@@ -78,6 +78,52 @@ public class AggregateKMeansRequest implements IndexedRecord {
      * com.gpudb.protocol.AggregateKMeansRequest.Options#NUM_TRIES NUM_TRIES}:
      * Number of times to run the k-means algorithm with a different randomly
      * selected starting points - helps avoid local minimum. Default is 1.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateKMeansRequest.Options#CREATE_TEMP_TABLE
+     * CREATE_TEMP_TABLE}: If {@code true}, a unique temporary table name will
+     * be generated in the sys_temp schema and used in place of {@code
+     * result_table}. If {@code result_table_persist} is {@code false} (or
+     * unspecified), then this is always allowed even if the caller does not
+     * have permission to create tables. The generated name is returned in
+     * {@code qualified_result_table_name}.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateKMeansRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateKMeansRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AggregateKMeansRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateKMeansRequest.Options#RESULT_TABLE
+     * RESULT_TABLE}: The name of a table used to store the results, in
+     * [schema_name.]table_name format, using standard <a
+     * href="../../../../../../concepts/tables/#table-name-resolution"
+     * target="_top">name resolution rules</a> and meeting <a
+     * href="../../../../../../concepts/tables/#table-naming-criteria"
+     * target="_top">table naming criteria</a>.  If this option is specified,
+     * the results are not returned in the response.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateKMeansRequest.Options#RESULT_TABLE_PERSIST
+     * RESULT_TABLE_PERSIST}: If {@code true}, then the result table specified
+     * in {@code result_table} will be persisted and will not expire unless a
+     * {@code ttl} is specified.   If {@code false}, then the result table will
+     * be an in-memory table and will expire unless a {@code ttl} is specified
+     * otherwise.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateKMeansRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateKMeansRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AggregateKMeansRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateKMeansRequest.Options#TTL TTL}: Sets the <a
+     * href="../../../../../../concepts/ttl/" target="_top">TTL</a> of the
+     * table specified in {@code result_table}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -102,6 +148,63 @@ public class AggregateKMeansRequest implements IndexedRecord {
          * Default is 1.
          */
         public static final String NUM_TRIES = "num_tries";
+
+        /**
+         * If {@code true}, a unique temporary table name will be generated in
+         * the sys_temp schema and used in place of {@code result_table}. If
+         * {@code result_table_persist} is {@code false} (or unspecified), then
+         * this is always allowed even if the caller does not have permission
+         * to create tables. The generated name is returned in {@code
+         * qualified_result_table_name}.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AggregateKMeansRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AggregateKMeansRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AggregateKMeansRequest.Options#FALSE FALSE}.
+         */
+        public static final String CREATE_TEMP_TABLE = "create_temp_table";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
+         * The name of a table used to store the results, in
+         * [schema_name.]table_name format, using standard <a
+         * href="../../../../../../concepts/tables/#table-name-resolution"
+         * target="_top">name resolution rules</a> and meeting <a
+         * href="../../../../../../concepts/tables/#table-naming-criteria"
+         * target="_top">table naming criteria</a>.  If this option is
+         * specified, the results are not returned in the response.
+         */
+        public static final String RESULT_TABLE = "result_table";
+
+        /**
+         * If {@code true}, then the result table specified in {@code
+         * result_table} will be persisted and will not expire unless a {@code
+         * ttl} is specified.   If {@code false}, then the result table will be
+         * an in-memory table and will expire unless a {@code ttl} is specified
+         * otherwise.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AggregateKMeansRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AggregateKMeansRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AggregateKMeansRequest.Options#FALSE FALSE}.
+         */
+        public static final String RESULT_TABLE_PERSIST = "result_table_persist";
+
+        /**
+         * Sets the <a href="../../../../../../concepts/ttl/"
+         * target="_top">TTL</a> of the table specified in {@code
+         * result_table}.
+         */
+        public static final String TTL = "ttl";
 
         private Options() {  }
     }
@@ -153,6 +256,63 @@ public class AggregateKMeansRequest implements IndexedRecord {
      *                 NUM_TRIES}: Number of times to run the k-means algorithm
      *                 with a different randomly selected starting points -
      *                 helps avoid local minimum. Default is 1.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#CREATE_TEMP_TABLE
+     *                 CREATE_TEMP_TABLE}: If {@code true}, a unique temporary
+     *                 table name will be generated in the sys_temp schema and
+     *                 used in place of {@code result_table}. If {@code
+     *                 result_table_persist} is {@code false} (or unspecified),
+     *                 then this is always allowed even if the caller does not
+     *                 have permission to create tables. The generated name is
+     *                 returned in {@code qualified_result_table_name}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#RESULT_TABLE
+     *                 RESULT_TABLE}: The name of a table used to store the
+     *                 results, in [schema_name.]table_name format, using
+     *                 standard <a
+     *                 href="../../../../../../concepts/tables/#table-name-resolution"
+     *                 target="_top">name resolution rules</a> and meeting <a
+     *                 href="../../../../../../concepts/tables/#table-naming-criteria"
+     *                 target="_top">table naming criteria</a>.  If this option
+     *                 is specified, the results are not returned in the
+     *                 response.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#RESULT_TABLE_PERSIST
+     *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
+     *                 table specified in {@code result_table} will be
+     *                 persisted and will not expire unless a {@code ttl} is
+     *                 specified.   If {@code false}, then the result table
+     *                 will be an in-memory table and will expire unless a
+     *                 {@code ttl} is specified otherwise.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#TTL
+     *                 TTL}: Sets the <a href="../../../../../../concepts/ttl/"
+     *                 target="_top">TTL</a> of the table specified in {@code
+     *                 result_table}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -281,6 +441,54 @@ public class AggregateKMeansRequest implements IndexedRecord {
      *         NUM_TRIES}: Number of times to run the k-means algorithm with a
      *         different randomly selected starting points - helps avoid local
      *         minimum. Default is 1.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateKMeansRequest.Options#CREATE_TEMP_TABLE
+     *         CREATE_TEMP_TABLE}: If {@code true}, a unique temporary table
+     *         name will be generated in the sys_temp schema and used in place
+     *         of {@code result_table}. If {@code result_table_persist} is
+     *         {@code false} (or unspecified), then this is always allowed even
+     *         if the caller does not have permission to create tables. The
+     *         generated name is returned in {@code
+     *         qualified_result_table_name}.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateKMeansRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateKMeansRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AggregateKMeansRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateKMeansRequest.Options#RESULT_TABLE
+     *         RESULT_TABLE}: The name of a table used to store the results, in
+     *         [schema_name.]table_name format, using standard <a
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
+     *         target="_top">name resolution rules</a> and meeting <a
+     *         href="../../../../../../concepts/tables/#table-naming-criteria"
+     *         target="_top">table naming criteria</a>.  If this option is
+     *         specified, the results are not returned in the response.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateKMeansRequest.Options#RESULT_TABLE_PERSIST
+     *         RESULT_TABLE_PERSIST}: If {@code true}, then the result table
+     *         specified in {@code result_table} will be persisted and will not
+     *         expire unless a {@code ttl} is specified.   If {@code false},
+     *         then the result table will be an in-memory table and will expire
+     *         unless a {@code ttl} is specified otherwise.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateKMeansRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateKMeansRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AggregateKMeansRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateKMeansRequest.Options#TTL TTL}: Sets
+     *         the <a href="../../../../../../concepts/ttl/"
+     *         target="_top">TTL</a> of the table specified in {@code
+     *         result_table}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -306,6 +514,63 @@ public class AggregateKMeansRequest implements IndexedRecord {
      *                 NUM_TRIES}: Number of times to run the k-means algorithm
      *                 with a different randomly selected starting points -
      *                 helps avoid local minimum. Default is 1.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#CREATE_TEMP_TABLE
+     *                 CREATE_TEMP_TABLE}: If {@code true}, a unique temporary
+     *                 table name will be generated in the sys_temp schema and
+     *                 used in place of {@code result_table}. If {@code
+     *                 result_table_persist} is {@code false} (or unspecified),
+     *                 then this is always allowed even if the caller does not
+     *                 have permission to create tables. The generated name is
+     *                 returned in {@code qualified_result_table_name}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#RESULT_TABLE
+     *                 RESULT_TABLE}: The name of a table used to store the
+     *                 results, in [schema_name.]table_name format, using
+     *                 standard <a
+     *                 href="../../../../../../concepts/tables/#table-name-resolution"
+     *                 target="_top">name resolution rules</a> and meeting <a
+     *                 href="../../../../../../concepts/tables/#table-naming-criteria"
+     *                 target="_top">table naming criteria</a>.  If this option
+     *                 is specified, the results are not returned in the
+     *                 response.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#RESULT_TABLE_PERSIST
+     *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
+     *                 table specified in {@code result_table} will be
+     *                 persisted and will not expire unless a {@code ttl} is
+     *                 specified.   If {@code false}, then the result table
+     *                 will be an in-memory table and will expire unless a
+     *                 {@code ttl} is specified otherwise.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#TTL
+     *                 TTL}: Sets the <a href="../../../../../../concepts/ttl/"
+     *                 target="_top">TTL</a> of the table specified in {@code
+     *                 result_table}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

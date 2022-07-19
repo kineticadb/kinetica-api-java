@@ -86,6 +86,12 @@ public class CreateDatasinkRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.CreateDatasinkRequest.Options#FLAT FLAT}.
      *         <li> {@link
+     * com.gpudb.protocol.CreateDatasinkRequest.Options#JDBC_DRIVER_JAR_PATH
+     * JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasinkRequest.Options#JDBC_DRIVER_CLASS_NAME
+     * JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
+     *         <li> {@link
      * com.gpudb.protocol.CreateDatasinkRequest.Options#SKIP_VALIDATION
      * SKIP_VALIDATION}: Bypass validation of connection to this data sink.
      * Supported values:
@@ -155,6 +161,16 @@ public class CreateDatasinkRequest implements IndexedRecord {
         public static final String JSON_FORMAT = "json_format";
         public static final String FLAT = "flat";
         public static final String NESTED = "nested";
+
+        /**
+         * JDBC driver jar file location
+         */
+        public static final String JDBC_DRIVER_JAR_PATH = "jdbc_driver_jar_path";
+
+        /**
+         * Name of the JDBC driver class
+         */
+        public static final String JDBC_DRIVER_CLASS_NAME = "jdbc_driver_class_name";
 
         /**
          * Bypass validation of connection to this data sink.
@@ -244,6 +260,12 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateDatasinkRequest.Options#FLAT
      *                 FLAT}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#JDBC_DRIVER_JAR_PATH
+     *                 JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#JDBC_DRIVER_CLASS_NAME
+     *                 JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasinkRequest.Options#SKIP_VALIDATION
      *                 SKIP_VALIDATION}: Bypass validation of connection to
@@ -362,6 +384,12 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.CreateDatasinkRequest.Options#FLAT FLAT}.
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasinkRequest.Options#JDBC_DRIVER_JAR_PATH
+     *         JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasinkRequest.Options#JDBC_DRIVER_CLASS_NAME
+     *         JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateDatasinkRequest.Options#SKIP_VALIDATION
      *         SKIP_VALIDATION}: Bypass validation of connection to this data
      *         sink.
@@ -431,6 +459,12 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateDatasinkRequest.Options#FLAT
      *                 FLAT}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#JDBC_DRIVER_JAR_PATH
+     *                 JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#JDBC_DRIVER_CLASS_NAME
+     *                 JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasinkRequest.Options#SKIP_VALIDATION
      *                 SKIP_VALIDATION}: Bypass validation of connection to

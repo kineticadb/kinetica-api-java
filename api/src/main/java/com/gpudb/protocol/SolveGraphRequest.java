@@ -222,39 +222,6 @@ public class SolveGraphRequest implements IndexedRecord {
      * where n is equal to the setting value. If set to 0, the setting is
      * ignored.  The default value is '1000'.
      *         <li> {@link
-     * com.gpudb.protocol.SolveGraphRequest.Options#EXPORT_SOLVE_RESULTS
-     * EXPORT_SOLVE_RESULTS}: Returns solution results inside the {@code
-     * resultPerDestinationNode} array in the response if set to {@code true}.
-     * Supported values:
-     * <ul>
-     *         <li> {@link com.gpudb.protocol.SolveGraphRequest.Options#TRUE
-     * TRUE}
-     *         <li> {@link com.gpudb.protocol.SolveGraphRequest.Options#FALSE
-     * FALSE}
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}.
-     *         <li> {@link
-     * com.gpudb.protocol.SolveGraphRequest.Options#REMOVE_PREVIOUS_RESTRICTIONS
-     * REMOVE_PREVIOUS_RESTRICTIONS}: Ignore the restrictions applied to the
-     * graph during the creation stage and only use the restrictions specified
-     * in this request if set to {@code true}.
-     * Supported values:
-     * <ul>
-     *         <li> {@link com.gpudb.protocol.SolveGraphRequest.Options#TRUE
-     * TRUE}
-     *         <li> {@link com.gpudb.protocol.SolveGraphRequest.Options#FALSE
-     * FALSE}
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}.
-     *         <li> {@link
-     * com.gpudb.protocol.SolveGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
-     * RESTRICTION_THRESHOLD_VALUE}: Value-based restriction comparison. Any
-     * node or edge with a RESTRICTIONS_VALUECOMPARED value greater than the
-     * {@code restriction_threshold_value} will not be included in the
-     * solution.
-     *         <li> {@link
      * com.gpudb.protocol.SolveGraphRequest.Options#UNIFORM_WEIGHTS
      * UNIFORM_WEIGHTS}: When specified, assigns the given value to all the
      * edges in the graph. Note that weights provided in {@code weightsOnEdges}
@@ -296,26 +263,6 @@ public class SolveGraphRequest implements IndexedRecord {
      * the cap on the combinatorial sequences generated. If the default value
      * of two millions is overridden to a lesser value, it can potentially
      * speed up the solver.  The default value is '2000000'.
-     *         <li> {@link
-     * com.gpudb.protocol.SolveGraphRequest.Options#ACCURATE_SNAPS
-     * ACCURATE_SNAPS}: Valid for single source destination pair solves if
-     * points are described in NODE_WKTPOINT identifier types: When true
-     * (default), it snaps to the nearest node of the graph; otherwise, it
-     * searches for the closest entity that could be an edge. For the latter
-     * case (false), the solver modifies the resulting cost with the weights
-     * proportional to the ratio of the snap location within the edge. This may
-     * be an over-kill when the performance is considered and the difference is
-     * well less than 1 percent. In batch runs, since the performance is of
-     * utmost importance, the option is always considered 'false'.
-     * Supported values:
-     * <ul>
-     *         <li> {@link com.gpudb.protocol.SolveGraphRequest.Options#TRUE
-     * TRUE}
-     *         <li> {@link com.gpudb.protocol.SolveGraphRequest.Options#FALSE
-     * FALSE}
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}.
      *         <li> {@link
      * com.gpudb.protocol.SolveGraphRequest.Options#OUTPUT_EDGE_PATH
      * OUTPUT_EDGE_PATH}: If true then concatenated edge ids will be added as
@@ -381,6 +328,26 @@ public class SolveGraphRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.SolveGraphRequest.Options#SOLVE_HEURISTIC
+     * SOLVE_HEURISTIC}: Specify heuristic search criterion only for the geo
+     * graphs and shortest path solves towards a single target
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.SolveGraphRequest.Options#ASTAR
+     * ASTAR}: Employs A-STAR heuristics to speed up the shortest path
+     * traversal
+     *         <li> {@link com.gpudb.protocol.SolveGraphRequest.Options#NONE
+     * NONE}: No heuristics are applied
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.SolveGraphRequest.Options#NONE NONE}.
+     *         <li> {@link
+     * com.gpudb.protocol.SolveGraphRequest.Options#ASTAR_RADIUS ASTAR_RADIUS}:
+     * For path solvers only when 'solve_heuristic' option is 'astar'. The
+     * shortest path traversal front includes nodes only within this radius
+     * (kilometers) as it moves towards the target location.  The default value
+     * is '70'.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -415,54 +382,6 @@ public class SolveGraphRequest implements IndexedRecord {
          * the setting is ignored.  The default value is '1000'.
          */
         public static final String MAX_SOLUTION_TARGETS = "max_solution_targets";
-
-        /**
-         * Returns solution results inside the {@code resultPerDestinationNode}
-         * array in the response if set to {@code true}.
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
-         *         <li> {@link
-         * com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}.
-         */
-        public static final String EXPORT_SOLVE_RESULTS = "export_solve_results";
-
-        /**
-         * An additional column 'CLUSTER' will be added for each node
-         */
-        public static final String TRUE = "true";
-
-        /**
-         * No extra cluster info per node will be available in the output
-         */
-        public static final String FALSE = "false";
-
-        /**
-         * Ignore the restrictions applied to the graph during the creation
-         * stage and only use the restrictions specified in this request if set
-         * to {@code true}.
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
-         *         <li> {@link
-         * com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}.
-         */
-        public static final String REMOVE_PREVIOUS_RESTRICTIONS = "remove_previous_restrictions";
-
-        /**
-         * Value-based restriction comparison. Any node or edge with a
-         * RESTRICTIONS_VALUECOMPARED value greater than the {@code
-         * restriction_threshold_value} will not be included in the solution.
-         */
-        public static final String RESTRICTION_THRESHOLD_VALUE = "restriction_threshold_value";
 
         /**
          * When specified, assigns the given value to all the edges in the
@@ -521,29 +440,6 @@ public class SolveGraphRequest implements IndexedRecord {
         public static final String MAX_NUM_COMBINATIONS = "max_num_combinations";
 
         /**
-         * Valid for single source destination pair solves if points are
-         * described in NODE_WKTPOINT identifier types: When true (default), it
-         * snaps to the nearest node of the graph; otherwise, it searches for
-         * the closest entity that could be an edge. For the latter case
-         * (false), the solver modifies the resulting cost with the weights
-         * proportional to the ratio of the snap location within the edge. This
-         * may be an over-kill when the performance is considered and the
-         * difference is well less than 1 percent. In batch runs, since the
-         * performance is of utmost importance, the option is always considered
-         * 'false'.
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
-         *         <li> {@link
-         * com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}.
-         */
-        public static final String ACCURATE_SNAPS = "accurate_snaps";
-
-        /**
          * If true then concatenated edge ids will be added as the EDGE path
          * column of the solution table for each source and target pair in
          * shortest path solves.
@@ -558,6 +454,16 @@ public class SolveGraphRequest implements IndexedRecord {
          * com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}.
          */
         public static final String OUTPUT_EDGE_PATH = "output_edge_path";
+
+        /**
+         * An additional column 'CLUSTER' will be added for each node
+         */
+        public static final String TRUE = "true";
+
+        /**
+         * No extra cluster info per node will be available in the output
+         */
+        public static final String FALSE = "false";
 
         /**
          * If true then concatenated wkt line segments will be added as the
@@ -623,6 +529,41 @@ public class SolveGraphRequest implements IndexedRecord {
          * com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}.
          */
         public static final String OUTPUT_CLUSTERS = "output_clusters";
+
+        /**
+         * Specify heuristic search criterion only for the geo graphs and
+         * shortest path solves towards a single target
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.SolveGraphRequest.Options#ASTAR ASTAR}: Employs
+         * A-STAR heuristics to speed up the shortest path traversal
+         *         <li> {@link
+         * com.gpudb.protocol.SolveGraphRequest.Options#NONE NONE}: No
+         * heuristics are applied
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.SolveGraphRequest.Options#NONE NONE}.
+         */
+        public static final String SOLVE_HEURISTIC = "solve_heuristic";
+
+        /**
+         * Employs A-STAR heuristics to speed up the shortest path traversal
+         */
+        public static final String ASTAR = "astar";
+
+        /**
+         * No heuristics are applied
+         */
+        public static final String NONE = "none";
+
+        /**
+         * For path solvers only when 'solve_heuristic' option is 'astar'. The
+         * shortest path traversal front includes nodes only within this radius
+         * (kilometers) as it moves towards the target location.  The default
+         * value is '70'.
+         */
+        public static final String ASTAR_RADIUS = "astar_radius";
 
         private Options() {  }
     }
@@ -702,13 +643,11 @@ public class SolveGraphRequest implements IndexedRecord {
      *                      using constant values in an
      *                      identifier combination, the number of values
      *                      specified must match across the
-     *                      combination. If {@code
-     *                      remove_previous_restrictions} is set
-     *                      to {@code true}, any
+     *                      combination. If remove_previous_restrictions option
+     *                      is set
+     *                      to true, any
      *                      provided restrictions will replace the existing
-     *                      restrictions. If
-     *                      {@code remove_previous_restrictions} is set to
-     *                      {@code false}, any provided
+     *                      restrictions. Otherwise, any provided
      *                      restrictions will be added (in the case of
      *                      'RESTRICTIONS_VALUECOMPARED') to or
      *                      replaced (in the case of
@@ -824,46 +763,6 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 set to 0, the setting is ignored.  The default value is
      *                 '1000'.
      *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#EXPORT_SOLVE_RESULTS
-     *                 EXPORT_SOLVE_RESULTS}: Returns solution results inside
-     *                 the {@code resultPerDestinationNode} array in the
-     *                 response if set to {@code true}.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#REMOVE_PREVIOUS_RESTRICTIONS
-     *                 REMOVE_PREVIOUS_RESTRICTIONS}: Ignore the restrictions
-     *                 applied to the graph during the creation stage and only
-     *                 use the restrictions specified in this request if set to
-     *                 {@code true}.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
-     *                 RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
-     *                 comparison. Any node or edge with a
-     *                 RESTRICTIONS_VALUECOMPARED value greater than the {@code
-     *                 restriction_threshold_value} will not be included in the
-     *                 solution.
-     *                         <li> {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#UNIFORM_WEIGHTS
      *                 UNIFORM_WEIGHTS}: When specified, assigns the given
      *                 value to all the edges in the graph. Note that weights
@@ -914,30 +813,6 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 millions is overridden to a lesser value, it can
      *                 potentially speed up the solver.  The default value is
      *                 '2000000'.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#ACCURATE_SNAPS
-     *                 ACCURATE_SNAPS}: Valid for single source destination
-     *                 pair solves if points are described in NODE_WKTPOINT
-     *                 identifier types: When true (default), it snaps to the
-     *                 nearest node of the graph; otherwise, it searches for
-     *                 the closest entity that could be an edge. For the latter
-     *                 case (false), the solver modifies the resulting cost
-     *                 with the weights proportional to the ratio of the snap
-     *                 location within the edge. This may be an over-kill when
-     *                 the performance is considered and the difference is well
-     *                 less than 1 percent. In batch runs, since the
-     *                 performance is of utmost importance, the option is
-     *                 always considered 'false'.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#OUTPUT_EDGE_PATH
      *                 OUTPUT_EDGE_PATH}: If true then concatenated edge ids
@@ -1018,6 +893,30 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#SOLVE_HEURISTIC
+     *                 SOLVE_HEURISTIC}: Specify heuristic search criterion
+     *                 only for the geo graphs and shortest path solves towards
+     *                 a single target
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#ASTAR
+     *                 ASTAR}: Employs A-STAR heuristics to speed up the
+     *                 shortest path traversal
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#NONE NONE}:
+     *                 No heuristics are applied
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#NONE NONE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#ASTAR_RADIUS
+     *                 ASTAR_RADIUS}: For path solvers only when
+     *                 'solve_heuristic' option is 'astar'. The shortest path
+     *                 traversal front includes nodes only within this radius
+     *                 (kilometers) as it moves towards the target location.
+     *                 The default value is '70'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1140,11 +1039,10 @@ public class SolveGraphRequest implements IndexedRecord {
      *         values in an
      *         identifier combination, the number of values specified must
      *         match across the
-     *         combination. If {@code remove_previous_restrictions} is set
-     *         to {@code true}, any
-     *         provided restrictions will replace the existing restrictions. If
-     *         {@code remove_previous_restrictions} is set to
-     *         {@code false}, any provided
+     *         combination. If remove_previous_restrictions option is set
+     *         to true, any
+     *         provided restrictions will replace the existing restrictions.
+     *         Otherwise, any provided
      *         restrictions will be added (in the case of
      *         'RESTRICTIONS_VALUECOMPARED') to or
      *         replaced (in the case of 'RESTRICTIONS_ONOFFCOMPARED').  The
@@ -1178,13 +1076,11 @@ public class SolveGraphRequest implements IndexedRecord {
      *                      using constant values in an
      *                      identifier combination, the number of values
      *                      specified must match across the
-     *                      combination. If {@code
-     *                      remove_previous_restrictions} is set
-     *                      to {@code true}, any
+     *                      combination. If remove_previous_restrictions option
+     *                      is set
+     *                      to true, any
      *                      provided restrictions will replace the existing
-     *                      restrictions. If
-     *                      {@code remove_previous_restrictions} is set to
-     *                      {@code false}, any provided
+     *                      restrictions. Otherwise, any provided
      *                      restrictions will be added (in the case of
      *                      'RESTRICTIONS_VALUECOMPARED') to or
      *                      replaced (in the case of
@@ -1456,40 +1352,6 @@ public class SolveGraphRequest implements IndexedRecord {
      *         setting value. If set to 0, the setting is ignored.  The default
      *         value is '1000'.
      *                 <li> {@link
-     *         com.gpudb.protocol.SolveGraphRequest.Options#EXPORT_SOLVE_RESULTS
-     *         EXPORT_SOLVE_RESULTS}: Returns solution results inside the
-     *         {@code resultPerDestinationNode} array in the response if set to
-     *         {@code true}.
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
-     *                 <li> {@link
-     *         com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}.
-     *                 <li> {@link
-     *         com.gpudb.protocol.SolveGraphRequest.Options#REMOVE_PREVIOUS_RESTRICTIONS
-     *         REMOVE_PREVIOUS_RESTRICTIONS}: Ignore the restrictions applied
-     *         to the graph during the creation stage and only use the
-     *         restrictions specified in this request if set to {@code true}.
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
-     *                 <li> {@link
-     *         com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}.
-     *                 <li> {@link
-     *         com.gpudb.protocol.SolveGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
-     *         RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
-     *         comparison. Any node or edge with a RESTRICTIONS_VALUECOMPARED
-     *         value greater than the {@code restriction_threshold_value} will
-     *         not be included in the solution.
-     *                 <li> {@link
      *         com.gpudb.protocol.SolveGraphRequest.Options#UNIFORM_WEIGHTS
      *         UNIFORM_WEIGHTS}: When specified, assigns the given value to all
      *         the edges in the graph. Note that weights provided in {@code
@@ -1536,27 +1398,6 @@ public class SolveGraphRequest implements IndexedRecord {
      *         the default value of two millions is overridden to a lesser
      *         value, it can potentially speed up the solver.  The default
      *         value is '2000000'.
-     *                 <li> {@link
-     *         com.gpudb.protocol.SolveGraphRequest.Options#ACCURATE_SNAPS
-     *         ACCURATE_SNAPS}: Valid for single source destination pair solves
-     *         if points are described in NODE_WKTPOINT identifier types: When
-     *         true (default), it snaps to the nearest node of the graph;
-     *         otherwise, it searches for the closest entity that could be an
-     *         edge. For the latter case (false), the solver modifies the
-     *         resulting cost with the weights proportional to the ratio of the
-     *         snap location within the edge. This may be an over-kill when the
-     *         performance is considered and the difference is well less than 1
-     *         percent. In batch runs, since the performance is of utmost
-     *         importance, the option is always considered 'false'.
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
-     *                 <li> {@link
-     *         com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}.
      *                 <li> {@link
      *         com.gpudb.protocol.SolveGraphRequest.Options#OUTPUT_EDGE_PATH
      *         OUTPUT_EDGE_PATH}: If true then concatenated edge ids will be
@@ -1625,6 +1466,28 @@ public class SolveGraphRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#SOLVE_HEURISTIC
+     *         SOLVE_HEURISTIC}: Specify heuristic search criterion only for
+     *         the geo graphs and shortest path solves towards a single target
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#ASTAR ASTAR}:
+     *         Employs A-STAR heuristics to speed up the shortest path
+     *         traversal
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#NONE NONE}: No
+     *         heuristics are applied
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#NONE NONE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#ASTAR_RADIUS
+     *         ASTAR_RADIUS}: For path solvers only when 'solve_heuristic'
+     *         option is 'astar'. The shortest path traversal front includes
+     *         nodes only within this radius (kilometers) as it moves towards
+     *         the target location.  The default value is '70'.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1666,46 +1529,6 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 ascending cost where n is equal to the setting value. If
      *                 set to 0, the setting is ignored.  The default value is
      *                 '1000'.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#EXPORT_SOLVE_RESULTS
-     *                 EXPORT_SOLVE_RESULTS}: Returns solution results inside
-     *                 the {@code resultPerDestinationNode} array in the
-     *                 response if set to {@code true}.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#REMOVE_PREVIOUS_RESTRICTIONS
-     *                 REMOVE_PREVIOUS_RESTRICTIONS}: Ignore the restrictions
-     *                 applied to the graph during the creation stage and only
-     *                 use the restrictions specified in this request if set to
-     *                 {@code true}.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
-     *                 RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
-     *                 comparison. Any node or edge with a
-     *                 RESTRICTIONS_VALUECOMPARED value greater than the {@code
-     *                 restriction_threshold_value} will not be included in the
-     *                 solution.
      *                         <li> {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#UNIFORM_WEIGHTS
      *                 UNIFORM_WEIGHTS}: When specified, assigns the given
@@ -1757,30 +1580,6 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 millions is overridden to a lesser value, it can
      *                 potentially speed up the solver.  The default value is
      *                 '2000000'.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#ACCURATE_SNAPS
-     *                 ACCURATE_SNAPS}: Valid for single source destination
-     *                 pair solves if points are described in NODE_WKTPOINT
-     *                 identifier types: When true (default), it snaps to the
-     *                 nearest node of the graph; otherwise, it searches for
-     *                 the closest entity that could be an edge. For the latter
-     *                 case (false), the solver modifies the resulting cost
-     *                 with the weights proportional to the ratio of the snap
-     *                 location within the edge. This may be an over-kill when
-     *                 the performance is considered and the difference is well
-     *                 less than 1 percent. In batch runs, since the
-     *                 performance is of utmost importance, the option is
-     *                 always considered 'false'.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#OUTPUT_EDGE_PATH
      *                 OUTPUT_EDGE_PATH}: If true then concatenated edge ids
@@ -1861,6 +1660,30 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#SOLVE_HEURISTIC
+     *                 SOLVE_HEURISTIC}: Specify heuristic search criterion
+     *                 only for the geo graphs and shortest path solves towards
+     *                 a single target
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#ASTAR
+     *                 ASTAR}: Employs A-STAR heuristics to speed up the
+     *                 shortest path traversal
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#NONE NONE}:
+     *                 No heuristics are applied
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#NONE NONE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#ASTAR_RADIUS
+     *                 ASTAR_RADIUS}: For path solvers only when
+     *                 'solve_heuristic' option is 'astar'. The shortest path
+     *                 traversal front includes nodes only within this radius
+     *                 (kilometers) as it moves towards the target location.
+     *                 The default value is '70'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

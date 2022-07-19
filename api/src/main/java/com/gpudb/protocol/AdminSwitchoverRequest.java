@@ -19,7 +19,7 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#adminSwitchover(AdminSwitchoverRequest)}.
  * <p>
- * Manually switchover one or more processes to another host. Individual ranks
+ * Manually switch over one or more processes to another host. Individual ranks
  * or entire hosts may be moved to another host.
  */
 public class AdminSwitchoverRequest implements IndexedRecord {
@@ -105,27 +105,30 @@ public class AdminSwitchoverRequest implements IndexedRecord {
      * Constructs an AdminSwitchoverRequest object with the specified
      * parameters.
      * 
-     * @param processes  Indicates the process identifier to switchover to
-     *                   another host. Options are 'hostN' and 'rankN' where
-     *                   'N' corresponds to the number associated with a host
-     *                   or rank in the <a
-     *                   href="../../../../../../config/#network"
+     * @param processes  Indicates the process identifier to switch over to
+     *                   another host. Options are
+     *                   'hostN' and 'rankN' where 'N' corresponds to the
+     *                   number associated with a host or rank in the
+     *                   <a
+     *                   href="../../../../../../config/#config-main-network"
      *                   target="_top">Network</a> section of the gpudb.conf
-     *                   file, e.g., 'host[N].address' or 'rank[N].host'. If
-     *                   'hostN' is provided, all processes on that host will
-     *                   be moved to another host. Each entry in this array
-     *                   will be switched over to the corresponding host entry
-     *                   at the same index in {@code destinations}.
-     * @param destinations  Indicates to which host to switchover each
-     *                      corresponding process given in {@code processes}.
-     *                      Each index must be specified as 'hostN' where 'N'
-     *                      corresponds to the number associated with a host or
-     *                      rank in the <a
-     *                      href="../../../../../../config/#network"
-     *                      target="_top">Network</a> section of the gpudb.conf
-     *                      file, e.g., 'host[N].address'. Each entry in this
-     *                      array will receive the corresponding process entry
-     *                      at the same index in {@code processes}.
+     *                   file; e.g.,
+     *                   'host[N].address' or 'rank[N].host'. If 'hostN' is
+     *                   provided, all processes on that host will be
+     *                   moved to another host. Each entry in this array will
+     *                   be switched over to the corresponding host
+     *                   entry at the same index in {@code destinations}.
+     * @param destinations  Indicates to which host to switch over each
+     *                      corresponding process given in
+     *                      {@code processes}. Each index must be specified as
+     *                      'hostN' where 'N' corresponds to the number
+     *                      associated with a host or rank in the <a
+     *                      href="../../../../../../config/#config-main-network"
+     *                      target="_top">Network</a> section of the
+     *                      gpudb.conf file; e.g., 'host[N].address'. Each
+     *                      entry in this array will receive the corresponding
+     *                      process entry at the same index in {@code
+     *                      processes}.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -156,14 +159,16 @@ public class AdminSwitchoverRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Indicates the process identifier to switchover to another host.
-     *         Options are 'hostN' and 'rankN' where 'N' corresponds to the
-     *         number associated with a host or rank in the <a
-     *         href="../../../../../../config/#network"
-     *         target="_top">Network</a> section of the gpudb.conf file, e.g.,
+     * @return Indicates the process identifier to switch over to another host.
+     *         Options are
+     *         'hostN' and 'rankN' where 'N' corresponds to the number
+     *         associated with a host or rank in the
+     *         <a href="../../../../../../config/#config-main-network"
+     *         target="_top">Network</a> section of the gpudb.conf file; e.g.,
      *         'host[N].address' or 'rank[N].host'. If 'hostN' is provided, all
-     *         processes on that host will be moved to another host. Each entry
-     *         in this array will be switched over to the corresponding host
+     *         processes on that host will be
+     *         moved to another host. Each entry in this array will be switched
+     *         over to the corresponding host
      *         entry at the same index in {@code destinations}.
      * 
      */
@@ -173,17 +178,19 @@ public class AdminSwitchoverRequest implements IndexedRecord {
 
     /**
      * 
-     * @param processes  Indicates the process identifier to switchover to
-     *                   another host. Options are 'hostN' and 'rankN' where
-     *                   'N' corresponds to the number associated with a host
-     *                   or rank in the <a
-     *                   href="../../../../../../config/#network"
+     * @param processes  Indicates the process identifier to switch over to
+     *                   another host. Options are
+     *                   'hostN' and 'rankN' where 'N' corresponds to the
+     *                   number associated with a host or rank in the
+     *                   <a
+     *                   href="../../../../../../config/#config-main-network"
      *                   target="_top">Network</a> section of the gpudb.conf
-     *                   file, e.g., 'host[N].address' or 'rank[N].host'. If
-     *                   'hostN' is provided, all processes on that host will
-     *                   be moved to another host. Each entry in this array
-     *                   will be switched over to the corresponding host entry
-     *                   at the same index in {@code destinations}.
+     *                   file; e.g.,
+     *                   'host[N].address' or 'rank[N].host'. If 'hostN' is
+     *                   provided, all processes on that host will be
+     *                   moved to another host. Each entry in this array will
+     *                   be switched over to the corresponding host
+     *                   entry at the same index in {@code destinations}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -195,14 +202,16 @@ public class AdminSwitchoverRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Indicates to which host to switchover each corresponding process
-     *         given in {@code processes}. Each index must be specified as
-     *         'hostN' where 'N' corresponds to the number associated with a
-     *         host or rank in the <a href="../../../../../../config/#network"
-     *         target="_top">Network</a> section of the gpudb.conf file, e.g.,
-     *         'host[N].address'. Each entry in this array will receive the
-     *         corresponding process entry at the same index in {@code
-     *         processes}.
+     * @return Indicates to which host to switch over each corresponding
+     *         process given in
+     *         {@code processes}. Each index must be specified as 'hostN' where
+     *         'N' corresponds to the number
+     *         associated with a host or rank in the <a
+     *         href="../../../../../../config/#config-main-network"
+     *         target="_top">Network</a> section of the
+     *         gpudb.conf file; e.g., 'host[N].address'. Each entry in this
+     *         array will receive the corresponding
+     *         process entry at the same index in {@code processes}.
      * 
      */
     public List<String> getDestinations() {
@@ -211,16 +220,17 @@ public class AdminSwitchoverRequest implements IndexedRecord {
 
     /**
      * 
-     * @param destinations  Indicates to which host to switchover each
-     *                      corresponding process given in {@code processes}.
-     *                      Each index must be specified as 'hostN' where 'N'
-     *                      corresponds to the number associated with a host or
-     *                      rank in the <a
-     *                      href="../../../../../../config/#network"
-     *                      target="_top">Network</a> section of the gpudb.conf
-     *                      file, e.g., 'host[N].address'. Each entry in this
-     *                      array will receive the corresponding process entry
-     *                      at the same index in {@code processes}.
+     * @param destinations  Indicates to which host to switch over each
+     *                      corresponding process given in
+     *                      {@code processes}. Each index must be specified as
+     *                      'hostN' where 'N' corresponds to the number
+     *                      associated with a host or rank in the <a
+     *                      href="../../../../../../config/#config-main-network"
+     *                      target="_top">Network</a> section of the
+     *                      gpudb.conf file; e.g., 'host[N].address'. Each
+     *                      entry in this array will receive the corresponding
+     *                      process entry at the same index in {@code
+     *                      processes}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

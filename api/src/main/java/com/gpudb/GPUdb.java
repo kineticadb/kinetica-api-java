@@ -349,34 +349,39 @@ public class GPUdb extends GPUdbBase {
      *               entry in this array corresponds to the entry at the same
      *               index in the {@code configParams}.
      * @param configParams  Array of maps containing configuration parameters
-     *                      to apply to the new ranks found in {@code hosts}.
-     *                      For example, '{"rank.gpu":"2",
+     *                      to apply to the new ranks
+     *                      found in {@code hosts}. For example,
+     *                      '{"rank.gpu":"2",
      *                      "tier.ram.rank.limit":"10000000000"}'. Currently,
-     *                      the available parameters are rank-specific
-     *                      parameters in the <a
-     *                      href="../../../../../config/#network"
-     *                      target="_top">Network</a>, <a
-     *                      href="../../../../../config/#hardware"
-     *                      target="_top">Hardware</a>, <a
-     *                      href="../../../../../config/#text-search"
-     *                      target="_top">Text Search</a>, and <a
-     *                      href="../../../../../config/#ram-tier"
+     *                      the available parameters
+     *                      are rank-specific parameters in the <a
+     *                      href="../../../../../config/#config-main-network"
+     *                      target="_top">Network</a>,
+     *                      <a
+     *                      href="../../../../../config/#config-main-hardware"
+     *                      target="_top">Hardware</a>,
+     *                      <a
+     *                      href="../../../../../config/#config-main-text-search"
+     *                      target="_top">Text Search</a>, and
+     *                      <a
+     *                      href="../../../../../config/#config-main-ram-tier"
      *                      target="_top">RAM Tiered Storage</a> sections in
-     *                      the gpudb.conf file, with the key exception of the
-     *                      'rankN.host' settings in the Network section that
-     *                      will be determined by {@code hosts} instead. Though
-     *                      many of these configuration parameters typically
-     *                      are affixed with 'rankN' in the gpudb.conf file
-     *                      (where N is the rank number), the 'N' should be
-     *                      omitted in {@code configParams} as the new rank
-     *                      number(s) are not allocated until the ranks have
-     *                      been added to the cluster. Each entry in this array
+     *                      the gpudb.conf file, with the
+     *                      key exception of the 'rankN.host' settings in the
+     *                      Network section that will be determined by
+     *                      {@code hosts} instead. Though many of these
+     *                      configuration parameters typically are affixed with
+     *                      'rankN' in the gpudb.conf file (where N is the rank
+     *                      number), the 'N' should be omitted in
+     *                      {@code configParams} as the new rank number(s) are
+     *                      not allocated until the ranks have been added
+     *                      to the cluster. Each entry in this array
      *                      corresponds to the entry at the same index in the
      *                      {@code hosts}. This array must either be completely
-     *                      empty or have the same number of elements as the
-     *                      {@code hosts}.  An empty {@code configParams} array
-     *                      will result in the new ranks being set with default
-     *                      parameters.
+     *                      empty or have the same number of elements as
+     *                      the {@code hosts}.  An empty {@code configParams}
+     *                      array will result in the new ranks being set
+     *                      with default parameters.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -727,26 +732,25 @@ public class GPUdb extends GPUdbBase {
      * distributed (as much as possible) across all the ranks.
      * <p>
      * The database must be offline for this operation, see {@link
-     * GPUdb#adminOffline(AdminOfflineRequest)}.
+     * GPUdb#adminOffline(AdminOfflineRequest)}
      * <p>
-     * If {@link GPUdb#adminRebalance(AdminRebalanceRequest)} is invoked after
-     * a change is made to the
-     * cluster, e.g., a host was added or removed,
-     * <a href="../../../../../concepts/tables/#sharding" target="_top">sharded
-     * data</a> will be
-     * evenly redistributed across the cluster by number of shards per rank
-     * while unsharded data will be redistributed across the cluster by data
-     * size per rank.
-     * <p>
-     * If {@link GPUdb#adminRebalance(AdminRebalanceRequest)} is invoked at
-     * some point when unsharded
-     * data (a.k.a. <a href="../../../../../concepts/tables/#random-sharding"
+     * * If {@link GPUdb#adminRebalance(AdminRebalanceRequest)} is invoked
+     * after a change is
+     *   made to the cluster, e.g., a host was added or removed,
+     *   <a href="../../../../../concepts/tables/#sharding"
+     * target="_top">sharded data</a> will be
+     *   evenly redistributed across the cluster by number of shards per rank
+     *   while unsharded data will be redistributed across the cluster by data
+     *   size per rank
+     * * If {@link GPUdb#adminRebalance(AdminRebalanceRequest)}
+     *   is invoked at some point when unsharded data (a.k.a.
+     *   <a href="../../../../../concepts/tables/#random-sharding"
      * target="_top">randomly-sharded</a>)
-     * in the cluster is unevenly distributed over time, sharded data will
-     * not move while unsharded data will be redistributed across the
-     * cluster by data size per rank.
+     *   in the cluster is unevenly distributed over time, sharded data will
+     *   not move while unsharded data will be redistributed across the
+     *   cluster by data size per rank
      * <p>
-     * NOTE: Replicated data will not move as a result of this call.
+     * NOTE: Replicated data will not move as a result of this call
      * <p>
      * This endpoint's processing time depends on the amount of data in the
      * system,
@@ -779,26 +783,24 @@ public class GPUdb extends GPUdbBase {
      * distributed (as much as possible) across all the ranks.
      * <p>
      * The database must be offline for this operation, see {@link
-     * GPUdb#adminOffline(boolean, Map)}.
+     * GPUdb#adminOffline(boolean, Map)}
      * <p>
-     * If {@link GPUdb#adminRebalance(Map)} is invoked after a change is made
-     * to the
-     * cluster, e.g., a host was added or removed,
-     * <a href="../../../../../concepts/tables/#sharding" target="_top">sharded
-     * data</a> will be
-     * evenly redistributed across the cluster by number of shards per rank
-     * while unsharded data will be redistributed across the cluster by data
-     * size per rank.
-     * <p>
-     * If {@link GPUdb#adminRebalance(Map)} is invoked at some point when
-     * unsharded
-     * data (a.k.a. <a href="../../../../../concepts/tables/#random-sharding"
+     * * If {@link GPUdb#adminRebalance(Map)} is invoked after a change is
+     *   made to the cluster, e.g., a host was added or removed,
+     *   <a href="../../../../../concepts/tables/#sharding"
+     * target="_top">sharded data</a> will be
+     *   evenly redistributed across the cluster by number of shards per rank
+     *   while unsharded data will be redistributed across the cluster by data
+     *   size per rank
+     * * If {@link GPUdb#adminRebalance(Map)}
+     *   is invoked at some point when unsharded data (a.k.a.
+     *   <a href="../../../../../concepts/tables/#random-sharding"
      * target="_top">randomly-sharded</a>)
-     * in the cluster is unevenly distributed over time, sharded data will
-     * not move while unsharded data will be redistributed across the
-     * cluster by data size per rank.
+     *   in the cluster is unevenly distributed over time, sharded data will
+     *   not move while unsharded data will be redistributed across the
+     *   cluster by data size per rank
      * <p>
-     * NOTE: Replicated data will not move as a result of this call.
+     * NOTE: Replicated data will not move as a result of this call
      * <p>
      * This endpoint's processing time depends on the amount of data in the
      * system,
@@ -1449,7 +1451,7 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Manually switchover one or more processes to another host. Individual
+     * Manually switch over one or more processes to another host. Individual
      * ranks or entire hosts may be moved to another host.
      * <p>
      * <b>Note:</b> This method should be used for on-premise deployments only.
@@ -1473,32 +1475,34 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Manually switchover one or more processes to another host. Individual
+     * Manually switch over one or more processes to another host. Individual
      * ranks or entire hosts may be moved to another host.
      * <p>
      * <b>Note:</b> This method should be used for on-premise deployments only.
      * 
-     * @param processes  Indicates the process identifier to switchover to
-     *                   another host. Options are 'hostN' and 'rankN' where
-     *                   'N' corresponds to the number associated with a host
-     *                   or rank in the <a
-     *                   href="../../../../../config/#network"
+     * @param processes  Indicates the process identifier to switch over to
+     *                   another host. Options are
+     *                   'hostN' and 'rankN' where 'N' corresponds to the
+     *                   number associated with a host or rank in the
+     *                   <a href="../../../../../config/#config-main-network"
      *                   target="_top">Network</a> section of the gpudb.conf
-     *                   file, e.g., 'host[N].address' or 'rank[N].host'. If
-     *                   'hostN' is provided, all processes on that host will
-     *                   be moved to another host. Each entry in this array
-     *                   will be switched over to the corresponding host entry
-     *                   at the same index in {@code destinations}.
-     * @param destinations  Indicates to which host to switchover each
-     *                      corresponding process given in {@code processes}.
-     *                      Each index must be specified as 'hostN' where 'N'
-     *                      corresponds to the number associated with a host or
-     *                      rank in the <a
-     *                      href="../../../../../config/#network"
-     *                      target="_top">Network</a> section of the gpudb.conf
-     *                      file, e.g., 'host[N].address'. Each entry in this
-     *                      array will receive the corresponding process entry
-     *                      at the same index in {@code processes}.
+     *                   file; e.g.,
+     *                   'host[N].address' or 'rank[N].host'. If 'hostN' is
+     *                   provided, all processes on that host will be
+     *                   moved to another host. Each entry in this array will
+     *                   be switched over to the corresponding host
+     *                   entry at the same index in {@code destinations}.
+     * @param destinations  Indicates to which host to switch over each
+     *                      corresponding process given in
+     *                      {@code processes}. Each index must be specified as
+     *                      'hostN' where 'N' corresponds to the number
+     *                      associated with a host or rank in the <a
+     *                      href="../../../../../config/#config-main-network"
+     *                      target="_top">Network</a> section of the
+     *                      gpudb.conf file; e.g., 'host[N].address'. Each
+     *                      entry in this array will receive the corresponding
+     *                      process entry at the same index in {@code
+     *                      processes}.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -1991,14 +1995,16 @@ public class GPUdb extends GPUdbBase {
      *                the results).  The default value is 0.The minimum allowed
      *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned, or END_OF_SET (-9999) to indicate
-     *               that the max number of results should be returned.  The
-     *               number of records returned will never exceed the server's
-     *               own limit, defined by the <a
-     *               href="../../../../../config/#general"
+     *               results to be returned, or
+     *               END_OF_SET (-9999) to indicate that the maximum number of
+     *               results allowed by the server should be
+     *               returned.  The number of records returned will never
+     *               exceed the server's own limit, defined by the
+     *               <a href="../../../../../config/#config-main-general"
      *               target="_top">max_get_records_size</a> parameter in the
-     *               server configuration.  Use {@code hasMoreRecords} to see
-     *               if more records exist in the result to be fetched, and
+     *               server configuration.
+     *               Use {@code hasMoreRecords} to see if more records exist in
+     *               the result to be fetched, and
      *               {@code offset} & {@code limit} to request subsequent pages
      *               of results.  The default value is -9999.
      * @param options  Optional parameters.
@@ -2402,6 +2408,63 @@ public class GPUdb extends GPUdbBase {
      *                 NUM_TRIES}: Number of times to run the k-means algorithm
      *                 with a different randomly selected starting points -
      *                 helps avoid local minimum. Default is 1.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#CREATE_TEMP_TABLE
+     *                 CREATE_TEMP_TABLE}: If {@code true}, a unique temporary
+     *                 table name will be generated in the sys_temp schema and
+     *                 used in place of {@code result_table}. If {@code
+     *                 result_table_persist} is {@code false} (or unspecified),
+     *                 then this is always allowed even if the caller does not
+     *                 have permission to create tables. The generated name is
+     *                 returned in {@code qualified_result_table_name}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#RESULT_TABLE
+     *                 RESULT_TABLE}: The name of a table used to store the
+     *                 results, in [schema_name.]table_name format, using
+     *                 standard <a
+     *                 href="../../../../../concepts/tables/#table-name-resolution"
+     *                 target="_top">name resolution rules</a> and meeting <a
+     *                 href="../../../../../concepts/tables/#table-naming-criteria"
+     *                 target="_top">table naming criteria</a>.  If this option
+     *                 is specified, the results are not returned in the
+     *                 response.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#RESULT_TABLE_PERSIST
+     *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
+     *                 table specified in {@code result_table} will be
+     *                 persisted and will not expire unless a {@code ttl} is
+     *                 specified.   If {@code false}, then the result table
+     *                 will be an in-memory table and will expire unless a
+     *                 {@code ttl} is specified otherwise.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#TTL
+     *                 TTL}: Sets the <a href="../../../../../concepts/ttl/"
+     *                 target="_top">TTL</a> of the table specified in {@code
+     *                 result_table}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -3113,14 +3176,16 @@ public class GPUdb extends GPUdbBase {
      *                the results).  The default value is 0.The minimum allowed
      *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned. Or END_OF_SET (-9999) to indicate
-     *               that the max number of results should be returned.  The
-     *               number of records returned will never exceed the server's
-     *               own limit, defined by the <a
-     *               href="../../../../../config/#general"
+     *               results to be returned, or
+     *               END_OF_SET (-9999) to indicate that the maximum number of
+     *               results allowed by the server should be
+     *               returned.  The number of records returned will never
+     *               exceed the server's own limit, defined by the
+     *               <a href="../../../../../config/#config-main-general"
      *               target="_top">max_get_records_size</a> parameter in the
-     *               server configuration.  Use {@code hasMoreRecords} to see
-     *               if more records exist in the result to be fetched, and
+     *               server configuration.
+     *               Use {@code hasMoreRecords} to see if more records exist in
+     *               the result to be fetched, and
      *               {@code offset} & {@code limit} to request subsequent pages
      *               of results.  The default value is -9999.
      * @param options  Optional parameters.
@@ -3623,6 +3688,12 @@ public class GPUdb extends GPUdbBase {
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#KAFKA
      *                              KAFKA}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#GCS_SERVICE_ACCOUNT_ID
+     *                              GCS_SERVICE_ACCOUNT_ID}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
+     *                              GCS_SERVICE_ACCOUNT_KEYS}
      *                              </ul>
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#IDENTITY
@@ -3630,6 +3701,14 @@ public class GPUdb extends GPUdbBase {
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#SECRET
      *                              SECRET}: New password for the credential
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#SCHEMA_NAME
+     *                              SCHEMA_NAME}: Updates the schema name.  If
+     *                              {@code schema_name}
+     *                              doesn't exist, an error will be thrown. If
+     *                              {@code schema_name} is empty, then the
+     *                              user's
+     *                              default schema will be used.
      *                              </ul>
      * @param options  Optional parameters.
      * 
@@ -3751,6 +3830,13 @@ public class GPUdb extends GPUdbBase {
      *                            The default value is {@link
      *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FALSE
      *                            FALSE}.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#SCHEMA_NAME
+     *                            SCHEMA_NAME}: Updates the schema name.  If
+     *                            {@code schema_name}
+     *                            doesn't exist, an error will be thrown. If
+     *                            {@code schema_name} is empty, then the user's
+     *                            default schema will be used.
      *                            </ul>
      * @param options  Optional parameters.
      * 
@@ -3809,8 +3895,8 @@ public class GPUdb extends GPUdbBase {
      *                              in
      *                              'storage_provider_type://[storage_path[:storage_port]]'
      *                              format.
-     *                              Supported storage provider types are 'hdfs'
-     *                              and 's3'.
+     *                              Supported storage provider types are
+     *                              'azure','gcs','hdfs','kafka' and 's3'.
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#USER_NAME
      *                              USER_NAME}: Name of the remote system user;
@@ -3908,6 +3994,19 @@ public class GPUdb extends GPUdbBase {
      *                              AZURE_OAUTH_TOKEN}: Oauth token to access
      *                              given storage container
      *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#GCS_BUCKET_NAME
+     *                              GCS_BUCKET_NAME}: Name of the Google Cloud
+     *                              Storage bucket to use as the data source
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#GCS_PROJECT_ID
+     *                              GCS_PROJECT_ID}: Name of the Google Cloud
+     *                              project to use as the data source
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
+     *                              GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud
+     *                              service account keys to use for
+     *                              authenticating the data source
+     *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_URL
      *                              KAFKA_URL}: The publicly-accessible full
      *                              path URL to the kafka broker, e.g.,
@@ -3969,6 +4068,14 @@ public class GPUdb extends GPUdbBase {
      *                              The default value is {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
      *                              TRUE}.
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#SCHEMA_NAME
+     *                              SCHEMA_NAME}: Updates the schema name.  If
+     *                              {@code schema_name}
+     *                              doesn't exist, an error will be thrown. If
+     *                              {@code schema_name} is empty, then the
+     *                              user's
+     *                              default schema will be used.
      *                              </ul>
      * @param options  Optional parameters.
      * 
@@ -4049,7 +4156,8 @@ public class GPUdb extends GPUdbBase {
      * resource management.
      * 
      * @param name  Name of the group to be altered. Must be an existing
-     *              resource group name.
+     *              resource group name or an empty string when used
+     *              inconjunction with the is_default_group option.
      * @param tierAttributes  Optional map containing tier names and their
      *                        respective attribute group limits.  The only
      *                        valid attribute limit that can be set is
@@ -4135,6 +4243,25 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.AlterResourceGroupRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Options#PERSIST
+     *                 PERSIST}: If {@code true} and a system-level change was
+     *                 requested, the system configuration will be written to
+     *                 disk upon successful application of this request. This
+     *                 will commit the changes from this request and any
+     *                 additional in-memory modifications.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Options#TRUE
+     *                 TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -4498,8 +4625,28 @@ public class GPUdb extends GPUdbBase {
      *                            kakfa poll will timeout if datasource has no
      *                            records.  The default value is '5'.
      *                            </ul>
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterSystemPropertiesRequest.Options#PERSIST
+     *                 PERSIST}: If {@code true} the system configuration will
+     *                 be written to disk upon successful application of this
+     *                 request. This will commit the changes from this request
+     *                 and any additional in-memory modifications.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterSystemPropertiesRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterSystemPropertiesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AlterSystemPropertiesRequest.Options#TRUE
+     *                 TRUE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -4523,9 +4670,9 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * Manage a table's columns--a column can be added, removed, or have its
      * <a href="../../../../../concepts/types/" target="_top">type and
-     * properties</a> modified, including
-     * whether it is <a href="../../../../../concepts/compression/"
-     * target="_top">compressed</a> or not.
+     * properties</a> modified, including whether it is
+     * <a href="../../../../../concepts/dictionary_encoding/"
+     * target="_top">dictionary encoded</a> or not.
      * <p>
      * External tables cannot be modified except for their refresh method.
      * <p>
@@ -4595,9 +4742,9 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * Manage a table's columns--a column can be added, removed, or have its
      * <a href="../../../../../concepts/types/" target="_top">type and
-     * properties</a> modified, including
-     * whether it is <a href="../../../../../concepts/compression/"
-     * target="_top">compressed</a> or not.
+     * properties</a> modified, including whether it is
+     * <a href="../../../../../concepts/dictionary_encoding/"
+     * target="_top">dictionary encoded</a> or not.
      * <p>
      * External tables cannot be modified except for their refresh method.
      * <p>
@@ -4687,8 +4834,8 @@ public class GPUdb extends GPUdbBase {
      *                com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_SCHEMA
      *                MOVE_TO_SCHEMA}: Moves a table or view into a schema
      *                named {@code value}.  If the schema provided is
-     *                non-existent, an error will be thrown. If {@code value}
-     *                is empty, then the table or view will be placed in the
+     *                nonexistent, an error will be thrown. If {@code value} is
+     *                empty, then the table or view will be placed in the
      *                user's default schema.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#PROTECTED
@@ -4726,11 +4873,8 @@ public class GPUdb extends GPUdbBase {
      *                be specified in the {@code options} map.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_COLUMN_COMPRESSION
-     *                SET_COLUMN_COMPRESSION}: Modifies the <a
-     *                href="../../../../../concepts/compression/"
-     *                target="_top">compression</a> setting on the column
-     *                specified in {@code value} to the compression type
-     *                specified in {@code compression_type}.
+     *                SET_COLUMN_COMPRESSION}: No longer supported; action will
+     *                be ignored.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_COLUMN
      *                DELETE_COLUMN}: Deletes the column specified in {@code
@@ -4899,10 +5043,8 @@ public class GPUdb extends GPUdbBase {
      *                 string, null etc).
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COMPRESSION_TYPE
-     *                 COMPRESSION_TYPE}: When setting column compression
-     *                 ({@code set_column_compression} for {@code action}),
-     *                 compression type to use: {@code none} (to use no
-     *                 compression) or a valid compression type.
+     *                 COMPRESSION_TYPE}: No longer supported; option will be
+     *                 ignored.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -4997,6 +5139,9 @@ public class GPUdb extends GPUdbBase {
      *                 CHUNK_SKIP}: Create or delete a <a
      *                 href="../../../../../concepts/indexes/#chunk-skip-index"
      *                 target="_top">chunk skip index</a>.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#GEOSPATIAL
+     *                 GEOSPATIAL}: Create or delete a geospatial index
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN
@@ -5035,10 +5180,9 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * Manage a table's columns--a column can be added, removed, or have its
      * <a href="../../../../../concepts/types/" target="_top">type and
-     * properties</a> modified.
-     * <p>
-     * Set or unset <a href="../../../../../concepts/compression/"
-     * target="_top">compression</a> for a column.
+     * properties</a> modified, including whether it is
+     * <a href="../../../../../concepts/dictionary_encoding/"
+     * target="_top">dictionary encoded</a> or not.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -5073,10 +5217,9 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * Manage a table's columns--a column can be added, removed, or have its
      * <a href="../../../../../concepts/types/" target="_top">type and
-     * properties</a> modified.
-     * <p>
-     * Set or unset <a href="../../../../../concepts/compression/"
-     * target="_top">compression</a> for a column.
+     * properties</a> modified, including whether it is
+     * <a href="../../../../../concepts/dictionary_encoding/"
+     * target="_top">dictionary encoded</a> or not.
      * 
      * @param tableName  Table on which the operation will be performed. Must
      *                   be an existing table or view, in
@@ -5176,6 +5319,63 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
+     * Alters a table monitor previously created with {@link
+     * GPUdb#createTableMonitor(CreateTableMonitorRequest)}.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AlterTableMonitorResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AlterTableMonitorResponse alterTableMonitor(AlterTableMonitorRequest request) throws GPUdbException {
+        AlterTableMonitorResponse actualResponse_ = new AlterTableMonitorResponse();
+        submitRequest("/alter/tablemonitor", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Alters a table monitor previously created with {@link
+     * GPUdb#createTableMonitor(String, Map)}.
+     * 
+     * @param topicId  The topic ID returned by {@link
+     *                 GPUdb#createTableMonitor(String, Map)}.
+     * @param monitorUpdatesMap  Map containing the properties of the table
+     *                           monitor to be updated. Error if empty.
+     *                           <ul>
+     *                                   <li> {@link
+     *                           com.gpudb.protocol.AlterTableMonitorRequest.MonitorUpdatesMap#SCHEMA_NAME
+     *                           SCHEMA_NAME}: Updates the schema name.  If
+     *                           {@code schema_name}
+     *                           doesn't exist, an error will be thrown. If
+     *                           {@code schema_name} is empty, then the user's
+     *                           default schema will be used.
+     *                           </ul>
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AlterTableMonitorResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AlterTableMonitorResponse alterTableMonitor(String topicId, Map<String, String> monitorUpdatesMap, Map<String, String> options) throws GPUdbException {
+        AlterTableMonitorRequest actualRequest_ = new AlterTableMonitorRequest(topicId, monitorUpdatesMap, options);
+        AlterTableMonitorResponse actualResponse_ = new AlterTableMonitorResponse();
+        submitRequest("/alter/tablemonitor", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
      * Alters properties of an exisiting
      * <a href="../../../../../rm/concepts/#storage-tiers"
      * target="_top">tier</a> to facilitate
@@ -5230,13 +5430,28 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTierRequest.Options#HIGH_WATERMARK
      *                 HIGH_WATERMARK}: Threshold of usage of this tier's
-     *                 resource that, once exceeded, will trigger
+     *                 resource that once exceeded, will trigger
      *                 watermark-based eviction from this tier.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTierRequest.Options#LOW_WATERMARK
-     *                 LOW_WATERMARK}: Threshold of resource usage that, once
+     *                 LOW_WATERMARK}: Threshold of resource usage that once
      *                 fallen below after crossing the {@code high_watermark},
      *                 will cease watermark-based eviction from this tier.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTierRequest.Options#PERSIST
+     *                 PERSIST}: If {@code true} the system configuration will
+     *                 be written to disk upon successful application of this
+     *                 request. This will commit the changes from this request
+     *                 and any additional in-memory modifications.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTierRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTierRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AlterTierRequest.Options#TRUE TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -5911,7 +6126,15 @@ public class GPUdb extends GPUdbBase {
      *              com.gpudb.protocol.CreateCredentialRequest.Type#DOCKER
      *              DOCKER}
      *                      <li> {@link
+     *              com.gpudb.protocol.CreateCredentialRequest.Type#GCS_SERVICE_ACCOUNT_ID
+     *              GCS_SERVICE_ACCOUNT_ID}
+     *                      <li> {@link
+     *              com.gpudb.protocol.CreateCredentialRequest.Type#GCS_SERVICE_ACCOUNT_KEYS
+     *              GCS_SERVICE_ACCOUNT_KEYS}
+     *                      <li> {@link
      *              com.gpudb.protocol.CreateCredentialRequest.Type#HDFS HDFS}
+     *                      <li> {@link
+     *              com.gpudb.protocol.CreateCredentialRequest.Type#JDBC JDBC}
      *                      <li> {@link
      *              com.gpudb.protocol.CreateCredentialRequest.Type#KAFKA
      *              KAFKA}
@@ -6020,6 +6243,12 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.CreateDatasinkRequest.Options#FLAT
      *                 FLAT}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#JDBC_DRIVER_JAR_PATH
+     *                 JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#JDBC_DRIVER_CLASS_NAME
+     *                 JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasinkRequest.Options#SKIP_VALIDATION
      *                 SKIP_VALIDATION}: Bypass validation of connection to
      *                 this data sink.
@@ -6089,7 +6318,7 @@ public class GPUdb extends GPUdbBase {
      *                  'storage_provider_type://[storage_path[:storage_port]]'
      *                  format.
      *                  Supported storage provider types are
-     *                  'azure','hdfs','kafka' and 's3'.
+     *                  'azure','gcs','hdfs','jdbc','kafka' and 's3'.
      * @param userName  Name of the remote system user; may be an empty string
      * @param password  Password for the remote system user; may be an empty
      *                  string
@@ -6137,6 +6366,14 @@ public class GPUdb extends GPUdbBase {
      *                 S3 permissions that can be assumed for the given S3 IAM
      *                 user
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#S3_ENCRYPTION_CUSTOMER_ALGORITHM
+     *                 S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer encryption
+     *                 algorithm used encrypting data
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#S3_ENCRYPTION_CUSTOMER_KEY
+     *                 S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption key to
+     *                 encrypt or decrypt data
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#HDFS_KERBEROS_KEYTAB
      *                 HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for
      *                 the given HDFS user
@@ -6182,8 +6419,20 @@ public class GPUdb extends GPUdbBase {
      *                 AZURE_OAUTH_TOKEN}: Oauth token to access given storage
      *                 container
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#GCS_BUCKET_NAME
+     *                 GCS_BUCKET_NAME}: Name of the Google Cloud Storage
+     *                 bucket to use as the data source
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#GCS_PROJECT_ID
+     *                 GCS_PROJECT_ID}: Name of the Google Cloud project to use
+     *                 as the data source
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#GCS_SERVICE_ACCOUNT_KEYS
+     *                 GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud service account
+     *                 keys to use for authenticating the data source
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#IS_STREAM
-     *                 IS_STREAM}: To load from S3/Azure as a stream
+     *                 IS_STREAM}: To load from Azure/GCS/S3 as a stream
      *                 continuously.
      *                 Supported values:
      *                 <ul>
@@ -6201,6 +6450,12 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#KAFKA_TOPIC_NAME
      *                 KAFKA_TOPIC_NAME}: Name of the Kafka topic to use as the
      *                 data source
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#JDBC_DRIVER_JAR_PATH
+     *                 JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#JDBC_DRIVER_CLASS_NAME
+     *                 JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#ANONYMOUS
      *                 ANONYMOUS}: Use anonymous connection to storage
@@ -6508,92 +6763,17 @@ public class GPUdb extends GPUdbBase {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
-     *                 RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
-     *                 comparison. Any node or edge with a
-     *                 RESTRICTIONS_VALUECOMPARED value greater than the {@code
-     *                 restriction_threshold_value} will not be included in the
-     *                 graph.
-     *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#MERGE_TOLERANCE
      *                 MERGE_TOLERANCE}: If node geospatial positions are input
      *                 (e.g., WKTPOINT, X, Y), determines the minimum
      *                 separation allowed between unique nodes. If nodes are
      *                 within the tolerance of each other, they will be merged
-     *                 as a single node.  The default value is '1.0E-4'.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#MIN_X
-     *                 MIN_X}: Minimum x (longitude) value for spatial graph
-     *                 associations.  The default value is '-180.0'.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#MAX_X
-     *                 MAX_X}: Maximum x (longitude) value for spatial graph
-     *                 associations.  The default value is '180.0'.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#MIN_Y
-     *                 MIN_Y}: Minimum y (latitude) value for spatial graph
-     *                 associations.  The default value is '-90.0'.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#MAX_Y
-     *                 MAX_Y}: Maximum y (latitude) value for spatial graph
-     *                 associations.  The default value is '90.0'.
+     *                 as a single node.  The default value is '1.0E-5'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#RECREATE
      *                 RECREATE}: If set to {@code true} and the graph (using
      *                 {@code graphName}) already exists, the graph is deleted
      *                 and recreated.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#MODIFY
-     *                 MODIFY}: If set to {@code true}, {@code recreate} is set
-     *                 to {@code true}, and the graph (specified using {@code
-     *                 graphName}) already exists, the graph is updated with
-     *                 the given components.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#EXPORT_CREATE_RESULTS
-     *                 EXPORT_CREATE_RESULTS}: If set to {@code true}, returns
-     *                 the graph topology in the response as arrays.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#ENABLE_GRAPH_DRAW
-     *                 ENABLE_GRAPH_DRAW}: If set to {@code true}, adds a
-     *                 'EDGE_WKTLINE' column identifier to the specified {@code
-     *                 graph_table} so the graph can be viewed via WMS; for
-     *                 social and non-geospatial graphs, the 'EDGE_WKTLINE'
-     *                 column identifier will be populated with spatial
-     *                 coordinates derived from a flattening layout algorithm
-     *                 so the graph can still be viewed.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -6613,26 +6793,6 @@ public class GPUdb extends GPUdbBase {
      *                 target="_top">config reference</a> for more
      *                 information). If set to {@code false}, the graph will be
      *                 removed when the graph server is shutdown.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#SYNC_DB
-     *                 SYNC_DB}: If set to {@code true} and {@code
-     *                 save_persist} is set to {@code true}, the graph will be
-     *                 fully reconstructed upon a database restart and be
-     *                 updated to align with any source table(s) updates made
-     *                 since the creation of the graph. If dynamic graph
-     *                 updates upon table inserts are desired, use {@code
-     *                 add_table_monitor} instead.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -6679,24 +6839,6 @@ public class GPUdb extends GPUdbBase {
      *                 'EDGE_NODE1_ID', 'EDGE_NODE2_ID'. If left blank, no
      *                 table is created.  The default value is ''.
      *                         <li> {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#REMOVE_LABEL_ONLY
-     *                 REMOVE_LABEL_ONLY}: When RESTRICTIONS on labeled
-     *                 entities requested, if set to true this will NOT delete
-     *                 the entity but only the label associated with the
-     *                 entity. Otherwise (default), it'll delete the label AND
-     *                 the entity.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#ADD_TURNS
      *                 ADD_TURNS}: Adds dummy 'pillowed' edges around
      *                 intersection nodes where there are more than three edges
@@ -6714,16 +6856,6 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
      *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#TURN_ANGLE
-     *                 TURN_ANGLE}: Value in degrees modifies the thresholds
-     *                 for attributing right, left, sharp turns, and
-     *                 intersections. It is the vertical deviation angle from
-     *                 the incoming edge to the intersection node. The larger
-     *                 the value, the larger the threshold for sharp turns and
-     *                 intersections; the smaller the value, the larger the
-     *                 threshold for right and left turns; 0 < turn_angle < 90.
-     *                 The default value is '60'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#IS_PARTITIONED
      *                 IS_PARTITIONED}:
@@ -6757,17 +6889,14 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
-     *                 FALSE}.
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#TRUE
+     *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#LABEL_DELIMITER
      *                 LABEL_DELIMITER}: If provided the label string will be
      *                 split according to this delimiter and each sub-string
      *                 will be applied as a separate label onto the specified
      *                 edge.  The default value is ''.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateGraphRequest.Options#SQL_REQUEST_AVRO_JSON
-     *                 SQL_REQUEST_AVRO_JSON}:   The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -7010,10 +7139,10 @@ public class GPUdb extends GPUdbBase {
      *                 value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#NO_COUNT
-     *                 NO_COUNT}: return a count of 0 for the join table for
-     *                 logging and for show_table. optimization needed for
-     *                 large overlapped equi-join stencils.  The default value
-     *                 is 'false'.
+     *                 NO_COUNT}: Return a count of 0 for the join table for
+     *                 logging and for {@link GPUdb#showTable(String, Map)};
+     *                 optimization needed for large overlapped equi-join
+     *                 stencils.  The default value is 'false'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#CHUNK_SIZE
      *                 CHUNK_SIZE}: Maximum number of records per joined-chunk
@@ -8237,11 +8366,13 @@ public class GPUdb extends GPUdbBase {
      *                   accessible to the gpudb user, residing on the path (or
      *                   relative to the path) specified by the
      *                   external files directory in the Kinetica
-     *                   <a href="../../../../../config/#external-files"
+     *                   <a
+     *                   href="../../../../../config/#config-main-external-files"
      *                   target="_top">configuration file</a>. Wildcards (*)
-     *                   can be used to specify a group of files
-     *                   Prefix matching is supported, the prefixes must be
-     *                   aligned with directories.
+     *                   can be used to
+     *                   specify a group of files.  Prefix matching is
+     *                   supported, the prefixes must be aligned with
+     *                   directories.
      *                   If the first path ends in .tsv, the text delimiter
      *                   will be defaulted to a tab character.
      *                   If the first path ends in .psv, the text delimiter
@@ -8471,6 +8602,14 @@ public class GPUdb extends GPUdbBase {
      *                 BAD_RECORD_TABLE_LIMIT}: A positive integer indicating
      *                 the maximum number of records that can be  written to
      *                 the bad-record-table.   Default value is 10000
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
+     *                 BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions: A
+     *                 positive integer indicating the maximum number of
+     *                 records that can be written to the bad-record-table per
+     *                 file/payload. Default value will be
+     *                 'bad_record_table_limit' and total size of the table per
+     *                 rank is limited to 'bad_record_table_limit'
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#BATCH_SIZE
      *                 BATCH_SIZE}: Internal tuning parameter--number of
@@ -8926,6 +9065,15 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SPEED
      *                 SPEED}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY
+     *                 REMOTE_QUERY}: Remote SQL query from which data will be
+     *                 sourced
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_FILTER_COLUMN
+     *                 REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used
+     *                 for splitting the query into multiple sub-queries.  The
+     *                 default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -11352,14 +11500,16 @@ public class GPUdb extends GPUdbBase {
      *                the results).  The default value is 0.The minimum allowed
      *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned, or END_OF_SET (-9999) to indicate
-     *               that the maximum number of results allowed by the server
-     *               should be returned.  The number of records returned will
-     *               never exceed the server's own limit, defined by the <a
-     *               href="../../../../../config/#general"
+     *               results to be returned, or
+     *               END_OF_SET (-9999) to indicate that the maximum number of
+     *               results allowed by the server should be
+     *               returned.  The number of records returned will never
+     *               exceed the server's own limit, defined by the
+     *               <a href="../../../../../config/#config-main-general"
      *               target="_top">max_get_records_size</a> parameter in the
-     *               server configuration.  Use {@code hasMoreRecords} to see
-     *               if more records exist in the result to be fetched, and
+     *               server configuration.
+     *               Use {@code hasMoreRecords} to see if more records exist in
+     *               the result to be fetched, and
      *               {@code offset} & {@code limit} to request subsequent pages
      *               of results.  The default value is -9999.
      * @param requestSchemaStr  Avro schema of {@code data}.  The default value
@@ -11616,6 +11766,70 @@ public class GPUdb extends GPUdbBase {
         response_.setPagingTable(actualResponse_.getPagingTable());
         response_.setInfo(actualResponse_.getInfo());
         return response_;
+    }
+
+
+
+    /**
+     * Exports records from source table to  specified target table in an
+     * external database
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ExportRecordsToTableResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ExportRecordsToTableResponse exportRecordsToTable(ExportRecordsToTableRequest request) throws GPUdbException {
+        ExportRecordsToTableResponse actualResponse_ = new ExportRecordsToTableResponse();
+        submitRequest("/export/records/totable", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Exports records from source table to  specified target table in an
+     * external database
+     * 
+     * @param tableName  Name of the table from which the data will be exported
+     *                   to remote database, in
+     *                   [schema_name.]table_name format, using standard
+     *                   <a
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
+     * @param remoteQuery  Parameterized insert query to export gpudb table
+     *                     data into remote database
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#BATCH_SIZE
+     *                 BATCH_SIZE}: Batch size, which determines how many rows
+     *                 to export per round trip.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#DATASINK_NAME
+     *                 DATASINK_NAME}: Name of an existing external data sink
+     *                 to which table name specified in {@code tableName} will
+     *                 be exported
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ExportRecordsToTableResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ExportRecordsToTableResponse exportRecordsToTable(String tableName, String remoteQuery, Map<String, String> options) throws GPUdbException {
+        ExportRecordsToTableRequest actualRequest_ = new ExportRecordsToTableRequest(tableName, remoteQuery, options);
+        ExportRecordsToTableResponse actualResponse_ = new ExportRecordsToTableResponse();
+        submitRequest("/export/records/totable", actualRequest_, actualResponse_, false);
+        return actualResponse_;
     }
 
 
@@ -13662,14 +13876,16 @@ public class GPUdb extends GPUdbBase {
      *                the results).  The default value is 0.The minimum allowed
      *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned. Or END_OF_SET (-9999) to indicate
-     *               that the max number of results should be returned.  The
-     *               number of records returned will never exceed the server's
-     *               own limit, defined by the <a
-     *               href="../../../../../config/#general"
+     *               results to be returned, or
+     *               END_OF_SET (-9999) to indicate that the maximum number of
+     *               results allowed by the server should be
+     *               returned.  The number of records returned will never
+     *               exceed the server's own limit, defined by the
+     *               <a href="../../../../../config/#config-main-general"
      *               target="_top">max_get_records_size</a> parameter in the
-     *               server configuration.  Use {@code hasMoreRecords} to see
-     *               if more records exist in the result to be fetched, and
+     *               server configuration.
+     *               Use {@code hasMoreRecords} to see if more records exist in
+     *               the result to be fetched, and
      *               {@code offset} & {@code limit} to request subsequent pages
      *               of results.  The default value is -9999.
      * @param options
@@ -13823,14 +14039,16 @@ public class GPUdb extends GPUdbBase {
      *                the results).  The default value is 0.The minimum allowed
      *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned. Or END_OF_SET (-9999) to indicate
-     *               that the max number of results should be returned.  The
-     *               number of records returned will never exceed the server's
-     *               own limit, defined by the <a
-     *               href="../../../../../config/#general"
+     *               results to be returned, or
+     *               END_OF_SET (-9999) to indicate that the maximum number of
+     *               results allowed by the server should be
+     *               returned.  The number of records returned will never
+     *               exceed the server's own limit, defined by the
+     *               <a href="../../../../../config/#config-main-general"
      *               target="_top">max_get_records_size</a> parameter in the
-     *               server configuration.  Use {@code hasMoreRecords} to see
-     *               if more records exist in the result to be fetched, and
+     *               server configuration.
+     *               Use {@code hasMoreRecords} to see if more records exist in
+     *               the result to be fetched, and
      *               {@code offset} & {@code limit} to request subsequent pages
      *               of results.  The default value is -9999.
      * @param options
@@ -14079,14 +14297,16 @@ public class GPUdb extends GPUdbBase {
      *                the results).  The default value is 0.The minimum allowed
      *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned, or END_OF_SET (-9999) to indicate
-     *               that the maximum number of results allowed by the server
-     *               should be returned.  The number of records returned will
-     *               never exceed the server's own limit, defined by the <a
-     *               href="../../../../../config/#general"
+     *               results to be returned, or
+     *               END_OF_SET (-9999) to indicate that the maximum number of
+     *               results allowed by the server should be
+     *               returned.  The number of records returned will never
+     *               exceed the server's own limit, defined by the
+     *               <a href="../../../../../config/#config-main-general"
      *               target="_top">max_get_records_size</a> parameter in the
-     *               server configuration.  Use {@code hasMoreRecords} to see
-     *               if more records exist in the result to be fetched, and
+     *               server configuration.
+     *               Use {@code hasMoreRecords} to see if more records exist in
+     *               the result to be fetched, and
      *               {@code offset} & {@code limit} to request subsequent pages
      *               of results.  The default value is -9999.
      * @param options
@@ -14556,15 +14776,16 @@ public class GPUdb extends GPUdbBase {
      *                the results).  The default value is 0.The minimum allowed
      *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned, or END_OF_SET (-9999) to indicate
-     *               that the max number of results should be returned.  The
-     *               number of records returned will never exceed the server's
-     *               own limit, defined by the <a
-     *               href="../../../../../config/#general"
+     *               results to be returned, or
+     *               END_OF_SET (-9999) to indicate that the maximum number of
+     *               results allowed by the server should be
+     *               returned.  The number of records returned will never
+     *               exceed the server's own limit, defined by the
+     *               <a href="../../../../../config/#config-main-general"
      *               target="_top">max_get_records_size</a> parameter in the
-     *               server configuration.  Use {@code offset} & {@code limit}
-     *               to request subsequent pages of results.  The default value
-     *               is -9999.
+     *               server configuration.
+     *               Use {@code offset} & {@code limit} to request subsequent
+     *               pages of results.  The default value is -9999.
      * @param options
      *                 <ul>
      *                         <li> {@link
@@ -14583,6 +14804,10 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#EXPRESSION
+     *                 EXPRESSION}: Optional filter expression to apply to the
+     *                 table.  The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -14682,15 +14907,16 @@ public class GPUdb extends GPUdbBase {
      *                the results).  The default value is 0.The minimum allowed
      *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned, or END_OF_SET (-9999) to indicate
-     *               that the max number of results should be returned.  The
-     *               number of records returned will never exceed the server's
-     *               own limit, defined by the <a
-     *               href="../../../../../config/#general"
+     *               results to be returned, or
+     *               END_OF_SET (-9999) to indicate that the maximum number of
+     *               results allowed by the server should be
+     *               returned.  The number of records returned will never
+     *               exceed the server's own limit, defined by the
+     *               <a href="../../../../../config/#config-main-general"
      *               target="_top">max_get_records_size</a> parameter in the
-     *               server configuration.  Use {@code offset} & {@code limit}
-     *               to request subsequent pages of results.  The default value
-     *               is -9999.
+     *               server configuration.
+     *               Use {@code offset} & {@code limit} to request subsequent
+     *               pages of results.  The default value is -9999.
      * @param options
      *                 <ul>
      *                         <li> {@link
@@ -14709,6 +14935,10 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#EXPRESSION
+     *                 EXPRESSION}: Optional filter expression to apply to the
+     *                 table.  The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -16319,20 +16549,22 @@ public class GPUdb extends GPUdbBase {
      *                   If an external data source is specified in {@code
      *                   datasource_name}, these file
      *                   paths must resolve to accessible files at that data
-     *                   source location. Prefix matching is is supported.
+     *                   source location. Prefix matching is supported.
      *                   If the data source is hdfs, prefixes must be aligned
-     *                   with directories, i.e. partial file names will not
-     *                   match.
+     *                   with directories, i.e. partial file names will
+     *                   not match.
      *                   If no data source is specified, the files are assumed
      *                   to be local to the database and must all be
      *                   accessible to the gpudb user, residing on the path (or
      *                   relative to the path) specified by the
      *                   external files directory in the Kinetica
-     *                   <a href="../../../../../config/#external-files"
+     *                   <a
+     *                   href="../../../../../config/#config-main-external-files"
      *                   target="_top">configuration file</a>. Wildcards (*)
-     *                   can be used to specify a group of files.
-     *                   Prefix matching is supported, the prefixes must be
-     *                   aligned with directories.
+     *                   can be used to
+     *                   specify a group of files.  Prefix matching is
+     *                   supported, the prefixes must be aligned with
+     *                   directories.
      *                   If the first path ends in .tsv, the text delimiter
      *                   will be defaulted to a tab character.
      *                   If the first path ends in .psv, the text delimiter
@@ -16551,6 +16783,14 @@ public class GPUdb extends GPUdbBase {
      *                 BAD_RECORD_TABLE_LIMIT}: A positive integer indicating
      *                 the maximum number of records that can be  written to
      *                 the bad-record-table.   Default value is 10000
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
+     *                 BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions: A
+     *                 positive integer indicating the maximum number of
+     *                 records that can be written to the bad-record-table per
+     *                 file/payload. Default value will be
+     *                 'bad_record_table_limit' and total size of the table per
+     *                 rank is limited to 'bad_record_table_limit'
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BATCH_SIZE
      *                 BATCH_SIZE}: Internal tuning parameter--number of
@@ -17250,6 +17490,14 @@ public class GPUdb extends GPUdbBase {
      *                 the maximum number of records that can be  written to
      *                 the bad-record-table.   Default value is 10000
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
+     *                 BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions: A
+     *                 positive integer indicating the maximum number of
+     *                 records that can be written to the bad-record-table per
+     *                 file/payload. Default value will be
+     *                 'bad_record_table_limit' and total size of the table per
+     *                 rank is limited to 'bad_record_table_limit'
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BATCH_SIZE
      *                 BATCH_SIZE}: Internal tuning parameter--number of
      *                 records per batch when inserting data.
@@ -17667,6 +17915,433 @@ public class GPUdb extends GPUdbBase {
         InsertRecordsFromPayloadRequest actualRequest_ = new InsertRecordsFromPayloadRequest(tableName, dataText, dataBytes, modifyColumns, createTableOptions, options);
         InsertRecordsFromPayloadResponse actualResponse_ = new InsertRecordsFromPayloadResponse();
         submitRequest("/insert/records/frompayload", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Computes remote query result and inserts the result data into a new or
+     * existing table
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  InsertRecordsFromQueryResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public InsertRecordsFromQueryResponse insertRecordsFromQuery(InsertRecordsFromQueryRequest request) throws GPUdbException {
+        InsertRecordsFromQueryResponse actualResponse_ = new InsertRecordsFromQueryResponse();
+        submitRequest("/insert/records/fromquery", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Computes remote query result and inserts the result data into a new or
+     * existing table
+     * 
+     * @param tableName  Name of the table into which the data will be
+     *                   inserted, in
+     *                   [schema_name.]table_name format, using standard
+     *                   <a
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
+     *                   If the table does not exist, the table will be created
+     *                   using either an existing
+     *                   {@code type_id} or the type inferred from the
+     *                   file, and the new table name will have to meet
+     *                   standard
+     *                   <a
+     *                   href="../../../../../concepts/tables/#table-naming-criteria"
+     *                   target="_top">table naming criteria</a>.
+     * @param remoteQuery  Query for which result data needs to be imported
+     * @param modifyColumns  Not implemented yet.  The default value is an
+     *                       empty {@link Map}.
+     * @param createTableOptions  Options used when creating the target table.
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#TYPE_ID
+     *                            TYPE_ID}: ID of a currently registered <a
+     *                            href="../../../../../concepts/types/"
+     *                            target="_top">type</a>.  The default value is
+     *                            ''.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#NO_ERROR_IF_EXISTS
+     *                            NO_ERROR_IF_EXISTS}: If {@code true},
+     *                            prevents an error from occurring if the table
+     *                            already exists and is of the given type.  If
+     *                            a table with the same ID but a different type
+     *                            exists, it is still an error.
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#TRUE
+     *                            TRUE}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#FALSE
+     *                            FALSE}
+     *                            </ul>
+     *                            The default value is {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#FALSE
+     *                            FALSE}.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#IS_REPLICATED
+     *                            IS_REPLICATED}: Affects the <a
+     *                            href="../../../../../concepts/tables/#distribution"
+     *                            target="_top">distribution scheme</a> for the
+     *                            table's data.  If {@code true} and the given
+     *                            type has no explicit <a
+     *                            href="../../../../../concepts/tables/#shard-key"
+     *                            target="_top">shard key</a> defined, the
+     *                            table will be <a
+     *                            href="../../../../../concepts/tables/#replication"
+     *                            target="_top">replicated</a>.  If {@code
+     *                            false}, the table will be <a
+     *                            href="../../../../../concepts/tables/#sharding"
+     *                            target="_top">sharded</a> according to the
+     *                            shard key specified in the given {@code
+     *                            type_id}, or <a
+     *                            href="../../../../../concepts/tables/#random-sharding"
+     *                            target="_top">randomly sharded</a>, if no
+     *                            shard key is specified.  Note that a type
+     *                            containing a shard key cannot be used to
+     *                            create a replicated table.
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#TRUE
+     *                            TRUE}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#FALSE
+     *                            FALSE}
+     *                            </ul>
+     *                            The default value is {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#FALSE
+     *                            FALSE}.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#FOREIGN_KEYS
+     *                            FOREIGN_KEYS}: Semicolon-separated list of <a
+     *                            href="../../../../../concepts/tables/#foreign-keys"
+     *                            target="_top">foreign keys</a>, of the format
+     *                            '(source_column_name [, ...]) references
+     *                            target_table_name(primary_key_column_name [,
+     *                            ...]) [as foreign_key_name]'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#FOREIGN_SHARD_KEY
+     *                            FOREIGN_SHARD_KEY}: Foreign shard key of the
+     *                            format 'source_column references
+     *                            shard_by_column from
+     *                            target_table(primary_key_column)'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#PARTITION_TYPE
+     *                            PARTITION_TYPE}: <a
+     *                            href="../../../../../concepts/tables/#partitioning"
+     *                            target="_top">Partitioning</a> scheme to use.
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#RANGE
+     *                            RANGE}: Use <a
+     *                            href="../../../../../concepts/tables/#partitioning-by-range"
+     *                            target="_top">range partitioning</a>.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#INTERVAL
+     *                            INTERVAL}: Use <a
+     *                            href="../../../../../concepts/tables/#partitioning-by-interval"
+     *                            target="_top">interval partitioning</a>.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#LIST
+     *                            LIST}: Use <a
+     *                            href="../../../../../concepts/tables/#partitioning-by-list"
+     *                            target="_top">list partitioning</a>.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#HASH
+     *                            HASH}: Use <a
+     *                            href="../../../../../concepts/tables/#partitioning-by-hash"
+     *                            target="_top">hash partitioning</a>.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#SERIES
+     *                            SERIES}: Use <a
+     *                            href="../../../../../concepts/tables/#partitioning-by-series"
+     *                            target="_top">series partitioning</a>.
+     *                            </ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#PARTITION_KEYS
+     *                            PARTITION_KEYS}: Comma-separated list of
+     *                            partition keys, which are the columns or
+     *                            column expressions by which records will be
+     *                            assigned to partitions defined by {@code
+     *                            partition_definitions}.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#PARTITION_DEFINITIONS
+     *                            PARTITION_DEFINITIONS}: Comma-separated list
+     *                            of partition definitions, whose format
+     *                            depends on the choice of {@code
+     *                            partition_type}.  See <a
+     *                            href="../../../../../concepts/tables/#partitioning-by-range"
+     *                            target="_top">range partitioning</a>, <a
+     *                            href="../../../../../concepts/tables/#partitioning-by-interval"
+     *                            target="_top">interval partitioning</a>, <a
+     *                            href="../../../../../concepts/tables/#partitioning-by-list"
+     *                            target="_top">list partitioning</a>, <a
+     *                            href="../../../../../concepts/tables/#partitioning-by-hash"
+     *                            target="_top">hash partitioning</a>, or <a
+     *                            href="../../../../../concepts/tables/#partitioning-by-series"
+     *                            target="_top">series partitioning</a> for
+     *                            example formats.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#IS_AUTOMATIC_PARTITION
+     *                            IS_AUTOMATIC_PARTITION}: If {@code true}, a
+     *                            new partition will be created for values
+     *                            which don't fall into an existing partition.
+     *                            Currently only supported for <a
+     *                            href="../../../../../concepts/tables/#partitioning-by-list"
+     *                            target="_top">list partitions</a>.
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#TRUE
+     *                            TRUE}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#FALSE
+     *                            FALSE}
+     *                            </ul>
+     *                            The default value is {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#FALSE
+     *                            FALSE}.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#TTL
+     *                            TTL}: Sets the <a
+     *                            href="../../../../../concepts/ttl/"
+     *                            target="_top">TTL</a> of the table specified
+     *                            in {@code tableName}.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#CHUNK_SIZE
+     *                            CHUNK_SIZE}: Indicates the number of records
+     *                            per chunk to be used for this table.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#IS_RESULT_TABLE
+     *                            IS_RESULT_TABLE}: Indicates whether the table
+     *                            is a <a
+     *                            href="../../../../../concepts/tables_memory_only/"
+     *                            target="_top">memory-only table</a>. A result
+     *                            table cannot contain columns with store_only
+     *                            or text_search <a
+     *                            href="../../../../../concepts/types/#data-handling"
+     *                            target="_top">data-handling</a> or that are
+     *                            <a
+     *                            href="../../../../../concepts/types/#primitive-types"
+     *                            target="_top">non-charN strings</a>, and it
+     *                            will not be retained if the server is
+     *                            restarted.
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#TRUE
+     *                            TRUE}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#FALSE
+     *                            FALSE}
+     *                            </ul>
+     *                            The default value is {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#FALSE
+     *                            FALSE}.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromQueryRequest.CreateTableOptions#STRATEGY_DEFINITION
+     *                            STRATEGY_DEFINITION}: The <a
+     *                            href="../../../../../rm/concepts/#tier-strategies"
+     *                            target="_top">tier strategy</a> for the table
+     *                            and its columns.
+     *                            </ul>
+     *                            The default value is an empty {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#BAD_RECORD_TABLE_NAME
+     *                 BAD_RECORD_TABLE_NAME}: Optional name of a table to
+     *                 which records that were rejected are written.  The
+     *                 bad-record-table has the following columns: line_number
+     *                 (long), line_rejected (string), error_message (string).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#BAD_RECORD_TABLE_LIMIT
+     *                 BAD_RECORD_TABLE_LIMIT}: A positive integer indicating
+     *                 the maximum number of records that can be  written to
+     *                 the bad-record-table.   Default value is 10000
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
+     *                 BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions: A
+     *                 positive integer indicating the maximum number of
+     *                 records that can be written to the bad-record-table per
+     *                 file/payload. Default value will be
+     *                 'bad_record_table_limit' and total size of the table per
+     *                 rank is limited to 'bad_record_table_limit'
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#JDBC_FETCH_SIZE
+     *                 JDBC_FETCH_SIZE}: The JDBC fetch size, which determines
+     *                 how many rows to fetch per round trip.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#DATASOURCE_NAME
+     *                 DATASOURCE_NAME}: Name of an existing external data
+     *                 source from which table will be loaded
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#ERROR_HANDLING
+     *                 ERROR_HANDLING}: Specifies how errors should be handled
+     *                 upon insertion.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#PERMISSIVE
+     *                 PERMISSIVE}: Records with missing columns are populated
+     *                 with nulls if possible; otherwise, the malformed records
+     *                 are skipped.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#IGNORE_BAD_RECORDS
+     *                 IGNORE_BAD_RECORDS}: Malformed records are skipped.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#ABORT
+     *                 ABORT}: Stops current insertion and aborts entire
+     *                 operation when an error is encountered.  Primary key
+     *                 collisions are considered abortable errors in this mode.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#PERMISSIVE
+     *                 PERMISSIVE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#INGESTION_MODE
+     *                 INGESTION_MODE}: Whether to do a full load, dry run, or
+     *                 perform a type inference on the source data.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FULL
+     *                 FULL}: Run a type inference on the source data (if
+     *                 needed) and ingest
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#DRY_RUN
+     *                 DRY_RUN}: Does not load data, but walks through the
+     *                 source data and determines the number of valid records,
+     *                 taking into account the current mode of {@code
+     *                 error_handling}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TYPE_INFERENCE_ONLY
+     *                 TYPE_INFERENCE_ONLY}: Infer the type of the source data
+     *                 and return, without ingesting any data.  The inferred
+     *                 type is returned in the response.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FULL
+     *                 FULL}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#LOADING_MODE
+     *                 LOADING_MODE}: Scheme for distributing the extraction
+     *                 and loading of data from the source data file(s). This
+     *                 option applies only when loading files that are local to
+     *                 the database
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#HEAD
+     *                 HEAD}: The head node loads all data. All files must be
+     *                 available to the head node.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#DISTRIBUTED_SHARED
+     *                 DISTRIBUTED_SHARED}: The head node coordinates loading
+     *                 data by worker
+     *                 processes across all nodes from shared files available
+     *                 to all workers.
+     *                 NOTE:
+     *                 Instead of existing on a shared source, the files can be
+     *                 duplicated on a source local to each host
+     *                 to improve performance, though the files must appear as
+     *                 the same data set from the perspective of
+     *                 all hosts performing the load.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#DISTRIBUTED_LOCAL
+     *                 DISTRIBUTED_LOCAL}: A single worker process on each node
+     *                 loads all files
+     *                 that are available to it. This option works best when
+     *                 each worker loads files from its own file
+     *                 system, to maximize performance. In order to avoid data
+     *                 duplication, either each worker performing
+     *                 the load needs to have visibility to a set of files
+     *                 unique to it (no file is visible to more than
+     *                 one node) or the target table needs to have a primary
+     *                 key (which will allow the worker to
+     *                 automatically deduplicate data).
+     *                 NOTE:
+     *                 If the target table doesn't exist, the table structure
+     *                 will be determined by the head node. If the
+     *                 head node has no files local to it, it will be unable to
+     *                 determine the structure and the request
+     *                 will fail.
+     *                 If the head node is configured to have no worker
+     *                 processes, no data strictly accessible to the head
+     *                 node will be loaded.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#HEAD
+     *                 HEAD}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#PRIMARY_KEYS
+     *                 PRIMARY_KEYS}: Optional: comma separated list of column
+     *                 names, to set as primary keys, when not specified in the
+     *                 type.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#SHARD_KEYS
+     *                 SHARD_KEYS}: Optional: comma separated list of column
+     *                 names, to set as primary keys, when not specified in the
+     *                 type.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUNCATE_TABLE
+     *                 TRUNCATE_TABLE}: If set to {@code true}, truncates the
+     *                 table specified by {@code tableName} prior to loading
+     *                 the file(s).
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#NUM_TASKS_PER_RANK
+     *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
+     *                 reading file per rank. Default will be
+     *                 external_file_reader_num_tasks
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY
+     *                 REMOTE_QUERY}: Remote SQL query from which data will be
+     *                 sourced
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_FILTER_COLUMN
+     *                 REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used
+     *                 for splitting the query into multiple sub-queries.  The
+     *                 default value is ''.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  InsertRecordsFromQueryResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public InsertRecordsFromQueryResponse insertRecordsFromQuery(String tableName, String remoteQuery, Map<String, Map<String, String>> modifyColumns, Map<String, String> createTableOptions, Map<String, String> options) throws GPUdbException {
+        InsertRecordsFromQueryRequest actualRequest_ = new InsertRecordsFromQueryRequest(tableName, remoteQuery, modifyColumns, createTableOptions, options);
+        InsertRecordsFromQueryResponse actualResponse_ = new InsertRecordsFromQueryResponse();
+        submitRequest("/insert/records/fromquery", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -18310,6 +18985,11 @@ public class GPUdb extends GPUdbBase {
      *                     MATCH_LOOPS}: Matches closed loops (Eulerian paths)
      *                     originating and ending at each graph node within min
      *                     and max hops (levels).
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_CHARGING_STATIONS
+     *                     MATCH_CHARGING_STATIONS}: Matches an optimal path
+     *                     across a number of ev-charging stations between
+     *                     source and target locations.
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -18574,6 +19254,26 @@ public class GPUdb extends GPUdbBase {
      *                 only. Uses this value as the batch size of the number of
      *                 loops in flushing(inserting) to the output table.  The
      *                 default value is '1000'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#CHARGING_CAPACITY
+     *                 CHARGING_CAPACITY}: For the {@code
+     *                 match_charging_stations} solver only. This is the
+     *                 maximum ev-charging capacity of a vehicle (distance in
+     *                 meters or time in seconds depending on the unit of the
+     *                 graph weights).  The default value is '300000.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#CHARGING_CANDIDATES
+     *                 CHARGING_CANDIDATES}: For the {@code
+     *                 match_charging_stations} solver only. Solver searches
+     *                 for this many number of stations closest around each
+     *                 base charging location found by capacity.  The default
+     *                 value is '10'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#CHARGING_PENALTY
+     *                 CHARGING_PENALTY}: For the {@code
+     *                 match_charging_stations} solver only. This is the
+     *                 penalty for full charging.  The default value is
+     *                 '30000.0'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -19057,6 +19757,22 @@ public class GPUdb extends GPUdbBase {
      *                 intersections; the smaller the value, the larger the
      *                 threshold for right and left turns; 0 < turn_angle < 90.
      *                 The default value is '60'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#USE_RTREE
+     *                 USE_RTREE}: Use an range tree structure to accelerate
+     *                 and improve the accuracy of snapping, especially to
+     *                 edges.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#TRUE
+     *                 TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -19100,14 +19816,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * To return the adjacency list in the response, leave {@code
      * adjacencyTable}
-     * empty. To return the adjacency list in a table and not in the response,
-     * provide
-     * a value to {@code adjacencyTable} and set
-     * {@code export_query_results} to
-     * {@code false}. To return the
-     * adjacency list both in a table and the response, provide a value to
-     * {@code adjacencyTable} and set {@code export_query_results}
-     * to {@code true}.
+     * empty.
      * <p>
      * IMPORTANT: It's highly recommended that you review the
      * <a href="../../../../../graph_solver/network_graph_solver/"
@@ -19162,14 +19871,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * To return the adjacency list in the response, leave {@code
      * adjacencyTable}
-     * empty. To return the adjacency list in a table and not in the response,
-     * provide
-     * a value to {@code adjacencyTable} and set
-     * {@code export_query_results} to
-     * {@code false}. To return the
-     * adjacency list both in a table and the response, provide a value to
-     * {@code adjacencyTable} and set {@code export_query_results}
-     * to {@code true}.
+     * empty.
      * <p>
      * IMPORTANT: It's highly recommended that you review the
      * <a href="../../../../../graph_solver/network_graph_solver/"
@@ -19220,9 +19922,7 @@ public class GPUdb extends GPUdbBase {
      *                        href="../../../../../concepts/tables/#table-naming-criteria"
      *                        target="_top">table naming criteria</a>.  If left
      *                        blank, the query results are instead returned in
-     *                        the response even if {@code export_query_results}
-     *                        is set to {@code false}. If the
-     *                        'QUERY_TARGET_NODE_LABEL' <a
+     *                        the response. If the 'QUERY_TARGET_NODE_LABEL' <a
      *                        href="../../../../../graph_solver/network_graph_solver/#query-identifiers"
      *                        target="_top">query identifier</a> is used in
      *                        {@code queries}, then two additional columns will
@@ -19267,40 +19967,14 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#LIMIT
      *                 LIMIT}: When specified, limits the number of query
-     *                 results. Note that if the {@code target_nodes_table} is
-     *                 provided, the size of the corresponding table will be
-     *                 limited by the {@code limit} value.  The default value
-     *                 is an empty {@link Map}.
+     *                 results. The size of the nodes table will be limited by
+     *                 the {@code limit} value.  The default value is an empty
+     *                 {@link Map}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
-     *                 TARGET_NODES_TABLE}: Name of the table to store the list
-     *                 of the final nodes reached during the traversal, in
-     *                 [schema_name.]table_name format, using standard <a
-     *                 href="../../../../../concepts/tables/#table-name-resolution"
-     *                 target="_top">name resolution rules</a> and meeting <a
-     *                 href="../../../../../concepts/tables/#table-naming-criteria"
-     *                 target="_top">table naming criteria</a>.  If this value
-     *                 is left as the default, the table name will default to
-     *                 the {@code adjacencyTable} value plus a '_nodes' suffix,
-     *                 e.g., '<adjacency_table_name>_nodes'.  The default value
-     *                 is ''.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
-     *                 RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
-     *                 comparison. Any node or edge with a
-     *                 RESTRICTIONS_VALUECOMPARED value greater than the {@code
-     *                 restriction_threshold_value} will not be included in the
-     *                 solution.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#EXPORT_QUERY_RESULTS
-     *                 EXPORT_QUERY_RESULTS}: Returns query results in the
-     *                 response. If set to {@code true}, the {@code
-     *                 adjacencyListIntArray} (if the query was based on IDs),
-     *                 {@code adjacencyListStringArray} (if the query was based
-     *                 on names), or {@code adjacencyListWktArray} (if the
-     *                 query was based on WKTs) will be populated with the
-     *                 results. If set to {@code false}, none of the arrays
-     *                 will be populated.
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#OUTPUT_WKT_PATH
+     *                 OUTPUT_WKT_PATH}: If true then concatenated wkt line
+     *                 segments will be added as the WKT column of the
+     *                 adjacency table.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -19310,30 +19984,7 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#ENABLE_GRAPH_DRAW
-     *                 ENABLE_GRAPH_DRAW}: If set to {@code true}, adds a
-     *                 WKT-type column named 'QUERY_EDGE_WKTLINE' to the given
-     *                 {@code adjacencyTable} and inputs WKT values from the
-     *                 source graph (if available) or auto-generated WKT values
-     *                 (if there are no WKT values in the source graph). A
-     *                 subsequent call to the <a
-     *                 href="../../../../../api/rest/wms_rest/"
-     *                 target="_top">/wms</a> endpoint can then be made to
-     *                 display the query results on a map.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
-     *                 FALSE}.
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#AND_LABELS
      *                 AND_LABELS}: If set to {@code true}, the result of the
@@ -20657,9 +21308,11 @@ public class GPUdb extends GPUdbBase {
      *                 number of results allowed by the server
      *                 should be returned.  The number of records returned will
      *                 never exceed the server's own limit,
-     *                 defined by the <a href="../../../../../config/#general"
+     *                 defined by the <a
+     *                 href="../../../../../config/#config-main-general"
      *                 target="_top">max_get_records_size</a> parameter in the
-     *                 server configuration.  The default value is '100'.
+     *                 server
+     *                 configuration.  The default value is '100'.
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowResourceObjectsRequest.Options#TABLE_NAMES
      *                 TABLE_NAMES}: Comma-separated list of tables to restrict
@@ -21839,13 +22492,11 @@ public class GPUdb extends GPUdbBase {
      *                      using constant values in an
      *                      identifier combination, the number of values
      *                      specified must match across the
-     *                      combination. If {@code
-     *                      remove_previous_restrictions} is set
-     *                      to {@code true}, any
+     *                      combination. If remove_previous_restrictions option
+     *                      is set
+     *                      to true, any
      *                      provided restrictions will replace the existing
-     *                      restrictions. If
-     *                      {@code remove_previous_restrictions} is set to
-     *                      {@code false}, any provided
+     *                      restrictions. Otherwise, any provided
      *                      restrictions will be added (in the case of
      *                      'RESTRICTIONS_VALUECOMPARED') to or
      *                      replaced (in the case of
@@ -21961,46 +22612,6 @@ public class GPUdb extends GPUdbBase {
      *                 set to 0, the setting is ignored.  The default value is
      *                 '1000'.
      *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#EXPORT_SOLVE_RESULTS
-     *                 EXPORT_SOLVE_RESULTS}: Returns solution results inside
-     *                 the {@code resultPerDestinationNode} array in the
-     *                 response if set to {@code true}.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#REMOVE_PREVIOUS_RESTRICTIONS
-     *                 REMOVE_PREVIOUS_RESTRICTIONS}: Ignore the restrictions
-     *                 applied to the graph during the creation stage and only
-     *                 use the restrictions specified in this request if set to
-     *                 {@code true}.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
-     *                 RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
-     *                 comparison. Any node or edge with a
-     *                 RESTRICTIONS_VALUECOMPARED value greater than the {@code
-     *                 restriction_threshold_value} will not be included in the
-     *                 solution.
-     *                         <li> {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#UNIFORM_WEIGHTS
      *                 UNIFORM_WEIGHTS}: When specified, assigns the given
      *                 value to all the edges in the graph. Note that weights
@@ -22054,30 +22665,6 @@ public class GPUdb extends GPUdbBase {
      *                 millions is overridden to a lesser value, it can
      *                 potentially speed up the solver.  The default value is
      *                 '2000000'.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#ACCURATE_SNAPS
-     *                 ACCURATE_SNAPS}: Valid for single source destination
-     *                 pair solves if points are described in NODE_WKTPOINT
-     *                 identifier types: When true (default), it snaps to the
-     *                 nearest node of the graph; otherwise, it searches for
-     *                 the closest entity that could be an edge. For the latter
-     *                 case (false), the solver modifies the resulting cost
-     *                 with the weights proportional to the ratio of the snap
-     *                 location within the edge. This may be an over-kill when
-     *                 the performance is considered and the difference is well
-     *                 less than 1 percent. In batch runs, since the
-     *                 performance is of utmost importance, the option is
-     *                 always considered 'false'.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#OUTPUT_EDGE_PATH
      *                 OUTPUT_EDGE_PATH}: If true then concatenated edge ids
@@ -22158,6 +22745,30 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#SOLVE_HEURISTIC
+     *                 SOLVE_HEURISTIC}: Specify heuristic search criterion
+     *                 only for the geo graphs and shortest path solves towards
+     *                 a single target
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#ASTAR
+     *                 ASTAR}: Employs A-STAR heuristics to speed up the
+     *                 shortest path traversal
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#NONE NONE}:
+     *                 No heuristics are applied
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#NONE NONE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#ASTAR_RADIUS
+     *                 ASTAR_RADIUS}: For path solvers only when
+     *                 'solve_heuristic' option is 'astar'. The shortest path
+     *                 traversal front includes nodes only within this radius
+     *                 (kilometers) as it moves towards the target location.
+     *                 The default value is '70'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -23078,6 +23689,94 @@ public class GPUdb extends GPUdbBase {
         UploadFilesRequest actualRequest_ = new UploadFilesRequest(fileNames, fileData, options);
         UploadFilesResponse actualResponse_ = new UploadFilesResponse();
         submitRequest("/upload/files", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Uploads one or more files to <a href="../../../../../tools/kifs/"
+     * target="_top">KiFS</a>.
+     * <p>
+     * Each file path must reside in a top-level KiFS directory, i.e. one of
+     * the
+     * directories listed in {@link
+     * GPUdb#showDirectories(ShowDirectoriesRequest)}. The user must have write
+     * permission on the directory. Nested directories are permitted in file
+     * name
+     * paths. Directories are deliniated with the directory separator of '/'.
+     * For
+     * example, given the file path '/a/b/c/d.txt', 'a' must be a KiFS
+     * directory.
+     * <p>
+     * These characters are allowed in file name paths: letters, numbers,
+     * spaces, the
+     * path delimiter of '/', and the characters: '.' '-' ':' '[' ']' '(' ')'
+     * '#' '='.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  UploadFilesFromurlResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public UploadFilesFromurlResponse uploadFilesFromurl(UploadFilesFromurlRequest request) throws GPUdbException {
+        UploadFilesFromurlResponse actualResponse_ = new UploadFilesFromurlResponse();
+        submitRequest("/upload/files/fromurl", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Uploads one or more files to <a href="../../../../../tools/kifs/"
+     * target="_top">KiFS</a>.
+     * <p>
+     * Each file path must reside in a top-level KiFS directory, i.e. one of
+     * the
+     * directories listed in {@link GPUdb#showDirectories(String, Map)}. The
+     * user must have write
+     * permission on the directory. Nested directories are permitted in file
+     * name
+     * paths. Directories are deliniated with the directory separator of '/'.
+     * For
+     * example, given the file path '/a/b/c/d.txt', 'a' must be a KiFS
+     * directory.
+     * <p>
+     * These characters are allowed in file name paths: letters, numbers,
+     * spaces, the
+     * path delimiter of '/', and the characters: '.' '-' ':' '[' ']' '(' ')'
+     * '#' '='.
+     * 
+     * @param fileNames  An array of full file name paths to be used for the
+     *                   files
+     *                   uploaded to KiFS. File names may have any number of
+     *                   nested directories in their
+     *                   paths, but the top-level directory must be an existing
+     *                   KiFS directory. Each file
+     *                   must reside in or under a top-level directory. A full
+     *                   file name path cannot be
+     *                   larger than 1024 characters.
+     * @param urls  List of URLs to upload, for each respective file in {@code
+     *              fileNames}.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  UploadFilesFromurlResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public UploadFilesFromurlResponse uploadFilesFromurl(List<String> fileNames, List<String> urls, Map<String, String> options) throws GPUdbException {
+        UploadFilesFromurlRequest actualRequest_ = new UploadFilesFromurlRequest(fileNames, urls, options);
+        UploadFilesFromurlResponse actualResponse_ = new UploadFilesFromurlResponse();
+        submitRequest("/upload/files/fromurl", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 

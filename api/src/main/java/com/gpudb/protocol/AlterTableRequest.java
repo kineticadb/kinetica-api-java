@@ -22,9 +22,9 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * Manage a table's columns--a column can be added, removed, or have its
  * <a href="../../../../../../concepts/types/" target="_top">type and
- * properties</a> modified, including
- * whether it is <a href="../../../../../../concepts/compression/"
- * target="_top">compressed</a> or not.
+ * properties</a> modified, including whether it is
+ * <a href="../../../../../../concepts/dictionary_encoding/"
+ * target="_top">dictionary encoded</a> or not.
  * <p>
  * External tables cannot be modified except for their refresh method.
  * <p>
@@ -128,9 +128,9 @@ public class AlterTableRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_SCHEMA
      * MOVE_TO_SCHEMA}: Moves a table or view into a schema named {@code
-     * value}.  If the schema provided is non-existent, an error will be
-     * thrown. If {@code value} is empty, then the table or view will be placed
-     * in the user's default schema.
+     * value}.  If the schema provided is nonexistent, an error will be thrown.
+     * If {@code value} is empty, then the table or view will be placed in the
+     * user's default schema.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#PROTECTED PROTECTED}: No
      * longer used.  Previously set whether the given {@code tableName} should
@@ -161,10 +161,7 @@ public class AlterTableRequest implements IndexedRecord {
      * both 'char4' and 'dict' must be specified in the {@code options} map.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_COLUMN_COMPRESSION
-     * SET_COLUMN_COMPRESSION}: Modifies the <a
-     * href="../../../../../../concepts/compression/"
-     * target="_top">compression</a> setting on the column specified in {@code
-     * value} to the compression type specified in {@code compression_type}.
+     * SET_COLUMN_COMPRESSION}: No longer supported; action will be ignored.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#DELETE_COLUMN
      * DELETE_COLUMN}: Deletes the column specified in {@code value} from the
@@ -325,7 +322,7 @@ public class AlterTableRequest implements IndexedRecord {
 
         /**
          * Moves a table or view into a schema named {@code value}.  If the
-         * schema provided is non-existent, an error will be thrown. If {@code
+         * schema provided is nonexistent, an error will be thrown. If {@code
          * value} is empty, then the table or view will be placed in the user's
          * default schema.
          */
@@ -373,10 +370,7 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String CHANGE_COLUMN = "change_column";
 
         /**
-         * Modifies the <a href="../../../../../../concepts/compression/"
-         * target="_top">compression</a> setting on the column specified in
-         * {@code value} to the compression type specified in {@code
-         * compression_type}.
+         * No longer supported; action will be ignored.
          */
         public static final String SET_COLUMN_COMPRESSION = "set_column_compression";
 
@@ -556,9 +550,7 @@ public class AlterTableRequest implements IndexedRecord {
      * separated by a comma: int, double, string, null etc).
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Options#COMPRESSION_TYPE
-     * COMPRESSION_TYPE}: When setting column compression ({@code
-     * set_column_compression} for {@code action}), compression type to use:
-     * {@code none} (to use no compression) or a valid compression type.
+     * COMPRESSION_TYPE}: No longer supported; option will be ignored.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.AlterTableRequest.Options#NONE
@@ -637,6 +629,9 @@ public class AlterTableRequest implements IndexedRecord {
      * Create or delete a <a
      * href="../../../../../../concepts/indexes/#chunk-skip-index"
      * target="_top">chunk skip index</a>.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Options#GEOSPATIAL GEOSPATIAL}:
+     * Create or delete a geospatial index
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.AlterTableRequest.Options#COLUMN COLUMN}.
@@ -670,9 +665,7 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String COLUMN_TYPE = "column_type";
 
         /**
-         * When setting column compression ({@code set_column_compression} for
-         * {@code action}), compression type to use: {@code none} (to use no
-         * compression) or a valid compression type.
+         * No longer supported; option will be ignored.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -783,6 +776,9 @@ public class AlterTableRequest implements IndexedRecord {
          * Create or delete a <a
          * href="../../../../../../concepts/indexes/#chunk-skip-index"
          * target="_top">chunk skip index</a>.
+         *         <li> {@link
+         * com.gpudb.protocol.AlterTableRequest.Options#GEOSPATIAL GEOSPATIAL}:
+         * Create or delete a geospatial index
          * </ul>
          * The default value is {@link
          * com.gpudb.protocol.AlterTableRequest.Options#COLUMN COLUMN}.
@@ -802,6 +798,11 @@ public class AlterTableRequest implements IndexedRecord {
          * target="_top">chunk skip index</a>.
          */
         public static final String CHUNK_SKIP = "chunk_skip";
+
+        /**
+         * Create or delete a geospatial index
+         */
+        public static final String GEOSPATIAL = "geospatial";
 
         private Options() {  }
     }
@@ -870,8 +871,8 @@ public class AlterTableRequest implements IndexedRecord {
      *                com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_SCHEMA
      *                MOVE_TO_SCHEMA}: Moves a table or view into a schema
      *                named {@code value}.  If the schema provided is
-     *                non-existent, an error will be thrown. If {@code value}
-     *                is empty, then the table or view will be placed in the
+     *                nonexistent, an error will be thrown. If {@code value} is
+     *                empty, then the table or view will be placed in the
      *                user's default schema.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#PROTECTED
@@ -909,11 +910,8 @@ public class AlterTableRequest implements IndexedRecord {
      *                be specified in the {@code options} map.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_COLUMN_COMPRESSION
-     *                SET_COLUMN_COMPRESSION}: Modifies the <a
-     *                href="../../../../../../concepts/compression/"
-     *                target="_top">compression</a> setting on the column
-     *                specified in {@code value} to the compression type
-     *                specified in {@code compression_type}.
+     *                SET_COLUMN_COMPRESSION}: No longer supported; action will
+     *                be ignored.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_COLUMN
      *                DELETE_COLUMN}: Deletes the column specified in {@code
@@ -1082,10 +1080,8 @@ public class AlterTableRequest implements IndexedRecord {
      *                 string, null etc).
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COMPRESSION_TYPE
-     *                 COMPRESSION_TYPE}: When setting column compression
-     *                 ({@code set_column_compression} for {@code action}),
-     *                 compression type to use: {@code none} (to use no
-     *                 compression) or a valid compression type.
+     *                 COMPRESSION_TYPE}: No longer supported; option will be
+     *                 ignored.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -1180,6 +1176,9 @@ public class AlterTableRequest implements IndexedRecord {
      *                 CHUNK_SKIP}: Create or delete a <a
      *                 href="../../../../../../concepts/indexes/#chunk-skip-index"
      *                 target="_top">chunk skip index</a>.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#GEOSPATIAL
+     *                 GEOSPATIAL}: Create or delete a geospatial index
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN
@@ -1264,7 +1263,7 @@ public class AlterTableRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_SCHEMA
      *         MOVE_TO_SCHEMA}: Moves a table or view into a schema named
-     *         {@code value}.  If the schema provided is non-existent, an error
+     *         {@code value}.  If the schema provided is nonexistent, an error
      *         will be thrown. If {@code value} is empty, then the table or
      *         view will be placed in the user's default schema.
      *                 <li> {@link
@@ -1301,11 +1300,8 @@ public class AlterTableRequest implements IndexedRecord {
      *         and 'dict' must be specified in the {@code options} map.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_COLUMN_COMPRESSION
-     *         SET_COLUMN_COMPRESSION}: Modifies the <a
-     *         href="../../../../../../concepts/compression/"
-     *         target="_top">compression</a> setting on the column specified in
-     *         {@code value} to the compression type specified in {@code
-     *         compression_type}.
+     *         SET_COLUMN_COMPRESSION}: No longer supported; action will be
+     *         ignored.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#DELETE_COLUMN
      *         DELETE_COLUMN}: Deletes the column specified in {@code value}
@@ -1478,8 +1474,8 @@ public class AlterTableRequest implements IndexedRecord {
      *                com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_SCHEMA
      *                MOVE_TO_SCHEMA}: Moves a table or view into a schema
      *                named {@code value}.  If the schema provided is
-     *                non-existent, an error will be thrown. If {@code value}
-     *                is empty, then the table or view will be placed in the
+     *                nonexistent, an error will be thrown. If {@code value} is
+     *                empty, then the table or view will be placed in the
      *                user's default schema.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#PROTECTED
@@ -1517,11 +1513,8 @@ public class AlterTableRequest implements IndexedRecord {
      *                be specified in the {@code options} map.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_COLUMN_COMPRESSION
-     *                SET_COLUMN_COMPRESSION}: Modifies the <a
-     *                href="../../../../../../concepts/compression/"
-     *                target="_top">compression</a> setting on the column
-     *                specified in {@code value} to the compression type
-     *                specified in {@code compression_type}.
+     *                SET_COLUMN_COMPRESSION}: No longer supported; action will
+     *                be ignored.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_COLUMN
      *                DELETE_COLUMN}: Deletes the column specified in {@code
@@ -1726,10 +1719,7 @@ public class AlterTableRequest implements IndexedRecord {
      *         etc).
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Options#COMPRESSION_TYPE
-     *         COMPRESSION_TYPE}: When setting column compression ({@code
-     *         set_column_compression} for {@code action}), compression type to
-     *         use: {@code none} (to use no compression) or a valid compression
-     *         type.
+     *         COMPRESSION_TYPE}: No longer supported; option will be ignored.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -1814,6 +1804,9 @@ public class AlterTableRequest implements IndexedRecord {
      *         CHUNK_SKIP}: Create or delete a <a
      *         href="../../../../../../concepts/indexes/#chunk-skip-index"
      *         target="_top">chunk skip index</a>.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#GEOSPATIAL
+     *         GEOSPATIAL}: Create or delete a geospatial index
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.AlterTableRequest.Options#COLUMN COLUMN}.
@@ -1856,10 +1849,8 @@ public class AlterTableRequest implements IndexedRecord {
      *                 string, null etc).
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COMPRESSION_TYPE
-     *                 COMPRESSION_TYPE}: When setting column compression
-     *                 ({@code set_column_compression} for {@code action}),
-     *                 compression type to use: {@code none} (to use no
-     *                 compression) or a valid compression type.
+     *                 COMPRESSION_TYPE}: No longer supported; option will be
+     *                 ignored.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -1954,6 +1945,9 @@ public class AlterTableRequest implements IndexedRecord {
      *                 CHUNK_SKIP}: Create or delete a <a
      *                 href="../../../../../../concepts/indexes/#chunk-skip-index"
      *                 target="_top">chunk skip index</a>.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#GEOSPATIAL
+     *                 GEOSPATIAL}: Create or delete a geospatial index
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN

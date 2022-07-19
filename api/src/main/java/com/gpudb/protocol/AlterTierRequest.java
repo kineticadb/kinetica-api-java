@@ -57,13 +57,26 @@ public class AlterTierRequest implements IndexedRecord {
      * CAPACITY}: Maximum size in bytes this tier may hold at once.
      *         <li> {@link
      * com.gpudb.protocol.AlterTierRequest.Options#HIGH_WATERMARK
-     * HIGH_WATERMARK}: Threshold of usage of this tier's resource that, once
+     * HIGH_WATERMARK}: Threshold of usage of this tier's resource that once
      * exceeded, will trigger watermark-based eviction from this tier.
      *         <li> {@link
      * com.gpudb.protocol.AlterTierRequest.Options#LOW_WATERMARK
-     * LOW_WATERMARK}: Threshold of resource usage that, once fallen below
-     * after crossing the {@code high_watermark}, will cease watermark-based
-     * eviction from this tier.
+     * LOW_WATERMARK}: Threshold of resource usage that once fallen below after
+     * crossing the {@code high_watermark}, will cease watermark-based eviction
+     * from this tier.
+     *         <li> {@link com.gpudb.protocol.AlterTierRequest.Options#PERSIST
+     * PERSIST}: If {@code true} the system configuration will be written to
+     * disk upon successful application of this request. This will commit the
+     * changes from this request and any additional in-memory modifications.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.AlterTierRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.AlterTierRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AlterTierRequest.Options#TRUE TRUE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -76,17 +89,36 @@ public class AlterTierRequest implements IndexedRecord {
         public static final String CAPACITY = "capacity";
 
         /**
-         * Threshold of usage of this tier's resource that, once exceeded, will
+         * Threshold of usage of this tier's resource that once exceeded, will
          * trigger watermark-based eviction from this tier.
          */
         public static final String HIGH_WATERMARK = "high_watermark";
 
         /**
-         * Threshold of resource usage that, once fallen below after crossing
+         * Threshold of resource usage that once fallen below after crossing
          * the {@code high_watermark}, will cease watermark-based eviction from
          * this tier.
          */
         public static final String LOW_WATERMARK = "low_watermark";
+
+        /**
+         * If {@code true} the system configuration will be written to disk
+         * upon successful application of this request. This will commit the
+         * changes from this request and any additional in-memory
+         * modifications.
+         * Supported values:
+         * <ul>
+         *         <li> {@link com.gpudb.protocol.AlterTierRequest.Options#TRUE
+         * TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AlterTierRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AlterTierRequest.Options#TRUE TRUE}.
+         */
+        public static final String PERSIST = "persist";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
 
         private Options() {  }
     }
@@ -117,13 +149,28 @@ public class AlterTierRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTierRequest.Options#HIGH_WATERMARK
      *                 HIGH_WATERMARK}: Threshold of usage of this tier's
-     *                 resource that, once exceeded, will trigger
+     *                 resource that once exceeded, will trigger
      *                 watermark-based eviction from this tier.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTierRequest.Options#LOW_WATERMARK
-     *                 LOW_WATERMARK}: Threshold of resource usage that, once
+     *                 LOW_WATERMARK}: Threshold of resource usage that once
      *                 fallen below after crossing the {@code high_watermark},
      *                 will cease watermark-based eviction from this tier.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTierRequest.Options#PERSIST
+     *                 PERSIST}: If {@code true} the system configuration will
+     *                 be written to disk upon successful application of this
+     *                 request. This will commit the changes from this request
+     *                 and any additional in-memory modifications.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTierRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTierRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AlterTierRequest.Options#TRUE TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -165,14 +212,29 @@ public class AlterTierRequest implements IndexedRecord {
      *         Maximum size in bytes this tier may hold at once.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTierRequest.Options#HIGH_WATERMARK
-     *         HIGH_WATERMARK}: Threshold of usage of this tier's resource
-     *         that, once exceeded, will trigger watermark-based eviction from
-     *         this tier.
+     *         HIGH_WATERMARK}: Threshold of usage of this tier's resource that
+     *         once exceeded, will trigger watermark-based eviction from this
+     *         tier.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTierRequest.Options#LOW_WATERMARK
-     *         LOW_WATERMARK}: Threshold of resource usage that, once fallen
+     *         LOW_WATERMARK}: Threshold of resource usage that once fallen
      *         below after crossing the {@code high_watermark}, will cease
      *         watermark-based eviction from this tier.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTierRequest.Options#PERSIST PERSIST}: If
+     *         {@code true} the system configuration will be written to disk
+     *         upon successful application of this request. This will commit
+     *         the changes from this request and any additional in-memory
+     *         modifications.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTierRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTierRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AlterTierRequest.Options#TRUE TRUE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -192,13 +254,28 @@ public class AlterTierRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTierRequest.Options#HIGH_WATERMARK
      *                 HIGH_WATERMARK}: Threshold of usage of this tier's
-     *                 resource that, once exceeded, will trigger
+     *                 resource that once exceeded, will trigger
      *                 watermark-based eviction from this tier.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTierRequest.Options#LOW_WATERMARK
-     *                 LOW_WATERMARK}: Threshold of resource usage that, once
+     *                 LOW_WATERMARK}: Threshold of resource usage that once
      *                 fallen below after crossing the {@code high_watermark},
      *                 will cease watermark-based eviction from this tier.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTierRequest.Options#PERSIST
+     *                 PERSIST}: If {@code true} the system configuration will
+     *                 be written to disk upon successful application of this
+     *                 request. This will commit the changes from this request
+     *                 and any additional in-memory modifications.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTierRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTierRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AlterTierRequest.Options#TRUE TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

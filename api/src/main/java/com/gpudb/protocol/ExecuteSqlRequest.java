@@ -532,14 +532,16 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                the results).  The default value is 0.The minimum allowed
      *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned, or END_OF_SET (-9999) to indicate
-     *               that the maximum number of results allowed by the server
-     *               should be returned.  The number of records returned will
-     *               never exceed the server's own limit, defined by the <a
-     *               href="../../../../../../config/#general"
+     *               results to be returned, or
+     *               END_OF_SET (-9999) to indicate that the maximum number of
+     *               results allowed by the server should be
+     *               returned.  The number of records returned will never
+     *               exceed the server's own limit, defined by the
+     *               <a href="../../../../../../config/#config-main-general"
      *               target="_top">max_get_records_size</a> parameter in the
-     *               server configuration.  Use {@code hasMoreRecords} to see
-     *               if more records exist in the result to be fetched, and
+     *               server configuration.
+     *               Use {@code hasMoreRecords} to see if more records exist in
+     *               the result to be fetched, and
      *               {@code offset} & {@code limit} to request subsequent pages
      *               of results.  The default value is -9999.
      * @param requestSchemaStr  Avro schema of {@code data}.  The default value
@@ -796,14 +798,16 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                the results).  The default value is 0.The minimum allowed
      *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned, or END_OF_SET (-9999) to indicate
-     *               that the maximum number of results allowed by the server
-     *               should be returned.  The number of records returned will
-     *               never exceed the server's own limit, defined by the <a
-     *               href="../../../../../../config/#general"
+     *               results to be returned, or
+     *               END_OF_SET (-9999) to indicate that the maximum number of
+     *               results allowed by the server should be
+     *               returned.  The number of records returned will never
+     *               exceed the server's own limit, defined by the
+     *               <a href="../../../../../../config/#config-main-general"
      *               target="_top">max_get_records_size</a> parameter in the
-     *               server configuration.  Use {@code hasMoreRecords} to see
-     *               if more records exist in the result to be fetched, and
+     *               server configuration.
+     *               Use {@code hasMoreRecords} to see if more records exist in
+     *               the result to be fetched, and
      *               {@code offset} & {@code limit} to request subsequent pages
      *               of results.  The default value is -9999.
      * @param encoding  Specifies the encoding for returned records; either
@@ -1116,16 +1120,18 @@ public class ExecuteSqlRequest implements IndexedRecord {
     /**
      * 
      * @return A positive integer indicating the maximum number of results to
-     *         be returned, or END_OF_SET (-9999) to indicate that the maximum
-     *         number of results allowed by the server should be returned.  The
-     *         number of records returned will never exceed the server's own
-     *         limit, defined by the <a
-     *         href="../../../../../../config/#general"
+     *         be returned, or
+     *         END_OF_SET (-9999) to indicate that the maximum number of
+     *         results allowed by the server should be
+     *         returned.  The number of records returned will never exceed the
+     *         server's own limit, defined by the
+     *         <a href="../../../../../../config/#config-main-general"
      *         target="_top">max_get_records_size</a> parameter in the server
-     *         configuration.  Use {@code hasMoreRecords} to see if more
-     *         records exist in the result to be fetched, and {@code offset} &
-     *         {@code limit} to request subsequent pages of results.  The
-     *         default value is -9999.
+     *         configuration.
+     *         Use {@code hasMoreRecords} to see if more records exist in the
+     *         result to be fetched, and
+     *         {@code offset} & {@code limit} to request subsequent pages of
+     *         results.  The default value is -9999.
      * 
      */
     public long getLimit() {
@@ -1135,14 +1141,16 @@ public class ExecuteSqlRequest implements IndexedRecord {
     /**
      * 
      * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned, or END_OF_SET (-9999) to indicate
-     *               that the maximum number of results allowed by the server
-     *               should be returned.  The number of records returned will
-     *               never exceed the server's own limit, defined by the <a
-     *               href="../../../../../../config/#general"
+     *               results to be returned, or
+     *               END_OF_SET (-9999) to indicate that the maximum number of
+     *               results allowed by the server should be
+     *               returned.  The number of records returned will never
+     *               exceed the server's own limit, defined by the
+     *               <a href="../../../../../../config/#config-main-general"
      *               target="_top">max_get_records_size</a> parameter in the
-     *               server configuration.  Use {@code hasMoreRecords} to see
-     *               if more records exist in the result to be fetched, and
+     *               server configuration.
+     *               Use {@code hasMoreRecords} to see if more records exist in
+     *               the result to be fetched, and
      *               {@code offset} & {@code limit} to request subsequent pages
      *               of results.  The default value is -9999.
      * 

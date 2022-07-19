@@ -103,9 +103,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * this projection is part of.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#NO_COUNT NO_COUNT}:
-     * return a count of 0 for the join table for logging and for show_table.
-     * optimization needed for large overlapped equi-join stencils.  The
-     * default value is 'false'.
+     * Return a count of 0 for the join table for logging and for {@link
+     * com.gpudb.GPUdb#showTable(ShowTableRequest)}; optimization needed for
+     * large overlapped equi-join stencils.  The default value is 'false'.
      *         <li> {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#CHUNK_SIZE
      * CHUNK_SIZE}: Maximum number of records per joined-chunk for this table.
@@ -178,9 +178,10 @@ public class CreateJoinTableRequest implements IndexedRecord {
         public static final String VIEW_ID = "view_id";
 
         /**
-         * return a count of 0 for the join table for logging and for
-         * show_table. optimization needed for large overlapped equi-join
-         * stencils.  The default value is 'false'.
+         * Return a count of 0 for the join table for logging and for {@link
+         * com.gpudb.GPUdb#showTable(ShowTableRequest)}; optimization needed
+         * for large overlapped equi-join stencils.  The default value is
+         * 'false'.
          */
         public static final String NO_COUNT = "no_count";
 
@@ -305,10 +306,11 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#NO_COUNT
-     *                 NO_COUNT}: return a count of 0 for the join table for
-     *                 logging and for show_table. optimization needed for
-     *                 large overlapped equi-join stencils.  The default value
-     *                 is 'false'.
+     *                 NO_COUNT}: Return a count of 0 for the join table for
+     *                 logging and for {@link
+     *                 com.gpudb.GPUdb#showTable(ShowTableRequest)};
+     *                 optimization needed for large overlapped equi-join
+     *                 stencils.  The default value is 'false'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#CHUNK_SIZE
      *                 CHUNK_SIZE}: Maximum number of records per joined-chunk
@@ -511,9 +513,10 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         ''.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#NO_COUNT
-     *         NO_COUNT}: return a count of 0 for the join table for logging
-     *         and for show_table. optimization needed for large overlapped
-     *         equi-join stencils.  The default value is 'false'.
+     *         NO_COUNT}: Return a count of 0 for the join table for logging
+     *         and for {@link com.gpudb.GPUdb#showTable(ShowTableRequest)};
+     *         optimization needed for large overlapped equi-join stencils.
+     *         The default value is 'false'.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#CHUNK_SIZE
      *         CHUNK_SIZE}: Maximum number of records per joined-chunk for this
@@ -589,10 +592,11 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#NO_COUNT
-     *                 NO_COUNT}: return a count of 0 for the join table for
-     *                 logging and for show_table. optimization needed for
-     *                 large overlapped equi-join stencils.  The default value
-     *                 is 'false'.
+     *                 NO_COUNT}: Return a count of 0 for the join table for
+     *                 logging and for {@link
+     *                 com.gpudb.GPUdb#showTable(ShowTableRequest)};
+     *                 optimization needed for large overlapped equi-join
+     *                 stencils.  The default value is 'false'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#CHUNK_SIZE
      *                 CHUNK_SIZE}: Maximum number of records per joined-chunk

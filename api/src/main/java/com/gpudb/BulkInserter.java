@@ -2,11 +2,9 @@ package com.gpudb;
 
 import com.gpudb.GPUdbBase.GPUdbExitException;
 import com.gpudb.protocol.*;
-import org.apache.avro.generic.IndexedRecord;
 import org.apache.commons.lang3.mutable.MutableLong;
 import org.apache.commons.lang3.tuple.Pair;
 import org.threeten.bp.Instant;
-import org.threeten.bp.LocalDateTime;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -17,6 +15,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Object that manages the insertion into GPUdb of large numbers of records in
@@ -240,7 +239,6 @@ public class BulkInserter<T> implements AutoCloseable {
         private final boolean hasPrimaryKey;
         private final boolean updateOnExistingPk;
         private List<T> queue;
-        private Map<RecordKey, Integer> primaryKeyMap;
         private final TypeObjectMap<T> typeObjectMap;
         private final Map<String, String> options;
 
@@ -262,9 +260,6 @@ public class BulkInserter<T> implements AutoCloseable {
             // sometimes go over the capacity before we flush
             queue = new ArrayList<>( (int)Math.round( capacity * 1.25 ) );
 
-            if (hasPrimaryKey) {
-                primaryKeyMap = new HashMap<>(Math.round(capacity / 0.75f) + 1, 0.75f);
-            }
         }
 
         /*
@@ -275,41 +270,14 @@ public class BulkInserter<T> implements AutoCloseable {
             List<T> oldQueue = queue;
             queue = new ArrayList<>(capacity);
 
-            if (primaryKeyMap != null) {
-                primaryKeyMap.clear();
-            }
-
             return oldQueue;
         }
 
         /**
-         * Insert the given record.  Return true if the record
-         * is inserted into the queue, and false if it hasn't
-         * (based on primary key conflicts and user options).
+         * Insert the given record into the queue.
          */
         public boolean insert(T record, RecordKey key) {
-            if (hasPrimaryKey && key.isValid()) {
-                if (updateOnExistingPk) {
-                    Integer keyIndex = primaryKeyMap.get(key);
-
-                    if (keyIndex != null) {
-                        queue.set(keyIndex, record);
-                    } else {
-                        queue.add(record);
-                        primaryKeyMap.put(key, queue.size() - 1);
-                    }
-                } else {
-                    if (primaryKeyMap.containsKey(key)) {
-                        return false;
-                    }
-
-                    queue.add(record);
-                    primaryKeyMap.put(key, queue.size() - 1);
-                }
-            } else {
-                queue.add(record);
-            }
-
+            queue.add( record );
             return true;
         }
 
@@ -318,11 +286,7 @@ public class BulkInserter<T> implements AutoCloseable {
          * Returns if the queue is full (based on the capacity).
          */
         public boolean isQueueFull() {
-            if (queue.size() >= capacity) {
-                return true;
-            } else {
-                return false;
-            }
+            return queue.size() >= capacity;
         }
 
 
@@ -338,12 +302,6 @@ public class BulkInserter<T> implements AutoCloseable {
             List<T> queuedRecords = this.queue;
             this.queue = new ArrayList<>( capacity );
 
-            // Clear out the map of records to primary index (used for the
-            // purpose of updating existing primary keys)
-            if (primaryKeyMap != null) {
-                primaryKeyMap.clear();
-            }
-
             // If nothing to insert, return a null object for the response
             if ( queuedRecords.isEmpty() ) {
                 GPUdbLogger.debug_with_info( "0 records in the queue; nothing to insert" );
@@ -352,13 +310,29 @@ public class BulkInserter<T> implements AutoCloseable {
 
             // First, encode the records to create the request packet
             RawInsertRecordsRequest request;
-            List<Pair<String, T>> warnings = new ArrayList<>();
+
+            // A TreeMap will keep the entries sorted by the key.
+            // The key is an integer which is the original index of
+            // the records as obtained from the list of encoded records
+            // returned by the 'Avro.encode' method.
+            Map<Integer, Pair<String, T>> warnings = new TreeMap<>();
+
+            // This map stores the records which have failed client side encoding
+            // and has been instantiated as a 'LinkedHashMap' which preserves
+            // the insertion order.
+            Map<String, T> recordsFailedEncoding = null;
+
             try {
-                List<ByteBuffer> encodedRecords;
+                // This is a 'Pair' of the list of correctly encoded records
+                // and a Map of an actual error message to the record which
+                // has failed Avro encoding.
+                final Pair<ArrayList<ByteBuffer>, Map<String, T>> encodedRecords;
+
                 if ( this.typeObjectMap == null ) {
-                    encodedRecords = Avro.encode( (List<? extends IndexedRecord>)queuedRecords,
+                    encodedRecords = Avro.encode( queuedRecords,
                             this.gpudb.getThreadCount(),
                             this.gpudb.getExecutor() );
+
                 } else {
                     encodedRecords = Avro.encode( this.typeObjectMap,
                             queuedRecords,
@@ -366,9 +340,12 @@ public class BulkInserter<T> implements AutoCloseable {
                             this.gpudb.getExecutor() );
                 }
                 request = new RawInsertRecordsRequest( this.tableName,
-                        encodedRecords,
+                        encodedRecords.getLeft(),
                         options);
-            } catch (Exception ex) {
+
+                recordsFailedEncoding = new LinkedHashMap<>( encodedRecords.getRight() );
+
+            } catch (GPUdbException ex) {
                 // Can't even attempt the insertion! Need to let the caller know.
                 return new WorkerQueueInsertionResult<>( url, this.gpudb.getURL(),
                         null,
@@ -414,15 +391,25 @@ public class BulkInserter<T> implements AutoCloseable {
                 }
 
                 Map<String, String> info = response.getInfo();
-                for (Entry<String, String> entry : info.entrySet()) {
-                    if (entry.getKey().toLowerCase().startsWith("error_")) {
-                        Integer index = Integer.parseInt(entry.getKey().substring(6));
-                        warnings.add(Pair.of(entry.getValue(), queuedRecords.get(index)));
-                    }
-                    else if (entry.getKey().toLowerCase().startsWith("warn")) {
-                        warnings.add(Pair.of(entry.getValue(), (T)null));
-                    }
-                }
+
+                // Peek into the errors from the map. This map contains
+                // several incorrect error messages returned by the server
+                // for those cases where we had passed empty ByteBuffers in
+                // places of records which had failed Avro encoding.
+                info.entrySet().stream().filter( x -> x.getKey().toLowerCase().startsWith("error_"))
+                        .forEach( x -> {
+                            int index = Integer.parseInt(x.getKey().substring(6));
+                            warnings.put(index, Pair.of(x.getKey().substring(6) + ":" + x.getValue(), queuedRecords.get(index)));
+                        });
+
+                // Now we traverse the Map of records which failed Avro
+                // encoding and update our warnings map with the actual Avro
+                // failure message for those records for which we had sent in
+                // am empty ByteBuffer to the server.
+                recordsFailedEncoding.forEach((key, value) -> {
+                    int index = Integer.parseInt(key.substring(0,key.indexOf(":")));
+                    warnings.put( index, Pair.of( key, value ));
+                });
 
                 // Check if shard re-balancing is under way at the server; if so,
                 // we need to update the shard mapping
@@ -489,19 +476,19 @@ public class BulkInserter<T> implements AutoCloseable {
         private final boolean   doFailover;
         private final int       countClusterSwitches;
         private final long      insertionAttemptTimestamp;
-        private final List<Pair<String, T>> warnings;
+        private final Map<Integer, Pair<String, T>> warnings;
 
-        public WorkerQueueInsertionResult( URL workerUrl,
-                                           URL headUrl,
-                                           InsertRecordsResponse insertResponse,
-                                           List<T>   failedRecords,
-                                           List<Pair<String, T>> warnings,
-                                           boolean   didSucceed,
-                                           boolean   doUpdateWorkers,
-                                           boolean   doFailover,
-                                           int       countClusterSwitches,
-                                           long      insertionAttemptTimestamp,
-                                           Exception exception ) {
+        public WorkerQueueInsertionResult(URL workerUrl,
+                                          URL headUrl,
+                                          InsertRecordsResponse insertResponse,
+                                          List<T> failedRecords,
+                                          Map<Integer, Pair<String, T>> warnings,
+                                          boolean didSucceed,
+                                          boolean doUpdateWorkers,
+                                          boolean doFailover,
+                                          int countClusterSwitches,
+                                          long insertionAttemptTimestamp,
+                                          Exception exception) {
             this.workerUrl        = workerUrl;
             this.headUrl          = headUrl;
             this.insertResponse   = insertResponse;
@@ -531,7 +518,7 @@ public class BulkInserter<T> implements AutoCloseable {
             return this.failedRecords;
         }
 
-        public List<Pair<String, T>> getErrors() {
+        public Map<Integer, Pair<String, T>> getErrors() {
             return this.warnings;
         }
 
@@ -573,7 +560,7 @@ public class BulkInserter<T> implements AutoCloseable {
     private final RecordKeyBuilder<T> primaryKeyBuilder;
     private final RecordKeyBuilder<T> shardKeyBuilder;
     private final ExecutorService workerExecutorService;
-    private ScheduledExecutorService timedFlushExecutorService;
+    private final ScheduledExecutorService timedFlushExecutorService;
     private FlushOptions flushOptions;
     private Instant lastFlushTime;
     private final boolean isReplicatedTable;
@@ -947,6 +934,8 @@ public class BulkInserter<T> implements AutoCloseable {
                     this.flushOptions.getFlushInterval(),
                     this.flushOptions.getFlushInterval(),
                     TimeUnit.SECONDS);
+        } else {
+            this.timedFlushExecutorService = null;
         }
     }
 
@@ -1531,8 +1520,8 @@ public class BulkInserter<T> implements AutoCloseable {
         // result of the queues as they complete (in the order of completion).
         CompletionService<WorkerQueueInsertionResult<T>> queueService
                 = new ExecutorCompletionService<>( this.workerExecutorService );
-        List< Future< WorkerQueueInsertionResult<T> >> futureResults
-                = new ArrayList<>();
+//		List< Future< WorkerQueueInsertionResult<T> >> futureResults
+//            = new ArrayList<>();
 
         // Add all the given tasks to the service
         int countQueueSubmitted = 0;
@@ -1544,9 +1533,8 @@ public class BulkInserter<T> implements AutoCloseable {
                 continue;
             }
 
-            // Submit each extant worker queue to the service and also
-            // to the list of future results
-            futureResults.add( queueService.submit( workerQueue ) );
+            // Submit each extant worker queue to the service
+            queueService.submit( workerQueue );
             ++countQueueSubmitted;
         }
         GPUdbLogger.debug_with_info( "# queues submitted: " + countQueueSubmitted );
@@ -1569,7 +1557,7 @@ public class BulkInserter<T> implements AutoCloseable {
             try {
                 result = queueService.take().get();
             } catch ( ExecutionException
-                    | java.lang.InterruptedException ex ) {
+                      | java.lang.InterruptedException ex ) {
                 // Something interrupted the execution of the threads.
                 // TODO: Is this the best way to handle it?
                 continue;
@@ -1591,21 +1579,7 @@ public class BulkInserter<T> implements AutoCloseable {
                         .getInsertResponse()
                         .getCountUpdated()  );
 
-                // Create Exception objects for the warnings
-                List<Pair<String, T>> errors = result.getErrors();
-                if (errors != null) {
-                    for (Pair<String, T> entry : errors) {
-                        List<T> records = new ArrayList<>();
-                        if (entry.getRight() != null)
-                            records.add(entry.getRight());
-
-                        synchronized (error_list_lock)
-                        {
-                            error_list.add(
-                                    new InsertException(result.headUrl, records, entry.getLeft()));
-                        }
-                    }
-                }
+                gatherErrorsFromInsertionResult( result );
 
                 // Check if shard re-balancing is under way at the server; if so,
                 // we need to update the shard mapping
@@ -1798,6 +1772,22 @@ public class BulkInserter<T> implements AutoCloseable {
         }
     }   // end flushQueues
 
+    private void gatherErrorsFromInsertionResult(WorkerQueueInsertionResult<T> result) {
+        Map<Integer, Pair<String, T>> errors = result.getErrors();
+        if (errors != null) {
+            errors.forEach((key,entry) -> {
+                List<T> records = new ArrayList<>();
+                if (entry.getRight() != null)
+                    records.add(entry.getRight());
+                synchronized (error_list_lock) {
+                    String message = entry.getLeft();
+                    message = message.substring( message.indexOf(":") + 1);
+                    error_list.add(
+                            new InsertException(result.headUrl, records, message));
+                }
+            });
+        }
+    }
 
 
     /**

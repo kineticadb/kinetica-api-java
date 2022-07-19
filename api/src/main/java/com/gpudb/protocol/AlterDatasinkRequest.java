@@ -105,6 +105,12 @@ public class AlterDatasinkRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#SCHEMA_NAME
+     * SCHEMA_NAME}: Updates the schema name.  If {@code schema_name}
+     * doesn't exist, an error will be thrown. If {@code schema_name} is empty,
+     * then the user's
+     * default schema will be used.
      * </ul>
      * A set of string constants for the parameter {@code datasinkUpdatesMap}.
      */
@@ -192,6 +198,14 @@ public class AlterDatasinkRequest implements IndexedRecord {
         public static final String SKIP_VALIDATION = "skip_validation";
         public static final String TRUE = "true";
         public static final String FALSE = "false";
+
+        /**
+         * Updates the schema name.  If {@code schema_name}
+         * doesn't exist, an error will be thrown. If {@code schema_name} is
+         * empty, then the user's
+         * default schema will be used.
+         */
+        public static final String SCHEMA_NAME = "schema_name";
 
         private DatasinkUpdatesMap() {  }
     }
@@ -289,6 +303,13 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *                            The default value is {@link
      *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FALSE
      *                            FALSE}.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#SCHEMA_NAME
+     *                            SCHEMA_NAME}: Updates the schema name.  If
+     *                            {@code schema_name}
+     *                            doesn't exist, an error will be thrown. If
+     *                            {@code schema_name} is empty, then the user's
+     *                            default schema will be used.
      *                            </ul>
      * @param options  Optional parameters.
      * 
@@ -391,6 +412,12 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FALSE
      *         FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#SCHEMA_NAME
+     *         SCHEMA_NAME}: Updates the schema name.  If {@code schema_name}
+     *         doesn't exist, an error will be thrown. If {@code schema_name}
+     *         is empty, then the user's
+     *         default schema will be used.
      *         </ul>
      * 
      */
@@ -474,6 +501,13 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *                            The default value is {@link
      *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FALSE
      *                            FALSE}.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#SCHEMA_NAME
+     *                            SCHEMA_NAME}: Updates the schema name.  If
+     *                            {@code schema_name}
+     *                            doesn't exist, an error will be thrown. If
+     *                            {@code schema_name} is empty, then the user's
+     *                            default schema will be used.
      *                            </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

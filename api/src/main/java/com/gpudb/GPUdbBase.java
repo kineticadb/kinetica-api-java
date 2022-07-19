@@ -1,5 +1,6 @@
 package com.gpudb;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -30,6 +31,7 @@ import java.util.regex.PatternSyntaxException;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
 
 import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
@@ -47,11 +49,13 @@ import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustAllStrategy;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
 import org.xerial.snappy.Snappy;
 
@@ -143,7 +147,11 @@ public abstract class GPUdbBase {
         private Pattern hostnameRegex        = null;
         private boolean useSnappy            = true;
         private boolean bypassSslCertCheck   = false;
-        private SSLConnectionSocketFactory customSslConnSocketFactory;
+
+        private String trustStoreFilePath;
+
+        private String trustStorePassword;
+
         private boolean disableFailover      = false;
         private boolean disableAutoDiscovery = false;
         private HAFailoverOrder haFailoverOrder = HAFailoverOrder.RANDOM;
@@ -178,7 +186,6 @@ public abstract class GPUdbBase {
             this.hostnameRegex        = other.hostnameRegex;
             this.useSnappy            = other.useSnappy;
             this.bypassSslCertCheck   = other.bypassSslCertCheck;
-            this.customSslConnSocketFactory = other.customSslConnSocketFactory;
             this.disableFailover      = other.disableFailover;
             this.disableAutoDiscovery = other.disableAutoDiscovery;
             this.haFailoverOrder      = other.haFailoverOrder;
@@ -275,8 +282,21 @@ public abstract class GPUdbBase {
          *
          * @see #setCustomSslConnSocketFactory(SSLConnectionSocketFactory)
          */
-        public SSLConnectionSocketFactory getCustomSslConnSocketFactory() {
-            return this.customSslConnSocketFactory;
+
+        /**
+         * Gets the value of the SSL trustStore file path
+         * @return - a String - SSL trustStore file path
+         */
+        public String getTrustStoreFilePath() {
+            return trustStoreFilePath;
+        }
+
+        /**
+         * Gets the SSL trustStore file password
+         * @return - a String - trustStore file password
+         */
+        public String getTrustStorePassword() {
+            return trustStorePassword;
         }
 
         /**
@@ -579,9 +599,9 @@ public abstract class GPUdbBase {
                 return this;
             } catch (PatternSyntaxException ex ) {
                 String errorMsg = ( "Error in parsing the pattern for "
-                                    + "hostname regex; given: '"
-                                    + value + "'; got error: "
-                                    + ex.getMessage() );
+                    + "hostname regex; given: '"
+                    + value + "'; got error: "
+                    + ex.getMessage() );
                 throw new GPUdbException( errorMsg );
             }
         }
@@ -642,37 +662,44 @@ public abstract class GPUdbBase {
             return this;
         }
 
-        /** Sets a custom SSLConnectionSocketFactory value which can be used
-         * to pass in a custom SSLContext and a custom HostNameVerifier
-         *
-         * Example code to create a custom SSLContext and subsequently a
-         * custom SSLConnectionSocketFactory using the custom context.
+        /**
+         * Sets the SSL trustStore file path. This is useful if the user wants
+         * to pass in a self-signed certificate. If this is passed in then
+         * the corresponding password for the file must also be set.
          *
          * <pre>
-         * {@code
-         * SSLContext sslContext = SSLContexts.custom()
-         *     .loadTrustMaterial(
-         *     new File("/opt/gpudb/truststore.jks"),
-         *     "password".toCharArray(), new TrustSelfSignedStrategy()
-         *     ).build();
-         *
-         *
-         * SSLConnectionSocketFactory = new SSLConnectionSocketFactory( sslContext,
-         *          new HostnameVerifier() {
-         *             public boolean verify(String hostName, SSLSession session) {
-         *                 return true;
-         *             }
-         *         } );
-         * }
+         *   GPUdbBase.Options m_gpudbOptions = new GPUdbBase.Options();
+         *   m_gpudbOptions = m_gpudbOptions.setTrustStoreFilePath(m_trustStoreFileName);
+         *   m_gpudbOptions = m_gpudbOptions.setTrustStorePassword(m_trustStorePassword);
          * </pre>
          *
-         * @param value     the value of the custom SSLConnectionSocketFactory
-         * @return          the current {@link Options} instance
+         * @param trustStoreFilePath - String indicating the full file path
+         * @return - the current {@link Options} instance
          *
-         * @see #getCustomSslConnSocketFactory()
+         * @see #setTrustStorePassword(String)
          */
-        public Options setCustomSslConnSocketFactory(SSLConnectionSocketFactory value) {
-            this.customSslConnSocketFactory = value;
+        public Options setTrustStoreFilePath(String trustStoreFilePath) {
+            this.trustStoreFilePath = trustStoreFilePath;
+            return this;
+        }
+
+        /**
+         * Sets the SSL trustStore file password. This is useful if the user wants
+         * to pass in a self-signed certificate.
+         *
+         * <pre>
+         *   GPUdbBase.Options m_gpudbOptions = new GPUdbBase.Options();
+         *   m_gpudbOptions = m_gpudbOptions.setTrustStoreFilePath(m_trustStoreFileName);
+         *   m_gpudbOptions = m_gpudbOptions.setTrustStorePassword(m_trustStorePassword);
+         * </pre>
+         *
+         * @param trustStorePassword - String indicating the full file path
+         * @return - the current {@link Options} instance
+         *
+         * @see #setTrustStoreFilePath(String) (String)
+         */
+        public Options setTrustStorePassword(String trustStorePassword) {
+            this.trustStorePassword = trustStorePassword;
             return this;
         }
 
@@ -822,11 +849,11 @@ public abstract class GPUdbBase {
         public Options setHostManagerPort(int value) {
             if (value < 0) {
                 throw new IllegalArgumentException("Host manager port number must be greater than zero; "
-                                                   + "given " + value);
+                    + "given " + value);
             }
             if (value > 65536) {
                 throw new IllegalArgumentException("Host manager port number must be less than 65536; "
-                                                   + "given " + value);
+                    + "given " + value);
             }
 
             hmPort = value;
@@ -870,7 +897,7 @@ public abstract class GPUdbBase {
         public Options setServerConnectionTimeout(int value) {
             if (value < 0) {
                 throw new IllegalArgumentException("Server connection timeout "
-                                                   + "must be greater than or equal to zero.");
+                    + "must be greater than or equal to zero.");
             }
 
             serverConnectionTimeout = value;
@@ -981,12 +1008,12 @@ public abstract class GPUdbBase {
         public Options setInitialConnectionAttemptTimeout(long value) {
             if (value < 0) {
                 throw new IllegalArgumentException( "initialConnectionAttemptTimeout "
-                                                    + "must be greater than or equal "
-                                                    + "to zero; given " + value);
+                    + "must be greater than or equal "
+                    + "to zero; given " + value);
             } else if ( value > 9223372036854L ) {
                 throw new IllegalArgumentException("initialConnectionAttemptTimeout "
-                                                   +"must be less than 9223372036854L;"
-                                                   + " given " + value);
+                    +"must be less than 9223372036854L;"
+                    + " given " + value);
             }
 
             this.initialConnectionAttemptTimeout = value;
@@ -1007,12 +1034,12 @@ public abstract class GPUdbBase {
         public Options setIntraClusterFailoverTimeout(long value) {
             if (value < 0) {
                 throw new IllegalArgumentException( "intraClusterFailoverTimeout "
-                                                    + "must be greater than or equal "
-                                                    + "to zero; given " + value);
+                    + "must be greater than or equal "
+                    + "to zero; given " + value);
             } else if ( value > 9223372036854L ) {
                 throw new IllegalArgumentException("intraClusterFailoverTimeout "
-                                                   +"must be less than 9223372036854L;"
-                                                   + " given " + value);
+                    +"must be less than 9223372036854L;"
+                    + " given " + value);
             }
 
             this.intraClusterFailoverTimeout = value;
@@ -1095,14 +1122,14 @@ public abstract class GPUdbBase {
                 return true;
             }
             if ( (this.major == major) && (this.minor == minor)
-                 && (this.revision > revision) ) {
+                && (this.revision > revision) ) {
                 // Example: 6.2._2_.0 is newer than 6.2._1_.0, but
                 // 7.7._3_.0 is NOT newer than 9.9._0_.0
                 return true;
             }
             if ( (this.major == major) && (this.minor == minor)
-                 && (this.revision == revision)
-                 && (this.abiVersion > abiVersion) ) {
+                && (this.revision == revision)
+                && (this.abiVersion > abiVersion) ) {
                 // Example: 6.2.1._3_ is newer than 6.2.1._1_, but
                 // 7.7.3._1_ is NOT newer than 9.9.0._0_
                 return true;
@@ -1130,14 +1157,14 @@ public abstract class GPUdbBase {
                 return true;
             }
             if ( (this.major == major) && (this.minor == minor)
-                 && (this.revision < revision) ) {
+                && (this.revision < revision) ) {
                 // Example: 6.2._1_.0 is older than 6.2._2_.0, but
                 // 9.9._0_.0 is NOT older than 7.7._3_.0
                 return true;
             }
             if ( (this.major == major) && (this.minor == minor)
-                 && (this.revision == revision)
-                 && (this.abiVersion < abiVersion) ) {
+                && (this.revision == revision)
+                && (this.abiVersion < abiVersion) ) {
                 // Example: 6.2.1._1_ is older than 6.2.1._3_, but
                 // 9.9.0._0_ is NOT older than 7.7.3._1_
                 return true;
@@ -1156,9 +1183,9 @@ public abstract class GPUdbBase {
         public boolean isEqualTo( int major, int minor,
                                   int revision, int abiVersion ) {
             return ( (this.major == major)
-                     && (this.minor == minor)
-                     && (this.revision == revision)
-                     && (this.abiVersion == abiVersion) );
+                && (this.minor == minor)
+                && (this.revision == revision)
+                && (this.abiVersion == abiVersion) );
         }
 
         @Override
@@ -1174,9 +1201,9 @@ public abstract class GPUdbBase {
             GPUdbVersion that = (GPUdbVersion)obj;
 
             return ( (this.major == that.major)
-                     && (this.minor == that.minor)
-                     && (this.revision == that.revision)
-                     && (this.abiVersion == that.abiVersion) );
+                && (this.minor == that.minor)
+                && (this.revision == that.revision)
+                && (this.abiVersion == that.abiVersion) );
         }
 
         @Override
@@ -1594,8 +1621,8 @@ public abstract class GPUdbBase {
 
     // Headers that are prt
     protected static final String[] PROTECTED_HEADERS = new String[]{ HEADER_HA_SYNC_MODE,
-                                                                      HEADER_AUTHORIZATION,
-                                                                      HEADER_CONTENT_TYPE
+        HEADER_AUTHORIZATION,
+        HEADER_CONTENT_TYPE
     };
 
 
@@ -1654,21 +1681,21 @@ public abstract class GPUdbBase {
                     // (likely, http[s]://hostname_or_IP:port/gpudb-host-manager)
                     // Also, use the default httpd port (8082, usually)
                     this.hostManagerUrl = new URL( activeHeadNodeUrl.getProtocol(),
-                                                   activeHeadNodeUrl.getHost(),
-                                                   DEFAULT_HTTPD_HOST_MANAGER_PORT,
-                                                   "/gpudb-host-manager" );
+                        activeHeadNodeUrl.getHost(),
+                        DEFAULT_HTTPD_HOST_MANAGER_PORT,
+                        "/gpudb-host-manager" );
                 } else {
                     // The host manager URL shouldn't use any path and
                     // use the host manager port
                     this.hostManagerUrl = new URL( activeHeadNodeUrl.getProtocol(),
-                                                   activeHeadNodeUrl.getHost(),
-                                                   DEFAULT_HOST_MANAGER_PORT,
-                                                   "" );
+                        activeHeadNodeUrl.getHost(),
+                        DEFAULT_HOST_MANAGER_PORT,
+                        "" );
                 }
             } catch ( MalformedURLException ex ) {
                 throw new GPUdbException( "Error in creating the host manager URL: "
-                                          + ex.getMessage(),
-                                          ex );
+                    + ex.getMessage(),
+                    ex );
             }
 
             // Ensure that all the known ranks' hostnames are also accounted for
@@ -1693,21 +1720,21 @@ public abstract class GPUdbBase {
                     // (likely, http[s]://hostname_or_IP:port/gpudb-host-manager)
                     // Also, use the default httpd port (8082, usually)
                     this.hostManagerUrl = new URL( activeHeadNodeUrl.getProtocol(),
-                                                   activeHeadNodeUrl.getHost(),
-                                                   hostManagerPort,
-                                                   "/gpudb-host-manager" );
+                        activeHeadNodeUrl.getHost(),
+                        hostManagerPort,
+                        "/gpudb-host-manager" );
                 } else {
                     // The host manager URL shouldn't use any path and
                     // use the host manager port
                     this.hostManagerUrl = new URL( activeHeadNodeUrl.getProtocol(),
-                                                   activeHeadNodeUrl.getHost(),
-                                                   hostManagerPort,
-                                                   "" );
+                        activeHeadNodeUrl.getHost(),
+                        hostManagerPort,
+                        "" );
                 }
             } catch ( MalformedURLException ex ) {
                 throw new GPUdbException( "Error in creating the host manager URL: "
-                                          + ex.getMessage(),
-                                          ex );
+                    + ex.getMessage(),
+                    ex );
             }
 
             // Ensure that all the known ranks' hostnames are also accounted for
@@ -1824,11 +1851,11 @@ public abstract class GPUdbBase {
             // it doesn't exist there already)
             if ( !doesClusterContainNode( this.activeHeadNodeUrl.getHost() ) ) {
                 String headRankHostname = (this.activeHeadNodeUrl.getProtocol()
-                                           + "://"
-                                           + this.activeHeadNodeUrl.getHost() );
+                    + "://"
+                    + this.activeHeadNodeUrl.getHost() );
                 GPUdbLogger.debug_with_info( "Adding head rank's hostname to "
-                                             + "hostname list: "
-                                             + headRankHostname );
+                    + "hostname list: "
+                    + headRankHostname );
                 this.hostNames.add( headRankHostname );
             }
 
@@ -1840,11 +1867,11 @@ public abstract class GPUdbBase {
                 // Check if this worker rank's host is already accounted for
                 if( !doesClusterContainNode( workerRank.getHost() ) ) {
                     String workerRankHostname = ( workerRank.getProtocol()
-                                                 + "://"
-                                                 + workerRank.getHost() );
+                        + "://"
+                        + workerRank.getHost() );
                     GPUdbLogger.debug_with_info( "Adding worker rank's hostname to "
-                                                 + "hostname list: "
-                                                 + workerRankHostname );
+                        + "hostname list: "
+                        + workerRankHostname );
                     // Add the worker rank's hostname to the list
                     this.hostNames.add( workerRankHostname );
                 }
@@ -1870,7 +1897,7 @@ public abstract class GPUdbBase {
                 // or IP address
                 String hostname_ = iter.next();
                 GPUdbLogger.debug_with_info( "Checking for match with '"
-                                             + hostname_ + "'" );
+                    + hostname_ + "'" );
                 if( hostname_.contains( hostName ) ) {
                     GPUdbLogger.debug_with_info( "Found matching hostname");
                     return true;
@@ -1896,13 +1923,13 @@ public abstract class GPUdbBase {
             ClusterAddressInfo that = (ClusterAddressInfo)obj;
 
             return ( this.activeHeadNodeUrl.equals( that.activeHeadNodeUrl )
-                     // The order of the worker ranks matter
-                     && this.workerRankUrls.equals( that.workerRankUrls )
-                     // The order of the hostnames do NOT matter
-                     && this.hostNames.equals( that.hostNames )
-                     && (this.isPrimaryCluster == that.isPrimaryCluster)
-                     && (this.isIntraClusterFailoverEnabled
-                         == that.isIntraClusterFailoverEnabled) );
+                // The order of the worker ranks matter
+                && this.workerRankUrls.equals( that.workerRankUrls )
+                // The order of the hostnames do NOT matter
+                && this.hostNames.equals( that.hostNames )
+                && (this.isPrimaryCluster == that.isPrimaryCluster)
+                && (this.isIntraClusterFailoverEnabled
+                == that.isIntraClusterFailoverEnabled) );
         }
 
 
@@ -1917,7 +1944,7 @@ public abstract class GPUdbBase {
             // https://docs.oracle.com/javase/7/docs/api/java/lang/Boolean.html#hashCode()
             hashCode = (31 * hashCode) + ( this.isPrimaryCluster ? 1231 : 1237 );
             hashCode = (31 * hashCode) + ( this.isIntraClusterFailoverEnabled
-                                           ? 1231 : 1237 );
+                ? 1231 : 1237 );
             return hashCode;
         }
 
@@ -1959,7 +1986,11 @@ public abstract class GPUdbBase {
     private boolean       useHttpd = false;
     private boolean       useSnappy;
     private boolean       bypassSslCertCheck;
-    private SSLConnectionSocketFactory customSslConnectionSocketFactory;
+
+    private String trustStoreFilePath;
+
+    private String trustStorePassword;
+
     private boolean       disableFailover;
     private boolean       disableAutoDiscovery;
     private int           threadCount;
@@ -1990,7 +2021,7 @@ public abstract class GPUdbBase {
 
         if ( url == null ) {
             String errorMsg = ( "Must provide a non-null and non-empty "
-                                + "string for the URL; given null" );
+                + "string for the URL; given null" );
             GPUdbLogger.error( errorMsg );
             throw new GPUdbException( errorMsg );
         }
@@ -2063,10 +2094,10 @@ public abstract class GPUdbBase {
 
         if ((username != null && !username.isEmpty()) || (password != null && !password.isEmpty())) {
             authorization = ("Basic "
-                             + Base64.encodeBase64String( ((username != null ? username : "")
-                                                           + ":"
-                                                           + (password != null ? password : "")).getBytes() )
-                               .replace("\n", "") );
+                + Base64.encodeBase64String( ((username != null ? username : "")
+                    + ":"
+                    + (password != null ? password : "")).getBytes() )
+                .replace("\n", "") );
         } else {
             authorization = null;
         }
@@ -2087,21 +2118,22 @@ public abstract class GPUdbBase {
         // Convert the initial connection attempt timeout from milliseconds
         // to nano seconds
         GPUdbLogger.debug_with_info( "Initial connection attempt timeout in ms: "
-                                     + this.initialConnectionAttemptTimeoutNS);
+            + this.initialConnectionAttemptTimeoutNS);
         this.initialConnectionAttemptTimeoutNS = this.initialConnectionAttemptTimeoutNS * 1000000L;
         GPUdbLogger.debug_with_info( "Initial connection attempt timeout in ns: "
-                                     + this.initialConnectionAttemptTimeoutNS);
+            + this.initialConnectionAttemptTimeoutNS);
 
         // Convert the intra-cluster failover recovery timeout from milliseconds
         // to nano seconds
         GPUdbLogger.debug_with_info( "Intra-cluster failover timeout in ms: "
-                                     + this.intraClusterFailoverTimeoutNS);
+            + this.intraClusterFailoverTimeoutNS);
         this.intraClusterFailoverTimeoutNS = this.intraClusterFailoverTimeoutNS * 1000000L;
         GPUdbLogger.debug_with_info( "Intra-cluster failover timeout in ns:"
-                                     + this.intraClusterFailoverTimeoutNS
-                                     + " (0 means infinite waiting)");
+            + this.intraClusterFailoverTimeoutNS
+            + " (0 means infinite waiting)");
 
-        this.customSslConnectionSocketFactory = options.getCustomSslConnSocketFactory();
+        this.trustStoreFilePath = options.getTrustStoreFilePath();
+        this.trustStorePassword = options.getTrustStorePassword();
 
         // Handle SSL certificate verification bypass for HTTPS connections
         this.bypassSslCertCheck = options.getBypassSslCertCheck();
@@ -2109,10 +2141,10 @@ public abstract class GPUdbBase {
         //Cannot have both 'bypassSslCertCheck' and 'customSslConnectionSocketFactory'
         //set at the same time; conflicting options. If both are set check
         //and throw 'GPUdbException'.
-        if( bypassSslCertCheck && customSslConnectionSocketFactory != null ) {
+        if( bypassSslCertCheck && ( trustStoreFilePath != null || trustStorePassword != null ) ) {
             throw new GPUdbException("Both 'bypassSslCertCheck' and " +
-                    "'customSslConnectionSocketFactory' cannot be set " +
-                    "together; conflicting options.");
+                "<'trustStoreFilePath' or 'trustStorePassword'> cannot be set " +
+                "together; conflicting options.");
         }
 
         if ( this.bypassSslCertCheck ) {
@@ -2172,10 +2204,31 @@ public abstract class GPUdbBase {
             }
         }
 
-        // If 'customSslConnectionSocketFactory' is set, use that to set the
-        // 'secureSocketFactory' variable
-        if ( this.customSslConnectionSocketFactory != null ) {
-            secureSocketFactory = customSslConnectionSocketFactory;
+        // If 'trustStoreFilePath' and 'trustStorePassword' are both set, use
+        // that to create the 'secureSocketFactory' variable
+        if( (trustStoreFilePath != null && !trustStoreFilePath.isEmpty())
+            && (trustStorePassword != null && !trustStorePassword.isEmpty())) {
+            SSLConnectionSocketFactory connectionSocketFactory = null;
+
+            try {
+                SSLContext sslContext = SSLContexts.custom()
+                    .loadTrustMaterial(
+                        new File(trustStoreFilePath),
+                        trustStorePassword.toCharArray(),
+                        new TrustSelfSignedStrategy()
+                    ).build();
+
+                connectionSocketFactory = new SSLConnectionSocketFactory(sslContext, new HostnameVerifier() {
+                    public boolean verify(String hostName, SSLSession session) {
+                        return true;
+                    }
+                });
+                secureSocketFactory = connectionSocketFactory;
+            } catch (Exception e) {
+                GPUdbLogger.debug_with_info(String.format("Exception %s", e.getMessage()));
+                throw new GPUdbException(e.getMessage());
+            }
+
         }
 
         // And a plain http socket factory
@@ -2246,7 +2299,7 @@ public abstract class GPUdbBase {
         List<URL> activeHeadNodeURLs = new ArrayList<URL>();
         for (int i = 0; i < this.hostAddresses.size(); ++i) {
             activeHeadNodeURLs.add( this.hostAddresses.get( i )
-                                    .getActiveHeadNodeUrl() );
+                .getActiveHeadNodeUrl() );
         }
         return activeHeadNodeURLs;
     }
@@ -2280,7 +2333,7 @@ public abstract class GPUdbBase {
         List<URL> hmURLs = new ArrayList<URL>();
         for (int i = 0; i < this.hostAddresses.size(); ++i) {
             hmURLs.add( this.hostAddresses.get( i )
-                        .getHostManagerUrl() );
+                .getHostManagerUrl() );
         }
         return hmURLs;
     }
@@ -2503,7 +2556,7 @@ public abstract class GPUdbBase {
         for ( int i = 0; i < PROTECTED_HEADERS.length; ++i ) {
             if ( header == PROTECTED_HEADERS[ i ] ) {
                 String errorMsg = ( "Not allowed to change proteced header: "
-                                    + header );
+                    + header );
                 GPUdbLogger.error( errorMsg );
                 throw new GPUdbException( errorMsg );
             }
@@ -2541,7 +2594,7 @@ public abstract class GPUdbBase {
         for ( int i = 0; i < PROTECTED_HEADERS.length; ++i ) {
             if ( header == PROTECTED_HEADERS[ i ] ) {
                 String errorMsg = ( "Not allowed to remove proteced header: "
-                                    + header );
+                    + header );
                 GPUdbLogger.error( errorMsg );
                 throw new GPUdbException( errorMsg );
             }
@@ -2690,7 +2743,7 @@ public abstract class GPUdbBase {
                     // can't get it, skip to the next one
                     Map<String, String> systemProperties = getSystemProperties( url );
                     ClusterAddressInfo clusterInfoRefreshed = createClusterAddressInfo( url,
-                                                                                        systemProperties );
+                        systemProperties );
 
                     GPUdbLogger.debug_with_info( "Current cluster info:   " + currClusterInfo.toString() );
                     GPUdbLogger.debug_with_info( "Refreshed cluster info: " + clusterInfoRefreshed.toString() );
@@ -2763,12 +2816,12 @@ public abstract class GPUdbBase {
                         // We'll move on to the next rank
                         keepPingingThisRank = false;
                         GPUdbLogger.debug_with_info( "Rank http server @ "
-                                                     + url.toString()
-                                                     + " did respond" );
+                            + url.toString()
+                            + " did respond" );
                     } else {
                         GPUdbLogger.debug_with_info( "Rank http server @ "
-                                                     + url.toString()
-                                                     + " did NOT respond" );
+                            + url.toString()
+                            + " did NOT respond" );
                         // Keep track of the fact that this rank's http server
                         // did NOT respond
                         wasSomeRankUnresponsive = true;
@@ -2777,14 +2830,14 @@ public abstract class GPUdbBase {
                         // pinging this rank until its http server comes up
                         try {
                             GPUdbLogger.debug_with_info( "Sleeping for "
-                                                         + (sleepInterval / 1000)
-                                                         + " seconds..." );
+                                + (sleepInterval / 1000)
+                                + " seconds..." );
                             Thread.sleep( sleepInterval );
                         } catch ( InterruptedException ex ) {
                             GPUdbLogger.debug_with_info( "Sleep interrupted; throwing exception: "
-                                                         + ex.getMessage() );
+                                + ex.getMessage() );
                             throw new GPUdbException( "Intra-cluster failover interrupted: "
-                                                      + ex.getMessage(), ex );
+                                + ex.getMessage(), ex );
                         }
                     }   // end if
                 }   // end inner while
@@ -2830,10 +2883,10 @@ public abstract class GPUdbBase {
             URL url = rankUrls.get( i );
             if ( isKineticaRunning( url ) ) {
                 GPUdbLogger.debug_with_info( "Rank http server @ " + url.toString()
-                                             + " did respond" );
+                    + " did respond" );
             } else {
                 GPUdbLogger.debug_with_info( "Rank http server @ " + url.toString()
-                                             + " did NOT respond" );
+                    + " did NOT respond" );
                 // Keep track of the fact that this rank's http server
                 // did NOT respond
                 wasSomeRankUnresponsive = true;
@@ -2868,10 +2921,10 @@ public abstract class GPUdbBase {
 
         URL currHeadRankUrl = currClusterInfo.getActiveHeadNodeUrl();
         GPUdbLogger.info( "Starting N+1 failover recovery for cluster "
-                          + "with head rank " + currHeadRankUrl.toString()
-                          + "; timeout is: "
-                          + (this.intraClusterFailoverTimeoutNS / 1000000000L)
-                          + " seconds (0 means infinite waiting)" );
+            + "with head rank " + currHeadRankUrl.toString()
+            + "; timeout is: "
+            + (this.intraClusterFailoverTimeoutNS / 1000000000L)
+            + " seconds (0 means infinite waiting)" );
 
         // Generate the list of the given cluster's rank-0 URL and worker
         // rank URLs
@@ -2961,7 +3014,7 @@ public abstract class GPUdbBase {
         // Try to get the new addresses for shuffled ranks from the
         // currently known ranks (whichever ones are still in place)
         GPUdbLogger.debug_with_info( "Before for loop; will attempt until hitting"
-                                     + " the timeout or all ranks are unresponsive" );
+            + " the timeout or all ranks are unresponsive" );
         int i = 0;
         while ( true ) {
             // Keep track of the iteration only for debug logging purpose
@@ -2989,12 +3042,12 @@ public abstract class GPUdbBase {
                     long currTime = System.nanoTime();
                     long elapsedTime = (currTime - startTime);
                     GPUdbLogger.info( "N+1 failover recovery elapsed time so far: "
-                                      + (elapsedTime / 1000000000L)
-                                      + " seconds" );
+                        + (elapsedTime / 1000000000L)
+                        + " seconds" );
                     if ( (this.intraClusterFailoverTimeoutNS != 0)
-                         && ( elapsedTime >= this.intraClusterFailoverTimeoutNS ) ) {
+                        && ( elapsedTime >= this.intraClusterFailoverTimeoutNS ) ) {
                         GPUdbLogger.debug_with_info( "Hit N+1 failover recovery timeout;"
-                                                     + " returning false" );
+                            + " returning false" );
                         return false;
                     }
 
@@ -3026,14 +3079,14 @@ public abstract class GPUdbBase {
                             // a certain amount of time before retrying status check
                             try {
                                 GPUdbLogger.debug_with_info( "Sleeping for "
-                                                             + (nPlusOneFailoverSleepIntervalLong / 1000)
-                                                             + " seconds..." );
+                                    + (nPlusOneFailoverSleepIntervalLong / 1000)
+                                    + " seconds..." );
                                 Thread.sleep( nPlusOneFailoverSleepIntervalLong );
                             } catch ( InterruptedException ex ) {
                                 GPUdbLogger.debug_with_info( "Sleep interrupted; throwing exception: "
-                                                             + ex.getMessage() );
+                                    + ex.getMessage() );
                                 throw new GPUdbException( "Intra-cluster failover interrupted: "
-                                                          + ex.getMessage(), ex );
+                                    + ex.getMessage(), ex );
                             }
                         } else if ( isSystemRunning( systemStatusInfo ) ) {
                             GPUdbLogger.debug_with_info( "System is running; getting sys props" );
@@ -3043,7 +3096,7 @@ public abstract class GPUdbBase {
                             // can't get it, skip to the next one
                             Map<String, String> systemProperties = getSystemProperties( url );
                             ClusterAddressInfo clusterInfoRefreshed = createClusterAddressInfo( url,
-                                                                                                systemProperties );
+                                systemProperties );
 
                             GPUdbLogger.debug_with_info( "Refreshed addresses: " + clusterInfoRefreshed.toString() );
                             GPUdbLogger.debug_with_info( "Current addresses:   " + currClusterInfo.toString() );
@@ -3053,9 +3106,9 @@ public abstract class GPUdbBase {
                                 // The addresses have remained the same; so we didn't
                                 // make any effective change
                                 GPUdbLogger.debug_with_info( "Refrehsed addresses the same as the old one at rank "
-                                                             + url.toString() + "; either no N+1 failover "
-                                                             + "happening or this rank "
-                                                             + "has stale information; moving to the next rank, if any.");
+                                    + url.toString() + "; either no N+1 failover "
+                                    + "happening or this rank "
+                                    + "has stale information; moving to the next rank, if any.");
                                 keepUsingThisRank = false;
 
                                 // Keep track of the fact that this rank gave
@@ -3077,13 +3130,13 @@ public abstract class GPUdbBase {
                             // we'll wait a certain amount of time before that)
                             try {
                                 GPUdbLogger.debug_with_info( "Sleeping for "
-                                                             + (nPlusOneFailoverSleepIntervalLong / 1000)
-                                                             + " seconds..." );
+                                    + (nPlusOneFailoverSleepIntervalLong / 1000)
+                                    + " seconds..." );
                                 Thread.sleep( nPlusOneFailoverSleepIntervalLong );
                             } catch ( InterruptedException ex ) {
                                 GPUdbLogger.debug_with_info( "Sleep interrupted; throwing exception" );
                                 throw new GPUdbException( "Intra-cluster failover interrupted: "
-                                                          + ex.getMessage(), ex );
+                                    + ex.getMessage(), ex );
                             }
                         }
                     } catch ( GPUdbUnauthorizedAccessException ex ) {
@@ -3091,9 +3144,9 @@ public abstract class GPUdbBase {
                         throw ex;
                     } catch ( GPUdbExitException ex ) {
                         GPUdbLogger.debug_with_info( "Caught GPUdb EXIT "
-                                                     + "exception; skipping "
-                                                     + "to next rank: "
-                                                     + ex.getMessage() );
+                            + "exception; skipping "
+                            + "to next rank: "
+                            + ex.getMessage() );
                         // Try the next URL, but keep track of the fact that this
                         // could not be connected to
                         keepUsingThisRank = false;
@@ -3115,8 +3168,8 @@ public abstract class GPUdbBase {
                 // There is no need to change any addresses, nor is there any
                 // need to ping all the ranks
                 GPUdbLogger.debug_with_info( "All ranks claim the addresses are "
-                                             +" the same; assuming no N+1 event "
-                                             + "happening; returning true");
+                    +" the same; assuming no N+1 event "
+                    + "happening; returning true");
                 return true;
             }
 
@@ -3126,7 +3179,7 @@ public abstract class GPUdbBase {
             // enough for us to give up.
             if ( numLeaderlessRanks >= (rankUrls.size() - 1) ) {
                 GPUdbLogger.debug_with_info( "All but one rank are leaderless; "
-                                             + "returning false" );
+                    + "returning false" );
                 return false; // we're giving up
             }
 
@@ -3136,29 +3189,29 @@ public abstract class GPUdbBase {
                 // There is no need to change any addresses, nor is there any
                 // need to ping all the ranks
                 GPUdbLogger.debug_with_info( "All ranks were UNresponsive; "
-                                             +" ending stage 1 of N+1 failover "
-                                             + "recovery");
+                    +" ending stage 1 of N+1 failover "
+                    + "recovery");
                 break; // out of the while loop
             }
 
             // Sleep a little before trying all the ranks again
             try {
                 GPUdbLogger.debug_with_info( "Sleeping for "
-                                             + (nPlusOneFailoverSleepIntervalShort / 1000)
-                                             + " seconds before trying all the ranks again" );
+                    + (nPlusOneFailoverSleepIntervalShort / 1000)
+                    + " seconds before trying all the ranks again" );
                 Thread.sleep( nPlusOneFailoverSleepIntervalShort );
             } catch ( InterruptedException ex ) {
                 GPUdbLogger.debug_with_info( "Sleep interrupted; throwing exception" );
                 throw new GPUdbException( "Intra-cluster failover interrupted: "
-                                          + ex.getMessage(), ex );
+                    + ex.getMessage(), ex );
             }
         }   // end while (stage 1)
 
         GPUdbLogger.debug_with_info( "N+1 failover recovery stage 1 done; "
-                                     + "at last attempt, # rank with no response: "
-                                     + numRanksNoResponse
-                                     + "; # leaderless ranks: "
-                                     + numLeaderlessRanks );
+            + "at last attempt, # rank with no response: "
+            + numRanksNoResponse
+            + "; # leaderless ranks: "
+            + numLeaderlessRanks );
 
         // If we get to this spot, then all the known ranks have failed to give
         // us the current state of the cluster.  Now, we must try to find the new
@@ -3191,17 +3244,17 @@ public abstract class GPUdbBase {
             // current head rank URL, but use the other hostname/IP address
             try {
                 URL url = new URL( currHeadRankUrl.getProtocol(),
-                                   host,
-                                   currHeadRankUrl.getPort(),
-                                   currHeadRankUrl.getFile() );
+                    host,
+                    currHeadRankUrl.getPort(),
+                    currHeadRankUrl.getFile() );
                 GPUdbLogger.debug_with_info( "Created potential head rank url: "
-                                             + url.toString() );
+                    + url.toString() );
                 // Won't be of any use if we don't add it to the list! :-)
                 headRankUrls.add( url );
             } catch ( MalformedURLException ex ) {
                 throw new GPUdbException( "Could not form a valid URL for "
-                                          + "possible head rank at host '"
-                                          + host + "': " + ex.getMessage(), ex );
+                    + "possible head rank at host '"
+                    + host + "': " + ex.getMessage(), ex );
             }
         }
         GPUdbLogger.debug_with_info( "Head rank urls for all hosts: " + java.util.Arrays.toString( headRankUrls.toArray() ) );
@@ -3231,12 +3284,12 @@ public abstract class GPUdbBase {
                 long currTime = System.nanoTime();
                 long elapsedTime = (currTime - startTime);
                 GPUdbLogger.info( "N+1 failover recovery elapsed time so far: "
-                                  + (elapsedTime / 1000000000L)
-                                  + " seconds (and trying...)" );
+                    + (elapsedTime / 1000000000L)
+                    + " seconds (and trying...)" );
                 if ( (this.intraClusterFailoverTimeoutNS != 0)
-                     && ( elapsedTime >= this.intraClusterFailoverTimeoutNS ) ) {
+                    && ( elapsedTime >= this.intraClusterFailoverTimeoutNS ) ) {
                     GPUdbLogger.debug_with_info( "Hit N+1 failover recovery timeout;"
-                                                 + " returning false" );
+                        + " returning false" );
                     return false;
                 }
 
@@ -3262,13 +3315,13 @@ public abstract class GPUdbBase {
                         // a certain amount of time before retrying status check
                         try {
                             GPUdbLogger.debug_with_info( "Sleeping for "
-                                                         + (nPlusOneFailoverSleepIntervalLong / 1000)
-                                                         + " seconds..." );
+                                + (nPlusOneFailoverSleepIntervalLong / 1000)
+                                + " seconds..." );
                             Thread.sleep( nPlusOneFailoverSleepIntervalLong );
                         } catch ( InterruptedException ex ) {
                             GPUdbLogger.debug_with_info( "Sleep interrupted; throwing exception" );
                             throw new GPUdbException( "Intra-cluster failover interrupted: "
-                                                      + ex.getMessage(), ex );
+                                + ex.getMessage(), ex );
                         }
                     } else if ( isSystemRunning( systemStatusInfo ) ) {
                         // System is back up; re-parse the URLs for this cluster
@@ -3278,7 +3331,7 @@ public abstract class GPUdbBase {
                         // can't get it, skip to the next one
                         Map<String, String> systemProperties = getSystemProperties( potentialHeadRankUrl );
                         ClusterAddressInfo clusterInfoRefreshed = createClusterAddressInfo( potentialHeadRankUrl,
-                                                                                            systemProperties );
+                            systemProperties );
 
                         GPUdbLogger.debug_with_info( "Refreshed addresses: " + clusterInfoRefreshed.toString() );
                         GPUdbLogger.debug_with_info( "Current addresses:   " + currClusterInfo.toString() );
@@ -3288,8 +3341,8 @@ public abstract class GPUdbBase {
                             // The addresses have remained the same; so we didn't
                             // make any effective change
                             GPUdbLogger.debug_with_info( "Refrehsed addresses are the same as the old ones at rank-0 "
-                                                         + potentialHeadRankUrl.toString() + "; possibly no N+1 failover "
-                                                         + "actually happened (maybe a network glitch?)");
+                                + potentialHeadRankUrl.toString() + "; possibly no N+1 failover "
+                                + "actually happened (maybe a network glitch?)");
 
                             // Verify that the ranks are actually up and ready
                             GPUdbLogger.debug_with_info( "Verifying that the ranks are ready...");
@@ -3333,14 +3386,14 @@ public abstract class GPUdbBase {
                 // Sleep a second before retrying
                 try {
                     GPUdbLogger.debug_with_info( "Sleeping for "
-                                                 + (nPlusOneFailoverSleepIntervalShort / 1000)
-                                                 + " seconds..." );
+                        + (nPlusOneFailoverSleepIntervalShort / 1000)
+                        + " seconds..." );
                     Thread.sleep( nPlusOneFailoverSleepIntervalShort );
                 } catch ( InterruptedException ex ) {
                     GPUdbLogger.debug_with_info( "Sleep interrupted; throwing exception: "
-                                                 + ex.getMessage() );
+                        + ex.getMessage() );
                     throw new GPUdbException( "Intra-cluster failover interrupted: "
-                                              + ex.getMessage(), ex );
+                        + ex.getMessage(), ex );
                 }
             }   // end inner while
 
@@ -3376,15 +3429,15 @@ public abstract class GPUdbBase {
      */
     protected URL switchURL(URL oldURL, int numClusterSwitches)
         throws GPUdbFailoverDisabledException,
-               GPUdbHAUnavailableException,
-               GPUdbUnauthorizedAccessException {
+        GPUdbHAUnavailableException,
+        GPUdbUnauthorizedAccessException {
         if ( this.disableFailover ) {
             GPUdbLogger.debug_with_info( "Failover is disabled; throwing exception" );
             throw new GPUdbFailoverDisabledException( "Failover is disabled!" );
         }
 
         GPUdbLogger.debug_with_info( "Switching from URL: " + getURL().toString()
-                                     + "; old URL: " + oldURL.toString() );
+            + "; old URL: " + oldURL.toString() );
 
         synchronized (urlLock) {
             // If there is only one URL, then we can't switch URLs
@@ -3403,10 +3456,10 @@ public abstract class GPUdbBase {
                     } else {
                         GPUdbLogger.debug_with_info( "N+1 failover recovery failed; throwing error" );
                         throw new GPUdbHAUnavailableException( "N+1 failover at cluster with (possibly stale) "
-                                                               + "rank-0 URL "
-                                                               + getURL().toString()
-                                                               + " did not complete successfully "
-                                                               + "( no backup clusters available to fall back on)" );
+                            + "rank-0 URL "
+                            + getURL().toString()
+                            + " did not complete successfully "
+                            + "( no backup clusters available to fall back on)" );
                     }
                 } catch ( GPUdbHAUnavailableException ex ) {
                     throw ex;
@@ -3415,15 +3468,15 @@ public abstract class GPUdbBase {
                     throw ex;
                 } catch ( GPUdbException ex ) {
                     GPUdbLogger.debug_with_info( "N+1 failover recovery had exception: "
-                                                 + ex.getMessage() );
+                        + ex.getMessage() );
                     throw new GPUdbHAUnavailableException( "N+1 failover at cluster with (possibly stale) "
-                                                           + "rank-0 URL "
-                                                           + getURL().toString()
-                                                           + " did not complete successfully ("
-                                                           + "no backup clusters available to fall back on);"
-                                                           + " error: "
-                                                           + ex.getMessage(),
-                                                           ex );
+                        + "rank-0 URL "
+                        + getURL().toString()
+                        + " did not complete successfully ("
+                        + "no backup clusters available to fall back on);"
+                        + " error: "
+                        + ex.getMessage(),
+                        ex );
                 }
             }
 
@@ -3433,22 +3486,22 @@ public abstract class GPUdbBase {
             // Check if the client has switched clusters more than the number
             // of clusters available in the HA ring
             boolean haveSwitchedClustersAcrossTheRing = ( countClusterSwitchesSinceInvocation
-                                                          >= getHARingSize() );
+                >= getHARingSize() );
             GPUdbLogger.debug_with_info( "Ring size is bigger than 1; " + getHARingSize()
-                                         + " countClusterSwitchesSinceInvocation: "
-                                         + countClusterSwitchesSinceInvocation
-                                         + " haveSwitchedClustersAcrossTheRing "
-                                         + haveSwitchedClustersAcrossTheRing);
+                + " countClusterSwitchesSinceInvocation: "
+                + countClusterSwitchesSinceInvocation
+                + " haveSwitchedClustersAcrossTheRing "
+                + haveSwitchedClustersAcrossTheRing);
             if ( haveSwitchedClustersAcrossTheRing ) {
                 throw new GPUdbHAUnavailableException(" (all GPUdb clusters with "
-                                                      + "head nodes [" + getURLs().toString()
-                                                      + "] returned error)");
+                    + "head nodes [" + getURLs().toString()
+                    + "] returned error)");
             }
 
             // Check if another thread beat us to switching the URL
             GPUdbLogger.debug_with_info( "Current URL: " + getURL().toString() + " old URL: " + oldURL.toString() );
             if ( !getURL().equals( oldURL )
-                 && (countClusterSwitchesSinceInvocation > 0) ) {
+                && (countClusterSwitchesSinceInvocation > 0) ) {
                 GPUdbLogger.debug_with_info( "Switched to URL: " + getURL().toString() );
                 // Another thread must have already switched the URL; nothing
                 // to do
@@ -3477,23 +3530,23 @@ public abstract class GPUdbBase {
             // let the caller know that we've circled back
             if ( getURL().equals( oldURL ) ) {
                 GPUdbLogger.debug_with_info( "Current URL: " +  getURL()
-                                             + " is the same as the old URL: "
-                                             + oldURL.toString()
-                                             + "; randomizing URLs and throwing exception" );
+                    + " is the same as the old URL: "
+                    + oldURL.toString()
+                    + "; randomizing URLs and throwing exception" );
                 // Re-shuffle and set the index counter to zero
                 randomizeURLs();
 
                 // Let the user know that we've circled back
                 throw new GPUdbHAUnavailableException(" (all GPUdb clusters with "
-                                                      + "head nodes [" + getURLs().toString()
-                                                      + "] returned error)");
+                    + "head nodes [" + getURLs().toString()
+                    + "] returned error)");
             }
 
             // Haven't circled back to the old URL; so return the new one
             GPUdbLogger.warn( "Switched to URL: " +  getURL().toString()
-                              + " (NOT the same as the old URL: "
-                              + oldURL.toString()
-                              + ")" );
+                + " (NOT the same as the old URL: "
+                + oldURL.toString()
+                + ")" );
             return getURL();
         }
     }  // end switchURL
@@ -3506,8 +3559,8 @@ public abstract class GPUdbBase {
      */
     private URL switchHmURL(URL oldURL, int numClusterSwitches)
         throws GPUdbFailoverDisabledException,
-               GPUdbHAUnavailableException,
-               GPUdbUnauthorizedAccessException {
+        GPUdbHAUnavailableException,
+        GPUdbUnauthorizedAccessException {
         if ( this.disableFailover ) {
             GPUdbLogger.debug_with_info( "Failover is disabled; throwing exception" );
             throw new GPUdbFailoverDisabledException( "Failover is disabled!" );
@@ -3526,18 +3579,18 @@ public abstract class GPUdbBase {
                     GPUdbLogger.debug_with_info( "currClusterIndex " + currClusterIndex + "; attempting intra cluster failover...");
                     if ( doIntraClusterFailover( currClusterIndex ) ) {
                         GPUdbLogger.debug_with_info( "Intra cluster failover succeeded; "
-                                                     + "switched to HM URL: "
-                                                     + getHmURL().toString());
+                            + "switched to HM URL: "
+                            + getHmURL().toString());
                         // We have updated all the addresses; return the
                         // current/new head rank URL
                         return getHmURL();
                     } else {
                         throw new GPUdbHAUnavailableException( "N+1 failover at cluster with (possibly stale) "
-                                                               + "host manager URL "
-                                                               + getHmURL().toString()
-                                                               + " did not complete successfully "
-                                                               + "( no backup clusters available "
-                                                               + "to fall back on)" );
+                            + "host manager URL "
+                            + getHmURL().toString()
+                            + " did not complete successfully "
+                            + "( no backup clusters available "
+                            + "to fall back on)" );
                     }
                 } catch ( GPUdbHAUnavailableException ex ) {
                     throw ex;
@@ -3546,10 +3599,10 @@ public abstract class GPUdbBase {
                     throw ex;
                 } catch ( GPUdbException ex ) {
                     throw new GPUdbHAUnavailableException( "N+1 failover at cluster with (possibly stale) "
-                                                           + "host manager URL " + getHmURL().toString()
-                                                           + " did not complete successfully ("
-                                                           + "no backup clusters available to fall back on);"
-                                                           + " error: " + ex.getMessage(), ex );
+                        + "host manager URL " + getHmURL().toString()
+                        + " did not complete successfully ("
+                        + "no backup clusters available to fall back on);"
+                        + " error: " + ex.getMessage(), ex );
                 }
             }
 
@@ -3559,25 +3612,25 @@ public abstract class GPUdbBase {
             // Check if the client has switched clusters more than the number
             // of clusters available in the HA ring
             boolean haveSwitchedClustersAcrossTheRing = ( countClusterSwitchesSinceInvocation
-                                                          >= getHARingSize() );
+                >= getHARingSize() );
             GPUdbLogger.debug_with_info( "Ring size is bigger than 1; " + getHARingSize()
-                                         + " countClusterSwitchesSinceInvocation: "
-                                         + countClusterSwitchesSinceInvocation
-                                         + " haveSwitchedClustersAcrossTheRing "
-                                         + haveSwitchedClustersAcrossTheRing );
+                + " countClusterSwitchesSinceInvocation: "
+                + countClusterSwitchesSinceInvocation
+                + " haveSwitchedClustersAcrossTheRing "
+                + haveSwitchedClustersAcrossTheRing );
             if ( haveSwitchedClustersAcrossTheRing ) {
                 throw new GPUdbHAUnavailableException(" (all host managers at GPUdb clusters "
-                                                      + "at [" + getHmURLs().toString()
-                                                      + "] returned error)");
+                    + "at [" + getHmURLs().toString()
+                    + "] returned error)");
             }
 
             // Check if another thread beat us to switching the URL
             GPUdbLogger.debug_with_info( "Current HM URL: " + getHmURL().toString()
-                                         + "; old URL: " + oldURL.toString() );
+                + "; old URL: " + oldURL.toString() );
             if ( !getHmURL().equals( oldURL )
-                 && (countClusterSwitchesSinceInvocation > 0) ) {
+                && (countClusterSwitchesSinceInvocation > 0) ) {
                 GPUdbLogger.debug_with_info( "Switched to HM URL: "
-                                             + getHmURL().toString() );
+                    + getHmURL().toString() );
                 // Another thread must have already switched the URL; nothing
                 // to do
                 return getHmURL();
@@ -3588,7 +3641,7 @@ public abstract class GPUdbBase {
             // In such a case, update the addresses.
             if ( updateClusterAddresses( getCurrentClusterIndex() ) ) {
                 GPUdbLogger.debug_with_info( "Updated cluster address; switched to HM URL: "
-                                             +  getHmURL().toString() );
+                    +  getHmURL().toString() );
                 // We actually did update/change the cluster addresses, so just
                 // return the fresh head-rank URL so that we can re-try
                 // endpoint submission
@@ -3603,23 +3656,23 @@ public abstract class GPUdbBase {
             // let the caller know that we've circled back
             if ( getHmURL().equals( oldURL ) ) {
                 GPUdbLogger.debug_with_info( "Current HM URL: " +  getHmURL()
-                                             + " is the same as the old HM URL: "
-                                             + oldURL.toString()
-                                             + "; randomizing URLs and throwing exception" );
+                    + " is the same as the old HM URL: "
+                    + oldURL.toString()
+                    + "; randomizing URLs and throwing exception" );
                 // Re-shuffle and set the index counter to zero
                 randomizeURLs();
 
                 // Let the user know that we've circled back
                 throw new GPUdbHAUnavailableException(" (all host managers at GPUdb clusters "
-                                                      + "at [" + getHmURLs().toString()
-                                                      + "] returned error)");
+                    + "at [" + getHmURLs().toString()
+                    + "] returned error)");
             }
 
             // Haven't circled back to the old URL; so return the new one
             GPUdbLogger.warn( "Switched to HM URL: " +  getHmURL().toString()
-                              + " (NOT the same as the old HM URL: "
-                              + oldURL.toString()
-                              + ")" );
+                + " (NOT the same as the old HM URL: "
+                + oldURL.toString()
+                + ")" );
             return getHmURL();
         }
     }   // end switchHmUrl
@@ -3650,7 +3703,7 @@ public abstract class GPUdbBase {
         // Verify that a sensible timeout is given
         if ( timeout < 0 ) {
             throw new GPUdbException( "Positive timeout value required, given "
-                                      + timeout );
+                + timeout );
         }
 
         HttpPost connection = new HttpPost( url.toURI() );
@@ -3712,7 +3765,7 @@ public abstract class GPUdbBase {
         // Set the timeout
         if ( timeout < 0 ) {
             throw new GPUdbException( "Positive timeout value required, given "
-                                      + timeout );
+                + timeout );
         }
         connection.setConnectTimeout( timeout );
         connection.setReadTimeout( timeout );
@@ -3765,7 +3818,7 @@ public abstract class GPUdbBase {
 
         // Did not find any cluster that uses/has the given hostname/IP address
         GPUdbLogger.debug_with_info( "Did not find any cluster with hostname "
-                                     + hostName + "; returning -1");
+            + hostName + "; returning -1");
         return -1;
     }
 
@@ -3779,16 +3832,16 @@ public abstract class GPUdbBase {
         ShowSystemStatusResponse statusResponse = null;
         try {
             GPUdbLogger.debug_with_info( "Getting system status from: "
-                                         + url.toString());
+                + url.toString());
             statusResponse = submitRequest( appendPathToURL( url,
-                                                             ENDPOINT_SHOW_SYSTEM_STATUS ),
-                                            new ShowSystemStatusRequest(),
-                                            new ShowSystemStatusResponse(),
-                                            false,
-                                            DEFAULT_INTERNAL_ENDPOINT_CALL_TIMEOUT );
+                    ENDPOINT_SHOW_SYSTEM_STATUS ),
+                new ShowSystemStatusRequest(),
+                new ShowSystemStatusResponse(),
+                false,
+                DEFAULT_INTERNAL_ENDPOINT_CALL_TIMEOUT );
         } catch (MalformedURLException ex) {
             throw new GPUdbException( "Error forming URL: " + ex.getMessage(),
-                                      ex );
+                ex );
         }
 
         // Get the 'system' entry in the status response and parse it
@@ -3802,9 +3855,9 @@ public abstract class GPUdbBase {
                 systemStatus = this.JSON_MAPPER.readTree( systemStatusStr );
             } catch ( IOException ex ) {
                 throw new GPUdbException( "Could not parse /show/system/status "
-                                          + "entry for 'system': "
-                                          + ex.getMessage(),
-                                          ex );
+                    + "entry for 'system': "
+                    + ex.getMessage(),
+                    ex );
             }
         }
 
@@ -3820,19 +3873,19 @@ public abstract class GPUdbBase {
         ShowSystemPropertiesResponse response = null;
         try {
             response = submitRequest( appendPathToURL( url,
-                                                       ENDPOINT_SHOW_SYSTEM_PROPERTIES ),
-                                      new ShowSystemPropertiesRequest(),
-                                      new ShowSystemPropertiesResponse(),
-                                      false );
+                    ENDPOINT_SHOW_SYSTEM_PROPERTIES ),
+                new ShowSystemPropertiesRequest(),
+                new ShowSystemPropertiesResponse(),
+                false );
         } catch (MalformedURLException ex) {
             throw new GPUdbException( "Error forming URL: " + ex.getMessage(),
-                                      ex );
+                ex );
         }
 
         // Get the property map from the response and return it
         if ( response != null ) {
             GPUdbLogger.debug_with_info( "Got system properties from: "
-                                         + url.toString() );
+                + url.toString() );
             Map<String, String> systemProperties = response.getPropertyMap();
 
             // Is HTTPD being used (helps in figuring out the host manager URL
@@ -3840,7 +3893,7 @@ public abstract class GPUdbBase {
 
             // Figure out if we're using HTTPD
             if ( (is_httpd_enabled_str != null)
-                 && (is_httpd_enabled_str.compareToIgnoreCase( "true" ) == 0 ) ) {
+                && (is_httpd_enabled_str.compareToIgnoreCase( "true" ) == 0 ) ) {
                 this.useHttpd = true;
             }
 
@@ -3863,7 +3916,7 @@ public abstract class GPUdbBase {
             GPUdbLogger.debug_with_info( "Got status: " + clusterOpRunningVal.toString() );
 
             if ( ( clusterOpRunningVal != null)
-                 && SHOW_SYSTEM_STATUS_RESPONSE_TRUE.equals( clusterOpRunningVal.textValue() ) ) {
+                && SHOW_SYSTEM_STATUS_RESPONSE_TRUE.equals( clusterOpRunningVal.textValue() ) ) {
                 GPUdbLogger.debug_with_info( "Returning true");
                 return true;
             }
@@ -3888,7 +3941,7 @@ public abstract class GPUdbBase {
             GPUdbLogger.debug_with_info( "Got status: " + clusterOpStatusVal.toString() );
 
             if ( ( clusterOpStatusVal != null)
-                 && SHOW_SYSTEM_STATUS_RESPONSE_CLUSTER_IRRECOVERABLE.equals( clusterOpStatusVal.textValue() ) ) {
+                && SHOW_SYSTEM_STATUS_RESPONSE_CLUSTER_IRRECOVERABLE.equals( clusterOpStatusVal.textValue() ) ) {
                 GPUdbLogger.debug_with_info( "Returning true");
                 return true;
             }
@@ -3913,7 +3966,7 @@ public abstract class GPUdbBase {
             GPUdbLogger.debug_with_info( "Got status: " + systemStatus.toString() );
 
             if ( ( systemStatus != null)
-                 && SHOW_SYSTEM_STATUS_RESPONSE_LEADERLESS.equals( systemStatus.textValue() ) ) {
+                && SHOW_SYSTEM_STATUS_RESPONSE_LEADERLESS.equals( systemStatus.textValue() ) ) {
                 GPUdbLogger.debug_with_info( "Returning true");
                 return true;
             }
@@ -3938,7 +3991,7 @@ public abstract class GPUdbBase {
             GPUdbLogger.debug_with_info( "Got status: " + systemStatus.toString() );
 
             if ( ( systemStatus != null)
-                 && SHOW_SYSTEM_STATUS_RESPONSE_RUNNING.equals( systemStatus.textValue() ) ) {
+                && SHOW_SYSTEM_STATUS_RESPONSE_RUNNING.equals( systemStatus.textValue() ) ) {
                 GPUdbLogger.debug_with_info( "Returning true");
                 return true;
             }
@@ -3964,14 +4017,14 @@ public abstract class GPUdbBase {
             GPUdbLogger.debug_with_info( url.toString()  + " got status: " + systemStatus.toString() );
 
             if ( ( systemStatus != null)
-                 && SHOW_SYSTEM_STATUS_RESPONSE_RUNNING.equals( systemStatus.textValue() ) ) {
+                && SHOW_SYSTEM_STATUS_RESPONSE_RUNNING.equals( systemStatus.textValue() ) ) {
                 GPUdbLogger.debug_with_info( url.toString()  + " returning true");
                 return true;
             }
         } catch ( Exception ex ) {
             // Any error means we don't know whether the system is running
             GPUdbLogger.debug_with_info( url.toString()
-                                         + " caught exception " + ex.toString());
+                + " caught exception " + ex.toString());
         }
 
         GPUdbLogger.debug_with_info( url.toString()  + " returning false");
@@ -3998,7 +4051,7 @@ public abstract class GPUdbBase {
         String headFailover = systemProperties.get( SYSTEM_PROPERTIES_RESPONSE_HEAD_FAILOVER );
         if (headFailover == null) {
             throw new GPUdbException( "Missing value for "
-                                      + SYSTEM_PROPERTIES_RESPONSE_HEAD_FAILOVER );
+                + SYSTEM_PROPERTIES_RESPONSE_HEAD_FAILOVER );
         }
 
         // Check if head failover is turned on
@@ -4010,7 +4063,7 @@ public abstract class GPUdbBase {
         String workerFailover = systemProperties.get( SYSTEM_PROPERTIES_RESPONSE_WORKER_FAILOVER );
         if (workerFailover == null) {
             throw new GPUdbException( "Missing value for "
-                                      + SYSTEM_PROPERTIES_RESPONSE_WORKER_FAILOVER );
+                + SYSTEM_PROPERTIES_RESPONSE_WORKER_FAILOVER );
         }
 
         // Check if worker failover is turned on
@@ -4019,7 +4072,7 @@ public abstract class GPUdbBase {
         }
 
         GPUdbLogger.debug_with_info( "isIntraClusterFailoverEnabled: "
-                                     + isIntraClusterFailoverEnabled);
+            + isIntraClusterFailoverEnabled);
         return isIntraClusterFailoverEnabled;
     }  // isIntraClusterFailoverEnabled
 
@@ -4038,7 +4091,7 @@ public abstract class GPUdbBase {
     private List<URL> getRankURLs( Map<String, String> systemProperties,
                                    Pattern hostnameRegex )
         throws GPUdbHostnameRegexFailureException,
-               GPUdbException {
+        GPUdbException {
 
         // Get the protocol being used
         String protocol = "http";
@@ -4046,7 +4099,7 @@ public abstract class GPUdbBase {
 
         // Check if we're to use HTTPS
         if ( (propertyVal != null)
-             && propertyVal.equals( SYSTEM_PROPERTIES_RESPONSE_TRUE ) ) {
+            && propertyVal.equals( SYSTEM_PROPERTIES_RESPONSE_TRUE ) ) {
             protocol = "https";
         }
 
@@ -4054,10 +4107,10 @@ public abstract class GPUdbBase {
 
         propertyVal = systemProperties.get( SYSTEM_PROPERTIES_RESPONSE_SERVER_URLS );
         if ( (propertyVal != null)
-             && !propertyVal.isEmpty() ){
+            && !propertyVal.isEmpty() ){
             GPUdbLogger.debug_with_info( "Got property '"
-                                         + SYSTEM_PROPERTIES_RESPONSE_SERVER_URLS
-                                         + "' value: " + propertyVal );
+                + SYSTEM_PROPERTIES_RESPONSE_SERVER_URLS
+                + "' value: " + propertyVal );
 
             // Get the URL for each of the ranks
             // ---------------------------------
@@ -4095,16 +4148,16 @@ public abstract class GPUdbBase {
                         // Check if this URL matches the given regex
                         doAdd = hostnameRegex.matcher( url.getHost() ).matches();
                         GPUdbLogger.debug_with_info( "Does rank URL " + url.toString()
-                                                     + " match hostname regex '"
-                                                     + hostnameRegex.toString()
-                                                     + "' with host '"
-                                                     + url.getHost() + "'?: "
-                                                     + doAdd );
+                            + " match hostname regex '"
+                            + hostnameRegex.toString()
+                            + "' with host '"
+                            + url.getHost() + "'?: "
+                            + doAdd );
                     } else {
                         // No regex is given, so we'll take the first one
                         GPUdbLogger.debug_with_info( "No hostname regex given; "
-                                                     + "adding rank url: "
-                                                     + url.toString() );
+                            + "adding rank url: "
+                            + url.toString() );
                         doAdd = true;
                     }
 
@@ -4122,10 +4175,10 @@ public abstract class GPUdbBase {
                         // The reason we don't have a URL is because it didn't
                         // match the given rege
                         throw new GPUdbHostnameRegexFailureException( "No matching "
-                                                                      + "IP/hostname found for worker "
-                                                                      + i + " (given hostname regex "
-                                                                      + hostnameRegex.toString()
-                                                                      + ")");
+                            + "IP/hostname found for worker "
+                            + i + " (given hostname regex "
+                            + hostnameRegex.toString()
+                            + ")");
                     }
                     // We couldn't find it for some other reason
                     throw new GPUdbException("No matching IP/hostname found for worker " + i + ".");
@@ -4133,9 +4186,9 @@ public abstract class GPUdbBase {
             }
         } else {
             GPUdbLogger.debug_with_info( "No entry for '"
-                                         + SYSTEM_PROPERTIES_RESPONSE_SERVER_URLS
-                                         + "' in " + ENDPOINT_SHOW_SYSTEM_PROPERTIES
-                                         + " response; returning empty list") ;
+                + SYSTEM_PROPERTIES_RESPONSE_SERVER_URLS
+                + "' in " + ENDPOINT_SHOW_SYSTEM_PROPERTIES
+                + " response; returning empty list") ;
         }
 
         return rankURLs;
@@ -4157,7 +4210,7 @@ public abstract class GPUdbBase {
         String hmPortStr = systemProperties.get( SYSTEM_PROPERTIES_RESPONSE_HM_PORT );
         if (hmPortStr == null) {
             throw new GPUdbException( "Missing value for "
-                                      + SYSTEM_PROPERTIES_RESPONSE_HM_PORT );
+                + SYSTEM_PROPERTIES_RESPONSE_HM_PORT );
         }
 
         int hmPort;
@@ -4165,8 +4218,8 @@ public abstract class GPUdbBase {
             hmPort = Integer.parseInt( hmPortStr, 10 );
         } catch ( NumberFormatException ex ) {
             throw new GPUdbException( "Unparsable entry for '"
-                                      + SYSTEM_PROPERTIES_RESPONSE_HM_PORT
-                                      + "' (" + hmPortStr + "); need an integer" );
+                + SYSTEM_PROPERTIES_RESPONSE_HM_PORT
+                + "' (" + hmPortStr + "); need an integer" );
         }
         return hmPort;
     }  // getHostManagerPortFromProperties
@@ -4191,21 +4244,21 @@ public abstract class GPUdbBase {
     private Set<String> getHostNamesFromSystemProperties( Map<String, String> systemProperties,
                                                           Pattern hostnameRegex )
         throws GPUdbHostnameRegexFailureException,
-               GPUdbException {
+        GPUdbException {
 
         // Get the total number of hosts/machines in the cluster
         String numHostsStr = systemProperties.get( SYSTEM_PROPERTIES_RESPONSE_NUM_HOSTS );
         if (numHostsStr == null) {
             throw new GPUdbException( "Missing value for "
-                                      + SYSTEM_PROPERTIES_RESPONSE_NUM_HOSTS );
+                + SYSTEM_PROPERTIES_RESPONSE_NUM_HOSTS );
         }
         int numHosts;
         try {
             numHosts = Integer.parseInt( numHostsStr, 10 );
         } catch ( NumberFormatException ex ) {
             throw new GPUdbException( "Unparsable entry for '"
-                                      + SYSTEM_PROPERTIES_RESPONSE_NUM_HOSTS
-                                      + "' (" + numHostsStr + "); need an integer" );
+                + SYSTEM_PROPERTIES_RESPONSE_NUM_HOSTS
+                + "' (" + numHostsStr + "); need an integer" );
         }
 
 
@@ -4220,8 +4273,8 @@ public abstract class GPUdbBase {
             String hostnameStr = systemProperties.get( hostnameKey );
             if (hostnameStr == null) {
                 throw new GPUdbException( "Missing value for "
-                                          + i + "th hostname '"
-                                          + hostnameKey + "'" );
+                    + i + "th hostname '"
+                    + hostnameKey + "'" );
             }
 
             // Each host can have multiple hostnames associated with it
@@ -4249,9 +4302,9 @@ public abstract class GPUdbBase {
                     // Check if this hostname matches the regex
                     doAdd = hostnameRegex.matcher( host ).matches();
                     GPUdbLogger.debug_with_info( "Does hostname " + host
-                                                 + " match hostname regex '"
-                                                 + hostnameRegex.toString()
-                                                 + "'?: " + doAdd );
+                        + " match hostname regex '"
+                        + hostnameRegex.toString()
+                        + "'?: " + doAdd );
                 } else {
                     // No regex given, so take the first one
                     doAdd = true;
@@ -4271,9 +4324,9 @@ public abstract class GPUdbBase {
                     // The reason we don't have a URL is because it didn't
                     // match the given reges
                     throw new GPUdbHostnameRegexFailureException( "No matching hostname found for host #"
-                                                                  + i + " (given hostname regex "
-                                                                  + hostnameRegex.toString()
-                                                                  + ")" );
+                        + i + " (given hostname regex "
+                        + hostnameRegex.toString()
+                        + ")" );
                 }
                 throw new GPUdbException("No matching hostname found for host #" + i + ".");
             }
@@ -4297,7 +4350,7 @@ public abstract class GPUdbBase {
     private ClusterAddressInfo createClusterAddressInfo( URL url,
                                                          Map<String, String> systemProperties )
         throws GPUdbHostnameRegexFailureException,
-               GPUdbException {
+        GPUdbException {
 
         // Figure out if this cluster has N+1 failover enabled
         boolean isIntraClusterFailoverEnabled = isIntraClusterFailoverEnabled( systemProperties );
@@ -4310,41 +4363,41 @@ public abstract class GPUdbBase {
         // Get the head node URL and keep it separately
         if ( !rankURLs.isEmpty() ) {
             GPUdbLogger.debug_with_info( "Got rank urls (including rank-0): "
-                                         + java.util.Arrays.toString( rankURLs.toArray() ) );
+                + java.util.Arrays.toString( rankURLs.toArray() ) );
             activeHeadNodeUrl = rankURLs.remove( 0 );
         } else {
             activeHeadNodeUrl = url;
             GPUdbLogger.debug_with_info( "No worker rank urls; using rank-0: "
-                                         + url.toString() );
+                + url.toString() );
         }
 
         // Get hostnames for all the nodes/machines in the cluster
         Set<String> clusterHostnames = getHostNamesFromSystemProperties( systemProperties,
-                                                                         hostnameRegex );
+            hostnameRegex );
 
         // Create the host manager URL
         URL hostManagerUrl;
         try {
             // Create the host manager URL using the user given (or default) port
             if ( ( this.useHttpd == true )
-                 && !activeHeadNodeUrl.getPath().isEmpty() ) {
+                && !activeHeadNodeUrl.getPath().isEmpty() ) {
                 // We're using HTTPD, so use the appropriate URL
                 // (likely, http[s]://hostname_or_IP:port/gpudb-host-manager)
                 // Also, use the default httpd port (8082, usually)
                 hostManagerUrl = new URL( activeHeadNodeUrl.getProtocol(),
-                                          activeHeadNodeUrl.getHost(),
-                                          // the port will be the same as the
-                                          // head rank's; we'll just use a
-                                          // different path
-                                          activeHeadNodeUrl.getPort(),
-                                          "/gpudb-host-manager" );
+                    activeHeadNodeUrl.getHost(),
+                    // the port will be the same as the
+                    // head rank's; we'll just use a
+                    // different path
+                    activeHeadNodeUrl.getPort(),
+                    "/gpudb-host-manager" );
             } else {
                 // The host manager URL shouldn't use any path and
                 // use the host manager port
                 hostManagerUrl = new URL( activeHeadNodeUrl.getProtocol(),
-                                          activeHeadNodeUrl.getHost(),
-                                          this.hostManagerPort,
-                                          "" );
+                    activeHeadNodeUrl.getHost(),
+                    this.hostManagerPort,
+                    "" );
             }
         } catch ( MalformedURLException ex ) {
             throw new GPUdbException( ex.getMessage(), ex );
@@ -4352,23 +4405,23 @@ public abstract class GPUdbBase {
 
         // Create an object to store all the information about this cluster
         ClusterAddressInfo clusterInfo = new ClusterAddressInfo( activeHeadNodeUrl,
-                                                                 rankURLs,
-                                                                 clusterHostnames,
-                                                                 hostManagerUrl,
-                                                                 false,
-                                                                 isIntraClusterFailoverEnabled );
+            rankURLs,
+            clusterHostnames,
+            hostManagerUrl,
+            false,
+            isIntraClusterFailoverEnabled );
 
         // Check if this cluster is the primary cluster
         GPUdbLogger.debug_with_info( "Checking if this is the primary cluster; "
-                                     + "this.primaryUrlHostname: "
-                                     + this.primaryUrlHostname );
+            + "this.primaryUrlHostname: "
+            + this.primaryUrlHostname );
         if ( !this.primaryUrlHostname.isEmpty()
-             && clusterInfo.doesClusterContainNode( this.primaryUrlHostname ) ) {
+            && clusterInfo.doesClusterContainNode( this.primaryUrlHostname ) ) {
             // Yes, it is; mark this cluster as the primary cluster
             clusterInfo.setIsPrimaryCluster( true );
         }
         GPUdbLogger.debug_with_info( "Is primary cluster?: "
-                                     + clusterInfo.getIsPrimaryCluster() );
+            + clusterInfo.getIsPrimaryCluster() );
 
         return clusterInfo;
     }  // end createClusterAddressInfo
@@ -4384,7 +4437,7 @@ public abstract class GPUdbBase {
      */
     private List<URL> getHARingHeadNodeURLs( Map<String, String> systemProperties )
         throws GPUdbHostnameRegexFailureException,
-               GPUdbException {
+        GPUdbException {
 
         List<URL> haRingHeadNodeURLs = new ArrayList<URL>();
 
@@ -4393,7 +4446,7 @@ public abstract class GPUdbBase {
 
         // Only attempt to parse the HA ring node addresses if HA is enabled
         if ( (is_ha_enabled_str != null)
-             && (is_ha_enabled_str.compareToIgnoreCase( "true" ) == 0 ) ) {
+            && (is_ha_enabled_str.compareToIgnoreCase( "true" ) == 0 ) ) {
 
             // Parse the HA ring head node addresses, if any
             String ha_ring_head_nodes_str = systemProperties.get( SYSTEM_PROPERTIES_RESPONSE_HEAD_NODE_URLS );
@@ -4428,13 +4481,13 @@ public abstract class GPUdbBase {
                             // Check if this URL matches the given regex
                             doAdd = this.hostnameRegex.matcher( url.getHost() ).matches();
                             GPUdbLogger.debug_with_info( "Does cluster " + i
-                                                         + " head node URL "
-                                                         + url.toString()
-                                                         + " match hostname regex '"
-                                                         + hostnameRegex.toString()
-                                                         + "' with host '"
-                                                         + url.getHost() + "'?: "
-                                                         + doAdd );
+                                + " head node URL "
+                                + url.toString()
+                                + " match hostname regex '"
+                                + hostnameRegex.toString()
+                                + "' with host '"
+                                + url.getHost() + "'?: "
+                                + doAdd );
                         } else {
                             // No regex is given, so we'll take the first one
                             doAdd = true;
@@ -4454,15 +4507,15 @@ public abstract class GPUdbBase {
                             // The reason we don't have a URL is because it didn't
                             // match the given reges
                             throw new GPUdbHostnameRegexFailureException( "No matching IP/hostname found "
-                                                                          + "for cluster with head node URLs "
-                                                                          + haRingHeadNodeUrlLists[i]
-                                                                          + " (given hostname regex "
-                                                                          + this.hostnameRegex.toString()
-                                                                          + ")" );
+                                + "for cluster with head node URLs "
+                                + haRingHeadNodeUrlLists[i]
+                                + " (given hostname regex "
+                                + this.hostnameRegex.toString()
+                                + ")" );
                         }
                         throw new GPUdbException("No matching IP/hostname found "
-                                                 + "for cluster with head node URLs"
-                                                 + haRingHeadNodeUrlLists[i] );
+                            + "for cluster with head node URLs"
+                            + haRingHeadNodeUrlLists[i] );
                     }
                 }   // end for
             }   // end if
@@ -4508,43 +4561,43 @@ public abstract class GPUdbBase {
                 // There's no point in keep trying since the URLs aren't
                 // going to magically change
                 throw new GPUdbException( "Could not connect to any working Kinetica server due "
-                                          + "to hostname regex mismatch (given "
-                                          + " URLs: " + urls.toString()
-                                          + "); " + ex.getMessage() );
+                    + "to hostname regex mismatch (given "
+                    + " URLs: " + urls.toString()
+                    + "); " + ex.getMessage() );
             } catch (GPUdbException ex ) {
                 GPUdbLogger.debug_with_info( "Attempt at parsing URLs failed: " + ex.getMessage() );
 
                 // If the user does not want us to retry, parse the URLs as is
                 if ( this.initialConnectionAttemptTimeoutNS == 0 ) {
                     GPUdbLogger.debug_with_info( "Initial connection attempt timeout set to 0; "
-                                                 + "parse the given URLs without auto discovery." );
+                        + "parse the given URLs without auto discovery." );
                     this.disableAutoDiscovery = true;
                 } else {
                     // Do we keep trying another time?  Has enough time passed?
                     keepTrying = ( (System.nanoTime() - startTime)
-                                   <= this.initialConnectionAttemptTimeoutNS );
+                        <= this.initialConnectionAttemptTimeoutNS );
                     GPUdbLogger.debug_with_info( "Keep trying to parse URLs?: " + keepTrying );
                     if ( keepTrying ) {
                         GPUdbLogger.warn( "Attempt at parsing user given URLs "
-                                          + java.util.Arrays.toString( urls.toArray() )
-                                          + " failed; waiting for "
-                                          + (parseUrlsReattemptWaitInterval / 60000)
-                                          + " mintue(s) before retrying");
+                            + java.util.Arrays.toString( urls.toArray() )
+                            + " failed; waiting for "
+                            + (parseUrlsReattemptWaitInterval / 60000)
+                            + " mintue(s) before retrying");
                         try {
                             // We will sleep before trying again
                             GPUdbLogger.debug_with_info( "Sleeping for "
-                                                         + (parseUrlsReattemptWaitInterval / 60000)
-                                                         + " minutes before trying again" );
+                                + (parseUrlsReattemptWaitInterval / 60000)
+                                + " minutes before trying again" );
                             Thread.sleep( parseUrlsReattemptWaitInterval );
 
                             // The next time, we will sleep for twice as long
                             parseUrlsReattemptWaitInterval = (2 * parseUrlsReattemptWaitInterval);
                         } catch ( InterruptedException ex2 ) {
                             GPUdbLogger.debug_with_info( "Sleep interrupted ("
-                                                         + ex2.getMessage()
-                                                         + "); throwing exception" );
+                                + ex2.getMessage()
+                                + "); throwing exception" );
                             throw new GPUdbException( "Initial parsing of user given URLs interrupted: "
-                                                      + ex2.getMessage(), ex2 );
+                                + ex2.getMessage(), ex2 );
                         }
                     }
                 }
@@ -4556,7 +4609,7 @@ public abstract class GPUdbBase {
         if ( getHARingSize() == 0 ) {
             GPUdbLogger.debug_with_info( "No cluster found!" );
             throw new GPUdbException( "Could not connect to any working Kinetica server! "
-                                      + "Given URLs: " + urls.toString() );
+                + "Given URLs: " + urls.toString() );
         }
     }   // end parseUrls
 
@@ -4574,7 +4627,7 @@ public abstract class GPUdbBase {
      */
     private synchronized void parseUrlsOnce( List<URL> urls )
         throws GPUdbHostnameRegexFailureException,
-               GPUdbException {
+        GPUdbException {
 
         this.hostAddresses = new ArrayList<ClusterAddressInfo>();
 
@@ -4592,7 +4645,7 @@ public abstract class GPUdbBase {
         this.primaryUrlHostname = primaryUrlStr;
         if ( !primaryUrlStr.isEmpty() ) {
             GPUdbLogger.debug_with_info( "Primary url string given: "
-                                         + primaryUrlStr);
+                + primaryUrlStr);
             try {
                 // If it's a full URL, add it to the queue for processing
                 URL primaryUrl = new URL( primaryUrlStr );
@@ -4616,8 +4669,8 @@ public abstract class GPUdbBase {
 
         String userGivenUrlsStr = java.util.Arrays.toString( urlQueue.toArray() );
         GPUdbLogger.debug_with_info( "User given URLs (size "
-                                     + urlQueue.size() + "): "
-                                     + userGivenUrlsStr );
+            + urlQueue.size() + "): "
+            + userGivenUrlsStr );
 
         // We will store API-discovered URLs even if we cannot communicate with
         // any server at that address (it might be temporarily down)
@@ -4635,8 +4688,8 @@ public abstract class GPUdbBase {
             String urlStr = url.toString();
             GPUdbLogger.debug_with_info( "Processing url: " + urlStr);
             GPUdbLogger.debug_with_info( "URLs queue after removing this url (size "
-                                         + urlQueue.size() + "): "
-                                         + java.util.Arrays.toString(urlQueue.toArray()) );
+                + urlQueue.size() + "): "
+                + java.util.Arrays.toString(urlQueue.toArray()) );
 
             // We need to know down the road if this URL was discovered by the
             // API or was given by the user.
@@ -4651,18 +4704,18 @@ public abstract class GPUdbBase {
             int indexOfHostnameInRing = getIndexOfClusterContainingNode( url.getHost() );
             if ( indexOfHostnameInRing != -1 ) {
                 GPUdbLogger.debug_with_info( "Already contains hostname "
-                                             + urlStr  + " skipping" );
+                    + urlStr  + " skipping" );
 
                 // Save the fact that this user given URL belong to an existing
                 // cluster
                 if ( !isDiscoveredURL ) {
                     GPUdbLogger.debug_with_info("Adding index " + indexOfHostnameInRing
-                                                + " for url " + urlStr + " to "
-                                                + "clusterIndicesOfUserGivenURLs" );
+                        + " for url " + urlStr + " to "
+                        + "clusterIndicesOfUserGivenURLs" );
                     clusterIndicesOfUserGivenURLs.add( indexOfHostnameInRing );
                 } else {
                     GPUdbLogger.debug_with_info("NOT adding index url " + urlStr
-                                                + " to clusterIndicesOfUserGivenURLs" );
+                        + " to clusterIndicesOfUserGivenURLs" );
                 } // end if
 
                 continue;
@@ -4670,27 +4723,27 @@ public abstract class GPUdbBase {
 
             // Skip auto-discovery of cluster information if the user says so
             GPUdbLogger.debug_with_info( "Auto discovery disabling flag value: "
-                                         + this.disableAutoDiscovery );
+                + this.disableAutoDiscovery );
             if ( this.disableAutoDiscovery ) {
                 GPUdbLogger.debug_with_info( "Auto discovery disabled; not connecting"
-                                             + " to server at " + urlStr
-                                             + " at initialization for verification" );
+                    + " to server at " + urlStr
+                    + " at initialization for verification" );
                 // Save the fact that this user given URL belong to an existing
                 // cluster
                 if ( !isDiscoveredURL ) {
                     GPUdbLogger.debug_with_info("Adding index " + this.hostAddresses.size()
-                                                + " for url " + urlStr + " to "
-                                                + "clusterIndicesOfUserGivenURLs" );
+                        + " for url " + urlStr + " to "
+                        + "clusterIndicesOfUserGivenURLs" );
                     clusterIndicesOfUserGivenURLs.add( this.hostAddresses.size() );
                 } else {
                     GPUdbLogger.debug_with_info("NOT adding index url " + urlStr
-                                                + " to clusterIndicesOfUserGivenURLs" );
+                        + " to clusterIndicesOfUserGivenURLs" );
                 } // end if
 
                 // Create a cluster info object with just the given URL and the
                 // host manager port in the option
                 ClusterAddressInfo clusterInfo = new ClusterAddressInfo( url,
-                                                                         this.hostManagerPort );
+                    this.hostManagerPort );
                 this.hostAddresses.add( clusterInfo );
                 GPUdbLogger.debug_with_info( "Added cluster: " + clusterInfo.toString() );
                 continue; // skip to the next URL
@@ -4699,7 +4752,7 @@ public abstract class GPUdbBase {
             // Skip processing this URL if Kinetica is not running at this address
             if ( !isSystemRunning( url ) ) {
                 GPUdbLogger.debug_with_info( "System is not running at  "
-                                             + urlStr );
+                    + urlStr );
                 // If this URL has been discovered by the API, then add it to
                 // the cluster list anyway
                 if ( isDiscoveredURL ) {
@@ -4707,12 +4760,12 @@ public abstract class GPUdbBase {
                     // Create a cluster info object with just the given URL and the
                     // host manager port in the option
                     ClusterAddressInfo clusterInfo = new ClusterAddressInfo( url,
-                                                                             this.hostManagerPort );
+                        this.hostManagerPort );
                     this.hostAddresses.add( clusterInfo );
                     GPUdbLogger.debug_with_info( "Added cluster: " + clusterInfo.toString() );
                 } else {
                     GPUdbLogger.debug_with_info( "Skipping user-given URL: "
-                                                 + urlStr );
+                        + urlStr );
                 }
                 continue;
             }
@@ -4725,7 +4778,7 @@ public abstract class GPUdbBase {
             } catch ( GPUdbException ex ) {
                 // Couldn't get the properties, so can't process this URL
                 GPUdbLogger.debug_with_info( "Could not get properties from "
-                                             + urlStr);
+                    + urlStr);
                 // If this URL has been discovered by the API, then add it to
                 // the cluster list anyway
                 if ( isDiscoveredURL ) {
@@ -4733,12 +4786,12 @@ public abstract class GPUdbBase {
                     // Create a cluster info object with just the given URL and the
                     // host manager port in the option
                     ClusterAddressInfo clusterInfo = new ClusterAddressInfo( url,
-                                                                             this.hostManagerPort );
+                        this.hostManagerPort );
                     this.hostAddresses.add( clusterInfo );
                     GPUdbLogger.debug_with_info( "Added cluster: " + clusterInfo.toString() );
                 } else {
                     GPUdbLogger.debug_with_info( "Skipping user-given URL: "
-                                                 + urlStr );
+                        + urlStr );
                 }
                 continue;
             }
@@ -4758,8 +4811,8 @@ public abstract class GPUdbBase {
                     // Yup, it's true--the server given URLs do not contain
                     // the user given hostname.
                     GPUdbLogger.debug_with_info( "Obtained cluster addresses do NOT "
-                                                 + "contain user given url : "
-                                                 + urlStr );
+                        + "contain user given url : "
+                        + urlStr );
 
                     // So, now we check if the server given addresses are
                     // reachable.  If they are, proceed as usual.  If they
@@ -4771,8 +4824,8 @@ public abstract class GPUdbBase {
                     if ( !isKineticaRunning( clusterInfo.getActiveHeadNodeUrl() ) ) {
                         // Alas, the server given head rank is NOT reachable!
                         GPUdbLogger.debug_with_info( "Obtained cluster addresses do NOT "
-                                                     + "contain user given url : "
-                                                     + urlStr );
+                            + "contain user given url : "
+                            + urlStr );
 
                         // So, we discard the server given addresses and store
                         // the user given address.
@@ -4782,17 +4835,17 @@ public abstract class GPUdbBase {
                         this.disableAutoDiscovery = true;
                         this.disableFailover = true;
                         GPUdbLogger.debug_with_info( "Disabling auto detection of "
-                                                     + "server addresses" );
+                            + "server addresses" );
                         GPUdbLogger.warn( "Using user-given URL (" + urlStr
-                                          + ") over server provided addresses; "
-                                          + " will be unable to recover during "
-                                          + "N+1 or intra-cluster failover events." );
+                            + ") over server provided addresses; "
+                            + " will be unable to recover during "
+                            + "N+1 or intra-cluster failover events." );
                         GPUdbLogger.warn( "Disabling API failover mechanism!" );
                         throw new GPUdbException( "Could not connect to server-"
-                                                  + "given  addresses: "
-                                                  + clusterInfo.toString()
-                                                  + " (user given URL: " + urlStr
-                                                  + ")" );
+                            + "given  addresses: "
+                            + clusterInfo.toString()
+                            + " (user given URL: " + urlStr
+                            + ")" );
                     }
                 }   // end if
 
@@ -4800,12 +4853,12 @@ public abstract class GPUdbBase {
                 // Save the fact that this URL, if user given, belong to an
                 // existing cluster
                 GPUdbLogger.debug_with_info("Adding index " + this.hostAddresses.size()
-                                            + " for url " + urlStr + " to "
-                                            + "clusterIndicesOfUserGivenURLs" );
+                    + " for url " + urlStr + " to "
+                    + "clusterIndicesOfUserGivenURLs" );
                 clusterIndicesOfUserGivenURLs.add( this.hostAddresses.size() );
             } else {
                 GPUdbLogger.debug_with_info("NOT adding index url " + urlStr
-                                            + " to clusterIndicesOfUserGivenURLs" );
+                    + " to clusterIndicesOfUserGivenURLs" );
             } // end if
 
 
@@ -4815,20 +4868,20 @@ public abstract class GPUdbBase {
             GPUdbLogger.debug_with_info( "Added cluster for url: " + urlStr );
             GPUdbLogger.debug_with_info( "Added cluster: " + clusterInfo.toString() );
             GPUdbLogger.debug_with_info( "URLs queue after processing this url (size "
-                                         + urlQueue.size() + "): "
-                                         + java.util.Arrays.toString(urlQueue.toArray()) );
+                + urlQueue.size() + "): "
+                + java.util.Arrays.toString(urlQueue.toArray()) );
 
             // Parse the HA ring head nodes in the properties and add them
             // to this queue (only if we haven't processed them already).
             // This could fail due to a hostname regex mismatch.
             List<URL> haRingHeadNodeURLs = getHARingHeadNodeURLs( systemProperties );
             GPUdbLogger.debug_with_info( "Got ha ring head urls: "
-                                         + java.util.Arrays.toString(haRingHeadNodeURLs.toArray()) );
+                + java.util.Arrays.toString(haRingHeadNodeURLs.toArray()) );
             for ( int i = 0; i < haRingHeadNodeURLs.size(); ++i ) {
                 URL haUrl = haRingHeadNodeURLs.get( i );
                 GPUdbLogger.debug_with_info( "Processing ha ring head urls: "
-                                             + haUrl.toString() + " host is "
-                                             + haUrl.getHost() );
+                    + haUrl.toString() + " host is "
+                    + haUrl.getHost() );
                 if ( getIndexOfClusterContainingNode( haUrl.getHost() ) == -1 ) {
                     // We have not encountered this cluster yet; add it to the
                     // list of URLs to process
@@ -4839,27 +4892,27 @@ public abstract class GPUdbBase {
                 }
             }
             GPUdbLogger.debug_with_info( "URLs queue after processing this ha head "
-                                         + "nodes (size " + urlQueue.size() + "): "
-                                         + java.util.Arrays.toString(urlQueue.toArray()) );
+                + "nodes (size " + urlQueue.size() + "): "
+                + java.util.Arrays.toString(urlQueue.toArray()) );
         }   // end while
 
         // Check that we have got at least one working URL
         if ( getHARingSize() == 0 ) {
             GPUdbLogger.error( "No clusters found at user given URLs "
-                               + java.util.Arrays.toString( urls.toArray() )
-                               + "!");
+                + java.util.Arrays.toString( urls.toArray() )
+                + "!");
             throw new GPUdbException( "Could not connect to any working Kinetica server! "
-                                      + "Given URLs: " + urls.toString() );
+                + "Given URLs: " + urls.toString() );
         }
 
         GPUdbLogger.debug_with_info( "Before re-setting primary for a single "
-                                     + "cluster '" + primaryUrlStr + "'" );
+            + "cluster '" + primaryUrlStr + "'" );
         // If we end up with a single cluster, ensure that its head rank URL is
         // set as the primary (we need this check in case only a single URL was
         // given to the constructor BUT it was a worker URL)
         if ( getHARingSize() == 1 ) {
             GPUdbLogger.debug_with_info( "Only one cluster in the ring; "
-                                         + "(re-)setting this one as the primary" );
+                + "(re-)setting this one as the primary" );
             // Mark the single cluster as the primary cluster
             this.hostAddresses.get( 0 ).setIsPrimaryCluster( true );
 
@@ -4880,19 +4933,19 @@ public abstract class GPUdbBase {
             // given URLs belong to a single cluster, set that as the primary
             if ( this.primaryUrlHostname.isEmpty() ) {
                 GPUdbLogger.debug_with_info( "No primary host given & more than "
-                                             + "one user given URL: " + userGivenUrlsStr );
+                    + "one user given URL: " + userGivenUrlsStr );
 
                 boolean allUrlsInSameCluster = ( new HashSet<Integer>( clusterIndicesOfUserGivenURLs )
-                                                 .size() == 1 );
+                    .size() == 1 );
                 GPUdbLogger.debug_with_info( "cluster_index_for_user_given_urls "
-                                             + java.util.Arrays.toString( clusterIndicesOfUserGivenURLs
-                                                                          .toArray() ) );
+                    + java.util.Arrays.toString( clusterIndicesOfUserGivenURLs
+                    .toArray() ) );
                 GPUdbLogger.debug_with_info( "Are all URLs in the same cluster? "
-                                             + allUrlsInSameCluster );
+                    + allUrlsInSameCluster );
                 if ( allUrlsInSameCluster ) {
                     int primaryIndex = clusterIndicesOfUserGivenURLs.get( 0 );
                     GPUdbLogger.debug_with_info( "All user given URLs belong to the same "
-                                                 + "cluster! Index " + primaryIndex );
+                        + "cluster! Index " + primaryIndex );
 
                     // Save the hostname of the newly identified primary cluster for
                     // future use
@@ -4916,16 +4969,16 @@ public abstract class GPUdbBase {
         // Check if the primary host exists in the list of user given hosts
         int primaryIndex = getIndexOfClusterContainingNode( this.primaryUrlHostname );
         GPUdbLogger.debug_with_info( "Checking if the primary cluster is in the"
-                                     + " ring; index: " + primaryIndex );
+            + " ring; index: " + primaryIndex );
         if ( primaryIndex != -1 ) {
             GPUdbLogger.debug_with_info( "Found match!  setting the cluster "
-                                         + "as primary: " + primaryIndex );
+                + "as primary: " + primaryIndex );
             // There is a match; mark the respective cluster as the primary cluster
             this.hostAddresses.get( primaryIndex ).setIsPrimaryCluster( true );
 
             if ( primaryIndex > 0 ) {
                 GPUdbLogger.debug_with_info( "Primary cluster not at the "
-                                             + "forefront; put it there" );
+                    + "forefront; put it there" );
                 // Note: Do not combine the nested if with the top level if; will change
                 //       logic and may end up getting duplicates of the primary URL
 
@@ -4997,8 +5050,8 @@ public abstract class GPUdbBase {
 
         if ( serverVersionStr == null ) {
             throw new GPUdbException( "System properties does not have any entry "
-                                      + "for the '" + DATABASE_SERVER_VERSION_KEY
-                                      + "' key" );
+                + "for the '" + DATABASE_SERVER_VERSION_KEY
+                + "' key" );
         }
 
         // Now parse the version string
@@ -5011,8 +5064,8 @@ public abstract class GPUdbBase {
             // Check that we get at least four components
             if ( componentStrings.length < 4 ) {
                 throw new GPUdbException( "Server version string in /show/system/properties "
-                                          + "response malformed (expect four periods): "
-                                          + serverVersionStr );
+                    + "response malformed (expect four periods): "
+                    + serverVersionStr );
             }
             // Parse each component
             for ( int i = 0; i < 4; ++i  ) {
@@ -5020,10 +5073,10 @@ public abstract class GPUdbBase {
             }
 
             return new GPUdbVersion( components[0], components[1],
-                                     components[2], components[3] );
+                components[2], components[3] );
         } catch (Exception ex) {
             throw new GPUdbException( "Could not parse server version; error: "
-                                      + ex.getMessage(), ex );
+                + ex.getMessage(), ex );
         }
     }  // end parseServerVersion
 
@@ -5046,14 +5099,14 @@ public abstract class GPUdbBase {
         try {
             ShowSystemPropertiesResponse response;
             response = submitRequest( appendPathToURL( this.getURL(),
-                                                       "/show/system/properties" ),
-                                      new ShowSystemPropertiesRequest(),
-                                      new ShowSystemPropertiesResponse(),
-                                      false );
+                    "/show/system/properties" ),
+                new ShowSystemPropertiesRequest(),
+                new ShowSystemPropertiesResponse(),
+                false );
             this.serverVersion = parseServerVersion( response.getPropertyMap() );
         } catch ( MalformedURLException | GPUdbException ex ) {
             String msg = ( "Failed to get database version from the server; "
-                           + ex.getMessage() );
+                + ex.getMessage() );
             throw new GPUdbException( msg, ex );
         }
     }  // end updateServerVersion
@@ -5083,9 +5136,9 @@ public abstract class GPUdbBase {
         if (typeDescriptor == null) {
             knownTypes.remove(typeId);
         } else if (typeDescriptor instanceof Schema
-                || typeDescriptor instanceof Type
-                || typeDescriptor instanceof TypeObjectMap
-                || typeDescriptor instanceof Class && IndexedRecord.class.isAssignableFrom((Class)typeDescriptor)) {
+            || typeDescriptor instanceof Type
+            || typeDescriptor instanceof TypeObjectMap
+            || typeDescriptor instanceof Class && IndexedRecord.class.isAssignableFrom((Class)typeDescriptor)) {
             knownTypes.put(typeId, typeDescriptor);
         } else {
             throw new IllegalArgumentException("Type descriptor must be a Schema, Type, TypeObjectMap, or Class implementing IndexedRecord.");
@@ -5132,10 +5185,10 @@ public abstract class GPUdbBase {
      */
     public void addKnownTypeFromTable(String tableName, Object typeDescriptor) throws GPUdbException {
         if (typeDescriptor == null
-                || typeDescriptor instanceof Schema
-                || typeDescriptor instanceof Type
-                || typeDescriptor instanceof TypeObjectMap
-                || typeDescriptor instanceof Class && IndexedRecord.class.isAssignableFrom((Class)typeDescriptor)) {
+            || typeDescriptor instanceof Schema
+            || typeDescriptor instanceof Type
+            || typeDescriptor instanceof TypeObjectMap
+            || typeDescriptor instanceof Class && IndexedRecord.class.isAssignableFrom((Class)typeDescriptor)) {
             ShowTableResponse response = submitRequest("/show/table", new ShowTableRequest(tableName, null), new ShowTableResponse(), false);
 
             if (response.getTypeIds().isEmpty()) {
@@ -5267,14 +5320,14 @@ public abstract class GPUdbBase {
         T object = data.get(0);
 
         if (object instanceof IndexedRecord) {
-            return Avro.encode((List<? extends IndexedRecord>)data, threadCount, executor);
+            return Avro.encode((List<? extends IndexedRecord>)data, threadCount, executor).getLeft();
         } else {
-            return Avro.encode((TypeObjectMap<T>)getTypeObjectMap(object.getClass()), data, threadCount, executor);
+            return Avro.encode((TypeObjectMap<T>)getTypeObjectMap(object.getClass()), data, threadCount, executor).getLeft();
         }
     }
 
     protected <T> List<ByteBuffer> encode(TypeObjectMap<T> typeObjectMap, List<T> data) throws GPUdbException {
-        return Avro.encode(typeObjectMap, data == null ? new ArrayList<T>() : data, threadCount, executor);
+        return Avro.encode(typeObjectMap, data == null ? new ArrayList<T>() : data, threadCount, executor).getLeft();
     }
 
     protected Object getTypeDescriptor(String typeId) throws GPUdbException {
@@ -5389,8 +5442,8 @@ public abstract class GPUdbBase {
                 throw new GPUdbRuntimeException(ex.getMessage(), ex);
             } catch (GPUdbExitException ex) {
                 GPUdbLogger.warn( "Got EXIT exception when trying endpoint "
-                                  + endpoint + " at " + url.toString()
-                                  + ": " + ex.getMessage() + "; switch URL..." );
+                    + endpoint + " at " + url.toString()
+                    + ": " + ex.getMessage() + "; switch URL..." );
                 // Handle our special exit exception
                 try {
                     url = switchURL( originalURL, currentClusterSwitchCount );
@@ -5400,17 +5453,17 @@ public abstract class GPUdbBase {
                     // Get the original cause to propagate to the user
                     String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
                     throw new GPUdbException( originalCause + "; "
-                                              + ha_ex.getMessage(), true );
+                        + ha_ex.getMessage(), true );
                 } catch (GPUdbFailoverDisabledException ha_ex) {
                     // Failover is disabled; return the original cause
                     String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
                     throw new GPUdbException( originalCause + "; "
-                                              + ha_ex.getMessage(), true );
+                        + ha_ex.getMessage(), true );
                 }
             } catch (SubmitException ex) {
                 GPUdbLogger.warn( "Got submit exception when trying endpoint "
-                                  + endpoint + " at " + url.toString()
-                                  + ": " + ex.getMessage() + "; switch URL..." );
+                    + endpoint + " at " + url.toString()
+                    + ": " + ex.getMessage() + "; switch URL..." );
                 // Some error occurred during the HTTP request
                 try {
                     url = switchURL( originalURL, currentClusterSwitchCount );
@@ -5420,26 +5473,26 @@ public abstract class GPUdbBase {
                     // Get the original cause to propagate to the user
                     String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
                     throw new SubmitException( null, ex.getRequest(), ex.getRequestSize(),
-                                               (originalCause + "; "
-                                                + ha_ex.getMessage()),
-                                               ex.getCause(), true );
+                        (originalCause + "; "
+                            + ha_ex.getMessage()),
+                        ex.getCause(), true );
                 } catch (GPUdbFailoverDisabledException ha_ex) {
                     // Failover is disabled; return the original cause
                     String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
                     throw new SubmitException( null, ex.getRequest(), ex.getRequestSize(),
-                                               (originalCause + "; "
-                                                + ha_ex.getMessage()),
-                                               ex.getCause(), true );
+                        (originalCause + "; "
+                            + ha_ex.getMessage()),
+                        ex.getCause(), true );
                 }
             } catch (GPUdbException ex) {
                 // Any other GPUdbException is a valid failure
                 GPUdbLogger.debug_with_info( "Got GPUdbException, so propagating: "
-                                             + ex.getMessage() );
+                    + ex.getMessage() );
                 throw ex;
             } catch (Exception ex) {
                 GPUdbLogger.warn( "Got Java exception when trying endpoint "
-                                  + endpoint + " at " + url.toString()
-                                  + ": " + ex.getMessage() + "; switch URL..." );
+                    + endpoint + " at " + url.toString()
+                    + ": " + ex.getMessage() + "; switch URL..." );
                 // And other random exceptions probably are also connection errors
                 try {
                     url = switchURL( originalURL, currentClusterSwitchCount );
@@ -5449,12 +5502,12 @@ public abstract class GPUdbBase {
                     // Get the original cause to propagate to the user
                     String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
                     throw new GPUdbException( originalCause + "; "
-                                              + ha_ex.getMessage(), true );
+                        + ha_ex.getMessage(), true );
                 } catch (GPUdbFailoverDisabledException ha_ex) {
                     // Failover is disabled; return the original cause
                     String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
                     throw new GPUdbException( originalCause + "; "
-                                              + ha_ex.getMessage(), true );
+                        + ha_ex.getMessage(), true );
                 }
             }
         } // end while
@@ -5545,12 +5598,12 @@ public abstract class GPUdbBase {
                     // Get the original cause to propagate to the user
                     String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
                     throw new GPUdbException( originalCause + "; "
-                                              + ha_ex.getMessage(), true );
+                        + ha_ex.getMessage(), true );
                 } catch (GPUdbFailoverDisabledException ha_ex) {
                     // Failover is disabled; return the original cause
                     String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
                     throw new GPUdbException( originalCause + "; "
-                                              + ha_ex.getMessage(), true );
+                        + ha_ex.getMessage(), true );
                 }
             } catch (SubmitException ex) {
                 // Save the original exception for later use
@@ -5567,16 +5620,16 @@ public abstract class GPUdbBase {
                     // Get the original cause to propagate to the user
                     String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
                     throw new SubmitException( null, ex.getRequest(), ex.getRequestSize(),
-                                               (originalCause + "; "
-                                                + ha_ex.getMessage()),
-                                               ex.getCause(), true );
+                        (originalCause + "; "
+                            + ha_ex.getMessage()),
+                        ex.getCause(), true );
                 } catch (GPUdbFailoverDisabledException ha_ex) {
                     // Failover is disabled; return the original cause
                     String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
                     throw new SubmitException( null, ex.getRequest(), ex.getRequestSize(),
-                                               (originalCause + "; "
-                                                + ha_ex.getMessage()),
-                                               ex.getCause(), true );
+                        (originalCause + "; "
+                            + ha_ex.getMessage()),
+                        ex.getCause(), true );
                 }
             } catch (GPUdbException ex) {
                 // Save the original exception for later use
@@ -5594,12 +5647,12 @@ public abstract class GPUdbBase {
                         // Get the original cause to propagate to the user
                         String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
                         throw new GPUdbException( originalCause + "; "
-                                                  + ha_ex.getMessage(), true );
+                            + ha_ex.getMessage(), true );
                     } catch (GPUdbFailoverDisabledException ha_ex) {
                         // Failover is disabled; return the original cause
                         String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
                         throw new GPUdbException( originalCause + "; "
-                                                  + ha_ex.getMessage(), true );
+                            + ha_ex.getMessage(), true );
                     }
                 }
                 else {
@@ -5621,24 +5674,24 @@ public abstract class GPUdbBase {
                     // Get the original cause to propagate to the user
                     String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
                     throw new GPUdbException( originalCause + "; "
-                                              + ha_ex.getMessage(), true );
+                        + ha_ex.getMessage(), true );
                 } catch (GPUdbFailoverDisabledException ha_ex) {
                     // Failover is disabled; return the original cause
                     String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
                     throw new GPUdbException( originalCause + "; "
-                                              + ha_ex.getMessage(), true );
+                        + ha_ex.getMessage(), true );
                 }
             }
         } // end for
 
         // If we reach here, then something went wrong
         GPUdbLogger.debug_with_info( "Failed to submit host manager endpoint; "
-                                     + "exceeded retry count "
-                                     + HOST_MANAGER_SUBMIT_REQUEST_RETRY_COUNT
-                                     + "; original exception: '"
-                                     + original_exception.getMessage()
-                                     + "'; please check if the host manager port"
-                                     + " is wrong: " + hmUrl.toString() );
+            + "exceeded retry count "
+            + HOST_MANAGER_SUBMIT_REQUEST_RETRY_COUNT
+            + "; original exception: '"
+            + original_exception.getMessage()
+            + "'; please check if the host manager port"
+            + " is wrong: " + hmUrl.toString() );
         throw original_exception;
     } // end submitRequestToHM
 
@@ -5703,7 +5756,7 @@ public abstract class GPUdbBase {
         throws SubmitException, GPUdbExitException, GPUdbException {
 
         return submitRequestRaw( url, request, response,
-                                 enableCompression, timeout );
+            enableCompression, timeout );
     }
 
     /**
@@ -5731,12 +5784,12 @@ public abstract class GPUdbBase {
                                                          T response,
                                                          boolean enableCompression )
         throws SubmitException,
-               GPUdbExitException,
-               GPUdbException {
+        GPUdbExitException,
+        GPUdbException {
         // Use the set timeout for the GPUdb object for the http connection
         return submitRequestRaw( url, request, response,
-                                 enableCompression,
-                                 this.timeout );
+            enableCompression,
+            this.timeout );
     }
 
 
@@ -5768,8 +5821,8 @@ public abstract class GPUdbBase {
                                                          boolean enableCompression,
                                                          int timeout)
         throws SubmitException,
-               GPUdbExitException,
-               GPUdbException {
+        GPUdbExitException,
+        GPUdbException {
 
         int requestSize = -1;
         HttpPost              postRequest    = null;
@@ -5809,17 +5862,17 @@ public abstract class GPUdbBase {
                 postResponse = this.httpClient.execute( postRequest );
             } catch ( javax.net.ssl.SSLException ex) {
                 String errorMsg = ("Encountered SSL exception when trying to connect to "
-                                   + url.toString() + "; error: "
-                                   + ex.getMessage() );
+                    + url.toString() + "; error: "
+                    + ex.getMessage() );
                 GPUdbLogger.debug_with_info( "Throwing unauthroized exception due to: "
-                                             + ex.getMessage() );
+                    + ex.getMessage() );
                 throw new GPUdbUnauthorizedAccessException( errorMsg );
             } catch (Exception ex) {
                 // Trigger an HA failover at the caller level
                 GPUdbLogger.debug_with_info( "Throwing exit exception due to: "
-                                             + ex.getMessage() );
+                    + ex.getMessage() );
                 throw new GPUdbExitException( "Error submitting endpoint request: "
-                                              + ex.getMessage() );
+                    + ex.getMessage() );
             }
 
             // Get the status code and the messages of the response
@@ -5832,9 +5885,9 @@ public abstract class GPUdbBase {
             // Ensure that we're not getting any html snippet (may be
             // returned by the HTTPD server)
             if ( (responseEntity.getContentType() != null)
-                 && (responseEntity.getContentType().getElements().length > 0)
-                 && (responseEntity.getContentType().getElements()[0].getName()
-                     .startsWith( "text" )) ) {
+                && (responseEntity.getContentType().getElements().length > 0)
+                && (responseEntity.getContentType().getElements()[0].getName()
+                .startsWith( "text" )) ) {
                 String errorMsg;
                 // Handle unauthorized connection specially--better error messaging
                 if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
@@ -5842,25 +5895,25 @@ public abstract class GPUdbBase {
                     errorMsg = ("Unauthorized access: " + responseMessage );
                     throw new GPUdbUnauthorizedAccessException( errorMsg );
                 } else if ( (statusCode == HttpURLConnection.HTTP_UNAVAILABLE)
-                            || (statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR)
-                            || (statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT)
-                            ) {
+                    || (statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR)
+                    || (statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT)
+                ) {
                     // Some status codes should trigger an exit exception which will
                     // in turn trigger a failover on the client side
                     GPUdbLogger.debug_with_info( "Throwing EXIT exception from "
-                                                 + url.toString() + "; "
-                                                 + "response_code: " + statusCode
-                                                 + "; content type "
-                                                 + responseEntity.getContentType()
-                                                       .getElements()[0].getName()
-                                                 + "; response message: "
-                                                 + responseMessage);
+                        + url.toString() + "; "
+                        + "response_code: " + statusCode
+                        + "; content type "
+                        + responseEntity.getContentType()
+                        .getElements()[0].getName()
+                        + "; response message: "
+                        + responseMessage);
                     throw new GPUdbExitException( responseMessage );
                 } else {
                     // All other issues are simply propagated to the user
                     errorMsg = ("Cannot parse response from server: '"
-                                + responseMessage + "'; status code: "
-                                + statusCode );
+                        + responseMessage + "'; status code: "
+                        + statusCode );
                 }
                 throw new SubmitException( url, request, requestSize, errorMsg );
             }
@@ -5882,9 +5935,9 @@ public abstract class GPUdbBase {
             if (inputStream == null) {
                 // Trigger an HA failover at the caller level
                 throw new GPUdbExitException( "Server returned HTTP "
-                                              + statusCode + " ("
-                                              + responseMessage + ")."
-                                              + " returning EXIT exception");
+                    + statusCode + " ("
+                    + responseMessage + ")."
+                    + " returning EXIT exception");
             }
 
             try {
@@ -5898,24 +5951,24 @@ public abstract class GPUdbBase {
                 if (status.equals("ERROR")) {
                     // Check if Kinetica is shutting down
                     if ( (statusCode == HttpURLConnection.HTTP_UNAVAILABLE)
-                         || (statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR)
-                         || (statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT)
-                         || message.contains( DB_EXITING_ERROR_MESSAGE )
-                         || message.contains( DB_CONNECTION_REFUSED_ERROR_MESSAGE )
-                         || message.contains( DB_CONNECTION_RESET_ERROR_MESSAGE )
-                         || message.contains( DB_SYSTEM_LIMITED_ERROR_MESSAGE )
-                         || message.contains( DB_OFFLINE_ERROR_MESSAGE ) ) {
+                        || (statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR)
+                        || (statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT)
+                        || message.contains( DB_EXITING_ERROR_MESSAGE )
+                        || message.contains( DB_CONNECTION_REFUSED_ERROR_MESSAGE )
+                        || message.contains( DB_CONNECTION_RESET_ERROR_MESSAGE )
+                        || message.contains( DB_SYSTEM_LIMITED_ERROR_MESSAGE )
+                        || message.contains( DB_OFFLINE_ERROR_MESSAGE ) ) {
                         GPUdbLogger.debug_with_info( "Throwing EXIT exception from "
-                                                     + url.toString() + "; "
-                                                     + "response_code: " + statusCode
-                                                     + "; message: " + message);
+                            + url.toString() + "; "
+                            + "response_code: " + statusCode
+                            + "; message: " + message);
                         throw new GPUdbExitException( message );
                     }
                     // A legitimate error
                     GPUdbLogger.debug_with_info( "Throwing GPUdb exception from "
-                                                 + url.toString() + "; "
-                                                 + "response_code: " + statusCode
-                                                 + "; message: " + message);
+                        + url.toString() + "; "
+                        + "response_code: " + statusCode
+                        + "; message: " + message);
                     throw new GPUdbException( message );
                 }
 
@@ -6120,8 +6173,8 @@ public abstract class GPUdbBase {
         // Use a super short timeout (0.5 second)
         String pingResponse = ping( url, 500 );
         GPUdbLogger.debug_with_info( "HTTP server @ " + url.toString()
-                                     + " responded with: '"
-                                     + pingResponse + "'" );
+            + " responded with: '"
+            + pingResponse + "'" );
         if ( pingResponse.equals("Kinetica is running!") ) {
             // Kinetica IS running!
             return true;

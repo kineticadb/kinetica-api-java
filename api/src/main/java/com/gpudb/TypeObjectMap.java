@@ -6,12 +6,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import org.apache.avro.Schema;
 
 public final class TypeObjectMap<T> {
@@ -734,9 +730,9 @@ public final class TypeObjectMap<T> {
             throw new IllegalArgumentException("Class " + objectClass.getName() + " must be public.");
         }
 
-        Map<String, Type.Column> columns = new HashMap<>();
-        Map<String, Accessor> accessors = new HashMap<>();
-        Map<String, Mutator> mutators = new HashMap<>();
+        Map<String, Type.Column> columns = new LinkedHashMap<>();
+        Map<String, Accessor> accessors = new LinkedHashMap<>();
+        Map<String, Mutator> mutators = new LinkedHashMap<>();
         Field[] objectClassFields = objectClass.getFields();
         Method[] objectClassMethods = objectClass.getMethods();
 
@@ -825,13 +821,6 @@ public final class TypeObjectMap<T> {
         List<Type.Column> columnList = new ArrayList<>(columns.values());
         List<Accessor> accessorList = new ArrayList<>();
         List<Mutator> mutatorList = new ArrayList<>();
-
-        Collections.sort(columnList, new Comparator<Type.Column>() {
-            @Override
-            public int compare(Column o1, Column o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
 
         for (Type.Column column : columnList) {
             accessorList.add(accessors.get(column.getName()));

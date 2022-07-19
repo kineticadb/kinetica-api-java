@@ -37,14 +37,7 @@ import org.apache.avro.generic.IndexedRecord;
  * for more information.
  * <p>
  * To return the adjacency list in the response, leave {@code adjacencyTable}
- * empty. To return the adjacency list in a table and not in the response,
- * provide
- * a value to {@code adjacencyTable} and set
- * {@code export_query_results} to
- * {@code false}. To return the
- * adjacency list both in a table and the response, provide a value to
- * {@code adjacencyTable} and set {@code export_query_results}
- * to {@code true}.
+ * empty.
  * <p>
  * IMPORTANT: It's highly recommended that you review the
  * <a href="../../../../../../graph_solver/network_graph_solver/"
@@ -105,36 +98,13 @@ public class QueryGraphRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
      *         <li> {@link com.gpudb.protocol.QueryGraphRequest.Options#LIMIT
-     * LIMIT}: When specified, limits the number of query results. Note that if
-     * the {@code target_nodes_table} is provided, the size of the
-     * corresponding table will be limited by the {@code limit} value.  The
-     * default value is an empty {@link Map}.
+     * LIMIT}: When specified, limits the number of query results. The size of
+     * the nodes table will be limited by the {@code limit} value.  The default
+     * value is an empty {@link Map}.
      *         <li> {@link
-     * com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
-     * TARGET_NODES_TABLE}: Name of the table to store the list of the final
-     * nodes reached during the traversal, in [schema_name.]table_name format,
-     * using standard <a
-     * href="../../../../../../concepts/tables/#table-name-resolution"
-     * target="_top">name resolution rules</a> and meeting <a
-     * href="../../../../../../concepts/tables/#table-naming-criteria"
-     * target="_top">table naming criteria</a>.  If this value is left as the
-     * default, the table name will default to the {@code adjacencyTable} value
-     * plus a '_nodes' suffix, e.g., '<adjacency_table_name>_nodes'.  The
-     * default value is ''.
-     *         <li> {@link
-     * com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
-     * RESTRICTION_THRESHOLD_VALUE}: Value-based restriction comparison. Any
-     * node or edge with a RESTRICTIONS_VALUECOMPARED value greater than the
-     * {@code restriction_threshold_value} will not be included in the
-     * solution.
-     *         <li> {@link
-     * com.gpudb.protocol.QueryGraphRequest.Options#EXPORT_QUERY_RESULTS
-     * EXPORT_QUERY_RESULTS}: Returns query results in the response. If set to
-     * {@code true}, the {@code adjacencyListIntArray} (if the query was based
-     * on IDs), {@code adjacencyListStringArray} (if the query was based on
-     * names), or {@code adjacencyListWktArray} (if the query was based on
-     * WKTs) will be populated with the results. If set to {@code false}, none
-     * of the arrays will be populated.
+     * com.gpudb.protocol.QueryGraphRequest.Options#OUTPUT_WKT_PATH
+     * OUTPUT_WKT_PATH}: If true then concatenated wkt line segments will be
+     * added as the WKT column of the adjacency table.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.QueryGraphRequest.Options#TRUE
@@ -143,25 +113,7 @@ public class QueryGraphRequest implements IndexedRecord {
      * FALSE}
      * </ul>
      * The default value is {@link
-     * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
-     *         <li> {@link
-     * com.gpudb.protocol.QueryGraphRequest.Options#ENABLE_GRAPH_DRAW
-     * ENABLE_GRAPH_DRAW}: If set to {@code true}, adds a WKT-type column named
-     * 'QUERY_EDGE_WKTLINE' to the given {@code adjacencyTable} and inputs WKT
-     * values from the source graph (if available) or auto-generated WKT values
-     * (if there are no WKT values in the source graph). A subsequent call to
-     * the <a href="../../../../../../api/rest/wms_rest/"
-     * target="_top">/wms</a> endpoint can then be made to display the query
-     * results on a map.
-     * Supported values:
-     * <ul>
-     *         <li> {@link com.gpudb.protocol.QueryGraphRequest.Options#TRUE
-     * TRUE}
-     *         <li> {@link com.gpudb.protocol.QueryGraphRequest.Options#FALSE
-     * FALSE}
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
+     * com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}.
      *         <li> {@link
      * com.gpudb.protocol.QueryGraphRequest.Options#AND_LABELS AND_LABELS}: If
      * set to {@code true}, the result of the query has entities that satisfy
@@ -209,41 +161,15 @@ public class QueryGraphRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * When specified, limits the number of query results. Note that if the
-         * {@code target_nodes_table} is provided, the size of the
-         * corresponding table will be limited by the {@code limit} value.  The
-         * default value is an empty {@link Map}.
+         * When specified, limits the number of query results. The size of the
+         * nodes table will be limited by the {@code limit} value.  The default
+         * value is an empty {@link Map}.
          */
         public static final String LIMIT = "limit";
 
         /**
-         * Name of the table to store the list of the final nodes reached
-         * during the traversal, in [schema_name.]table_name format, using
-         * standard <a
-         * href="../../../../../../concepts/tables/#table-name-resolution"
-         * target="_top">name resolution rules</a> and meeting <a
-         * href="../../../../../../concepts/tables/#table-naming-criteria"
-         * target="_top">table naming criteria</a>.  If this value is left as
-         * the default, the table name will default to the {@code
-         * adjacencyTable} value plus a '_nodes' suffix, e.g.,
-         * '<adjacency_table_name>_nodes'.  The default value is ''.
-         */
-        public static final String TARGET_NODES_TABLE = "target_nodes_table";
-
-        /**
-         * Value-based restriction comparison. Any node or edge with a
-         * RESTRICTIONS_VALUECOMPARED value greater than the {@code
-         * restriction_threshold_value} will not be included in the solution.
-         */
-        public static final String RESTRICTION_THRESHOLD_VALUE = "restriction_threshold_value";
-
-        /**
-         * Returns query results in the response. If set to {@code true}, the
-         * {@code adjacencyListIntArray} (if the query was based on IDs),
-         * {@code adjacencyListStringArray} (if the query was based on names),
-         * or {@code adjacencyListWktArray} (if the query was based on WKTs)
-         * will be populated with the results. If set to {@code false}, none of
-         * the arrays will be populated.
+         * If true then concatenated wkt line segments will be added as the WKT
+         * column of the adjacency table.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -252,29 +178,9 @@ public class QueryGraphRequest implements IndexedRecord {
          * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}
          * </ul>
          * The default value is {@link
-         * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
+         * com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}.
          */
-        public static final String EXPORT_QUERY_RESULTS = "export_query_results";
-
-        /**
-         * If set to {@code true}, adds a WKT-type column named
-         * 'QUERY_EDGE_WKTLINE' to the given {@code adjacencyTable} and inputs
-         * WKT values from the source graph (if available) or auto-generated
-         * WKT values (if there are no WKT values in the source graph). A
-         * subsequent call to the <a
-         * href="../../../../../../api/rest/wms_rest/" target="_top">/wms</a>
-         * endpoint can then be made to display the query results on a map.
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}
-         *         <li> {@link
-         * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
-         */
-        public static final String ENABLE_GRAPH_DRAW = "enable_graph_draw";
+        public static final String OUTPUT_WKT_PATH = "output_wkt_path";
 
         /**
          * If set to {@code true}, the result of the query has entities that
@@ -361,9 +267,7 @@ public class QueryGraphRequest implements IndexedRecord {
      *                        href="../../../../../../concepts/tables/#table-naming-criteria"
      *                        target="_top">table naming criteria</a>.  If left
      *                        blank, the query results are instead returned in
-     *                        the response even if {@code export_query_results}
-     *                        is set to {@code false}. If the
-     *                        'QUERY_TARGET_NODE_LABEL' <a
+     *                        the response. If the 'QUERY_TARGET_NODE_LABEL' <a
      *                        href="../../../../../../graph_solver/network_graph_solver/#query-identifiers"
      *                        target="_top">query identifier</a> is used in
      *                        {@code queries}, then two additional columns will
@@ -408,40 +312,14 @@ public class QueryGraphRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#LIMIT
      *                 LIMIT}: When specified, limits the number of query
-     *                 results. Note that if the {@code target_nodes_table} is
-     *                 provided, the size of the corresponding table will be
-     *                 limited by the {@code limit} value.  The default value
-     *                 is an empty {@link Map}.
+     *                 results. The size of the nodes table will be limited by
+     *                 the {@code limit} value.  The default value is an empty
+     *                 {@link Map}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
-     *                 TARGET_NODES_TABLE}: Name of the table to store the list
-     *                 of the final nodes reached during the traversal, in
-     *                 [schema_name.]table_name format, using standard <a
-     *                 href="../../../../../../concepts/tables/#table-name-resolution"
-     *                 target="_top">name resolution rules</a> and meeting <a
-     *                 href="../../../../../../concepts/tables/#table-naming-criteria"
-     *                 target="_top">table naming criteria</a>.  If this value
-     *                 is left as the default, the table name will default to
-     *                 the {@code adjacencyTable} value plus a '_nodes' suffix,
-     *                 e.g., '<adjacency_table_name>_nodes'.  The default value
-     *                 is ''.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
-     *                 RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
-     *                 comparison. Any node or edge with a
-     *                 RESTRICTIONS_VALUECOMPARED value greater than the {@code
-     *                 restriction_threshold_value} will not be included in the
-     *                 solution.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#EXPORT_QUERY_RESULTS
-     *                 EXPORT_QUERY_RESULTS}: Returns query results in the
-     *                 response. If set to {@code true}, the {@code
-     *                 adjacencyListIntArray} (if the query was based on IDs),
-     *                 {@code adjacencyListStringArray} (if the query was based
-     *                 on names), or {@code adjacencyListWktArray} (if the
-     *                 query was based on WKTs) will be populated with the
-     *                 results. If set to {@code false}, none of the arrays
-     *                 will be populated.
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#OUTPUT_WKT_PATH
+     *                 OUTPUT_WKT_PATH}: If true then concatenated wkt line
+     *                 segments will be added as the WKT column of the
+     *                 adjacency table.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -451,30 +329,7 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 FALSE}
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#ENABLE_GRAPH_DRAW
-     *                 ENABLE_GRAPH_DRAW}: If set to {@code true}, adds a
-     *                 WKT-type column named 'QUERY_EDGE_WKTLINE' to the given
-     *                 {@code adjacencyTable} and inputs WKT values from the
-     *                 source graph (if available) or auto-generated WKT values
-     *                 (if there are no WKT values in the source graph). A
-     *                 subsequent call to the <a
-     *                 href="../../../../../../api/rest/wms_rest/"
-     *                 target="_top">/wms</a> endpoint can then be made to
-     *                 display the query results on a map.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
-     *                 FALSE}.
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#AND_LABELS
      *                 AND_LABELS}: If set to {@code true}, the result of the
@@ -628,8 +483,7 @@ public class QueryGraphRequest implements IndexedRecord {
      *         target="_top">name resolution rules</a> and meeting <a
      *         href="../../../../../../concepts/tables/#table-naming-criteria"
      *         target="_top">table naming criteria</a>.  If left blank, the
-     *         query results are instead returned in the response even if
-     *         {@code export_query_results} is set to {@code false}. If the
+     *         query results are instead returned in the response. If the
      *         'QUERY_TARGET_NODE_LABEL' <a
      *         href="../../../../../../graph_solver/network_graph_solver/#query-identifiers"
      *         target="_top">query identifier</a> is used in {@code queries},
@@ -655,9 +509,7 @@ public class QueryGraphRequest implements IndexedRecord {
      *                        href="../../../../../../concepts/tables/#table-naming-criteria"
      *                        target="_top">table naming criteria</a>.  If left
      *                        blank, the query results are instead returned in
-     *                        the response even if {@code export_query_results}
-     *                        is set to {@code false}. If the
-     *                        'QUERY_TARGET_NODE_LABEL' <a
+     *                        the response. If the 'QUERY_TARGET_NODE_LABEL' <a
      *                        href="../../../../../../graph_solver/network_graph_solver/#query-identifiers"
      *                        target="_top">query identifier</a> is used in
      *                        {@code queries}, then two additional columns will
@@ -739,37 +591,13 @@ public class QueryGraphRequest implements IndexedRecord {
      *         com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.QueryGraphRequest.Options#LIMIT LIMIT}: When
-     *         specified, limits the number of query results. Note that if the
-     *         {@code target_nodes_table} is provided, the size of the
-     *         corresponding table will be limited by the {@code limit} value.
-     *         The default value is an empty {@link Map}.
+     *         specified, limits the number of query results. The size of the
+     *         nodes table will be limited by the {@code limit} value.  The
+     *         default value is an empty {@link Map}.
      *                 <li> {@link
-     *         com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
-     *         TARGET_NODES_TABLE}: Name of the table to store the list of the
-     *         final nodes reached during the traversal, in
-     *         [schema_name.]table_name format, using standard <a
-     *         href="../../../../../../concepts/tables/#table-name-resolution"
-     *         target="_top">name resolution rules</a> and meeting <a
-     *         href="../../../../../../concepts/tables/#table-naming-criteria"
-     *         target="_top">table naming criteria</a>.  If this value is left
-     *         as the default, the table name will default to the {@code
-     *         adjacencyTable} value plus a '_nodes' suffix, e.g.,
-     *         '<adjacency_table_name>_nodes'.  The default value is ''.
-     *                 <li> {@link
-     *         com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
-     *         RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
-     *         comparison. Any node or edge with a RESTRICTIONS_VALUECOMPARED
-     *         value greater than the {@code restriction_threshold_value} will
-     *         not be included in the solution.
-     *                 <li> {@link
-     *         com.gpudb.protocol.QueryGraphRequest.Options#EXPORT_QUERY_RESULTS
-     *         EXPORT_QUERY_RESULTS}: Returns query results in the response. If
-     *         set to {@code true}, the {@code adjacencyListIntArray} (if the
-     *         query was based on IDs), {@code adjacencyListStringArray} (if
-     *         the query was based on names), or {@code adjacencyListWktArray}
-     *         (if the query was based on WKTs) will be populated with the
-     *         results. If set to {@code false}, none of the arrays will be
-     *         populated.
+     *         com.gpudb.protocol.QueryGraphRequest.Options#OUTPUT_WKT_PATH
+     *         OUTPUT_WKT_PATH}: If true then concatenated wkt line segments
+     *         will be added as the WKT column of the adjacency table.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -778,26 +606,7 @@ public class QueryGraphRequest implements IndexedRecord {
      *         com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link
-     *         com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
-     *                 <li> {@link
-     *         com.gpudb.protocol.QueryGraphRequest.Options#ENABLE_GRAPH_DRAW
-     *         ENABLE_GRAPH_DRAW}: If set to {@code true}, adds a WKT-type
-     *         column named 'QUERY_EDGE_WKTLINE' to the given {@code
-     *         adjacencyTable} and inputs WKT values from the source graph (if
-     *         available) or auto-generated WKT values (if there are no WKT
-     *         values in the source graph). A subsequent call to the <a
-     *         href="../../../../../../api/rest/wms_rest/"
-     *         target="_top">/wms</a> endpoint can then be made to display the
-     *         query results on a map.
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}
-     *                 <li> {@link
-     *         com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
+     *         com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}.
      *                 <li> {@link
      *         com.gpudb.protocol.QueryGraphRequest.Options#AND_LABELS
      *         AND_LABELS}: If set to {@code true}, the result of the query has
@@ -853,40 +662,14 @@ public class QueryGraphRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#LIMIT
      *                 LIMIT}: When specified, limits the number of query
-     *                 results. Note that if the {@code target_nodes_table} is
-     *                 provided, the size of the corresponding table will be
-     *                 limited by the {@code limit} value.  The default value
-     *                 is an empty {@link Map}.
+     *                 results. The size of the nodes table will be limited by
+     *                 the {@code limit} value.  The default value is an empty
+     *                 {@link Map}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
-     *                 TARGET_NODES_TABLE}: Name of the table to store the list
-     *                 of the final nodes reached during the traversal, in
-     *                 [schema_name.]table_name format, using standard <a
-     *                 href="../../../../../../concepts/tables/#table-name-resolution"
-     *                 target="_top">name resolution rules</a> and meeting <a
-     *                 href="../../../../../../concepts/tables/#table-naming-criteria"
-     *                 target="_top">table naming criteria</a>.  If this value
-     *                 is left as the default, the table name will default to
-     *                 the {@code adjacencyTable} value plus a '_nodes' suffix,
-     *                 e.g., '<adjacency_table_name>_nodes'.  The default value
-     *                 is ''.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
-     *                 RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
-     *                 comparison. Any node or edge with a
-     *                 RESTRICTIONS_VALUECOMPARED value greater than the {@code
-     *                 restriction_threshold_value} will not be included in the
-     *                 solution.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#EXPORT_QUERY_RESULTS
-     *                 EXPORT_QUERY_RESULTS}: Returns query results in the
-     *                 response. If set to {@code true}, the {@code
-     *                 adjacencyListIntArray} (if the query was based on IDs),
-     *                 {@code adjacencyListStringArray} (if the query was based
-     *                 on names), or {@code adjacencyListWktArray} (if the
-     *                 query was based on WKTs) will be populated with the
-     *                 results. If set to {@code false}, none of the arrays
-     *                 will be populated.
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#OUTPUT_WKT_PATH
+     *                 OUTPUT_WKT_PATH}: If true then concatenated wkt line
+     *                 segments will be added as the WKT column of the
+     *                 adjacency table.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -896,30 +679,7 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 FALSE}
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#ENABLE_GRAPH_DRAW
-     *                 ENABLE_GRAPH_DRAW}: If set to {@code true}, adds a
-     *                 WKT-type column named 'QUERY_EDGE_WKTLINE' to the given
-     *                 {@code adjacencyTable} and inputs WKT values from the
-     *                 source graph (if available) or auto-generated WKT values
-     *                 (if there are no WKT values in the source graph). A
-     *                 subsequent call to the <a
-     *                 href="../../../../../../api/rest/wms_rest/"
-     *                 target="_top">/wms</a> endpoint can then be made to
-     *                 display the query results on a map.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
-     *                 FALSE}.
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#AND_LABELS
      *                 AND_LABELS}: If set to {@code true}, the result of the

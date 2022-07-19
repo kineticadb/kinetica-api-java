@@ -175,6 +175,19 @@ public class ModifyGraphRequest implements IndexedRecord {
      * larger the threshold for sharp turns and intersections; the smaller the
      * value, the larger the threshold for right and left turns; 0 < turn_angle
      * < 90.  The default value is '60'.
+     *         <li> {@link
+     * com.gpudb.protocol.ModifyGraphRequest.Options#USE_RTREE USE_RTREE}: Use
+     * an range tree structure to accelerate and improve the accuracy of
+     * snapping, especially to edges.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.ModifyGraphRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -317,6 +330,21 @@ public class ModifyGraphRequest implements IndexedRecord {
          * '60'.
          */
         public static final String TURN_ANGLE = "turn_angle";
+
+        /**
+         * Use an range tree structure to accelerate and improve the accuracy
+         * of snapping, especially to edges.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ModifyGraphRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}.
+         */
+        public static final String USE_RTREE = "use_rtree";
 
         private Options() {  }
     }
@@ -572,6 +600,22 @@ public class ModifyGraphRequest implements IndexedRecord {
      *                 intersections; the smaller the value, the larger the
      *                 threshold for right and left turns; 0 < turn_angle < 90.
      *                 The default value is '60'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#USE_RTREE
+     *                 USE_RTREE}: Use an range tree structure to accelerate
+     *                 and improve the accuracy of snapping, especially to
+     *                 edges.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#TRUE
+     *                 TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -964,6 +1008,19 @@ public class ModifyGraphRequest implements IndexedRecord {
      *         threshold for sharp turns and intersections; the smaller the
      *         value, the larger the threshold for right and left turns; 0 <
      *         turn_angle < 90.  The default value is '60'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ModifyGraphRequest.Options#USE_RTREE
+     *         USE_RTREE}: Use an range tree structure to accelerate and
+     *         improve the accuracy of snapping, especially to edges.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ModifyGraphRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1117,6 +1174,22 @@ public class ModifyGraphRequest implements IndexedRecord {
      *                 intersections; the smaller the value, the larger the
      *                 threshold for right and left turns; 0 < turn_angle < 90.
      *                 The default value is '60'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#USE_RTREE
+     *                 USE_RTREE}: Use an range tree structure to accelerate
+     *                 and improve the accuracy of snapping, especially to
+     *                 edges.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#TRUE
+     *                 TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

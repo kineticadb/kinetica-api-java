@@ -19,9 +19,9 @@ import java.util.List;
  *
  * This example demonstrates the following:
  *  -   Upload a set of files from a directory named '_kifs_Example_date_files'
- *      which has a few sub-directories populated with files. This example
+ *      which has a few subdirectories populated with files. This example
  *      will upload all the files starting from the root directory traversing
- *      the directory hierarchy. The upload will preserver the sub-directories
+ *      the directory hierarchy. The upload will preserver the subdirectories
  *      on the KIFS after upload.
  *  -   Download all the files that have been uploaded in one go into the
  *      directory named '_kifs_example_downloaded_files'.
@@ -105,15 +105,17 @@ public class GPUdbFileHandlerExample {
          * shot successfully. This just returns a list of file names for
          * display purposes
          *
-         * @param fileNames
+         * @param result - A {@link Result} object
          */
         @Override
-        public void onFullFileUpload( List<String> fileNames ) {
+        public void onFullFileUpload(Result result) {
+            List<String> fileNames = result.getFullFileNames();
             for ( String fileName : fileNames ) {
                 System.out.println( fileName );
                 GPUdbLogger.info( fileName );
             }
         }
+
     }
 
     /**

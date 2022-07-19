@@ -4,7 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -14,6 +16,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.apache.avro.Schema;
 import org.apache.avro.UnresolvedUnionException;
 import org.apache.avro.generic.GenericData;
@@ -27,6 +30,7 @@ import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.avro.specific.SpecificRecord;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Utility class containing static methods for encoding and decoding Avro binary
@@ -116,13 +120,13 @@ public final class Avro {
      * Default thread pool for multi-threaded operations.
      */
     private static final ExecutorService defaultThreadPool =
-            new ThreadPoolExecutor(0, Integer.MAX_VALUE, 100L, TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>());
+        new ThreadPoolExecutor(0, Integer.MAX_VALUE, 100L, TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>());
 
     /**
      * Pattern for parsing Avro NullPointerException messages.
      */
     private static final Pattern nullPointerExceptionPattern =
-            Pattern.compile("null of .+ in field (.+) of .+");
+        Pattern.compile("null of .+ in field (.+) of .+");
 
     /**
      * Decodes an Avro binary object into a pre-created destination object.
@@ -513,8 +517,21 @@ public final class Avro {
     /**
      * Encodes a portion of list of objects into Avro binary format, optionally
      * using a type object map for non-Avro-compatible objects.
+     * @param typeObjectMap - The {@link TypeObjectMap} derived from the table
+     * @param objects - List of record objects
+     * @param start - start index of record list
+     * @param count - count of records in the list
+     * @param <T> - Generic type indicating the type of the Record object
+     * @return - Pair<ArrayList<ByteBuffer>, Map<String, T>> - A pair of objects
+     *         - where the first member is a list of encoded records and the
+     *         - second member is a Map of s String to T where the String
+     *         - is the error encountered while encoding the object and T is
+     *         - the actual record object.
      */
-    private static <T> List<ByteBuffer> encodeInternal(TypeObjectMap<T> typeObjectMap, List<T> objects, int start, int count) throws GPUdbException {
+    private static <T> Pair<ArrayList<ByteBuffer>, Map<String, T>> encodeInternal(TypeObjectMap<T> typeObjectMap,
+                                                                                  List<T> objects,
+                                                                                  int start,
+                                                                                  int count) {
         if (start < 0) {
             throw new IndexOutOfBoundsException("Invalid start index specified.");
         }
@@ -527,49 +544,53 @@ public final class Avro {
             throw new IndexOutOfBoundsException("Start index plus count exceeds list size.");
         }
 
+        // Stores the list of encoded records where each encoded record is
+        // represented as a ByteBuffer
         ArrayList<ByteBuffer> encodedObjects = new ArrayList<>(count);
 
+        // Stores the records which have failed in a key-value format
+        // where each 'key' is the failure message in the format
+        // '<n>:<message string> where 'n' is the original index of the records
+        // in the input list 'List<T> objects' and the 'value' is the
+        // record of type T which parameterizes this method.
+        // The fact that the first character of the key is the index of the
+        // record in the input list of records helps reconcile the final
+        // list of indices of the records which have failed on the client
+        // or the server.
+        Map<String, T> recordsFailedEncoding = new LinkedHashMap<>();
+
         if (count == 0) {
-            return encodedObjects;
+            return Pair.of(encodedObjects, recordsFailedEncoding);
         }
 
-        try {
-            T object = objects.get(start);
-            GenericDatumWriter<IndexedRecord> writer;
+        T object = objects.get(start);
+        GenericDatumWriter<IndexedRecord> writer;
 
-            if (typeObjectMap == null) {
-                if (object instanceof SpecificRecord) {
-                    writer = new SpecificDatumWriter<>(((IndexedRecord)object).getSchema());
-                } else {
-                    writer = new GenericDatumWriter<>(((IndexedRecord)object).getSchema());
-                }
+        if (typeObjectMap == null) {
+            if (object instanceof SpecificRecord) {
+                writer = new SpecificDatumWriter<>(((IndexedRecord)object).getSchema());
             } else {
-                writer = new GenericDatumWriter<>(typeObjectMap.getSchema());
+                writer = new GenericDatumWriter<>(((IndexedRecord)object).getSchema());
             }
+        } else {
+            writer = new GenericDatumWriter<>(typeObjectMap.getSchema());
+        }
 
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            EncoderFactory factory = EncoderFactory.get();
-            BinaryEncoder encoder = factory.binaryEncoder(stream, null);
-            AvroEncodeProxy<T> proxy = null;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        EncoderFactory factory = EncoderFactory.get();
+        BinaryEncoder encoder = factory.binaryEncoder(stream, null);
+        AvroEncodeProxy<T> proxy = null;
 
-            if (typeObjectMap == null) {
-                writer.write((IndexedRecord)object, encoder);
-            } else {
-                proxy = new AvroEncodeProxy<>(typeObjectMap);
-                proxy.object = object;
-                writer.write(proxy, encoder);
-            }
+        if( typeObjectMap != null ) {
+            proxy = new AvroEncodeProxy<>( typeObjectMap );
+        }
 
-            encoder.flush();
-            stream.close();
-            encodedObjects.add(ByteBuffer.wrap(stream.toByteArray()));
-
-            for (int i = start + 1; i < start + count; i++) {
-                stream = new ByteArrayOutputStream();
-                encoder = factory.binaryEncoder(stream, encoder);
+        for (int i = start; i < start + count; i++) {
+            boolean encodingError = false;
+            try {
 
                 if (typeObjectMap == null) {
-                    writer.write((IndexedRecord)objects.get(i), encoder);
+                    writer.write((IndexedRecord) objects.get(i), encoder);
                 } else {
                     proxy.object = objects.get(i);
                     writer.write(proxy, encoder);
@@ -577,27 +598,51 @@ public final class Avro {
 
                 encoder.flush();
                 stream.close();
-                encodedObjects.add(ByteBuffer.wrap(stream.toByteArray()));
-            }
-        } catch (ClassCastException | UnresolvedUnionException ex) {
-            throw new GPUdbException("Could not encode object: Field has incorrect data type.", ex);
-        } catch (IOException ex) {
-            if (ex.getMessage() == null) {
-                throw new GPUdbException("Could not encode object", ex);
-            } else {
-                throw new GPUdbException("Could not encode object: " + ex.getMessage(), ex);
-            }
-        } catch (NullPointerException ex) {
-            Matcher matcher = nullPointerExceptionPattern.matcher(ex.getMessage());
+                encodedObjects.add( ByteBuffer.wrap(stream.toByteArray()) );
 
-            if (matcher.matches()) {
-                throw new GPUdbException("Could not encode object: Non-nullable field " + matcher.group(1) + " cannot be null.", ex);
-            } else {
-                throw new GPUdbException("Could not encode object: " + ex.getMessage(), ex);
-            }
-        }
+            } catch (ClassCastException | UnresolvedUnionException ex) {
+                recordsFailedEncoding.put( String.format("%d:Could not encode object: Field has incorrect data type in record :: %s", i, ex.getMessage()), objects.get(i) );
+                encodingError = true;
+            } catch (IOException ex) {
+                if (ex.getMessage() == null) {
+                    recordsFailedEncoding.put( String.format("%d:Could not encode object record :: %s", i, ex), objects.get(i) );
+                } else {
+                    recordsFailedEncoding.put(String.format("%d:Could not encode object: record %s", i, ex.getMessage()), objects.get(i) );
+                }
+                encodingError = true;
+            } catch (NullPointerException ex) {
+                Matcher matcher = nullPointerExceptionPattern.matcher(ex.getMessage());
 
-        return encodedObjects;
+                if (matcher.matches()) {
+                    recordsFailedEncoding.put( String.format("%d:%s", i, String.format("Could not encode object: Non-nullable field %s of record cannot be null", matcher.group(1) )), objects.get(i) );
+                } else {
+                    recordsFailedEncoding.put( String.format("%d:Could not encode object: record :: %s", i, ex.getMessage()), objects.get(i) );
+                }
+                encodingError = true;
+            } catch (Exception ex) {
+                recordsFailedEncoding.put( String.format("%d:Could not encode object: record :: %s -- Got Exception %s", i, ex.getMessage(), ex.getClass().getCanonicalName()), objects.get(i) );
+                encodingError = true;
+            }
+
+            // If an encoding error has been detected pass in an empty
+            // ByteBuffer, eventually the server will return an error on
+            // these records, and we can just overwrite the messages sent
+            // by the server with the one corresponding to the same index
+            // that we have already accumulated on the client in the
+            // map variable named 'recordsFailedEncoding'.
+            if( encodingError ) {
+                encodedObjects.add( ByteBuffer.allocate(0) );
+            }
+
+            // Reset the stream to a new one and
+            // re-initialize the encoder with the new stream
+            // for handling the next record.
+            stream = new ByteArrayOutputStream();
+            encoder = factory.binaryEncoder(stream, encoder);
+
+        } // end for loop
+
+        return Pair.of( encodedObjects, recordsFailedEncoding );
     }
 
     /**
@@ -609,15 +654,20 @@ public final class Avro {
      * @param start           index of first object within {@code objects} to
      *                        encode
      * @param count           number of objects within {@code objects} to encode
-     * @return                list of encoded objects
-     *
+     * @return - Pair<ArrayList<ByteBuffer>, Map<String, T>> - A pair of objects
+     *         - where the first member is a list of encoded records and the
+     *         - second member is a Map of s String to T where the String
+     *         - is the error encountered while encoding the object and T is
+     *         - the actual record object.
      * @throws IndexOutOfBoundsException if {@code start} is less than zero,
      * {@code count} is less than zero, or {@code start} plus {@code count}
      * exceeds the length of {@code objects}
      *
      * @throws GPUdbException if an encoding error occurs
      */
-    public static <T extends IndexedRecord> List<ByteBuffer> encode(List<T> objects, int start, int count) throws GPUdbException {
+    static <T extends IndexedRecord> Pair<ArrayList<ByteBuffer>, Map<String, T>> encode(List<T> objects,
+                                                                                        int start,
+                                                                                        int count) throws GPUdbException {
         return encodeInternal(null, objects, start, count);
     }
 
@@ -631,15 +681,21 @@ public final class Avro {
      * @param start           index of first object within {@code objects} to
      *                        encode
      * @param count           number of objects within {@code objects} to encode
-     * @return                list of encoded objects
-     *
+     * @return - Pair<ArrayList<ByteBuffer>, Map<String, T>> - A pair of objects
+     *         - where the first member is a list of encoded records and the
+     *         - second member is a Map of s String to T where the String
+     *         - is the error encountered while encoding the object and T is
+     *         - the actual record object.
      * @throws IndexOutOfBoundsException if {@code start} is less than zero,
      * {@code count} is less than zero, or {@code start} plus {@code count}
      * exceeds the length of {@code objects}
      *
      * @throws GPUdbException if an encoding error occurs
      */
-    public static <T> List<ByteBuffer> encode(TypeObjectMap<T> typeObjectMap, List<T> objects, int start, int count) throws GPUdbException {
+    static <T> Pair<ArrayList<ByteBuffer>, Map<String, T>> encode(TypeObjectMap<T> typeObjectMap,
+                                                                  List<T> objects,
+                                                                  int start,
+                                                                  int count) throws GPUdbException {
         return encodeInternal(typeObjectMap, objects, start, count);
     }
 
@@ -647,8 +703,24 @@ public final class Avro {
      * Encodes a portion of list of objects into Avro binary format, optionally
      * using a type object map for non-Avro-compatible objects, and optionally
      * using multiple threads, with or without a supplied executor.
+     * @param typeObjectMap - The {@link TypeObjectMap} derived from the table
+     * @param objects - List of record objects
+     * @param start - start index of record list
+     * @param count - count of records in the list
+     * @param threadCount - Number of background threads to use
+     * @param executor - the {@link ExecutorService} to manage the thread pool.
+     * @return - Pair<ArrayList<ByteBuffer>, Map<String, T>> - A pair of objects
+     *         - where the first member is a list of encoded records and the
+     *         - second member is a Map of s String to T where the String
+     *         - is the error encountered while encoding the object and T is
+     *         - the actual record object.
      */
-    private static <T> List<ByteBuffer> encodeInternal(final TypeObjectMap<T> typeObjectMap, final List<T> objects, int start, int count, int threadCount, ExecutorService executor) throws GPUdbException {
+    private static <T> Pair<ArrayList<ByteBuffer>, Map<String, T>> encodeInternal(final TypeObjectMap<T> typeObjectMap,
+                                                                                  final List<T> objects,
+                                                                                  int start,
+                                                                                  int count,
+                                                                                  int threadCount,
+                                                                                  ExecutorService executor) throws GPUdbException {
         if (threadCount == 1 || count <= 1) {
             return encodeInternal(typeObjectMap, objects, start, count);
         }
@@ -657,11 +729,11 @@ public final class Avro {
             throw new IllegalArgumentException("Thread count must be greater than zero.");
         }
 
-        ArrayList<ByteBuffer> encodedObjects = new ArrayList<>(count);
+        Pair<ArrayList<ByteBuffer>, Map<String, T>> encodedObjects = Pair.of( new ArrayList<>(), new LinkedHashMap<>());
         int partitionSize = count / threadCount;
         int partitionExtras = count % threadCount;
         ExecutorService executorService = executor != null ? executor : defaultThreadPool;
-        List<Future<List<ByteBuffer>>> futures = new ArrayList<>(threadCount);
+        List<Future<Pair<ArrayList<ByteBuffer>, Map<String, T>>>> futures = new ArrayList<>(threadCount);
 
         for (int i = 0; i < threadCount; i++) {
             final int partitionStart = i * partitionSize + Math.min(i, partitionExtras);
@@ -671,17 +743,19 @@ public final class Avro {
                 break;
             }
 
-            futures.add(executorService.submit(new Callable<List<ByteBuffer>>() {
+            futures.add(executorService.submit(new Callable<Pair<ArrayList<ByteBuffer>, Map<String, T>>>() {
                 @Override
-                public List<ByteBuffer> call() throws GPUdbException {
+                public Pair<ArrayList<ByteBuffer>, Map<String, T>> call() throws GPUdbException {
                     return encodeInternal(typeObjectMap, objects, partitionStart, partitionEnd - partitionStart);
                 }
             }));
+
         }
 
-        for (Future<List<ByteBuffer>> future : futures) {
+        for (Future<Pair<ArrayList<ByteBuffer>, Map<String, T>>> future : futures) {
             try {
-                encodedObjects.addAll(future.get());
+                encodedObjects.getLeft().addAll(future.get().getLeft());
+                encodedObjects.getRight().putAll(future.get().getRight());
             } catch (ExecutionException ex) {
                 if (ex.getCause() instanceof GPUdbException) {
                     throw (GPUdbException)ex.getCause();
@@ -722,7 +796,11 @@ public final class Avro {
      *
      * @throws GPUdbException if an encoding error occurs
      */
-    public static <T extends IndexedRecord> List<ByteBuffer> encode(List<T> objects, int start, int count, int threadCount, ExecutorService executor) throws GPUdbException {
+    static <T extends IndexedRecord> Pair<ArrayList<ByteBuffer>, Map<String, T>> encode(List<T> objects,
+                                                                                        int start,
+                                                                                        int count,
+                                                                                        int threadCount,
+                                                                                        ExecutorService executor) throws GPUdbException {
         return encodeInternal(null, objects, start, count, threadCount, executor);
     }
 
@@ -751,7 +829,12 @@ public final class Avro {
      *
      * @throws GPUdbException if an encoding error occurs
      */
-    public static <T> List<ByteBuffer> encode(TypeObjectMap<T> typeObjectMap, List<T> objects, int start, int count, int threadCount, ExecutorService executor) throws GPUdbException {
+    static <T> Pair<ArrayList<ByteBuffer>, Map<String, T>> encode(TypeObjectMap<T> typeObjectMap,
+                                                                  List<T> objects,
+                                                                  int start,
+                                                                  int count,
+                                                                  int threadCount,
+                                                                  ExecutorService executor) throws GPUdbException {
         return encodeInternal(typeObjectMap, objects, start, count, threadCount, executor);
     }
 
@@ -764,8 +847,8 @@ public final class Avro {
      *
      * @throws GPUdbException if an encoding error occurs
      */
-    public static <T extends IndexedRecord> List<ByteBuffer> encode(List<T> objects) throws GPUdbException {
-        return encodeInternal(null, objects, 0, objects.size());
+    public static <T> ArrayList<ByteBuffer> encode(List<T> objects) throws GPUdbException {
+        return encodeInternal(null, objects, 0, objects.size()).getLeft();
     }
 
     /**
@@ -779,7 +862,8 @@ public final class Avro {
      *
      * @throws GPUdbException if an encoding error occurs
      */
-    public static <T> List<ByteBuffer> encode(TypeObjectMap<T> typeObjectMap, List<T> objects) throws GPUdbException {
+    static <T> Pair<ArrayList<ByteBuffer>, Map<String, T>> encode(TypeObjectMap<T> typeObjectMap,
+                                                                  List<T> objects) throws GPUdbException {
         return encodeInternal(typeObjectMap, objects, 0, objects.size());
     }
 
@@ -799,7 +883,9 @@ public final class Avro {
      *
      * @throws GPUdbException if an encoding error occurs
      */
-    public static <T extends IndexedRecord> List<ByteBuffer> encode(List<T> objects, int threadCount, ExecutorService executor) throws GPUdbException {
+    static <T> Pair<ArrayList<ByteBuffer>, Map<String, T>> encode(List<T> objects,
+                                                                  int threadCount,
+                                                                  ExecutorService executor) throws GPUdbException {
         return encodeInternal(null, objects, 0, objects.size(), threadCount, executor);
     }
 
@@ -821,7 +907,10 @@ public final class Avro {
      *
      * @throws GPUdbException if an encoding error occurs
      */
-    public static <T> List<ByteBuffer> encode(TypeObjectMap<T> typeObjectMap, List<T> objects, int threadCount, ExecutorService executor) throws GPUdbException {
+    static <T> Pair<ArrayList<ByteBuffer>, Map<String, T>> encode(TypeObjectMap<T> typeObjectMap,
+                                                                  List<T> objects,
+                                                                  int threadCount,
+                                                                  ExecutorService executor) throws GPUdbException {
         return encodeInternal(typeObjectMap, objects, 0, objects.size(), threadCount, executor);
     }
 

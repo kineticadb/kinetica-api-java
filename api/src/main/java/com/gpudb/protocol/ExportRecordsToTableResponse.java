@@ -5,9 +5,7 @@
  */
 package com.gpudb.protocol;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
@@ -17,17 +15,17 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of results returned by {@link
- * com.gpudb.GPUdb#createGraph(CreateGraphRequest)}.
+ * com.gpudb.GPUdb#exportRecordsToTable(ExportRecordsToTableRequest)}.
  */
-public class CreateGraphResponse implements IndexedRecord {
+public class ExportRecordsToTableResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("CreateGraphResponse")
+            .record("ExportRecordsToTableResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("result").type().booleanType().noDefault()
-                .name("numNodes").type().longType().noDefault()
-                .name("numEdges").type().longType().noDefault()
-                .name("edgesIds").type().array().items().longType().noDefault()
+                .name("tableName").type().stringType().noDefault()
+                .name("countInserted").type().longType().noDefault()
+                .name("countSkipped").type().longType().noDefault()
+                .name("countUpdated").type().longType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -43,104 +41,103 @@ public class CreateGraphResponse implements IndexedRecord {
         return schema$;
     }
 
-    private boolean result;
-    private long numNodes;
-    private long numEdges;
-    private List<Long> edgesIds;
+    private String tableName;
+    private long countInserted;
+    private long countSkipped;
+    private long countUpdated;
     private Map<String, String> info;
 
 
     /**
-     * Constructs a CreateGraphResponse object with default parameters.
+     * Constructs an ExportRecordsToTableResponse object with default
+     * parameters.
      */
-    public CreateGraphResponse() {
+    public ExportRecordsToTableResponse() {
     }
 
     /**
      * 
-     * @return Indicates a successful creation on all servers.
+     * @return Value of {@code tableName}.
      * 
      */
-    public boolean getResult() {
-        return result;
+    public String getTableName() {
+        return tableName;
     }
 
     /**
      * 
-     * @param result  Indicates a successful creation on all servers.
+     * @param tableName  Value of {@code tableName}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public CreateGraphResponse setResult(boolean result) {
-        this.result = result;
+    public ExportRecordsToTableResponse setTableName(String tableName) {
+        this.tableName = (tableName == null) ? "" : tableName;
         return this;
     }
 
     /**
      * 
-     * @return Total number of nodes created.
+     * @return Number of records inserted into the target table.
      * 
      */
-    public long getNumNodes() {
-        return numNodes;
+    public long getCountInserted() {
+        return countInserted;
     }
 
     /**
      * 
-     * @param numNodes  Total number of nodes created.
+     * @param countInserted  Number of records inserted into the target table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public CreateGraphResponse setNumNodes(long numNodes) {
-        this.numNodes = numNodes;
+    public ExportRecordsToTableResponse setCountInserted(long countInserted) {
+        this.countInserted = countInserted;
         return this;
     }
 
     /**
      * 
-     * @return Total number of edges created.
+     * @return Number of records skipped.
      * 
      */
-    public long getNumEdges() {
-        return numEdges;
+    public long getCountSkipped() {
+        return countSkipped;
     }
 
     /**
      * 
-     * @param numEdges  Total number of edges created.
+     * @param countSkipped  Number of records skipped.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public CreateGraphResponse setNumEdges(long numEdges) {
-        this.numEdges = numEdges;
+    public ExportRecordsToTableResponse setCountSkipped(long countSkipped) {
+        this.countSkipped = countSkipped;
         return this;
     }
 
     /**
      * 
-     * @return [Deprecated] Edges given as pairs of node indices. Only
-     *         populated if export_create_results internal option is set to
-     *         true.
+     * @return [Not yet implemented]  Number of records updated within the
+     *         target table.
      * 
      */
-    public List<Long> getEdgesIds() {
-        return edgesIds;
+    public long getCountUpdated() {
+        return countUpdated;
     }
 
     /**
      * 
-     * @param edgesIds  [Deprecated] Edges given as pairs of node indices. Only
-     *                  populated if export_create_results internal option is
-     *                  set to true.
+     * @param countUpdated  [Not yet implemented]  Number of records updated
+     *                      within the target table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public CreateGraphResponse setEdgesIds(List<Long> edgesIds) {
-        this.edgesIds = (edgesIds == null) ? new ArrayList<Long>() : edgesIds;
+    public ExportRecordsToTableResponse setCountUpdated(long countUpdated) {
+        this.countUpdated = countUpdated;
         return this;
     }
 
@@ -160,7 +157,7 @@ public class CreateGraphResponse implements IndexedRecord {
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public CreateGraphResponse setInfo(Map<String, String> info) {
+    public ExportRecordsToTableResponse setInfo(Map<String, String> info) {
         this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
         return this;
     }
@@ -192,16 +189,16 @@ public class CreateGraphResponse implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.result;
+                return this.tableName;
 
             case 1:
-                return this.numNodes;
+                return this.countInserted;
 
             case 2:
-                return this.numEdges;
+                return this.countSkipped;
 
             case 3:
-                return this.edgesIds;
+                return this.countUpdated;
 
             case 4:
                 return this.info;
@@ -226,19 +223,19 @@ public class CreateGraphResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.result = (Boolean)value;
+                this.tableName = (String)value;
                 break;
 
             case 1:
-                this.numNodes = (Long)value;
+                this.countInserted = (Long)value;
                 break;
 
             case 2:
-                this.numEdges = (Long)value;
+                this.countSkipped = (Long)value;
                 break;
 
             case 3:
-                this.edgesIds = (List<Long>)value;
+                this.countUpdated = (Long)value;
                 break;
 
             case 4:
@@ -260,12 +257,12 @@ public class CreateGraphResponse implements IndexedRecord {
             return false;
         }
 
-        CreateGraphResponse that = (CreateGraphResponse)obj;
+        ExportRecordsToTableResponse that = (ExportRecordsToTableResponse)obj;
 
-        return ( ( this.result == that.result )
-                 && ( this.numNodes == that.numNodes )
-                 && ( this.numEdges == that.numEdges )
-                 && this.edgesIds.equals( that.edgesIds )
+        return ( this.tableName.equals( that.tableName )
+                 && ( this.countInserted == that.countInserted )
+                 && ( this.countSkipped == that.countSkipped )
+                 && ( this.countUpdated == that.countUpdated )
                  && this.info.equals( that.info ) );
     }
 
@@ -274,21 +271,21 @@ public class CreateGraphResponse implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "result" ) );
+        builder.append( gd.toString( "tableName" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.result ) );
+        builder.append( gd.toString( this.tableName ) );
         builder.append( ", " );
-        builder.append( gd.toString( "numNodes" ) );
+        builder.append( gd.toString( "countInserted" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.numNodes ) );
+        builder.append( gd.toString( this.countInserted ) );
         builder.append( ", " );
-        builder.append( gd.toString( "numEdges" ) );
+        builder.append( gd.toString( "countSkipped" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.numEdges ) );
+        builder.append( gd.toString( this.countSkipped ) );
         builder.append( ", " );
-        builder.append( gd.toString( "edgesIds" ) );
+        builder.append( gd.toString( "countUpdated" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.edgesIds ) );
+        builder.append( gd.toString( this.countUpdated ) );
         builder.append( ", " );
         builder.append( gd.toString( "info" ) );
         builder.append( ": " );
@@ -301,10 +298,10 @@ public class CreateGraphResponse implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + ((Boolean)this.result).hashCode();
-        hashCode = (31 * hashCode) + ((Long)this.numNodes).hashCode();
-        hashCode = (31 * hashCode) + ((Long)this.numEdges).hashCode();
-        hashCode = (31 * hashCode) + this.edgesIds.hashCode();
+        hashCode = (31 * hashCode) + this.tableName.hashCode();
+        hashCode = (31 * hashCode) + ((Long)this.countInserted).hashCode();
+        hashCode = (31 * hashCode) + ((Long)this.countSkipped).hashCode();
+        hashCode = (31 * hashCode) + ((Long)this.countUpdated).hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
