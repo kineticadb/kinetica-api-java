@@ -403,6 +403,52 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         private PropertyUpdatesMap() {  }
     }
 
+
+    /**
+     * Optional parameters.
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.Options#PERSIST
+     * PERSIST}: If {@code true} the system configuration will be written to
+     * disk upon successful application of this request. This will commit the
+     * changes from this request and any additional in-memory modifications.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.Options#TRUE TRUE}.
+     * </ul>
+     * The default value is an empty {@link Map}.
+     * A set of string constants for the parameter {@code options}.
+     */
+    public static final class Options {
+
+        /**
+         * If {@code true} the system configuration will be written to disk
+         * upon successful application of this request. This will commit the
+         * changes from this request and any additional in-memory
+         * modifications.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AlterSystemPropertiesRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AlterSystemPropertiesRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AlterSystemPropertiesRequest.Options#TRUE TRUE}.
+         */
+        public static final String PERSIST = "persist";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        private Options() {  }
+    }
+
     private Map<String, String> propertyUpdatesMap;
     private Map<String, String> options;
 
@@ -612,8 +658,28 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            kakfa poll will timeout if datasource has no
      *                            records.  The default value is '5'.
      *                            </ul>
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterSystemPropertiesRequest.Options#PERSIST
+     *                 PERSIST}: If {@code true} the system configuration will
+     *                 be written to disk upon successful application of this
+     *                 request. This will commit the changes from this request
+     *                 and any additional in-memory modifications.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterSystemPropertiesRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterSystemPropertiesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AlterSystemPropertiesRequest.Options#TRUE
+     *                 TRUE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public AlterSystemPropertiesRequest(Map<String, String> propertyUpdatesMap, Map<String, String> options) {
@@ -995,7 +1061,28 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.  The default value is an empty {@link Map}.
+     * @return Optional parameters.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.Options#PERSIST
+     *         PERSIST}: If {@code true} the system configuration will be
+     *         written to disk upon successful application of this request.
+     *         This will commit the changes from this request and any
+     *         additional in-memory modifications.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.Options#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.Options#TRUE
+     *         TRUE}.
+     *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -1004,8 +1091,28 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterSystemPropertiesRequest.Options#PERSIST
+     *                 PERSIST}: If {@code true} the system configuration will
+     *                 be written to disk upon successful application of this
+     *                 request. This will commit the changes from this request
+     *                 and any additional in-memory modifications.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterSystemPropertiesRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterSystemPropertiesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AlterSystemPropertiesRequest.Options#TRUE
+     *                 TRUE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

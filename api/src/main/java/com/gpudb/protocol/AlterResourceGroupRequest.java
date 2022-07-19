@@ -142,6 +142,21 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.AlterResourceGroupRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterResourceGroupRequest.Options#PERSIST PERSIST}:
+     * If {@code true} and a system-level change was requested, the system
+     * configuration will be written to disk upon successful application of
+     * this request. This will commit the changes from this request and any
+     * additional in-memory modifications.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AlterResourceGroupRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AlterResourceGroupRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AlterResourceGroupRequest.Options#TRUE TRUE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -188,6 +203,23 @@ public class AlterResourceGroupRequest implements IndexedRecord {
         public static final String TRUE = "true";
         public static final String FALSE = "false";
 
+        /**
+         * If {@code true} and a system-level change was requested, the system
+         * configuration will be written to disk upon successful application of
+         * this request. This will commit the changes from this request and any
+         * additional in-memory modifications.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AlterResourceGroupRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AlterResourceGroupRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AlterResourceGroupRequest.Options#TRUE TRUE}.
+         */
+        public static final String PERSIST = "persist";
+
         private Options() {  }
     }
 
@@ -214,7 +246,8 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      * parameters.
      * 
      * @param name  Name of the group to be altered. Must be an existing
-     *              resource group name.
+     *              resource group name or an empty string when used
+     *              inconjunction with the is_default_group option.
      * @param tierAttributes  Optional map containing tier names and their
      *                        respective attribute group limits.  The only
      *                        valid attribute limit that can be set is
@@ -300,6 +333,25 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.AlterResourceGroupRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Options#PERSIST
+     *                 PERSIST}: If {@code true} and a system-level change was
+     *                 requested, the system configuration will be written to
+     *                 disk upon successful application of this request. This
+     *                 will commit the changes from this request and any
+     *                 additional in-memory modifications.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Options#TRUE
+     *                 TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -315,7 +367,8 @@ public class AlterResourceGroupRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the group to be altered. Must be an existing resource
-     *         group name.
+     *         group name or an empty string when used inconjunction with the
+     *         is_default_group option.
      * 
      */
     public String getName() {
@@ -325,7 +378,8 @@ public class AlterResourceGroupRequest implements IndexedRecord {
     /**
      * 
      * @param name  Name of the group to be altered. Must be an existing
-     *              resource group name.
+     *              resource group name or an empty string when used
+     *              inconjunction with the is_default_group option.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -519,6 +573,23 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.AlterResourceGroupRequest.Options#FALSE
      *         FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterResourceGroupRequest.Options#PERSIST
+     *         PERSIST}: If {@code true} and a system-level change was
+     *         requested, the system configuration will be written to disk upon
+     *         successful application of this request. This will commit the
+     *         changes from this request and any additional in-memory
+     *         modifications.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterResourceGroupRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterResourceGroupRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AlterResourceGroupRequest.Options#TRUE TRUE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -566,6 +637,25 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.AlterResourceGroupRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Options#PERSIST
+     *                 PERSIST}: If {@code true} and a system-level change was
+     *                 requested, the system configuration will be written to
+     *                 disk upon successful application of this request. This
+     *                 will commit the changes from this request and any
+     *                 additional in-memory modifications.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Options#TRUE
+     *                 TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

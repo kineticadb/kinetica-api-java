@@ -53,7 +53,8 @@ public class AlterDatasourceRequest implements IndexedRecord {
      * LOCATION}: Location of the remote storage in
      * 'storage_provider_type://[storage_path[:storage_port]]' format.
      * <p>
-     * Supported storage provider types are 'hdfs' and 's3'.
+     * Supported storage provider types are 'azure','gcs','hdfs','kafka' and
+     * 's3'.
      *         <li> {@link
      * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#USER_NAME
      * USER_NAME}: Name of the remote system user; may be an empty string
@@ -138,6 +139,18 @@ public class AlterDatasourceRequest implements IndexedRecord {
      * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_OAUTH_TOKEN
      * AZURE_OAUTH_TOKEN}: Oauth token to access given storage container
      *         <li> {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#GCS_BUCKET_NAME
+     * GCS_BUCKET_NAME}: Name of the Google Cloud Storage bucket to use as the
+     * data source
+     *         <li> {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#GCS_PROJECT_ID
+     * GCS_PROJECT_ID}: Name of the Google Cloud project to use as the data
+     * source
+     *         <li> {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
+     * GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud service account keys to use for
+     * authenticating the data source
+     *         <li> {@link
      * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_URL
      * KAFKA_URL}: The publicly-accessible full path URL to the kafka broker,
      * e.g., 'http://172.123.45.67:9300'.
@@ -194,6 +207,12 @@ public class AlterDatasourceRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
      * TRUE}.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#SCHEMA_NAME
+     * SCHEMA_NAME}: Updates the schema name.  If {@code schema_name}
+     * doesn't exist, an error will be thrown. If {@code schema_name} is empty,
+     * then the user's
+     * default schema will be used.
      * </ul>
      * A set of string constants for the parameter {@code
      * datasourceUpdatesMap}.
@@ -204,7 +223,8 @@ public class AlterDatasourceRequest implements IndexedRecord {
          * Location of the remote storage in
          * 'storage_provider_type://[storage_path[:storage_port]]' format.
          * <p>
-         * Supported storage provider types are 'hdfs' and 's3'.
+         * Supported storage provider types are 'azure','gcs','hdfs','kafka'
+         * and 's3'.
          */
         public static final String LOCATION = "location";
 
@@ -323,6 +343,22 @@ public class AlterDatasourceRequest implements IndexedRecord {
         public static final String AZURE_OAUTH_TOKEN = "azure_oauth_token";
 
         /**
+         * Name of the Google Cloud Storage bucket to use as the data source
+         */
+        public static final String GCS_BUCKET_NAME = "gcs_bucket_name";
+
+        /**
+         * Name of the Google Cloud project to use as the data source
+         */
+        public static final String GCS_PROJECT_ID = "gcs_project_id";
+
+        /**
+         * Google Cloud service account keys to use for authenticating the data
+         * source
+         */
+        public static final String GCS_SERVICE_ACCOUNT_KEYS = "gcs_service_account_keys";
+
+        /**
          * The publicly-accessible full path URL to the kafka broker, e.g.,
          * 'http://172.123.45.67:9300'.
          */
@@ -387,6 +423,14 @@ public class AlterDatasourceRequest implements IndexedRecord {
          */
         public static final String USE_HTTPS = "use_https";
 
+        /**
+         * Updates the schema name.  If {@code schema_name}
+         * doesn't exist, an error will be thrown. If {@code schema_name} is
+         * empty, then the user's
+         * default schema will be used.
+         */
+        public static final String SCHEMA_NAME = "schema_name";
+
         private DatasourceUpdatesMap() {  }
     }
 
@@ -419,8 +463,8 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                              in
      *                              'storage_provider_type://[storage_path[:storage_port]]'
      *                              format.
-     *                              Supported storage provider types are 'hdfs'
-     *                              and 's3'.
+     *                              Supported storage provider types are
+     *                              'azure','gcs','hdfs','kafka' and 's3'.
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#USER_NAME
      *                              USER_NAME}: Name of the remote system user;
@@ -518,6 +562,19 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                              AZURE_OAUTH_TOKEN}: Oauth token to access
      *                              given storage container
      *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#GCS_BUCKET_NAME
+     *                              GCS_BUCKET_NAME}: Name of the Google Cloud
+     *                              Storage bucket to use as the data source
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#GCS_PROJECT_ID
+     *                              GCS_PROJECT_ID}: Name of the Google Cloud
+     *                              project to use as the data source
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
+     *                              GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud
+     *                              service account keys to use for
+     *                              authenticating the data source
+     *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_URL
      *                              KAFKA_URL}: The publicly-accessible full
      *                              path URL to the kafka broker, e.g.,
@@ -579,6 +636,14 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                              The default value is {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
      *                              TRUE}.
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#SCHEMA_NAME
+     *                              SCHEMA_NAME}: Updates the schema name.  If
+     *                              {@code schema_name}
+     *                              doesn't exist, an error will be thrown. If
+     *                              {@code schema_name} is empty, then the
+     *                              user's
+     *                              default schema will be used.
      *                              </ul>
      * @param options  Optional parameters.
      * 
@@ -621,7 +686,8 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#LOCATION
      *         LOCATION}: Location of the remote storage in
      *         'storage_provider_type://[storage_path[:storage_port]]' format.
-     *         Supported storage provider types are 'hdfs' and 's3'.
+     *         Supported storage provider types are
+     *         'azure','gcs','hdfs','kafka' and 's3'.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#USER_NAME
      *         USER_NAME}: Name of the remote system user; may be an empty
@@ -714,6 +780,18 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         AZURE_OAUTH_TOKEN}: Oauth token to access given storage
      *         container
      *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#GCS_BUCKET_NAME
+     *         GCS_BUCKET_NAME}: Name of the Google Cloud Storage bucket to use
+     *         as the data source
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#GCS_PROJECT_ID
+     *         GCS_PROJECT_ID}: Name of the Google Cloud project to use as the
+     *         data source
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
+     *         GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud service account keys to
+     *         use for authenticating the data source
+     *                 <li> {@link
      *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_URL
      *         KAFKA_URL}: The publicly-accessible full path URL to the kafka
      *         broker, e.g., 'http://172.123.45.67:9300'.
@@ -771,6 +849,12 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
      *         TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#SCHEMA_NAME
+     *         SCHEMA_NAME}: Updates the schema name.  If {@code schema_name}
+     *         doesn't exist, an error will be thrown. If {@code schema_name}
+     *         is empty, then the user's
+     *         default schema will be used.
      *         </ul>
      * 
      */
@@ -789,8 +873,8 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                              in
      *                              'storage_provider_type://[storage_path[:storage_port]]'
      *                              format.
-     *                              Supported storage provider types are 'hdfs'
-     *                              and 's3'.
+     *                              Supported storage provider types are
+     *                              'azure','gcs','hdfs','kafka' and 's3'.
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#USER_NAME
      *                              USER_NAME}: Name of the remote system user;
@@ -888,6 +972,19 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                              AZURE_OAUTH_TOKEN}: Oauth token to access
      *                              given storage container
      *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#GCS_BUCKET_NAME
+     *                              GCS_BUCKET_NAME}: Name of the Google Cloud
+     *                              Storage bucket to use as the data source
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#GCS_PROJECT_ID
+     *                              GCS_PROJECT_ID}: Name of the Google Cloud
+     *                              project to use as the data source
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
+     *                              GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud
+     *                              service account keys to use for
+     *                              authenticating the data source
+     *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_URL
      *                              KAFKA_URL}: The publicly-accessible full
      *                              path URL to the kafka broker, e.g.,
@@ -949,6 +1046,14 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                              The default value is {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
      *                              TRUE}.
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#SCHEMA_NAME
+     *                              SCHEMA_NAME}: Updates the schema name.  If
+     *                              {@code schema_name}
+     *                              doesn't exist, an error will be thrown. If
+     *                              {@code schema_name} is empty, then the
+     *                              user's
+     *                              default schema will be used.
      *                              </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

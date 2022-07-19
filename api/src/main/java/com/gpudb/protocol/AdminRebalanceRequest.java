@@ -22,26 +22,25 @@ import org.apache.avro.generic.IndexedRecord;
  * distributed (as much as possible) across all the ranks.
  * <p>
  * The database must be offline for this operation, see {@link
- * com.gpudb.GPUdb#adminOffline(AdminOfflineRequest)}.
+ * com.gpudb.GPUdb#adminOffline(AdminOfflineRequest)}
  * <p>
- * If {@link com.gpudb.GPUdb#adminRebalance(AdminRebalanceRequest)} is invoked
- * after a change is made to the
- * cluster, e.g., a host was added or removed,
- * <a href="../../../../../../concepts/tables/#sharding" target="_top">sharded
- * data</a> will be
- * evenly redistributed across the cluster by number of shards per rank
- * while unsharded data will be redistributed across the cluster by data
- * size per rank.
- * <p>
- * If {@link com.gpudb.GPUdb#adminRebalance(AdminRebalanceRequest)} is invoked
- * at some point when unsharded
- * data (a.k.a. <a href="../../../../../../concepts/tables/#random-sharding"
+ * * If {@link com.gpudb.GPUdb#adminRebalance(AdminRebalanceRequest)} is
+ * invoked after a change is
+ *   made to the cluster, e.g., a host was added or removed,
+ *   <a href="../../../../../../concepts/tables/#sharding"
+ * target="_top">sharded data</a> will be
+ *   evenly redistributed across the cluster by number of shards per rank
+ *   while unsharded data will be redistributed across the cluster by data
+ *   size per rank
+ * * If {@link com.gpudb.GPUdb#adminRebalance(AdminRebalanceRequest)}
+ *   is invoked at some point when unsharded data (a.k.a.
+ *   <a href="../../../../../../concepts/tables/#random-sharding"
  * target="_top">randomly-sharded</a>)
- * in the cluster is unevenly distributed over time, sharded data will
- * not move while unsharded data will be redistributed across the
- * cluster by data size per rank.
+ *   in the cluster is unevenly distributed over time, sharded data will
+ *   not move while unsharded data will be redistributed across the
+ *   cluster by data size per rank
  * <p>
- * NOTE: Replicated data will not move as a result of this call.
+ * NOTE: Replicated data will not move as a result of this call
  * <p>
  * This endpoint's processing time depends on the amount of data in the system,
  * thus the API call may time out if run directly.  It is recommended to run

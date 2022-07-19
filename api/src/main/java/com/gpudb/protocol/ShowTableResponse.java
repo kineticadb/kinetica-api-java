@@ -319,12 +319,7 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String ATTRIBUTE_INDEXES = "attribute_indexes";
 
         /**
-         * Semicolon-separated list of <a
-         * href="../../../../../../concepts/compression/"
-         * target="_top">compressed</a> columns with the corresponding
-         * compression type for each; e.g.:
-         * {first_name,snappy};{last_name,lz4hc}. Not present for schemas.  The
-         * default value is ''.
+         * No longer supported.  The default value is ''.
          */
         public static final String COMPRESSED_COLUMNS = "compressed_columns";
 

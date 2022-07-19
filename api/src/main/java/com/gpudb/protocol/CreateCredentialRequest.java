@@ -66,8 +66,16 @@ public class CreateCredentialRequest implements IndexedRecord {
      * AZURE_STORAGE_KEY}
      *         <li> {@link
      * com.gpudb.protocol.CreateCredentialRequest.Type#DOCKER DOCKER}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateCredentialRequest.Type#GCS_SERVICE_ACCOUNT_ID
+     * GCS_SERVICE_ACCOUNT_ID}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateCredentialRequest.Type#GCS_SERVICE_ACCOUNT_KEYS
+     * GCS_SERVICE_ACCOUNT_KEYS}
      *         <li> {@link com.gpudb.protocol.CreateCredentialRequest.Type#HDFS
      * HDFS}
+     *         <li> {@link com.gpudb.protocol.CreateCredentialRequest.Type#JDBC
+     * JDBC}
      *         <li> {@link
      * com.gpudb.protocol.CreateCredentialRequest.Type#KAFKA KAFKA}
      * </ul>
@@ -81,7 +89,10 @@ public class CreateCredentialRequest implements IndexedRecord {
         public static final String AZURE_SAS = "azure_sas";
         public static final String AZURE_STORAGE_KEY = "azure_storage_key";
         public static final String DOCKER = "docker";
+        public static final String GCS_SERVICE_ACCOUNT_ID = "gcs_service_account_id";
+        public static final String GCS_SERVICE_ACCOUNT_KEYS = "gcs_service_account_keys";
         public static final String HDFS = "hdfs";
+        public static final String JDBC = "jdbc";
         public static final String KAFKA = "kafka";
 
         private Type() {  }
@@ -138,7 +149,15 @@ public class CreateCredentialRequest implements IndexedRecord {
      *              com.gpudb.protocol.CreateCredentialRequest.Type#DOCKER
      *              DOCKER}
      *                      <li> {@link
+     *              com.gpudb.protocol.CreateCredentialRequest.Type#GCS_SERVICE_ACCOUNT_ID
+     *              GCS_SERVICE_ACCOUNT_ID}
+     *                      <li> {@link
+     *              com.gpudb.protocol.CreateCredentialRequest.Type#GCS_SERVICE_ACCOUNT_KEYS
+     *              GCS_SERVICE_ACCOUNT_KEYS}
+     *                      <li> {@link
      *              com.gpudb.protocol.CreateCredentialRequest.Type#HDFS HDFS}
+     *                      <li> {@link
+     *              com.gpudb.protocol.CreateCredentialRequest.Type#JDBC JDBC}
      *                      <li> {@link
      *              com.gpudb.protocol.CreateCredentialRequest.Type#KAFKA
      *              KAFKA}
@@ -209,7 +228,15 @@ public class CreateCredentialRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateCredentialRequest.Type#DOCKER DOCKER}
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateCredentialRequest.Type#GCS_SERVICE_ACCOUNT_ID
+     *         GCS_SERVICE_ACCOUNT_ID}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateCredentialRequest.Type#GCS_SERVICE_ACCOUNT_KEYS
+     *         GCS_SERVICE_ACCOUNT_KEYS}
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateCredentialRequest.Type#HDFS HDFS}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateCredentialRequest.Type#JDBC JDBC}
      *                 <li> {@link
      *         com.gpudb.protocol.CreateCredentialRequest.Type#KAFKA KAFKA}
      *         </ul>
@@ -246,7 +273,15 @@ public class CreateCredentialRequest implements IndexedRecord {
      *              com.gpudb.protocol.CreateCredentialRequest.Type#DOCKER
      *              DOCKER}
      *                      <li> {@link
+     *              com.gpudb.protocol.CreateCredentialRequest.Type#GCS_SERVICE_ACCOUNT_ID
+     *              GCS_SERVICE_ACCOUNT_ID}
+     *                      <li> {@link
+     *              com.gpudb.protocol.CreateCredentialRequest.Type#GCS_SERVICE_ACCOUNT_KEYS
+     *              GCS_SERVICE_ACCOUNT_KEYS}
+     *                      <li> {@link
      *              com.gpudb.protocol.CreateCredentialRequest.Type#HDFS HDFS}
+     *                      <li> {@link
+     *              com.gpudb.protocol.CreateCredentialRequest.Type#JDBC JDBC}
      *                      <li> {@link
      *              com.gpudb.protocol.CreateCredentialRequest.Type#KAFKA
      *              KAFKA}

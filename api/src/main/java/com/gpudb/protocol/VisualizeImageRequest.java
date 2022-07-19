@@ -160,6 +160,17 @@ public class VisualizeImageRequest implements IndexedRecord {
     }
 
 
+    public static final class Options {
+
+        public static final String TRACK_ID_COLUMN_NAME = "track_id_column_name";
+
+        public static final String TRACK_ORDER_COLUMN_NAME = "track_order_column_name";
+
+
+        private Options() {  }
+    }
+
+
     private List<String> tableNames;
     private List<String> worldTableNames;
     private String xColumnName;

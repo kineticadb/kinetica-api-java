@@ -506,6 +506,13 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * number of records that can be  written to the bad-record-table.
      * Default value is 10000
      *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
+     * BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions: A positive integer
+     * indicating the maximum number of records that can be written to the
+     * bad-record-table per file/payload. Default value will be
+     * 'bad_record_table_limit' and total size of the table per rank is limited
+     * to 'bad_record_table_limit'
+     *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#BATCH_SIZE
      * BATCH_SIZE}: Internal tuning parameter--number of records per batch when
      * inserting data.
@@ -933,6 +940,13 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#SPEED SPEED}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY
+     * REMOTE_QUERY}: Remote SQL query from which data will be sourced
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_FILTER_COLUMN
+     * REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used for splitting the
+     * query into multiple sub-queries.  The default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -951,6 +965,15 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * be  written to the bad-record-table.   Default value is 10000
          */
         public static final String BAD_RECORD_TABLE_LIMIT = "bad_record_table_limit";
+
+        /**
+         * For subscriptions: A positive integer indicating the maximum number
+         * of records that can be written to the bad-record-table per
+         * file/payload. Default value will be 'bad_record_table_limit' and
+         * total size of the table per rank is limited to
+         * 'bad_record_table_limit'
+         */
+        public static final String BAD_RECORD_TABLE_LIMIT_PER_INPUT = "bad_record_table_limit_per_input";
 
         /**
          * Internal tuning parameter--number of records per batch when
@@ -1592,6 +1615,17 @@ public class CreateTableExternalRequest implements IndexedRecord {
          */
         public static final String SPEED = "speed";
 
+        /**
+         * Remote SQL query from which data will be sourced
+         */
+        public static final String REMOTE_QUERY = "remote_query";
+
+        /**
+         * Name of column to be used for splitting the query into multiple
+         * sub-queries.  The default value is ''.
+         */
+        public static final String REMOTE_QUERY_FILTER_COLUMN = "remote_query_filter_column";
+
         private Options() {  }
     }
 
@@ -1645,11 +1679,13 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                   accessible to the gpudb user, residing on the path (or
      *                   relative to the path) specified by the
      *                   external files directory in the Kinetica
-     *                   <a href="../../../../../../config/#external-files"
+     *                   <a
+     *                   href="../../../../../../config/#config-main-external-files"
      *                   target="_top">configuration file</a>. Wildcards (*)
-     *                   can be used to specify a group of files
-     *                   Prefix matching is supported, the prefixes must be
-     *                   aligned with directories.
+     *                   can be used to
+     *                   specify a group of files.  Prefix matching is
+     *                   supported, the prefixes must be aligned with
+     *                   directories.
      *                   If the first path ends in .tsv, the text delimiter
      *                   will be defaulted to a tab character.
      *                   If the first path ends in .psv, the text delimiter
@@ -1879,6 +1915,14 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 BAD_RECORD_TABLE_LIMIT}: A positive integer indicating
      *                 the maximum number of records that can be  written to
      *                 the bad-record-table.   Default value is 10000
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
+     *                 BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions: A
+     *                 positive integer indicating the maximum number of
+     *                 records that can be written to the bad-record-table per
+     *                 file/payload. Default value will be
+     *                 'bad_record_table_limit' and total size of the table per
+     *                 rank is limited to 'bad_record_table_limit'
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#BATCH_SIZE
      *                 BATCH_SIZE}: Internal tuning parameter--number of
@@ -2334,6 +2378,15 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SPEED
      *                 SPEED}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY
+     *                 REMOTE_QUERY}: Remote SQL query from which data will be
+     *                 sourced
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_FILTER_COLUMN
+     *                 REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used
+     *                 for splitting the query into multiple sub-queries.  The
+     *                 default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -2402,10 +2455,11 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         accessible to the gpudb user, residing on the path (or relative
      *         to the path) specified by the
      *         external files directory in the Kinetica
-     *         <a href="../../../../../../config/#external-files"
+     *         <a href="../../../../../../config/#config-main-external-files"
      *         target="_top">configuration file</a>. Wildcards (*) can be used
-     *         to specify a group of files
-     *         Prefix matching is supported, the prefixes must be aligned with
+     *         to
+     *         specify a group of files.  Prefix matching is supported, the
+     *         prefixes must be aligned with
      *         directories.
      *         If the first path ends in .tsv, the text delimiter will be
      *         defaulted to a tab character.
@@ -2439,11 +2493,13 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                   accessible to the gpudb user, residing on the path (or
      *                   relative to the path) specified by the
      *                   external files directory in the Kinetica
-     *                   <a href="../../../../../../config/#external-files"
+     *                   <a
+     *                   href="../../../../../../config/#config-main-external-files"
      *                   target="_top">configuration file</a>. Wildcards (*)
-     *                   can be used to specify a group of files
-     *                   Prefix matching is supported, the prefixes must be
-     *                   aligned with directories.
+     *                   can be used to
+     *                   specify a group of files.  Prefix matching is
+     *                   supported, the prefixes must be aligned with
+     *                   directories.
      *                   If the first path ends in .tsv, the text delimiter
      *                   will be defaulted to a tab character.
      *                   If the first path ends in .psv, the text delimiter
@@ -2918,6 +2974,13 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         maximum number of records that can be  written to the
      *         bad-record-table.   Default value is 10000
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
+     *         BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions: A positive
+     *         integer indicating the maximum number of records that can be
+     *         written to the bad-record-table per file/payload. Default value
+     *         will be 'bad_record_table_limit' and total size of the table per
+     *         rank is limited to 'bad_record_table_limit'
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#BATCH_SIZE
      *         BATCH_SIZE}: Internal tuning parameter--number of records per
      *         batch when inserting data.
@@ -3353,6 +3416,14 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#SPEED
      *         SPEED}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY
+     *         REMOTE_QUERY}: Remote SQL query from which data will be sourced
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_FILTER_COLUMN
+     *         REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used for
+     *         splitting the query into multiple sub-queries.  The default
+     *         value is ''.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -3376,6 +3447,14 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 BAD_RECORD_TABLE_LIMIT}: A positive integer indicating
      *                 the maximum number of records that can be  written to
      *                 the bad-record-table.   Default value is 10000
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
+     *                 BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions: A
+     *                 positive integer indicating the maximum number of
+     *                 records that can be written to the bad-record-table per
+     *                 file/payload. Default value will be
+     *                 'bad_record_table_limit' and total size of the table per
+     *                 rank is limited to 'bad_record_table_limit'
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#BATCH_SIZE
      *                 BATCH_SIZE}: Internal tuning parameter--number of
@@ -3831,6 +3910,15 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SPEED
      *                 SPEED}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY
+     *                 REMOTE_QUERY}: Remote SQL query from which data will be
+     *                 sourced
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_FILTER_COLUMN
+     *                 REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used
+     *                 for splitting the query into multiple sub-queries.  The
+     *                 default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

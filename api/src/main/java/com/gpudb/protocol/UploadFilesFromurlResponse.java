@@ -17,17 +17,15 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of results returned by {@link
- * com.gpudb.GPUdb#createGraph(CreateGraphRequest)}.
+ * com.gpudb.GPUdb#uploadFilesFromurl(UploadFilesFromurlRequest)}.
  */
-public class CreateGraphResponse implements IndexedRecord {
+public class UploadFilesFromurlResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("CreateGraphResponse")
+            .record("UploadFilesFromurlResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("result").type().booleanType().noDefault()
-                .name("numNodes").type().longType().noDefault()
-                .name("numEdges").type().longType().noDefault()
-                .name("edgesIds").type().array().items().longType().noDefault()
+                .name("successfulFileNames").type().array().items().stringType().noDefault()
+                .name("successfulUrls").type().array().items().stringType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -43,104 +41,58 @@ public class CreateGraphResponse implements IndexedRecord {
         return schema$;
     }
 
-    private boolean result;
-    private long numNodes;
-    private long numEdges;
-    private List<Long> edgesIds;
+    private List<String> successfulFileNames;
+    private List<String> successfulUrls;
     private Map<String, String> info;
 
 
     /**
-     * Constructs a CreateGraphResponse object with default parameters.
+     * Constructs an UploadFilesFromurlResponse object with default parameters.
      */
-    public CreateGraphResponse() {
+    public UploadFilesFromurlResponse() {
     }
 
     /**
      * 
-     * @return Indicates a successful creation on all servers.
+     * @return List of {@code fileNames} that were successfully uploaded.
      * 
      */
-    public boolean getResult() {
-        return result;
+    public List<String> getSuccessfulFileNames() {
+        return successfulFileNames;
     }
 
     /**
      * 
-     * @param result  Indicates a successful creation on all servers.
+     * @param successfulFileNames  List of {@code fileNames} that were
+     *                             successfully uploaded.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public CreateGraphResponse setResult(boolean result) {
-        this.result = result;
+    public UploadFilesFromurlResponse setSuccessfulFileNames(List<String> successfulFileNames) {
+        this.successfulFileNames = (successfulFileNames == null) ? new ArrayList<String>() : successfulFileNames;
         return this;
     }
 
     /**
      * 
-     * @return Total number of nodes created.
+     * @return List of {@code urls} that were successfully uploaded.
      * 
      */
-    public long getNumNodes() {
-        return numNodes;
+    public List<String> getSuccessfulUrls() {
+        return successfulUrls;
     }
 
     /**
      * 
-     * @param numNodes  Total number of nodes created.
+     * @param successfulUrls  List of {@code urls} that were successfully
+     *                        uploaded.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public CreateGraphResponse setNumNodes(long numNodes) {
-        this.numNodes = numNodes;
-        return this;
-    }
-
-    /**
-     * 
-     * @return Total number of edges created.
-     * 
-     */
-    public long getNumEdges() {
-        return numEdges;
-    }
-
-    /**
-     * 
-     * @param numEdges  Total number of edges created.
-     * 
-     * @return {@code this} to mimic the builder pattern.
-     * 
-     */
-    public CreateGraphResponse setNumEdges(long numEdges) {
-        this.numEdges = numEdges;
-        return this;
-    }
-
-    /**
-     * 
-     * @return [Deprecated] Edges given as pairs of node indices. Only
-     *         populated if export_create_results internal option is set to
-     *         true.
-     * 
-     */
-    public List<Long> getEdgesIds() {
-        return edgesIds;
-    }
-
-    /**
-     * 
-     * @param edgesIds  [Deprecated] Edges given as pairs of node indices. Only
-     *                  populated if export_create_results internal option is
-     *                  set to true.
-     * 
-     * @return {@code this} to mimic the builder pattern.
-     * 
-     */
-    public CreateGraphResponse setEdgesIds(List<Long> edgesIds) {
-        this.edgesIds = (edgesIds == null) ? new ArrayList<Long>() : edgesIds;
+    public UploadFilesFromurlResponse setSuccessfulUrls(List<String> successfulUrls) {
+        this.successfulUrls = (successfulUrls == null) ? new ArrayList<String>() : successfulUrls;
         return this;
     }
 
@@ -160,7 +112,7 @@ public class CreateGraphResponse implements IndexedRecord {
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public CreateGraphResponse setInfo(Map<String, String> info) {
+    public UploadFilesFromurlResponse setInfo(Map<String, String> info) {
         this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
         return this;
     }
@@ -192,18 +144,12 @@ public class CreateGraphResponse implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.result;
+                return this.successfulFileNames;
 
             case 1:
-                return this.numNodes;
+                return this.successfulUrls;
 
             case 2:
-                return this.numEdges;
-
-            case 3:
-                return this.edgesIds;
-
-            case 4:
                 return this.info;
 
             default:
@@ -226,22 +172,14 @@ public class CreateGraphResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.result = (Boolean)value;
+                this.successfulFileNames = (List<String>)value;
                 break;
 
             case 1:
-                this.numNodes = (Long)value;
+                this.successfulUrls = (List<String>)value;
                 break;
 
             case 2:
-                this.numEdges = (Long)value;
-                break;
-
-            case 3:
-                this.edgesIds = (List<Long>)value;
-                break;
-
-            case 4:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -260,12 +198,10 @@ public class CreateGraphResponse implements IndexedRecord {
             return false;
         }
 
-        CreateGraphResponse that = (CreateGraphResponse)obj;
+        UploadFilesFromurlResponse that = (UploadFilesFromurlResponse)obj;
 
-        return ( ( this.result == that.result )
-                 && ( this.numNodes == that.numNodes )
-                 && ( this.numEdges == that.numEdges )
-                 && this.edgesIds.equals( that.edgesIds )
+        return ( this.successfulFileNames.equals( that.successfulFileNames )
+                 && this.successfulUrls.equals( that.successfulUrls )
                  && this.info.equals( that.info ) );
     }
 
@@ -274,21 +210,13 @@ public class CreateGraphResponse implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "result" ) );
+        builder.append( gd.toString( "successfulFileNames" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.result ) );
+        builder.append( gd.toString( this.successfulFileNames ) );
         builder.append( ", " );
-        builder.append( gd.toString( "numNodes" ) );
+        builder.append( gd.toString( "successfulUrls" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.numNodes ) );
-        builder.append( ", " );
-        builder.append( gd.toString( "numEdges" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.numEdges ) );
-        builder.append( ", " );
-        builder.append( gd.toString( "edgesIds" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.edgesIds ) );
+        builder.append( gd.toString( this.successfulUrls ) );
         builder.append( ", " );
         builder.append( gd.toString( "info" ) );
         builder.append( ": " );
@@ -301,10 +229,8 @@ public class CreateGraphResponse implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + ((Boolean)this.result).hashCode();
-        hashCode = (31 * hashCode) + ((Long)this.numNodes).hashCode();
-        hashCode = (31 * hashCode) + ((Long)this.numEdges).hashCode();
-        hashCode = (31 * hashCode) + this.edgesIds.hashCode();
+        hashCode = (31 * hashCode) + this.successfulFileNames.hashCode();
+        hashCode = (31 * hashCode) + this.successfulUrls.hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }

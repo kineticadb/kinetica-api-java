@@ -5,9 +5,7 @@
  */
 package com.gpudb.protocol;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
@@ -17,15 +15,14 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of results returned by {@link
- * com.gpudb.GPUdb#solveGraph(SolveGraphRequest)}.
+ * com.gpudb.GPUdb#alterTableMonitor(AlterTableMonitorRequest)}.
  */
-public class SolveGraphResponse implements IndexedRecord {
+public class AlterTableMonitorResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("SolveGraphResponse")
+            .record("AlterTableMonitorResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("result").type().booleanType().noDefault()
-                .name("resultPerDestinationNode").type().array().items().floatType().noDefault()
+                .name("topicId").type().stringType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -41,62 +38,34 @@ public class SolveGraphResponse implements IndexedRecord {
         return schema$;
     }
 
-    private boolean result;
-    private List<Float> resultPerDestinationNode;
+    private String topicId;
     private Map<String, String> info;
 
 
     /**
-     * Constructs a SolveGraphResponse object with default parameters.
+     * Constructs an AlterTableMonitorResponse object with default parameters.
      */
-    public SolveGraphResponse() {
+    public AlterTableMonitorResponse() {
     }
 
     /**
      * 
-     * @return Indicates a successful solution on all servers.
+     * @return Value of {@code topicId}.
      * 
      */
-    public boolean getResult() {
-        return result;
+    public String getTopicId() {
+        return topicId;
     }
 
     /**
      * 
-     * @param result  Indicates a successful solution on all servers.
+     * @param topicId  Value of {@code topicId}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public SolveGraphResponse setResult(boolean result) {
-        this.result = result;
-        return this;
-    }
-
-    /**
-     * 
-     * @return Cost or Pagerank (based on solver type) for each destination
-     *         node requested. Only populated if 'export_solve_results' option
-     *         is set to true.
-     * 
-     */
-    public List<Float> getResultPerDestinationNode() {
-        return resultPerDestinationNode;
-    }
-
-    /**
-     * 
-     * @param resultPerDestinationNode  Cost or Pagerank (based on solver type)
-     *                                  for each destination node requested.
-     *                                  Only populated if
-     *                                  'export_solve_results' option is set to
-     *                                  true.
-     * 
-     * @return {@code this} to mimic the builder pattern.
-     * 
-     */
-    public SolveGraphResponse setResultPerDestinationNode(List<Float> resultPerDestinationNode) {
-        this.resultPerDestinationNode = (resultPerDestinationNode == null) ? new ArrayList<Float>() : resultPerDestinationNode;
+    public AlterTableMonitorResponse setTopicId(String topicId) {
+        this.topicId = (topicId == null) ? "" : topicId;
         return this;
     }
 
@@ -116,7 +85,7 @@ public class SolveGraphResponse implements IndexedRecord {
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public SolveGraphResponse setInfo(Map<String, String> info) {
+    public AlterTableMonitorResponse setInfo(Map<String, String> info) {
         this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
         return this;
     }
@@ -148,12 +117,9 @@ public class SolveGraphResponse implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.result;
+                return this.topicId;
 
             case 1:
-                return this.resultPerDestinationNode;
-
-            case 2:
                 return this.info;
 
             default:
@@ -176,14 +142,10 @@ public class SolveGraphResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.result = (Boolean)value;
+                this.topicId = (String)value;
                 break;
 
             case 1:
-                this.resultPerDestinationNode = (List<Float>)value;
-                break;
-
-            case 2:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -202,10 +164,9 @@ public class SolveGraphResponse implements IndexedRecord {
             return false;
         }
 
-        SolveGraphResponse that = (SolveGraphResponse)obj;
+        AlterTableMonitorResponse that = (AlterTableMonitorResponse)obj;
 
-        return ( ( this.result == that.result )
-                 && this.resultPerDestinationNode.equals( that.resultPerDestinationNode )
+        return ( this.topicId.equals( that.topicId )
                  && this.info.equals( that.info ) );
     }
 
@@ -214,13 +175,9 @@ public class SolveGraphResponse implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "result" ) );
+        builder.append( gd.toString( "topicId" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.result ) );
-        builder.append( ", " );
-        builder.append( gd.toString( "resultPerDestinationNode" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.resultPerDestinationNode ) );
+        builder.append( gd.toString( this.topicId ) );
         builder.append( ", " );
         builder.append( gd.toString( "info" ) );
         builder.append( ": " );
@@ -233,8 +190,7 @@ public class SolveGraphResponse implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + ((Boolean)this.result).hashCode();
-        hashCode = (31 * hashCode) + this.resultPerDestinationNode.hashCode();
+        hashCode = (31 * hashCode) + this.topicId.hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }

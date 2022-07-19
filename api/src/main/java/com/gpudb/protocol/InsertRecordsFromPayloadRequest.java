@@ -477,6 +477,13 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * number of records that can be  written to the bad-record-table.
      * Default value is 10000
      *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
+     * BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions: A positive integer
+     * indicating the maximum number of records that can be written to the
+     * bad-record-table per file/payload. Default value will be
+     * 'bad_record_table_limit' and total size of the table per rank is limited
+     * to 'bad_record_table_limit'
+     *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BATCH_SIZE
      * BATCH_SIZE}: Internal tuning parameter--number of records per batch when
      * inserting data.
@@ -879,6 +886,15 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * be  written to the bad-record-table.   Default value is 10000
          */
         public static final String BAD_RECORD_TABLE_LIMIT = "bad_record_table_limit";
+
+        /**
+         * For subscriptions: A positive integer indicating the maximum number
+         * of records that can be written to the bad-record-table per
+         * file/payload. Default value will be 'bad_record_table_limit' and
+         * total size of the table per rank is limited to
+         * 'bad_record_table_limit'
+         */
+        public static final String BAD_RECORD_TABLE_LIMIT_PER_INPUT = "bad_record_table_limit_per_input";
 
         /**
          * Internal tuning parameter--number of records per batch when
@@ -1713,6 +1729,14 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 BAD_RECORD_TABLE_LIMIT}: A positive integer indicating
      *                 the maximum number of records that can be  written to
      *                 the bad-record-table.   Default value is 10000
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
+     *                 BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions: A
+     *                 positive integer indicating the maximum number of
+     *                 records that can be written to the bad-record-table per
+     *                 file/payload. Default value will be
+     *                 'bad_record_table_limit' and total size of the table per
+     *                 rank is limited to 'bad_record_table_limit'
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BATCH_SIZE
      *                 BATCH_SIZE}: Internal tuning parameter--number of
@@ -2654,6 +2678,13 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         maximum number of records that can be  written to the
      *         bad-record-table.   Default value is 10000
      *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
+     *         BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions: A positive
+     *         integer indicating the maximum number of records that can be
+     *         written to the bad-record-table per file/payload. Default value
+     *         will be 'bad_record_table_limit' and total size of the table per
+     *         rank is limited to 'bad_record_table_limit'
+     *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BATCH_SIZE
      *         BATCH_SIZE}: Internal tuning parameter--number of records per
      *         batch when inserting data.
@@ -3068,6 +3099,14 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 BAD_RECORD_TABLE_LIMIT}: A positive integer indicating
      *                 the maximum number of records that can be  written to
      *                 the bad-record-table.   Default value is 10000
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
+     *                 BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions: A
+     *                 positive integer indicating the maximum number of
+     *                 records that can be written to the bad-record-table per
+     *                 file/payload. Default value will be
+     *                 'bad_record_table_limit' and total size of the table per
+     *                 rank is limited to 'bad_record_table_limit'
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BATCH_SIZE
      *                 BATCH_SIZE}: Internal tuning parameter--number of

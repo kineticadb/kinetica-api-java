@@ -83,6 +83,14 @@ public class CreateDatasourceRequest implements IndexedRecord {
      * S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which has required S3 permissions
      * that can be assumed for the given S3 IAM user
      *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#S3_ENCRYPTION_CUSTOMER_ALGORITHM
+     * S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer encryption algorithm used
+     * encrypting data
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#S3_ENCRYPTION_CUSTOMER_KEY
+     * S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption key to encrypt or
+     * decrypt data
+     *         <li> {@link
      * com.gpudb.protocol.CreateDatasourceRequest.Options#HDFS_KERBEROS_KEYTAB
      * HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for the given HDFS
      * user
@@ -121,8 +129,20 @@ public class CreateDatasourceRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_OAUTH_TOKEN
      * AZURE_OAUTH_TOKEN}: Oauth token to access given storage container
      *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#GCS_BUCKET_NAME
+     * GCS_BUCKET_NAME}: Name of the Google Cloud Storage bucket to use as the
+     * data source
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#GCS_PROJECT_ID
+     * GCS_PROJECT_ID}: Name of the Google Cloud project to use as the data
+     * source
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#GCS_SERVICE_ACCOUNT_KEYS
+     * GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud service account keys to use for
+     * authenticating the data source
+     *         <li> {@link
      * com.gpudb.protocol.CreateDatasourceRequest.Options#IS_STREAM IS_STREAM}:
-     * To load from S3/Azure as a stream continuously.
+     * To load from Azure/GCS/S3 as a stream continuously.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -135,6 +155,12 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateDatasourceRequest.Options#KAFKA_TOPIC_NAME
      * KAFKA_TOPIC_NAME}: Name of the Kafka topic to use as the data source
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#JDBC_DRIVER_JAR_PATH
+     * JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#JDBC_DRIVER_CLASS_NAME
+     * JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
      *         <li> {@link
      * com.gpudb.protocol.CreateDatasourceRequest.Options#ANONYMOUS ANONYMOUS}:
      * Use anonymous connection to storage provider--DEPRECATED: this is now
@@ -229,6 +255,16 @@ public class CreateDatasourceRequest implements IndexedRecord {
         public static final String S3_AWS_ROLE_ARN = "s3_aws_role_arn";
 
         /**
+         * Customer encryption algorithm used encrypting data
+         */
+        public static final String S3_ENCRYPTION_CUSTOMER_ALGORITHM = "s3_encryption_customer_algorithm";
+
+        /**
+         * Customer encryption key to encrypt or decrypt data
+         */
+        public static final String S3_ENCRYPTION_CUSTOMER_KEY = "s3_encryption_customer_key";
+
+        /**
          * Kerberos keytab file location for the given HDFS user
          */
         public static final String HDFS_KERBEROS_KEYTAB = "hdfs_kerberos_keytab";
@@ -280,7 +316,23 @@ public class CreateDatasourceRequest implements IndexedRecord {
         public static final String AZURE_OAUTH_TOKEN = "azure_oauth_token";
 
         /**
-         * To load from S3/Azure as a stream continuously.
+         * Name of the Google Cloud Storage bucket to use as the data source
+         */
+        public static final String GCS_BUCKET_NAME = "gcs_bucket_name";
+
+        /**
+         * Name of the Google Cloud project to use as the data source
+         */
+        public static final String GCS_PROJECT_ID = "gcs_project_id";
+
+        /**
+         * Google Cloud service account keys to use for authenticating the data
+         * source
+         */
+        public static final String GCS_SERVICE_ACCOUNT_KEYS = "gcs_service_account_keys";
+
+        /**
+         * To load from Azure/GCS/S3 as a stream continuously.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -297,6 +349,16 @@ public class CreateDatasourceRequest implements IndexedRecord {
          * Name of the Kafka topic to use as the data source
          */
         public static final String KAFKA_TOPIC_NAME = "kafka_topic_name";
+
+        /**
+         * JDBC driver jar file location
+         */
+        public static final String JDBC_DRIVER_JAR_PATH = "jdbc_driver_jar_path";
+
+        /**
+         * Name of the JDBC driver class
+         */
+        public static final String JDBC_DRIVER_CLASS_NAME = "jdbc_driver_class_name";
 
         /**
          * Use anonymous connection to storage provider--DEPRECATED: this is
@@ -373,7 +435,7 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                  'storage_provider_type://[storage_path[:storage_port]]'
      *                  format.
      *                  Supported storage provider types are
-     *                  'azure','hdfs','kafka' and 's3'.
+     *                  'azure','gcs','hdfs','jdbc','kafka' and 's3'.
      * @param userName  Name of the remote system user; may be an empty string
      * @param password  Password for the remote system user; may be an empty
      *                  string
@@ -421,6 +483,14 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 S3 permissions that can be assumed for the given S3 IAM
      *                 user
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#S3_ENCRYPTION_CUSTOMER_ALGORITHM
+     *                 S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer encryption
+     *                 algorithm used encrypting data
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#S3_ENCRYPTION_CUSTOMER_KEY
+     *                 S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption key to
+     *                 encrypt or decrypt data
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#HDFS_KERBEROS_KEYTAB
      *                 HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for
      *                 the given HDFS user
@@ -466,8 +536,20 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 AZURE_OAUTH_TOKEN}: Oauth token to access given storage
      *                 container
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#GCS_BUCKET_NAME
+     *                 GCS_BUCKET_NAME}: Name of the Google Cloud Storage
+     *                 bucket to use as the data source
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#GCS_PROJECT_ID
+     *                 GCS_PROJECT_ID}: Name of the Google Cloud project to use
+     *                 as the data source
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#GCS_SERVICE_ACCOUNT_KEYS
+     *                 GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud service account
+     *                 keys to use for authenticating the data source
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#IS_STREAM
-     *                 IS_STREAM}: To load from S3/Azure as a stream
+     *                 IS_STREAM}: To load from Azure/GCS/S3 as a stream
      *                 continuously.
      *                 Supported values:
      *                 <ul>
@@ -485,6 +567,12 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#KAFKA_TOPIC_NAME
      *                 KAFKA_TOPIC_NAME}: Name of the Kafka topic to use as the
      *                 data source
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#JDBC_DRIVER_JAR_PATH
+     *                 JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#JDBC_DRIVER_CLASS_NAME
+     *                 JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#ANONYMOUS
      *                 ANONYMOUS}: Use anonymous connection to storage
@@ -572,8 +660,8 @@ public class CreateDatasourceRequest implements IndexedRecord {
      * 
      * @return Location of the remote storage in
      *         'storage_provider_type://[storage_path[:storage_port]]' format.
-     *         Supported storage provider types are 'azure','hdfs','kafka' and
-     *         's3'.
+     *         Supported storage provider types are
+     *         'azure','gcs','hdfs','jdbc','kafka' and 's3'.
      * 
      */
     public String getLocation() {
@@ -586,7 +674,7 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                  'storage_provider_type://[storage_path[:storage_port]]'
      *                  format.
      *                  Supported storage provider types are
-     *                  'azure','hdfs','kafka' and 's3'.
+     *                  'azure','gcs','hdfs','jdbc','kafka' and 's3'.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -681,6 +769,14 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which has required S3
      *         permissions that can be assumed for the given S3 IAM user
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#S3_ENCRYPTION_CUSTOMER_ALGORITHM
+     *         S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer encryption algorithm
+     *         used encrypting data
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#S3_ENCRYPTION_CUSTOMER_KEY
+     *         S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption key to encrypt
+     *         or decrypt data
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateDatasourceRequest.Options#HDFS_KERBEROS_KEYTAB
      *         HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for the
      *         given HDFS user
@@ -721,8 +817,20 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         AZURE_OAUTH_TOKEN}: Oauth token to access given storage
      *         container
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#GCS_BUCKET_NAME
+     *         GCS_BUCKET_NAME}: Name of the Google Cloud Storage bucket to use
+     *         as the data source
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#GCS_PROJECT_ID
+     *         GCS_PROJECT_ID}: Name of the Google Cloud project to use as the
+     *         data source
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#GCS_SERVICE_ACCOUNT_KEYS
+     *         GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud service account keys to
+     *         use for authenticating the data source
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateDatasourceRequest.Options#IS_STREAM
-     *         IS_STREAM}: To load from S3/Azure as a stream continuously.
+     *         IS_STREAM}: To load from Azure/GCS/S3 as a stream continuously.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -736,6 +844,12 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateDatasourceRequest.Options#KAFKA_TOPIC_NAME
      *         KAFKA_TOPIC_NAME}: Name of the Kafka topic to use as the data
      *         source
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#JDBC_DRIVER_JAR_PATH
+     *         JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#JDBC_DRIVER_CLASS_NAME
+     *         JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
      *                 <li> {@link
      *         com.gpudb.protocol.CreateDatasourceRequest.Options#ANONYMOUS
      *         ANONYMOUS}: Use anonymous connection to storage
@@ -831,6 +945,14 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 S3 permissions that can be assumed for the given S3 IAM
      *                 user
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#S3_ENCRYPTION_CUSTOMER_ALGORITHM
+     *                 S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer encryption
+     *                 algorithm used encrypting data
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#S3_ENCRYPTION_CUSTOMER_KEY
+     *                 S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption key to
+     *                 encrypt or decrypt data
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#HDFS_KERBEROS_KEYTAB
      *                 HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for
      *                 the given HDFS user
@@ -876,8 +998,20 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 AZURE_OAUTH_TOKEN}: Oauth token to access given storage
      *                 container
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#GCS_BUCKET_NAME
+     *                 GCS_BUCKET_NAME}: Name of the Google Cloud Storage
+     *                 bucket to use as the data source
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#GCS_PROJECT_ID
+     *                 GCS_PROJECT_ID}: Name of the Google Cloud project to use
+     *                 as the data source
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#GCS_SERVICE_ACCOUNT_KEYS
+     *                 GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud service account
+     *                 keys to use for authenticating the data source
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#IS_STREAM
-     *                 IS_STREAM}: To load from S3/Azure as a stream
+     *                 IS_STREAM}: To load from Azure/GCS/S3 as a stream
      *                 continuously.
      *                 Supported values:
      *                 <ul>
@@ -895,6 +1029,12 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#KAFKA_TOPIC_NAME
      *                 KAFKA_TOPIC_NAME}: Name of the Kafka topic to use as the
      *                 data source
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#JDBC_DRIVER_JAR_PATH
+     *                 JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#JDBC_DRIVER_CLASS_NAME
+     *                 JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#ANONYMOUS
      *                 ANONYMOUS}: Use anonymous connection to storage

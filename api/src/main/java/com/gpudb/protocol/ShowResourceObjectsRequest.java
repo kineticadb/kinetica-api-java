@@ -88,7 +88,7 @@ public class ShowResourceObjectsRequest implements IndexedRecord {
      * results allowed by the server
      * should be returned.  The number of records returned will never exceed
      * the server's own limit,
-     * defined by the <a href="../../../../../../config/#general"
+     * defined by the <a href="../../../../../../config/#config-main-general"
      * target="_top">max_get_records_size</a> parameter in the server
      * configuration.  The default value is '100'.
      *         <li> {@link
@@ -153,7 +153,8 @@ public class ShowResourceObjectsRequest implements IndexedRecord {
          * results allowed by the server
          * should be returned.  The number of records returned will never
          * exceed the server's own limit,
-         * defined by the <a href="../../../../../../config/#general"
+         * defined by the <a
+         * href="../../../../../../config/#config-main-general"
          * target="_top">max_get_records_size</a> parameter in the server
          * configuration.  The default value is '100'.
          */
@@ -232,9 +233,10 @@ public class ShowResourceObjectsRequest implements IndexedRecord {
      *                 should be returned.  The number of records returned will
      *                 never exceed the server's own limit,
      *                 defined by the <a
-     *                 href="../../../../../../config/#general"
+     *                 href="../../../../../../config/#config-main-general"
      *                 target="_top">max_get_records_size</a> parameter in the
-     *                 server configuration.  The default value is '100'.
+     *                 server
+     *                 configuration.  The default value is '100'.
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowResourceObjectsRequest.Options#TABLE_NAMES
      *                 TABLE_NAMES}: Comma-separated list of tables to restrict
@@ -295,7 +297,8 @@ public class ShowResourceObjectsRequest implements IndexedRecord {
      *         of results allowed by the server
      *         should be returned.  The number of records returned will never
      *         exceed the server's own limit,
-     *         defined by the <a href="../../../../../../config/#general"
+     *         defined by the <a
+     *         href="../../../../../../config/#config-main-general"
      *         target="_top">max_get_records_size</a> parameter in the server
      *         configuration.  The default value is '100'.
      *                 <li> {@link
@@ -362,9 +365,10 @@ public class ShowResourceObjectsRequest implements IndexedRecord {
      *                 should be returned.  The number of records returned will
      *                 never exceed the server's own limit,
      *                 defined by the <a
-     *                 href="../../../../../../config/#general"
+     *                 href="../../../../../../config/#config-main-general"
      *                 target="_top">max_get_records_size</a> parameter in the
-     *                 server configuration.  The default value is '100'.
+     *                 server
+     *                 configuration.  The default value is '100'.
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowResourceObjectsRequest.Options#TABLE_NAMES
      *                 TABLE_NAMES}: Comma-separated list of tables to restrict

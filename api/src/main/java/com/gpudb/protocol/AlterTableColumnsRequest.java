@@ -32,10 +32,9 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * Manage a table's columns--a column can be added, removed, or have its
  * <a href="../../../../../../concepts/types/" target="_top">type and
- * properties</a> modified.
- * <p>
- * Set or unset <a href="../../../../../../concepts/compression/"
- * target="_top">compression</a> for a column.
+ * properties</a> modified, including whether it is
+ * <a href="../../../../../../concepts/dictionary_encoding/"
+ * target="_top">dictionary encoded</a> or not.
  */
 public class AlterTableColumnsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

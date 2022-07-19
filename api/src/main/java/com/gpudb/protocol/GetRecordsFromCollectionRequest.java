@@ -93,6 +93,10 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#EXPRESSION
+     * EXPRESSION}: Optional filter expression to apply to the table.  The
+     * default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -118,6 +122,12 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
         public static final String RETURN_RECORD_IDS = "return_record_ids";
         public static final String TRUE = "true";
         public static final String FALSE = "false";
+
+        /**
+         * Optional filter expression to apply to the table.  The default value
+         * is ''.
+         */
+        public static final String EXPRESSION = "expression";
 
         private Options() {  }
     }
@@ -154,15 +164,16 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *                the results).  The default value is 0.The minimum allowed
      *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned, or END_OF_SET (-9999) to indicate
-     *               that the max number of results should be returned.  The
-     *               number of records returned will never exceed the server's
-     *               own limit, defined by the <a
-     *               href="../../../../../../config/#general"
+     *               results to be returned, or
+     *               END_OF_SET (-9999) to indicate that the maximum number of
+     *               results allowed by the server should be
+     *               returned.  The number of records returned will never
+     *               exceed the server's own limit, defined by the
+     *               <a href="../../../../../../config/#config-main-general"
      *               target="_top">max_get_records_size</a> parameter in the
-     *               server configuration.  Use {@code offset} & {@code limit}
-     *               to request subsequent pages of results.  The default value
-     *               is -9999.
+     *               server configuration.
+     *               Use {@code offset} & {@code limit} to request subsequent
+     *               pages of results.  The default value is -9999.
      * @param options
      *                 <ul>
      *                         <li> {@link
@@ -181,6 +192,10 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#EXPRESSION
+     *                 EXPRESSION}: Optional filter expression to apply to the
+     *                 table.  The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -208,15 +223,16 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *                the results).  The default value is 0.The minimum allowed
      *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned, or END_OF_SET (-9999) to indicate
-     *               that the max number of results should be returned.  The
-     *               number of records returned will never exceed the server's
-     *               own limit, defined by the <a
-     *               href="../../../../../../config/#general"
+     *               results to be returned, or
+     *               END_OF_SET (-9999) to indicate that the maximum number of
+     *               results allowed by the server should be
+     *               returned.  The number of records returned will never
+     *               exceed the server's own limit, defined by the
+     *               <a href="../../../../../../config/#config-main-general"
      *               target="_top">max_get_records_size</a> parameter in the
-     *               server configuration.  Use {@code offset} & {@code limit}
-     *               to request subsequent pages of results.  The default value
-     *               is -9999.
+     *               server configuration.
+     *               Use {@code offset} & {@code limit} to request subsequent
+     *               pages of results.  The default value is -9999.
      * @param encoding  Specifies the encoding for returned records; either
      *                  {@code binary} or {@code json}.
      *                  Supported values:
@@ -249,6 +265,10 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#EXPRESSION
+     *                 EXPRESSION}: Optional filter expression to apply to the
+     *                 table.  The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -321,13 +341,16 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
     /**
      * 
      * @return A positive integer indicating the maximum number of results to
-     *         be returned, or END_OF_SET (-9999) to indicate that the max
-     *         number of results should be returned.  The number of records
-     *         returned will never exceed the server's own limit, defined by
-     *         the <a href="../../../../../../config/#general"
+     *         be returned, or
+     *         END_OF_SET (-9999) to indicate that the maximum number of
+     *         results allowed by the server should be
+     *         returned.  The number of records returned will never exceed the
+     *         server's own limit, defined by the
+     *         <a href="../../../../../../config/#config-main-general"
      *         target="_top">max_get_records_size</a> parameter in the server
-     *         configuration.  Use {@code offset} & {@code limit} to request
-     *         subsequent pages of results.  The default value is -9999.
+     *         configuration.
+     *         Use {@code offset} & {@code limit} to request subsequent pages
+     *         of results.  The default value is -9999.
      * 
      */
     public long getLimit() {
@@ -337,15 +360,16 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
     /**
      * 
      * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned, or END_OF_SET (-9999) to indicate
-     *               that the max number of results should be returned.  The
-     *               number of records returned will never exceed the server's
-     *               own limit, defined by the <a
-     *               href="../../../../../../config/#general"
+     *               results to be returned, or
+     *               END_OF_SET (-9999) to indicate that the maximum number of
+     *               results allowed by the server should be
+     *               returned.  The number of records returned will never
+     *               exceed the server's own limit, defined by the
+     *               <a href="../../../../../../config/#config-main-general"
      *               target="_top">max_get_records_size</a> parameter in the
-     *               server configuration.  Use {@code offset} & {@code limit}
-     *               to request subsequent pages of results.  The default value
-     *               is -9999.
+     *               server configuration.
+     *               Use {@code offset} & {@code limit} to request subsequent
+     *               pages of results.  The default value is -9999.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -422,6 +446,10 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#FALSE
      *         FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#EXPRESSION
+     *         EXPRESSION}: Optional filter expression to apply to the table.
+     *         The default value is ''.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -450,6 +478,10 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#EXPRESSION
+     *                 EXPRESSION}: Optional filter expression to apply to the
+     *                 table.  The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

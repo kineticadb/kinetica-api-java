@@ -2,6 +2,20 @@
 
 ## Version 7.1
 
+### Version 7.1.7.0 - 2022-07-18
+
+#### Added
+-   Capability to pass in self-signed certificates & passwords as options
+
+#### Changed
+-   Updated dependencies to more secure versions
+-   Fixed unhandled exception when an Avro encoding error occurs
+-   Fixed error where a type's column order would not match a table created from
+    it
+-   Removed client-side primary key check, to improve performance and make
+    returned errors more consistently delivered
+
+
 ### Version 7.1.6.1 - 2022-02-22
 
 #### Breaking Changes

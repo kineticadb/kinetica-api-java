@@ -79,6 +79,12 @@ public class AlterCredentialRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#KAFKA
      * KAFKA}
+     *         <li> {@link
+     * com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#GCS_SERVICE_ACCOUNT_ID
+     * GCS_SERVICE_ACCOUNT_ID}
+     *         <li> {@link
+     * com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
+     * GCS_SERVICE_ACCOUNT_KEYS}
      * </ul>
      *         <li> {@link
      * com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#IDENTITY
@@ -86,6 +92,12 @@ public class AlterCredentialRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#SECRET
      * SECRET}: New password for the credential
+     *         <li> {@link
+     * com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#SCHEMA_NAME
+     * SCHEMA_NAME}: Updates the schema name.  If {@code schema_name}
+     * doesn't exist, an error will be thrown. If {@code schema_name} is empty,
+     * then the user's
+     * default schema will be used.
      * </ul>
      * A set of string constants for the parameter {@code
      * credentialUpdatesMap}.
@@ -123,6 +135,12 @@ public class AlterCredentialRequest implements IndexedRecord {
          *         <li> {@link
          * com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#KAFKA
          * KAFKA}
+         *         <li> {@link
+         * com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#GCS_SERVICE_ACCOUNT_ID
+         * GCS_SERVICE_ACCOUNT_ID}
+         *         <li> {@link
+         * com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
+         * GCS_SERVICE_ACCOUNT_KEYS}
          * </ul>
          */
         public static final String TYPE = "type";
@@ -135,6 +153,8 @@ public class AlterCredentialRequest implements IndexedRecord {
         public static final String DOCKER = "docker";
         public static final String HDFS = "hdfs";
         public static final String KAFKA = "kafka";
+        public static final String GCS_SERVICE_ACCOUNT_ID = "gcs_service_account_id";
+        public static final String GCS_SERVICE_ACCOUNT_KEYS = "gcs_service_account_keys";
 
         /**
          * New user for the credential
@@ -145,6 +165,14 @@ public class AlterCredentialRequest implements IndexedRecord {
          * New password for the credential
          */
         public static final String SECRET = "secret";
+
+        /**
+         * Updates the schema name.  If {@code schema_name}
+         * doesn't exist, an error will be thrown. If {@code schema_name} is
+         * empty, then the user's
+         * default schema will be used.
+         */
+        public static final String SCHEMA_NAME = "schema_name";
 
         private CredentialUpdatesMap() {  }
     }
@@ -204,6 +232,12 @@ public class AlterCredentialRequest implements IndexedRecord {
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#KAFKA
      *                              KAFKA}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#GCS_SERVICE_ACCOUNT_ID
+     *                              GCS_SERVICE_ACCOUNT_ID}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
+     *                              GCS_SERVICE_ACCOUNT_KEYS}
      *                              </ul>
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#IDENTITY
@@ -211,6 +245,14 @@ public class AlterCredentialRequest implements IndexedRecord {
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#SECRET
      *                              SECRET}: New password for the credential
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#SCHEMA_NAME
+     *                              SCHEMA_NAME}: Updates the schema name.  If
+     *                              {@code schema_name}
+     *                              doesn't exist, an error will be thrown. If
+     *                              {@code schema_name} is empty, then the
+     *                              user's
+     *                              default schema will be used.
      *                              </ul>
      * @param options  Optional parameters.
      * 
@@ -281,6 +323,12 @@ public class AlterCredentialRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#KAFKA
      *         KAFKA}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#GCS_SERVICE_ACCOUNT_ID
+     *         GCS_SERVICE_ACCOUNT_ID}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
+     *         GCS_SERVICE_ACCOUNT_KEYS}
      *         </ul>
      *                 <li> {@link
      *         com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#IDENTITY
@@ -288,6 +336,12 @@ public class AlterCredentialRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#SECRET
      *         SECRET}: New password for the credential
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#SCHEMA_NAME
+     *         SCHEMA_NAME}: Updates the schema name.  If {@code schema_name}
+     *         doesn't exist, an error will be thrown. If {@code schema_name}
+     *         is empty, then the user's
+     *         default schema will be used.
      *         </ul>
      * 
      */
@@ -332,6 +386,12 @@ public class AlterCredentialRequest implements IndexedRecord {
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#KAFKA
      *                              KAFKA}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#GCS_SERVICE_ACCOUNT_ID
+     *                              GCS_SERVICE_ACCOUNT_ID}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
+     *                              GCS_SERVICE_ACCOUNT_KEYS}
      *                              </ul>
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#IDENTITY
@@ -339,6 +399,14 @@ public class AlterCredentialRequest implements IndexedRecord {
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#SECRET
      *                              SECRET}: New password for the credential
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#SCHEMA_NAME
+     *                              SCHEMA_NAME}: Updates the schema name.  If
+     *                              {@code schema_name}
+     *                              doesn't exist, an error will be thrown. If
+     *                              {@code schema_name} is empty, then the
+     *                              user's
+     *                              default schema will be used.
      *                              </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

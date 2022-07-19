@@ -93,6 +93,10 @@ public class MatchGraphRequest implements IndexedRecord {
      * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_LOOPS
      * MATCH_LOOPS}: Matches closed loops (Eulerian paths) originating and
      * ending at each graph node within min and max hops (levels).
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_CHARGING_STATIONS
+     * MATCH_CHARGING_STATIONS}: Matches an optimal path across a number of
+     * ev-charging stations between source and target locations.
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -139,6 +143,12 @@ public class MatchGraphRequest implements IndexedRecord {
          * graph node within min and max hops (levels).
          */
         public static final String MATCH_LOOPS = "match_loops";
+
+        /**
+         * Matches an optimal path across a number of ev-charging stations
+         * between source and target locations.
+         */
+        public static final String MATCH_CHARGING_STATIONS = "match_charging_stations";
 
         private SolveMethod() {  }
     }
@@ -339,6 +349,22 @@ public class MatchGraphRequest implements IndexedRecord {
      * OUTPUT_BATCH_SIZE}: For the {@code match_loops} solver only. Uses this
      * value as the batch size of the number of loops in flushing(inserting) to
      * the output table.  The default value is '1000'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#CHARGING_CAPACITY
+     * CHARGING_CAPACITY}: For the {@code match_charging_stations} solver only.
+     * This is the maximum ev-charging capacity of a vehicle (distance in
+     * meters or time in seconds depending on the unit of the graph weights).
+     * The default value is '300000.0'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#CHARGING_CANDIDATES
+     * CHARGING_CANDIDATES}: For the {@code match_charging_stations} solver
+     * only. Solver searches for this many number of stations closest around
+     * each base charging location found by capacity.  The default value is
+     * '10'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#CHARGING_PENALTY
+     * CHARGING_PENALTY}: For the {@code match_charging_stations} solver only.
+     * This is the penalty for full charging.  The default value is '30000.0'.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -613,6 +639,27 @@ public class MatchGraphRequest implements IndexedRecord {
          */
         public static final String OUTPUT_BATCH_SIZE = "output_batch_size";
 
+        /**
+         * For the {@code match_charging_stations} solver only. This is the
+         * maximum ev-charging capacity of a vehicle (distance in meters or
+         * time in seconds depending on the unit of the graph weights).  The
+         * default value is '300000.0'.
+         */
+        public static final String CHARGING_CAPACITY = "charging_capacity";
+
+        /**
+         * For the {@code match_charging_stations} solver only. Solver searches
+         * for this many number of stations closest around each base charging
+         * location found by capacity.  The default value is '10'.
+         */
+        public static final String CHARGING_CANDIDATES = "charging_candidates";
+
+        /**
+         * For the {@code match_charging_stations} solver only. This is the
+         * penalty for full charging.  The default value is '30000.0'.
+         */
+        public static final String CHARGING_PENALTY = "charging_penalty";
+
         private Options() {  }
     }
 
@@ -695,6 +742,11 @@ public class MatchGraphRequest implements IndexedRecord {
      *                     MATCH_LOOPS}: Matches closed loops (Eulerian paths)
      *                     originating and ending at each graph node within min
      *                     and max hops (levels).
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_CHARGING_STATIONS
+     *                     MATCH_CHARGING_STATIONS}: Matches an optimal path
+     *                     across a number of ev-charging stations between
+     *                     source and target locations.
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -956,6 +1008,26 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 only. Uses this value as the batch size of the number of
      *                 loops in flushing(inserting) to the output table.  The
      *                 default value is '1000'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#CHARGING_CAPACITY
+     *                 CHARGING_CAPACITY}: For the {@code
+     *                 match_charging_stations} solver only. This is the
+     *                 maximum ev-charging capacity of a vehicle (distance in
+     *                 meters or time in seconds depending on the unit of the
+     *                 graph weights).  The default value is '300000.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#CHARGING_CANDIDATES
+     *                 CHARGING_CANDIDATES}: For the {@code
+     *                 match_charging_stations} solver only. Solver searches
+     *                 for this many number of stations closest around each
+     *                 base charging location found by capacity.  The default
+     *                 value is '10'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#CHARGING_PENALTY
+     *                 CHARGING_PENALTY}: For the {@code
+     *                 match_charging_stations} solver only. This is the
+     *                 penalty for full charging.  The default value is
+     *                 '30000.0'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1076,6 +1148,11 @@ public class MatchGraphRequest implements IndexedRecord {
      *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_LOOPS
      *         MATCH_LOOPS}: Matches closed loops (Eulerian paths) originating
      *         and ending at each graph node within min and max hops (levels).
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_CHARGING_STATIONS
+     *         MATCH_CHARGING_STATIONS}: Matches an optimal path across a
+     *         number of ev-charging stations between source and target
+     *         locations.
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -1128,6 +1205,11 @@ public class MatchGraphRequest implements IndexedRecord {
      *                     MATCH_LOOPS}: Matches closed loops (Eulerian paths)
      *                     originating and ending at each graph node within min
      *                     and max hops (levels).
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_CHARGING_STATIONS
+     *                     MATCH_CHARGING_STATIONS}: Matches an optimal path
+     *                     across a number of ev-charging stations between
+     *                     source and target locations.
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -1416,6 +1498,23 @@ public class MatchGraphRequest implements IndexedRecord {
      *         Uses this value as the batch size of the number of loops in
      *         flushing(inserting) to the output table.  The default value is
      *         '1000'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#CHARGING_CAPACITY
+     *         CHARGING_CAPACITY}: For the {@code match_charging_stations}
+     *         solver only. This is the maximum ev-charging capacity of a
+     *         vehicle (distance in meters or time in seconds depending on the
+     *         unit of the graph weights).  The default value is '300000.0'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#CHARGING_CANDIDATES
+     *         CHARGING_CANDIDATES}: For the {@code match_charging_stations}
+     *         solver only. Solver searches for this many number of stations
+     *         closest around each base charging location found by capacity.
+     *         The default value is '10'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#CHARGING_PENALTY
+     *         CHARGING_PENALTY}: For the {@code match_charging_stations}
+     *         solver only. This is the penalty for full charging.  The default
+     *         value is '30000.0'.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1664,6 +1763,26 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 only. Uses this value as the batch size of the number of
      *                 loops in flushing(inserting) to the output table.  The
      *                 default value is '1000'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#CHARGING_CAPACITY
+     *                 CHARGING_CAPACITY}: For the {@code
+     *                 match_charging_stations} solver only. This is the
+     *                 maximum ev-charging capacity of a vehicle (distance in
+     *                 meters or time in seconds depending on the unit of the
+     *                 graph weights).  The default value is '300000.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#CHARGING_CANDIDATES
+     *                 CHARGING_CANDIDATES}: For the {@code
+     *                 match_charging_stations} solver only. Solver searches
+     *                 for this many number of stations closest around each
+     *                 base charging location found by capacity.  The default
+     *                 value is '10'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#CHARGING_PENALTY
+     *                 CHARGING_PENALTY}: For the {@code
+     *                 match_charging_stations} solver only. This is the
+     *                 penalty for full charging.  The default value is
+     *                 '30000.0'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
