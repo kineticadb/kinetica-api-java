@@ -54,7 +54,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
-import org.apache.log4j.Level;
 import org.xerial.snappy.Snappy;
 
 
@@ -106,7 +105,6 @@ public abstract class GPUdbBase {
         private int serverConnectionTimeout = DEFAULT_SERVER_CONNECTION_TIMEOUT;
         private int maxTotalConnections     = DEFAULT_MAX_TOTAL_CONNECTIONS;
         private int maxConnectionsPerHost   = DEFAULT_MAX_CONNECTIONS_PER_HOST;
-        private Level loggingLevel = GPUdbLogger.DEFAULT_LOGGING_LEVEL;
 
         /**
          * Gets the URL of the primary cluster of the HA environment.
@@ -192,98 +190,6 @@ public abstract class GPUdbBase {
          */
         public ExecutorService getExecutor() {
             return executor;
-        }
-
-        /**
-         * Gets the logging level that will be used by the API.  By default,
-         * logging is turned off; but if logging properties are provided
-         * by the user, those properties will be respected.  If the user sets
-         * the logging level explicitly (and it is not the default log level),
-         * then the programmatically set level will be used instead of the
-         * one set in the properties file.
-         *
-         * @return  the logging level
-         *
-         * @see #setLoggingLevel(String)
-         * @see #setLoggingLevel(Level)
-         */
-        public Level getLoggingLevel() {
-            return this.loggingLevel;
-        }
-
-        /**
-         * Sets the logging level that will be used by the API.
-         * Supported values:
-         * <ul>
-         *     <li> ALL
-         *     <li> DEBUG
-         *     <li> ERROR
-         *     <li> FATAL
-         *     <li> INFO
-         *     <li> OFF (the default)
-         *     <li> TRACE
-         *     <li> TRACE_INT
-         *     <li> WARN
-         * </ul>
-         *
-         * If `OFF` is given, and if logging properties are provided by the user
-         * (via log4j.properties or other files), those properties will be
-         * respected.  If the user set logging level is not the default log
-         * level, i.e. `OFF`), then the programmatically set level will be used
-         * instead of the one set in the properties file.
-         *
-         * @return  the current {@link Options} instance
-         *
-         * @see #getLoggingLevel()
-         */
-        public Options setLoggingLevel(String value) throws GPUdbException {
-
-            // Parse the level
-            Level level = Level.toLevel( value );
-
-            // Ensure a valid level was given
-            if ( (level == Level.DEBUG)
-                    && !value.equalsIgnoreCase( "DEBUG" ) ) {
-                // The user didn't give debug, but Level returned it
-                // (which it does when it can't parse the given value)
-                String errorMsg = ( "Must provide a valid logging level "
-                        + "(please see documentation); given: '"
-                        + value + "'" );
-                throw new GPUdbException( errorMsg );
-            }
-
-            this.loggingLevel = level;
-            return this;
-        }
-
-        /**
-         * Sets the logging level that will be used by the API.
-         * Supported values:
-         * <ul>
-         *     <li> Level.ALL
-         *     <li> Level.DEBUG
-         *     <li> Level.ERROR
-         *     <li> Level.FATAL
-         *     <li> Level.INFO
-         *     <li> Level.OFF (the default)
-         *     <li> Level.TRACE
-         *     <li> Level.TRACE_INT
-         *     <li> Level.WARN
-         * </ul>
-         *
-         * If `OFF` is given, and if logging properties are provided by the user
-         * (via log4j.properties or other files), those properties will be
-         * respected.  If the user set logging level is not the default log
-         * level, i.e. `OFF`), then the programmatically set level will be used
-         * instead of the one set in the properties file.
-         *
-         * @return  the current {@link Options} instance
-         *
-         * @see #getLoggingLevel()
-         */
-        public Options setLoggingLevel(Level value) {
-            this.loggingLevel = value;
-            return this;
         }
 
         /**
@@ -987,8 +893,6 @@ public abstract class GPUdbBase {
         // No override; defer to the HA process for synchronizing
         // endpoints (which has different logic for different endpoints)
         DEFAULT( "none" ),
-        // Don't replicate any endpoint calls
-        NONE( "no_repl" ),
         // Synchronize all endpoint calls
         SYNCHRONOUS( "sync" ),
         // Do NOT synchronize any endpoint call
@@ -1186,17 +1090,6 @@ public abstract class GPUdbBase {
     protected GPUdbBase(String url, Options options) throws GPUdbException {
         urlLock = new Object();
 
-        // Initialize the logger before anything else.  This MUST be done
-        // before any logging happens!
-        GPUdbLogger.initializeLogger( options.getLoggingLevel() );
-
-        if ( url == null || url.isEmpty() ) {
-            String errorMsg = ( "Must provide a non-null and non-empty "
-                    + "string for the URL; given null" );
-            GPUdbLogger.error( errorMsg );
-            throw new GPUdbException( errorMsg );
-        }
-
         try {
             // Not using an unmodifiable list because we'll have to update it
             // with the HA ring head node addresses
@@ -1217,14 +1110,8 @@ public abstract class GPUdbBase {
     protected GPUdbBase(URL url, Options options) throws GPUdbException {
         urlLock = new Object();
 
-        // Initialize the logger before anything else.  This MUST be done
-        // before any logging happens!
-        GPUdbLogger.initializeLogger( options.getLoggingLevel() );
-
         if ( url == null ) {
-            String errorMsg = "Must provide at least one URL; gave none!";
-            GPUdbLogger.error( errorMsg );
-            throw new GPUdbException( errorMsg );
+            throw new GPUdbException( "Must provide at least one URL; gave none!" );
         }
 
         // Not using an unmodifiable list because we'll have to update it
@@ -1236,14 +1123,8 @@ public abstract class GPUdbBase {
     protected GPUdbBase(List<URL> urls, Options options) throws GPUdbException {
         urlLock = new Object();
 
-        // Initialize the logger before anything else.  This MUST be done
-        // before any logging happens!
-        GPUdbLogger.initializeLogger( options.getLoggingLevel() );
-
         if ( urls.isEmpty() ) {
-            String errorMsg = "Must provide at least one URL; gave none!";
-            GPUdbLogger.error( errorMsg );
-            throw new GPUdbException( errorMsg );
+            throw new GPUdbException( "Must provide at least one URL; gave none!" );
         }
 
         // Not using an unmodifiable list because we'll have to update it
@@ -1334,7 +1215,6 @@ public abstract class GPUdbBase {
                     .loadTrustMaterial( new TrustSelfSignedStrategy() )
                     .build();
             } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException ex) {
-                GPUdbLogger.error( ex.getMessage() );
             }
 
             // Disable hostname verification
@@ -1820,8 +1700,6 @@ public abstract class GPUdbBase {
      */
     protected URL switchURL(URL oldURL, int numClusterSwitches) throws GPUdbHAUnavailableException {
 
-        GPUdbLogger.debug_with_info( "Switching from URL: " + getURL().toString()
-                                     + "; old URL: " + oldURL.toString() );
         synchronized (urlLock) {
             // If there is only one URL, then we can't switch URLs
             if ( this.urls.size() == 1 ) {
@@ -1844,9 +1722,7 @@ public abstract class GPUdbBase {
                                                       + "] returned error)");
             }
             // Check if another thread beat us to switching the URL
-            GPUdbLogger.debug_with_info( "Current URL: " + getURL().toString() + " old URL: " + oldURL.toString() );
-            if ( !getURL().equals(oldURL) && (countClusterSwitchesSinceInvocation > 0) ) {
-            	GPUdbLogger.debug_with_info( "Switched to URL: " + getURL().toString() );
+            if ( (getURL() != oldURL) && (countClusterSwitchesSinceInvocation > 0) ) {
                 // Another thread must have already switched the URL; nothing
                 // to do
                 return getURL();
@@ -1861,11 +1737,7 @@ public abstract class GPUdbBase {
             // We've circled back; shuffle the indices again so that future
             // requests go to a different randomly selected cluster, but also
             // let the caller know that we've circled back
-            if ( getURL().equals(oldURL) ) {
-                GPUdbLogger.debug_with_info( "Current URL: " +  getURL()
-                                             + " is the same as the old URL: "
-                                             + oldURL.toString()
-                                             + "; randomizing URLs and throwing exception" );
+            if (getURL() == oldURL) {
                 // Re-shuffle and set the index counter to zero
                 randomizeURLs();
 
@@ -1876,10 +1748,6 @@ public abstract class GPUdbBase {
             }
 
             // Haven't circled back to the old URL; so return the new one
-            GPUdbLogger.warn( "Switched to URL: " +  getURL().toString()
-                              + " (NOT the same as the old URL: "
-                              + oldURL.toString()
-                              + ")" );
             return getURL();
             // return this.urls.get( this.haUrlIndices.get( getCurrentUrlIndex() ) );
         }
@@ -1892,8 +1760,6 @@ public abstract class GPUdbBase {
      * clusters in a different random manner and throw an exception.
      */
     private URL switchHmURL(URL oldURL, int numClusterSwitches) throws GPUdbHAUnavailableException {
-        GPUdbLogger.debug_with_info( "Switching from HM URL: " + oldURL.toString() );
-
         synchronized (urlLock) {
             // If there is only one URL, then we can't switch URLs
             if ( this.hmUrls.size() == 1 ) {
@@ -1916,11 +1782,7 @@ public abstract class GPUdbBase {
                                                       + "] returned error)");
             }
             // Check if another thread beat us to switching the URL
-            GPUdbLogger.debug_with_info( "Current HM URL: " + getHmURL().toString()
-                                         + "; old URL: " + oldURL.toString() );
-            if ( !getHmURL().equals(oldURL) && (countClusterSwitchesSinceInvocation > 0) ) {
-                GPUdbLogger.debug_with_info( "Switched to HM URL: "
-                                             + getHmURL().toString() );
+            if ( (getHmURL() != oldURL) && (countClusterSwitchesSinceInvocation > 0) ) {
                 // Another thread must have already switched the URL; nothing
                 // to do
                 return getHmURL();
@@ -1935,11 +1797,7 @@ public abstract class GPUdbBase {
             // We've circled back; shuffle the indices again so that future
             // requests go to a different randomly selected cluster, but also
             // let the caller know that we've circled back
-            if ( getHmURL().equals(oldURL) ) {
-                GPUdbLogger.debug_with_info( "Current HM URL: " +  getHmURL()
-                                             + " is the same as the old HM URL: "
-                                             + oldURL.toString()
-                                             + "; randomizing URLs and throwing exception" );
+            if (getHmURL() == oldURL) {
                 // Re-shuffle and set the index counter to zero
                 randomizeURLs();
 
@@ -1950,10 +1808,6 @@ public abstract class GPUdbBase {
             }
 
             // Haven't circled back to the old URL; so return the new one
-            GPUdbLogger.warn( "Switched to HM URL: " +  getHmURL().toString()
-                              + " (NOT the same as the old HM URL: "
-                              + oldURL.toString()
-                              + ")" );
             return getHmURL();
         }
     }   // end switchHmUrl
@@ -2660,13 +2514,9 @@ public abstract class GPUdbBase {
                 // There's an error in creating the URL
                 throw new GPUdbRuntimeException(ex.getMessage(), ex);
             } catch (GPUdbExitException ex) {
-                GPUdbLogger.warn( "Got EXIT exception when trying endpoint "
-                                  + endpoint + " at " + url.toString()
-                                  + ": " + ex.getMessage() + "; switch URL..." );
                 // Handle our special exit exception
                 try {
                     url = switchURL( originalURL, currentClusterSwitchCount );
-                    GPUdbLogger.debug_with_info( "Switched to " + url.toString() );
                 } catch (GPUdbHAUnavailableException ha_ex) {
                     // We've now tried all the HA clusters and circled back
                     // Get the original cause to propagate to the user
@@ -2675,13 +2525,9 @@ public abstract class GPUdbBase {
                                               + ha_ex.getMessage(), true );
                 }
             } catch (SubmitException ex) {
-                GPUdbLogger.warn( "Got submit exception when trying endpoint "
-                                  + endpoint + " at " + url.toString()
-                                  + ": " + ex.getMessage() + "; switch URL..." );
                 // Some error occurred during the HTTP request
                 try {
                     url = switchURL( originalURL, currentClusterSwitchCount );
-                    GPUdbLogger.debug_with_info( "Switched to " + url.toString() );
                 } catch (GPUdbHAUnavailableException ha_ex) {
                     // We've now tried all the HA clusters and circled back
                     // Get the original cause to propagate to the user
@@ -2693,17 +2539,11 @@ public abstract class GPUdbBase {
                 }
             } catch (GPUdbException ex) {
                 // Any other GPUdbException is a valid failure
-                GPUdbLogger.debug_with_info( "Got GPUdbException, so propagating: "
-                                             + ex.getMessage() );
                 throw ex;
             } catch (Exception ex) {
-                GPUdbLogger.warn( "Got Java exception when trying endpoint "
-                                  + endpoint + " at " + url.toString()
-                                  + ": " + ex.getMessage() + "; switch URL..." );
                 // And other random exceptions probably are also connection errors
                 try {
                     url = switchURL( originalURL, currentClusterSwitchCount );
-                    GPUdbLogger.debug_with_info( "Switched to " + url.toString() );
                 } catch (GPUdbHAUnavailableException ha_ex) {
                     // We've now tried all the HA clusters and circled back
                     // Get the original cause to propagate to the user
@@ -2794,7 +2634,6 @@ public abstract class GPUdbBase {
                         // Upon failure, try to use other clusters
                         try {
                             hmUrl = switchHmURL( originalURL, currentClusterSwitchCount );
-                            GPUdbLogger.debug_with_info( "Switched to " + hmUrl.toString() );
                         } catch (GPUdbHAUnavailableException ha_ex) {
                             // We've now tried all the HA clusters and circled back
                             // Get the original cause to propagate to the user
@@ -2807,7 +2646,6 @@ public abstract class GPUdbBase {
                     // Upon any error, try to use other clusters
                     try {
                         hmUrl = switchHmURL( originalURL, currentClusterSwitchCount );
-                        GPUdbLogger.debug_with_info( "Switched to " + hmUrl.toString() );
                     } catch (GPUdbHAUnavailableException ha_ex) {
                         // We've now tried all the HA clusters and circled back
                         // Get the original cause to propagate to the user
@@ -2832,7 +2670,6 @@ public abstract class GPUdbBase {
                         // Upon failure, try to use other clusters
                         try {
                             hmUrl = switchHmURL( originalURL, currentClusterSwitchCount );
-                            GPUdbLogger.debug_with_info( "Switched to " + hmUrl.toString() );
                         } catch (GPUdbHAUnavailableException ha_ex) {
                             // We've now tried all the HA clusters and circled back
                             // Get the original cause to propagate to the user
@@ -2847,7 +2684,6 @@ public abstract class GPUdbBase {
                     // Upon any error, try to use other clusters
                     try {
                         hmUrl = switchHmURL( originalURL, currentClusterSwitchCount );
-                        GPUdbLogger.debug_with_info( "Switched to " + hmUrl.toString() );
                     } catch (GPUdbHAUnavailableException ha_ex) {
                         // We've now tried all the HA clusters and circled back
                         // Get the original cause to propagate to the user
@@ -2868,7 +2704,6 @@ public abstract class GPUdbBase {
                 if ( ex.getMessage().contains( DB_HM_OFFLINE_ERROR_MESSAGE ) ) {
                     try {
                         hmUrl = switchHmURL( originalURL, currentClusterSwitchCount );
-                        GPUdbLogger.debug_with_info( "Switched to " + hmUrl.toString() );
                     } catch (GPUdbHAUnavailableException ha_ex) {
                         // We've now tried all the HA clusters and circled back
                         // Get the original cause to propagate to the user
@@ -2890,7 +2725,6 @@ public abstract class GPUdbBase {
                 // And other random exceptions probably are also connection errors
                 try {
                     hmUrl = switchHmURL( originalURL, currentClusterSwitchCount );
-                    GPUdbLogger.debug_with_info( "Switched to " + hmUrl.toString() );
                 } catch (GPUdbHAUnavailableException ha_ex) {
                     // We've now tried all the HA clusters and circled back
                     // Get the original cause to propagate to the user
@@ -2902,13 +2736,6 @@ public abstract class GPUdbBase {
         } // end for
 
         // If we reach here, then something went wrong
-        GPUdbLogger.debug_with_info( "Failed to submit host manager endpoint; "
-                                     + "exceeded retry count "
-                                     + HOST_MANAGER_SUBMIT_REQUEST_RETRY_COUNT
-                                     + "; original exception: '"
-                                     + original_exception.getMessage()
-                                     + "'; please check if the host manager port"
-                                     + " is wrong: " + hmUrl.toString() );
         throw original_exception;
     } // end submitRequestToHM
 

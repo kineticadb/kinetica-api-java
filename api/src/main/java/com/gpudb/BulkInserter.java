@@ -1,13 +1,12 @@
 package com.gpudb;
 
 import com.gpudb.GPUdbBase.GPUdbExitException;
-import com.gpudb.protocol.*;
-import org.apache.avro.generic.IndexedRecord;
-import org.apache.commons.lang3.mutable.MutableLong;
-import org.apache.log4j.Level;
-import org.threeten.bp.Instant;
-import org.threeten.bp.LocalDateTime;
-
+import com.gpudb.protocol.AdminShowShardsRequest;
+import com.gpudb.protocol.AdminShowShardsResponse;
+import com.gpudb.protocol.InsertRecordsRequest;
+import com.gpudb.protocol.InsertRecordsResponse;
+import com.gpudb.protocol.RawInsertRecordsRequest;
+import com.gpudb.protocol.ShowTableResponse;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.ByteBuffer;
@@ -16,6 +15,9 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
+import org.apache.avro.generic.IndexedRecord;
+import org.apache.commons.lang3.mutable.MutableLong;
+import org.threeten.bp.Instant;
 
 /**
  * Object that manages the insertion into GPUdb of large numbers of records in
@@ -27,8 +29,7 @@ import java.util.regex.Pattern;
  *
  * @param <T>  the type of object being inserted
  */
-public class BulkInserter<T> implements AutoCloseable {
-
+public class BulkInserter<T> implements AutoCloseable{
     //Number of seconds to wait for the thread pools (scheduler and worker) to terminate
     private static final int DEFAULT_THREADPOOL_TERMINATION_TIMEOUT = 30; //In seconds
 
@@ -210,7 +211,6 @@ public class BulkInserter<T> implements AutoCloseable {
 
         @Override
         public void run() {
-            GPUdbLogger.debug_with_info("Fired TimedFlushTask at : " + LocalDateTime.now());
             try {
                 if( thisInserter.getTimedFlushOptions().isFlushWhenFull())
                     thisInserter.flushFullQueues( thisInserter.getRetryCount() );
@@ -224,6 +224,7 @@ public class BulkInserter<T> implements AutoCloseable {
             }
         }
     }
+
 
     /**
      * A callable class that stores a list of records to insert and can also insert
@@ -315,13 +316,17 @@ public class BulkInserter<T> implements AutoCloseable {
          * Returns if the queue is full (based on the capacity).
          */
         public boolean isQueueFull() {
-            return queue.size() >= capacity;
+            if (queue.size() >= capacity) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
 
         /**
          * Inserts the records in the queue.  Returns a {@link
-         * WorkerQueueInsertionResult} object
+         * WorkerQueueInsertionResult<T>} object
          * containing the result of the insertion, or null if no
          * insertion was attempted.
          */
@@ -339,7 +344,6 @@ public class BulkInserter<T> implements AutoCloseable {
 
             // If nothing to insert, return a null object for the response
             if ( queuedRecords.isEmpty() ) {
-                GPUdbLogger.debug_with_info( "0 records in the queue; nothing to insert" );
                 return null;
             }
 
@@ -387,13 +391,8 @@ public class BulkInserter<T> implements AutoCloseable {
 
             try {
                 if (url == null) {
-                    GPUdbLogger.debug_with_info( "Inserting " + queuedRecords.size()
-                            + " records to rank-0" );
                     response = this.gpudb.submitRequest("/insert/records", request, response, true);
                 } else {
-                    GPUdbLogger.debug_with_info( "Inserting " + queuedRecords.size()
-                            + " records to rank at "
-                            + url.toString() );
                     response = this.gpudb.submitRequest(url, request, response, true);
                 }
 
@@ -405,19 +404,12 @@ public class BulkInserter<T> implements AutoCloseable {
 
                 // Insertion worked!
                 isSuccess = true;
-            } catch (GPUdbExitException exitException ) {
-                GPUdbLogger.debug_with_info( exitException.getMessage() );
-                doFailover = true;
-                // Need to pass the records that we couldn't insert and the
-                // exception we caught for further analysis down the road
-                failedRecords = queuedRecords;
-                exception     = exitException;
             } catch (GPUdbException ex) {
                 // If some connection issue occurred, we want to force an HA failover
-                if ( ex.hadConnectionFailure() ) {
+                if ( (ex instanceof GPUdbExitException)
+                     || ex.hadConnectionFailure() ) {
                     // We did encounter an HA failover trigger
                     doFailover = true;
-                    GPUdbLogger.debug_with_info( ex.getMessage() );
                 }
 
                 // Need to pass the records that we couldn't insert and the
@@ -432,7 +424,7 @@ public class BulkInserter<T> implements AutoCloseable {
             }
 
             // Package the response nicely with all relevant information
-            return new WorkerQueueInsertionResult<T>( url, headRankURL, response,
+            return new WorkerQueueInsertionResult<>( url, headRankURL, response,
                                                       failedRecords,
                                                       isSuccess,
                                                       doUpdateWorkers,
@@ -544,7 +536,7 @@ public class BulkInserter<T> implements AutoCloseable {
     private final RecordKeyBuilder<T> primaryKeyBuilder;
     private final RecordKeyBuilder<T> shardKeyBuilder;
     private final ExecutorService workerExecutorService;
-    private ScheduledExecutorService timedFlushExecutorService;
+    private final ScheduledExecutorService timedFlushExecutorService;
     private FlushOptions flushOptions;
     private Instant lastFlushTime;
     private final boolean isReplicatedTable;
@@ -563,6 +555,9 @@ public class BulkInserter<T> implements AutoCloseable {
     private int numRanks;
     private final AtomicLong countInserted = new AtomicLong();
     private final AtomicLong countUpdated = new AtomicLong();
+    private List<InsertException> error_list = new ArrayList<>();
+    private final Object error_list_lock = new Object();
+
 
     /**
      * Creates a {@link BulkInserter} with the specified parameters.
@@ -580,12 +575,8 @@ public class BulkInserter<T> implements AutoCloseable {
      *
      * @see com.gpudb.protocol.InsertRecordsRequest.Options
      */
-    public BulkInserter(GPUdb gpudb,
-                        String tableName,
-                        Type type,
-                        int batchSize,
-                        Map<String, String> options) throws GPUdbException {
-        this(gpudb, tableName, type, null, batchSize, options, null, FlushOptions.defaultOptions());
+    public BulkInserter(GPUdb gpudb, String tableName, Type type, int batchSize, Map<String, String> options) throws GPUdbException {
+        this(gpudb, tableName, type, null, batchSize, options, null);
     }
 
     /**
@@ -608,45 +599,8 @@ public class BulkInserter<T> implements AutoCloseable {
      *
      * @see com.gpudb.protocol.InsertRecordsRequest.Options
      */
-    public BulkInserter(GPUdb gpudb,
-                        String tableName,
-                        Type type,
-                        int batchSize,
-                        Map<String, String> options,
-                        com.gpudb.WorkerList workers) throws GPUdbException {
-        this(gpudb, tableName, type, null, batchSize, options, workers, FlushOptions.defaultOptions());
-    }
-
-    /**
-     * Creates a {@link BulkInserter} with the specified parameters.
-     *
-     * @param gpudb      the GPUdb instance to insert records into
-     * @param tableName  name of the table to insert records into
-     * @param type       the type of records being inserted
-     * @param batchSize  the number of records to insert into GPUdb at a time
-     *                   (records will queue until this number is reached); for
-     *                   multi-head ingest, this value is per worker
-     * @param options    optional parameters to pass to GPUdb while inserting
-     *                   ({@code null} for no parameters)
-     * @param workers    worker list for multi-head ingest ({@code null} to
-     *                   disable multi-head ingest)
-     * @param flushOptions - instance of {@link FlushOptions} class
-     *
-     * @throws GPUdbException if a configuration error occurs
-     *
-     * @throws IllegalArgumentException if an invalid parameter is specified
-     *
-     * @see com.gpudb.protocol.InsertRecordsRequest.Options
-     * @see FlushOptions
-     */
-    public BulkInserter(GPUdb gpudb,
-                        String tableName,
-                        Type type,
-                        int batchSize,
-                        Map<String, String> options,
-                        com.gpudb.WorkerList workers,
-                        FlushOptions flushOptions) throws GPUdbException {
-        this(gpudb, tableName, type, null, batchSize, options, workers, flushOptions);
+    public BulkInserter(GPUdb gpudb, String tableName, Type type, int batchSize, Map<String, String> options, com.gpudb.WorkerList workers) throws GPUdbException {
+        this(gpudb, tableName, type, null, batchSize, options, workers);
     }
 
     /**
@@ -668,12 +622,8 @@ public class BulkInserter<T> implements AutoCloseable {
      *
      * @see com.gpudb.protocol.InsertRecordsRequest.Options
      */
-    public BulkInserter(GPUdb gpudb,
-                        String tableName,
-                        TypeObjectMap<T> typeObjectMap,
-                        int batchSize,
-                        Map<String, String> options) throws GPUdbException {
-        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, batchSize, options, null, FlushOptions.defaultOptions());
+    public BulkInserter(GPUdb gpudb, String tableName, TypeObjectMap<T> typeObjectMap, int batchSize, Map<String, String> options) throws GPUdbException {
+        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, batchSize, options, null);
     }
 
     /**
@@ -698,57 +648,12 @@ public class BulkInserter<T> implements AutoCloseable {
      *
      * @see com.gpudb.protocol.InsertRecordsRequest.Options
      */
-    public BulkInserter(GPUdb gpudb,
-                        String tableName,
-                        TypeObjectMap<T> typeObjectMap,
-                        int batchSize,
-                        Map<String, String> options,
-                        com.gpudb.WorkerList workers) throws GPUdbException {
-        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, batchSize, options, workers, FlushOptions.defaultOptions());
+    public BulkInserter(GPUdb gpudb, String tableName, TypeObjectMap<T> typeObjectMap, int batchSize, Map<String, String> options, com.gpudb.WorkerList workers) throws GPUdbException {
+        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, batchSize, options, workers);
     }
 
-    /**
-     * Creates a {@link BulkInserter} with the specified parameters.
-     *
-     * @param gpudb          the GPUdb instance to insert records into
-     * @param tableName      name of the table to insert records into
-     * @param typeObjectMap  type object map for the type of records being
-     *                       inserted
-     * @param batchSize      the number of records to insert into GPUdb at a
-     *                       time (records will queue until this number is
-     *                       reached); for multi-head ingest, this value is per
-     *                       worker
-     * @param options        optional parameters to pass to GPUdb while
-     *                       inserting ({@code null} for no parameters)
-     * @param workers        worker list for multi-head ingest ({@code null} to
-     *                       disable multi-head ingest)
-     * @param flushOptions - instance of timed flush options {@link FlushOptions}
-     *
-     * @throws GPUdbException if a configuration error occurs
-     *
-     * @throws IllegalArgumentException if an invalid parameter is specified
-     *
-     * @see com.gpudb.protocol.InsertRecordsRequest.Options
-     * @see FlushOptions
-     */
-    public BulkInserter(GPUdb gpudb,
-                        String tableName,
-                        TypeObjectMap<T> typeObjectMap,
-                        int batchSize,
-                        Map<String, String> options,
-                        com.gpudb.WorkerList workers,
-                        FlushOptions flushOptions) throws GPUdbException {
-        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, batchSize, options, workers, flushOptions);
-    }
 
-    private BulkInserter(GPUdb gpudb,
-                         String tableName,
-                         Type type,
-                         TypeObjectMap<T> typeObjectMap,
-                         int batchSize,
-                         Map<String, String> options,
-                         com.gpudb.WorkerList workers,
-                         FlushOptions flushOptions) throws GPUdbException {
+    private BulkInserter(GPUdb gpudb, String tableName, Type type, TypeObjectMap<T> typeObjectMap, int batchSize, Map<String, String> options, com.gpudb.WorkerList workers) throws GPUdbException {
 
         haFailoverLock = new Object();
 
@@ -842,7 +747,7 @@ public class BulkInserter<T> implements AutoCloseable {
         // Save whether this table has a primary key
         this.hasPrimaryKey = (this.primaryKeyBuilder != null);
 
-        // And whether we need to update records with existing primary keys
+        // And wheter we need to update records with existing primary keys
         this.updateOnExistingPk = ( (options != null)
                                     && options.containsKey( InsertRecordsRequest
                                                             .Options
@@ -869,7 +774,7 @@ public class BulkInserter<T> implements AutoCloseable {
                     } else {
                         URL insertURL = GPUdbBase.appendPathToURL( url,
                                                                    "/insert/records" );
-                        this.workerQueues.add(new WorkerQueue<>( this.gpudb,
+                        this.workerQueues.add(new WorkerQueue<T>( this.gpudb,
                                                                   insertURL,
                                                                   this.tableName,
                                                                   batchSize,
@@ -891,7 +796,7 @@ public class BulkInserter<T> implements AutoCloseable {
                                                            "/insert/records" );
                 }
 
-                this.workerQueues.add( new WorkerQueue<>( this.gpudb, insertURL,
+                this.workerQueues.add( new WorkerQueue<T>( this.gpudb, insertURL,
                                                            this.tableName,
                                                            batchSize,
                                                            (primaryKeyBuilder != null),
@@ -904,25 +809,17 @@ public class BulkInserter<T> implements AutoCloseable {
         } catch (MalformedURLException ex) {
             throw new GPUdbException(ex.getMessage(), ex);
         }
-
         // Create the scheduler only if the flush interval has been set to a valid value by the user.
         // The default value is -1 to indicate that automatic flush is not called for
         if( this.flushOptions.getFlushInterval() > 0 ) {
             timedFlushExecutorService = Executors.newSingleThreadScheduledExecutor();
             timedFlushExecutorService.scheduleWithFixedDelay(new TimedFlushTask(this),
-                    this.flushOptions.getFlushInterval(),
-                    this.flushOptions.getFlushInterval(),
-                    TimeUnit.SECONDS);
+                this.flushOptions.getFlushInterval(),
+                this.flushOptions.getFlushInterval(),
+                TimeUnit.SECONDS);
+        } else {
+            this.timedFlushExecutorService = null;
         }
-    }
-
-    /**
-     * Returns the list of {@link BulkInserter.WorkerQueue} for the {@link BulkInserter}
-     * instance.
-     * @return - the list of {@link BulkInserter.WorkerQueue} objects
-     */
-    public List<WorkerQueue<T>> getWorkerQueues() {
-        return new ArrayList<>(this.workerQueues);
     }
 
     public FlushOptions getTimedFlushOptions() {
@@ -933,33 +830,7 @@ public class BulkInserter<T> implements AutoCloseable {
         this.flushOptions = flushOptions;
     }
 
-    /**
-     * This method will be called automatically if the {@link BulkInserter} class is used in a
-     * try-with-resources block. If not used that way it is mandatory to call this method
-     * to initiate a smooth cleanup of the underlying resources. This method will terminate
-     * the internal scheduler threads and call flush so that all pending updates to the database
-     * are handled properly.
-     *
-     * <pre>
-     *     try( BulkInserter inserter = new BulkInserter(...) ) {
-     *         // Do something with the BulkInserter instance
-     *         // inserter.{some_method}
-     *     }
-     *     // Here the close method of the BulkInserter class will be called
-     *     // automatically
-     * </pre>
-     *
-     * or
-     *
-     * <pre>
-     *     BulkInserter inserter = new BulkInserter<>(...)
-     *     // Invoke some methods on the inserter
-     *     //Explicitly call close() method
-     *     inserter.close();
-     * </pre>
-     *
-     * @throws InsertException - While doing the final flush
-     */
+
     @Override
     public void close() throws InsertException {
         GPUdbLogger.debug_with_info("Terminating BulkInserter and cleaning up ...");
@@ -982,7 +853,7 @@ public class BulkInserter<T> implements AutoCloseable {
         this.flush();
 
         // Terminate the worker thread pool
-        if( workerExecutorService != null ) {
+        if( this.workerExecutorService != null ) {
             workerExecutorService.shutdown();
             try {
                 if (!workerExecutorService.awaitTermination( DEFAULT_THREADPOOL_TERMINATION_TIMEOUT, TimeUnit.SECONDS)) {
@@ -994,6 +865,7 @@ public class BulkInserter<T> implements AutoCloseable {
             }
             GPUdbLogger.debug_with_info("Terminated worker thread pool ...");
         }
+
     }
 
     /**
@@ -1046,7 +918,6 @@ public class BulkInserter<T> implements AutoCloseable {
         for (int i = 0; i < this.dbHARingSize; ++i) {
             // Try to switch to a new cluster
             try {
-                GPUdbLogger.debug_with_info( "Forced HA failover attempt #" + i );
                 this.gpudb.switchURL( currURL, currCountClusterSwitches );
             } catch (GPUdbBase.GPUdbHAUnavailableException ex ) {
                 // Have tried all clusters; back to square 1
@@ -1138,8 +1009,6 @@ public class BulkInserter<T> implements AutoCloseable {
                 int _numClusterSwitches = this.gpudb.getNumClusterSwitches();
                 if ( countClusterSwitches == _numClusterSwitches ) {
                     // Still using the same cluster; so no change needed
-                    GPUdbLogger.debug_with_info( "# cluster switches and shard versions the same" );
-                    GPUdbLogger.debug_with_info( "Returning false" );
                     return false;
                 }
 
@@ -1161,8 +1030,6 @@ public class BulkInserter<T> implements AutoCloseable {
             if ( ex.hadConnectionFailure() ) {
                 // Could not update the worker queues because we can't connect
                 // to the database
-                GPUdbLogger.debug_with_info( "Had connection failure: "
-                        + ex.getMessage() );
                 return false;
             } else {
                 // Unknown errors not handled here
@@ -1183,7 +1050,6 @@ public class BulkInserter<T> implements AutoCloseable {
         {
             reconstructWorkerQueues();
         }
-        GPUdbLogger.debug_with_info( "Returning true" );
 
         return true; // the shard mapping was updated indeed
     }  // end updateWorkerQueues
@@ -1202,10 +1068,7 @@ public class BulkInserter<T> implements AutoCloseable {
         // Get the latest worker list (use whatever IP regex was used initially)
         com.gpudb.WorkerList newWorkerList = new com.gpudb.WorkerList( this.gpudb,
                                                                        this.workerList.getIpRegex() );
-        GPUdbLogger.debug_with_info( "Current worker list: " + this.workerList.toString() );
-        GPUdbLogger.debug_with_info( "New worker list:     " + newWorkerList.toString() );
         if ( newWorkerList.equals( this.workerList ) ) {
-            GPUdbLogger.debug_with_info( "Worker list remained the same; returning false" );
             return; // nothing to do since the worker list did not change
         }
 
@@ -1223,7 +1086,7 @@ public class BulkInserter<T> implements AutoCloseable {
                 else {
                     // Add a queue for a currently active rank
                     URL insertURL = GPUdbBase.appendPathToURL( url, "/insert/records" );
-                    newWorkerQueues.add( new WorkerQueue<T>( this.gpudb, insertURL,
+                    newWorkerQueues.add( new WorkerQueue<>( this.gpudb, insertURL,
                                                              this.tableName,
                                                              batchSize,
                                                              (this.primaryKeyBuilder != null),
@@ -1350,6 +1213,22 @@ public class BulkInserter<T> implements AutoCloseable {
         return countUpdated.get();
     }
 
+    /**
+     * Gets the list of errors and warnings received since the last call to
+     * getErrors().
+     *
+     * @return  list of InsertException objects
+     */
+    public List<InsertException> getErrors()
+    {
+        synchronized (error_list_lock)
+        {
+            List<InsertException> copy = error_list; // Make a copy to return
+            error_list = new ArrayList<>(); // Make a new list for the future
+            return copy;
+        }
+    }
+
 
     /**
      * Ensures that any queued records are inserted into GPUdb. If an error
@@ -1367,8 +1246,6 @@ public class BulkInserter<T> implements AutoCloseable {
         // lets the called method know that the user is forcing this flush;
         // this is important for recursive calls.
         this.flush( this.retryCount );
-        lastFlushTime = Instant.now();
-
     }
 
 
@@ -1422,14 +1299,11 @@ public class BulkInserter<T> implements AutoCloseable {
 
             // We will flush only full queues
             if ( workerQueue.isQueueFull() ) {
-                GPUdbLogger.debug_with_info( "Adding full queue for "
-                        + workerQueue.getUrl() );
                 fullQueues.add( workerQueue );
             }
 
         }
 
-        GPUdbLogger.debug_with_info( "Before calling flushQueues()" );
         this.flushQueues( fullQueues, retryCount, false );
     }
 
@@ -1452,12 +1326,9 @@ public class BulkInserter<T> implements AutoCloseable {
     private void flushQueues( List<WorkerQueue<T>> queues, int retryCount,
                               boolean forcedFlush )
         throws InsertException {
-        GPUdbLogger.debug_with_info( "Begin; # queues " + queues.size()
-                + "; retryCount: " + retryCount );
         // Let the user know that we ran out of retries
         if ( ( retryCount < 0 ) || (queues.size() == 0) ) {
             // Retry count of 0 means try once but do no retry
-            GPUdbLogger.debug_with_info( "Returning without further action" );
             return;
         }
 
@@ -1475,7 +1346,6 @@ public class BulkInserter<T> implements AutoCloseable {
 
             // Handle removed ranks
             if ( workerQueue == null) {
-                GPUdbLogger.debug_with_info( "Skipping null worker queue" );
                 continue;
             }
 
@@ -1484,7 +1354,6 @@ public class BulkInserter<T> implements AutoCloseable {
             futureResults.add( queueService.submit( workerQueue ) );
             ++countQueueSubmitted;
         }
-        GPUdbLogger.debug_with_info( "# queues submitted: " + countQueueSubmitted );
 
         boolean doUpdateWorkers  = false;
         boolean doFailover       = false;
@@ -1517,7 +1386,6 @@ public class BulkInserter<T> implements AutoCloseable {
 
             // Handle the result, if any
             if ( result.getDidSucceed() ) {
-                GPUdbLogger.debug_with_info( "Flush thread succeeded" );
                 // The insertion for this queue succeeded; aggregate the results
                 countInserted.addAndGet( result
                                          .getInsertResponse()
@@ -1535,7 +1403,6 @@ public class BulkInserter<T> implements AutoCloseable {
                     doUpdateWorkers = true;
                 }
             } else {
-                GPUdbLogger.debug_with_info( "Setting retry to true" );
                 // Something went wrong and the data was not inserted.
                 doRetryInsertion = true;
 
@@ -1556,7 +1423,6 @@ public class BulkInserter<T> implements AutoCloseable {
                     // worker's result with a false value of this worker.  We
                     // are trying to find out if *any* worker has triggered a
                     // need for updating our worker list.
-                    GPUdbLogger.debug_with_info( "Setting update workers to true" );
                     doUpdateWorkers = true;
                 }
 
@@ -1566,7 +1432,6 @@ public class BulkInserter<T> implements AutoCloseable {
                     // worker's result with a false value of this worker.  We
                     // are trying to find out if *any* worker has triggered a
                     // need for updating our worker list.
-                    GPUdbLogger.debug_with_info( "Setting doFailover & updateWorkers to true" );
                     doFailover = true;
                     // We need to update the worker if we have to fail over
                     doUpdateWorkers = true;
@@ -1577,10 +1442,6 @@ public class BulkInserter<T> implements AutoCloseable {
                     // We're only saving the largest value so that we know the
                     // latest cluster switch (in the gpudb object) that was
                     // encountered by the workers.
-                    GPUdbLogger.debug_with_info( "Changing # cluster switches from "
-                            + latestCountClusterSwitches
-                            + " to "
-                            + workerCountClusterSwitches );
                     latestCountClusterSwitches = workerCountClusterSwitches;
                 }
 
@@ -1588,15 +1449,10 @@ public class BulkInserter<T> implements AutoCloseable {
                 if ( workerInsertionAttemptTimestamp > latestInsertionAttemptTimestamp ) {
                     // We're only saving the largest value so that we know the
                     // latest insertion attempt timestamp by the workers.
-                    GPUdbLogger.debug_with_info( "Changing insertion attempt time from "
-                            + latestInsertionAttemptTimestamp
-                            + " to "
-                            + workerInsertionAttemptTimestamp );
                     latestInsertionAttemptTimestamp = workerInsertionAttemptTimestamp;
                 }
 
                 // Save any exception encountered by the worker
-                GPUdbLogger.debug_with_info( "Saving worker failure exception " );
                 workerExceptions.add( result.getFailureException() );
             }  // end if
         }  // end loop handling results
@@ -1625,8 +1481,6 @@ public class BulkInserter<T> implements AutoCloseable {
             }
             builder.append( " ]" );
             originalCauses = builder.toString();
-            GPUdbLogger.warn( "Original causes of failure from ranks: "
-                              + originalCauses );
         }
 
         // Failover if needed
@@ -1634,9 +1488,6 @@ public class BulkInserter<T> implements AutoCloseable {
             try {
                 // Switch to a different cluster in the HA ring, if any
                 // TODO: Check which head node url needs to be used here
-                GPUdbLogger.debug_with_info( "Before calling forceHAFailover() "
-                        + "with current head URL: "
-                        + currHeadUrl );
                 forceHAFailover( currHeadUrl, latestCountClusterSwitches );
             } catch (GPUdbException ex) {
                 // We've now tried all the HA clusters and circled back;
@@ -1644,8 +1495,6 @@ public class BulkInserter<T> implements AutoCloseable {
 
                 // Let the user know that there was a problem and which
                 // records could not be inserted
-                GPUdbLogger.debug_with_info( "Failover failed with exception: "
-                        + ex.getMessage() );
                 GPUdbException exception = new GPUdbException( ex.getMessage()
                                                                + ".  Original causes "
                                                                + " encountered by workers: "
@@ -1661,14 +1510,10 @@ public class BulkInserter<T> implements AutoCloseable {
             // Update the workers because we either failed over or the shard
             // mapping has to be updated (due to added/removed ranks)
             try {
-                GPUdbLogger.debug_with_info( "Before calling updateWorkerQueues()" );
                 updateWorkerQueues( latestCountClusterSwitches );
             } catch (Exception ex) {
                 // Let the user know that there was a problem and which records
                 // could not be inserted
-                GPUdbLogger.debug_with_info( "updateWorkerQueues() failed with "
-                        + "exception: "
-                        + ex.getMessage() );
                 throw new InsertException( currHeadUrl, failedRecords,
                                            ex.getMessage(), ex);
             }
@@ -1677,19 +1522,15 @@ public class BulkInserter<T> implements AutoCloseable {
         if ( doRetryInsertion ) {
             // We need to re-attempt inserting the records that did not get
             // ingested.
-            GPUdbLogger.debug_with_info( "Retry insertion" );
 
             // For a failover scenario, we won't count the next trial as a
-            // a true retry since.  Note that without this check, failover
+            // true retry since.  Note that without this check, failover
             // doesn't happen properly since we run out of retries.
             if ( !doFailover ) {
                 // Not a failover scenario; so the insertion failure happened
                 // for some other reason.  Count the next attempt as a retry.
-                GPUdbLogger.debug_with_info( "Decreasing retry count from: "
-                        + retryCount );
                 --retryCount;
             }
-            GPUdbLogger.debug_with_info( "retryCount: " + retryCount );
 
             // Retry insertion of the failed records (recursive call to our
             // private insertion with the retry count decreased to halt
@@ -1709,11 +1550,8 @@ public class BulkInserter<T> implements AutoCloseable {
             // need to call the flush method again (otherwise, failed records
             // may have been queued but not actually inserted).
             if ( forcedFlush ) {
-                GPUdbLogger.debug_with_info( "Before forced flush" );
                 this.flush( retryCount );
-                GPUdbLogger.debug_with_info( "After forced flush" );
             }
-            GPUdbLogger.debug_with_info( "End flushQueues" );
         }
     }   // end flushQueues
 
@@ -1753,7 +1591,7 @@ public class BulkInserter<T> implements AutoCloseable {
         } catch (GPUdbException ex) {
             List<T> queuedRecord = new ArrayList<>();
             queuedRecord.add( record );
-            throw new InsertException(null, queuedRecord,
+            throw new InsertException( null, queuedRecord,
                                        "Unable to calculate shard/primary key; please check data for unshardable values" );
         }
 
@@ -1771,7 +1609,7 @@ public class BulkInserter<T> implements AutoCloseable {
         if (workerQueue == null) {
             List<T> queuedRecord = new ArrayList<>();
             queuedRecord.add( record );
-            throw new InsertException(null, queuedRecord,
+            throw new InsertException( null, queuedRecord,
                                        "Attempted to insert into worker rank that has been removed!  Maybe need to update the shard mapping.");
         }
 
@@ -1807,7 +1645,7 @@ public class BulkInserter<T> implements AutoCloseable {
         // was single threaded; so each time records got inserted to this class
         // (whether via this insert(single record) or the insert( many records ) )
         // method, we always flushed any queue that became full.  Now that we
-        // are using background threads to flush the queues in parallel, if we
+        // are using background threads to flush the queues paralelly, if we
         // don't have this 'flushWhenFull' mechanism, the insert( single record )
         // method would _never_ flush any queue.  We can't change the method's
         // behavior that much; it would break existing client code potentially.
@@ -1843,8 +1681,6 @@ public class BulkInserter<T> implements AutoCloseable {
         // Let the user know that we ran out of retries
         if ( retryCount < 0 ) {
             // Retry count of 0 means try once but do no retry
-            GPUdbLogger.debug_with_info( "retryCount: " + retryCount
-                    + "; returning false" );
             return false;
         }
 
@@ -1867,9 +1703,7 @@ public class BulkInserter<T> implements AutoCloseable {
         }
 
         // Flush all the queues that are full in parallel
-        GPUdbLogger.debug_with_info( "Before flushing full queues" );
         this.flushFullQueues( retryCount );
-        GPUdbLogger.debug_with_info( "After flushing full queues" );
 
         // We succeeded in inserting all the records!
         return true;
@@ -1893,7 +1727,7 @@ public class BulkInserter<T> implements AutoCloseable {
      */
     @SuppressWarnings("unchecked")
     public void insert(List<T> records) throws InsertException {
-        // Try to insert all the records with the allotted retry count
+        // Try to insert all the records with the alotted retry count
         this.insert( records, this.retryCount );
     }
 }
