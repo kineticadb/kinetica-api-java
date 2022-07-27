@@ -1559,7 +1559,16 @@ public class BulkInserter<T> implements AutoCloseable {
             } catch ( ExecutionException
                       | java.lang.InterruptedException ex ) {
                 // Something interrupted the execution of the threads.
-                // TODO: Is this the best way to handle it?
+                if (ex instanceof ExecutionException ) {
+                    // Some error occurred in the task being executed
+                    // Need to report
+                    final URL url = queues.get(i).getUrl();
+                    GPUdbLogger.debug_with_info(String.format("Error in inserting data for queue with URL : %s : Error message # %s", url, ((ExecutionException) ex).getMessage()));
+                    workerExceptions.add(ex);
+                }
+                if( ex instanceof InterruptedException ) {
+                    GPUdbLogger.debug_with_info(String.format("Thread interrupted : %s", ((InterruptedException) ex).getMessage()));
+                }
                 continue;
             }
 
