@@ -1090,6 +1090,10 @@ public abstract class GPUdbBase {
     protected GPUdbBase(String url, Options options) throws GPUdbException {
         urlLock = new Object();
 
+        // Initialize the logger before anything else.  This MUST be donce
+        // before any logging happens!
+        GPUdbLogger.initializeLogger();
+
         try {
             // Not using an unmodifiable list because we'll have to update it
             // with the HA ring head node addresses
@@ -1110,6 +1114,10 @@ public abstract class GPUdbBase {
     protected GPUdbBase(URL url, Options options) throws GPUdbException {
         urlLock = new Object();
 
+        // Initialize the logger before anything else.  This MUST be donce
+        // before any logging happens!
+        GPUdbLogger.initializeLogger();
+
         if ( url == null ) {
             throw new GPUdbException( "Must provide at least one URL; gave none!" );
         }
@@ -1122,6 +1130,10 @@ public abstract class GPUdbBase {
 
     protected GPUdbBase(List<URL> urls, Options options) throws GPUdbException {
         urlLock = new Object();
+
+        // Initialize the logger before anything else.  This MUST be donce
+        // before any logging happens!
+        GPUdbLogger.initializeLogger();
 
         if ( urls.isEmpty() ) {
             throw new GPUdbException( "Must provide at least one URL; gave none!" );

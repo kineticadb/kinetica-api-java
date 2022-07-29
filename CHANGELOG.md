@@ -2,6 +2,16 @@
 
 ## Version 7.0
 
+### Version 7.0.20.7 - 2022-07-28
+
+#### Changed
+-   Improved error reporting of environment-related issues during inserts
+
+#### Fixed
+-   Logger initialization issue
+
+
+
 ### Version 7.0.20.6 - 2022-07-25
 
 #### Fixed
