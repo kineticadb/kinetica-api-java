@@ -224,3 +224,13 @@ command -
 com.gpudb.example.GPUdbFileHandlerExample
 
 The URL VM argument needs to be changed suitably to match the exact environment.
+
+# Support
+If you found a bug please submit an [issue on Github](https://github.com/kineticadb/examples/issues). Please reference the example that you are having an issue with in the title.
+
+To get community support, you can: 
+1. Ask a question in our [community slack channel](https://join.slack.com/t/kinetica-community/shared_invite/zt-1bt9x3mvr-uMKrXlSDXfy3oU~sKi84qg) 
+2. Post on [stackoverflow](https://stackoverflow.com/questions/tagged/kinetica) under the kinetica tag.
+
+# More Information
+See our [Documentation](http://docs.kinetica.com/7.1/azure) for more information about workbooks and the Kinetica workbench.
