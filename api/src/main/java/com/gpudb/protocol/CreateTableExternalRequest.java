@@ -947,6 +947,18 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_FILTER_COLUMN
      * REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used for splitting the
      * query into multiple sub-queries.  The default value is ''.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#UPDATE_ON_EXISTING_PK
+     * UPDATE_ON_EXISTING_PK}:
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -1625,6 +1637,19 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * sub-queries.  The default value is ''.
          */
         public static final String REMOTE_QUERY_FILTER_COLUMN = "remote_query_filter_column";
+
+        /**
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}.
+         */
+        public static final String UPDATE_ON_EXISTING_PK = "update_on_existing_pk";
 
         private Options() {  }
     }
@@ -2387,6 +2412,21 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used
      *                 for splitting the query into multiple sub-queries.  The
      *                 default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#UPDATE_ON_EXISTING_PK
+     *                 UPDATE_ON_EXISTING_PK}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -3424,6 +3464,20 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used for
      *         splitting the query into multiple sub-queries.  The default
      *         value is ''.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#UPDATE_ON_EXISTING_PK
+     *         UPDATE_ON_EXISTING_PK}:
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *         FALSE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -3919,6 +3973,21 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used
      *                 for splitting the query into multiple sub-queries.  The
      *                 default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#UPDATE_ON_EXISTING_PK
+     *                 UPDATE_ON_EXISTING_PK}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

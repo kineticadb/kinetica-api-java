@@ -505,7 +505,7 @@ public abstract class GPUdbBase {
         /**
          * Gets the timeout used when trying to recover from an intra-cluster
          * failover event.  The value is given in milliseconds.  The default is
-         * equivalent to 5 minutes.
+         * set to 0 (infinite, no timeout).
          *
          * @return  the intraClusterFailoverTimeout value
          *
@@ -2919,8 +2919,16 @@ public abstract class GPUdbBase {
         ClusterAddressInfo currClusterInfo = this.hostAddresses.get( clusterIndex );
         GPUdbLogger.debug_with_info( "Got cluster info: " + currClusterInfo.toString() );
 
+        // If N+1 failover is disabled on the server ignore all client settings
+        // and bail out.
+        if( !currClusterInfo.isIntraClusterFailoverEnabled() ) {
+            GPUdbLogger.warn(String.format("N+1 failover disabled on " +
+                "the server for URL : %s , stopping failover process", currClusterInfo.getActiveHeadNodeUrl()));
+            return false;
+        }
+
         URL currHeadRankUrl = currClusterInfo.getActiveHeadNodeUrl();
-        GPUdbLogger.info( "Starting N+1 failover recovery for cluster "
+        GPUdbLogger.warn( "Starting N+1 failover recovery for cluster "
             + "with head rank " + currHeadRankUrl.toString()
             + "; timeout is: "
             + (this.intraClusterFailoverTimeoutNS / 1000000000L)
@@ -3041,9 +3049,7 @@ public abstract class GPUdbBase {
                     // If we've reached the timeout, just return
                     long currTime = System.nanoTime();
                     long elapsedTime = (currTime - startTime);
-                    GPUdbLogger.info( "N+1 failover recovery elapsed time so far: "
-                        + (elapsedTime / 1000000000L)
-                        + " seconds" );
+
                     if ( (this.intraClusterFailoverTimeoutNS != 0)
                         && ( elapsedTime >= this.intraClusterFailoverTimeoutNS ) ) {
                         GPUdbLogger.debug_with_info( "Hit N+1 failover recovery timeout;"
@@ -3078,9 +3084,7 @@ public abstract class GPUdbBase {
                             // Some sort of cluster operation is ongoing; wait for
                             // a certain amount of time before retrying status check
                             try {
-                                GPUdbLogger.debug_with_info( "Sleeping for "
-                                    + (nPlusOneFailoverSleepIntervalLong / 1000)
-                                    + " seconds..." );
+                                GPUdbLogger.info(String.format("Checking whether a cluster operation is running on the server, Sleeping for %d seconds...", nPlusOneFailoverSleepIntervalLong / 1000));
                                 Thread.sleep( nPlusOneFailoverSleepIntervalLong );
                             } catch ( InterruptedException ex ) {
                                 GPUdbLogger.debug_with_info( "Sleep interrupted; throwing exception: "
@@ -3129,7 +3133,7 @@ public abstract class GPUdbBase {
                             // For all other system statuses, we will retry (but
                             // we'll wait a certain amount of time before that)
                             try {
-                                GPUdbLogger.debug_with_info( "Sleeping for "
+                                GPUdbLogger.debug_with_info( "System not yet up; Sleeping for "
                                     + (nPlusOneFailoverSleepIntervalLong / 1000)
                                     + " seconds..." );
                                 Thread.sleep( nPlusOneFailoverSleepIntervalLong );
@@ -3225,10 +3229,8 @@ public abstract class GPUdbBase {
         // on this machine
         GPUdbLogger.debug_with_info( "Generating head rank urls for all hosts" );
         List<URL> headRankUrls = new ArrayList<URL>();
-        Iterator<String> iter = currClusterInfo.getHostNames().iterator();
-        while ( iter.hasNext() ) {
+        for (String hostnameWithProtocol : currClusterInfo.getHostNames()) {
             // Get the hostname (which *may* have the protocol attached)
-            String hostnameWithProtocol = iter.next();
             GPUdbLogger.debug_with_info( "Got hostname: " + hostnameWithProtocol );
             // Split the hostname to extract just the host part
             String[] splitHostname = hostnameWithProtocol.split( "://" );
@@ -3283,9 +3285,7 @@ public abstract class GPUdbBase {
                 // If we've reached the timeout, just return
                 long currTime = System.nanoTime();
                 long elapsedTime = (currTime - startTime);
-                GPUdbLogger.info( "N+1 failover recovery elapsed time so far: "
-                    + (elapsedTime / 1000000000L)
-                    + " seconds (and trying...)" );
+
                 if ( (this.intraClusterFailoverTimeoutNS != 0)
                     && ( elapsedTime >= this.intraClusterFailoverTimeoutNS ) ) {
                     GPUdbLogger.debug_with_info( "Hit N+1 failover recovery timeout;"
@@ -3314,9 +3314,7 @@ public abstract class GPUdbBase {
                         // Some sort of cluster operation is ongoing; wait for
                         // a certain amount of time before retrying status check
                         try {
-                            GPUdbLogger.debug_with_info( "Sleeping for "
-                                + (nPlusOneFailoverSleepIntervalLong / 1000)
-                                + " seconds..." );
+                            GPUdbLogger.info(String.format("Checking whether a cluster operation is running on the server, Sleeping for %d seconds...", nPlusOneFailoverSleepIntervalLong / 1000));
                             Thread.sleep( nPlusOneFailoverSleepIntervalLong );
                         } catch ( InterruptedException ex ) {
                             GPUdbLogger.debug_with_info( "Sleep interrupted; throwing exception" );
@@ -3387,7 +3385,7 @@ public abstract class GPUdbBase {
                 try {
                     GPUdbLogger.debug_with_info( "Sleeping for "
                         + (nPlusOneFailoverSleepIntervalShort / 1000)
-                        + " seconds..." );
+                        + " seconds before re-trying ..." );
                     Thread.sleep( nPlusOneFailoverSleepIntervalShort );
                 } catch ( InterruptedException ex ) {
                     GPUdbLogger.debug_with_info( "Sleep interrupted; throwing exception: "

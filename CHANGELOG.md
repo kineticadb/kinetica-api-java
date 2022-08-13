@@ -2,6 +2,16 @@
 
 ## Version 7.1
 
+### Version 7.1.7.2 - 2022-08-12
+
+#### Added
+-   Method to query a BulkInserter's multi-head status
+
+#### Changed
+-   Switched ordering of flush & thread shutdown sequence
+-   Disabled client intra-cluster failover if failover is disabled on the server
+
+
 ### Version 7.1.7.1 - 2022-07-27
 
 #### Changed

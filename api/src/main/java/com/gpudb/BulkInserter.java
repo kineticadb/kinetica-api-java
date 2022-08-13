@@ -11,11 +11,9 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Object that manages the insertion into GPUdb of large numbers of records in
@@ -330,29 +328,29 @@ public class BulkInserter<T> implements AutoCloseable {
 
                 if ( this.typeObjectMap == null ) {
                     encodedRecords = Avro.encode( queuedRecords,
-                            this.gpudb.getThreadCount(),
-                            this.gpudb.getExecutor() );
+                        this.gpudb.getThreadCount(),
+                        this.gpudb.getExecutor() );
 
                 } else {
                     encodedRecords = Avro.encode( this.typeObjectMap,
-                            queuedRecords,
-                            this.gpudb.getThreadCount(),
-                            this.gpudb.getExecutor() );
+                        queuedRecords,
+                        this.gpudb.getThreadCount(),
+                        this.gpudb.getExecutor() );
                 }
                 request = new RawInsertRecordsRequest( this.tableName,
-                        encodedRecords.getLeft(),
-                        options);
+                    encodedRecords.getLeft(),
+                    options);
 
                 recordsFailedEncoding = new LinkedHashMap<>( encodedRecords.getRight() );
 
             } catch (GPUdbException ex) {
                 // Can't even attempt the insertion! Need to let the caller know.
                 return new WorkerQueueInsertionResult<>( url, this.gpudb.getURL(),
-                        null,
-                        queuedRecords,
-                        warnings, false, false, false,
-                        this.gpudb.getNumClusterSwitches(),
-                        0, ex );
+                    null,
+                    queuedRecords,
+                    warnings, false, false, false,
+                    this.gpudb.getNumClusterSwitches(),
+                    0, ex );
             }
 
             // Some flags for necessary follow-up work
@@ -373,12 +371,12 @@ public class BulkInserter<T> implements AutoCloseable {
             try {
                 if (url == null) {
                     GPUdbLogger.debug_with_info( "Inserting " + queuedRecords.size()
-                            + " records to rank-0" );
+                        + " records to rank-0" );
                     response = this.gpudb.submitRequest("/insert/records", request, response, true);
                 } else {
                     GPUdbLogger.debug_with_info( "Inserting " + queuedRecords.size()
-                            + " records to rank at "
-                            + url.toString() );
+                        + " records to rank at "
+                        + url.toString() );
 
                     // // Note: The following debug is for developer debugging **ONLY**.
                     // //       NEVER have this checked in uncommented since it will
@@ -397,10 +395,10 @@ public class BulkInserter<T> implements AutoCloseable {
                 // for those cases where we had passed empty ByteBuffers in
                 // places of records which had failed Avro encoding.
                 info.entrySet().stream().filter( x -> x.getKey().toLowerCase().startsWith("error_"))
-                        .forEach( x -> {
-                            int index = Integer.parseInt(x.getKey().substring(6));
-                            warnings.put(index, Pair.of(x.getKey().substring(6) + ":" + x.getValue(), queuedRecords.get(index)));
-                        });
+                    .forEach( x -> {
+                        int index = Integer.parseInt(x.getKey().substring(6));
+                        warnings.put(index, Pair.of(x.getKey().substring(6) + ":" + x.getValue(), queuedRecords.get(index)));
+                    });
 
                 // Now we traverse the Map of records which failed Avro
                 // encoding and update our warnings map with the actual Avro
@@ -422,7 +420,7 @@ public class BulkInserter<T> implements AutoCloseable {
             } catch (GPUdbException ex) {
                 // If some connection issue occurred, we want to force an HA failover
                 if ( (ex instanceof GPUdbExitException)
-                        || ex.hadConnectionFailure() ) {
+                    || ex.hadConnectionFailure() ) {
                     // We did encounter an HA failover trigger
                     doFailover = true;
                 }
@@ -441,14 +439,14 @@ public class BulkInserter<T> implements AutoCloseable {
 
             // Package the response nicely with all relevant information
             return new WorkerQueueInsertionResult<>( url, headRankURL, response,
-                    failedRecords,
-                    warnings,
-                    isSuccess,
-                    doUpdateWorkers,
-                    doFailover,
-                    countClusterSwitches,
-                    insertionAttemptTimestamp,
-                    exception );
+                failedRecords,
+                warnings,
+                isSuccess,
+                doUpdateWorkers,
+                doFailover,
+                countClusterSwitches,
+                insertionAttemptTimestamp,
+                exception );
         }  // end call
 
         public URL getUrl() {
@@ -564,7 +562,7 @@ public class BulkInserter<T> implements AutoCloseable {
     private FlushOptions flushOptions;
     private Instant lastFlushTime;
     private final boolean isReplicatedTable;
-    private final boolean isMultiHeadEnabled;
+    private final boolean multiHeadEnabled;
     private final boolean useHeadNode;
     private final boolean hasPrimaryKey;
     private final boolean updateOnExistingPk;
@@ -585,6 +583,10 @@ public class BulkInserter<T> implements AutoCloseable {
     /**
      * Creates a {@link BulkInserter} with the specified parameters.
      *
+     * This constructor could be used to obtain an instance of the BulkInserter
+     * class when the API user chooses not to use the multi-head ingestion
+     * facility even if it is turned on, on the server.
+
      * @param gpudb      the GPUdb instance to insert records into
      * @param tableName  the table to insert records into
      * @param type       the type of records being inserted
@@ -669,6 +671,10 @@ public class BulkInserter<T> implements AutoCloseable {
 
     /**
      * Creates a {@link BulkInserter} with the specified parameters.
+     *
+     * This constructor could be used to obtain an instance of the BulkInserter
+     * class when the API user chooses not to use the multi-head ingestion
+     * facility even if it is turned on, on the server.
      *
      * @param gpudb          the GPUdb instance to insert records into
      * @param tableName      name of the table to insert records into
@@ -779,8 +785,8 @@ public class BulkInserter<T> implements AutoCloseable {
         // Initialize the thread pool for workers based on the resources
         // available on the system
         workerExecutorService = Executors.newFixedThreadPool( Runtime
-                .getRuntime()
-                .availableProcessors() );
+            .getRuntime()
+            .availableProcessors() );
 
         // Initialize the shard version and update time
         this.shardVersion = 0;
@@ -806,16 +812,16 @@ public class BulkInserter<T> implements AutoCloseable {
         // Check if it is a replicated table (if so, then can't do
         // multi-head ingestion; will have to force rank-0 ingestion)
         this.isReplicatedTable = gpudb.showTable( tableName, null )
-                .getTableDescriptions()
-                .get( 0 )
-                .contains( ShowTableResponse.TableDescriptions.REPLICATED );
+            .getTableDescriptions()
+            .get( 0 )
+            .contains( ShowTableResponse.TableDescriptions.REPLICATED );
 
         // Set if multi-head I/O is turned on at the server
-        this.isMultiHeadEnabled = ( this.workerList != null && !this.workerList.isEmpty() );
+        this.multiHeadEnabled = ( this.workerList != null && !this.workerList.isEmpty() );
 
         // We should use the head node if multi-head is turned off at the server
         // or if we're working with a replicated table
-        this.useHeadNode = ( !this.isMultiHeadEnabled || this.isReplicatedTable);
+        this.useHeadNode = ( !this.multiHeadEnabled || this.isReplicatedTable);
 
         // Validate the batch size
         if (batchSize < 1) {
@@ -865,15 +871,15 @@ public class BulkInserter<T> implements AutoCloseable {
 
         // And whether we need to update records with existing primary keys
         this.updateOnExistingPk = ( (options != null)
-                && options.containsKey( InsertRecordsRequest
+            && options.containsKey( InsertRecordsRequest
+            .Options
+            .UPDATE_ON_EXISTING_PK )
+            && options.get( InsertRecordsRequest
                 .Options
                 .UPDATE_ON_EXISTING_PK )
-                && options.get( InsertRecordsRequest
-                        .Options
-                        .UPDATE_ON_EXISTING_PK )
-                .equals( InsertRecordsRequest
-                        .Options
-                        .TRUE ) );
+            .equals( InsertRecordsRequest
+                .Options
+                .TRUE ) );
 
         this.workerQueues = new ArrayList<>();
 
@@ -889,15 +895,15 @@ public class BulkInserter<T> implements AutoCloseable {
                         this.workerQueues.add( null );
                     } else {
                         URL insertURL = GPUdbBase.appendPathToURL( url,
-                                "/insert/records" );
+                            "/insert/records" );
                         this.workerQueues.add(new WorkerQueue<>( this.gpudb,
-                                insertURL,
-                                this.tableName,
-                                batchSize,
-                                this.hasPrimaryKey,
-                                this.updateOnExistingPk,
-                                this.options,
-                                this.typeObjectMap ) );
+                            insertURL,
+                            this.tableName,
+                            batchSize,
+                            this.hasPrimaryKey,
+                            this.updateOnExistingPk,
+                            this.options,
+                            this.typeObjectMap ) );
                     }
                 }
 
@@ -909,16 +915,16 @@ public class BulkInserter<T> implements AutoCloseable {
                 URL insertURL = null;
                 if (gpudb.getURLs().size() == 1) {
                     insertURL = GPUdbBase.appendPathToURL( gpudb.getURL(),
-                            "/insert/records" );
+                        "/insert/records" );
                 }
 
                 this.workerQueues.add( new WorkerQueue<>( this.gpudb, insertURL,
-                        this.tableName,
-                        batchSize,
-                        (primaryKeyBuilder != null),
-                        updateOnExistingPk,
-                        this.options,
-                        this.typeObjectMap ) );
+                    this.tableName,
+                    batchSize,
+                    (primaryKeyBuilder != null),
+                    updateOnExistingPk,
+                    this.options,
+                    this.typeObjectMap ) );
                 routingTable = null;
                 this.numRanks = 1;
             }
@@ -931,9 +937,9 @@ public class BulkInserter<T> implements AutoCloseable {
         if( this.flushOptions.getFlushInterval() > 0 ) {
             timedFlushExecutorService = Executors.newSingleThreadScheduledExecutor();
             timedFlushExecutorService.scheduleWithFixedDelay(new TimedFlushTask(this),
-                    this.flushOptions.getFlushInterval(),
-                    this.flushOptions.getFlushInterval(),
-                    TimeUnit.SECONDS);
+                this.flushOptions.getFlushInterval(),
+                this.flushOptions.getFlushInterval(),
+                TimeUnit.SECONDS);
         } else {
             this.timedFlushExecutorService = null;
         }
@@ -976,6 +982,9 @@ public class BulkInserter<T> implements AutoCloseable {
      */
     @Override
     public void close() throws InsertException {
+        // Call the flush method one last time
+        this.flush();
+
         GPUdbLogger.debug_with_info("Terminating BulkInserter and cleaning up ...");
 
         //Terminate the scheduler thread
@@ -991,9 +1000,6 @@ public class BulkInserter<T> implements AutoCloseable {
             }
             GPUdbLogger.debug_with_info("Terminated scheduler thread ...");
         }
-
-        // Call the flush method one last time
-        this.flush();
 
         // Terminate the worker thread pool
         if( this.workerExecutorService != null ) {
@@ -1080,12 +1086,12 @@ public class BulkInserter<T> implements AutoCloseable {
             }
 
             boolean isClusterHealthy = true;
-            if ( this.isMultiHeadEnabled ) {
+            if ( this.multiHeadEnabled) {
                 // Obtain the worker rank addresses
                 com.gpudb.WorkerList workerRanks;
                 try {
                     workerRanks = new com.gpudb.WorkerList( this.gpudb,
-                            this.workerList.getIpRegex() );
+                        this.workerList.getIpRegex() );
                 } catch (GPUdbException ex) {
                     // Some problem occurred; move to the next cluster
                     continue;
@@ -1110,8 +1116,8 @@ public class BulkInserter<T> implements AutoCloseable {
         // If we get here, it means we've failed over across the whole HA ring at least
         // once (could be more times if other threads are causing failover, too)
         String errorMsg = ("HA failover could not find any healthy cluster (all GPUdb clusters with "
-                + "head nodes [" + this.gpudb.getURLs().toString()
-                + "] tried)");
+            + "head nodes [" + this.gpudb.getURLs().toString()
+            + "] tried)");
         throw new GPUdbException( errorMsg );
     }   // end forceFailover
 
@@ -1145,7 +1151,7 @@ public class BulkInserter<T> implements AutoCloseable {
         // only if multi-head is enabled, it is not a replicated table, and if
         // the user wants to)
         boolean reconstructWorkerQueues = ( doReconstructWorkerQueues
-                && !this.useHeadNode );
+            && !this.useHeadNode );
 
         try {
             // Get the latest shard mapping information
@@ -1170,8 +1176,8 @@ public class BulkInserter<T> implements AutoCloseable {
                         // queues
                         boolean didRecontructWorkerQueues = reconstructWorkerQueues();
                         GPUdbLogger.debug_with_info( "Returning reconstruct "
-                                + "worker queue return value: "
-                                + didRecontructWorkerQueues );
+                            + "worker queue return value: "
+                            + didRecontructWorkerQueues );
                         return didRecontructWorkerQueues;
                     }
                     // Not appropriate to update worker queues; then no change
@@ -1199,7 +1205,7 @@ public class BulkInserter<T> implements AutoCloseable {
                 // Could not update the worker queues because we can't connect
                 // to the database
                 GPUdbLogger.debug_with_info( "Had connection failure: "
-                        + ex.getMessage() );
+                    + ex.getMessage() );
                 return false;
             } else {
                 // Unknown errors not handled here
@@ -1239,7 +1245,7 @@ public class BulkInserter<T> implements AutoCloseable {
 
         // Get the latest worker list (use whatever IP regex was used initially)
         com.gpudb.WorkerList newWorkerList = new com.gpudb.WorkerList( this.gpudb,
-                this.workerList.getIpRegex() );
+            this.workerList.getIpRegex() );
         GPUdbLogger.debug_with_info( "Current worker list: " + this.workerList.toString() );
         GPUdbLogger.debug_with_info( "New worker list:     " + newWorkerList.toString() );
         if ( newWorkerList.equals( this.workerList ) ) {
@@ -1262,12 +1268,12 @@ public class BulkInserter<T> implements AutoCloseable {
                     // Add a queue for a currently active rank
                     URL insertURL = GPUdbBase.appendPathToURL( url, "/insert/records" );
                     newWorkerQueues.add( new WorkerQueue<T>( this.gpudb, insertURL,
-                            this.tableName,
-                            batchSize,
-                            (this.primaryKeyBuilder != null),
-                            this.updateOnExistingPk,
-                            this.options,
-                            this.typeObjectMap ) );
+                        this.tableName,
+                        batchSize,
+                        (this.primaryKeyBuilder != null),
+                        this.updateOnExistingPk,
+                        this.options,
+                        this.typeObjectMap ) );
                 }
             } catch (MalformedURLException ex) {
                 throw new GPUdbException( ex.getMessage(), ex );
@@ -1336,6 +1342,10 @@ public class BulkInserter<T> implements AutoCloseable {
      */
     public Map<String, String> getOptions() {
         return options;
+    }
+
+    public boolean isMultiHeadEnabled() throws GPUdbException {
+        return multiHeadEnabled;
     }
 
     /**
@@ -1477,7 +1487,7 @@ public class BulkInserter<T> implements AutoCloseable {
             // We will flush only full queues
             if ( workerQueue.isQueueFull() ) {
                 GPUdbLogger.debug_with_info( "Adding full queue for "
-                        + workerQueue.getUrl() );
+                    + workerQueue.getUrl() );
                 fullQueues.add( workerQueue );
             }
 
@@ -1505,9 +1515,9 @@ public class BulkInserter<T> implements AutoCloseable {
      */
     private void flushQueues( List<WorkerQueue<T>> queues, int retryCount,
                               boolean forcedFlush )
-            throws InsertException {
+        throws InsertException {
         GPUdbLogger.debug_with_info( "Begin; # queues " + queues.size()
-                + "; retryCount: " + retryCount );
+            + "; retryCount: " + retryCount );
         // Let the user know that we ran out of retries
         if ( ( retryCount < 0 ) || (queues.size() == 0) ) {
             // Retry count of 0 means try once but do no retry
@@ -1519,9 +1529,7 @@ public class BulkInserter<T> implements AutoCloseable {
         // work in an independent parallel thread.  We will consume the
         // result of the queues as they complete (in the order of completion).
         CompletionService<WorkerQueueInsertionResult<T>> queueService
-                = new ExecutorCompletionService<>( this.workerExecutorService );
-//		List< Future< WorkerQueueInsertionResult<T> >> futureResults
-//            = new ArrayList<>();
+            = new ExecutorCompletionService<>( this.workerExecutorService );
 
         // Add all the given tasks to the service
         int countQueueSubmitted = 0;
@@ -1582,20 +1590,20 @@ public class BulkInserter<T> implements AutoCloseable {
                 GPUdbLogger.debug_with_info( "Flush thread succeeded" );
                 // The insertion for this queue succeeded; aggregate the results
                 countInserted.addAndGet( result
-                        .getInsertResponse()
-                        .getCountInserted() );
+                    .getInsertResponse()
+                    .getCountInserted() );
                 countUpdated.addAndGet(  result
-                        .getInsertResponse()
-                        .getCountUpdated()  );
+                    .getInsertResponse()
+                    .getCountUpdated()  );
 
                 gatherErrorsFromInsertionResult( result );
 
                 // Check if shard re-balancing is under way at the server; if so,
                 // we need to update the shard mapping
                 if ( "true".equals( result
-                        .getInsertResponse()
-                        .getInfo()
-                        .get( "data_rerouted" ) ) ) {
+                    .getInsertResponse()
+                    .getInfo()
+                    .get( "data_rerouted" ) ) ) {
                     doUpdateWorkers = true;
                 }
             } else {
@@ -1642,9 +1650,9 @@ public class BulkInserter<T> implements AutoCloseable {
                     // latest cluster switch (in the gpudb object) that was
                     // encountered by the workers.
                     GPUdbLogger.debug_with_info( "Changing # cluster switches from "
-                            + latestCountClusterSwitches
-                            + " to "
-                            + workerCountClusterSwitches );
+                        + latestCountClusterSwitches
+                        + " to "
+                        + workerCountClusterSwitches );
                     latestCountClusterSwitches = workerCountClusterSwitches;
                 }
 
@@ -1653,9 +1661,9 @@ public class BulkInserter<T> implements AutoCloseable {
                     // We're only saving the largest value so that we know the
                     // latest insertion attempt timestamp by the workers.
                     GPUdbLogger.debug_with_info( "Changing insertion attempt time from "
-                            + latestInsertionAttemptTimestamp
-                            + " to "
-                            + workerInsertionAttemptTimestamp );
+                        + latestInsertionAttemptTimestamp
+                        + " to "
+                        + workerInsertionAttemptTimestamp );
                     latestInsertionAttemptTimestamp = workerInsertionAttemptTimestamp;
                 }
 
@@ -1683,14 +1691,14 @@ public class BulkInserter<T> implements AutoCloseable {
                 if ( ex_ != null ) {
                     builder.append( "worker URL " + workerUrl + ": ");
                     builder.append( (ex_.getCause() == null)
-                            ? ex_.toString() : ex_.getCause().toString() );
+                        ? ex_.toString() : ex_.getCause().toString() );
                     builder.append( "; " );
                 }
             }
             builder.append( " ]" );
             originalCauses = builder.toString();
             GPUdbLogger.warn( "Original causes of failure from ranks: "
-                    + originalCauses );
+                + originalCauses );
         }
 
         // Failover if needed
@@ -1699,25 +1707,25 @@ public class BulkInserter<T> implements AutoCloseable {
                 // Switch to a different cluster in the HA ring, if any
                 // TODO: Check which head node url needs to be used here
                 GPUdbLogger.debug_with_info( "Before calling forceFailover() "
-                        + "with current head URL: "
-                        + currHeadUrl );
+                    + "with current head URL: "
+                    + currHeadUrl );
                 forceFailover( currHeadUrl, latestCountClusterSwitches );
             } catch (GPUdbException ex) {
                 GPUdbLogger.debug_with_info( "Failover failed with exception: "
-                        + ex.getMessage() );
+                    + ex.getMessage() );
                 // We've now tried all the HA clusters and circled back;
                 // propagate the error to the user.
 
                 // Let the user know that there was a problem and which
                 // records could not be inserted
                 GPUdbException exception = new GPUdbException( ex.getMessage()
-                        + ".  Original causes "
-                        + " encountered by workers: "
-                        + originalCauses,
-                        true );
+                    + ".  Original causes "
+                    + " encountered by workers: "
+                    + originalCauses,
+                    true );
                 throw new InsertException( currHeadUrl, failedRecords,
-                        exception.getMessage(),
-                        exception );
+                    exception.getMessage(),
+                    exception );
             }
         }   // end failover
 
@@ -1729,12 +1737,12 @@ public class BulkInserter<T> implements AutoCloseable {
                 updateWorkerQueues( latestCountClusterSwitches );
             } catch (Exception ex) {
                 GPUdbLogger.debug_with_info( "updateWorkerQueues() failed with "
-                        + "exception: "
-                        + ex.getMessage() );
+                    + "exception: "
+                    + ex.getMessage() );
                 // Let the user know that there was a problem and which records
                 // could not be inserted
                 throw new InsertException( currHeadUrl, failedRecords,
-                        ex.getMessage(), ex);
+                    ex.getMessage(), ex);
             }
         }
 
@@ -1750,7 +1758,7 @@ public class BulkInserter<T> implements AutoCloseable {
                 // Not a failover scenario; so the insertion failure happened
                 // for some other reason.  Count the next attempt as a retry.
                 GPUdbLogger.debug_with_info( "Decreasing retry count from: "
-                        + retryCount );
+                    + retryCount );
                 --retryCount;
             }
             GPUdbLogger.debug_with_info( "retryCount: " + retryCount );
@@ -1763,8 +1771,8 @@ public class BulkInserter<T> implements AutoCloseable {
                 // We ran out of chances to retry.  Let the user know this and
                 // pass along the records that we could not insert.
                 String message = ("Insertion failed; ran out of retries.  "
-                        + "Original causes encountered by workers: "
-                        + originalCauses );
+                    + "Original causes encountered by workers: "
+                    + originalCauses );
                 throw new InsertException( currHeadUrl, failedRecords, message );
 
             }
@@ -1792,7 +1800,7 @@ public class BulkInserter<T> implements AutoCloseable {
                     String message = entry.getLeft();
                     message = message.substring( message.indexOf(":") + 1);
                     error_list.add(
-                            new InsertException(result.headUrl, records, message));
+                        new InsertException(result.headUrl, records, message));
                 }
             });
         }
@@ -1834,7 +1842,7 @@ public class BulkInserter<T> implements AutoCloseable {
             List<T> queuedRecord = new ArrayList<>();
             queuedRecord.add( record );
             throw new InsertException( (URL)null, queuedRecord,
-                    "Unable to calculate shard/primary key; please check data for unshardable values" );
+                "Unable to calculate shard/primary key; please check data for unshardable values" );
         }
 
         WorkerQueue<T> workerQueue;
@@ -1852,7 +1860,7 @@ public class BulkInserter<T> implements AutoCloseable {
             List<T> queuedRecord = new ArrayList<>();
             queuedRecord.add( record );
             throw new InsertException( (URL)null, queuedRecord,
-                    "Attempted to insert into worker rank that has been removed!  Maybe need to update the shard mapping.");
+                "Attempted to insert into worker rank that has been removed!  Maybe need to update the shard mapping.");
         }
 
         // Insert the record into the queue
@@ -1924,7 +1932,7 @@ public class BulkInserter<T> implements AutoCloseable {
         if ( retryCount < 0 ) {
             // Retry count of 0 means try once but do no retry
             GPUdbLogger.debug_with_info( "retryCount: " + retryCount
-                    + "; returning false" );
+                + "; returning false" );
             return false;
         }
 

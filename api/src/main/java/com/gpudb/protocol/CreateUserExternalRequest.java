@@ -46,6 +46,13 @@ public class CreateUserExternalRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *         <li> {@link
+     * com.gpudb.protocol.CreateUserExternalRequest.Options#RESOURCE_GROUP
+     * RESOURCE_GROUP}: Name of an existing resource group to associate with
+     * this user
+     *         <li> {@link
+     * com.gpudb.protocol.CreateUserExternalRequest.Options#DEFAULT_SCHEMA
+     * DEFAULT_SCHEMA}: default schema associate with this user
+     *         <li> {@link
      * com.gpudb.protocol.CreateUserExternalRequest.Options#CREATE_HOME_DIRECTORY
      * CREATE_HOME_DIRECTORY}: when true, a home directory in KiFS is created
      * for this user
@@ -63,6 +70,16 @@ public class CreateUserExternalRequest implements IndexedRecord {
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
+
+        /**
+         * Name of an existing resource group to associate with this user
+         */
+        public static final String RESOURCE_GROUP = "resource_group";
+
+        /**
+         * default schema associate with this user
+         */
+        public static final String DEFAULT_SCHEMA = "default_schema";
 
         /**
          * when true, a home directory in KiFS is created for this user
@@ -104,6 +121,13 @@ public class CreateUserExternalRequest implements IndexedRecord {
      *              not be the same name as an existing user.
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserExternalRequest.Options#RESOURCE_GROUP
+     *                 RESOURCE_GROUP}: Name of an existing resource group to
+     *                 associate with this user
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserExternalRequest.Options#DEFAULT_SCHEMA
+     *                 DEFAULT_SCHEMA}: default schema associate with this user
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUserExternalRequest.Options#CREATE_HOME_DIRECTORY
      *                 CREATE_HOME_DIRECTORY}: when true, a home directory in
@@ -159,6 +183,13 @@ public class CreateUserExternalRequest implements IndexedRecord {
      * @return Optional parameters.
      *         <ul>
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateUserExternalRequest.Options#RESOURCE_GROUP
+     *         RESOURCE_GROUP}: Name of an existing resource group to associate
+     *         with this user
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUserExternalRequest.Options#DEFAULT_SCHEMA
+     *         DEFAULT_SCHEMA}: default schema associate with this user
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateUserExternalRequest.Options#CREATE_HOME_DIRECTORY
      *         CREATE_HOME_DIRECTORY}: when true, a home directory in KiFS is
      *         created for this user
@@ -184,6 +215,13 @@ public class CreateUserExternalRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserExternalRequest.Options#RESOURCE_GROUP
+     *                 RESOURCE_GROUP}: Name of an existing resource group to
+     *                 associate with this user
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserExternalRequest.Options#DEFAULT_SCHEMA
+     *                 DEFAULT_SCHEMA}: default schema associate with this user
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUserExternalRequest.Options#CREATE_HOME_DIRECTORY
      *                 CREATE_HOME_DIRECTORY}: when true, a home directory in

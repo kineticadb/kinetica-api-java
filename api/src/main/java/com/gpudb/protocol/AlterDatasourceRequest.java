@@ -98,6 +98,14 @@ public class AlterDatasourceRequest implements IndexedRecord {
      * S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which has required S3 permissions
      * that can be assumed for the given S3 IAM user
      *         <li> {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#S3_ENCRYPTION_CUSTOMER_ALGORITHM
+     * S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer encryption algorithm used
+     * encrypting data
+     *         <li> {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#S3_ENCRYPTION_CUSTOMER_KEY
+     * S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption key to encrypt or
+     * decrypt data
+     *         <li> {@link
      * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#HDFS_KERBEROS_KEYTAB
      * HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for the given HDFS
      * user
@@ -157,6 +165,13 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_TOPIC_NAME
      * KAFKA_TOPIC_NAME}: Name of the Kafka topic to use as the data source
+     *         <li> {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#JDBC_DRIVER_JAR_PATH
+     * JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location.  This may be a
+     * KIFS file.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#JDBC_DRIVER_CLASS_NAME
+     * JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
      *         <li> {@link
      * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#ANONYMOUS
      * ANONYMOUS}: Create an anonymous connection to the storage
@@ -289,6 +304,16 @@ public class AlterDatasourceRequest implements IndexedRecord {
         public static final String S3_AWS_ROLE_ARN = "s3_aws_role_arn";
 
         /**
+         * Customer encryption algorithm used encrypting data
+         */
+        public static final String S3_ENCRYPTION_CUSTOMER_ALGORITHM = "s3_encryption_customer_algorithm";
+
+        /**
+         * Customer encryption key to encrypt or decrypt data
+         */
+        public static final String S3_ENCRYPTION_CUSTOMER_KEY = "s3_encryption_customer_key";
+
+        /**
          * Kerberos keytab file location for the given HDFS user
          */
         public static final String HDFS_KERBEROS_KEYTAB = "hdfs_kerberos_keytab";
@@ -368,6 +393,16 @@ public class AlterDatasourceRequest implements IndexedRecord {
          * Name of the Kafka topic to use as the data source
          */
         public static final String KAFKA_TOPIC_NAME = "kafka_topic_name";
+
+        /**
+         * JDBC driver jar file location.  This may be a KIFS file.
+         */
+        public static final String JDBC_DRIVER_JAR_PATH = "jdbc_driver_jar_path";
+
+        /**
+         * Name of the JDBC driver class
+         */
+        public static final String JDBC_DRIVER_CLASS_NAME = "jdbc_driver_class_name";
 
         /**
          * Create an anonymous connection to the storage provider--DEPRECATED:
@@ -515,6 +550,14 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                              has required S3 permissions that can be
      *                              assumed for the given S3 IAM user
      *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#S3_ENCRYPTION_CUSTOMER_ALGORITHM
+     *                              S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer
+     *                              encryption algorithm used encrypting data
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#S3_ENCRYPTION_CUSTOMER_KEY
+     *                              S3_ENCRYPTION_CUSTOMER_KEY}: Customer
+     *                              encryption key to encrypt or decrypt data
+     *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#HDFS_KERBEROS_KEYTAB
      *                              HDFS_KERBEROS_KEYTAB}: Kerberos keytab file
      *                              location for the given HDFS user
@@ -583,6 +626,14 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_TOPIC_NAME
      *                              KAFKA_TOPIC_NAME}: Name of the Kafka topic
      *                              to use as the data source
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#JDBC_DRIVER_JAR_PATH
+     *                              JDBC_DRIVER_JAR_PATH}: JDBC driver jar file
+     *                              location.  This may be a KIFS file.
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#JDBC_DRIVER_CLASS_NAME
+     *                              JDBC_DRIVER_CLASS_NAME}: Name of the JDBC
+     *                              driver class
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#ANONYMOUS
      *                              ANONYMOUS}: Create an anonymous connection
@@ -737,6 +788,14 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which has required S3
      *         permissions that can be assumed for the given S3 IAM user
      *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#S3_ENCRYPTION_CUSTOMER_ALGORITHM
+     *         S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer encryption algorithm
+     *         used encrypting data
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#S3_ENCRYPTION_CUSTOMER_KEY
+     *         S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption key to encrypt
+     *         or decrypt data
+     *                 <li> {@link
      *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#HDFS_KERBEROS_KEYTAB
      *         HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for the
      *         given HDFS user
@@ -799,6 +858,13 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_TOPIC_NAME
      *         KAFKA_TOPIC_NAME}: Name of the Kafka topic to use as the data
      *         source
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#JDBC_DRIVER_JAR_PATH
+     *         JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location.  This may
+     *         be a KIFS file.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#JDBC_DRIVER_CLASS_NAME
+     *         JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
      *                 <li> {@link
      *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#ANONYMOUS
      *         ANONYMOUS}: Create an anonymous connection to the storage
@@ -925,6 +991,14 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                              has required S3 permissions that can be
      *                              assumed for the given S3 IAM user
      *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#S3_ENCRYPTION_CUSTOMER_ALGORITHM
+     *                              S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer
+     *                              encryption algorithm used encrypting data
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#S3_ENCRYPTION_CUSTOMER_KEY
+     *                              S3_ENCRYPTION_CUSTOMER_KEY}: Customer
+     *                              encryption key to encrypt or decrypt data
+     *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#HDFS_KERBEROS_KEYTAB
      *                              HDFS_KERBEROS_KEYTAB}: Kerberos keytab file
      *                              location for the given HDFS user
@@ -993,6 +1067,14 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_TOPIC_NAME
      *                              KAFKA_TOPIC_NAME}: Name of the Kafka topic
      *                              to use as the data source
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#JDBC_DRIVER_JAR_PATH
+     *                              JDBC_DRIVER_JAR_PATH}: JDBC driver jar file
+     *                              location.  This may be a KIFS file.
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#JDBC_DRIVER_CLASS_NAME
+     *                              JDBC_DRIVER_CLASS_NAME}: Name of the JDBC
+     *                              driver class
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#ANONYMOUS
      *                              ANONYMOUS}: Create an anonymous connection
