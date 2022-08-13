@@ -3947,6 +3947,14 @@ public class GPUdb extends GPUdbBase {
      *                              has required S3 permissions that can be
      *                              assumed for the given S3 IAM user
      *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#S3_ENCRYPTION_CUSTOMER_ALGORITHM
+     *                              S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer
+     *                              encryption algorithm used encrypting data
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#S3_ENCRYPTION_CUSTOMER_KEY
+     *                              S3_ENCRYPTION_CUSTOMER_KEY}: Customer
+     *                              encryption key to encrypt or decrypt data
+     *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#HDFS_KERBEROS_KEYTAB
      *                              HDFS_KERBEROS_KEYTAB}: Kerberos keytab file
      *                              location for the given HDFS user
@@ -4015,6 +4023,14 @@ public class GPUdb extends GPUdbBase {
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_TOPIC_NAME
      *                              KAFKA_TOPIC_NAME}: Name of the Kafka topic
      *                              to use as the data source
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#JDBC_DRIVER_JAR_PATH
+     *                              JDBC_DRIVER_JAR_PATH}: JDBC driver jar file
+     *                              location.  This may be a KIFS file.
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#JDBC_DRIVER_CLASS_NAME
+     *                              JDBC_DRIVER_CLASS_NAME}: Name of the JDBC
+     *                              driver class
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#ANONYMOUS
      *                              ANONYMOUS}: Create an anonymous connection
@@ -9074,6 +9090,21 @@ public class GPUdb extends GPUdbBase {
      *                 REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used
      *                 for splitting the query into multiple sub-queries.  The
      *                 default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#UPDATE_ON_EXISTING_PK
+     *                 UPDATE_ON_EXISTING_PK}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -10099,6 +10130,13 @@ public class GPUdb extends GPUdbBase {
      *              not be the same name as an existing user.
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserExternalRequest.Options#RESOURCE_GROUP
+     *                 RESOURCE_GROUP}: Name of an existing resource group to
+     *                 associate with this user
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserExternalRequest.Options#DEFAULT_SCHEMA
+     *                 DEFAULT_SCHEMA}: default schema associate with this user
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUserExternalRequest.Options#CREATE_HOME_DIRECTORY
      *                 CREATE_HOME_DIRECTORY}: when true, a home directory in
@@ -17205,6 +17243,21 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED
      *                 SPEED}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#UPDATE_ON_EXISTING_PK
+     *                 UPDATE_ON_EXISTING_PK}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -17901,6 +17954,21 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SPEED
      *                 SPEED}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#UPDATE_ON_EXISTING_PK
+     *                 UPDATE_ON_EXISTING_PK}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -18328,6 +18396,21 @@ public class GPUdb extends GPUdbBase {
      *                 REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used
      *                 for splitting the query into multiple sub-queries.  The
      *                 default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#UPDATE_ON_EXISTING_PK
+     *                 UPDATE_ON_EXISTING_PK}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

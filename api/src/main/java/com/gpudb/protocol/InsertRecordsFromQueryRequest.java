@@ -608,6 +608,18 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_FILTER_COLUMN
      * REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used for splitting the
      * query into multiple sub-queries.  The default value is ''.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#UPDATE_ON_EXISTING_PK
+     * UPDATE_ON_EXISTING_PK}:
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -880,6 +892,21 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
          * sub-queries.  The default value is ''.
          */
         public static final String REMOTE_QUERY_FILTER_COLUMN = "remote_query_filter_column";
+
+        /**
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+         * FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+         * FALSE}.
+         */
+        public static final String UPDATE_ON_EXISTING_PK = "update_on_existing_pk";
 
         private Options() {  }
     }
@@ -1289,6 +1316,21 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                 REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used
      *                 for splitting the query into multiple sub-queries.  The
      *                 default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#UPDATE_ON_EXISTING_PK
+     *                 UPDATE_ON_EXISTING_PK}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1946,6 +1988,21 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used for
      *         splitting the query into multiple sub-queries.  The default
      *         value is ''.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#UPDATE_ON_EXISTING_PK
+     *         UPDATE_ON_EXISTING_PK}:
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *         FALSE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -2124,6 +2181,21 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                 REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used
      *                 for splitting the query into multiple sub-queries.  The
      *                 default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#UPDATE_ON_EXISTING_PK
+     *                 UPDATE_ON_EXISTING_PK}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
