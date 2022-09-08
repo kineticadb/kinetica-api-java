@@ -2,6 +2,12 @@
 
 ## Version 7.1
 
+### Version 7.1.7.3 - 2022-09-08
+
+#### Changed
+-   Updated Avro version to 1.11.1
+
+
 ### Version 7.1.7.2 - 2022-08-12
 
 #### Added
