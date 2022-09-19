@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.gpudb</groupId>
     <artifactId>gpudb-api</artifactId>
-    <version>7.1.7.3</version>
+    <version>7.1.7.4</version>
     <packaging>jar</packaging>
     <name>Kinetica Java API</name>
     <repositories>
@@ -80,7 +80,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <gpudb-api.version>7.1.7.3</gpudb-api.version>
+        <gpudb-api.version>7.1.7.4</gpudb-api.version>
     </properties>
     <profiles>
         <profile>
@@ -110,6 +110,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
+                  <release>8</release>
                 </configuration>
             </plugin>
             <plugin>

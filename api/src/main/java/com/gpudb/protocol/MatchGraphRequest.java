@@ -760,7 +760,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *                       href="../../../../../../concepts/tables/#table-naming-criteria"
      *                       target="_top">table naming criteria</a>.  This
      *                       table contains a <a
-     *                       href="../../../../../../geospatial/geo_objects/#geospatial-tracks"
+     *                       href="../../../../../../location_intelligence/geo_objects/#geospatial-tracks"
      *                       target="_top">track</a> of geospatial points for
      *                       the matched portion of the graph, a track ID, and
      *                       a score value. Also outputs a details table
@@ -1232,7 +1232,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *         href="../../../../../../concepts/tables/#table-naming-criteria"
      *         target="_top">table naming criteria</a>.  This table contains a
      *         <a
-     *         href="../../../../../../geospatial/geo_objects/#geospatial-tracks"
+     *         href="../../../../../../location_intelligence/geo_objects/#geospatial-tracks"
      *         target="_top">track</a> of geospatial points for the matched
      *         portion of the graph, a track ID, and a score value. Also
      *         outputs a details table containing a trip ID (that matches the
@@ -1257,7 +1257,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *                       href="../../../../../../concepts/tables/#table-naming-criteria"
      *                       target="_top">table naming criteria</a>.  This
      *                       table contains a <a
-     *                       href="../../../../../../geospatial/geo_objects/#geospatial-tracks"
+     *                       href="../../../../../../location_intelligence/geo_objects/#geospatial-tracks"
      *                       target="_top">track</a> of geospatial points for
      *                       the matched portion of the graph, a track ID, and
      *                       a score value. Also outputs a details table
