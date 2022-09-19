@@ -2,6 +2,12 @@
 
 ## Version 7.1
 
+### Version 7.1.7.4 - 2022-09-19
+
+#### Changed
+-   Targeted Java 8 runtime
+
+
 ### Version 7.1.7.3 - 2022-09-08
 
 #### Changed
