@@ -196,6 +196,70 @@ public class CreateProjectionRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
      *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#PARTITION_TYPE
+     * PARTITION_TYPE}: <a
+     * href="../../../../../../concepts/tables/#partitioning"
+     * target="_top">Partitioning</a> scheme to use.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#RANGE RANGE}: Use <a
+     * href="../../../../../../concepts/tables/#partitioning-by-range"
+     * target="_top">range partitioning</a>.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#INTERVAL INTERVAL}:
+     * Use <a
+     * href="../../../../../../concepts/tables/#partitioning-by-interval"
+     * target="_top">interval partitioning</a>.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#LIST LIST}: Use <a
+     * href="../../../../../../concepts/tables/#partitioning-by-list"
+     * target="_top">list partitioning</a>.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#HASH HASH}: Use <a
+     * href="../../../../../../concepts/tables/#partitioning-by-hash"
+     * target="_top">hash partitioning</a>.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#SERIES SERIES}: Use
+     * <a href="../../../../../../concepts/tables/#partitioning-by-series"
+     * target="_top">series partitioning</a>.
+     * </ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#PARTITION_KEYS
+     * PARTITION_KEYS}: Comma-separated list of partition keys, which are the
+     * columns or column expressions by which records will be assigned to
+     * partitions defined by {@code partition_definitions}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#PARTITION_DEFINITIONS
+     * PARTITION_DEFINITIONS}: Comma-separated list of partition definitions,
+     * whose format depends on the choice of {@code partition_type}.  See <a
+     * href="../../../../../../concepts/tables/#partitioning-by-range"
+     * target="_top">range partitioning</a>, <a
+     * href="../../../../../../concepts/tables/#partitioning-by-interval"
+     * target="_top">interval partitioning</a>, <a
+     * href="../../../../../../concepts/tables/#partitioning-by-list"
+     * target="_top">list partitioning</a>, <a
+     * href="../../../../../../concepts/tables/#partitioning-by-hash"
+     * target="_top">hash partitioning</a>, or <a
+     * href="../../../../../../concepts/tables/#partitioning-by-series"
+     * target="_top">series partitioning</a> for example formats.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#IS_AUTOMATIC_PARTITION
+     * IS_AUTOMATIC_PARTITION}: If {@code true}, a new partition will be
+     * created for values which don't fall into an existing partition.
+     * Currently only supported for <a
+     * href="../../../../../../concepts/tables/#partitioning-by-list"
+     * target="_top">list partitions</a>.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
+     *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID VIEW_ID}: ID
      * of view of which this projection is a member.  The default value is ''.
      * </ul>
@@ -348,6 +412,112 @@ public class CreateProjectionRequest implements IndexedRecord {
          * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
          */
         public static final String RETAIN_PARTITIONS = "retain_partitions";
+
+        /**
+         * <a href="../../../../../../concepts/tables/#partitioning"
+         * target="_top">Partitioning</a> scheme to use.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#RANGE RANGE}: Use
+         * <a href="../../../../../../concepts/tables/#partitioning-by-range"
+         * target="_top">range partitioning</a>.
+         *         <li> {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#INTERVAL
+         * INTERVAL}: Use <a
+         * href="../../../../../../concepts/tables/#partitioning-by-interval"
+         * target="_top">interval partitioning</a>.
+         *         <li> {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#LIST LIST}: Use
+         * <a href="../../../../../../concepts/tables/#partitioning-by-list"
+         * target="_top">list partitioning</a>.
+         *         <li> {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#HASH HASH}: Use
+         * <a href="../../../../../../concepts/tables/#partitioning-by-hash"
+         * target="_top">hash partitioning</a>.
+         *         <li> {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#SERIES SERIES}:
+         * Use <a
+         * href="../../../../../../concepts/tables/#partitioning-by-series"
+         * target="_top">series partitioning</a>.
+         * </ul>
+         */
+        public static final String PARTITION_TYPE = "partition_type";
+
+        /**
+         * Use <a
+         * href="../../../../../../concepts/tables/#partitioning-by-range"
+         * target="_top">range partitioning</a>.
+         */
+        public static final String RANGE = "RANGE";
+
+        /**
+         * Use <a
+         * href="../../../../../../concepts/tables/#partitioning-by-interval"
+         * target="_top">interval partitioning</a>.
+         */
+        public static final String INTERVAL = "INTERVAL";
+
+        /**
+         * Use <a
+         * href="../../../../../../concepts/tables/#partitioning-by-list"
+         * target="_top">list partitioning</a>.
+         */
+        public static final String LIST = "LIST";
+
+        /**
+         * Use <a
+         * href="../../../../../../concepts/tables/#partitioning-by-hash"
+         * target="_top">hash partitioning</a>.
+         */
+        public static final String HASH = "HASH";
+
+        /**
+         * Use <a
+         * href="../../../../../../concepts/tables/#partitioning-by-series"
+         * target="_top">series partitioning</a>.
+         */
+        public static final String SERIES = "SERIES";
+
+        /**
+         * Comma-separated list of partition keys, which are the columns or
+         * column expressions by which records will be assigned to partitions
+         * defined by {@code partition_definitions}.
+         */
+        public static final String PARTITION_KEYS = "partition_keys";
+
+        /**
+         * Comma-separated list of partition definitions, whose format depends
+         * on the choice of {@code partition_type}.  See <a
+         * href="../../../../../../concepts/tables/#partitioning-by-range"
+         * target="_top">range partitioning</a>, <a
+         * href="../../../../../../concepts/tables/#partitioning-by-interval"
+         * target="_top">interval partitioning</a>, <a
+         * href="../../../../../../concepts/tables/#partitioning-by-list"
+         * target="_top">list partitioning</a>, <a
+         * href="../../../../../../concepts/tables/#partitioning-by-hash"
+         * target="_top">hash partitioning</a>, or <a
+         * href="../../../../../../concepts/tables/#partitioning-by-series"
+         * target="_top">series partitioning</a> for example formats.
+         */
+        public static final String PARTITION_DEFINITIONS = "partition_definitions";
+
+        /**
+         * If {@code true}, a new partition will be created for values which
+         * don't fall into an existing partition.  Currently only supported for
+         * <a href="../../../../../../concepts/tables/#partitioning-by-list"
+         * target="_top">list partitions</a>.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
+         */
+        public static final String IS_AUTOMATIC_PARTITION = "is_automatic_partition";
 
         /**
          * ID of view of which this projection is a member.  The default value
@@ -530,6 +700,81 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 RETAIN_PARTITIONS}: Determines whether the created
      *                 projection will retain the partitioning scheme from the
      *                 source table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#PARTITION_TYPE
+     *                 PARTITION_TYPE}: <a
+     *                 href="../../../../../../concepts/tables/#partitioning"
+     *                 target="_top">Partitioning</a> scheme to use.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#RANGE
+     *                 RANGE}: Use <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-range"
+     *                 target="_top">range partitioning</a>.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#INTERVAL
+     *                 INTERVAL}: Use <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-interval"
+     *                 target="_top">interval partitioning</a>.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#LIST
+     *                 LIST}: Use <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-list"
+     *                 target="_top">list partitioning</a>.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#HASH
+     *                 HASH}: Use <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-hash"
+     *                 target="_top">hash partitioning</a>.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#SERIES
+     *                 SERIES}: Use <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-series"
+     *                 target="_top">series partitioning</a>.
+     *                 </ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#PARTITION_KEYS
+     *                 PARTITION_KEYS}: Comma-separated list of partition keys,
+     *                 which are the columns or column expressions by which
+     *                 records will be assigned to partitions defined by {@code
+     *                 partition_definitions}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#PARTITION_DEFINITIONS
+     *                 PARTITION_DEFINITIONS}: Comma-separated list of
+     *                 partition definitions, whose format depends on the
+     *                 choice of {@code partition_type}.  See <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-range"
+     *                 target="_top">range partitioning</a>, <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-interval"
+     *                 target="_top">interval partitioning</a>, <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-list"
+     *                 target="_top">list partitioning</a>, <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-hash"
+     *                 target="_top">hash partitioning</a>, or <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-series"
+     *                 target="_top">series partitioning</a> for example
+     *                 formats.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#IS_AUTOMATIC_PARTITION
+     *                 IS_AUTOMATIC_PARTITION}: If {@code true}, a new
+     *                 partition will be created for values which don't fall
+     *                 into an existing partition.  Currently only supported
+     *                 for <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-list"
+     *                 target="_top">list partitions</a>.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -774,6 +1019,75 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#PARTITION_TYPE
+     *         PARTITION_TYPE}: <a
+     *         href="../../../../../../concepts/tables/#partitioning"
+     *         target="_top">Partitioning</a> scheme to use.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#RANGE RANGE}:
+     *         Use <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-range"
+     *         target="_top">range partitioning</a>.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#INTERVAL
+     *         INTERVAL}: Use <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-interval"
+     *         target="_top">interval partitioning</a>.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#LIST LIST}:
+     *         Use <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-list"
+     *         target="_top">list partitioning</a>.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#HASH HASH}:
+     *         Use <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-hash"
+     *         target="_top">hash partitioning</a>.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#SERIES
+     *         SERIES}: Use <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-series"
+     *         target="_top">series partitioning</a>.
+     *         </ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#PARTITION_KEYS
+     *         PARTITION_KEYS}: Comma-separated list of partition keys, which
+     *         are the columns or column expressions by which records will be
+     *         assigned to partitions defined by {@code partition_definitions}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#PARTITION_DEFINITIONS
+     *         PARTITION_DEFINITIONS}: Comma-separated list of partition
+     *         definitions, whose format depends on the choice of {@code
+     *         partition_type}.  See <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-range"
+     *         target="_top">range partitioning</a>, <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-interval"
+     *         target="_top">interval partitioning</a>, <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-list"
+     *         target="_top">list partitioning</a>, <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-hash"
+     *         target="_top">hash partitioning</a>, or <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-series"
+     *         target="_top">series partitioning</a> for example formats.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#IS_AUTOMATIC_PARTITION
+     *         IS_AUTOMATIC_PARTITION}: If {@code true}, a new partition will
+     *         be created for values which don't fall into an existing
+     *         partition.  Currently only supported for <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-list"
+     *         target="_top">list partitions</a>.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID
      *         VIEW_ID}: ID of view of which this projection is a member.  The
      *         default value is ''.
@@ -919,6 +1233,81 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 RETAIN_PARTITIONS}: Determines whether the created
      *                 projection will retain the partitioning scheme from the
      *                 source table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#PARTITION_TYPE
+     *                 PARTITION_TYPE}: <a
+     *                 href="../../../../../../concepts/tables/#partitioning"
+     *                 target="_top">Partitioning</a> scheme to use.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#RANGE
+     *                 RANGE}: Use <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-range"
+     *                 target="_top">range partitioning</a>.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#INTERVAL
+     *                 INTERVAL}: Use <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-interval"
+     *                 target="_top">interval partitioning</a>.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#LIST
+     *                 LIST}: Use <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-list"
+     *                 target="_top">list partitioning</a>.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#HASH
+     *                 HASH}: Use <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-hash"
+     *                 target="_top">hash partitioning</a>.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#SERIES
+     *                 SERIES}: Use <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-series"
+     *                 target="_top">series partitioning</a>.
+     *                 </ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#PARTITION_KEYS
+     *                 PARTITION_KEYS}: Comma-separated list of partition keys,
+     *                 which are the columns or column expressions by which
+     *                 records will be assigned to partitions defined by {@code
+     *                 partition_definitions}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#PARTITION_DEFINITIONS
+     *                 PARTITION_DEFINITIONS}: Comma-separated list of
+     *                 partition definitions, whose format depends on the
+     *                 choice of {@code partition_type}.  See <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-range"
+     *                 target="_top">range partitioning</a>, <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-interval"
+     *                 target="_top">interval partitioning</a>, <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-list"
+     *                 target="_top">list partitioning</a>, <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-hash"
+     *                 target="_top">hash partitioning</a>, or <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-series"
+     *                 target="_top">series partitioning</a> for example
+     *                 formats.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#IS_AUTOMATIC_PARTITION
+     *                 IS_AUTOMATIC_PARTITION}: If {@code true}, a new
+     *                 partition will be created for values which don't fall
+     *                 into an existing partition.  Currently only supported
+     *                 for <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-list"
+     *                 target="_top">list partitions</a>.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

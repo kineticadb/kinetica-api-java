@@ -208,6 +208,12 @@ public class MatchGraphRequest implements IndexedRecord {
      * the demand locations - can increase this up to 2M.  The default value is
      * '10000'.
      *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#MAX_SUPPLY_COMBINATIONS
+     * MAX_SUPPLY_COMBINATIONS}: For the {@code match_supply_demand} solver
+     * only. This is the cutoff for the number of generated combinations for
+     * sequencing the supply locations if/when 'permute_supplies' is true.  The
+     * default value is '10000'.
+     *         <li> {@link
      * com.gpudb.protocol.MatchGraphRequest.Options#LEFT_TURN_PENALTY
      * LEFT_TURN_PENALTY}: This will add an additonal weight over the edges
      * labelled as 'left turn' if the 'add_turn' option parameter of the {@link
@@ -311,6 +317,28 @@ public class MatchGraphRequest implements IndexedRecord {
      * (demand locations) in one round trip. Otherwise, it is unlimited. If
      * 'enable_truck_reuse' is on, this condition will be applied separately at
      * each round trip use of the same truck.  The default value is '0'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#TRUCK_SERVICE_RADIUS
+     * TRUCK_SERVICE_RADIUS}: For the {@code match_supply_demand} solver only.
+     * If specified (greater than zero), it filters the demands outside this
+     * radius centered around the truck's originating location (distance or
+     * time).  The default value is '0.0'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#RESTRICTED_TRUCK_TYPE
+     * RESTRICTED_TRUCK_TYPE}: For the {@code match_supply_demand} solver only.
+     * Optimization is performed by restricting routes labeled by
+     * 'MSDO_ODDEVEN_RESTRICTED' only for this truck type
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#ODD
+     * ODD}: Applies odd/even rule restrictions to odd tagged vehicles.
+     *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#EVEN
+     * EVEN}: Applies odd/even rule restrictions to even tagged vehicles.
+     *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#NONE
+     * NONE}: Does not apply odd/even rule restrictions to any vehicles.
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#NONE NONE}.
      *         <li> {@link
      * com.gpudb.protocol.MatchGraphRequest.Options#SERVER_ID SERVER_ID}:
      * Indicates which graph server(s) to send the request to. Default is to
@@ -452,6 +480,14 @@ public class MatchGraphRequest implements IndexedRecord {
         public static final String MAX_COMBINATIONS = "max_combinations";
 
         /**
+         * For the {@code match_supply_demand} solver only. This is the cutoff
+         * for the number of generated combinations for sequencing the supply
+         * locations if/when 'permute_supplies' is true.  The default value is
+         * '10000'.
+         */
+        public static final String MAX_SUPPLY_COMBINATIONS = "max_supply_combinations";
+
+        /**
          * This will add an additonal weight over the edges labelled as 'left
          * turn' if the 'add_turn' option parameter of the {@link
          * com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was invoked at
@@ -585,6 +621,49 @@ public class MatchGraphRequest implements IndexedRecord {
          * value is '0'.
          */
         public static final String MAX_TRUCK_STOPS = "max_truck_stops";
+
+        /**
+         * For the {@code match_supply_demand} solver only. If specified
+         * (greater than zero), it filters the demands outside this radius
+         * centered around the truck's originating location (distance or time).
+         * The default value is '0.0'.
+         */
+        public static final String TRUCK_SERVICE_RADIUS = "truck_service_radius";
+
+        /**
+         * For the {@code match_supply_demand} solver only. Optimization is
+         * performed by restricting routes labeled by 'MSDO_ODDEVEN_RESTRICTED'
+         * only for this truck type
+         * Supported values:
+         * <ul>
+         *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#ODD
+         * ODD}: Applies odd/even rule restrictions to odd tagged vehicles.
+         *         <li> {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#EVEN EVEN}: Applies
+         * odd/even rule restrictions to even tagged vehicles.
+         *         <li> {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#NONE NONE}: Does not
+         * apply odd/even rule restrictions to any vehicles.
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#NONE NONE}.
+         */
+        public static final String RESTRICTED_TRUCK_TYPE = "restricted_truck_type";
+
+        /**
+         * Applies odd/even rule restrictions to odd tagged vehicles.
+         */
+        public static final String ODD = "odd";
+
+        /**
+         * Applies odd/even rule restrictions to even tagged vehicles.
+         */
+        public static final String EVEN = "even";
+
+        /**
+         * Does not apply odd/even rule restrictions to any vehicles.
+         */
+        public static final String NONE = "none";
 
         /**
          * Indicates which graph server(s) to send the request to. Default is
@@ -834,6 +913,13 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 locations - can increase this up to 2M.  The default
      *                 value is '10000'.
      *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_SUPPLY_COMBINATIONS
+     *                 MAX_SUPPLY_COMBINATIONS}: For the {@code
+     *                 match_supply_demand} solver only. This is the cutoff for
+     *                 the number of generated combinations for sequencing the
+     *                 supply locations if/when 'permute_supplies' is true.
+     *                 The default value is '10000'.
+     *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#LEFT_TURN_PENALTY
      *                 LEFT_TURN_PENALTY}: This will add an additonal weight
      *                 over the edges labelled as 'left turn' if the 'add_turn'
@@ -961,6 +1047,36 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 'enable_truck_reuse' is on, this condition will be
      *                 applied separately at each round trip use of the same
      *                 truck.  The default value is '0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUCK_SERVICE_RADIUS
+     *                 TRUCK_SERVICE_RADIUS}: For the {@code
+     *                 match_supply_demand} solver only. If specified (greater
+     *                 than zero), it filters the demands outside this radius
+     *                 centered around the truck's originating location
+     *                 (distance or time).  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#RESTRICTED_TRUCK_TYPE
+     *                 RESTRICTED_TRUCK_TYPE}: For the {@code
+     *                 match_supply_demand} solver only. Optimization is
+     *                 performed by restricting routes labeled by
+     *                 'MSDO_ODDEVEN_RESTRICTED' only for this truck type
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#ODD ODD}:
+     *                 Applies odd/even rule restrictions to odd tagged
+     *                 vehicles.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#EVEN EVEN}:
+     *                 Applies odd/even rule restrictions to even tagged
+     *                 vehicles.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#NONE NONE}:
+     *                 Does not apply odd/even rule restrictions to any
+     *                 vehicles.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#NONE NONE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#SERVER_ID
      *                 SERVER_ID}: Indicates which graph server(s) to send the
@@ -1340,6 +1456,12 @@ public class MatchGraphRequest implements IndexedRecord {
      *         combinations for sequencing the demand locations - can increase
      *         this up to 2M.  The default value is '10000'.
      *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#MAX_SUPPLY_COMBINATIONS
+     *         MAX_SUPPLY_COMBINATIONS}: For the {@code match_supply_demand}
+     *         solver only. This is the cutoff for the number of generated
+     *         combinations for sequencing the supply locations if/when
+     *         'permute_supplies' is true.  The default value is '10000'.
+     *                 <li> {@link
      *         com.gpudb.protocol.MatchGraphRequest.Options#LEFT_TURN_PENALTY
      *         LEFT_TURN_PENALTY}: This will add an additonal weight over the
      *         edges labelled as 'left turn' if the 'add_turn' option parameter
@@ -1455,6 +1577,32 @@ public class MatchGraphRequest implements IndexedRecord {
      *         it is unlimited. If 'enable_truck_reuse' is on, this condition
      *         will be applied separately at each round trip use of the same
      *         truck.  The default value is '0'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#TRUCK_SERVICE_RADIUS
+     *         TRUCK_SERVICE_RADIUS}: For the {@code match_supply_demand}
+     *         solver only. If specified (greater than zero), it filters the
+     *         demands outside this radius centered around the truck's
+     *         originating location (distance or time).  The default value is
+     *         '0.0'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#RESTRICTED_TRUCK_TYPE
+     *         RESTRICTED_TRUCK_TYPE}: For the {@code match_supply_demand}
+     *         solver only. Optimization is performed by restricting routes
+     *         labeled by 'MSDO_ODDEVEN_RESTRICTED' only for this truck type
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#ODD ODD}: Applies
+     *         odd/even rule restrictions to odd tagged vehicles.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#EVEN EVEN}: Applies
+     *         odd/even rule restrictions to even tagged vehicles.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#NONE NONE}: Does
+     *         not apply odd/even rule restrictions to any vehicles.
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#NONE NONE}.
      *                 <li> {@link
      *         com.gpudb.protocol.MatchGraphRequest.Options#SERVER_ID
      *         SERVER_ID}: Indicates which graph server(s) to send the request
@@ -1589,6 +1737,13 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 locations - can increase this up to 2M.  The default
      *                 value is '10000'.
      *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_SUPPLY_COMBINATIONS
+     *                 MAX_SUPPLY_COMBINATIONS}: For the {@code
+     *                 match_supply_demand} solver only. This is the cutoff for
+     *                 the number of generated combinations for sequencing the
+     *                 supply locations if/when 'permute_supplies' is true.
+     *                 The default value is '10000'.
+     *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#LEFT_TURN_PENALTY
      *                 LEFT_TURN_PENALTY}: This will add an additonal weight
      *                 over the edges labelled as 'left turn' if the 'add_turn'
@@ -1716,6 +1871,36 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 'enable_truck_reuse' is on, this condition will be
      *                 applied separately at each round trip use of the same
      *                 truck.  The default value is '0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUCK_SERVICE_RADIUS
+     *                 TRUCK_SERVICE_RADIUS}: For the {@code
+     *                 match_supply_demand} solver only. If specified (greater
+     *                 than zero), it filters the demands outside this radius
+     *                 centered around the truck's originating location
+     *                 (distance or time).  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#RESTRICTED_TRUCK_TYPE
+     *                 RESTRICTED_TRUCK_TYPE}: For the {@code
+     *                 match_supply_demand} solver only. Optimization is
+     *                 performed by restricting routes labeled by
+     *                 'MSDO_ODDEVEN_RESTRICTED' only for this truck type
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#ODD ODD}:
+     *                 Applies odd/even rule restrictions to odd tagged
+     *                 vehicles.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#EVEN EVEN}:
+     *                 Applies odd/even rule restrictions to even tagged
+     *                 vehicles.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#NONE NONE}:
+     *                 Does not apply odd/even rule restrictions to any
+     *                 vehicles.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#NONE NONE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#SERVER_ID
      *                 SERVER_ID}: Indicates which graph server(s) to send the

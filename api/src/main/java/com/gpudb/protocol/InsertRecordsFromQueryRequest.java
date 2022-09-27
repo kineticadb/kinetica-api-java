@@ -463,23 +463,16 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      * BAD_RECORD_TABLE_NAME}: Optional name of a table to which records that
      * were rejected are written.  The bad-record-table has the following
      * columns: line_number (long), line_rejected (string), error_message
-     * (string).
+     * (string). When error handling is Abort, bad records table is not
+     * populated.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#BAD_RECORD_TABLE_LIMIT
      * BAD_RECORD_TABLE_LIMIT}: A positive integer indicating the maximum
      * number of records that can be  written to the bad-record-table.
      * Default value is 10000
      *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
-     * BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions: A positive integer
-     * indicating the maximum number of records that can be written to the
-     * bad-record-table per file/payload. Default value will be
-     * 'bad_record_table_limit' and total size of the table per rank is limited
-     * to 'bad_record_table_limit'
-     *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#JDBC_FETCH_SIZE
-     * JDBC_FETCH_SIZE}: The JDBC fetch size, which determines how many rows to
-     * fetch per round trip.
+     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#BATCH_SIZE
+     * BATCH_SIZE}: Number of records per batch when inserting data.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#DATASOURCE_NAME
      * DATASOURCE_NAME}: Name of an existing external data source from which
@@ -503,8 +496,7 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      * this mode.
      * </ul>
      * The default value is {@link
-     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#PERMISSIVE
-     * PERMISSIVE}.
+     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#ABORT ABORT}.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#INGESTION_MODE
      * INGESTION_MODE}: Whether to do a full load, dry run, or perform a type
@@ -528,54 +520,13 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FULL FULL}.
      *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#LOADING_MODE
-     * LOADING_MODE}: Scheme for distributing the extraction and loading of
-     * data from the source data file(s). This option applies only when loading
-     * files that are local to the database
-     * Supported values:
-     * <ul>
+     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#JDBC_FETCH_SIZE
+     * JDBC_FETCH_SIZE}: The JDBC fetch size, which determines how many rows to
+     * fetch per round trip.
      *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#HEAD HEAD}: The
-     * head node loads all data. All files must be available to the head node.
-     *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#DISTRIBUTED_SHARED
-     * DISTRIBUTED_SHARED}: The head node coordinates loading data by worker
-     * processes across all nodes from shared files available to all workers.
-     * <p>
-     * NOTE:
-     * <p>
-     * Instead of existing on a shared source, the files can be duplicated on a
-     * source local to each host
-     * to improve performance, though the files must appear as the same data
-     * set from the perspective of
-     * all hosts performing the load.
-     *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#DISTRIBUTED_LOCAL
-     * DISTRIBUTED_LOCAL}: A single worker process on each node loads all files
-     * that are available to it. This option works best when each worker loads
-     * files from its own file
-     * system, to maximize performance. In order to avoid data duplication,
-     * either each worker performing
-     * the load needs to have visibility to a set of files unique to it (no
-     * file is visible to more than
-     * one node) or the target table needs to have a primary key (which will
-     * allow the worker to
-     * automatically deduplicate data).
-     * <p>
-     * NOTE:
-     * <p>
-     * If the target table doesn't exist, the table structure will be
-     * determined by the head node. If the
-     * head node has no files local to it, it will be unable to determine the
-     * structure and the request
-     * will fail.
-     * <p>
-     * If the head node is configured to have no worker processes, no data
-     * strictly accessible to the head
-     * node will be loaded.
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#HEAD HEAD}.
+     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#NUM_TASKS_PER_RANK
+     * NUM_TASKS_PER_RANK}: Optional: number of tasks for reading data per
+     * rank. Default will be external_file_reader_num_tasks
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#PRIMARY_KEYS
      * PRIMARY_KEYS}: Optional: comma separated list of column names, to set as
@@ -587,7 +538,7 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUNCATE_TABLE
      * TRUNCATE_TABLE}: If set to {@code true}, truncates the table specified
-     * by {@code tableName} prior to loading the file(s).
+     * by {@code tableName} prior to loading the data.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -598,16 +549,17 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE FALSE}.
      *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#NUM_TASKS_PER_RANK
-     * NUM_TASKS_PER_RANK}: Optional: number of tasks for reading file per
-     * rank. Default will be external_file_reader_num_tasks
-     *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY
      * REMOTE_QUERY}: Remote SQL query from which data will be sourced
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_FILTER_COLUMN
      * REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used for splitting the
-     * query into multiple sub-queries.  The default value is ''.
+     * query into multiple sub-queries using the data distribution of given
+     * column.  The default value is ''.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
+     * REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
+     * remote_query_filter_column.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#UPDATE_ON_EXISTING_PK
      * UPDATE_ON_EXISTING_PK}:
@@ -630,6 +582,7 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
          * Optional name of a table to which records that were rejected are
          * written.  The bad-record-table has the following columns:
          * line_number (long), line_rejected (string), error_message (string).
+         * When error handling is Abort, bad records table is not populated.
          */
         public static final String BAD_RECORD_TABLE_NAME = "bad_record_table_name";
 
@@ -640,19 +593,9 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
         public static final String BAD_RECORD_TABLE_LIMIT = "bad_record_table_limit";
 
         /**
-         * For subscriptions: A positive integer indicating the maximum number
-         * of records that can be written to the bad-record-table per
-         * file/payload. Default value will be 'bad_record_table_limit' and
-         * total size of the table per rank is limited to
-         * 'bad_record_table_limit'
+         * Number of records per batch when inserting data.
          */
-        public static final String BAD_RECORD_TABLE_LIMIT_PER_INPUT = "bad_record_table_limit_per_input";
-
-        /**
-         * The JDBC fetch size, which determines how many rows to fetch per
-         * round trip.
-         */
-        public static final String JDBC_FETCH_SIZE = "jdbc_fetch_size";
+        public static final String BATCH_SIZE = "batch_size";
 
         /**
          * Name of an existing external data source from which table will be
@@ -678,8 +621,8 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
          * abortable errors in this mode.
          * </ul>
          * The default value is {@link
-         * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#PERMISSIVE
-         * PERMISSIVE}.
+         * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#ABORT
+         * ABORT}.
          */
         public static final String ERROR_HANDLING = "error_handling";
 
@@ -744,106 +687,16 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
         public static final String TYPE_INFERENCE_ONLY = "type_inference_only";
 
         /**
-         * Scheme for distributing the extraction and loading of data from the
-         * source data file(s). This option applies only when loading files
-         * that are local to the database
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#HEAD HEAD}:
-         * The head node loads all data. All files must be available to the
-         * head node.
-         *         <li> {@link
-         * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#DISTRIBUTED_SHARED
-         * DISTRIBUTED_SHARED}: The head node coordinates loading data by
-         * worker
-         * processes across all nodes from shared files available to all
-         * workers.
-         * <p>
-         * NOTE:
-         * <p>
-         * Instead of existing on a shared source, the files can be duplicated
-         * on a source local to each host
-         * to improve performance, though the files must appear as the same
-         * data set from the perspective of
-         * all hosts performing the load.
-         *         <li> {@link
-         * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#DISTRIBUTED_LOCAL
-         * DISTRIBUTED_LOCAL}: A single worker process on each node loads all
-         * files
-         * that are available to it. This option works best when each worker
-         * loads files from its own file
-         * system, to maximize performance. In order to avoid data duplication,
-         * either each worker performing
-         * the load needs to have visibility to a set of files unique to it (no
-         * file is visible to more than
-         * one node) or the target table needs to have a primary key (which
-         * will allow the worker to
-         * automatically deduplicate data).
-         * <p>
-         * NOTE:
-         * <p>
-         * If the target table doesn't exist, the table structure will be
-         * determined by the head node. If the
-         * head node has no files local to it, it will be unable to determine
-         * the structure and the request
-         * will fail.
-         * <p>
-         * If the head node is configured to have no worker processes, no data
-         * strictly accessible to the head
-         * node will be loaded.
-         * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#HEAD HEAD}.
+         * The JDBC fetch size, which determines how many rows to fetch per
+         * round trip.
          */
-        public static final String LOADING_MODE = "loading_mode";
+        public static final String JDBC_FETCH_SIZE = "jdbc_fetch_size";
 
         /**
-         * The head node loads all data. All files must be available to the
-         * head node.
+         * Optional: number of tasks for reading data per rank. Default will be
+         * external_file_reader_num_tasks
          */
-        public static final String HEAD = "head";
-
-        /**
-         * The head node coordinates loading data by worker
-         * processes across all nodes from shared files available to all
-         * workers.
-         * <p>
-         * NOTE:
-         * <p>
-         * Instead of existing on a shared source, the files can be duplicated
-         * on a source local to each host
-         * to improve performance, though the files must appear as the same
-         * data set from the perspective of
-         * all hosts performing the load.
-         */
-        public static final String DISTRIBUTED_SHARED = "distributed_shared";
-
-        /**
-         * A single worker process on each node loads all files
-         * that are available to it. This option works best when each worker
-         * loads files from its own file
-         * system, to maximize performance. In order to avoid data duplication,
-         * either each worker performing
-         * the load needs to have visibility to a set of files unique to it (no
-         * file is visible to more than
-         * one node) or the target table needs to have a primary key (which
-         * will allow the worker to
-         * automatically deduplicate data).
-         * <p>
-         * NOTE:
-         * <p>
-         * If the target table doesn't exist, the table structure will be
-         * determined by the head node. If the
-         * head node has no files local to it, it will be unable to determine
-         * the structure and the request
-         * will fail.
-         * <p>
-         * If the head node is configured to have no worker processes, no data
-         * strictly accessible to the head
-         * node will be loaded.
-         */
-        public static final String DISTRIBUTED_LOCAL = "distributed_local";
+        public static final String NUM_TASKS_PER_RANK = "num_tasks_per_rank";
 
         /**
          * Optional: comma separated list of column names, to set as primary
@@ -859,7 +712,7 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
 
         /**
          * If set to {@code true}, truncates the table specified by {@code
-         * tableName} prior to loading the file(s).
+         * tableName} prior to loading the data.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -877,21 +730,21 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * Optional: number of tasks for reading file per rank. Default will be
-         * external_file_reader_num_tasks
-         */
-        public static final String NUM_TASKS_PER_RANK = "num_tasks_per_rank";
-
-        /**
          * Remote SQL query from which data will be sourced
          */
         public static final String REMOTE_QUERY = "remote_query";
 
         /**
          * Name of column to be used for splitting the query into multiple
-         * sub-queries.  The default value is ''.
+         * sub-queries using the data distribution of given column.  The
+         * default value is ''.
          */
         public static final String REMOTE_QUERY_FILTER_COLUMN = "remote_query_filter_column";
+
+        /**
+         * Alias name for remote_query_filter_column.  The default value is ''.
+         */
+        public static final String REMOTE_QUERY_PARTITION_COLUMN = "remote_query_partition_column";
 
         /**
          * Supported values:
@@ -943,7 +796,7 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                   If the table does not exist, the table will be created
      *                   using either an existing
      *                   {@code type_id} or the type inferred from the
-     *                   file, and the new table name will have to meet
+     *                   remote query, and the new table name will have to meet
      *                   standard
      *                   <a
      *                   href="../../../../../../concepts/tables/#table-naming-criteria"
@@ -1156,23 +1009,17 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                 which records that were rejected are written.  The
      *                 bad-record-table has the following columns: line_number
      *                 (long), line_rejected (string), error_message (string).
+     *                 When error handling is Abort, bad records table is not
+     *                 populated.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#BAD_RECORD_TABLE_LIMIT
      *                 BAD_RECORD_TABLE_LIMIT}: A positive integer indicating
      *                 the maximum number of records that can be  written to
      *                 the bad-record-table.   Default value is 10000
      *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
-     *                 BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions: A
-     *                 positive integer indicating the maximum number of
-     *                 records that can be written to the bad-record-table per
-     *                 file/payload. Default value will be
-     *                 'bad_record_table_limit' and total size of the table per
-     *                 rank is limited to 'bad_record_table_limit'
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#JDBC_FETCH_SIZE
-     *                 JDBC_FETCH_SIZE}: The JDBC fetch size, which determines
-     *                 how many rows to fetch per round trip.
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#BATCH_SIZE
+     *                 BATCH_SIZE}: Number of records per batch when inserting
+     *                 data.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#DATASOURCE_NAME
      *                 DATASOURCE_NAME}: Name of an existing external data
@@ -1198,8 +1045,8 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                 collisions are considered abortable errors in this mode.
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#PERMISSIVE
-     *                 PERMISSIVE}.
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#ABORT
+     *                 ABORT}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#INGESTION_MODE
      *                 INGESTION_MODE}: Whether to do a full load, dry run, or
@@ -1226,55 +1073,14 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FULL
      *                 FULL}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#LOADING_MODE
-     *                 LOADING_MODE}: Scheme for distributing the extraction
-     *                 and loading of data from the source data file(s). This
-     *                 option applies only when loading files that are local to
-     *                 the database
-     *                 Supported values:
-     *                 <ul>
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#JDBC_FETCH_SIZE
+     *                 JDBC_FETCH_SIZE}: The JDBC fetch size, which determines
+     *                 how many rows to fetch per round trip.
      *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#HEAD
-     *                 HEAD}: The head node loads all data. All files must be
-     *                 available to the head node.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#DISTRIBUTED_SHARED
-     *                 DISTRIBUTED_SHARED}: The head node coordinates loading
-     *                 data by worker
-     *                 processes across all nodes from shared files available
-     *                 to all workers.
-     *                 NOTE:
-     *                 Instead of existing on a shared source, the files can be
-     *                 duplicated on a source local to each host
-     *                 to improve performance, though the files must appear as
-     *                 the same data set from the perspective of
-     *                 all hosts performing the load.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#DISTRIBUTED_LOCAL
-     *                 DISTRIBUTED_LOCAL}: A single worker process on each node
-     *                 loads all files
-     *                 that are available to it. This option works best when
-     *                 each worker loads files from its own file
-     *                 system, to maximize performance. In order to avoid data
-     *                 duplication, either each worker performing
-     *                 the load needs to have visibility to a set of files
-     *                 unique to it (no file is visible to more than
-     *                 one node) or the target table needs to have a primary
-     *                 key (which will allow the worker to
-     *                 automatically deduplicate data).
-     *                 NOTE:
-     *                 If the target table doesn't exist, the table structure
-     *                 will be determined by the head node. If the
-     *                 head node has no files local to it, it will be unable to
-     *                 determine the structure and the request
-     *                 will fail.
-     *                 If the head node is configured to have no worker
-     *                 processes, no data strictly accessible to the head
-     *                 node will be loaded.
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#HEAD
-     *                 HEAD}.
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#NUM_TASKS_PER_RANK
+     *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
+     *                 reading data per rank. Default will be
+     *                 external_file_reader_num_tasks
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#PRIMARY_KEYS
      *                 PRIMARY_KEYS}: Optional: comma separated list of column
@@ -1289,7 +1095,7 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUNCATE_TABLE
      *                 TRUNCATE_TABLE}: If set to {@code true}, truncates the
      *                 table specified by {@code tableName} prior to loading
-     *                 the file(s).
+     *                 the data.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -1303,19 +1109,19 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#NUM_TASKS_PER_RANK
-     *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
-     *                 reading file per rank. Default will be
-     *                 external_file_reader_num_tasks
-     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY
      *                 REMOTE_QUERY}: Remote SQL query from which data will be
      *                 sourced
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_FILTER_COLUMN
      *                 REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used
-     *                 for splitting the query into multiple sub-queries.  The
-     *                 default value is ''.
+     *                 for splitting the query into multiple sub-queries using
+     *                 the data distribution of given column.  The default
+     *                 value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
+     *                 REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
+     *                 remote_query_filter_column.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}:
@@ -1353,7 +1159,7 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         If the table does not exist, the table will be created using
      *         either an existing
      *         {@code type_id} or the type inferred from the
-     *         file, and the new table name will have to meet standard
+     *         remote query, and the new table name will have to meet standard
      *         <a
      *         href="../../../../../../concepts/tables/#table-naming-criteria"
      *         target="_top">table naming criteria</a>.
@@ -1374,7 +1180,7 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                   If the table does not exist, the table will be created
      *                   using either an existing
      *                   {@code type_id} or the type inferred from the
-     *                   file, and the new table name will have to meet
+     *                   remote query, and the new table name will have to meet
      *                   standard
      *                   <a
      *                   href="../../../../../../concepts/tables/#table-naming-criteria"
@@ -1834,23 +1640,16 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         BAD_RECORD_TABLE_NAME}: Optional name of a table to which
      *         records that were rejected are written.  The bad-record-table
      *         has the following columns: line_number (long), line_rejected
-     *         (string), error_message (string).
+     *         (string), error_message (string). When error handling is Abort,
+     *         bad records table is not populated.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#BAD_RECORD_TABLE_LIMIT
      *         BAD_RECORD_TABLE_LIMIT}: A positive integer indicating the
      *         maximum number of records that can be  written to the
      *         bad-record-table.   Default value is 10000
      *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
-     *         BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions: A positive
-     *         integer indicating the maximum number of records that can be
-     *         written to the bad-record-table per file/payload. Default value
-     *         will be 'bad_record_table_limit' and total size of the table per
-     *         rank is limited to 'bad_record_table_limit'
-     *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#JDBC_FETCH_SIZE
-     *         JDBC_FETCH_SIZE}: The JDBC fetch size, which determines how many
-     *         rows to fetch per round trip.
+     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#BATCH_SIZE
+     *         BATCH_SIZE}: Number of records per batch when inserting data.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#DATASOURCE_NAME
      *         DATASOURCE_NAME}: Name of an existing external data source from
@@ -1875,8 +1674,8 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         abortable errors in this mode.
      *         </ul>
      *         The default value is {@link
-     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#PERMISSIVE
-     *         PERMISSIVE}.
+     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#ABORT
+     *         ABORT}.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#INGESTION_MODE
      *         INGESTION_MODE}: Whether to do a full load, dry run, or perform
@@ -1902,54 +1701,13 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FULL
      *         FULL}.
      *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#LOADING_MODE
-     *         LOADING_MODE}: Scheme for distributing the extraction and
-     *         loading of data from the source data file(s). This option
-     *         applies only when loading files that are local to the database
-     *         Supported values:
-     *         <ul>
+     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#JDBC_FETCH_SIZE
+     *         JDBC_FETCH_SIZE}: The JDBC fetch size, which determines how many
+     *         rows to fetch per round trip.
      *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#HEAD
-     *         HEAD}: The head node loads all data. All files must be available
-     *         to the head node.
-     *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#DISTRIBUTED_SHARED
-     *         DISTRIBUTED_SHARED}: The head node coordinates loading data by
-     *         worker
-     *         processes across all nodes from shared files available to all
-     *         workers.
-     *         NOTE:
-     *         Instead of existing on a shared source, the files can be
-     *         duplicated on a source local to each host
-     *         to improve performance, though the files must appear as the same
-     *         data set from the perspective of
-     *         all hosts performing the load.
-     *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#DISTRIBUTED_LOCAL
-     *         DISTRIBUTED_LOCAL}: A single worker process on each node loads
-     *         all files
-     *         that are available to it. This option works best when each
-     *         worker loads files from its own file
-     *         system, to maximize performance. In order to avoid data
-     *         duplication, either each worker performing
-     *         the load needs to have visibility to a set of files unique to it
-     *         (no file is visible to more than
-     *         one node) or the target table needs to have a primary key (which
-     *         will allow the worker to
-     *         automatically deduplicate data).
-     *         NOTE:
-     *         If the target table doesn't exist, the table structure will be
-     *         determined by the head node. If the
-     *         head node has no files local to it, it will be unable to
-     *         determine the structure and the request
-     *         will fail.
-     *         If the head node is configured to have no worker processes, no
-     *         data strictly accessible to the head
-     *         node will be loaded.
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#HEAD
-     *         HEAD}.
+     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#NUM_TASKS_PER_RANK
+     *         NUM_TASKS_PER_RANK}: Optional: number of tasks for reading data
+     *         per rank. Default will be external_file_reader_num_tasks
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#PRIMARY_KEYS
      *         PRIMARY_KEYS}: Optional: comma separated list of column names,
@@ -1963,7 +1721,7 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUNCATE_TABLE
      *         TRUNCATE_TABLE}: If set to {@code true}, truncates the table
-     *         specified by {@code tableName} prior to loading the file(s).
+     *         specified by {@code tableName} prior to loading the data.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -1977,17 +1735,17 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
      *         FALSE}.
      *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#NUM_TASKS_PER_RANK
-     *         NUM_TASKS_PER_RANK}: Optional: number of tasks for reading file
-     *         per rank. Default will be external_file_reader_num_tasks
-     *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY
      *         REMOTE_QUERY}: Remote SQL query from which data will be sourced
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_FILTER_COLUMN
      *         REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used for
-     *         splitting the query into multiple sub-queries.  The default
-     *         value is ''.
+     *         splitting the query into multiple sub-queries using the data
+     *         distribution of given column.  The default value is ''.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
+     *         REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
+     *         remote_query_filter_column.  The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#UPDATE_ON_EXISTING_PK
      *         UPDATE_ON_EXISTING_PK}:
@@ -2021,23 +1779,17 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                 which records that were rejected are written.  The
      *                 bad-record-table has the following columns: line_number
      *                 (long), line_rejected (string), error_message (string).
+     *                 When error handling is Abort, bad records table is not
+     *                 populated.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#BAD_RECORD_TABLE_LIMIT
      *                 BAD_RECORD_TABLE_LIMIT}: A positive integer indicating
      *                 the maximum number of records that can be  written to
      *                 the bad-record-table.   Default value is 10000
      *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
-     *                 BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions: A
-     *                 positive integer indicating the maximum number of
-     *                 records that can be written to the bad-record-table per
-     *                 file/payload. Default value will be
-     *                 'bad_record_table_limit' and total size of the table per
-     *                 rank is limited to 'bad_record_table_limit'
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#JDBC_FETCH_SIZE
-     *                 JDBC_FETCH_SIZE}: The JDBC fetch size, which determines
-     *                 how many rows to fetch per round trip.
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#BATCH_SIZE
+     *                 BATCH_SIZE}: Number of records per batch when inserting
+     *                 data.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#DATASOURCE_NAME
      *                 DATASOURCE_NAME}: Name of an existing external data
@@ -2063,8 +1815,8 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                 collisions are considered abortable errors in this mode.
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#PERMISSIVE
-     *                 PERMISSIVE}.
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#ABORT
+     *                 ABORT}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#INGESTION_MODE
      *                 INGESTION_MODE}: Whether to do a full load, dry run, or
@@ -2091,55 +1843,14 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FULL
      *                 FULL}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#LOADING_MODE
-     *                 LOADING_MODE}: Scheme for distributing the extraction
-     *                 and loading of data from the source data file(s). This
-     *                 option applies only when loading files that are local to
-     *                 the database
-     *                 Supported values:
-     *                 <ul>
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#JDBC_FETCH_SIZE
+     *                 JDBC_FETCH_SIZE}: The JDBC fetch size, which determines
+     *                 how many rows to fetch per round trip.
      *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#HEAD
-     *                 HEAD}: The head node loads all data. All files must be
-     *                 available to the head node.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#DISTRIBUTED_SHARED
-     *                 DISTRIBUTED_SHARED}: The head node coordinates loading
-     *                 data by worker
-     *                 processes across all nodes from shared files available
-     *                 to all workers.
-     *                 NOTE:
-     *                 Instead of existing on a shared source, the files can be
-     *                 duplicated on a source local to each host
-     *                 to improve performance, though the files must appear as
-     *                 the same data set from the perspective of
-     *                 all hosts performing the load.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#DISTRIBUTED_LOCAL
-     *                 DISTRIBUTED_LOCAL}: A single worker process on each node
-     *                 loads all files
-     *                 that are available to it. This option works best when
-     *                 each worker loads files from its own file
-     *                 system, to maximize performance. In order to avoid data
-     *                 duplication, either each worker performing
-     *                 the load needs to have visibility to a set of files
-     *                 unique to it (no file is visible to more than
-     *                 one node) or the target table needs to have a primary
-     *                 key (which will allow the worker to
-     *                 automatically deduplicate data).
-     *                 NOTE:
-     *                 If the target table doesn't exist, the table structure
-     *                 will be determined by the head node. If the
-     *                 head node has no files local to it, it will be unable to
-     *                 determine the structure and the request
-     *                 will fail.
-     *                 If the head node is configured to have no worker
-     *                 processes, no data strictly accessible to the head
-     *                 node will be loaded.
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#HEAD
-     *                 HEAD}.
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#NUM_TASKS_PER_RANK
+     *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
+     *                 reading data per rank. Default will be
+     *                 external_file_reader_num_tasks
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#PRIMARY_KEYS
      *                 PRIMARY_KEYS}: Optional: comma separated list of column
@@ -2154,7 +1865,7 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUNCATE_TABLE
      *                 TRUNCATE_TABLE}: If set to {@code true}, truncates the
      *                 table specified by {@code tableName} prior to loading
-     *                 the file(s).
+     *                 the data.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -2168,19 +1879,19 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#NUM_TASKS_PER_RANK
-     *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
-     *                 reading file per rank. Default will be
-     *                 external_file_reader_num_tasks
-     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY
      *                 REMOTE_QUERY}: Remote SQL query from which data will be
      *                 sourced
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_FILTER_COLUMN
      *                 REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used
-     *                 for splitting the query into multiple sub-queries.  The
-     *                 default value is ''.
+     *                 for splitting the query into multiple sub-queries using
+     *                 the data distribution of given column.  The default
+     *                 value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
+     *                 REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
+     *                 remote_query_filter_column.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}:

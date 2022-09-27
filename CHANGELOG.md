@@ -2,6 +2,21 @@
 
 ## Version 7.1
 
+### Version 7.1.8.0 - 2022-09-27
+
+#### Added
+-   Support for boolean type
+
+#### Changed
+-   BulkInserter will do a default of 3 local retries for any non-data failure
+    before attempting to fail over to another cluster
+-   Timed flush mechanism can be set or reset after BulkInserter construction
+-   Fully relocated dependencies to avoid library conflicts
+
+#### Fixed
+-   Java bytecode version mismatch when compiling on Java9+ and running on Java8
+
+
 ### Version 7.1.7.4 - 2022-09-19
 
 #### Changed
@@ -18,7 +33,7 @@
 
 #### Added
 -   Method to query a BulkInserter's multi-head status
-
+ 
 #### Changed
 -   Switched ordering of flush & thread shutdown sequence
 -   Disabled client intra-cluster failover if failover is disabled on the server

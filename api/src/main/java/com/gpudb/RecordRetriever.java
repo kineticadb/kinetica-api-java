@@ -710,14 +710,12 @@ public class RecordRetriever<T> {
      * worker.
      * <p>
      * All fields in both the shard key and the expression must have defined
-     * attribute indexes, unless the shard key is also a primary key and all
-     * referenced fields are in the primary key. The expression must be limited
-     * to basic equality and inequality comparisons that can be evaluated using
-     * the attribute indexes.
+     * attribute indexes unless all fields of the primary key are referenced with no others.
+     * The expression must be limited
+     * to basic equality comparisons that can be evaluated using the attribute indexes.
      * <p>
      * For replicated tables, the user may pass a pre-constructed expression via
-     * the second parameter.  If both parameters are empty or null, then all the
-     * records would be fetched.
+     * the second parameter.
      *
      * @param keyValues   list of values that make up the shard key; the values
      *                    must be in the same order as in the table and have the
@@ -725,8 +723,7 @@ public class RecordRetriever<T> {
      *                    an empty or null list for replicated tables; in that
      *                    case, only the string expression would be used.
      * @param expression  additional filter to be applied, or {@code null} for
-     *                    none.  For replicated tables, if neither is given,
-     *                    all records would be fetched.
+     *                    none.
      * @return            {@link com.gpudb.protocol.GetRecordsResponse response}
      *                    object containing the results
      *
@@ -757,16 +754,14 @@ public class RecordRetriever<T> {
         }
 
         // Build the expression to be used for the lookup
-        if ( shardKeyBuilder.hasKey() ) {
+        if ( shardKeyBuilder.hasKey() && !this.isTableReplicated ) {
             // We have primary or shard columns; need to use the given key values
             // to create the filter expression.
             String keyExpression = "";
-            if ( keyValues != null ) {
+            if ( (keyValues != null) && !keyValues.isEmpty() ) {
                 keyExpression = shardKeyBuilder.buildExpression( keyValues );
-            } else if ( !this.isTableReplicated ) {
-                // It is ok for the user to bypass the keys and give a string
-                // expression for replicated tables only.
-                throw new GPUdbException( "For sharded tables, must provide the key values for key lookup." );
+            } else {
+                throw new GPUdbException( "For sharded tables, must provide the shard key values for key lookup." );
             }
 
             if ( expression.isEmpty() ) {
@@ -778,20 +773,15 @@ public class RecordRetriever<T> {
                 // Join the two non-empty expressions together
                 expression = ( "(" + keyExpression + ") and (" + expression + ")" );
             }
-        } else {
-            // No primary or shard key in the table
-            if ( ( (keyValues != null) && !keyValues.isEmpty() )
-                 && this.isTableReplicated ) {
-                // No primary keys for a replicated table; must give key values
-                // via te second parameter, not keyValues (since we have no way
-                // of knowing which columns the given values are for).
-                String msg = ("For replicated tables without primary keys, please pass "
-                              + "all key values in the 'expression' argument, not via "
-                              + "the 'keyValues' argument.");
-                throw new GPUdbException( msg );
-            }
+        } else if ( ( (keyValues != null) && !keyValues.isEmpty() ) && this.isTableReplicated ) {
+            // No primary keys for a replicated table; must give key values
+            // via te second parameter, not keyValues (since we have no way
+            // of knowing which columns the given values are for).
+            String msg = ("For replicated tables without primary keys, please pass "
+                            + "all key values in the 'expression' argument, not via "
+                            + "the 'keyValues' argument.");
+            throw new GPUdbException( msg );
         }
-
 
         // Create the options for the key lookup; first include general options
         Map<String, String> retrievalOptions = new HashMap<>( this.options );

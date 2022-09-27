@@ -73,6 +73,7 @@ public final class Type implements Serializable {
             STRING,
             BYTES,
             // Integer sub-types
+            BOOLEAN,
             INT8,
             INT16,
             // Long sub-types
@@ -220,7 +221,9 @@ public final class Type implements Serializable {
                 columnBaseType = ColumnBaseType.BYTES;
             }
             // Then, any sub-type based on properties
-            if ( properties.contains( ColumnProperty.INT8 ) ) {
+            if ( properties.contains( ColumnProperty.BOOLEAN ) ) {
+                columnType = ColumnType.BOOLEAN;
+            } else if ( properties.contains( ColumnProperty.INT8 ) ) {
                 columnType = ColumnType.INT8;
             } else if ( properties.contains( ColumnProperty.INT16 ) ) {
                 columnType = ColumnType.INT16;
@@ -614,6 +617,7 @@ public final class Type implements Serializable {
                 case ColumnProperty.DATE:
                 case ColumnProperty.DATETIME:
                 case ColumnProperty.DECIMAL:
+                case ColumnProperty.BOOLEAN:
                 case ColumnProperty.INT8:
                 case ColumnProperty.INT16:
                 case ColumnProperty.IPV4:

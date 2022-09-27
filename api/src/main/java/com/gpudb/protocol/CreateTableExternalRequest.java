@@ -695,6 +695,10 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#FULL FULL}.
      *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#JDBC_FETCH_SIZE
+     * JDBC_FETCH_SIZE}: The JDBC fetch size, which determines how many rows to
+     * fetch per round trip.
+     *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_GROUP_ID
      * KAFKA_GROUP_ID}: The group id to be used consuming data from a kakfa
      * topic (valid only for kafka datasource subscriptions).
@@ -946,7 +950,12 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_FILTER_COLUMN
      * REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used for splitting the
-     * query into multiple sub-queries.  The default value is ''.
+     * query into multiple sub-queries using the data distribution of given
+     * column.  The default value is ''.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
+     * REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
+     * remote_query_filter_column.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#UPDATE_ON_EXISTING_PK
      * UPDATE_ON_EXISTING_PK}:
@@ -1259,6 +1268,12 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * data.  The inferred type is returned in the response.
          */
         public static final String TYPE_INFERENCE_ONLY = "type_inference_only";
+
+        /**
+         * The JDBC fetch size, which determines how many rows to fetch per
+         * round trip.
+         */
+        public static final String JDBC_FETCH_SIZE = "jdbc_fetch_size";
 
         /**
          * The group id to be used consuming data from a kakfa topic (valid
@@ -1634,9 +1649,15 @@ public class CreateTableExternalRequest implements IndexedRecord {
 
         /**
          * Name of column to be used for splitting the query into multiple
-         * sub-queries.  The default value is ''.
+         * sub-queries using the data distribution of given column.  The
+         * default value is ''.
          */
         public static final String REMOTE_QUERY_FILTER_COLUMN = "remote_query_filter_column";
+
+        /**
+         * Alias name for remote_query_filter_column.  The default value is ''.
+         */
+        public static final String REMOTE_QUERY_PARTITION_COLUMN = "remote_query_partition_column";
 
         /**
          * Supported values:
@@ -2137,6 +2158,10 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FULL
      *                 FULL}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#JDBC_FETCH_SIZE
+     *                 JDBC_FETCH_SIZE}: The JDBC fetch size, which determines
+     *                 how many rows to fetch per round trip.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_GROUP_ID
      *                 KAFKA_GROUP_ID}: The group id to be used consuming data
      *                 from a kakfa topic (valid only for kafka datasource
@@ -2410,8 +2435,13 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_FILTER_COLUMN
      *                 REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used
-     *                 for splitting the query into multiple sub-queries.  The
-     *                 default value is ''.
+     *                 for splitting the query into multiple sub-queries using
+     *                 the data distribution of given column.  The default
+     *                 value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
+     *                 REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
+     *                 remote_query_filter_column.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}:
@@ -3203,6 +3233,10 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#FULL
      *         FULL}.
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#JDBC_FETCH_SIZE
+     *         JDBC_FETCH_SIZE}: The JDBC fetch size, which determines how many
+     *         rows to fetch per round trip.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_GROUP_ID
      *         KAFKA_GROUP_ID}: The group id to be used consuming data from a
      *         kakfa topic (valid only for kafka datasource subscriptions).
@@ -3462,8 +3496,12 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_FILTER_COLUMN
      *         REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used for
-     *         splitting the query into multiple sub-queries.  The default
-     *         value is ''.
+     *         splitting the query into multiple sub-queries using the data
+     *         distribution of given column.  The default value is ''.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
+     *         REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
+     *         remote_query_filter_column.  The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#UPDATE_ON_EXISTING_PK
      *         UPDATE_ON_EXISTING_PK}:
@@ -3697,6 +3735,10 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FULL
      *                 FULL}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#JDBC_FETCH_SIZE
+     *                 JDBC_FETCH_SIZE}: The JDBC fetch size, which determines
+     *                 how many rows to fetch per round trip.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_GROUP_ID
      *                 KAFKA_GROUP_ID}: The group id to be used consuming data
@@ -3971,8 +4013,13 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_FILTER_COLUMN
      *                 REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used
-     *                 for splitting the query into multiple sub-queries.  The
-     *                 default value is ''.
+     *                 for splitting the query into multiple sub-queries using
+     *                 the data distribution of given column.  The default
+     *                 value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
+     *                 REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
+     *                 remote_query_filter_column.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}:

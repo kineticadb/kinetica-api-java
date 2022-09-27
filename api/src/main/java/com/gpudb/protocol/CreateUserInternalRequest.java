@@ -52,10 +52,10 @@ public class CreateUserInternalRequest implements IndexedRecord {
      * this user
      *         <li> {@link
      * com.gpudb.protocol.CreateUserInternalRequest.Options#DEFAULT_SCHEMA
-     * DEFAULT_SCHEMA}: default schema associate with this user
+     * DEFAULT_SCHEMA}: Default schema to associate with this user
      *         <li> {@link
      * com.gpudb.protocol.CreateUserInternalRequest.Options#CREATE_HOME_DIRECTORY
-     * CREATE_HOME_DIRECTORY}: when true, a home directory in KiFS is created
+     * CREATE_HOME_DIRECTORY}: When true, a home directory in KiFS is created
      * for this user
      * Supported values:
      * <ul>
@@ -66,6 +66,12 @@ public class CreateUserInternalRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.CreateUserInternalRequest.Options#TRUE TRUE}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateUserInternalRequest.Options#DIRECTORY_DATA_LIMIT
+     * DIRECTORY_DATA_LIMIT}: The maximum capacity to apply to the created
+     * directory if @{input.key options.create_home_directory} is {@code true}.
+     * Set to -1 to indicate no upper limit. If empty, the system default limit
+     * is applied.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -78,12 +84,12 @@ public class CreateUserInternalRequest implements IndexedRecord {
         public static final String RESOURCE_GROUP = "resource_group";
 
         /**
-         * default schema associate with this user
+         * Default schema to associate with this user
          */
         public static final String DEFAULT_SCHEMA = "default_schema";
 
         /**
-         * when true, a home directory in KiFS is created for this user
+         * When true, a home directory in KiFS is created for this user
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -97,6 +103,14 @@ public class CreateUserInternalRequest implements IndexedRecord {
         public static final String CREATE_HOME_DIRECTORY = "create_home_directory";
         public static final String TRUE = "true";
         public static final String FALSE = "false";
+
+        /**
+         * The maximum capacity to apply to the created directory if
+         * @{input.key options.create_home_directory} is {@code true}. Set to
+         * -1 to indicate no upper limit. If empty, the system default limit is
+         * applied.
+         */
+        public static final String DIRECTORY_DATA_LIMIT = "directory_data_limit";
 
         private Options() {  }
     }
@@ -133,10 +147,11 @@ public class CreateUserInternalRequest implements IndexedRecord {
      *                 associate with this user
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUserInternalRequest.Options#DEFAULT_SCHEMA
-     *                 DEFAULT_SCHEMA}: default schema associate with this user
+     *                 DEFAULT_SCHEMA}: Default schema to associate with this
+     *                 user
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUserInternalRequest.Options#CREATE_HOME_DIRECTORY
-     *                 CREATE_HOME_DIRECTORY}: when true, a home directory in
+     *                 CREATE_HOME_DIRECTORY}: When true, a home directory in
      *                 KiFS is created for this user
      *                 Supported values:
      *                 <ul>
@@ -150,6 +165,13 @@ public class CreateUserInternalRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateUserInternalRequest.Options#TRUE
      *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserInternalRequest.Options#DIRECTORY_DATA_LIMIT
+     *                 DIRECTORY_DATA_LIMIT}: The maximum capacity to apply to
+     *                 the created directory if @{input.key
+     *                 options.create_home_directory} is {@code true}. Set to
+     *                 -1 to indicate no upper limit. If empty, the system
+     *                 default limit is applied.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -219,10 +241,10 @@ public class CreateUserInternalRequest implements IndexedRecord {
      *         with this user
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUserInternalRequest.Options#DEFAULT_SCHEMA
-     *         DEFAULT_SCHEMA}: default schema associate with this user
+     *         DEFAULT_SCHEMA}: Default schema to associate with this user
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUserInternalRequest.Options#CREATE_HOME_DIRECTORY
-     *         CREATE_HOME_DIRECTORY}: when true, a home directory in KiFS is
+     *         CREATE_HOME_DIRECTORY}: When true, a home directory in KiFS is
      *         created for this user
      *         Supported values:
      *         <ul>
@@ -234,6 +256,12 @@ public class CreateUserInternalRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.CreateUserInternalRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUserInternalRequest.Options#DIRECTORY_DATA_LIMIT
+     *         DIRECTORY_DATA_LIMIT}: The maximum capacity to apply to the
+     *         created directory if @{input.key options.create_home_directory}
+     *         is {@code true}. Set to -1 to indicate no upper limit. If empty,
+     *         the system default limit is applied.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -252,10 +280,11 @@ public class CreateUserInternalRequest implements IndexedRecord {
      *                 associate with this user
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUserInternalRequest.Options#DEFAULT_SCHEMA
-     *                 DEFAULT_SCHEMA}: default schema associate with this user
+     *                 DEFAULT_SCHEMA}: Default schema to associate with this
+     *                 user
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUserInternalRequest.Options#CREATE_HOME_DIRECTORY
-     *                 CREATE_HOME_DIRECTORY}: when true, a home directory in
+     *                 CREATE_HOME_DIRECTORY}: When true, a home directory in
      *                 KiFS is created for this user
      *                 Supported values:
      *                 <ul>
@@ -269,6 +298,13 @@ public class CreateUserInternalRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateUserInternalRequest.Options#TRUE
      *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserInternalRequest.Options#DIRECTORY_DATA_LIMIT
+     *                 DIRECTORY_DATA_LIMIT}: The maximum capacity to apply to
+     *                 the created directory if @{input.key
+     *                 options.create_home_directory} is {@code true}. Set to
+     *                 -1 to indicate no upper limit. If empty, the system
+     *                 default limit is applied.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
