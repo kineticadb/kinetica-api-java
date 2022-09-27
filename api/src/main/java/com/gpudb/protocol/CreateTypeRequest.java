@@ -204,6 +204,10 @@ public class CreateTypeRequest implements IndexedRecord {
      * property provides optimized memory, disk and query performance for
      * string columns. Strings with this property must be no longer than 256
      * characters.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTypeRequest.Properties#BOOLEAN BOOLEAN}: This
+     * property provides optimized memory and query performance for int
+     * columns. Ints with this property must be between 0 and 1(inclusive)
      *         <li> {@link com.gpudb.protocol.CreateTypeRequest.Properties#INT8
      * INT8}: This property provides optimized memory and query performance for
      * int columns. Ints with this property must be between -128 and +127
@@ -426,6 +430,13 @@ public class CreateTypeRequest implements IndexedRecord {
          * than 256 characters.
          */
         public static final String CHAR256 = "char256";
+
+        /**
+         * This property provides optimized memory and query performance for
+         * int columns. Ints with this property must be between 0 and
+         * 1(inclusive)
+         */
+        public static final String BOOLEAN = "boolean";
 
         /**
          * This property provides optimized memory and query performance for
@@ -689,6 +700,11 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    disk and query performance for string columns.
      *                    Strings with this property must be no longer than 256
      *                    characters.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.CreateTypeRequest.Properties#BOOLEAN
+     *                    BOOLEAN}: This property provides optimized memory and
+     *                    query performance for int columns. Ints with this
+     *                    property must be between 0 and 1(inclusive)
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#INT8
      *                    INT8}: This property provides optimized memory and
@@ -956,6 +972,11 @@ public class CreateTypeRequest implements IndexedRecord {
      *         query performance for string columns. Strings with this property
      *         must be no longer than 256 characters.
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateTypeRequest.Properties#BOOLEAN
+     *         BOOLEAN}: This property provides optimized memory and query
+     *         performance for int columns. Ints with this property must be
+     *         between 0 and 1(inclusive)
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#INT8 INT8}: This
      *         property provides optimized memory and query performance for int
      *         columns. Ints with this property must be between -128 and +127
@@ -1182,6 +1203,11 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    disk and query performance for string columns.
      *                    Strings with this property must be no longer than 256
      *                    characters.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.CreateTypeRequest.Properties#BOOLEAN
+     *                    BOOLEAN}: This property provides optimized memory and
+     *                    query performance for int columns. Ints with this
+     *                    property must be between 0 and 1(inclusive)
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#INT8
      *                    INT8}: This property provides optimized memory and

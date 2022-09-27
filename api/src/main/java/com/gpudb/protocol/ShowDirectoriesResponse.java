@@ -27,6 +27,8 @@ public class ShowDirectoriesResponse implements IndexedRecord {
                 .name("directories").type().array().items().stringType().noDefault()
                 .name("users").type().array().items().stringType().noDefault()
                 .name("creationTimes").type().array().items().longType().noDefault()
+                .name("dataUsages").type().array().items().longType().noDefault()
+                .name("dataLimits").type().array().items().longType().noDefault()
                 .name("permissions").type().array().items().stringType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
@@ -46,6 +48,8 @@ public class ShowDirectoriesResponse implements IndexedRecord {
     private List<String> directories;
     private List<String> users;
     private List<Long> creationTimes;
+    private List<Long> dataUsages;
+    private List<Long> dataLimits;
     private List<String> permissions;
     private Map<String, String> info;
 
@@ -121,6 +125,52 @@ public class ShowDirectoriesResponse implements IndexedRecord {
      */
     public ShowDirectoriesResponse setCreationTimes(List<Long> creationTimes) {
         this.creationTimes = (creationTimes == null) ? new ArrayList<Long>() : creationTimes;
+        return this;
+    }
+
+    /**
+     * 
+     * @return The data usage each directory in bytes, for the respective
+     *         directories in {@code directories}
+     * 
+     */
+    public List<Long> getDataUsages() {
+        return dataUsages;
+    }
+
+    /**
+     * 
+     * @param dataUsages  The data usage each directory in bytes, for the
+     *                    respective directories in {@code directories}
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ShowDirectoriesResponse setDataUsages(List<Long> dataUsages) {
+        this.dataUsages = (dataUsages == null) ? new ArrayList<Long>() : dataUsages;
+        return this;
+    }
+
+    /**
+     * 
+     * @return The data limit for each directory in bytes, for the respective
+     *         directories in {@code directories}
+     * 
+     */
+    public List<Long> getDataLimits() {
+        return dataLimits;
+    }
+
+    /**
+     * 
+     * @param dataLimits  The data limit for each directory in bytes, for the
+     *                    respective directories in {@code directories}
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ShowDirectoriesResponse setDataLimits(List<Long> dataLimits) {
+        this.dataLimits = (dataLimits == null) ? new ArrayList<Long>() : dataLimits;
         return this;
     }
 
@@ -209,9 +259,15 @@ public class ShowDirectoriesResponse implements IndexedRecord {
                 return this.creationTimes;
 
             case 3:
-                return this.permissions;
+                return this.dataUsages;
 
             case 4:
+                return this.dataLimits;
+
+            case 5:
+                return this.permissions;
+
+            case 6:
                 return this.info;
 
             default:
@@ -246,10 +302,18 @@ public class ShowDirectoriesResponse implements IndexedRecord {
                 break;
 
             case 3:
-                this.permissions = (List<String>)value;
+                this.dataUsages = (List<Long>)value;
                 break;
 
             case 4:
+                this.dataLimits = (List<Long>)value;
+                break;
+
+            case 5:
+                this.permissions = (List<String>)value;
+                break;
+
+            case 6:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -273,6 +337,8 @@ public class ShowDirectoriesResponse implements IndexedRecord {
         return ( this.directories.equals( that.directories )
                  && this.users.equals( that.users )
                  && this.creationTimes.equals( that.creationTimes )
+                 && this.dataUsages.equals( that.dataUsages )
+                 && this.dataLimits.equals( that.dataLimits )
                  && this.permissions.equals( that.permissions )
                  && this.info.equals( that.info ) );
     }
@@ -294,6 +360,14 @@ public class ShowDirectoriesResponse implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.creationTimes ) );
         builder.append( ", " );
+        builder.append( gd.toString( "dataUsages" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.dataUsages ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "dataLimits" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.dataLimits ) );
+        builder.append( ", " );
         builder.append( gd.toString( "permissions" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.permissions ) );
@@ -312,6 +386,8 @@ public class ShowDirectoriesResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.directories.hashCode();
         hashCode = (31 * hashCode) + this.users.hashCode();
         hashCode = (31 * hashCode) + this.creationTimes.hashCode();
+        hashCode = (31 * hashCode) + this.dataUsages.hashCode();
+        hashCode = (31 * hashCode) + this.dataLimits.hashCode();
         hashCode = (31 * hashCode) + this.permissions.hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;

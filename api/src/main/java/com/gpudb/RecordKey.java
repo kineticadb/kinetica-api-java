@@ -465,6 +465,7 @@ final class RecordKey {
     }
 
     public int route(List<Integer> routingTable) {
-        return routingTable.get( Math.abs( (int) (routingHash % routingTable.size()) ) ) - 1;
+        int index = Math.abs( (int) (routingHash % routingTable.size()) );
+        return routingTable.get( index ) - 1;
     }
 }

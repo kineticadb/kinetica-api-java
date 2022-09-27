@@ -120,13 +120,13 @@ public final class Avro {
      * Default thread pool for multi-threaded operations.
      */
     private static final ExecutorService defaultThreadPool =
-        new ThreadPoolExecutor(0, Integer.MAX_VALUE, 100L, TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>());
+            new ThreadPoolExecutor(0, Integer.MAX_VALUE, 100L, TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>());
 
     /**
      * Pattern for parsing Avro NullPointerException messages.
      */
     private static final Pattern nullPointerExceptionPattern =
-        Pattern.compile("null of .+ in field (.+) of .+");
+            Pattern.compile("null of .+ in field (.+) of .+");
 
     /**
      * Decodes an Avro binary object into a pre-created destination object.
@@ -529,9 +529,9 @@ public final class Avro {
      *         - the actual record object.
      */
     private static <T> Pair<ArrayList<ByteBuffer>, Map<String, T>> encodeInternal(TypeObjectMap<T> typeObjectMap,
-                                                                                  List<T> objects,
-                                                                                  int start,
-                                                                                  int count) {
+                                                                                        List<T> objects,
+                                                                                        int start,
+                                                                                        int count) {
         if (start < 0) {
             throw new IndexOutOfBoundsException("Invalid start index specified.");
         }
@@ -666,8 +666,8 @@ public final class Avro {
      * @throws GPUdbException if an encoding error occurs
      */
     static <T extends IndexedRecord> Pair<ArrayList<ByteBuffer>, Map<String, T>> encode(List<T> objects,
-                                                                                        int start,
-                                                                                        int count) throws GPUdbException {
+                                                                                               int start,
+                                                                                               int count) throws GPUdbException {
         return encodeInternal(null, objects, start, count);
     }
 
@@ -693,9 +693,9 @@ public final class Avro {
      * @throws GPUdbException if an encoding error occurs
      */
     static <T> Pair<ArrayList<ByteBuffer>, Map<String, T>> encode(TypeObjectMap<T> typeObjectMap,
-                                                                  List<T> objects,
-                                                                  int start,
-                                                                  int count) throws GPUdbException {
+                                                                         List<T> objects,
+                                                                         int start,
+                                                                         int count) throws GPUdbException {
         return encodeInternal(typeObjectMap, objects, start, count);
     }
 
@@ -797,10 +797,10 @@ public final class Avro {
      * @throws GPUdbException if an encoding error occurs
      */
     static <T extends IndexedRecord> Pair<ArrayList<ByteBuffer>, Map<String, T>> encode(List<T> objects,
-                                                                                        int start,
-                                                                                        int count,
-                                                                                        int threadCount,
-                                                                                        ExecutorService executor) throws GPUdbException {
+                                                                                               int start,
+                                                                                               int count,
+                                                                                               int threadCount,
+                                                                                               ExecutorService executor) throws GPUdbException {
         return encodeInternal(null, objects, start, count, threadCount, executor);
     }
 
@@ -830,11 +830,11 @@ public final class Avro {
      * @throws GPUdbException if an encoding error occurs
      */
     static <T> Pair<ArrayList<ByteBuffer>, Map<String, T>> encode(TypeObjectMap<T> typeObjectMap,
-                                                                  List<T> objects,
-                                                                  int start,
-                                                                  int count,
-                                                                  int threadCount,
-                                                                  ExecutorService executor) throws GPUdbException {
+                                                                         List<T> objects,
+                                                                         int start,
+                                                                         int count,
+                                                                         int threadCount,
+                                                                         ExecutorService executor) throws GPUdbException {
         return encodeInternal(typeObjectMap, objects, start, count, threadCount, executor);
     }
 
@@ -863,7 +863,7 @@ public final class Avro {
      * @throws GPUdbException if an encoding error occurs
      */
     static <T> Pair<ArrayList<ByteBuffer>, Map<String, T>> encode(TypeObjectMap<T> typeObjectMap,
-                                                                  List<T> objects) throws GPUdbException {
+                                                                         List<T> objects) throws GPUdbException {
         return encodeInternal(typeObjectMap, objects, 0, objects.size());
     }
 
@@ -884,8 +884,8 @@ public final class Avro {
      * @throws GPUdbException if an encoding error occurs
      */
     static <T> Pair<ArrayList<ByteBuffer>, Map<String, T>> encode(List<T> objects,
-                                                                  int threadCount,
-                                                                  ExecutorService executor) throws GPUdbException {
+                                                                                               int threadCount,
+                                                                                               ExecutorService executor) throws GPUdbException {
         return encodeInternal(null, objects, 0, objects.size(), threadCount, executor);
     }
 
@@ -908,9 +908,9 @@ public final class Avro {
      * @throws GPUdbException if an encoding error occurs
      */
     static <T> Pair<ArrayList<ByteBuffer>, Map<String, T>> encode(TypeObjectMap<T> typeObjectMap,
-                                                                  List<T> objects,
-                                                                  int threadCount,
-                                                                  ExecutorService executor) throws GPUdbException {
+                                                                         List<T> objects,
+                                                                         int threadCount,
+                                                                         ExecutorService executor) throws GPUdbException {
         return encodeInternal(typeObjectMap, objects, 0, objects.size(), threadCount, executor);
     }
 

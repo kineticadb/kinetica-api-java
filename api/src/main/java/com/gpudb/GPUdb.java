@@ -3683,17 +3683,17 @@ public class GPUdb extends GPUdbBase {
      *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#DOCKER
      *                              DOCKER}
      *                                      <li> {@link
-     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#HDFS
-     *                              HDFS}
-     *                                      <li> {@link
-     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#KAFKA
-     *                              KAFKA}
-     *                                      <li> {@link
      *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#GCS_SERVICE_ACCOUNT_ID
      *                              GCS_SERVICE_ACCOUNT_ID}
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
      *                              GCS_SERVICE_ACCOUNT_KEYS}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#HDFS
+     *                              HDFS}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#KAFKA
+     *                              KAFKA}
      *                              </ul>
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#IDENTITY
@@ -3780,10 +3780,141 @@ public class GPUdb extends GPUdbBase {
      *                            target="_top">credential</a> object to be
      *                            used in this data sink
      *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#S3_BUCKET_NAME
+     *                            S3_BUCKET_NAME}: Name of the Amazon S3 bucket
+     *                            to use as the data sink
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#S3_REGION
+     *                            S3_REGION}: Name of the Amazon S3 region
+     *                            where the given bucket is located
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#S3_AWS_ROLE_ARN
+     *                            S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which
+     *                            has required S3 permissions that can be
+     *                            assumed for the given S3 IAM user
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#HDFS_KERBEROS_KEYTAB
+     *                            HDFS_KERBEROS_KEYTAB}: Kerberos keytab file
+     *                            location for the given HDFS user.  This may
+     *                            be a KIFS file.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#HDFS_DELEGATION_TOKEN
+     *                            HDFS_DELEGATION_TOKEN}: Delegation token for
+     *                            the given HDFS user
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#HDFS_USE_KERBEROS
+     *                            HDFS_USE_KERBEROS}: Use kerberos
+     *                            authentication for the given HDFS cluster
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#TRUE
+     *                            TRUE}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FALSE
+     *                            FALSE}
+     *                            </ul>
+     *                            The default value is {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FALSE
+     *                            FALSE}.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#AZURE_STORAGE_ACCOUNT_NAME
+     *                            AZURE_STORAGE_ACCOUNT_NAME}: Name of the
+     *                            Azure storage account to use as the data
+     *                            sink, this is valid only if tenant_id is
+     *                            specified
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#AZURE_CONTAINER_NAME
+     *                            AZURE_CONTAINER_NAME}: Name of the Azure
+     *                            storage container to use as the data sink
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#AZURE_TENANT_ID
+     *                            AZURE_TENANT_ID}: Active Directory tenant ID
+     *                            (or directory ID)
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#AZURE_SAS_TOKEN
+     *                            AZURE_SAS_TOKEN}: Shared access signature
+     *                            token for Azure storage account to use as the
+     *                            data sink
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#AZURE_OAUTH_TOKEN
+     *                            AZURE_OAUTH_TOKEN}: Oauth token to access
+     *                            given storage container
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#GCS_BUCKET_NAME
+     *                            GCS_BUCKET_NAME}: Name of the Google Cloud
+     *                            Storage bucket to use as the data sink
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#GCS_PROJECT_ID
+     *                            GCS_PROJECT_ID}: Name of the Google Cloud
+     *                            project to use as the data sink
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
+     *                            GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud
+     *                            service account keys to use for
+     *                            authenticating the data sink
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#KAFKA_URL
+     *                            KAFKA_URL}: The publicly-accessible full path
+     *                            URL to the kafka broker, e.g.,
+     *                            'http://172.123.45.67:9300'.
+     *                                    <li> {@link
      *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#KAFKA_TOPIC_NAME
      *                            KAFKA_TOPIC_NAME}: Name of the Kafka topic to
      *                            use for this data sink, if it references a
      *                            Kafka broker
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#ANONYMOUS
+     *                            ANONYMOUS}: Create an anonymous connection to
+     *                            the storage provider--DEPRECATED: this is now
+     *                            the default.  Specify use_managed_credentials
+     *                            for non-anonymous connection
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#TRUE
+     *                            TRUE}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FALSE
+     *                            FALSE}
+     *                            </ul>
+     *                            The default value is {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#TRUE
+     *                            TRUE}.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#USE_MANAGED_CREDENTIALS
+     *                            USE_MANAGED_CREDENTIALS}: When no credentials
+     *                            are supplied, we use anonymous access by
+     *                            default.  If this is set, we will use cloud
+     *                            provider user settings.
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#TRUE
+     *                            TRUE}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FALSE
+     *                            FALSE}
+     *                            </ul>
+     *                            The default value is {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FALSE
+     *                            FALSE}.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#USE_HTTPS
+     *                            USE_HTTPS}: Use https to connect to datasink
+     *                            if true, otherwise use http
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#TRUE
+     *                            TRUE}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FALSE
+     *                            FALSE}
+     *                            </ul>
+     *                            The default value is {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#TRUE
+     *                            TRUE}.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#MAX_BATCH_SIZE
      *                            MAX_BATCH_SIZE}: Maximum number of records
@@ -3957,7 +4088,8 @@ public class GPUdb extends GPUdbBase {
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#HDFS_KERBEROS_KEYTAB
      *                              HDFS_KERBEROS_KEYTAB}: Kerberos keytab file
-     *                              location for the given HDFS user
+     *                              location for the given HDFS user.  This may
+     *                              be a KIFS file.
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#HDFS_DELEGATION_TOKEN
      *                              HDFS_DELEGATION_TOKEN}: Delegation token
@@ -4106,6 +4238,60 @@ public class GPUdb extends GPUdbBase {
         AlterDatasourceRequest actualRequest_ = new AlterDatasourceRequest(name, datasourceUpdatesMap, options);
         AlterDatasourceResponse actualResponse_ = new AlterDatasourceResponse();
         submitRequest("/alter/datasource", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Alters a directory in <a href="../../../../../tools/kifs/"
+     * target="_top">KiFS</a>.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AlterDirectoryResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AlterDirectoryResponse alterDirectory(AlterDirectoryRequest request) throws GPUdbException {
+        AlterDirectoryResponse actualResponse_ = new AlterDirectoryResponse();
+        submitRequest("/alter/directory", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Alters a directory in <a href="../../../../../tools/kifs/"
+     * target="_top">KiFS</a>.
+     * 
+     * @param directoryName  Name of the directory in KiFS to be created.
+     * @param directoryUpdatesMap  Map containing the properties of the
+     *                             directory to be updated. Error if empty.
+     *                             <ul>
+     *                                     <li> {@link
+     *                             com.gpudb.protocol.AlterDirectoryRequest.DirectoryUpdatesMap#DATA_LIMIT
+     *                             DATA_LIMIT}: The maximum capacity to apply
+     *                             to the created directory. Set to -1 to
+     *                             indicate no upper limit.
+     *                             </ul>
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AlterDirectoryResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AlterDirectoryResponse alterDirectory(String directoryName, Map<String, String> directoryUpdatesMap, Map<String, String> options) throws GPUdbException {
+        AlterDirectoryRequest actualRequest_ = new AlterDirectoryRequest(directoryName, directoryUpdatesMap, options);
+        AlterDirectoryResponse actualResponse_ = new AlterDirectoryResponse();
+        submitRequest("/alter/directory", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -4640,6 +4826,24 @@ public class GPUdb extends GPUdbBase {
      *                            KAFKA_TIMEOUT}: Number of seconds after which
      *                            kakfa poll will timeout if datasource has no
      *                            records.  The default value is '5'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EGRESS_SINGLE_FILE_MAX_SIZE
+     *                            EGRESS_SINGLE_FILE_MAX_SIZE}: Max file size
+     *                            (in MB) to allow saving to a single file. May
+     *                            be overridden by target limitations.  The
+     *                            default value is '100'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MAX_CONCURRENT_KERNELS
+     *                            MAX_CONCURRENT_KERNELS}: Sets the
+     *                            max_concurrent_kernels value of the conf.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TCS_PER_TOM
+     *                            TCS_PER_TOM}: Sets the tcs_per_tom value of
+     *                            the conf.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TPS_PER_TOM
+     *                            TPS_PER_TOM}: Sets the tps_per_tom value of
+     *                            the conf.
      *                            </ul>
      * @param options  Optional parameters.
      *                 <ul>
@@ -6228,6 +6432,90 @@ public class GPUdb extends GPUdbBase {
      *                 target="_top">credential</a> object to be used in this
      *                 data sink
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#S3_BUCKET_NAME
+     *                 S3_BUCKET_NAME}: Name of the Amazon S3 bucket to use as
+     *                 the data sink
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#S3_REGION
+     *                 S3_REGION}: Name of the Amazon S3 region where the given
+     *                 bucket is located
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#S3_AWS_ROLE_ARN
+     *                 S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which has required
+     *                 S3 permissions that can be assumed for the given S3 IAM
+     *                 user
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#S3_ENCRYPTION_CUSTOMER_ALGORITHM
+     *                 S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer encryption
+     *                 algorithm used encrypting data
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#S3_ENCRYPTION_CUSTOMER_KEY
+     *                 S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption key to
+     *                 encrypt or decrypt data
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#HDFS_KERBEROS_KEYTAB
+     *                 HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for
+     *                 the given HDFS user.  This may be a KIFS file.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#HDFS_DELEGATION_TOKEN
+     *                 HDFS_DELEGATION_TOKEN}: Delegation token for the given
+     *                 HDFS user
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#HDFS_USE_KERBEROS
+     *                 HDFS_USE_KERBEROS}: Use kerberos authentication for the
+     *                 given HDFS cluster
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#AZURE_STORAGE_ACCOUNT_NAME
+     *                 AZURE_STORAGE_ACCOUNT_NAME}: Name of the Azure storage
+     *                 account to use as the data sink, this is valid only if
+     *                 tenant_id is specified
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#AZURE_CONTAINER_NAME
+     *                 AZURE_CONTAINER_NAME}: Name of the Azure storage
+     *                 container to use as the data sink
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#AZURE_TENANT_ID
+     *                 AZURE_TENANT_ID}: Active Directory tenant ID (or
+     *                 directory ID)
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#AZURE_SAS_TOKEN
+     *                 AZURE_SAS_TOKEN}: Shared access signature token for
+     *                 Azure storage account to use as the data sink
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#AZURE_OAUTH_TOKEN
+     *                 AZURE_OAUTH_TOKEN}: Oauth token to access given storage
+     *                 container
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#GCS_BUCKET_NAME
+     *                 GCS_BUCKET_NAME}: Name of the Google Cloud Storage
+     *                 bucket to use as the data sink
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#GCS_PROJECT_ID
+     *                 GCS_PROJECT_ID}: Name of the Google Cloud project to use
+     *                 as the data sink
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#GCS_SERVICE_ACCOUNT_KEYS
+     *                 GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud service account
+     *                 keys to use for authenticating the data sink
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#JDBC_DRIVER_JAR_PATH
+     *                 JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#JDBC_DRIVER_CLASS_NAME
+     *                 JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasinkRequest.Options#KAFKA_TOPIC_NAME
      *                 KAFKA_TOPIC_NAME}: Name of the Kafka topic to publish to
      *                 if {@code destination} is a Kafka broker
@@ -6259,11 +6547,38 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.CreateDatasinkRequest.Options#FLAT
      *                 FLAT}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#JDBC_DRIVER_JAR_PATH
-     *                 JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#USE_MANAGED_CREDENTIALS
+     *                 USE_MANAGED_CREDENTIALS}: When no credentials are
+     *                 supplied, we use anonymous access by default.  If this
+     *                 is set, we will use cloud provider user settings.
+     *                 Supported values:
+     *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#JDBC_DRIVER_CLASS_NAME
-     *                 JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#USE_HTTPS
+     *                 USE_HTTPS}: Use https to connect to datasink if true,
+     *                 otherwise use http
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#TRUE
+     *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasinkRequest.Options#SKIP_VALIDATION
      *                 SKIP_VALIDATION}: Bypass validation of connection to
@@ -6392,7 +6707,7 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#HDFS_KERBEROS_KEYTAB
      *                 HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for
-     *                 the given HDFS user
+     *                 the given HDFS user.  This may be a KIFS file.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#HDFS_DELEGATION_TOKEN
      *                 HDFS_DELEGATION_TOKEN}: Delegation token for the given
@@ -6468,7 +6783,8 @@ public class GPUdb extends GPUdbBase {
      *                 data source
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#JDBC_DRIVER_JAR_PATH
-     *                 JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location
+     *                 JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location.
+     *                 This may be a KIFS file.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#JDBC_DRIVER_CLASS_NAME
      *                 JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
@@ -6597,6 +6913,11 @@ public class GPUdb extends GPUdbBase {
      *                 created for the user name provided in the value. The
      *                 {@code directoryName} must be an empty string in this
      *                 case. The user must exist.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDirectoryRequest.Options#DATA_LIMIT
+     *                 DATA_LIMIT}: The maximum capacity to apply to the
+     *                 created directory. Set to -1 to indicate no upper limit.
+     *                 If empty, the system default limit is applied.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDirectoryRequest.Options#NO_ERROR_IF_EXISTS
      *                 NO_ERROR_IF_EXISTS}: If {@code true}, does not return an
@@ -7715,6 +8036,81 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#PARTITION_TYPE
+     *                 PARTITION_TYPE}: <a
+     *                 href="../../../../../concepts/tables/#partitioning"
+     *                 target="_top">Partitioning</a> scheme to use.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#RANGE
+     *                 RANGE}: Use <a
+     *                 href="../../../../../concepts/tables/#partitioning-by-range"
+     *                 target="_top">range partitioning</a>.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#INTERVAL
+     *                 INTERVAL}: Use <a
+     *                 href="../../../../../concepts/tables/#partitioning-by-interval"
+     *                 target="_top">interval partitioning</a>.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#LIST
+     *                 LIST}: Use <a
+     *                 href="../../../../../concepts/tables/#partitioning-by-list"
+     *                 target="_top">list partitioning</a>.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#HASH
+     *                 HASH}: Use <a
+     *                 href="../../../../../concepts/tables/#partitioning-by-hash"
+     *                 target="_top">hash partitioning</a>.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#SERIES
+     *                 SERIES}: Use <a
+     *                 href="../../../../../concepts/tables/#partitioning-by-series"
+     *                 target="_top">series partitioning</a>.
+     *                 </ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#PARTITION_KEYS
+     *                 PARTITION_KEYS}: Comma-separated list of partition keys,
+     *                 which are the columns or column expressions by which
+     *                 records will be assigned to partitions defined by {@code
+     *                 partition_definitions}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#PARTITION_DEFINITIONS
+     *                 PARTITION_DEFINITIONS}: Comma-separated list of
+     *                 partition definitions, whose format depends on the
+     *                 choice of {@code partition_type}.  See <a
+     *                 href="../../../../../concepts/tables/#partitioning-by-range"
+     *                 target="_top">range partitioning</a>, <a
+     *                 href="../../../../../concepts/tables/#partitioning-by-interval"
+     *                 target="_top">interval partitioning</a>, <a
+     *                 href="../../../../../concepts/tables/#partitioning-by-list"
+     *                 target="_top">list partitioning</a>, <a
+     *                 href="../../../../../concepts/tables/#partitioning-by-hash"
+     *                 target="_top">hash partitioning</a>, or <a
+     *                 href="../../../../../concepts/tables/#partitioning-by-series"
+     *                 target="_top">series partitioning</a> for example
+     *                 formats.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#IS_AUTOMATIC_PARTITION
+     *                 IS_AUTOMATIC_PARTITION}: If {@code true}, a new
+     *                 partition will be created for values which don't fall
+     *                 into an existing partition.  Currently only supported
+     *                 for <a
+     *                 href="../../../../../concepts/tables/#partitioning-by-list"
+     *                 target="_top">list partitions</a>.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID
      *                 VIEW_ID}: ID of view of which this projection is a
      *                 member.  The default value is ''.
@@ -8815,6 +9211,10 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FULL
      *                 FULL}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#JDBC_FETCH_SIZE
+     *                 JDBC_FETCH_SIZE}: The JDBC fetch size, which determines
+     *                 how many rows to fetch per round trip.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_GROUP_ID
      *                 KAFKA_GROUP_ID}: The group id to be used consuming data
      *                 from a kakfa topic (valid only for kafka datasource
@@ -9088,8 +9488,13 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_FILTER_COLUMN
      *                 REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used
-     *                 for splitting the query into multiple sub-queries.  The
-     *                 default value is ''.
+     *                 for splitting the query into multiple sub-queries using
+     *                 the data distribution of given column.  The default
+     *                 value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
+     *                 REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
+     *                 remote_query_filter_column.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}:
@@ -9747,6 +10152,11 @@ public class GPUdb extends GPUdbBase {
      *                    Strings with this property must be no longer than 256
      *                    characters.
      *                            <li> {@link
+     *                    com.gpudb.protocol.CreateTypeRequest.Properties#BOOLEAN
+     *                    BOOLEAN}: This property provides optimized memory and
+     *                    query performance for int columns. Ints with this
+     *                    property must be between 0 and 1(inclusive)
+     *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#INT8
      *                    INT8}: This property provides optimized memory and
      *                    query performance for int columns. Ints with this
@@ -10136,10 +10546,11 @@ public class GPUdb extends GPUdbBase {
      *                 associate with this user
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUserExternalRequest.Options#DEFAULT_SCHEMA
-     *                 DEFAULT_SCHEMA}: default schema associate with this user
+     *                 DEFAULT_SCHEMA}: Default schema to associate with this
+     *                 user
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUserExternalRequest.Options#CREATE_HOME_DIRECTORY
-     *                 CREATE_HOME_DIRECTORY}: when true, a home directory in
+     *                 CREATE_HOME_DIRECTORY}: When true, a home directory in
      *                 KiFS is created for this user
      *                 Supported values:
      *                 <ul>
@@ -10153,6 +10564,13 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateUserExternalRequest.Options#TRUE
      *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserExternalRequest.Options#DIRECTORY_DATA_LIMIT
+     *                 DIRECTORY_DATA_LIMIT}: The maximum capacity to apply to
+     *                 the created directory if @{input.key
+     *                 options.create_home_directory} is {@code true}. Set to
+     *                 -1 to indicate no upper limit. If empty, the system
+     *                 default limit is applied.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -10212,10 +10630,11 @@ public class GPUdb extends GPUdbBase {
      *                 associate with this user
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUserInternalRequest.Options#DEFAULT_SCHEMA
-     *                 DEFAULT_SCHEMA}: default schema associate with this user
+     *                 DEFAULT_SCHEMA}: Default schema to associate with this
+     *                 user
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUserInternalRequest.Options#CREATE_HOME_DIRECTORY
-     *                 CREATE_HOME_DIRECTORY}: when true, a home directory in
+     *                 CREATE_HOME_DIRECTORY}: When true, a home directory in
      *                 KiFS is created for this user
      *                 Supported values:
      *                 <ul>
@@ -10229,6 +10648,13 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateUserInternalRequest.Options#TRUE
      *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserInternalRequest.Options#DIRECTORY_DATA_LIMIT
+     *                 DIRECTORY_DATA_LIMIT}: The maximum capacity to apply to
+     *                 the created directory if @{input.key
+     *                 options.create_home_directory} is {@code true}. Set to
+     *                 -1 to indicate no upper limit. If empty, the system
+     *                 default limit is applied.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -11804,6 +12230,52 @@ public class GPUdb extends GPUdbBase {
         response_.setPagingTable(actualResponse_.getPagingTable());
         response_.setInfo(actualResponse_.getInfo());
         return response_;
+    }
+
+
+
+    /**
+     * Export records from table
+     * export_records_to_files_response
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ExportRecordsToFilesResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ExportRecordsToFilesResponse exportRecordsToFiles(ExportRecordsToFilesRequest request) throws GPUdbException {
+        ExportRecordsToFilesResponse actualResponse_ = new ExportRecordsToFilesResponse();
+        submitRequest("/export/records/tofiles", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Export records from table
+     * export_records_to_files_response
+     * 
+     * @param tableName
+     * @param filepath  Directory or File name (if file name, include ext)
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ExportRecordsToFilesResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ExportRecordsToFilesResponse exportRecordsToFiles(String tableName, String filepath, Map<String, String> options) throws GPUdbException {
+        ExportRecordsToFilesRequest actualRequest_ = new ExportRecordsToFilesRequest(tableName, filepath, options);
+        ExportRecordsToFilesResponse actualResponse_ = new ExportRecordsToFilesResponse();
+        submitRequest("/export/records/tofiles", actualRequest_, actualResponse_, false);
+        return actualResponse_;
     }
 
 
@@ -18023,7 +18495,7 @@ public class GPUdb extends GPUdbBase {
      *                   If the table does not exist, the table will be created
      *                   using either an existing
      *                   {@code type_id} or the type inferred from the
-     *                   file, and the new table name will have to meet
+     *                   remote query, and the new table name will have to meet
      *                   standard
      *                   <a
      *                   href="../../../../../concepts/tables/#table-naming-criteria"
@@ -18236,23 +18708,17 @@ public class GPUdb extends GPUdbBase {
      *                 which records that were rejected are written.  The
      *                 bad-record-table has the following columns: line_number
      *                 (long), line_rejected (string), error_message (string).
+     *                 When error handling is Abort, bad records table is not
+     *                 populated.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#BAD_RECORD_TABLE_LIMIT
      *                 BAD_RECORD_TABLE_LIMIT}: A positive integer indicating
      *                 the maximum number of records that can be  written to
      *                 the bad-record-table.   Default value is 10000
      *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
-     *                 BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions: A
-     *                 positive integer indicating the maximum number of
-     *                 records that can be written to the bad-record-table per
-     *                 file/payload. Default value will be
-     *                 'bad_record_table_limit' and total size of the table per
-     *                 rank is limited to 'bad_record_table_limit'
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#JDBC_FETCH_SIZE
-     *                 JDBC_FETCH_SIZE}: The JDBC fetch size, which determines
-     *                 how many rows to fetch per round trip.
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#BATCH_SIZE
+     *                 BATCH_SIZE}: Number of records per batch when inserting
+     *                 data.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#DATASOURCE_NAME
      *                 DATASOURCE_NAME}: Name of an existing external data
@@ -18278,8 +18744,8 @@ public class GPUdb extends GPUdbBase {
      *                 collisions are considered abortable errors in this mode.
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#PERMISSIVE
-     *                 PERMISSIVE}.
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#ABORT
+     *                 ABORT}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#INGESTION_MODE
      *                 INGESTION_MODE}: Whether to do a full load, dry run, or
@@ -18306,55 +18772,14 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FULL
      *                 FULL}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#LOADING_MODE
-     *                 LOADING_MODE}: Scheme for distributing the extraction
-     *                 and loading of data from the source data file(s). This
-     *                 option applies only when loading files that are local to
-     *                 the database
-     *                 Supported values:
-     *                 <ul>
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#JDBC_FETCH_SIZE
+     *                 JDBC_FETCH_SIZE}: The JDBC fetch size, which determines
+     *                 how many rows to fetch per round trip.
      *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#HEAD
-     *                 HEAD}: The head node loads all data. All files must be
-     *                 available to the head node.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#DISTRIBUTED_SHARED
-     *                 DISTRIBUTED_SHARED}: The head node coordinates loading
-     *                 data by worker
-     *                 processes across all nodes from shared files available
-     *                 to all workers.
-     *                 NOTE:
-     *                 Instead of existing on a shared source, the files can be
-     *                 duplicated on a source local to each host
-     *                 to improve performance, though the files must appear as
-     *                 the same data set from the perspective of
-     *                 all hosts performing the load.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#DISTRIBUTED_LOCAL
-     *                 DISTRIBUTED_LOCAL}: A single worker process on each node
-     *                 loads all files
-     *                 that are available to it. This option works best when
-     *                 each worker loads files from its own file
-     *                 system, to maximize performance. In order to avoid data
-     *                 duplication, either each worker performing
-     *                 the load needs to have visibility to a set of files
-     *                 unique to it (no file is visible to more than
-     *                 one node) or the target table needs to have a primary
-     *                 key (which will allow the worker to
-     *                 automatically deduplicate data).
-     *                 NOTE:
-     *                 If the target table doesn't exist, the table structure
-     *                 will be determined by the head node. If the
-     *                 head node has no files local to it, it will be unable to
-     *                 determine the structure and the request
-     *                 will fail.
-     *                 If the head node is configured to have no worker
-     *                 processes, no data strictly accessible to the head
-     *                 node will be loaded.
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#HEAD
-     *                 HEAD}.
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#NUM_TASKS_PER_RANK
+     *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
+     *                 reading data per rank. Default will be
+     *                 external_file_reader_num_tasks
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#PRIMARY_KEYS
      *                 PRIMARY_KEYS}: Optional: comma separated list of column
@@ -18369,7 +18794,7 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUNCATE_TABLE
      *                 TRUNCATE_TABLE}: If set to {@code true}, truncates the
      *                 table specified by {@code tableName} prior to loading
-     *                 the file(s).
+     *                 the data.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -18383,19 +18808,19 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#NUM_TASKS_PER_RANK
-     *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
-     *                 reading file per rank. Default will be
-     *                 external_file_reader_num_tasks
-     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY
      *                 REMOTE_QUERY}: Remote SQL query from which data will be
      *                 sourced
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_FILTER_COLUMN
      *                 REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used
-     *                 for splitting the query into multiple sub-queries.  The
-     *                 default value is ''.
+     *                 for splitting the query into multiple sub-queries using
+     *                 the data distribution of given column.  The default
+     *                 value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
+     *                 REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
+     *                 remote_query_filter_column.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}:
@@ -19160,6 +19585,13 @@ public class GPUdb extends GPUdbBase {
      *                 locations - can increase this up to 2M.  The default
      *                 value is '10000'.
      *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_SUPPLY_COMBINATIONS
+     *                 MAX_SUPPLY_COMBINATIONS}: For the {@code
+     *                 match_supply_demand} solver only. This is the cutoff for
+     *                 the number of generated combinations for sequencing the
+     *                 supply locations if/when 'permute_supplies' is true.
+     *                 The default value is '10000'.
+     *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#LEFT_TURN_PENALTY
      *                 LEFT_TURN_PENALTY}: This will add an additonal weight
      *                 over the edges labelled as 'left turn' if the 'add_turn'
@@ -19290,6 +19722,36 @@ public class GPUdb extends GPUdbBase {
      *                 'enable_truck_reuse' is on, this condition will be
      *                 applied separately at each round trip use of the same
      *                 truck.  The default value is '0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUCK_SERVICE_RADIUS
+     *                 TRUCK_SERVICE_RADIUS}: For the {@code
+     *                 match_supply_demand} solver only. If specified (greater
+     *                 than zero), it filters the demands outside this radius
+     *                 centered around the truck's originating location
+     *                 (distance or time).  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#RESTRICTED_TRUCK_TYPE
+     *                 RESTRICTED_TRUCK_TYPE}: For the {@code
+     *                 match_supply_demand} solver only. Optimization is
+     *                 performed by restricting routes labeled by
+     *                 'MSDO_ODDEVEN_RESTRICTED' only for this truck type
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#ODD ODD}:
+     *                 Applies odd/even rule restrictions to odd tagged
+     *                 vehicles.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#EVEN EVEN}:
+     *                 Applies odd/even rule restrictions to even tagged
+     *                 vehicles.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#NONE NONE}:
+     *                 Does not apply odd/even rule restrictions to any
+     *                 vehicles.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#NONE NONE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#SERVER_ID
      *                 SERVER_ID}: Indicates which graph server(s) to send the
@@ -23860,6 +24322,23 @@ public class GPUdb extends GPUdbBase {
         UploadFilesFromurlRequest actualRequest_ = new UploadFilesFromurlRequest(fileNames, urls, options);
         UploadFilesFromurlResponse actualResponse_ = new UploadFilesFromurlResponse();
         submitRequest("/upload/files/fromurl", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public VisualizeGetFeatureInfoResponse visualizeGetFeatureInfo(VisualizeGetFeatureInfoRequest request) throws GPUdbException {
+        VisualizeGetFeatureInfoResponse actualResponse_ = new VisualizeGetFeatureInfoResponse();
+        submitRequest("/visualize/getfeatureinfo", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public VisualizeGetFeatureInfoResponse visualizeGetFeatureInfo(List<String> tableNames, List<String> xColumnNames, List<String> yColumnNames, List<String> geometryColumnNames, List<List<String>> queryColumnNames, String projection, double minX, double maxX, double minY, double maxY, int width, int height, int x, int y, int radius, long limit, String encoding, Map<String, String> options) throws GPUdbException {
+        VisualizeGetFeatureInfoRequest actualRequest_ = new VisualizeGetFeatureInfoRequest(tableNames, xColumnNames, yColumnNames, geometryColumnNames, queryColumnNames, projection, minX, maxX, minY, maxY, width, height, x, y, radius, limit, encoding, options);
+        VisualizeGetFeatureInfoResponse actualResponse_ = new VisualizeGetFeatureInfoResponse();
+        submitRequest("/visualize/getfeatureinfo", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 

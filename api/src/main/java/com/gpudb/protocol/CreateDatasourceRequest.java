@@ -93,7 +93,7 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateDatasourceRequest.Options#HDFS_KERBEROS_KEYTAB
      * HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for the given HDFS
-     * user
+     * user.  This may be a KIFS file.
      *         <li> {@link
      * com.gpudb.protocol.CreateDatasourceRequest.Options#HDFS_DELEGATION_TOKEN
      * HDFS_DELEGATION_TOKEN}: Delegation token for the given HDFS user
@@ -157,7 +157,8 @@ public class CreateDatasourceRequest implements IndexedRecord {
      * KAFKA_TOPIC_NAME}: Name of the Kafka topic to use as the data source
      *         <li> {@link
      * com.gpudb.protocol.CreateDatasourceRequest.Options#JDBC_DRIVER_JAR_PATH
-     * JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location
+     * JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location.  This may be a
+     * KIFS file.
      *         <li> {@link
      * com.gpudb.protocol.CreateDatasourceRequest.Options#JDBC_DRIVER_CLASS_NAME
      * JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
@@ -265,7 +266,8 @@ public class CreateDatasourceRequest implements IndexedRecord {
         public static final String S3_ENCRYPTION_CUSTOMER_KEY = "s3_encryption_customer_key";
 
         /**
-         * Kerberos keytab file location for the given HDFS user
+         * Kerberos keytab file location for the given HDFS user.  This may be
+         * a KIFS file.
          */
         public static final String HDFS_KERBEROS_KEYTAB = "hdfs_kerberos_keytab";
 
@@ -351,7 +353,7 @@ public class CreateDatasourceRequest implements IndexedRecord {
         public static final String KAFKA_TOPIC_NAME = "kafka_topic_name";
 
         /**
-         * JDBC driver jar file location
+         * JDBC driver jar file location.  This may be a KIFS file.
          */
         public static final String JDBC_DRIVER_JAR_PATH = "jdbc_driver_jar_path";
 
@@ -493,7 +495,7 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#HDFS_KERBEROS_KEYTAB
      *                 HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for
-     *                 the given HDFS user
+     *                 the given HDFS user.  This may be a KIFS file.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#HDFS_DELEGATION_TOKEN
      *                 HDFS_DELEGATION_TOKEN}: Delegation token for the given
@@ -569,7 +571,8 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 data source
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#JDBC_DRIVER_JAR_PATH
-     *                 JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location
+     *                 JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location.
+     *                 This may be a KIFS file.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#JDBC_DRIVER_CLASS_NAME
      *                 JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
@@ -779,7 +782,7 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateDatasourceRequest.Options#HDFS_KERBEROS_KEYTAB
      *         HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for the
-     *         given HDFS user
+     *         given HDFS user.  This may be a KIFS file.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateDatasourceRequest.Options#HDFS_DELEGATION_TOKEN
      *         HDFS_DELEGATION_TOKEN}: Delegation token for the given HDFS user
@@ -846,7 +849,8 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         source
      *                 <li> {@link
      *         com.gpudb.protocol.CreateDatasourceRequest.Options#JDBC_DRIVER_JAR_PATH
-     *         JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location
+     *         JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location.  This may
+     *         be a KIFS file.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateDatasourceRequest.Options#JDBC_DRIVER_CLASS_NAME
      *         JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
@@ -955,7 +959,7 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#HDFS_KERBEROS_KEYTAB
      *                 HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for
-     *                 the given HDFS user
+     *                 the given HDFS user.  This may be a KIFS file.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#HDFS_DELEGATION_TOKEN
      *                 HDFS_DELEGATION_TOKEN}: Delegation token for the given
@@ -1031,7 +1035,8 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 data source
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#JDBC_DRIVER_JAR_PATH
-     *                 JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location
+     *                 JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location.
+     *                 This may be a KIFS file.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#JDBC_DRIVER_CLASS_NAME
      *                 JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class

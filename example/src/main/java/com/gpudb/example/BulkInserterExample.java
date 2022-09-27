@@ -22,11 +22,13 @@ public class BulkInserterExample {
      */
     public static void main( String ...args ) throws Exception {
 
-//        String url = System.getProperty("url", "http://127.0.0.1:9191");
-        String url = System.getProperty("url", "http://172.17.0.2:9191");
+        String url = System.getProperty("url", "http://127.0.0.1:9191");
 
         // Get the log level from the command line, if any
         GPUdb.Options options = new GPUdb.Options();
+        options.setUsername("admin");
+        options.setPassword("abcd12!");
+
         String logLevel = System.getProperty("logLevel", "DEBUG");
         if ( !logLevel.isEmpty() ) {
             System.out.println( "Log level given by the user: " + logLevel );
@@ -40,21 +42,21 @@ public class BulkInserterExample {
 
         bulkInserterWithTryWithResources( gpudb );
 
-//        bulkInserterWithExplicitCloseCall( gpudb );
+        bulkInserterWithExplicitCloseCall( gpudb );
 
     }
 
     public static void bulkInserterWithTryWithResources(GPUdb gpudb ) throws Exception {
 
-        Pair<String, Type> tableNameTypePair = setUp(gpudb, true);
+        Pair<String, Type> tableNameTypePair = setUp(gpudb, false);
 
         String tableName = tableNameTypePair.getLeft();
         Type type_ = tableNameTypePair.getRight();
 
-        int numRecords = 10000;
+        int numRecords = 1000000;
 
         try( BulkInserter<GenericRecord> bi = new BulkInserter<>( gpudb, tableName, type_,
-                100, null,
+                25000, null,
                 new WorkerList(gpudb) ); ) {
 
             // Try to insert enough records such that at least one batch
@@ -96,7 +98,7 @@ public class BulkInserterExample {
         int numRecords = 10000;
 
         BulkInserter<GenericRecord> bi = new BulkInserter<>( gpudb, tableName, type_,
-                100, null,
+                500, null,
                 new WorkerList(gpudb) );
 
         // Try to insert enough records such that at least one batch
@@ -131,7 +133,7 @@ public class BulkInserterExample {
 
     public static Pair<String, Type> setUp(GPUdb gpudb, boolean useReplicatedTable) throws GPUdbException
     {
-        String tableName = "Bi_example_" + UUID.randomUUID();
+        String tableName = "Bi_example_" + (useReplicatedTable ? "1" : "2");
 
         Type type_;
         // Create a table with two simple int columns

@@ -74,17 +74,17 @@ public class AlterCredentialRequest implements IndexedRecord {
      * com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#DOCKER
      * DOCKER}
      *         <li> {@link
-     * com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#HDFS
-     * HDFS}
-     *         <li> {@link
-     * com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#KAFKA
-     * KAFKA}
-     *         <li> {@link
      * com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#GCS_SERVICE_ACCOUNT_ID
      * GCS_SERVICE_ACCOUNT_ID}
      *         <li> {@link
      * com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
      * GCS_SERVICE_ACCOUNT_KEYS}
+     *         <li> {@link
+     * com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#HDFS
+     * HDFS}
+     *         <li> {@link
+     * com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#KAFKA
+     * KAFKA}
      * </ul>
      *         <li> {@link
      * com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#IDENTITY
@@ -130,17 +130,17 @@ public class AlterCredentialRequest implements IndexedRecord {
          * com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#DOCKER
          * DOCKER}
          *         <li> {@link
-         * com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#HDFS
-         * HDFS}
-         *         <li> {@link
-         * com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#KAFKA
-         * KAFKA}
-         *         <li> {@link
          * com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#GCS_SERVICE_ACCOUNT_ID
          * GCS_SERVICE_ACCOUNT_ID}
          *         <li> {@link
          * com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
          * GCS_SERVICE_ACCOUNT_KEYS}
+         *         <li> {@link
+         * com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#HDFS
+         * HDFS}
+         *         <li> {@link
+         * com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#KAFKA
+         * KAFKA}
          * </ul>
          */
         public static final String TYPE = "type";
@@ -151,10 +151,10 @@ public class AlterCredentialRequest implements IndexedRecord {
         public static final String AZURE_SAS = "azure_sas";
         public static final String AZURE_STORAGE_KEY = "azure_storage_key";
         public static final String DOCKER = "docker";
-        public static final String HDFS = "hdfs";
-        public static final String KAFKA = "kafka";
         public static final String GCS_SERVICE_ACCOUNT_ID = "gcs_service_account_id";
         public static final String GCS_SERVICE_ACCOUNT_KEYS = "gcs_service_account_keys";
+        public static final String HDFS = "hdfs";
+        public static final String KAFKA = "kafka";
 
         /**
          * New user for the credential
@@ -227,17 +227,17 @@ public class AlterCredentialRequest implements IndexedRecord {
      *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#DOCKER
      *                              DOCKER}
      *                                      <li> {@link
-     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#HDFS
-     *                              HDFS}
-     *                                      <li> {@link
-     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#KAFKA
-     *                              KAFKA}
-     *                                      <li> {@link
      *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#GCS_SERVICE_ACCOUNT_ID
      *                              GCS_SERVICE_ACCOUNT_ID}
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
      *                              GCS_SERVICE_ACCOUNT_KEYS}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#HDFS
+     *                              HDFS}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#KAFKA
+     *                              KAFKA}
      *                              </ul>
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#IDENTITY
@@ -318,17 +318,17 @@ public class AlterCredentialRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#DOCKER
      *         DOCKER}
      *                 <li> {@link
-     *         com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#HDFS
-     *         HDFS}
-     *                 <li> {@link
-     *         com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#KAFKA
-     *         KAFKA}
-     *                 <li> {@link
      *         com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#GCS_SERVICE_ACCOUNT_ID
      *         GCS_SERVICE_ACCOUNT_ID}
      *                 <li> {@link
      *         com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
      *         GCS_SERVICE_ACCOUNT_KEYS}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#HDFS
+     *         HDFS}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#KAFKA
+     *         KAFKA}
      *         </ul>
      *                 <li> {@link
      *         com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#IDENTITY
@@ -381,17 +381,17 @@ public class AlterCredentialRequest implements IndexedRecord {
      *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#DOCKER
      *                              DOCKER}
      *                                      <li> {@link
-     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#HDFS
-     *                              HDFS}
-     *                                      <li> {@link
-     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#KAFKA
-     *                              KAFKA}
-     *                                      <li> {@link
      *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#GCS_SERVICE_ACCOUNT_ID
      *                              GCS_SERVICE_ACCOUNT_ID}
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
      *                              GCS_SERVICE_ACCOUNT_KEYS}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#HDFS
+     *                              HDFS}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#KAFKA
+     *                              KAFKA}
      *                              </ul>
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#IDENTITY

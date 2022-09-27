@@ -108,7 +108,7 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#HDFS_KERBEROS_KEYTAB
      * HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for the given HDFS
-     * user
+     * user.  This may be a KIFS file.
      *         <li> {@link
      * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#HDFS_DELEGATION_TOKEN
      * HDFS_DELEGATION_TOKEN}: Delegation token for the given HDFS user
@@ -314,7 +314,8 @@ public class AlterDatasourceRequest implements IndexedRecord {
         public static final String S3_ENCRYPTION_CUSTOMER_KEY = "s3_encryption_customer_key";
 
         /**
-         * Kerberos keytab file location for the given HDFS user
+         * Kerberos keytab file location for the given HDFS user.  This may be
+         * a KIFS file.
          */
         public static final String HDFS_KERBEROS_KEYTAB = "hdfs_kerberos_keytab";
 
@@ -560,7 +561,8 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#HDFS_KERBEROS_KEYTAB
      *                              HDFS_KERBEROS_KEYTAB}: Kerberos keytab file
-     *                              location for the given HDFS user
+     *                              location for the given HDFS user.  This may
+     *                              be a KIFS file.
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#HDFS_DELEGATION_TOKEN
      *                              HDFS_DELEGATION_TOKEN}: Delegation token
@@ -798,7 +800,7 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#HDFS_KERBEROS_KEYTAB
      *         HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for the
-     *         given HDFS user
+     *         given HDFS user.  This may be a KIFS file.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#HDFS_DELEGATION_TOKEN
      *         HDFS_DELEGATION_TOKEN}: Delegation token for the given HDFS user
@@ -1001,7 +1003,8 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#HDFS_KERBEROS_KEYTAB
      *                              HDFS_KERBEROS_KEYTAB}: Kerberos keytab file
-     *                              location for the given HDFS user
+     *                              location for the given HDFS user.  This may
+     *                              be a KIFS file.
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#HDFS_DELEGATION_TOKEN
      *                              HDFS_DELEGATION_TOKEN}: Delegation token

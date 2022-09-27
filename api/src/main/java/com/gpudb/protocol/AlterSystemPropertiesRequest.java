@@ -196,6 +196,21 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_TIMEOUT
      * KAFKA_TIMEOUT}: Number of seconds after which kakfa poll will timeout if
      * datasource has no records.  The default value is '5'.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EGRESS_SINGLE_FILE_MAX_SIZE
+     * EGRESS_SINGLE_FILE_MAX_SIZE}: Max file size (in MB) to allow saving to a
+     * single file. May be overridden by target limitations.  The default value
+     * is '100'.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MAX_CONCURRENT_KERNELS
+     * MAX_CONCURRENT_KERNELS}: Sets the max_concurrent_kernels value of the
+     * conf.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TCS_PER_TOM
+     * TCS_PER_TOM}: Sets the tcs_per_tom value of the conf.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TPS_PER_TOM
+     * TPS_PER_TOM}: Sets the tps_per_tom value of the conf.
      * </ul>
      * A set of string constants for the parameter {@code propertyUpdatesMap}.
      */
@@ -399,6 +414,27 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          * has no records.  The default value is '5'.
          */
         public static final String KAFKA_TIMEOUT = "kafka_timeout";
+
+        /**
+         * Max file size (in MB) to allow saving to a single file. May be
+         * overridden by target limitations.  The default value is '100'.
+         */
+        public static final String EGRESS_SINGLE_FILE_MAX_SIZE = "egress_single_file_max_size";
+
+        /**
+         * Sets the max_concurrent_kernels value of the conf.
+         */
+        public static final String MAX_CONCURRENT_KERNELS = "max_concurrent_kernels";
+
+        /**
+         * Sets the tcs_per_tom value of the conf.
+         */
+        public static final String TCS_PER_TOM = "tcs_per_tom";
+
+        /**
+         * Sets the tps_per_tom value of the conf.
+         */
+        public static final String TPS_PER_TOM = "tps_per_tom";
 
         private PropertyUpdatesMap() {  }
     }
@@ -657,6 +693,24 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            KAFKA_TIMEOUT}: Number of seconds after which
      *                            kakfa poll will timeout if datasource has no
      *                            records.  The default value is '5'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EGRESS_SINGLE_FILE_MAX_SIZE
+     *                            EGRESS_SINGLE_FILE_MAX_SIZE}: Max file size
+     *                            (in MB) to allow saving to a single file. May
+     *                            be overridden by target limitations.  The
+     *                            default value is '100'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MAX_CONCURRENT_KERNELS
+     *                            MAX_CONCURRENT_KERNELS}: Sets the
+     *                            max_concurrent_kernels value of the conf.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TCS_PER_TOM
+     *                            TCS_PER_TOM}: Sets the tcs_per_tom value of
+     *                            the conf.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TPS_PER_TOM
+     *                            TPS_PER_TOM}: Sets the tps_per_tom value of
+     *                            the conf.
      *                            </ul>
      * @param options  Optional parameters.
      *                 <ul>
@@ -849,6 +903,21 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_TIMEOUT
      *         KAFKA_TIMEOUT}: Number of seconds after which kakfa poll will
      *         timeout if datasource has no records.  The default value is '5'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EGRESS_SINGLE_FILE_MAX_SIZE
+     *         EGRESS_SINGLE_FILE_MAX_SIZE}: Max file size (in MB) to allow
+     *         saving to a single file. May be overridden by target
+     *         limitations.  The default value is '100'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MAX_CONCURRENT_KERNELS
+     *         MAX_CONCURRENT_KERNELS}: Sets the max_concurrent_kernels value
+     *         of the conf.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TCS_PER_TOM
+     *         TCS_PER_TOM}: Sets the tcs_per_tom value of the conf.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TPS_PER_TOM
+     *         TPS_PER_TOM}: Sets the tps_per_tom value of the conf.
      *         </ul>
      * 
      */
@@ -1049,6 +1118,24 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            KAFKA_TIMEOUT}: Number of seconds after which
      *                            kakfa poll will timeout if datasource has no
      *                            records.  The default value is '5'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EGRESS_SINGLE_FILE_MAX_SIZE
+     *                            EGRESS_SINGLE_FILE_MAX_SIZE}: Max file size
+     *                            (in MB) to allow saving to a single file. May
+     *                            be overridden by target limitations.  The
+     *                            default value is '100'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MAX_CONCURRENT_KERNELS
+     *                            MAX_CONCURRENT_KERNELS}: Sets the
+     *                            max_concurrent_kernels value of the conf.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TCS_PER_TOM
+     *                            TCS_PER_TOM}: Sets the tcs_per_tom value of
+     *                            the conf.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TPS_PER_TOM
+     *                            TPS_PER_TOM}: Sets the tps_per_tom value of
+     *                            the conf.
      *                            </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
