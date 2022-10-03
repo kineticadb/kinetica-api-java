@@ -2,6 +2,12 @@
 
 ## Version 7.1
 
+### Version 7.1.8.1 - 2022-10-02
+
+#### Changed
+-   Simplified dependency inclusion
+
+
 ### Version 7.1.8.0 - 2022-09-27
 
 #### Added

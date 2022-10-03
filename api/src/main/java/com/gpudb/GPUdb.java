@@ -10550,8 +10550,8 @@ public class GPUdb extends GPUdbBase {
      *                 user
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUserExternalRequest.Options#CREATE_HOME_DIRECTORY
-     *                 CREATE_HOME_DIRECTORY}: When true, a home directory in
-     *                 KiFS is created for this user
+     *                 CREATE_HOME_DIRECTORY}: When {@code true}, a home
+     *                 directory in KiFS is created for this user
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -10567,10 +10567,9 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUserExternalRequest.Options#DIRECTORY_DATA_LIMIT
      *                 DIRECTORY_DATA_LIMIT}: The maximum capacity to apply to
-     *                 the created directory if @{input.key
-     *                 options.create_home_directory} is {@code true}. Set to
-     *                 -1 to indicate no upper limit. If empty, the system
-     *                 default limit is applied.
+     *                 the created directory if {@code create_home_directory}
+     *                 is {@code true}. Set to -1 to indicate no upper limit.
+     *                 If empty, the system default limit is applied.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -10634,8 +10633,8 @@ public class GPUdb extends GPUdbBase {
      *                 user
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUserInternalRequest.Options#CREATE_HOME_DIRECTORY
-     *                 CREATE_HOME_DIRECTORY}: When true, a home directory in
-     *                 KiFS is created for this user
+     *                 CREATE_HOME_DIRECTORY}: When {@code true}, a home
+     *                 directory in KiFS is created for this user
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -10651,10 +10650,9 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUserInternalRequest.Options#DIRECTORY_DATA_LIMIT
      *                 DIRECTORY_DATA_LIMIT}: The maximum capacity to apply to
-     *                 the created directory if @{input.key
-     *                 options.create_home_directory} is {@code true}. Set to
-     *                 -1 to indicate no upper limit. If empty, the system
-     *                 default limit is applied.
+     *                 the created directory if {@code create_home_directory}
+     *                 is {@code true}. Set to -1 to indicate no upper limit.
+     *                 If empty, the system default limit is applied.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

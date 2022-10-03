@@ -12,6 +12,14 @@ import java.util.UUID;
 /**
  * This class demonstrates the usage of the BulkInserter class in a
  * try-with-resources block and with an explicit call to 'close()' method.
+ * 
+ * Usage:
+ *         java -cp <JAR> -Duser=<username> -Dpass=<password> com.gpudb.example.BulkInserterExample
+ *         
+ * Other options:
+ * 
+ *         -Durl=<URL>         (Kinetica connection URL, default is"http://127.0.0.1:9191")
+ *         -DlogLevel=<level>  (Output logging level, default is "INFO")
  */
 public class BulkInserterExample {
 
@@ -23,19 +31,14 @@ public class BulkInserterExample {
     public static void main( String ...args ) throws Exception {
 
         String url = System.getProperty("url", "http://127.0.0.1:9191");
+        String user = System.getProperty("user", "");
+        String pass = System.getProperty("pass", "");
+        String logLevel = System.getProperty("logLevel", "INFO");
 
-        // Get the log level from the command line, if any
         GPUdb.Options options = new GPUdb.Options();
-        options.setUsername("admin");
-        options.setPassword("abcd12!");
-
-        String logLevel = System.getProperty("logLevel", "DEBUG");
-        if ( !logLevel.isEmpty() ) {
-            System.out.println( "Log level given by the user: " + logLevel );
-            GPUdbLogger.setLoggingLevel(logLevel);
-        } else {
-            System.out.println( "No log level given by the user." );
-        }
+        options.setUsername(user);
+        options.setPassword(pass);
+        GPUdbLogger.setLoggingLevel(logLevel);
 
         // Establish a connection with a locally running instance of GPUdb
         GPUdb gpudb = new GPUdb( url, options );
@@ -51,18 +54,24 @@ public class BulkInserterExample {
         Pair<String, Type> tableNameTypePair = setUp(gpudb, false);
 
         String tableName = tableNameTypePair.getLeft();
-        Type type_ = tableNameTypePair.getRight();
+        Type tableDefinition = tableNameTypePair.getRight();
 
         int numRecords = 1000000;
 
-        try( BulkInserter<GenericRecord> bi = new BulkInserter<>( gpudb, tableName, type_,
-                25000, null,
-                new WorkerList(gpudb) ); ) {
-
+        try(
+                BulkInserter<GenericRecord> bi = new BulkInserter<>(
+                        gpudb,
+                        tableName,
+                        tableDefinition,
+                        25000,
+                        null,
+                        new WorkerList(gpudb)
+                )
+        ) {
             // Try to insert enough records such that at least one batch
             // is pushed automatically, and then we have some leftovers to flush
             for (int x = 0; x < numRecords; ++x) {
-                GenericRecord gr = new GenericRecord(type_);
+                GenericRecord gr = new GenericRecord(tableDefinition);
                 gr.put(0, x);
                 gr.put(1, x);
                 bi.insert(gr);
@@ -70,20 +79,17 @@ public class BulkInserterExample {
 
         } // end of try-with-resources block; pending inserts will be flushed automatically
 
-        Long table_size = gpudb.showTable( tableName,
-                        GPUdb.options( ShowTableRequest.Options.GET_SIZES,
-                                ShowTableRequest.Options.TRUE ) )
-                .getFullSizes().get( 0 );
-        if ( table_size != numRecords ) {
-            GPUdbLogger.error( "Table '' does not have the correct number of "
-                    + "records; expected " + numRecords + ", got "
-                    + table_size );
-            throw new Exception( "Table '' does not have the correct number "
-                    + "of records; expected " + numRecords
-                    + ", got " + table_size );
+        Map<String,String> stOptions = GPUdb.options( ShowTableRequest.Options.GET_SIZES, ShowTableRequest.Options.TRUE );
+        Long tableRecordCount = gpudb.showTable(tableName, stOptions).getFullSizes().get( 0 );
+        if ( tableRecordCount != numRecords ) {
+            GPUdbLogger.error(
+                    "Failed to insert <" + numRecords + "> records into table <" + tableName + ">; " +
+                    "got <" + tableRecordCount + "> instead"
+            );
         } else {
-            GPUdbLogger.debug_with_info( "Number of records in table " + table_size );
-            clearTable( gpudb, tableName );
+            GPUdbLogger.info(
+                    "Successfully inserted <" + numRecords + "> records into table <" + tableName + ">"
+            );
         }
 
     }
@@ -93,18 +99,23 @@ public class BulkInserterExample {
         Pair<String, Type> tableNameTypePair = setUp(gpudb, true);
 
         String tableName = tableNameTypePair.getLeft();
-        Type type_ = tableNameTypePair.getRight();
+        Type tableDefinition = tableNameTypePair.getRight();
 
         int numRecords = 10000;
 
-        BulkInserter<GenericRecord> bi = new BulkInserter<>( gpudb, tableName, type_,
-                500, null,
-                new WorkerList(gpudb) );
+        BulkInserter<GenericRecord> bi = new BulkInserter<>(
+                gpudb,
+                tableName,
+                tableDefinition,
+                500,
+                null,
+                new WorkerList(gpudb)
+        );
 
         // Try to insert enough records such that at least one batch
         // is pushed automatically and then we have some leftovers to flush
         for (int x = 0; x < numRecords; ++x) {
-            GenericRecord gr = new GenericRecord(type_);
+            GenericRecord gr = new GenericRecord(tableDefinition);
             gr.put(0, x);
             gr.put(1, x);
             bi.insert(gr);
@@ -114,62 +125,58 @@ public class BulkInserterExample {
         bi.close();
 
 
-        Long table_size = gpudb.showTable( tableName,
-                        GPUdb.options( ShowTableRequest.Options.GET_SIZES,
-                                ShowTableRequest.Options.TRUE ) )
-                .getFullSizes().get( 0 );
-        if ( table_size != numRecords ) {
-            GPUdbLogger.error( "Table '' does not have the correct number of "
-                    + "records; expected " + numRecords + ", got "
-                    + table_size );
-            throw new Exception( "Table '' does not have the correct number "
-                    + "of records; expected " + numRecords
-                    + ", got " + table_size );
+        Map<String,String> stOptions = GPUdb.options( ShowTableRequest.Options.GET_SIZES, ShowTableRequest.Options.TRUE );
+        Long tableRecordCount = gpudb.showTable(tableName, stOptions).getFullSizes().get( 0 );
+        if ( tableRecordCount != numRecords ) {
+            GPUdbLogger.error(
+                    "Failed to insert <" + numRecords + "> records into table <" + tableName + ">; " +
+                    "got <" + tableRecordCount + "> instead"
+            );
         } else {
-            clearTable( gpudb, tableName );
+            GPUdbLogger.info(
+                    "Successfully inserted <" + numRecords + "> records into table <" + tableName + ">"
+            );
         }
 
     }
 
     public static Pair<String, Type> setUp(GPUdb gpudb, boolean useReplicatedTable) throws GPUdbException
     {
-        String tableName = "Bi_example_" + (useReplicatedTable ? "1" : "2");
+        String tableType = useReplicatedTable ? "replicated" : "sharded";
+        String tableName = "bi_example_" + tableType;
 
-        Type type_;
+        Type tableDefinition;
         // Create a table with two simple int columns
         if ( !useReplicatedTable ) {
-            GPUdbLogger.info("Creating regular table (not replicated)" );
             // Need sharding for regular tables
-            type_ = new Type(
-                    new Type.Column( "x", Integer.class,
-                            ColumnProperty.SHARD_KEY ),
+            tableDefinition = new Type(
+                    new Type.Column( "x", Integer.class, ColumnProperty.SHARD_KEY ),
                     new Type.Column( "int", Integer.class )
             );
         } else {
-            GPUdbLogger.info("Creating replicated table" );
             // No sharding for replicated tables
-            type_ = new Type(
+            tableDefinition = new Type(
                     new Type.Column( "x", Integer.class ),
                     new Type.Column( "int", Integer.class )
             );
         }
 
-        // Create the table with the necessary options--replicated if the
-        // user wants it to be so
-        GPUdbLogger.info("Creating table <TABLE NAME: " + tableName + ">" );
-        Map<String, String> m_createTableOptions = new HashMap<>();
-        gpudb.createTable( tableName, type_.create(gpudb), m_createTableOptions );
+        // Create the table with the given type
 
-        return Pair.of( tableName, type_ );
+        if (gpudb.hasTable(tableName, null).getTableExists()) {
+            GPUdbLogger.info("Removing pre-existing table <" + tableName + ">" );
+        	gpudb.clearTable(tableName, null, null);
+        }
+
+        GPUdbLogger.info("Creating " + tableType + " table <" + tableName + ">" );
+        gpudb.createTable( tableName, tableDefinition.create(gpudb), null );
+
+        return Pair.of( tableName, tableDefinition );
     }
 
     public static void clearTable( GPUdb gpudb, String tableName ) {
         try {
-            ClearTableRequest request = new ClearTableRequest();
-            request.setTableName( tableName );
-            Map<String, String> m_clearTableOptions = new HashMap<>();
-            request.setOptions( m_clearTableOptions );
-            gpudb.clearTable( request );
+            gpudb.clearTable( tableName, null, null );
         } catch ( Exception ex ) {
             // Not doing anything about it
         }

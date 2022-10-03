@@ -950,7 +950,7 @@ public class BulkInserter<T> implements AutoCloseable {
                     TimeUnit.SECONDS);
             timedFlushExecutorServiceTerminated = false;
         } else {
-            GPUdbLogger.info("Timed flush turned off, flush interval set to negative value ...");
+            GPUdbLogger.debug("Timed flush turned off, flush interval set to negative value ...");
             this.timedFlushExecutorService = null;
             timedFlushExecutorServiceTerminated = true;
         }
