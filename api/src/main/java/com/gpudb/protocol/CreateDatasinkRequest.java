@@ -427,9 +427,9 @@ public class CreateDatasinkRequest implements IndexedRecord {
      * 
      * @param name  Name of the data sink to be created.
      * @param destination  Destination for the output data in format
-     *                     'destination_type://path[:port]'.
-     *                     Supported destination types are 'http', 'https' and
-     *                     'kafka'.
+     *                     'storage_provider_type://path[:port]'.
+     *                     Supported storage provider types are 'azure', 'gcs',
+     *                     'hdfs', 'http', 'https', 'jdbc', 'kafka' and 's3'.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -644,8 +644,9 @@ public class CreateDatasinkRequest implements IndexedRecord {
     /**
      * 
      * @return Destination for the output data in format
-     *         'destination_type://path[:port]'.
-     *         Supported destination types are 'http', 'https' and 'kafka'.
+     *         'storage_provider_type://path[:port]'.
+     *         Supported storage provider types are 'azure', 'gcs', 'hdfs',
+     *         'http', 'https', 'jdbc', 'kafka' and 's3'.
      * 
      */
     public String getDestination() {
@@ -655,9 +656,9 @@ public class CreateDatasinkRequest implements IndexedRecord {
     /**
      * 
      * @param destination  Destination for the output data in format
-     *                     'destination_type://path[:port]'.
-     *                     Supported destination types are 'http', 'https' and
-     *                     'kafka'.
+     *                     'storage_provider_type://path[:port]'.
+     *                     Supported storage provider types are 'azure', 'gcs',
+     *                     'hdfs', 'http', 'https', 'jdbc', 'kafka' and 's3'.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

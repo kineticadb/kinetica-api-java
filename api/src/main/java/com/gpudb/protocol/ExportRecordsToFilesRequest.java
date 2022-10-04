@@ -17,8 +17,25 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#exportRecordsToFiles(ExportRecordsToFilesRequest)}.
  * <p>
- * Export records from table
- * export_records_to_files_response
+ * Export records from a table to files. All tables can be exported, in full or
+ * partial
+ * (see {@code columns_to_export} and {@code columns_to_skip}).
+ * Additional filtering can be applied when using export table with expression
+ * through SQL.
+ * Default destination is KIFS, though other storage types (Azure, S3, GCS, and
+ * HDFS) are supported
+ * through {@code datasink_name}; see {@link
+ * com.gpudb.GPUdb#createDatasink(CreateDatasinkRequest)}.
+ * <p>
+ * Server's local file system is not supported.  Default file format is
+ * delimited text. See options for
+ * different file types and different options for each file type.  Table is
+ * saved to a single file if
+ * within max file size limits (may vary depending on datasink type).  If not,
+ * then table is split into
+ * multiple files; these may be smaller than the max size limit.
+ * <p>
+ * All filenames created are returned in the response.
  */
 public class ExportRecordsToFilesRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -42,6 +59,350 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * Optional parameters.
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#BATCH_SIZE
+     * BATCH_SIZE}: Number of records to be exported as a batch.  The default
+     * value is '1000000'.
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMN_FORMATS
+     * COLUMN_FORMATS}: For each source column specified, applies the
+     * column-property-bound
+     * format.  Currently supported column properties include date, time, &
+     * datetime. The parameter value
+     * must be formatted as a JSON string of maps of column names to maps of
+     * column properties to their
+     * corresponding column formats, e.g.,
+     * '{ "order_date" : { "date" : "%Y.%m.%d" }, "order_time" : { "time" :
+     * "%H:%M:%S" } }'.
+     * <p>
+     * See {@code default_column_formats} for valid format syntax.
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMNS_TO_EXPORT
+     * COLUMNS_TO_EXPORT}: Comma-separated list of column names to export.
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMNS_TO_SKIP
+     * COLUMNS_TO_SKIP}: Comma-separated list of column names to not export.
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DATASINK_NAME
+     * DATASINK_NAME}: Datasink name, created using {@link
+     * com.gpudb.GPUdb#createDatasink(CreateDatasinkRequest)}.
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DEFAULT_COLUMN_FORMATS
+     * DEFAULT_COLUMN_FORMATS}: Specifies the default format to use to write
+     * data.  Currently
+     * supported column properties include date, time, & datetime.  This
+     * default column-property-bound
+     * format can be overridden by specifying a column property & format for a
+     * given source column in
+     * {@code column_formats}. For each specified annotation, the format will
+     * apply to all
+     * columns with that annotation unless custom {@code column_formats} for
+     * that
+     * annotation are specified.
+     * <p>
+     * The parameter value must be formatted as a JSON string that is a map of
+     * column properties to their
+     * respective column formats, e.g., '{ "date" : "%Y.%m.%d", "time" :
+     * "%H:%M:%S" }'.  Column
+     * formats are specified as a string of control characters and plain text.
+     * The supported control
+     * characters are 'Y', 'm', 'd', 'H', 'M', 'S', and 's', which follow the
+     * Linux 'strptime()'
+     * specification, as well as 's', which specifies seconds and fractional
+     * seconds (though the fractional
+     * component will be truncated past milliseconds).
+     * <p>
+     * Formats for the 'date' annotation must include the 'Y', 'm', and 'd'
+     * control characters. Formats for
+     * the 'time' annotation must include the 'H', 'M', and either 'S' or 's'
+     * (but not both) control
+     * characters. Formats for the 'datetime' annotation meet both the 'date'
+     * and 'time' control character
+     * requirements. For example, '{"datetime" : "%m/%d/%Y %H:%M:%S" }' would
+     * be used to write text
+     * as "05/04/2000 12:12:11"
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#EXPORT_DDL
+     * EXPORT_DDL}: Save DDL to a separate file.  The default value is 'false'.
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FILE_EXTENTION
+     * FILE_EXTENTION}: Extension to give the export file.  The default value
+     * is '.csv'.
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FILE_TYPE
+     * FILE_TYPE}: Specifies the file format to use when exporting data.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DELIMITED_TEXT
+     * DELIMITED_TEXT}: Delimited text file format; e.g., CSV, TSV, PSV, etc.
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#PARQUET PARQUET}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DELIMITED_TEXT
+     * DELIMITED_TEXT}.
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#KINETICA_HEADER
+     * KINETICA_HEADER}: Whether to include a Kinetica proprietary header. Will
+     * not be
+     * written if {@code text_has_header} is
+     * {@code false}.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#KINETICA_HEADER_DELIMITER
+     * KINETICA_HEADER_DELIMITER}: If a Kinetica proprietary header is
+     * included, then specify a
+     * property separator. Different from column delimiter.  The default value
+     * is '|'.
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#SINGLE_FILE
+     * SINGLE_FILE}: Save records to a single file. This option may be ignored
+     * if file
+     * size exceeds internal file size limits (this limit will differ on
+     * different targets).
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE TRUE}.
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TEXT_DELIMITER
+     * TEXT_DELIMITER}: Specifies the character to write out to delimit field
+     * values and
+     * field names in the header (if present).
+     * <p>
+     * For {@code delimited_text} {@code file_type} only.  The default value is
+     * ','.
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TEXT_HAS_HEADER
+     * TEXT_HAS_HEADER}: Indicates whether to write out a header row.
+     * <p>
+     * For {@code delimited_text} {@code file_type} only.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE TRUE}.
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TEXT_NULL_STRING
+     * TEXT_NULL_STRING}: Specifies the character string that should be written
+     * out for the null
+     * value in the data.
+     * <p>
+     * For {@code delimited_text} {@code file_type} only.  The default value is
+     * '\\N'.
+     * </ul>
+     * The default value is an empty {@link Map}.
+     * A set of string constants for the parameter {@code options}.
+     */
+    public static final class Options {
+
+        /**
+         * Number of records to be exported as a batch.  The default value is
+         * '1000000'.
+         */
+        public static final String BATCH_SIZE = "batch_size";
+
+        /**
+         * For each source column specified, applies the column-property-bound
+         * format.  Currently supported column properties include date, time, &
+         * datetime. The parameter value
+         * must be formatted as a JSON string of maps of column names to maps
+         * of column properties to their
+         * corresponding column formats, e.g.,
+         * '{ "order_date" : { "date" : "%Y.%m.%d" }, "order_time" : { "time" :
+         * "%H:%M:%S" } }'.
+         * <p>
+         * See {@code default_column_formats} for valid format syntax.
+         */
+        public static final String COLUMN_FORMATS = "column_formats";
+
+        /**
+         * Comma-separated list of column names to export.
+         */
+        public static final String COLUMNS_TO_EXPORT = "columns_to_export";
+
+        /**
+         * Comma-separated list of column names to not export.
+         */
+        public static final String COLUMNS_TO_SKIP = "columns_to_skip";
+
+        /**
+         * Datasink name, created using {@link
+         * com.gpudb.GPUdb#createDatasink(CreateDatasinkRequest)}.
+         */
+        public static final String DATASINK_NAME = "datasink_name";
+
+        /**
+         * Specifies the default format to use to write data.  Currently
+         * supported column properties include date, time, & datetime.  This
+         * default column-property-bound
+         * format can be overridden by specifying a column property & format
+         * for a given source column in
+         * {@code column_formats}. For each specified annotation, the format
+         * will apply to all
+         * columns with that annotation unless custom {@code column_formats}
+         * for that
+         * annotation are specified.
+         * <p>
+         * The parameter value must be formatted as a JSON string that is a map
+         * of column properties to their
+         * respective column formats, e.g., '{ "date" : "%Y.%m.%d", "time" :
+         * "%H:%M:%S" }'.  Column
+         * formats are specified as a string of control characters and plain
+         * text. The supported control
+         * characters are 'Y', 'm', 'd', 'H', 'M', 'S', and 's', which follow
+         * the Linux 'strptime()'
+         * specification, as well as 's', which specifies seconds and
+         * fractional seconds (though the fractional
+         * component will be truncated past milliseconds).
+         * <p>
+         * Formats for the 'date' annotation must include the 'Y', 'm', and 'd'
+         * control characters. Formats for
+         * the 'time' annotation must include the 'H', 'M', and either 'S' or
+         * 's' (but not both) control
+         * characters. Formats for the 'datetime' annotation meet both the
+         * 'date' and 'time' control character
+         * requirements. For example, '{"datetime" : "%m/%d/%Y %H:%M:%S" }'
+         * would be used to write text
+         * as "05/04/2000 12:12:11"
+         */
+        public static final String DEFAULT_COLUMN_FORMATS = "default_column_formats";
+
+        /**
+         * Save DDL to a separate file.  The default value is 'false'.
+         */
+        public static final String EXPORT_DDL = "export_ddl";
+
+        /**
+         * Extension to give the export file.  The default value is '.csv'.
+         */
+        public static final String FILE_EXTENTION = "file_extention";
+
+        /**
+         * Specifies the file format to use when exporting data.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DELIMITED_TEXT
+         * DELIMITED_TEXT}: Delimited text file format; e.g., CSV, TSV, PSV,
+         * etc.
+         *         <li> {@link
+         * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#PARQUET
+         * PARQUET}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DELIMITED_TEXT
+         * DELIMITED_TEXT}.
+         */
+        public static final String FILE_TYPE = "file_type";
+
+        /**
+         * Delimited text file format; e.g., CSV, TSV, PSV, etc.
+         */
+        public static final String DELIMITED_TEXT = "delimited_text";
+        public static final String PARQUET = "parquet";
+
+        /**
+         * Whether to include a Kinetica proprietary header. Will not be
+         * written if {@code text_has_header} is
+         * {@code false}.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE FALSE}.
+         */
+        public static final String KINETICA_HEADER = "kinetica_header";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
+         * If a Kinetica proprietary header is included, then specify a
+         * property separator. Different from column delimiter.  The default
+         * value is '|'.
+         */
+        public static final String KINETICA_HEADER_DELIMITER = "kinetica_header_delimiter";
+
+        /**
+         * Save records to a single file. This option may be ignored if file
+         * size exceeds internal file size limits (this limit will differ on
+         * different targets).
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE TRUE}.
+         */
+        public static final String SINGLE_FILE = "single_file";
+
+        /**
+         * Specifies the character to write out to delimit field values and
+         * field names in the header (if present).
+         * <p>
+         * For {@code delimited_text} {@code file_type} only.  The default
+         * value is ','.
+         */
+        public static final String TEXT_DELIMITER = "text_delimiter";
+
+        /**
+         * Indicates whether to write out a header row.
+         * <p>
+         * For {@code delimited_text} {@code file_type} only.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE TRUE}.
+         */
+        public static final String TEXT_HAS_HEADER = "text_has_header";
+
+        /**
+         * Specifies the character string that should be written out for the
+         * null
+         * value in the data.
+         * <p>
+         * For {@code delimited_text} {@code file_type} only.  The default
+         * value is '\\N'.
+         */
+        public static final String TEXT_NULL_STRING = "text_null_string";
+
+        private Options() {  }
+    }
+
     private String tableName;
     private String filepath;
     private Map<String, String> options;
@@ -62,8 +423,181 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      * parameters.
      * 
      * @param tableName
-     * @param filepath  Directory or File name (if file name, include ext)
+     * @param filepath  Path to data export target.  If {@code filepath} has a
+     *                  file extension, it is
+     *                  read as the name of a file. If {@code filepath} is a
+     *                  directory, then the source table name with a
+     *                  random UUID appended will be used as the name of each
+     *                  exported file, all written to that directory.
+     *                  If filepath is a filename, then all exported files will
+     *                  have a random UUID appended to the given
+     *                  name.  In either case, the target directory specified
+     *                  or implied must exist.  The names of all
+     *                  exported files are returned in the response.
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#BATCH_SIZE
+     *                 BATCH_SIZE}: Number of records to be exported as a
+     *                 batch.  The default value is '1000000'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMN_FORMATS
+     *                 COLUMN_FORMATS}: For each source column specified,
+     *                 applies the column-property-bound
+     *                 format.  Currently supported column properties include
+     *                 date, time, & datetime. The parameter value
+     *                 must be formatted as a JSON string of maps of column
+     *                 names to maps of column properties to their
+     *                 corresponding column formats, e.g.,
+     *                 '{ "order_date" : { "date" : "%Y.%m.%d" }, "order_time"
+     *                 : { "time" : "%H:%M:%S" } }'.
+     *                 See {@code default_column_formats} for valid format
+     *                 syntax.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMNS_TO_EXPORT
+     *                 COLUMNS_TO_EXPORT}: Comma-separated list of column names
+     *                 to export.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMNS_TO_SKIP
+     *                 COLUMNS_TO_SKIP}: Comma-separated list of column names
+     *                 to not export.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DATASINK_NAME
+     *                 DATASINK_NAME}: Datasink name, created using {@link
+     *                 com.gpudb.GPUdb#createDatasink(CreateDatasinkRequest)}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DEFAULT_COLUMN_FORMATS
+     *                 DEFAULT_COLUMN_FORMATS}: Specifies the default format to
+     *                 use to write data.  Currently
+     *                 supported column properties include date, time, &
+     *                 datetime.  This default column-property-bound
+     *                 format can be overridden by specifying a column property
+     *                 & format for a given source column in
+     *                 {@code column_formats}. For each specified annotation,
+     *                 the format will apply to all
+     *                 columns with that annotation unless custom {@code
+     *                 column_formats} for that
+     *                 annotation are specified.
+     *                 The parameter value must be formatted as a JSON string
+     *                 that is a map of column properties to their
+     *                 respective column formats, e.g., '{ "date" : "%Y.%m.%d",
+     *                 "time" : "%H:%M:%S" }'.  Column
+     *                 formats are specified as a string of control characters
+     *                 and plain text. The supported control
+     *                 characters are 'Y', 'm', 'd', 'H', 'M', 'S', and 's',
+     *                 which follow the Linux 'strptime()'
+     *                 specification, as well as 's', which specifies seconds
+     *                 and fractional seconds (though the fractional
+     *                 component will be truncated past milliseconds).
+     *                 Formats for the 'date' annotation must include the 'Y',
+     *                 'm', and 'd' control characters. Formats for
+     *                 the 'time' annotation must include the 'H', 'M', and
+     *                 either 'S' or 's' (but not both) control
+     *                 characters. Formats for the 'datetime' annotation meet
+     *                 both the 'date' and 'time' control character
+     *                 requirements. For example, '{"datetime" : "%m/%d/%Y
+     *                 %H:%M:%S" }' would be used to write text
+     *                 as "05/04/2000 12:12:11"
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#EXPORT_DDL
+     *                 EXPORT_DDL}: Save DDL to a separate file.  The default
+     *                 value is 'false'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FILE_EXTENTION
+     *                 FILE_EXTENTION}: Extension to give the export file.  The
+     *                 default value is '.csv'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FILE_TYPE
+     *                 FILE_TYPE}: Specifies the file format to use when
+     *                 exporting data.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DELIMITED_TEXT
+     *                 DELIMITED_TEXT}: Delimited text file format; e.g., CSV,
+     *                 TSV, PSV, etc.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#PARQUET
+     *                 PARQUET}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DELIMITED_TEXT
+     *                 DELIMITED_TEXT}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#KINETICA_HEADER
+     *                 KINETICA_HEADER}: Whether to include a Kinetica
+     *                 proprietary header. Will not be
+     *                 written if {@code text_has_header} is
+     *                 {@code false}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#KINETICA_HEADER_DELIMITER
+     *                 KINETICA_HEADER_DELIMITER}: If a Kinetica proprietary
+     *                 header is included, then specify a
+     *                 property separator. Different from column delimiter.
+     *                 The default value is '|'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#SINGLE_FILE
+     *                 SINGLE_FILE}: Save records to a single file. This option
+     *                 may be ignored if file
+     *                 size exceeds internal file size limits (this limit will
+     *                 differ on different targets).
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
+     *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TEXT_DELIMITER
+     *                 TEXT_DELIMITER}: Specifies the character to write out to
+     *                 delimit field values and
+     *                 field names in the header (if present).
+     *                 For {@code delimited_text} {@code file_type} only.  The
+     *                 default value is ','.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TEXT_HAS_HEADER
+     *                 TEXT_HAS_HEADER}: Indicates whether to write out a
+     *                 header row.
+     *                 For {@code delimited_text} {@code file_type} only.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
+     *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TEXT_NULL_STRING
+     *                 TEXT_NULL_STRING}: Specifies the character string that
+     *                 should be written out for the null
+     *                 value in the data.
+     *                 For {@code delimited_text} {@code file_type} only.  The
+     *                 default value is '\\N'.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public ExportRecordsToFilesRequest(String tableName, String filepath, Map<String, String> options) {
@@ -89,7 +623,17 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Directory or File name (if file name, include ext)
+     * @return Path to data export target.  If {@code filepath} has a file
+     *         extension, it is
+     *         read as the name of a file. If {@code filepath} is a directory,
+     *         then the source table name with a
+     *         random UUID appended will be used as the name of each exported
+     *         file, all written to that directory.
+     *         If filepath is a filename, then all exported files will have a
+     *         random UUID appended to the given
+     *         name.  In either case, the target directory specified or implied
+     *         must exist.  The names of all
+     *         exported files are returned in the response.
      * 
      */
     public String getFilepath() {
@@ -98,7 +642,17 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
 
     /**
      * 
-     * @param filepath  Directory or File name (if file name, include ext)
+     * @param filepath  Path to data export target.  If {@code filepath} has a
+     *                  file extension, it is
+     *                  read as the name of a file. If {@code filepath} is a
+     *                  directory, then the source table name with a
+     *                  random UUID appended will be used as the name of each
+     *                  exported file, all written to that directory.
+     *                  If filepath is a filename, then all exported files will
+     *                  have a random UUID appended to the given
+     *                  name.  In either case, the target directory specified
+     *                  or implied must exist.  The names of all
+     *                  exported files are returned in the response.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -111,6 +665,167 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
     /**
      * 
      * @return Optional parameters.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#BATCH_SIZE
+     *         BATCH_SIZE}: Number of records to be exported as a batch.  The
+     *         default value is '1000000'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMN_FORMATS
+     *         COLUMN_FORMATS}: For each source column specified, applies the
+     *         column-property-bound
+     *         format.  Currently supported column properties include date,
+     *         time, & datetime. The parameter value
+     *         must be formatted as a JSON string of maps of column names to
+     *         maps of column properties to their
+     *         corresponding column formats, e.g.,
+     *         '{ "order_date" : { "date" : "%Y.%m.%d" }, "order_time" : {
+     *         "time" : "%H:%M:%S" } }'.
+     *         See {@code default_column_formats} for valid format syntax.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMNS_TO_EXPORT
+     *         COLUMNS_TO_EXPORT}: Comma-separated list of column names to
+     *         export.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMNS_TO_SKIP
+     *         COLUMNS_TO_SKIP}: Comma-separated list of column names to not
+     *         export.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DATASINK_NAME
+     *         DATASINK_NAME}: Datasink name, created using {@link
+     *         com.gpudb.GPUdb#createDatasink(CreateDatasinkRequest)}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DEFAULT_COLUMN_FORMATS
+     *         DEFAULT_COLUMN_FORMATS}: Specifies the default format to use to
+     *         write data.  Currently
+     *         supported column properties include date, time, & datetime.
+     *         This default column-property-bound
+     *         format can be overridden by specifying a column property &
+     *         format for a given source column in
+     *         {@code column_formats}. For each specified annotation, the
+     *         format will apply to all
+     *         columns with that annotation unless custom {@code
+     *         column_formats} for that
+     *         annotation are specified.
+     *         The parameter value must be formatted as a JSON string that is a
+     *         map of column properties to their
+     *         respective column formats, e.g., '{ "date" : "%Y.%m.%d", "time"
+     *         : "%H:%M:%S" }'.  Column
+     *         formats are specified as a string of control characters and
+     *         plain text. The supported control
+     *         characters are 'Y', 'm', 'd', 'H', 'M', 'S', and 's', which
+     *         follow the Linux 'strptime()'
+     *         specification, as well as 's', which specifies seconds and
+     *         fractional seconds (though the fractional
+     *         component will be truncated past milliseconds).
+     *         Formats for the 'date' annotation must include the 'Y', 'm', and
+     *         'd' control characters. Formats for
+     *         the 'time' annotation must include the 'H', 'M', and either 'S'
+     *         or 's' (but not both) control
+     *         characters. Formats for the 'datetime' annotation meet both the
+     *         'date' and 'time' control character
+     *         requirements. For example, '{"datetime" : "%m/%d/%Y %H:%M:%S" }'
+     *         would be used to write text
+     *         as "05/04/2000 12:12:11"
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#EXPORT_DDL
+     *         EXPORT_DDL}: Save DDL to a separate file.  The default value is
+     *         'false'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FILE_EXTENTION
+     *         FILE_EXTENTION}: Extension to give the export file.  The default
+     *         value is '.csv'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FILE_TYPE
+     *         FILE_TYPE}: Specifies the file format to use when exporting
+     *         data.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DELIMITED_TEXT
+     *         DELIMITED_TEXT}: Delimited text file format; e.g., CSV, TSV,
+     *         PSV, etc.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#PARQUET
+     *         PARQUET}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DELIMITED_TEXT
+     *         DELIMITED_TEXT}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#KINETICA_HEADER
+     *         KINETICA_HEADER}: Whether to include a Kinetica proprietary
+     *         header. Will not be
+     *         written if {@code text_has_header} is
+     *         {@code false}.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE
+     *         FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#KINETICA_HEADER_DELIMITER
+     *         KINETICA_HEADER_DELIMITER}: If a Kinetica proprietary header is
+     *         included, then specify a
+     *         property separator. Different from column delimiter.  The
+     *         default value is '|'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#SINGLE_FILE
+     *         SINGLE_FILE}: Save records to a single file. This option may be
+     *         ignored if file
+     *         size exceeds internal file size limits (this limit will differ
+     *         on different targets).
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
+     *         TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TEXT_DELIMITER
+     *         TEXT_DELIMITER}: Specifies the character to write out to delimit
+     *         field values and
+     *         field names in the header (if present).
+     *         For {@code delimited_text} {@code file_type} only.  The default
+     *         value is ','.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TEXT_HAS_HEADER
+     *         TEXT_HAS_HEADER}: Indicates whether to write out a header row.
+     *         For {@code delimited_text} {@code file_type} only.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
+     *         TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TEXT_NULL_STRING
+     *         TEXT_NULL_STRING}: Specifies the character string that should be
+     *         written out for the null
+     *         value in the data.
+     *         For {@code delimited_text} {@code file_type} only.  The default
+     *         value is '\\N'.
+     *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -120,6 +835,169 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#BATCH_SIZE
+     *                 BATCH_SIZE}: Number of records to be exported as a
+     *                 batch.  The default value is '1000000'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMN_FORMATS
+     *                 COLUMN_FORMATS}: For each source column specified,
+     *                 applies the column-property-bound
+     *                 format.  Currently supported column properties include
+     *                 date, time, & datetime. The parameter value
+     *                 must be formatted as a JSON string of maps of column
+     *                 names to maps of column properties to their
+     *                 corresponding column formats, e.g.,
+     *                 '{ "order_date" : { "date" : "%Y.%m.%d" }, "order_time"
+     *                 : { "time" : "%H:%M:%S" } }'.
+     *                 See {@code default_column_formats} for valid format
+     *                 syntax.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMNS_TO_EXPORT
+     *                 COLUMNS_TO_EXPORT}: Comma-separated list of column names
+     *                 to export.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMNS_TO_SKIP
+     *                 COLUMNS_TO_SKIP}: Comma-separated list of column names
+     *                 to not export.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DATASINK_NAME
+     *                 DATASINK_NAME}: Datasink name, created using {@link
+     *                 com.gpudb.GPUdb#createDatasink(CreateDatasinkRequest)}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DEFAULT_COLUMN_FORMATS
+     *                 DEFAULT_COLUMN_FORMATS}: Specifies the default format to
+     *                 use to write data.  Currently
+     *                 supported column properties include date, time, &
+     *                 datetime.  This default column-property-bound
+     *                 format can be overridden by specifying a column property
+     *                 & format for a given source column in
+     *                 {@code column_formats}. For each specified annotation,
+     *                 the format will apply to all
+     *                 columns with that annotation unless custom {@code
+     *                 column_formats} for that
+     *                 annotation are specified.
+     *                 The parameter value must be formatted as a JSON string
+     *                 that is a map of column properties to their
+     *                 respective column formats, e.g., '{ "date" : "%Y.%m.%d",
+     *                 "time" : "%H:%M:%S" }'.  Column
+     *                 formats are specified as a string of control characters
+     *                 and plain text. The supported control
+     *                 characters are 'Y', 'm', 'd', 'H', 'M', 'S', and 's',
+     *                 which follow the Linux 'strptime()'
+     *                 specification, as well as 's', which specifies seconds
+     *                 and fractional seconds (though the fractional
+     *                 component will be truncated past milliseconds).
+     *                 Formats for the 'date' annotation must include the 'Y',
+     *                 'm', and 'd' control characters. Formats for
+     *                 the 'time' annotation must include the 'H', 'M', and
+     *                 either 'S' or 's' (but not both) control
+     *                 characters. Formats for the 'datetime' annotation meet
+     *                 both the 'date' and 'time' control character
+     *                 requirements. For example, '{"datetime" : "%m/%d/%Y
+     *                 %H:%M:%S" }' would be used to write text
+     *                 as "05/04/2000 12:12:11"
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#EXPORT_DDL
+     *                 EXPORT_DDL}: Save DDL to a separate file.  The default
+     *                 value is 'false'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FILE_EXTENTION
+     *                 FILE_EXTENTION}: Extension to give the export file.  The
+     *                 default value is '.csv'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FILE_TYPE
+     *                 FILE_TYPE}: Specifies the file format to use when
+     *                 exporting data.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DELIMITED_TEXT
+     *                 DELIMITED_TEXT}: Delimited text file format; e.g., CSV,
+     *                 TSV, PSV, etc.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#PARQUET
+     *                 PARQUET}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DELIMITED_TEXT
+     *                 DELIMITED_TEXT}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#KINETICA_HEADER
+     *                 KINETICA_HEADER}: Whether to include a Kinetica
+     *                 proprietary header. Will not be
+     *                 written if {@code text_has_header} is
+     *                 {@code false}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#KINETICA_HEADER_DELIMITER
+     *                 KINETICA_HEADER_DELIMITER}: If a Kinetica proprietary
+     *                 header is included, then specify a
+     *                 property separator. Different from column delimiter.
+     *                 The default value is '|'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#SINGLE_FILE
+     *                 SINGLE_FILE}: Save records to a single file. This option
+     *                 may be ignored if file
+     *                 size exceeds internal file size limits (this limit will
+     *                 differ on different targets).
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
+     *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TEXT_DELIMITER
+     *                 TEXT_DELIMITER}: Specifies the character to write out to
+     *                 delimit field values and
+     *                 field names in the header (if present).
+     *                 For {@code delimited_text} {@code file_type} only.  The
+     *                 default value is ','.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TEXT_HAS_HEADER
+     *                 TEXT_HAS_HEADER}: Indicates whether to write out a
+     *                 header row.
+     *                 For {@code delimited_text} {@code file_type} only.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
+     *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TEXT_NULL_STRING
+     *                 TEXT_NULL_STRING}: Specifies the character string that
+     *                 should be written out for the null
+     *                 value in the data.
+     *                 For {@code delimited_text} {@code file_type} only.  The
+     *                 default value is '\\N'.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
