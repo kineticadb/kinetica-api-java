@@ -324,6 +324,21 @@ public class MatchGraphRequest implements IndexedRecord {
      * radius centered around the truck's originating location (distance or
      * time).  The default value is '0.0'.
      *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#BATCH_TSM_MODE
+     * BATCH_TSM_MODE}: For the {@code match_supply_demand} solver only. When
+     * enabled, it sets the number of visits on each demand location by a
+     * single salesman at each trip is considered to be (one) 1, otherwise
+     * there is no bound.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#TRUE
+     * TRUE}: Sets only one visit per demand location by a salesman (tsm mode)
+     *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     * FALSE}: No preset limit (usual msdo mode)
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}.
+     *         <li> {@link
      * com.gpudb.protocol.MatchGraphRequest.Options#RESTRICTED_TRUCK_TYPE
      * RESTRICTED_TRUCK_TYPE}: For the {@code match_supply_demand} solver only.
      * Optimization is performed by restricting routes labeled by
@@ -629,6 +644,25 @@ public class MatchGraphRequest implements IndexedRecord {
          * The default value is '0.0'.
          */
         public static final String TRUCK_SERVICE_RADIUS = "truck_service_radius";
+
+        /**
+         * For the {@code match_supply_demand} solver only. When enabled, it
+         * sets the number of visits on each demand location by a single
+         * salesman at each trip is considered to be (one) 1, otherwise there
+         * is no bound.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}: Sets only
+         * one visit per demand location by a salesman (tsm mode)
+         *         <li> {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}: No preset
+         * limit (usual msdo mode)
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}.
+         */
+        public static final String BATCH_TSM_MODE = "batch_tsm_mode";
 
         /**
          * For the {@code match_supply_demand} solver only. Optimization is
@@ -1054,6 +1088,26 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 than zero), it filters the demands outside this radius
      *                 centered around the truck's originating location
      *                 (distance or time).  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#BATCH_TSM_MODE
+     *                 BATCH_TSM_MODE}: For the {@code match_supply_demand}
+     *                 solver only. When enabled, it sets the number of visits
+     *                 on each demand location by a single salesman at each
+     *                 trip is considered to be (one) 1, otherwise there is no
+     *                 bound.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}:
+     *                 Sets only one visit per demand location by a salesman
+     *                 (tsm mode)
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}: No preset limit (usual msdo mode)
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#RESTRICTED_TRUCK_TYPE
      *                 RESTRICTED_TRUCK_TYPE}: For the {@code
@@ -1585,6 +1639,23 @@ public class MatchGraphRequest implements IndexedRecord {
      *         originating location (distance or time).  The default value is
      *         '0.0'.
      *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#BATCH_TSM_MODE
+     *         BATCH_TSM_MODE}: For the {@code match_supply_demand} solver
+     *         only. When enabled, it sets the number of visits on each demand
+     *         location by a single salesman at each trip is considered to be
+     *         (one) 1, otherwise there is no bound.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}: Sets
+     *         only one visit per demand location by a salesman (tsm mode)
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}: No
+     *         preset limit (usual msdo mode)
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.MatchGraphRequest.Options#RESTRICTED_TRUCK_TYPE
      *         RESTRICTED_TRUCK_TYPE}: For the {@code match_supply_demand}
      *         solver only. Optimization is performed by restricting routes
@@ -1878,6 +1949,26 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 than zero), it filters the demands outside this radius
      *                 centered around the truck's originating location
      *                 (distance or time).  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#BATCH_TSM_MODE
+     *                 BATCH_TSM_MODE}: For the {@code match_supply_demand}
+     *                 solver only. When enabled, it sets the number of visits
+     *                 on each demand location by a single salesman at each
+     *                 trip is considered to be (one) 1, otherwise there is no
+     *                 bound.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}:
+     *                 Sets only one visit per demand location by a salesman
+     *                 (tsm mode)
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}: No preset limit (usual msdo mode)
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#RESTRICTED_TRUCK_TYPE
      *                 RESTRICTED_TRUCK_TYPE}: For the {@code

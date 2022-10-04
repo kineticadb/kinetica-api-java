@@ -4244,7 +4244,7 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Alters a directory in <a href="../../../../../tools/kifs/"
+     * Alters an existing directory in <a href="../../../../../tools/kifs/"
      * target="_top">KiFS</a>.
      * 
      * @param request  Request object containing the parameters for the
@@ -4266,17 +4266,17 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Alters a directory in <a href="../../../../../tools/kifs/"
+     * Alters an existing directory in <a href="../../../../../tools/kifs/"
      * target="_top">KiFS</a>.
      * 
-     * @param directoryName  Name of the directory in KiFS to be created.
+     * @param directoryName  Name of the directory in KiFS to be altered.
      * @param directoryUpdatesMap  Map containing the properties of the
-     *                             directory to be updated. Error if empty.
+     *                             directory to be altered. Error if empty.
      *                             <ul>
      *                                     <li> {@link
      *                             com.gpudb.protocol.AlterDirectoryRequest.DirectoryUpdatesMap#DATA_LIMIT
-     *                             DATA_LIMIT}: The maximum capacity to apply
-     *                             to the created directory. Set to -1 to
+     *                             DATA_LIMIT}: The maximum capacity, in bytes,
+     *                             to apply to the directory. Set to -1 to
      *                             indicate no upper limit.
      *                             </ul>
      * @param options  Optional parameters.
@@ -6412,9 +6412,9 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param name  Name of the data sink to be created.
      * @param destination  Destination for the output data in format
-     *                     'destination_type://path[:port]'.
-     *                     Supported destination types are 'http', 'https' and
-     *                     'kafka'.
+     *                     'storage_provider_type://path[:port]'.
+     *                     Supported storage provider types are 'azure', 'gcs',
+     *                     'hdfs', 'http', 'https', 'jdbc', 'kafka' and 's3'.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -6915,9 +6915,9 @@ public class GPUdb extends GPUdbBase {
      *                 case. The user must exist.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDirectoryRequest.Options#DATA_LIMIT
-     *                 DATA_LIMIT}: The maximum capacity to apply to the
-     *                 created directory. Set to -1 to indicate no upper limit.
-     *                 If empty, the system default limit is applied.
+     *                 DATA_LIMIT}: The maximum capacity, in bytes, to apply to
+     *                 the created directory. Set to -1 to indicate no upper
+     *                 limit. If empty, the system default limit is applied.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDirectoryRequest.Options#NO_ERROR_IF_EXISTS
      *                 NO_ERROR_IF_EXISTS}: If {@code true}, does not return an
@@ -12233,8 +12233,25 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Export records from table
-     * export_records_to_files_response
+     * Export records from a table to files. All tables can be exported, in
+     * full or partial
+     * (see {@code columns_to_export} and {@code columns_to_skip}).
+     * Additional filtering can be applied when using export table with
+     * expression through SQL.
+     * Default destination is KIFS, though other storage types (Azure, S3, GCS,
+     * and HDFS) are supported
+     * through {@code datasink_name}; see {@link
+     * GPUdb#createDatasink(CreateDatasinkRequest)}.
+     * <p>
+     * Server's local file system is not supported.  Default file format is
+     * delimited text. See options for
+     * different file types and different options for each file type.  Table is
+     * saved to a single file if
+     * within max file size limits (may vary depending on datasink type).  If
+     * not, then table is split into
+     * multiple files; these may be smaller than the max size limit.
+     * <p>
+     * All filenames created are returned in the response.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -12255,12 +12272,202 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Export records from table
-     * export_records_to_files_response
+     * Export records from a table to files. All tables can be exported, in
+     * full or partial
+     * (see {@code columns_to_export} and {@code columns_to_skip}).
+     * Additional filtering can be applied when using export table with
+     * expression through SQL.
+     * Default destination is KIFS, though other storage types (Azure, S3, GCS,
+     * and HDFS) are supported
+     * through {@code datasink_name}; see {@link GPUdb#createDatasink(String,
+     * String, Map)}.
+     * <p>
+     * Server's local file system is not supported.  Default file format is
+     * delimited text. See options for
+     * different file types and different options for each file type.  Table is
+     * saved to a single file if
+     * within max file size limits (may vary depending on datasink type).  If
+     * not, then table is split into
+     * multiple files; these may be smaller than the max size limit.
+     * <p>
+     * All filenames created are returned in the response.
      * 
      * @param tableName
-     * @param filepath  Directory or File name (if file name, include ext)
+     * @param filepath  Path to data export target.  If {@code filepath} has a
+     *                  file extension, it is
+     *                  read as the name of a file. If {@code filepath} is a
+     *                  directory, then the source table name with a
+     *                  random UUID appended will be used as the name of each
+     *                  exported file, all written to that directory.
+     *                  If filepath is a filename, then all exported files will
+     *                  have a random UUID appended to the given
+     *                  name.  In either case, the target directory specified
+     *                  or implied must exist.  The names of all
+     *                  exported files are returned in the response.
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#BATCH_SIZE
+     *                 BATCH_SIZE}: Number of records to be exported as a
+     *                 batch.  The default value is '1000000'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMN_FORMATS
+     *                 COLUMN_FORMATS}: For each source column specified,
+     *                 applies the column-property-bound
+     *                 format.  Currently supported column properties include
+     *                 date, time, & datetime. The parameter value
+     *                 must be formatted as a JSON string of maps of column
+     *                 names to maps of column properties to their
+     *                 corresponding column formats, e.g.,
+     *                 '{ "order_date" : { "date" : "%Y.%m.%d" }, "order_time"
+     *                 : { "time" : "%H:%M:%S" } }'.
+     *                 See {@code default_column_formats} for valid format
+     *                 syntax.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMNS_TO_EXPORT
+     *                 COLUMNS_TO_EXPORT}: Comma-separated list of column names
+     *                 to export.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMNS_TO_SKIP
+     *                 COLUMNS_TO_SKIP}: Comma-separated list of column names
+     *                 to not export.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DATASINK_NAME
+     *                 DATASINK_NAME}: Datasink name, created using {@link
+     *                 GPUdb#createDatasink(String, String, Map)}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DEFAULT_COLUMN_FORMATS
+     *                 DEFAULT_COLUMN_FORMATS}: Specifies the default format to
+     *                 use to write data.  Currently
+     *                 supported column properties include date, time, &
+     *                 datetime.  This default column-property-bound
+     *                 format can be overridden by specifying a column property
+     *                 & format for a given source column in
+     *                 {@code column_formats}. For each specified annotation,
+     *                 the format will apply to all
+     *                 columns with that annotation unless custom {@code
+     *                 column_formats} for that
+     *                 annotation are specified.
+     *                 The parameter value must be formatted as a JSON string
+     *                 that is a map of column properties to their
+     *                 respective column formats, e.g., '{ "date" : "%Y.%m.%d",
+     *                 "time" : "%H:%M:%S" }'.  Column
+     *                 formats are specified as a string of control characters
+     *                 and plain text. The supported control
+     *                 characters are 'Y', 'm', 'd', 'H', 'M', 'S', and 's',
+     *                 which follow the Linux 'strptime()'
+     *                 specification, as well as 's', which specifies seconds
+     *                 and fractional seconds (though the fractional
+     *                 component will be truncated past milliseconds).
+     *                 Formats for the 'date' annotation must include the 'Y',
+     *                 'm', and 'd' control characters. Formats for
+     *                 the 'time' annotation must include the 'H', 'M', and
+     *                 either 'S' or 's' (but not both) control
+     *                 characters. Formats for the 'datetime' annotation meet
+     *                 both the 'date' and 'time' control character
+     *                 requirements. For example, '{"datetime" : "%m/%d/%Y
+     *                 %H:%M:%S" }' would be used to write text
+     *                 as "05/04/2000 12:12:11"
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#EXPORT_DDL
+     *                 EXPORT_DDL}: Save DDL to a separate file.  The default
+     *                 value is 'false'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FILE_EXTENTION
+     *                 FILE_EXTENTION}: Extension to give the export file.  The
+     *                 default value is '.csv'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FILE_TYPE
+     *                 FILE_TYPE}: Specifies the file format to use when
+     *                 exporting data.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DELIMITED_TEXT
+     *                 DELIMITED_TEXT}: Delimited text file format; e.g., CSV,
+     *                 TSV, PSV, etc.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#PARQUET
+     *                 PARQUET}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DELIMITED_TEXT
+     *                 DELIMITED_TEXT}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#KINETICA_HEADER
+     *                 KINETICA_HEADER}: Whether to include a Kinetica
+     *                 proprietary header. Will not be
+     *                 written if {@code text_has_header} is
+     *                 {@code false}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#KINETICA_HEADER_DELIMITER
+     *                 KINETICA_HEADER_DELIMITER}: If a Kinetica proprietary
+     *                 header is included, then specify a
+     *                 property separator. Different from column delimiter.
+     *                 The default value is '|'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#SINGLE_FILE
+     *                 SINGLE_FILE}: Save records to a single file. This option
+     *                 may be ignored if file
+     *                 size exceeds internal file size limits (this limit will
+     *                 differ on different targets).
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
+     *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TEXT_DELIMITER
+     *                 TEXT_DELIMITER}: Specifies the character to write out to
+     *                 delimit field values and
+     *                 field names in the header (if present).
+     *                 For {@code delimited_text} {@code file_type} only.  The
+     *                 default value is ','.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TEXT_HAS_HEADER
+     *                 TEXT_HAS_HEADER}: Indicates whether to write out a
+     *                 header row.
+     *                 For {@code delimited_text} {@code file_type} only.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
+     *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TEXT_NULL_STRING
+     *                 TEXT_NULL_STRING}: Specifies the character string that
+     *                 should be written out for the null
+     *                 value in the data.
+     *                 For {@code delimited_text} {@code file_type} only.  The
+     *                 default value is '\\N'.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -19727,6 +19934,26 @@ public class GPUdb extends GPUdbBase {
      *                 than zero), it filters the demands outside this radius
      *                 centered around the truck's originating location
      *                 (distance or time).  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#BATCH_TSM_MODE
+     *                 BATCH_TSM_MODE}: For the {@code match_supply_demand}
+     *                 solver only. When enabled, it sets the number of visits
+     *                 on each demand location by a single salesman at each
+     *                 trip is considered to be (one) 1, otherwise there is no
+     *                 bound.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}:
+     *                 Sets only one visit per demand location by a salesman
+     *                 (tsm mode)
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}: No preset limit (usual msdo mode)
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#RESTRICTED_TRUCK_TYPE
      *                 RESTRICTED_TRUCK_TYPE}: For the {@code

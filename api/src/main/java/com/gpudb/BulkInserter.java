@@ -943,6 +943,7 @@ public class BulkInserter<T> implements AutoCloseable {
         // Create the scheduler only if the flush interval has been set to a valid value by the user.
         // The default value is -1 to indicate that automatic flush is not called for
         if( this.flushOptions.getFlushInterval() > 0 ) {
+            GPUdbLogger.debug("Timed flush turned on, flush interval set to <" + this.flushOptions.getFlushInterval() + ">");
             timedFlushExecutorService = Executors.newSingleThreadScheduledExecutor();
             timedFlushExecutorService.scheduleWithFixedDelay(new TimedFlushTask(this),
                     this.flushOptions.getFlushInterval(),
@@ -950,7 +951,7 @@ public class BulkInserter<T> implements AutoCloseable {
                     TimeUnit.SECONDS);
             timedFlushExecutorServiceTerminated = false;
         } else {
-            GPUdbLogger.debug("Timed flush turned off, flush interval set to negative value ...");
+            GPUdbLogger.debug("Timed flush turned off, flush interval set to negative value");
             this.timedFlushExecutorService = null;
             timedFlushExecutorServiceTerminated = true;
         }
@@ -1002,9 +1003,9 @@ public class BulkInserter<T> implements AutoCloseable {
 
             //reset the state to false after restart
             timedFlushExecutorServiceTerminated = timedFlushExecutorService.isTerminated();
-            GPUdbLogger.info(String.format("Timed flush restarted with new flush interval = %d", this.flushOptions.getFlushInterval()));
+            GPUdbLogger.debug("Timed flush restarted, flush interval set to <" + this.flushOptions.getFlushInterval() + ">");
         } else {
-            GPUdbLogger.info("Timed flush turned off; flush interval set to a negative value ...");
+        	GPUdbLogger.debug("Timed flush turned off, flush interval set to negative value");
         }
 
 

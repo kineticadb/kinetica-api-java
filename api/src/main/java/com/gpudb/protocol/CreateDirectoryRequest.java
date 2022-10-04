@@ -54,9 +54,9 @@ public class CreateDirectoryRequest implements IndexedRecord {
      * empty string in this case. The user must exist.
      *         <li> {@link
      * com.gpudb.protocol.CreateDirectoryRequest.Options#DATA_LIMIT
-     * DATA_LIMIT}: The maximum capacity to apply to the created directory. Set
-     * to -1 to indicate no upper limit. If empty, the system default limit is
-     * applied.
+     * DATA_LIMIT}: The maximum capacity, in bytes, to apply to the created
+     * directory. Set to -1 to indicate no upper limit. If empty, the system
+     * default limit is applied.
      *         <li> {@link
      * com.gpudb.protocol.CreateDirectoryRequest.Options#NO_ERROR_IF_EXISTS
      * NO_ERROR_IF_EXISTS}: If {@code true}, does not return an error if the
@@ -84,9 +84,9 @@ public class CreateDirectoryRequest implements IndexedRecord {
         public static final String CREATE_HOME_DIRECTORY = "create_home_directory";
 
         /**
-         * The maximum capacity to apply to the created directory. Set to -1 to
-         * indicate no upper limit. If empty, the system default limit is
-         * applied.
+         * The maximum capacity, in bytes, to apply to the created directory.
+         * Set to -1 to indicate no upper limit. If empty, the system default
+         * limit is applied.
          */
         public static final String DATA_LIMIT = "data_limit";
 
@@ -137,9 +137,9 @@ public class CreateDirectoryRequest implements IndexedRecord {
      *                 case. The user must exist.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDirectoryRequest.Options#DATA_LIMIT
-     *                 DATA_LIMIT}: The maximum capacity to apply to the
-     *                 created directory. Set to -1 to indicate no upper limit.
-     *                 If empty, the system default limit is applied.
+     *                 DATA_LIMIT}: The maximum capacity, in bytes, to apply to
+     *                 the created directory. Set to -1 to indicate no upper
+     *                 limit. If empty, the system default limit is applied.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDirectoryRequest.Options#NO_ERROR_IF_EXISTS
      *                 NO_ERROR_IF_EXISTS}: If {@code true}, does not return an
@@ -198,9 +198,9 @@ public class CreateDirectoryRequest implements IndexedRecord {
      *         must exist.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateDirectoryRequest.Options#DATA_LIMIT
-     *         DATA_LIMIT}: The maximum capacity to apply to the created
-     *         directory. Set to -1 to indicate no upper limit. If empty, the
-     *         system default limit is applied.
+     *         DATA_LIMIT}: The maximum capacity, in bytes, to apply to the
+     *         created directory. Set to -1 to indicate no upper limit. If
+     *         empty, the system default limit is applied.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateDirectoryRequest.Options#NO_ERROR_IF_EXISTS
      *         NO_ERROR_IF_EXISTS}: If {@code true}, does not return an error
@@ -234,9 +234,9 @@ public class CreateDirectoryRequest implements IndexedRecord {
      *                 case. The user must exist.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDirectoryRequest.Options#DATA_LIMIT
-     *                 DATA_LIMIT}: The maximum capacity to apply to the
-     *                 created directory. Set to -1 to indicate no upper limit.
-     *                 If empty, the system default limit is applied.
+     *                 DATA_LIMIT}: The maximum capacity, in bytes, to apply to
+     *                 the created directory. Set to -1 to indicate no upper
+     *                 limit. If empty, the system default limit is applied.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDirectoryRequest.Options#NO_ERROR_IF_EXISTS
      *                 NO_ERROR_IF_EXISTS}: If {@code true}, does not return an

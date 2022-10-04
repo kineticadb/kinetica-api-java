@@ -2,6 +2,12 @@
 
 ## Version 7.1
 
+### Version 7.1.8.2 - 2022-10-03
+
+#### Changed
+-   Reduced logging during setting of timed flush
+
+
 ### Version 7.1.8.1 - 2022-10-02
 
 #### Changed

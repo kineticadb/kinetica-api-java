@@ -63,13 +63,19 @@ public class ExportRecordsToFilesResponse implements IndexedRecord {
      */
     public ExportRecordsToFilesResponse() {
     }
+
+    /**
+     * 
+     * @return Name of source table
+     * 
+     */
     public String getTableName() {
         return tableName;
     }
 
     /**
      * 
-     * @param tableName
+     * @param tableName  Name of source table
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -78,13 +84,19 @@ public class ExportRecordsToFilesResponse implements IndexedRecord {
         this.tableName = (tableName == null) ? "" : tableName;
         return this;
     }
+
+    /**
+     * 
+     * @return Number of source table records exported
+     * 
+     */
     public long getCountExported() {
         return countExported;
     }
 
     /**
      * 
-     * @param countExported
+     * @param countExported  Number of source table records exported
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -93,13 +105,19 @@ public class ExportRecordsToFilesResponse implements IndexedRecord {
         this.countExported = countExported;
         return this;
     }
+
+    /**
+     * 
+     * @return Number of source table records skipped
+     * 
+     */
     public long getCountSkipped() {
         return countSkipped;
     }
 
     /**
      * 
-     * @param countSkipped
+     * @param countSkipped  Number of source table records skipped
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -108,13 +126,19 @@ public class ExportRecordsToFilesResponse implements IndexedRecord {
         this.countSkipped = countSkipped;
         return this;
     }
+
+    /**
+     * 
+     * @return Names of all exported files
+     * 
+     */
     public List<String> getFiles() {
         return files;
     }
 
     /**
      * 
-     * @param files
+     * @param files  Names of all exported files
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -126,7 +150,7 @@ public class ExportRecordsToFilesResponse implements IndexedRecord {
 
     /**
      * 
-     * @return timestamp of last file scanned
+     * @return Timestamp of last file scanned
      * 
      */
     public long getLastTimestamp() {
@@ -135,7 +159,7 @@ public class ExportRecordsToFilesResponse implements IndexedRecord {
 
     /**
      * 
-     * @param lastTimestamp  timestamp of last file scanned
+     * @param lastTimestamp  Timestamp of last file scanned
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -177,7 +201,7 @@ public class ExportRecordsToFilesResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Additional information.
+     * @return Additional information
      * 
      */
     public Map<String, String> getInfo() {
@@ -186,7 +210,7 @@ public class ExportRecordsToFilesResponse implements IndexedRecord {
 
     /**
      * 
-     * @param info  Additional information.
+     * @param info  Additional information
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

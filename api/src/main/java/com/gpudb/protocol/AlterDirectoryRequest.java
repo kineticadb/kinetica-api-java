@@ -17,7 +17,7 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#alterDirectory(AlterDirectoryRequest)}.
  * <p>
- * Alters a directory in <a href="../../../../../../tools/kifs/"
+ * Alters an existing directory in <a href="../../../../../../tools/kifs/"
  * target="_top">KiFS</a>.
  */
 public class AlterDirectoryRequest implements IndexedRecord {
@@ -44,21 +44,21 @@ public class AlterDirectoryRequest implements IndexedRecord {
 
 
     /**
-     * Map containing the properties of the directory to be updated. Error if
+     * Map containing the properties of the directory to be altered. Error if
      * empty.
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.AlterDirectoryRequest.DirectoryUpdatesMap#DATA_LIMIT
-     * DATA_LIMIT}: The maximum capacity to apply to the created directory. Set
-     * to -1 to indicate no upper limit.
+     * DATA_LIMIT}: The maximum capacity, in bytes, to apply to the directory.
+     * Set to -1 to indicate no upper limit.
      * </ul>
      * A set of string constants for the parameter {@code directoryUpdatesMap}.
      */
     public static final class DirectoryUpdatesMap {
 
         /**
-         * The maximum capacity to apply to the created directory. Set to -1 to
-         * indicate no upper limit.
+         * The maximum capacity, in bytes, to apply to the directory. Set to -1
+         * to indicate no upper limit.
          */
         public static final String DATA_LIMIT = "data_limit";
 
@@ -83,14 +83,14 @@ public class AlterDirectoryRequest implements IndexedRecord {
      * Constructs an AlterDirectoryRequest object with the specified
      * parameters.
      * 
-     * @param directoryName  Name of the directory in KiFS to be created.
+     * @param directoryName  Name of the directory in KiFS to be altered.
      * @param directoryUpdatesMap  Map containing the properties of the
-     *                             directory to be updated. Error if empty.
+     *                             directory to be altered. Error if empty.
      *                             <ul>
      *                                     <li> {@link
      *                             com.gpudb.protocol.AlterDirectoryRequest.DirectoryUpdatesMap#DATA_LIMIT
-     *                             DATA_LIMIT}: The maximum capacity to apply
-     *                             to the created directory. Set to -1 to
+     *                             DATA_LIMIT}: The maximum capacity, in bytes,
+     *                             to apply to the directory. Set to -1 to
      *                             indicate no upper limit.
      *                             </ul>
      * @param options  Optional parameters.
@@ -104,7 +104,7 @@ public class AlterDirectoryRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the directory in KiFS to be created.
+     * @return Name of the directory in KiFS to be altered.
      * 
      */
     public String getDirectoryName() {
@@ -113,7 +113,7 @@ public class AlterDirectoryRequest implements IndexedRecord {
 
     /**
      * 
-     * @param directoryName  Name of the directory in KiFS to be created.
+     * @param directoryName  Name of the directory in KiFS to be altered.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -125,12 +125,12 @@ public class AlterDirectoryRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Map containing the properties of the directory to be updated.
+     * @return Map containing the properties of the directory to be altered.
      *         Error if empty.
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.AlterDirectoryRequest.DirectoryUpdatesMap#DATA_LIMIT
-     *         DATA_LIMIT}: The maximum capacity to apply to the created
+     *         DATA_LIMIT}: The maximum capacity, in bytes, to apply to the
      *         directory. Set to -1 to indicate no upper limit.
      *         </ul>
      * 
@@ -142,12 +142,12 @@ public class AlterDirectoryRequest implements IndexedRecord {
     /**
      * 
      * @param directoryUpdatesMap  Map containing the properties of the
-     *                             directory to be updated. Error if empty.
+     *                             directory to be altered. Error if empty.
      *                             <ul>
      *                                     <li> {@link
      *                             com.gpudb.protocol.AlterDirectoryRequest.DirectoryUpdatesMap#DATA_LIMIT
-     *                             DATA_LIMIT}: The maximum capacity to apply
-     *                             to the created directory. Set to -1 to
+     *                             DATA_LIMIT}: The maximum capacity, in bytes,
+     *                             to apply to the directory. Set to -1 to
      *                             indicate no upper limit.
      *                             </ul>
      * 
