@@ -2,6 +2,17 @@
 
 ## Version 7.1
 
+### Version 7.1.8.3 - 2022-10-17
+
+#### Added
+-   Retry handler for all requests
+-   Logging during timed flush executions
+
+#### Changed
+-   Reduced idle connection check interval to 100ms
+-   Improved reporting of `BulkInserter` errors
+
+
 ### Version 7.1.8.2 - 2022-10-03
 
 #### Changed
@@ -20,9 +31,9 @@
 -   Support for boolean type
 
 #### Changed
--   BulkInserter will do a default of 3 local retries for any non-data failure
+-   `BulkInserter` will do a default of 3 local retries for any non-data failure
     before attempting to fail over to another cluster
--   Timed flush mechanism can be set or reset after BulkInserter construction
+-   Timed flush mechanism can be set or reset after `BulkInserter` construction
 -   Fully relocated dependencies to avoid library conflicts
 
 #### Fixed
@@ -44,7 +55,7 @@
 ### Version 7.1.7.2 - 2022-08-12
 
 #### Added
--   Method to query a BulkInserter's multi-head status
+-   Method to query a `BulkInserter` multi-head status
  
 #### Changed
 -   Switched ordering of flush & thread shutdown sequence
@@ -92,9 +103,9 @@
 
 #### Added
 -   Option for automatically flushing the BulkInserter at a given delay
--   Added support for retrieving errant records from BulkInserter ingest
--   Added support for automatically flushing the BulkInserter and cleaning up of
-    service objects upon BulkInserter shutdown
+-   Added support for retrieving errant records from `BulkInserter` ingest
+-   Added support for automatically flushing the `BulkInserter` and cleaning up of
+    service objects upon `BulkInserter` shutdown
 -   Improved SSL cert bypass
 
 
@@ -170,13 +181,13 @@
 ### Version 7.1.2.1 - 2021-01-26
 
 #### Fixed
--   An issue with BulkInserter flush when retryCount > 0
+-   An issue with `BulkInserter` flush when retryCount > 0
 
 
 ### Version 7.1.2.0 - 2021-01-25
 
 #### Performance Enhancements
--   Converted the BulkInserter flushing mechanism from single-threaded
+-   Converted the `BulkInserter` flushing mechanism from single-threaded
     to parallel-threaded.
 
 #### Note
@@ -211,7 +222,7 @@
 #### Added
 -   Support for intra-cluster, also known as N+1, failover.
 -   Support for logging.
--   GPUdb.Options options (solely handled by getters and setters):
+-   `GPUdb.Options` options (solely handled by getters and setters):
     -   clusterReconnectCount -- The number of times the API tries to
                                  reconnect to the same cluster (when a
                                  failover event has been triggered), before
@@ -255,21 +266,21 @@
                         by the user (via log4j.properties etc.), then that will
                         be honored only if the default logging level is used.
                         Otherwise, the programmatically set level will be used.
--   Added class GPUdb.ClusterAddressInfo which contains information about a
+-   Added class `GPUdb.ClusterAddressInfo` which contains information about a
     given Kinetica cluster, including rank URLs and hostnames.
--   GPUdb methods:
-    -   getHARingInfo()
-    -   getHARingSize()
-    -   getPrimaryHostName()
+-   `GPUdb` methods:
+    -   `getHARingInfo()`
+    -   `getHARingSize()`
+    -   `getPrimaryHostName()`
 
 
 #### Changed
--   BulkInserter default retry count to 1 (from 0).
+-   `BulkInserter` default retry count to 1 (from 0).
 
 
 #### Deprecated
--   GPUdb.setHostManagerPort(int) method.  The user must set the host manager
-    at GPUdb initialization; changing the host manager port will not be
+-   `GPUdb.setHostManagerPort(int)` method.  The user must set the host manager
+    at `GPUdb` initialization; changing the host manager port will not be
     permitted post-initialization.  The method is now a no-op (until removed
     in 7.2 or a later version).
 
@@ -312,14 +323,14 @@
 ### Version 7.0.20.2 - 2021-01-26
 
 #### Fixed
--   An issue with BulkInserter flush when retryCount > 0
+-   An issue with `BulkInserter` flush when retryCount > 0
 
 
 
 ### Version 7.0.20.1 - 2020-12-23
 
 #### Performance Enhancements
--   Converted the BulkInserter flushing mechanism from single-threaded
+-   Converted the `BulkInserter` flushing mechanism from single-threaded
     to parallel-threaded.
 
 
@@ -345,13 +356,13 @@
 ### Version 7.0.19.2 - 2021-01-26
 
 #### Fixed
--   An issue with BulkInserter flush when retryCount > 0
+-   An issue with `BulkInserter` flush when retryCount > 0
 
 
 ### Version 7.0.19.1 - 2020-12-23
 
 #### Performance Enhancements
--   Converted the BulkInserter flushing mechanism from single-threaded
+-   Converted the `BulkInserter` flushing mechanism from single-threaded
     to parallel-threaded.
 
 
@@ -364,7 +375,7 @@
 ### Version 7.0.18.1 - 2020-07-29
 
 #### Added
--   GPUdb.Options member connectionInactivityValidationTimeout which controls
+-   `GPUdb.Options` member `connectionInactivityValidationTimeout` which controls
     the period of inactivity after which a connection would be checked
     for inactivity or stale-ness before leasing to a client.  The value is given
     in milliseconds.  The default value is 200 ms.  Note that this is for
@@ -374,9 +385,9 @@
     if they want it.
 
 #### Changed
--   The default value of GPUdb.Options member serverConnectionTimeout to 10000
+-   The default value of `GPUdb.Options` member `serverConnectionTimeout` to `10000`
     (equivalent to 10 seconds).
--   The default value of GPUdb.Options member maxConnectionsPerHost to 10.
+-   The default value of `GPUdb.Options` member `maxConnectionsPerHost` to `10`.
 
 
 ### Version 7.0.18.0 - 2020-07-28
@@ -389,7 +400,7 @@
 ### Version 7.0.17.1 - 2020-07-14
 
 #### Added
--   GPUdb.Options member serverConnectionTimeout which controls the
+-   `GPUdb.Options` member `serverConnectionTimeout` which controls the
     server connection timeout (not the request timeout).  The
     value is given in milliseconds.  The default value is 3 seconds
     (3000).
@@ -435,8 +446,8 @@
 
 #### Added
 -   Options for configuring the maximum allowed number of connections:
-    -   GPUdb.Options.maxTotalConnections (across all hosts; default 40)
-    -   GPUdb.Options.maxConnectionsPerHost (for any given host; default 40)
+    -   `GPUdb.Options.maxTotalConnections` (across all hosts; default 40)
+    -   `GPUdb.Options.maxConnectionsPerHost` (for any given host; default 40)
 
 
 #### Fixed
@@ -456,7 +467,7 @@
     offline mode.
 
 #### Changed
--   GPUdb constructor behavior--if a single URL is used and no primary URL
+-   `GPUdb` constructor behavior--if a single URL is used and no primary URL
     is specified via the options, the given single URL will be treated as
     the primary URL.
 
@@ -479,19 +490,19 @@
 ### Version 7.0.7.1 - 2019-09-11
 
 #### Added
--   An option to GPUdb.Options for bypassing SSL certificate verification
-    for HTTPS connections.  Obtained by and set by Options.getBypassSslCertCheck()
-    and Options.setBypassSslCertCheck(boolean) methods.
+-   An option to `GPUdb.Options` for bypassing SSL certificate verification
+    for HTTPS connections.  Obtained by and set by `Options.getBypassSslCertCheck()`
+    and `Options.setBypassSslCertCheck(boolean)` methods.
 
 
 ### Version 7.0.7.0 - 2019-08-28
 
 #### Added
--   Support for adding and removing custom headers to the GPUdb object.  See
+-   Support for adding and removing custom headers to the `GPUdb` object.  See
     methods:
-    -   GPUdb.addHttpHeader(String, String)
-    -   GPUdb.removeHttpHeader(String)
--   Support for new column property 'ulong' to multi-head I/O.  ***Compatible
+    -   `GPUdb.addHttpHeader(String, String)`
+    -   `GPUdb.removeHttpHeader(String)`
+-   Support for new column property `ulong` to multi-head I/O.  ***Compatible
     with Kinetica Server version 7.0.7.0 and later only.***
 
 #### Fixed
@@ -516,17 +527,17 @@
 ### Version 7.0.6.0 - 2019-08-05
 
 #### Added
--   Support for passing /get/records options to RecordRetriever; can be set
+-   Support for passing `/get/records` options to `RecordRetriever`; can be set
     via the constructors and also be set by the setter method.
 -   Support for overriding the high availability synchronicity mode for
-    endpoints; set the mode (enum HASynchronicityMode) with the setter
-    method setHASyncMode():
-    - DEFAULT
-    - SYNCHRONOUS
-    - ASYNCRHONOUS
--   Enumerations, Type.Column.ColumnType and Type.Column.ColumnBaseType,
-    to indicate a column's type.  Use getters Type.Column.getColumnType()
-    and Type.Column.getColumnBaseType() to obtain the appropriate enumeration.
+    endpoints; set the mode (enum `HASynchronicityMode`) with the setter
+    method `setHASyncMode()`:
+    - `DEFAULT`
+    - `SYNCHRONOUS`
+    - `ASYNCRHONOUS`
+-   Enumerations, `Type.Column.ColumnType` and `Type.Column.ColumnBaseType`,
+    to indicate a column's type.  Use getters `Type.Column.getColumnType()`
+    and `Type.Column.getColumnBaseType()` to obtain the appropriate enumeration.
     This is more efficient than checking for strings in the column's property
     list or checking for Java class equivalency.
 
@@ -539,7 +550,7 @@
 ### Version 7.0.5.0 - 2019-07-21
 
 #### Added
--   A 'putDateTime' method to GenericRecord that parses string values
+-   A `putDateTime` method to `GenericRecord` that parses string values
     with a variety of different date, time, and datetime formats
     and converts them to the appropriate Kinetica format for the column's type.
     Of the accepteble formats, the date component can be any of YMD, MDY, or
@@ -554,7 +565,7 @@
 -   Minor documentation and some options for some endpoints
 
 #### Changed
--   Parameters for /visualize/isoschrone
+-   Parameters for `/visualize/isoschrone`
 
 
 ### Version 7.0.3.0 - 2019-05-07
@@ -570,30 +581,30 @@
 
 
 ### Version 7.0.2.0 - 2019-04-05
--   Added support for selecting a primary host for the GPUdb class
+-   Added support for selecting a primary host for the `GPUdb` class
 
 
 ### Version 7.0.1.1 - 2019-04-02
--   Added missing types for Type.fromDynamicSchema():
-    --  datetime
-    --  geometry (mapped to wkt)
--   Added method hasProperty(String) to Type.Column; provides a convenient
+-   Added missing types for `Type.fromDynamicSchema()`:
+    --  `datetime`
+    --  `geometry` (mapped to `wkt`)
+-   Added method `hasProperty(String)` to `Type.Column`; provides a convenient
     functionality to check if a given column property applies to the given
     column.
 
 
 ### Version 7.0.1.0 - 2019-03-11
--   Added support for comma-separated URLs for the GPUdb constructor that
+-   Added support for comma-separated URLs for the `GPUdb` constructor that
     takes a string.
 
 
 ### Version 7.0.0.2 - 2019-02-26
--   Added a new column property: INIT_WITH_NOW
+-   Added a new column property: `INIT_WITH_NOW`
 
 
 ### Version 7.0.0.1 - 2019-02-08
 -   Added support for high availability (HA) failover logic to the
-    GPUdb class
+    `GPUdb` class
 
 
 ### Version 7.0.0.0 - 2019-01-31
@@ -604,17 +615,17 @@
 
 ### Version 6.2.0 - 2018-09-26
 
--   New RecordRetriever class to support multi-head record lookup by
+-   New `RecordRetriever` class to support multi-head record lookup by
     shard key
--   BulkInserter.WorkerList class deprecated in favor of top-level
-    WorkerList class used by both BulkInserter and RecordRetriever
+-   `BulkInserter.WorkerList` class deprecated in favor of top-level
+    `WorkerList` class used by both `BulkInserter` and `RecordRetriever`
 -   Added support for host manager endpoints
 -   Added member dataType to the response protocol classes that return
     a dynamically generated table.  Currently, that includes:
-    -   AggregateGroupByResponse
-    -   AggregateUniqueResponse
-    -   AggregateUnpivotResponse
-    -   GetRecordsByColumnResponse
+    -   `AggregateGroupByResponse`
+    -   `AggregateUniqueResponse`
+    -   `AggregateUnpivotResponse`
+    -   `GetRecordsByColumnResponse`
 
 
 ## Version 6.1.0 - 2017-10-05
@@ -636,7 +647,7 @@
 
 -   Record objects now support complex column names (expressions, multipart
     join names, etc.)
--   Record objects now support access via a Map interface via getDataMap()
+-   Record objects now support access via a Map interface via `getDataMap()`
 -   Can now pass arbitrary additional HTTP headers to GPUdb
 -   Added nullable column support
 

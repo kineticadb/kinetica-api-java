@@ -535,11 +535,13 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * the target table exists, the column names must match the source data
      * field names for a name-mapping
      * to be successful.
+     * <p>
+     * Mutually exclusive with {@code columns_to_skip}.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#COLUMNS_TO_SKIP
      * COLUMNS_TO_SKIP}: Specifies a comma-delimited list of columns from the
      * source data to
-     * skip.  Mutually exclusive to columns_to_load.
+     * skip.  Mutually exclusive with {@code columns_to_load}.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DEFAULT_COLUMN_FORMATS
      * DEFAULT_COLUMN_FORMATS}: Specifies the default format to be applied to
@@ -962,12 +964,14 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * the target table exists, the column names must match the source data
          * field names for a name-mapping
          * to be successful.
+         * <p>
+         * Mutually exclusive with {@code columns_to_skip}.
          */
         public static final String COLUMNS_TO_LOAD = "columns_to_load";
 
         /**
          * Specifies a comma-delimited list of columns from the source data to
-         * skip.  Mutually exclusive to columns_to_load.
+         * skip.  Mutually exclusive with {@code columns_to_load}.
          */
         public static final String COLUMNS_TO_SKIP = "columns_to_skip";
 
@@ -1816,11 +1820,12 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 the target table exists, the column names must match the
      *                 source data field names for a name-mapping
      *                 to be successful.
+     *                 Mutually exclusive with {@code columns_to_skip}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#COLUMNS_TO_SKIP
      *                 COLUMNS_TO_SKIP}: Specifies a comma-delimited list of
      *                 columns from the source data to
-     *                 skip.  Mutually exclusive to columns_to_load.
+     *                 skip.  Mutually exclusive with {@code columns_to_load}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DEFAULT_COLUMN_FORMATS
      *                 DEFAULT_COLUMN_FORMATS}: Specifies the default format to
@@ -2776,11 +2781,12 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         the target table exists, the column names must match the source
      *         data field names for a name-mapping
      *         to be successful.
+     *         Mutually exclusive with {@code columns_to_skip}.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#COLUMNS_TO_SKIP
      *         COLUMNS_TO_SKIP}: Specifies a comma-delimited list of columns
      *         from the source data to
-     *         skip.  Mutually exclusive to columns_to_load.
+     *         skip.  Mutually exclusive with {@code columns_to_load}.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DEFAULT_COLUMN_FORMATS
      *         DEFAULT_COLUMN_FORMATS}: Specifies the default format to be
@@ -3216,11 +3222,12 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 the target table exists, the column names must match the
      *                 source data field names for a name-mapping
      *                 to be successful.
+     *                 Mutually exclusive with {@code columns_to_skip}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#COLUMNS_TO_SKIP
      *                 COLUMNS_TO_SKIP}: Specifies a comma-delimited list of
      *                 columns from the source data to
-     *                 skip.  Mutually exclusive to columns_to_load.
+     *                 skip.  Mutually exclusive with {@code columns_to_load}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DEFAULT_COLUMN_FORMATS
      *                 DEFAULT_COLUMN_FORMATS}: Specifies the default format to

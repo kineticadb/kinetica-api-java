@@ -82,10 +82,33 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      * See {@code default_column_formats} for valid format syntax.
      *         <li> {@link
      * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMNS_TO_EXPORT
-     * COLUMNS_TO_EXPORT}: Comma-separated list of column names to export.
+     * COLUMNS_TO_EXPORT}: Specifies a comma-delimited list of columns from the
+     * source table to
+     * export, written to the output file in the order they are given.
+     * <p>
+     * Column names can be provided, in which case the target file will use
+     * those names as the column
+     * headers as well.
+     * <p>
+     * Alternatively, column numbers can be specified--discretely or as a
+     * range.  For example, a value of
+     * '5,7,1..3' will write values from the fifth column in the source table
+     * into the first column in the
+     * target file, from the seventh column in the source table into the second
+     * column in the target file,
+     * and from the first through third columns in the source table into the
+     * third through fifth columns in
+     * the target file.
+     * <p>
+     * Mutually exclusive with {@code columns_to_skip}.
      *         <li> {@link
      * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMNS_TO_SKIP
-     * COLUMNS_TO_SKIP}: Comma-separated list of column names to not export.
+     * COLUMNS_TO_SKIP}: Comma-separated list of column names or column numbers
+     * to not
+     * export.  All columns in the source table not specified will be written
+     * to the target file in the
+     * order they appear in the table definition.  Mutually exclusive with
+     * {@code columns_to_export}.
      *         <li> {@link
      * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DATASINK_NAME
      * DATASINK_NAME}: Datasink name, created using {@link
@@ -239,12 +262,33 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
         public static final String COLUMN_FORMATS = "column_formats";
 
         /**
-         * Comma-separated list of column names to export.
+         * Specifies a comma-delimited list of columns from the source table to
+         * export, written to the output file in the order they are given.
+         * <p>
+         * Column names can be provided, in which case the target file will use
+         * those names as the column
+         * headers as well.
+         * <p>
+         * Alternatively, column numbers can be specified--discretely or as a
+         * range.  For example, a value of
+         * '5,7,1..3' will write values from the fifth column in the source
+         * table into the first column in the
+         * target file, from the seventh column in the source table into the
+         * second column in the target file,
+         * and from the first through third columns in the source table into
+         * the third through fifth columns in
+         * the target file.
+         * <p>
+         * Mutually exclusive with {@code columns_to_skip}.
          */
         public static final String COLUMNS_TO_EXPORT = "columns_to_export";
 
         /**
-         * Comma-separated list of column names to not export.
+         * Comma-separated list of column names or column numbers to not
+         * export.  All columns in the source table not specified will be
+         * written to the target file in the
+         * order they appear in the table definition.  Mutually exclusive with
+         * {@code columns_to_export}.
          */
         public static final String COLUMNS_TO_SKIP = "columns_to_skip";
 
@@ -455,12 +499,33 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *                 syntax.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMNS_TO_EXPORT
-     *                 COLUMNS_TO_EXPORT}: Comma-separated list of column names
-     *                 to export.
+     *                 COLUMNS_TO_EXPORT}: Specifies a comma-delimited list of
+     *                 columns from the source table to
+     *                 export, written to the output file in the order they are
+     *                 given.
+     *                 Column names can be provided, in which case the target
+     *                 file will use those names as the column
+     *                 headers as well.
+     *                 Alternatively, column numbers can be
+     *                 specified--discretely or as a range.  For example, a
+     *                 value of
+     *                 '5,7,1..3' will write values from the fifth column in
+     *                 the source table into the first column in the
+     *                 target file, from the seventh column in the source table
+     *                 into the second column in the target file,
+     *                 and from the first through third columns in the source
+     *                 table into the third through fifth columns in
+     *                 the target file.
+     *                 Mutually exclusive with {@code columns_to_skip}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMNS_TO_SKIP
      *                 COLUMNS_TO_SKIP}: Comma-separated list of column names
-     *                 to not export.
+     *                 or column numbers to not
+     *                 export.  All columns in the source table not specified
+     *                 will be written to the target file in the
+     *                 order they appear in the table definition.  Mutually
+     *                 exclusive with
+     *                 {@code columns_to_export}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DATASINK_NAME
      *                 DATASINK_NAME}: Datasink name, created using {@link
@@ -684,12 +749,31 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *         See {@code default_column_formats} for valid format syntax.
      *                 <li> {@link
      *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMNS_TO_EXPORT
-     *         COLUMNS_TO_EXPORT}: Comma-separated list of column names to
-     *         export.
+     *         COLUMNS_TO_EXPORT}: Specifies a comma-delimited list of columns
+     *         from the source table to
+     *         export, written to the output file in the order they are given.
+     *         Column names can be provided, in which case the target file will
+     *         use those names as the column
+     *         headers as well.
+     *         Alternatively, column numbers can be specified--discretely or as
+     *         a range.  For example, a value of
+     *         '5,7,1..3' will write values from the fifth column in the source
+     *         table into the first column in the
+     *         target file, from the seventh column in the source table into
+     *         the second column in the target file,
+     *         and from the first through third columns in the source table
+     *         into the third through fifth columns in
+     *         the target file.
+     *         Mutually exclusive with {@code columns_to_skip}.
      *                 <li> {@link
      *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMNS_TO_SKIP
-     *         COLUMNS_TO_SKIP}: Comma-separated list of column names to not
-     *         export.
+     *         COLUMNS_TO_SKIP}: Comma-separated list of column names or column
+     *         numbers to not
+     *         export.  All columns in the source table not specified will be
+     *         written to the target file in the
+     *         order they appear in the table definition.  Mutually exclusive
+     *         with
+     *         {@code columns_to_export}.
      *                 <li> {@link
      *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DATASINK_NAME
      *         DATASINK_NAME}: Datasink name, created using {@link
@@ -855,12 +939,33 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *                 syntax.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMNS_TO_EXPORT
-     *                 COLUMNS_TO_EXPORT}: Comma-separated list of column names
-     *                 to export.
+     *                 COLUMNS_TO_EXPORT}: Specifies a comma-delimited list of
+     *                 columns from the source table to
+     *                 export, written to the output file in the order they are
+     *                 given.
+     *                 Column names can be provided, in which case the target
+     *                 file will use those names as the column
+     *                 headers as well.
+     *                 Alternatively, column numbers can be
+     *                 specified--discretely or as a range.  For example, a
+     *                 value of
+     *                 '5,7,1..3' will write values from the fifth column in
+     *                 the source table into the first column in the
+     *                 target file, from the seventh column in the source table
+     *                 into the second column in the target file,
+     *                 and from the first through third columns in the source
+     *                 table into the third through fifth columns in
+     *                 the target file.
+     *                 Mutually exclusive with {@code columns_to_skip}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMNS_TO_SKIP
      *                 COLUMNS_TO_SKIP}: Comma-separated list of column names
-     *                 to not export.
+     *                 or column numbers to not
+     *                 export.  All columns in the source table not specified
+     *                 will be written to the target file in the
+     *                 order they appear in the table definition.  Mutually
+     *                 exclusive with
+     *                 {@code columns_to_export}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DATASINK_NAME
      *                 DATASINK_NAME}: Datasink name, created using {@link

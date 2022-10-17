@@ -47,6 +47,8 @@ public class BulkInserterExample {
 
         bulkInserterWithExplicitCloseCall( gpudb );
 
+        bulkInserterWithExplicitCloseCallWithTimedFlush(gpudb);
+
     }
 
     public static void bulkInserterWithTryWithResources(GPUdb gpudb ) throws Exception {
@@ -135,6 +137,55 @@ public class BulkInserterExample {
         } else {
             GPUdbLogger.info(
                     "Successfully inserted <" + numRecords + "> records into table <" + tableName + ">"
+            );
+        }
+
+    }
+
+    public static void bulkInserterWithExplicitCloseCallWithTimedFlush(GPUdb gpudb ) throws Exception {
+
+        Pair<String, Type> tableNameTypePair = setUp(gpudb, true);
+
+        String tableName = tableNameTypePair.getLeft();
+        Type tableDefinition = tableNameTypePair.getRight();
+
+        int numRecords = 10_000_000;
+
+        BulkInserter.FlushOptions flushOptions = new BulkInserter.FlushOptions(false, 1);
+
+        BulkInserter<GenericRecord> bi = new BulkInserter<>(
+            gpudb,
+            tableName,
+            tableDefinition,
+            20000,
+            null,
+            new WorkerList(gpudb),
+            flushOptions
+        );
+
+        // Try to insert enough records such that at least one batch
+        // is pushed automatically and then we have some leftovers to flush
+        for (int x = 0; x < numRecords; ++x) {
+            GenericRecord gr = new GenericRecord(tableDefinition);
+            gr.put(0, x);
+            gr.put(1, x);
+            bi.insert(gr);
+        }
+
+        // Call close explicitly; will automatically flush pending updates
+        bi.close();
+
+
+        Map<String,String> stOptions = GPUdb.options( ShowTableRequest.Options.GET_SIZES, ShowTableRequest.Options.TRUE );
+        Long tableRecordCount = gpudb.showTable(tableName, stOptions).getFullSizes().get( 0 );
+        if ( tableRecordCount != numRecords ) {
+            GPUdbLogger.error(
+                "Failed to insert <" + numRecords + "> records into table <" + tableName + ">; " +
+                    "got <" + tableRecordCount + "> instead"
+            );
+        } else {
+            GPUdbLogger.info(
+                "Successfully inserted <" + numRecords + "> records into table <" + tableName + ">"
             );
         }
 

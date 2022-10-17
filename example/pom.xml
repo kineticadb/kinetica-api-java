@@ -10,7 +10,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <gpudb-api.version>7.1.8.2</gpudb-api.version>
+        <gpudb-api.version>7.1.8.3</gpudb-api.version>
     </properties>
 
     <dependencies>
@@ -19,12 +19,6 @@
             <artifactId>gpudb-api</artifactId>
             <version>${gpudb-api.version}</version>
             <classifier>shaded</classifier>
-            <exclusions>
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-classic</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 
