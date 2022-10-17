@@ -4,12 +4,13 @@ import com.gpudb.GPUdbBase.GPUdbExitException;
 import com.gpudb.protocol.*;
 import org.apache.commons.lang3.mutable.MutableLong;
 import org.apache.commons.lang3.tuple.Pair;
-import org.threeten.bp.Instant;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -211,16 +212,17 @@ public class BulkInserter<T> implements AutoCloseable {
 
         @Override
         public void run() {
+            final LocalDateTime startTime = LocalDateTime.now();
+            GPUdbLogger.debug(String.format("Timed flush started at : %s", startTime));
             try {
                 if( thisInserter.getTimedFlushOptions().isFlushWhenFull())
                     thisInserter.flushFullQueues( thisInserter.getRetryCount() );
                 else
                     thisInserter.flush();
-
-                thisInserter.lastFlushTime = Instant.now();
-
+                final LocalDateTime endTime = LocalDateTime.now();
+                GPUdbLogger.debug(String.format("Timed flush completed in : %d seconds", Duration.between(startTime, endTime).getSeconds()));
             } catch (InsertException e) {
-                e.printStackTrace();
+                GPUdbLogger.error(e.getMessage());
             }
         }
     }
@@ -372,6 +374,8 @@ public class BulkInserter<T> implements AutoCloseable {
             int countClusterSwitches = this.gpudb.getNumClusterSwitches();
 
             try {
+                final LocalDateTime startTime = LocalDateTime.now();
+
                 if (url == null) {
                     GPUdbLogger.debug_with_info( "Inserting " + queuedRecords.size()
                                                  + " records to rank-0" );
@@ -390,6 +394,11 @@ public class BulkInserter<T> implements AutoCloseable {
                     // Insert into the given worker rank
                     response = this.gpudb.submitRequest(url, request, response, true);
                 }
+                final LocalDateTime endTime = LocalDateTime.now();
+
+                GPUdbLogger.debug_with_info(String.format("Insertion to rank %s completed in %d seconds",
+                    (url == null ? "head rank" : url.toString()), Duration.between(startTime, endTime).getSeconds()
+                ));
 
                 Map<String, String> info = response.getInfo();
 
@@ -451,6 +460,11 @@ public class BulkInserter<T> implements AutoCloseable {
                                                       insertionAttemptTimestamp,
                                                       exception );
         }  // end call
+
+        // Clear queue without sending
+        public void clear() {
+            queue.clear();
+        }
 
         public URL getUrl() {
             return url;
@@ -566,12 +580,14 @@ public class BulkInserter<T> implements AutoCloseable {
     private boolean timedFlushExecutorServiceTerminated;
 
     private FlushOptions flushOptions;
-    private Instant lastFlushTime;
+    private LocalDateTime lastFlushTime;
     private final boolean isReplicatedTable;
     private final boolean multiHeadEnabled;
     private final boolean useHeadNode;
     private final boolean hasPrimaryKey;
     private final boolean updateOnExistingPk;
+    private final boolean returnIndividualErrors;
+    private boolean simulateErrorMode = false; // Simulate returnIndividualErrors after an error
     private volatile int retryCount;
     private List<Integer> routingTable;
     private long shardVersion;
@@ -886,6 +902,16 @@ public class BulkInserter<T> implements AutoCloseable {
                                                .equals( InsertRecordsRequest
                                                         .Options
                                                         .TRUE ) );
+
+        // If caller specified RETURN_INDIVIDUAL_ERRORS without ALLOW_PARTIAL_BATCH
+        // then we will need to do our own error handling
+        this.returnIndividualErrors = (options != null)
+                && options.containsKey(InsertRecordsRequest.Options.RETURN_INDIVIDUAL_ERRORS)
+                && options.get(InsertRecordsRequest.Options.RETURN_INDIVIDUAL_ERRORS)
+                            .equals(InsertRecordsRequest.Options.TRUE)
+                && (!options.containsKey(InsertRecordsRequest.Options.ALLOW_PARTIAL_BATCH)
+                    || !options.get(InsertRecordsRequest.Options.ALLOW_PARTIAL_BATCH)
+                            .equals(InsertRecordsRequest.Options.TRUE));
 
         this.workerQueues = new ArrayList<>();
 
@@ -1605,8 +1631,13 @@ public class BulkInserter<T> implements AutoCloseable {
         for (WorkerQueue<T> workerQueue : queues) {
 
             // Handle removed ranks
-            if ( workerQueue == null) {
-                GPUdbLogger.debug_with_info( "Skipping null worker queue" );
+            if ( (workerQueue == null) || workerQueue.queue.isEmpty() ) {
+                GPUdbLogger.debug_with_info( "Skipping null/empty worker queue" );
+                continue;
+            }
+
+            if (simulateErrorMode) {
+                workerQueue.clear();
                 continue;
             }
 
@@ -1888,8 +1919,9 @@ public class BulkInserter<T> implements AutoCloseable {
                 synchronized (error_list_lock) {
                     String message = entry.getLeft();
                     message = message.substring( message.indexOf(":") + 1);
-                    error_list.add(
-                            new InsertException(result.headUrl, records, message));
+                    error_list.add(new InsertException(result.headUrl, records, message));
+                    if (returnIndividualErrors && !records.isEmpty())
+                        simulateErrorMode = true;
                 }
             });
         }
@@ -1914,6 +1946,10 @@ public class BulkInserter<T> implements AutoCloseable {
     private void insert(T record, boolean flushWhenFull) throws InsertException {
         RecordKey primaryKey;
         RecordKey shardKey;
+
+        // Don't accept new records if there was an error thrown already with returnIndividualErrors
+        if (simulateErrorMode)
+            return;
 
         try {
             if (primaryKeyBuilder != null) {
@@ -2017,6 +2053,10 @@ public class BulkInserter<T> implements AutoCloseable {
      */
     @SuppressWarnings("unchecked")
     private boolean insert(List<T> records, int retryCount ) throws InsertException {
+        // Don't accept new records if there was an error thrown already with returnIndividualErrors
+        if (simulateErrorMode)
+            return true;
+
         // Let the user know that we ran out of retries
         if ( retryCount < 0 ) {
             // Retry count of 0 means try once but do no retry

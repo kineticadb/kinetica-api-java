@@ -26,6 +26,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -39,11 +40,13 @@ import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpEntity;
+import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
@@ -52,8 +55,10 @@ import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
@@ -84,8 +89,8 @@ public abstract class GPUdbBase {
     private static final int DEFAULT_SERVER_CONNECTION_TIMEOUT = 10000;
 
     // The amount of time of inactivity after which the connection would be
-    // validated: 200ms
-    private static final int DEFAULT_CONNECTION_INACTIVITY_VALIDATION_TIMEOUT = 200;
+    // validated: 100ms
+    private static final int DEFAULT_CONNECTION_INACTIVITY_VALIDATION_TIMEOUT = 100;
 
     // The default port for host manager URLs
     private static final int DEFAULT_HOST_MANAGER_PORT = 9300;
@@ -127,6 +132,15 @@ public abstract class GPUdbBase {
     // The maxium number of connections across all or an individual host
     private static final int DEFAULT_MAX_TOTAL_CONNECTIONS    = 40;
     private static final int DEFAULT_MAX_CONNECTIONS_PER_HOST = 10;
+
+    private static final int DEFAULT_HTTP_CLIENT_KEEP_ALIVE_TIMEOUT = 2 * 1000;
+
+    // Used to set the number of retries for HTTP requests.
+    // KECO-2150 - Handle 'Failed to respond' errors resulting from
+    // NoHttpResponseException due to socket HALF_OPEN states.
+    private static final int HTTP_REQUEST_MAX_RETRY_ATTEMPTS = 5;
+
+    private IdleHttpConnectionMonitorThread monitorThread;
 
 
     // JSON parser
@@ -1048,6 +1062,61 @@ public abstract class GPUdbBase {
 
     }  // end class Options
 
+    /*
+        One of the major shortcomings of the classic blocking I/O model is that the network socket can react to I/O events
+        only when blocked in an I/O operation. When a connection is released back to the manager, it can be kept alive however
+        it is unable to monitor the status of the socket and react to any I/O events. If the connection gets closed on the
+        server side, the client side connection is unable to detect the change in the connection state (and react
+        appropriately by closing the socket on its end).
+
+        HttpClient tries to mitigate the problem by testing whether the connection is 'stale', that is no longer valid
+        because it was closed on the server side, prior to using the connection for executing an HTTP request. The stale
+        connection check is not 100% reliable. The only feasible solution that does not involve a one thread per socket
+        model for idle connections is a dedicated monitor thread used to evict connections that are considered expired due
+        to a long period of inactivity. The monitor thread can periodically call ClientConnectionManager#closeExpiredConnections()
+        method to close all expired connections and evict closed connections from the pool. It can also optionally call
+        ClientConnectionManager#closeIdleConnections() method to close all connections that have been idle over a given period of time.
+     */
+
+    private static class IdleHttpConnectionMonitorThread extends Thread {
+
+        private static final long DEFAULT_IDLE_HTTP_CONNECTION_EVICTION_TIMEOUT = 2000;
+        private static final long DEFAULT_IDLE_HTTP_CONNECTION_CLOSE_TIMEOUT = 30*1000;
+        private final HttpClientConnectionManager connMgr;
+        private volatile boolean shutdown;
+
+        public IdleHttpConnectionMonitorThread(HttpClientConnectionManager connMgr) {
+            super();
+            this.connMgr = connMgr;
+        }
+
+        @Override
+        public void run() {
+            try {
+                while (!shutdown) {
+                    synchronized (this) {
+                        wait(DEFAULT_IDLE_HTTP_CONNECTION_EVICTION_TIMEOUT);
+                        // Close expired connections
+                        connMgr.closeExpiredConnections();
+                        // Optionally, close connections
+                        // that have been idle longer than 30 sec
+                        connMgr.closeIdleConnections(DEFAULT_IDLE_HTTP_CONNECTION_CLOSE_TIMEOUT, TimeUnit.SECONDS);
+                    }
+                }
+                GPUdbLogger.info("Terminated idle HTTP connection monitor thread ...");
+            } catch (InterruptedException ex) {
+                // terminate
+            }
+        }
+
+        public void shutdown() {
+            shutdown = true;
+            synchronized (this) {
+                notifyAll();
+            }
+        }
+
+    }
 
     /**
      * Contains the version of the client API or the GPUdb server.
@@ -2244,6 +2313,9 @@ public abstract class GPUdbBase {
         connectionManager.setDefaultMaxPerRoute( options.getMaxConnectionsPerHost() );
         connectionManager.setValidateAfterInactivity( options.getConnectionInactivityValidationTimeout() );
 
+//        monitorThread = new IdleHttpConnectionMonitorThread(connectionManager);
+//        monitorThread.start();
+
         // Set the timeout defaults
         RequestConfig requestConfig = RequestConfig.custom()
             .setSocketTimeout( this.timeout )
@@ -2251,10 +2323,35 @@ public abstract class GPUdbBase {
             .setConnectionRequestTimeout( this.timeout )
             .build();
 
+//        ConnectionKeepAliveStrategy connectionKeepAliveStrategy = new DefaultConnectionKeepAliveStrategy() {
+//
+//            @Override
+//            public long getKeepAliveDuration(HttpResponse response, HttpContext context) {
+//                long keepAlive = super.getKeepAliveDuration(response, context);
+//                if( keepAlive == -1 ) {
+//                    keepAlive = DEFAULT_HTTP_CLIENT_KEEP_ALIVE_TIMEOUT;
+//                }
+//                return keepAlive;
+//            }
+//
+//        };
+
         // Build the http client.
-        this.httpClient = HttpClients.custom()
+        this.httpClient = HttpClientBuilder.create()
             .setConnectionManager( connectionManager )
             .setDefaultRequestConfig( requestConfig )
+            .setRetryHandler(new HttpRequestRetryHandler() {
+                @Override
+                public boolean retryRequest(IOException exception,
+                                            int executionCount,
+                                            HttpContext context) {
+                    if (executionCount > HTTP_REQUEST_MAX_RETRY_ATTEMPTS) {
+                        return false;
+                    }
+                    // Return true if the exception is NoHttpResponseException
+                    return exception instanceof org.apache.http.NoHttpResponseException;
+                }
+            })
             .build();
 
         // Parse the user given URL(s) and store information on all clusters
@@ -2277,7 +2374,10 @@ public abstract class GPUdbBase {
      *  Clean up resources--namely, the HTTPClient object(s).
      */
     protected void finalize() throws Throwable {
-        // Release the resources-- the HTTP client and connection manager
+        // Release the resources-- the HTTP client and connection manager and
+        // the monitoring thread
+//        monitorThread.shutdown();
+
         this.httpClient.getConnectionManager().shutdown();
         httpClient.close();
     }

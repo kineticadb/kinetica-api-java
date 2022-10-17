@@ -9073,11 +9073,12 @@ public class GPUdb extends GPUdbBase {
      *                 the target table exists, the column names must match the
      *                 source data field names for a name-mapping
      *                 to be successful.
+     *                 Mutually exclusive with {@code columns_to_skip}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#COLUMNS_TO_SKIP
      *                 COLUMNS_TO_SKIP}: Specifies a comma-delimited list of
      *                 columns from the source data to
-     *                 skip.  Mutually exclusive to columns_to_load.
+     *                 skip.  Mutually exclusive with {@code columns_to_load}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#DATASOURCE_NAME
      *                 DATASOURCE_NAME}: Name of an existing external data
@@ -12325,12 +12326,33 @@ public class GPUdb extends GPUdbBase {
      *                 syntax.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMNS_TO_EXPORT
-     *                 COLUMNS_TO_EXPORT}: Comma-separated list of column names
-     *                 to export.
+     *                 COLUMNS_TO_EXPORT}: Specifies a comma-delimited list of
+     *                 columns from the source table to
+     *                 export, written to the output file in the order they are
+     *                 given.
+     *                 Column names can be provided, in which case the target
+     *                 file will use those names as the column
+     *                 headers as well.
+     *                 Alternatively, column numbers can be
+     *                 specified--discretely or as a range.  For example, a
+     *                 value of
+     *                 '5,7,1..3' will write values from the fifth column in
+     *                 the source table into the first column in the
+     *                 target file, from the seventh column in the source table
+     *                 into the second column in the target file,
+     *                 and from the first through third columns in the source
+     *                 table into the third through fifth columns in
+     *                 the target file.
+     *                 Mutually exclusive with {@code columns_to_skip}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMNS_TO_SKIP
      *                 COLUMNS_TO_SKIP}: Comma-separated list of column names
-     *                 to not export.
+     *                 or column numbers to not
+     *                 export.  All columns in the source table not specified
+     *                 will be written to the target file in the
+     *                 order they appear in the table definition.  Mutually
+     *                 exclusive with
+     *                 {@code columns_to_export}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#DATASINK_NAME
      *                 DATASINK_NAME}: Datasink name, created using {@link
@@ -17557,11 +17579,12 @@ public class GPUdb extends GPUdbBase {
      *                 the target table exists, the column names must match the
      *                 source data field names for a name-mapping
      *                 to be successful.
+     *                 Mutually exclusive with {@code columns_to_skip}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COLUMNS_TO_SKIP
      *                 COLUMNS_TO_SKIP}: Specifies a comma-delimited list of
      *                 columns from the source data to
-     *                 skip.  Mutually exclusive to columns_to_load.
+     *                 skip.  Mutually exclusive with {@code columns_to_load}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DATASOURCE_NAME
      *                 DATASOURCE_NAME}: Name of an existing external data
@@ -18278,11 +18301,12 @@ public class GPUdb extends GPUdbBase {
      *                 the target table exists, the column names must match the
      *                 source data field names for a name-mapping
      *                 to be successful.
+     *                 Mutually exclusive with {@code columns_to_skip}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#COLUMNS_TO_SKIP
      *                 COLUMNS_TO_SKIP}: Specifies a comma-delimited list of
      *                 columns from the source data to
-     *                 skip.  Mutually exclusive to columns_to_load.
+     *                 skip.  Mutually exclusive with {@code columns_to_load}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DEFAULT_COLUMN_FORMATS
      *                 DEFAULT_COLUMN_FORMATS}: Specifies the default format to
