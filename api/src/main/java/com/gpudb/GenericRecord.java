@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.TimeZone;
 
 import org.threeten.bp.LocalDate;
@@ -369,28 +367,7 @@ public final class GenericRecord extends RecordBase implements Serializable  {
                     break;
                 }
 
-                case INTEGER:
-                case LONG:
-                case FLOAT:
-                case DOUBLE:
-                case STRING:
-                case BYTES:
-                case INT8:
-                case INT16:
-                case TIMESTAMP:
-                case DECIMAL:
-                case CHAR1:
-                case CHAR2:
-                case CHAR4:
-                case CHAR8:
-                case CHAR16:
-                case CHAR32:
-                case CHAR64:
-                case CHAR128:
-                case CHAR256:
-                case IPV4:
-                case WKT:
-                case WKB:
+                default:
                     // For any other data types, just set the value
                     values[index] = value;
                     break;
