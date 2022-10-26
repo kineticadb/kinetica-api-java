@@ -77,7 +77,7 @@ public class BulkInserter<T> implements AutoCloseable {
     }
 
     /**
-     * @deprecated This class has been superceded by {@link
+     * @deprecated This class has been superseded by {@link
      * com.gpudb.WorkerList com.gpudb.WorkerList}.
      */
     @Deprecated
@@ -85,7 +85,7 @@ public class BulkInserter<T> implements AutoCloseable {
         private static final long serialVersionUID = 1L;
 
         /**
-         * @deprecated This class has been superceded by {@link
+         * @deprecated This class has been superseded by {@link
          * com.gpudb.WorkerList com.gpudb.WorkerList}.
          */
         public WorkerList() {
@@ -93,7 +93,7 @@ public class BulkInserter<T> implements AutoCloseable {
         }
 
         /**
-         * @deprecated This class has been superceded by {@link
+         * @deprecated This class has been superseded by {@link
          * com.gpudb.WorkerList com.gpudb.WorkerList}.
          */
         public WorkerList(GPUdb gpudb) throws GPUdbException {
@@ -101,7 +101,7 @@ public class BulkInserter<T> implements AutoCloseable {
         }
 
         /**
-         * @deprecated This class has been superceded by {@link
+         * @deprecated This class has been superseded by {@link
          * com.gpudb.WorkerList com.gpudb.WorkerList}.
          */
         public WorkerList(GPUdb gpudb, Pattern ipRegex) throws GPUdbException {
@@ -109,7 +109,7 @@ public class BulkInserter<T> implements AutoCloseable {
         }
 
         /**
-         * @deprecated This class has been superceded by {@link
+         * @deprecated This class has been superseded by {@link
          * com.gpudb.WorkerList com.gpudb.WorkerList}.
          */
         public WorkerList(GPUdb gpudb, String ipPrefix) throws GPUdbException {
@@ -238,8 +238,6 @@ public class BulkInserter<T> implements AutoCloseable {
 
         // This is the same as the batchSize in BulkInserter class
         private final int capacity;
-        private final boolean hasPrimaryKey;
-        private final boolean updateOnExistingPk;
         private List<T> queue;
         private final TypeObjectMap<T> typeObjectMap;
         private final Map<String, String> options;
@@ -247,15 +245,12 @@ public class BulkInserter<T> implements AutoCloseable {
         public WorkerQueue( GPUdb gpudb, URL url, String tableName,
                             int capacity,
                             int retryCount,
-                            boolean hasPrimaryKey, boolean updateOnExistingPk,
                             Map<String, String> options,
                             TypeObjectMap<T> typeObjectMap ) {
             this.gpudb     = gpudb;
             this.url       = url;
             this.tableName = tableName;
             this.capacity           = capacity;
-            this.hasPrimaryKey      = hasPrimaryKey;
-            this.updateOnExistingPk = updateOnExistingPk;
             this.options            = options;
             this.typeObjectMap      = typeObjectMap;
 
@@ -279,7 +274,7 @@ public class BulkInserter<T> implements AutoCloseable {
         /**
          * Insert the given record into the queue.
          */
-        public boolean insert(T record, RecordKey key) {
+        public boolean insert(T record) {
             queue.add( record );
             return true;
         }
@@ -521,10 +516,6 @@ public class BulkInserter<T> implements AutoCloseable {
             return this.workerUrl;
         }
 
-        public URL getHeadUrl() {
-            return this.headUrl;
-        }
-
         public InsertRecordsResponse getInsertResponse() {
             return this.insertResponse;
         }
@@ -572,20 +563,15 @@ public class BulkInserter<T> implements AutoCloseable {
     private final int batchSize;
     private final int dbHARingSize;
     private final Map<String, String> options;
-    private final RecordKeyBuilder<T> primaryKeyBuilder;
     private final RecordKeyBuilder<T> shardKeyBuilder;
     private final ExecutorService workerExecutorService;
-    private boolean workerExecutorServiceTerminated;
     private ScheduledExecutorService timedFlushExecutorService;
     private boolean timedFlushExecutorServiceTerminated;
 
     private FlushOptions flushOptions;
-    private LocalDateTime lastFlushTime;
     private final boolean isReplicatedTable;
     private final boolean multiHeadEnabled;
     private final boolean useHeadNode;
-    private final boolean hasPrimaryKey;
-    private final boolean updateOnExistingPk;
     private final boolean returnIndividualErrors;
     private boolean simulateErrorMode = false; // Simulate returnIndividualErrors after an error
     private volatile int retryCount;
@@ -596,7 +582,6 @@ public class BulkInserter<T> implements AutoCloseable {
     private URL currentHeadNodeURL;
     private com.gpudb.WorkerList workerList;
     private List<WorkerQueue<T>> workerQueues;
-    private int numRanks;
     private final AtomicLong countInserted = new AtomicLong();
     private final AtomicLong countUpdated = new AtomicLong();
     private List<InsertException> error_list = new ArrayList<>();
@@ -860,48 +845,7 @@ public class BulkInserter<T> implements AutoCloseable {
             this.options = null;
         }
 
-        RecordKeyBuilder<T> primaryKeyBuilderTemp;
-        RecordKeyBuilder<T> shardKeyBuilderTemp;
-
-        if (typeObjectMap == null) {
-            primaryKeyBuilderTemp = new RecordKeyBuilder<>(true, type);
-            shardKeyBuilderTemp = new RecordKeyBuilder<>(false, type);
-        } else {
-            primaryKeyBuilderTemp = new RecordKeyBuilder<>(true, typeObjectMap);
-            shardKeyBuilderTemp = new RecordKeyBuilder<>(false, typeObjectMap);
-        }
-
-        if (primaryKeyBuilderTemp.hasKey()) {
-            primaryKeyBuilder = primaryKeyBuilderTemp;
-
-            if (shardKeyBuilderTemp.hasKey() && !shardKeyBuilderTemp.hasSameKey(primaryKeyBuilderTemp)) {
-                shardKeyBuilder = shardKeyBuilderTemp;
-            } else {
-                shardKeyBuilder = null;
-            }
-        } else {
-            primaryKeyBuilder = null;
-
-            if (shardKeyBuilderTemp.hasKey()) {
-                shardKeyBuilder = shardKeyBuilderTemp;
-            } else {
-                shardKeyBuilder = null;
-            }
-        }
-        // Save whether this table has a primary key
-        this.hasPrimaryKey = (this.primaryKeyBuilder != null);
-
-        // And whether we need to update records with existing primary keys
-        this.updateOnExistingPk = ( (options != null)
-                                    && options.containsKey( InsertRecordsRequest
-                                                            .Options
-                                                            .UPDATE_ON_EXISTING_PK )
-                                    && options.get( InsertRecordsRequest
-                                                    .Options
-                                                    .UPDATE_ON_EXISTING_PK )
-                                               .equals( InsertRecordsRequest
-                                                        .Options
-                                                        .TRUE ) );
+        this.shardKeyBuilder = new RecordKeyBuilder<>(type, typeObjectMap);
 
         // If caller specified RETURN_INDIVIDUAL_ERRORS without ALLOW_PARTIAL_BATCH
         // then we will need to do our own error handling
@@ -933,8 +877,6 @@ public class BulkInserter<T> implements AutoCloseable {
                                                                   this.tableName,
                                                                   batchSize,
                                                                   retryCount,
-                                                                  this.hasPrimaryKey,
-                                                                  this.updateOnExistingPk,
                                                                   this.options,
                                                                   this.typeObjectMap ) );
                     }
@@ -942,8 +884,6 @@ public class BulkInserter<T> implements AutoCloseable {
 
                 // Update the worker queues, if needed
                 updateWorkerQueues( this.numClusterSwitches, false );
-
-                this.numRanks = this.workerQueues.size();
             } else { // use the head node only for insertion
                 URL insertURL = null;
                 if (gpudb.getURLs().size() == 1) {
@@ -955,12 +895,9 @@ public class BulkInserter<T> implements AutoCloseable {
                                                            this.tableName,
                                                            batchSize,
                                                            retryCount,
-                                                           (primaryKeyBuilder != null),
-                                                           updateOnExistingPk,
                                                            this.options,
                                                            this.typeObjectMap ) );
                 routingTable = null;
-                this.numRanks = 1;
             }
         } catch (MalformedURLException ex) {
             throw new GPUdbException(ex.getMessage(), ex);
@@ -1031,7 +968,7 @@ public class BulkInserter<T> implements AutoCloseable {
             timedFlushExecutorServiceTerminated = timedFlushExecutorService.isTerminated();
             GPUdbLogger.debug("Timed flush restarted, flush interval set to <" + this.flushOptions.getFlushInterval() + ">");
         } else {
-        	GPUdbLogger.debug("Timed flush turned off, flush interval set to negative value");
+            GPUdbLogger.debug("Timed flush turned off, flush interval set to negative value");
         }
 
 
@@ -1107,7 +1044,6 @@ public class BulkInserter<T> implements AutoCloseable {
                 Thread.currentThread().interrupt();
             }
             GPUdbLogger.debug_with_info("Terminated worker thread pool ...");
-            workerExecutorServiceTerminated = workerExecutorService.isTerminated();
         }
     }
 
@@ -1127,15 +1063,6 @@ public class BulkInserter<T> implements AutoCloseable {
     private void setCurrentHeadNodeURL(URL newCurrURL) {
         synchronized ( this.currentHeadNodeURL ) {
             this.currentHeadNodeURL = newCurrURL;
-        }
-    }
-
-    /**
-     * Use the current count of HA failover events in a thread-safe manner.
-     */
-    private int getCurrentClusterSwitchCount() {
-        synchronized ( this.haFailoverLock ) {
-            return this.numClusterSwitches;
         }
     }
 
@@ -1367,8 +1294,6 @@ public class BulkInserter<T> implements AutoCloseable {
                                                              this.tableName,
                                                              batchSize,
                                                              retryCount,
-                                                             (this.primaryKeyBuilder != null),
-                                                             this.updateOnExistingPk,
                                                              this.options,
                                                              this.typeObjectMap ) );
                 }
@@ -1376,9 +1301,6 @@ public class BulkInserter<T> implements AutoCloseable {
                 throw new GPUdbException( ex.getMessage(), ex );
             }
         }
-
-        // Get the number of workers
-        this.numRanks = newWorkerQueues.size();
 
         // Save the new queue for future use
         List< WorkerQueue<T> > oldWorkerQueues;
@@ -1903,7 +1825,7 @@ public class BulkInserter<T> implements AutoCloseable {
             // Retry insertion of the failed records (recursive call to our
             // private insertion with the retry count decreased to halt
             // the recursion as needed
-            boolean couldRetry = this.insert( failedRecords, retryCount );
+            this.insert( failedRecords, retryCount );
 
             GPUdbLogger.debug_with_info( "End flushQueues" );
         }
@@ -1944,25 +1866,14 @@ public class BulkInserter<T> implements AutoCloseable {
      * @throws InsertException if an error occurs while inserting
      */
     private void insert(T record, boolean flushWhenFull) throws InsertException {
-        RecordKey primaryKey;
-        RecordKey shardKey;
+        RecordKey shardKey = null;
 
         // Don't accept new records if there was an error thrown already with returnIndividualErrors
         if (simulateErrorMode)
             return;
 
         try {
-            if (primaryKeyBuilder != null) {
-                primaryKey = primaryKeyBuilder.build( record );
-            } else {
-                primaryKey = null;
-            }
-
-            if (shardKeyBuilder != null) {
-                shardKey = shardKeyBuilder.build( record );
-            } else {
-                shardKey = primaryKey;
-            }
+            shardKey = this.shardKeyBuilder.build(record);
         } catch (GPUdbException ex) {
             List<T> queuedRecord = new ArrayList<>();
             queuedRecord.add( record );
@@ -1990,7 +1901,7 @@ public class BulkInserter<T> implements AutoCloseable {
 
         // Insert the record into the queue
         synchronized (workerQueue) {
-            workerQueue.insert(record, primaryKey);
+            workerQueue.insert(record);
 
             // Flush the queue if it is full
             if ( flushWhenFull && workerQueue.isQueueFull() ) {
@@ -2108,7 +2019,6 @@ public class BulkInserter<T> implements AutoCloseable {
      *
      * @throws InsertException if an error occurs while inserting
      */
-    @SuppressWarnings("unchecked")
     public void insert(List<T> records) throws InsertException {
         // Try to insert all the records with the alotted retry count
         this.insert( records, this.retryCount );

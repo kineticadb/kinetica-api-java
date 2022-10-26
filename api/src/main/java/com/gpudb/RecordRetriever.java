@@ -31,14 +31,12 @@ public class RecordRetriever<T> {
     private final String tableName;
     private final Type type;
     private final TypeObjectMap<T> typeObjectMap;
-    private final RecordKeyBuilder<T> shardKeyBuilder;
+    private RecordKeyBuilder<T> shardKeyBuilder;
     private final boolean isMultiHeadEnabled;
-    private final boolean useHeadRank;
-    private final boolean useRandomWorker;
-    private final boolean isTableReplicated;
+    private boolean isWorkerLookupSupported;
+    private boolean isTableReplicated;
     private final int dbHARingSize;
     private Map<String, String> options;
-    private int numRanks;
     private long shardVersion;
     private MutableLong shardUpdateTime;
     private int numClusterSwitches;
@@ -244,12 +242,18 @@ public class RecordRetriever<T> {
         // HA failover has happened)
         this.currentHeadNodeURL = gpudb.getURL();
 
+        // Set if user has provided rank URLs
+        this.isMultiHeadEnabled = ( (this.workerList != null)
+                                    && !this.workerList.isEmpty() );
+
+        // If no rank URLs are provided, use the head rank
+        this.isWorkerLookupSupported = this.isMultiHeadEnabled;
+
         // Check if the table is replicated or not; in case we can't figure it
         // out, we will pretend it is not
-        boolean isTableReplicated = false;
         try {
             // Check whether 'replicated' is in one of the response fields
-            isTableReplicated = this.gpudb.showTable( this.tableName, null )
+            this.isTableReplicated = this.gpudb.showTable( this.tableName, null )
                 .getTableDescriptions()
                 .get(0)
                 .contains( ShowTableResponse.TableDescriptions.REPLICATED );
@@ -258,72 +262,33 @@ public class RecordRetriever<T> {
             // exist yet.  Who knows when the user would instantiate this
             // object--quite possibly before creating the table.  So no worries.
         }
-        this.isTableReplicated = isTableReplicated;
 
-        // For replicated tables, we might want to use a random worker instead
-        // of the head node (completely depended upon the database version
-        // running on the server.  So, we need to hardcode the versions that
-        // will have this change.
-        if ( isTableReplicated ) {
+        // For replicated tables, we might have to use the head node instead of
+        // a random worker, depended upon whether the database version supports
+        // it.  So, we need to hardcode the versions that will have this change.
+        //
+        // Since isWorkerLookupSupported is true if MH is active (by this point in init),
+        // just set it to false if the server can't support it for replicated
+        // tables
+        if ( this.isTableReplicated ) {
             // Check the server version
             GPUdbBase.GPUdbVersion serverVersion = this.gpudb.getServerVersion();
             if ( serverVersion == null ) {
-                // When we can't know the server version, we won't risk
-                // using random workers for replicated tables.  We will
-                // just send the requests to the head node.
-                this.useHeadRank     = true;
-                this.useRandomWorker = false;
-            } else if ( serverVersion.isNewerThan( 7, 1, 2, 0 ) ) {
+                // Use head rank only if the server is too old or broken to
+                // return its version number
+                GPUdbLogger.warn( "Server returned a null version" );
+                this.isWorkerLookupSupported = false;
+            }
+            else if ( serverVersion.isOlderThan( 7, 1, 3, 0 ) ) {
                 // Anything newer than 7.1.2.0 can handle replicated tables
-                // at the worker ranks for key lookup; [7.1.0.0, 7.1.2.0) can't.
-                this.useHeadRank     = false;
-                this.useRandomWorker = true;
-            } else if ( serverVersion.isNewerThan( 7, 0, 20, 2 ) ) {
-                // Anything in [7.0.20.1, 7.1.0.0) can handle replicated tables
-                // at the worker ranks for key lookup; but 7.0.20.0 can't.
-                this.useHeadRank     = false;
-                this.useRandomWorker = true;
-            } else if ( serverVersion.isNewerThan( 7, 0, 19, 14 ) ) {
-                // Anything in [7.0.19.3, 7.0.20.0) can handle replicated tables
-                // at the worker ranks for key lookup
-                this.useHeadRank     = false;
-                this.useRandomWorker = true;
-            } else {
-                // All versions prior to 7.0.19.3 can NOT handle replicated
-                // tables at the worker ranks for key lookup; must use the head
-                // rank.
-                this.useHeadRank     = true;
-                this.useRandomWorker = false;
-            }
-        } else {
-            // If not a replicated table, then this doesn't apply at all
-            this.useHeadRank     = false;
-            this.useRandomWorker = false;
-        }
-
-        RecordKeyBuilder<T> shardKeyBuilderTemp;
-
-        if (typeObjectMap == null) {
-            shardKeyBuilderTemp = new RecordKeyBuilder<>(false, type);
-
-            if (!shardKeyBuilderTemp.hasKey()) {
-                shardKeyBuilderTemp = new RecordKeyBuilder<>(true, type);
-            }
-        } else {
-            shardKeyBuilderTemp = new RecordKeyBuilder<>(false, typeObjectMap);
-
-            if (!shardKeyBuilderTemp.hasKey()) {
-                shardKeyBuilderTemp = new RecordKeyBuilder<>(true, typeObjectMap);
+                // at the worker ranks for key lookup; [7.1.0.0, 7.1.2.0] can't.
+                this.isWorkerLookupSupported = false;
             }
         }
 
-        shardKeyBuilder = shardKeyBuilderTemp;
+        this.shardKeyBuilder = new RecordKeyBuilder<>(type, typeObjectMap);
 
         this.workerUrls = new ArrayList<>();
-
-        // Set if multi-head I/O is turned on at the server
-        this.isMultiHeadEnabled = ( (this.workerList != null)
-                                    && !this.workerList.isEmpty() );
 
         if ( this.isMultiHeadEnabled ) {
             try {
@@ -342,11 +307,10 @@ public class RecordRetriever<T> {
             // Update the worker queues, if needed
             updateWorkerQueues( this.numClusterSwitches, false );
 
-            this.numRanks = this.workerUrls.size();
-
-        } else {
-            routingTable = null;
-            this.numRanks = 1;
+            // If ranks have not been assigned by updateWorkerQueues,
+            // this is a randomly-sharded table; use head rank
+            if (this.routingTable == null)
+                this.isWorkerLookupSupported = false;
         }
     }
 
@@ -625,9 +589,6 @@ public class RecordRetriever<T> {
             }
         }
 
-        // Get the number of workers
-        this.numRanks = newWorkerUrls.size();
-
         // Save the new URLs for future use
         this.workerUrls = newWorkerUrls;
 
@@ -661,7 +622,18 @@ public class RecordRetriever<T> {
      *          multi-head (the worker ranks) for key lookup (false value).
      */
     public boolean isUsingHeadRank() {
-        return this.useHeadRank;
+        return !this.isWorkerLookupSupported;
+    }
+
+    /**
+     * @return  whether this {@link RecordRetriever} object is using the worker
+     *          ranks to do key lookups (true value), or doing simple record
+     *          fetching (not the server's key lookup feature) (false value).
+     *          Note that this will not reflect the non-worker lookup scenario
+     *          where only an expression is supplied and the table is sharded.
+     */
+    public boolean isDoingWorkerLookup() {
+        return this.isWorkerLookupSupported;
     }
 
     /**
@@ -688,7 +660,7 @@ public class RecordRetriever<T> {
      *
      * @see com.gpudb.protocol.GetRecordsRequest.Options#EXPRESSION
      */
-    public RecordRetriever setOptions( Map<String, String> options ) {
+    public RecordRetriever<T> setOptions( Map<String, String> options ) {
         // Set the options in a thread-safe manner
         synchronized (this.options) {
             if (options != null) {
@@ -702,128 +674,110 @@ public class RecordRetriever<T> {
         return this;
     }
 
+    
     /**
-     * Retrieves records for a given shard key, optionally further limited by an
-     * additional expression. All records matching the key and satisfying the
-     * expression will be returned, up to the system-defined limit. For
-     * multi-head mode the request will be sent directly to the appropriate
-     * worker.
-     * <p>
-     * All fields in both the shard key and the expression must have defined
-     * attribute indexes unless all fields of the primary key are referenced with no others.
-     * The expression must be limited
-     * to basic equality comparisons that can be evaluated using the attribute indexes.
-     * <p>
-     * For replicated tables, the user may pass a pre-constructed expression via
-     * the second parameter.
+     * Retrieves records with the given key values and filter expression from
+     * the database using a direct-to-rank fast key lookup, if possible, and
+     * falling back to a standard lookup via the head node, if not.
+     * 
+     * This method operates in four modes, depending on the parameters passed:
+     * 
+     * * keyValues only - attempts a direct-to-rank lookup for records matching
+     *                    the given key values
+     * * keyValues & expression - attempts a direct-to-rank lookup for records
+     *                    matching the given key values, filtering them by the
+     *                    given expression
+     * * expression only - requests, via the head rank, all records in the table
+     *                    matching the given filter expression
+     * * neither - retrieves all records from the table via the head rank
      *
-     * @param keyValues   list of values that make up the shard key; the values
-     *                    must be in the same order as in the table and have the
-     *                    correct data types, if given.  The user may provide
-     *                    an empty or null list for replicated tables; in that
-     *                    case, only the string expression would be used.
-     * @param expression  additional filter to be applied, or {@code null} for
-     *                    none.
-     * @return            {@link com.gpudb.protocol.GetRecordsResponse response}
-     *                    object containing the results
+     * @param keyValues   the key values to use for the lookup; these must
+     *                    correspond to either the explicit or implicit shard
+     *                    key for sharded tables or the primary key of
+     *                    replicated tables
+     * @param expression  a filter expression that will be applied to the data
+     *                    requested by the key values; if no key values are
+     *                    specified this filter will be applied to all of the
+     *                    data in the target table
      *
-     * @throws GPUdbException if an error occurs during the operation
+     * @return            a {@link com.gpudb.protocol.GetRecordsResponse} with
+     *                    the requested records
      */
     public GetRecordsResponse<T> getByKey(List<Object> keyValues, String expression)
-        throws GPUdbException {
+            throws GPUdbException {
 
-        String originalExpression = expression;
+        boolean doWorkerLookup = this.isWorkerLookupSupported;
+        String compositeExpression = expression;
+        boolean keyValuesSpecified = keyValues != null && !keyValues.isEmpty();
 
-        // For replicated tables, we don't need any shard or primary keys for
-        // looking up records.  But, for regular tables, must have at least some
-        // primary or shard columns.  (For shard columns, attribute indexing is
-        // needed, but will let the server check for that.)
-        if ( !shardKeyBuilder.hasKey() && !this.isTableReplicated ) {
-            // Table type does not have any primary or shard columns, nor are
-            // we using the head rank or a random rank.  So, there's no way for
-            // us to calculate which precise rank to send request to!
-            String msg = ("Cannot get by key from unsharded regular "
-                          + " (non-replicated) table.");
-            throw new IllegalStateException( msg );
-        }
+        if (!keyValuesSpecified) {
+            // Use head rank if table is [randomly] sharded and no keys are given,
+            //   or if the table is replicated and no expression (or keys) is given.
+            if (!this.isTableReplicated || expression == null || expression.isEmpty())
+                doWorkerLookup = false;
+        } else {
+            // Eliminate the case where key values are given, but the table has no
+            //   key columns with which to associate them
+            if (!shardKeyBuilder.hasKey())
+                throw new IllegalArgumentException(
+                        "Cannot associate the specified keyValues with columns, " +
+                        "as the table has no primary or shard key."
+                );
 
-        // Convert null expressions to empty an empty string so that we don't
-        // need to keep checking for null later
-        if ( expression == null ) {
-            expression = "";
-        }
+            // Since we have a keyed table, build the composite expression to be
+            //   used for both sharded-with-PK/SK and replicated-with-PK tables;
+            //   randomly-sharded & replicated-without-PK will only use expression
+            String keyExpression = shardKeyBuilder.buildExpression( keyValues );
 
-        // Build the expression to be used for the lookup
-        if ( shardKeyBuilder.hasKey() && !this.isTableReplicated ) {
-            // We have primary or shard columns; need to use the given key values
-            // to create the filter expression.
-            String keyExpression = "";
-            if ( (keyValues != null) && !keyValues.isEmpty() ) {
-                keyExpression = shardKeyBuilder.buildExpression( keyValues );
-            } else {
-                throw new GPUdbException( "For sharded tables, must provide the shard key values for key lookup." );
-            }
-
-            if ( expression.isEmpty() ) {
-                // We are not dealing with the case where they keys were empty.
-                // If both keys and the extra expression are empty, the user would
-                // get ALL the records!
-                expression = keyExpression;
-            } else if ( !keyExpression.isEmpty() ){
-                // Join the two non-empty expressions together
-                expression = ( "(" + keyExpression + ") and (" + expression + ")" );
-            }
-        } else if ( ( (keyValues != null) && !keyValues.isEmpty() ) && this.isTableReplicated ) {
-            // No primary keys for a replicated table; must give key values
-            // via te second parameter, not keyValues (since we have no way
-            // of knowing which columns the given values are for).
-            String msg = ("For replicated tables without primary keys, please pass "
-                            + "all key values in the 'expression' argument, not via "
-                            + "the 'keyValues' argument.");
-            throw new GPUdbException( msg );
+            // If the key expression exists, but the filter expression doesn't,
+            //   use the key, otherwise if both exist, concatenate both
+            if ( keyExpression != null && !keyExpression.isEmpty() )
+                if ( expression == null || expression.isEmpty() )
+                    compositeExpression = keyExpression;
+                else
+                    compositeExpression = ( "(" + keyExpression + ") and (" + expression + ")" );
         }
 
         // Create the options for the key lookup; first include general options
         Map<String, String> retrievalOptions = new HashMap<>( this.options );
-        // Add the retrieval expression to the options, if any
-        if ( !expression.isEmpty() ) {
-            retrievalOptions.put(GetRecordsRequest.Options.EXPRESSION, expression);
 
-            // Additionally check if we need to add the fast index lookup
-            // option.  Note that this option only applies if there is a
-            // non-empty expression.  We could have an empty expression if no
-            // key value nor any expression is provided by the user
-            if ( shardKeyBuilder.hasKey() ) {
-                retrievalOptions.put( GetRecordsRequest.Options.FAST_INDEX_LOOKUP,
-                                      GetRecordsRequest.Options.TRUE );
-            }
+        // Add the retrieval expression to the options, if any
+        if ( compositeExpression != null && !compositeExpression.isEmpty() )
+        {
+            retrievalOptions.put(GetRecordsRequest.Options.EXPRESSION, compositeExpression);
+
+            // If key values were specified, add fast index lookup option
+            if ( keyValuesSpecified )
+                retrievalOptions.put(
+                        GetRecordsRequest.Options.FAST_INDEX_LOOKUP,
+                        GetRecordsRequest.Options.TRUE
+                );
         }
+
 
         GetRecordsRequest request = new GetRecordsRequest(tableName, 0, GPUdb.END_OF_SET, retrievalOptions);
         RawGetRecordsResponse response = new RawGetRecordsResponse();
-
         GetRecordsResponse<T> decodedResponse = new GetRecordsResponse<>();
+        
 
-        // Save a snapshot of the state of the object pre-retrieval
         long retrievalAttemptTimestamp = new Timestamp( System.currentTimeMillis() ).getTime();
         URL currURL = getCurrentHeadNodeURL();
         int currentCountClusterSwitches = getCurrentClusterSwitchCount();
 
         try {
-            if ( this.isMultiHeadEnabled && (routingTable != null)
-                 && !this.useHeadRank ) {
-
+            if (!doWorkerLookup) {
+                // Get from the head node
+                GPUdbLogger.debug_with_info( "Retrieving records from rank-0 with <" + compositeExpression + ">" );
+                response = gpudb.submitRequest("/get/records", request, response, false);
+            } else {
                 // Get the record(s) from a worker rank; whether from a random
                 // or a specific one depends on a few things
                 URL url;
 
-                // Special condition for random worker rank: table is replicated
-                // and the server version can handle key lookup queries for such
-                // tables at the worker ranks
-                if ( this.useRandomWorker ) {
-                    // We don't need to waste time by calculating sharding; the
-                    // data is available at all ranks!
-                    url = workerUrls.get( ThreadLocalRandom.current().nextInt( workerUrls.size() ) );
+                // If the table is replicated and it's determined that the
+                // server supports it, use random worker rank for lookups
+                if ( this.isTableReplicated ) {
+                    url = this.workerUrls.get( ThreadLocalRandom.current().nextInt( this.workerUrls.size() ) );
                 } else {
                     // Not a replicated table; so calculate the shard to figure
                     // out which worker rank contains the requested records
@@ -834,23 +788,17 @@ public class RecordRetriever<T> {
                         throw new GPUdbException( "Unable to calculate the shard value; please check data for unshardable values");
                     }
 
-                    url = workerUrls.get( shardKey.route( routingTable ) );
+                    url = this.workerUrls.get( shardKey.route( this.routingTable ) );
                 }
 
-                GPUdbLogger.debug_with_info( "Retrieving records from rank at "
-                                             + url.toString() );
+                GPUdbLogger.debug_with_info( "Retrieving records from <" + url.toString() + "> with <" + compositeExpression + ">" );
                 response = gpudb.submitRequest(url, request, response, false);
-            } else {
-                // Get from the head node
-                GPUdbLogger.debug_with_info( "Retrieving records from rank-0" );
-                response = gpudb.submitRequest("/get/records", request, response, false);
             }
 
             // Check if shard re-balancing is under way at the server; if so,
             // we need to update the shard mapping
-            if ( response.getInfo().get( "data_rerouted" ) == "true" ) {
+            if ( response.getInfo().get( "data_rerouted" ) == "true" )
                 updateWorkerQueues( currentCountClusterSwitches );
-            }
 
             // Set up the decoded response
             decodedResponse.setTableName(  response.getTableName()  );
@@ -858,11 +806,10 @@ public class RecordRetriever<T> {
             decodedResponse.setTypeSchema( response.getTypeSchema() );
 
             // Decode the actual resposne
-            if (typeObjectMap == null) {
+            if (typeObjectMap == null)
                 decodedResponse.setData( gpudb.<T>decode(type, response.getRecordsBinary()) );
-            } else {
+            else
                 decodedResponse.setData( gpudb.<T>decode(typeObjectMap, response.getRecordsBinary()) );
-            }
 
             decodedResponse.setTotalNumberOfRecords(response.getTotalNumberOfRecords());
             decodedResponse.setHasMoreRecords(response.getHasMoreRecords());
@@ -871,10 +818,9 @@ public class RecordRetriever<T> {
             throw ex;
         } catch ( GPUdbException ex ) {
             boolean didFailoverSucceed = false;
-            if ( (ex instanceof GPUdbExitException)
-                 || ex.hadConnectionFailure() ) {
-                GPUdbLogger.warn( "Caught EXIT exception or had other "
-                                  + "connection failure: " + ex.getMessage() );
+            if ( (ex instanceof GPUdbExitException) || ex.hadConnectionFailure() ) {
+                GPUdbLogger.warn( "Caught EXIT exception or had other connection failure: " + ex.getMessage() );
+
                 // We did encounter an HA failover trigger
                 // Switch to a different, healthy cluster in the HA ring, if any
                 try {
@@ -885,13 +831,11 @@ public class RecordRetriever<T> {
                     // We've now tried all the HA clusters and circled back;
                     // propagate the error to the user
                     String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
-                    throw new GPUdbException( originalCause + "; "
-                                              + ex2.getMessage(), true );
+                    throw new GPUdbException( originalCause + "; " + ex2.getMessage(), true );
                 }
             } else {
                 // For debugging purposes only (can be very useful!)
-                GPUdbLogger.debug_with_info( "Caught GPUdbException: "
-                                             + ex.getMessage() );
+                GPUdbLogger.debug_with_info( "Caught GPUdbException: " + ex.getMessage() );
             }
             GPUdbLogger.debug_with_info( "Did failover succeed? " + didFailoverSucceed );
 
@@ -911,7 +855,7 @@ public class RecordRetriever<T> {
                 // We need to try fetching the records again
                 try {
                     // Don't use the modified expression;use the original one
-                    return this.getByKey( keyValues, originalExpression );
+                    return this.getByKey( keyValues, expression );
                 } catch (Exception ex2) {
                     // Re-setting the exception since we may re-try again
                     throw new GPUdbException( ex2.getMessage() );
@@ -919,12 +863,11 @@ public class RecordRetriever<T> {
             }
             throw new GPUdbException( ex.getMessage() );
         } catch (Exception ex) {
-            GPUdbLogger.debug_with_info( "Caught java exception: "
-                                         + ex.getMessage() );
+            GPUdbLogger.debug_with_info( "Caught java exception: " + ex.getMessage() );
             // Retrieval failed, but maybe due to shard mapping changes (due to
             // cluster reconfiguration)? Check if the mapping needs to be updated
             // or has been updated by another thread already after the
-            // insertion was attemtped
+            // insertion was attempted
             boolean updatedWorkerQueues = updateWorkerQueues( currentCountClusterSwitches );
             boolean retry = false;
             synchronized ( this.shardUpdateTime ) {

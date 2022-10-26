@@ -2,6 +2,12 @@
 
 ## Version 7.1
 
+### Version 7.1.8.4 - 2022-10-26
+
+#### Changed
+-   Improved performance of BulkInserter & RecordRetriever key generation
+
+
 ### Version 7.1.8.3 - 2022-10-17
 
 #### Added

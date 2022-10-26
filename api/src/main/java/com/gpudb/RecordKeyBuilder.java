@@ -11,65 +11,74 @@ final class RecordKeyBuilder<T> {
     private final List<String> columnNames;
     private final List<Type.Column.ColumnType> columnTypes;
     private final int bufferSize;
+    private final boolean hasPrimaryKey;
 
-    public RecordKeyBuilder(boolean primaryKey, Type type) {
-        this(primaryKey, type, null);
+    /*
+     * @deprecated  As of version 7.1.8, this method should not be called by a
+     * client.  It is intended to be used internally by the
+     * {@link RecordRetriever}, but that class now uses the
+     * {@link #RecordKeyBuilder(Type, TypeObjectMap<T>) method instead.
+     * This method will be removed in version 7.2.0.0.
+     */
+    @Deprecated public RecordKeyBuilder(boolean primaryKey, Type type) {
+        this(type, null);
     }
 
-    public RecordKeyBuilder(boolean primaryKey, TypeObjectMap<T> typeObjectMap) {
-        this(primaryKey, typeObjectMap.getType(), typeObjectMap);
+    /*
+     * @deprecated  As of version 7.1.8, this method should not be called by a
+     * client.  It is intended to be used internally by the
+     * {@link RecordRetriever}, but that class now uses the
+     * {@link RecordKeyBuilder(Type, TypeObjectMap<T>) method instead.
+     * This method will be removed in version 7.2.0.0.
+     */
+    @Deprecated public RecordKeyBuilder(boolean primaryKey, TypeObjectMap<T> typeObjectMap) {
+        this(typeObjectMap.getType(), typeObjectMap);
     }
 
-    private RecordKeyBuilder(boolean primaryKey, Type type, TypeObjectMap<T> typeObjectMap) {
+    /**
+     * Creates a {@link RecordKeyBuilder} with the specified table type.
+     * This holds the shard/primary key column positions, names, & types.
+     * It also provides the ability to generate a {@link RecordKey} for
+     * determining the rank from which to request data, and the key expression
+     * used to make that request.
+     *
+     * @param type       the type of records being retrieved
+     * @param typeObjectMap  type object map for the type of records being
+     *                       retrieved
+     *
+     * @throws IllegalArgumentException if the specified table type contains a
+     *         column marked as a shard key whose type is incompatible with
+     *         being a shard key
+     */
+    protected RecordKeyBuilder(Type type, TypeObjectMap<T> typeObjectMap) {
         this.typeObjectMap = typeObjectMap;
-        columns = new ArrayList<>();
-        columnNames = new ArrayList<>();
-        columnTypes = new ArrayList<>();
+        List<Integer> pkColumns = new ArrayList<>();
+        List<Integer> skColumns = new ArrayList<>();
+        this.columnNames = new ArrayList<>();
+        this.columnTypes = new ArrayList<>();
 
+        // Build a list of the PK & SK columns in the table
         List<Type.Column> typeColumns = type.getColumns();
-        boolean hasTimestamp = false;
-        boolean hasX = false;
-        boolean hasY = false;
-        int trackIdColumn = -1;
-
         for (int i = 0; i < typeColumns.size(); i++) {
-            Type.Column typeColumn = typeColumns.get(i);
+            List<String> columnProps = typeColumns.get(i).getProperties();
 
-            switch (typeColumn.getName()) {
-                case "TRACKID":
-                    trackIdColumn = i;
-                    break;
-
-                case "TIMESTAMP":
-                    hasTimestamp = true;
-                    break;
-
-                case "x":
-                    hasX = true;
-                    break;
-
-                case "y":
-                    hasY = true;
-                    break;
-            }
-
-            if (primaryKey && typeColumn.getProperties().contains(ColumnProperty.PRIMARY_KEY)) {
-                columns.add(i);
-            } else if (!primaryKey && typeColumn.getProperties().contains(ColumnProperty.SHARD_KEY)) {
-                columns.add(i);
-            }
+            // Accumulate explicit SK & PK columns; stop accumulating PK columns
+            //   if an SK is found and at least one PK column is found--the PK
+            //   list needs at least one column so that hasPrimaryKey can be set
+            //   appropriately below by checking the PK list's non-emptiness
+            if (columnProps.contains(ColumnProperty.SHARD_KEY))
+                skColumns.add(i);
+            if ((pkColumns.isEmpty() || skColumns.isEmpty()) && columnProps.contains(ColumnProperty.PRIMARY_KEY))
+                pkColumns.add(i);
         }
 
-        if (!primaryKey && trackIdColumn != -1 && hasTimestamp && hasX && hasY) {
-            if (columns.isEmpty()) {
-                columns.add(trackIdColumn);
-            } else if (columns.size() != 1 || columns.get(0) != trackIdColumn) {
-                throw new IllegalArgumentException("Cannot have a shard key other than TRACKID.");
-            }
-        }
-
-        if (columns.isEmpty()) {
-            bufferSize = 0;
+        // If no explicit shard key is defined, assume the PK is the SK
+        this.columns = (!skColumns.isEmpty()) ? skColumns : pkColumns;
+        
+        this.hasPrimaryKey = !pkColumns.isEmpty();
+        
+        if (this.columns.isEmpty()) {
+            this.bufferSize = 0;
             return;
         }
 
@@ -77,184 +86,108 @@ final class RecordKeyBuilder<T> {
 
         for (int i : columns) {
             Type.Column column = typeColumns.get(i);
-            columnNames.add( column.getName() );
+            this.columnNames.add( column.getName() );
 
             switch ( column.getColumnType() ) {
                 case DOUBLE:
-                    columnTypes.add( Type.Column.ColumnType.DOUBLE );
+                    this.columnTypes.add( Type.Column.ColumnType.DOUBLE );
                     size += 8;
                     break;
                 case FLOAT:
-                    columnTypes.add( Type.Column.ColumnType.FLOAT );
+                    this.columnTypes.add( Type.Column.ColumnType.FLOAT );
                     size += 4;
                     break;
                 case INTEGER:
-                    columnTypes.add( Type.Column.ColumnType.INTEGER );
+                    this.columnTypes.add( Type.Column.ColumnType.INTEGER );
                     size += 4;
                     break;
                 case INT8:
-                    columnTypes.add( Type.Column.ColumnType.INT8 );
+                    this.columnTypes.add( Type.Column.ColumnType.INT8 );
                     size += 1;
                     break;
                 case INT16:
-                    columnTypes.add( Type.Column.ColumnType.INT16 );
+                    this.columnTypes.add( Type.Column.ColumnType.INT16 );
                     size += 2;
                     break;
                 case LONG:
-                    columnTypes.add( Type.Column.ColumnType.LONG );
+                    this.columnTypes.add( Type.Column.ColumnType.LONG );
                     size += 8;
                     break;
                 case TIMESTAMP:
-                    columnTypes.add( Type.Column.ColumnType.TIMESTAMP );
+                    this.columnTypes.add( Type.Column.ColumnType.TIMESTAMP );
                     size += 8;
                     break;
                 case CHAR1:
-                    columnTypes.add( Type.Column.ColumnType.CHAR1 );
+                    this.columnTypes.add( Type.Column.ColumnType.CHAR1 );
                     size += 1;
                     break;
                 case CHAR2:
-                    columnTypes.add( Type.Column.ColumnType.CHAR2 );
+                    this.columnTypes.add( Type.Column.ColumnType.CHAR2 );
                     size += 2;
                     break;
                 case CHAR4:
-                    columnTypes.add( Type.Column.ColumnType.CHAR4 );
+                    this.columnTypes.add( Type.Column.ColumnType.CHAR4 );
                     size += 4;
                     break;
                 case CHAR8:
-                    columnTypes.add( Type.Column.ColumnType.CHAR8 );
+                    this.columnTypes.add( Type.Column.ColumnType.CHAR8 );
                     size += 8;
                     break;
                 case CHAR16:
-                    columnTypes.add( Type.Column.ColumnType.CHAR16 );
+                    this.columnTypes.add( Type.Column.ColumnType.CHAR16 );
                     size += 16;
                     break;
                 case CHAR32:
-                    columnTypes.add( Type.Column.ColumnType.CHAR32 );
+                    this.columnTypes.add( Type.Column.ColumnType.CHAR32 );
                     size += 32;
                     break;
                 case CHAR64:
-                    columnTypes.add( Type.Column.ColumnType.CHAR64 );
+                    this.columnTypes.add( Type.Column.ColumnType.CHAR64 );
                     size += 64;
                     break;
                 case CHAR128:
-                    columnTypes.add( Type.Column.ColumnType.CHAR128 );
+                    this.columnTypes.add( Type.Column.ColumnType.CHAR128 );
                     size += 128;
                     break;
                 case CHAR256:
-                    columnTypes.add( Type.Column.ColumnType.CHAR256 );
+                    this.columnTypes.add( Type.Column.ColumnType.CHAR256 );
                     size += 256;
                     break;
                 case DATE:
-                    columnTypes.add( Type.Column.ColumnType.DATE );
+                    this.columnTypes.add( Type.Column.ColumnType.DATE );
                     size += 4;
                     break;
                 case DATETIME:
-                    columnTypes.add( Type.Column.ColumnType.DATETIME );
+                    this.columnTypes.add( Type.Column.ColumnType.DATETIME );
                     size += 8;
                     break;
                 case DECIMAL:
-                    columnTypes.add( Type.Column.ColumnType.DECIMAL );
+                    this.columnTypes.add( Type.Column.ColumnType.DECIMAL );
                     size += 8;
                     break;
                 case TIME:
-                    columnTypes.add( Type.Column.ColumnType.TIME );
+                    this.columnTypes.add( Type.Column.ColumnType.TIME );
                     size += 4;
                     break;
                 case IPV4:
-                    columnTypes.add( Type.Column.ColumnType.IPV4 );
+                    this.columnTypes.add( Type.Column.ColumnType.IPV4 );
                     size += 4;
                     break;
                 case ULONG:
-                    columnTypes.add( Type.Column.ColumnType.ULONG );
+                    this.columnTypes.add( Type.Column.ColumnType.ULONG );
                     size += 8;
                     break;
                 case STRING:
-                    columnTypes.add( Type.Column.ColumnType.STRING );
+                    this.columnTypes.add( Type.Column.ColumnType.STRING );
                     size += 8;
                     break;
                 default:
                     // WKT, WKB, and bytes are not allowed for sharding
-                    throw new IllegalArgumentException( "Cannot use column " + column.getName()
-                                                        + " as a key; type/property '"
-                                                        + column.getType() );
+                    throw new IllegalArgumentException(
+                            "Cannot use column <" + column.getName() + "> as a key; " +
+                            "type/property <" + column.getType() + ">"
+                    );
             }
-
-
-            // if (typeColumn.getType() == Double.class) {
-            //     columnTypes.add(ColumnType.DOUBLE);
-            //     size += 8;
-            // } else if (typeColumn.getType() == Float.class) {
-            //     columnTypes.add(ColumnType.FLOAT);
-            //     size += 4;
-            // } else if (typeColumn.getType() == Integer.class) {
-            //     if (typeColumn.getProperties().contains(ColumnProperty.INT8)) {
-            //         columnTypes.add(ColumnType.INT8);
-            //         size += 1;
-            //     } else if (typeColumn.getProperties().contains(ColumnProperty.INT16)) {
-            //         columnTypes.add(ColumnType.INT16);
-            //         size += 2;
-            //     } else {
-            //         columnTypes.add(ColumnType.INT);
-            //         size += 4;
-            //     }
-            // } else if (typeColumn.getType() == Long.class) {
-            //     if (typeColumn.getProperties().contains(ColumnProperty.TIMESTAMP)) {
-            //         columnTypes.add(ColumnType.TIMESTAMP);
-            //         size += 8;
-            //     } else {
-            //         columnTypes.add(ColumnType.LONG);
-            //         size += 8;
-            //     }
-            // } else if (typeColumn.getType() == String.class) {
-            //     if (typeColumn.getProperties().contains(ColumnProperty.CHAR1)) {
-            //         columnTypes.add(ColumnType.CHAR1);
-            //         size += 1;
-            //     } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR2)) {
-            //         columnTypes.add(ColumnType.CHAR2);
-            //         size += 2;
-            //     } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR4)) {
-            //         columnTypes.add(ColumnType.CHAR4);
-            //         size += 4;
-            //     } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR8)) {
-            //         columnTypes.add(ColumnType.CHAR8);
-            //         size += 8;
-            //     } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR16)) {
-            //         columnTypes.add(ColumnType.CHAR16);
-            //         size += 16;
-            //     } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR32)) {
-            //         columnTypes.add(ColumnType.CHAR32);
-            //         size += 32;
-            //     } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR64)) {
-            //         columnTypes.add(ColumnType.CHAR64);
-            //         size += 64;
-            //     } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR128)) {
-            //         columnTypes.add(ColumnType.CHAR128);
-            //         size += 128;
-            //     } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR256)) {
-            //         columnTypes.add(ColumnType.CHAR256);
-            //         size += 256;
-            //     } else if (typeColumn.getProperties().contains(ColumnProperty.DATE)) {
-            //         columnTypes.add(ColumnType.DATE);
-            //         size += 4;
-            //     } else if (typeColumn.getProperties().contains(ColumnProperty.DATETIME)) {
-            //         columnTypes.add(ColumnType.DATETIME);
-            //         size += 8;
-            //     } else if (typeColumn.getProperties().contains(ColumnProperty.DECIMAL)) {
-            //         columnTypes.add(ColumnType.DECIMAL);
-            //         size += 8;
-            //     } else if (typeColumn.getProperties().contains(ColumnProperty.IPV4)) {
-            //         columnTypes.add(ColumnType.IPV4);
-            //         size += 4;
-            //     } else if (typeColumn.getProperties().contains(ColumnProperty.TIME)) {
-            //         columnTypes.add(ColumnType.TIME);
-            //         size += 4;
-            //     } else {
-            //         columnTypes.add(ColumnType.STRING);
-            //         size += 8;
-            //     }
-            // } else {
-            //     throw new IllegalArgumentException("Cannot use column " + typeColumn.getName() + " as a key.");
-            // }
         }
 
         this.bufferSize = size;
@@ -357,7 +290,7 @@ final class RecordKeyBuilder<T> {
     }
 
     public RecordKey build(T object) throws GPUdbException {
-        if (bufferSize == 0) {
+        if (this.bufferSize == 0) {
             return null;
         }
 
@@ -369,7 +302,7 @@ final class RecordKeyBuilder<T> {
             indexedRecord = null;
         }
 
-        RecordKey key = new RecordKey(bufferSize);
+        RecordKey key = new RecordKey(this.bufferSize);
 
         for (int i = 0; i < columns.size(); i++) {
             if (indexedRecord != null) {
@@ -383,8 +316,19 @@ final class RecordKeyBuilder<T> {
         return key;
     }
 
+    /**
+     * Builds a {@link RecordKey} object, which is used by a
+     * {@link RecordRetriever} to identify the shard on which the requested
+     * records exist.
+     *
+     * @param values   the key values corresponding to this table's key columns,
+     *                 used to calculate the shard of the records
+     *
+     * @return         a {@link RecordKey} instance for this table, which can be
+     *                 used to determine the rank from which to request data
+     */
     public RecordKey build(List<Object> values) throws GPUdbException {
-        if (bufferSize == 0) {
+        if (this.bufferSize == 0) {
             return null;
         }
 
@@ -392,7 +336,7 @@ final class RecordKeyBuilder<T> {
             throw new IllegalArgumentException("Incorrect number of key values specified.");
         }
 
-        RecordKey key = new RecordKey(bufferSize);
+        RecordKey key = new RecordKey(this.bufferSize);
 
         for (int i = 0; i < columns.size(); i++) {
             addValue(key, i, values.get(i));
@@ -402,13 +346,27 @@ final class RecordKeyBuilder<T> {
         return key;
     }
 
+    /**
+     * Builds and returns a filter expression, associating the given key values
+     * with the table's key columns.
+     *
+     * @param values   the key values corresponding to this table's key columns,
+     *                 which will be used to build a filter expression
+     *                 identifying the records
+     *
+     * @return         a filter expression identifying the records with the
+     *                 given values
+     */
     public String buildExpression(List<Object> values) throws GPUdbException {
-        if (bufferSize == 0) {
+        if (this.bufferSize == 0) {
             return null;
         }
 
         if (columns.size() != values.size()) {
-            throw new IllegalArgumentException("Incorrect number of key values specified.");
+            throw new IllegalArgumentException(
+                    "Incorrect number of key values specified: " +
+                    "need <" + columns.size() + ">, got <" + values.size() + ">"
+            );
         }
 
         StringBuilder result = new StringBuilder();
@@ -489,6 +447,10 @@ final class RecordKeyBuilder<T> {
 
     public boolean hasKey() {
         return !columns.isEmpty();
+    }
+
+    public boolean hasPrimaryKey() {
+        return hasPrimaryKey;
     }
 
     public boolean hasSameKey(RecordKeyBuilder<T> other) {
