@@ -12416,8 +12416,8 @@ public class GPUdb extends GPUdbBase {
      *                 EXPORT_DDL}: Save DDL to a separate file.  The default
      *                 value is 'false'.
      *                         <li> {@link
-     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FILE_EXTENTION
-     *                 FILE_EXTENTION}: Extension to give the export file.  The
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FILE_EXTENSION
+     *                 FILE_EXTENSION}: Extension to give the export file.  The
      *                 default value is '.csv'.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FILE_TYPE
@@ -19748,6 +19748,11 @@ public class GPUdb extends GPUdbBase {
      *                     MATCH_CHARGING_STATIONS}: Matches an optimal path
      *                     across a number of ev-charging stations between
      *                     source and target locations.
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_SIMILARITY
+     *                     MATCH_SIMILARITY}: Matches the intersection set(s)
+     *                     by computing the Jaccard similarity score between
+     *                     node pairs.
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -20089,6 +20094,33 @@ public class GPUdb extends GPUdbBase {
      *                 match_charging_stations} solver only. This is the
      *                 penalty for full charging.  The default value is
      *                 '30000.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_HOPS
+     *                 MAX_HOPS}: For the {@code match_similarity} solver only.
+     *                 Searches within this maximum hops for source and target
+     *                 node pairs to compute the Jaccard scores.  The default
+     *                 value is '3'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRAVERSAL_NODE_LIMIT
+     *                 TRAVERSAL_NODE_LIMIT}: For the {@code match_similarity}
+     *                 solver only. Limits the traversal depth if it reaches
+     *                 this many number of nodes.  The default value is '1000'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#PAIRED_SIMILARITY
+     *                 PAIRED_SIMILARITY}: For the {@code match_similarity}
+     *                 solver only. If true, it computes Jaccard score between
+     *                 each pair, otherwise it will compute Jaccard from the
+     *                 intersection set between the source and target nodes
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

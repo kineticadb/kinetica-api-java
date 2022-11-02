@@ -152,8 +152,8 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#EXPORT_DDL
      * EXPORT_DDL}: Save DDL to a separate file.  The default value is 'false'.
      *         <li> {@link
-     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FILE_EXTENTION
-     * FILE_EXTENTION}: Extension to give the export file.  The default value
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FILE_EXTENSION
+     * FILE_EXTENSION}: Extension to give the export file.  The default value
      * is '.csv'.
      *         <li> {@link
      * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FILE_TYPE
@@ -342,7 +342,7 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
         /**
          * Extension to give the export file.  The default value is '.csv'.
          */
-        public static final String FILE_EXTENTION = "file_extention";
+        public static final String FILE_EXTENSION = "file_extension";
 
         /**
          * Specifies the file format to use when exporting data.
@@ -568,8 +568,8 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *                 EXPORT_DDL}: Save DDL to a separate file.  The default
      *                 value is 'false'.
      *                         <li> {@link
-     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FILE_EXTENTION
-     *                 FILE_EXTENTION}: Extension to give the export file.  The
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FILE_EXTENSION
+     *                 FILE_EXTENSION}: Extension to give the export file.  The
      *                 default value is '.csv'.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FILE_TYPE
@@ -816,8 +816,8 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *         EXPORT_DDL}: Save DDL to a separate file.  The default value is
      *         'false'.
      *                 <li> {@link
-     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FILE_EXTENTION
-     *         FILE_EXTENTION}: Extension to give the export file.  The default
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FILE_EXTENSION
+     *         FILE_EXTENSION}: Extension to give the export file.  The default
      *         value is '.csv'.
      *                 <li> {@link
      *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FILE_TYPE
@@ -1008,8 +1008,8 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *                 EXPORT_DDL}: Save DDL to a separate file.  The default
      *                 value is 'false'.
      *                         <li> {@link
-     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FILE_EXTENTION
-     *                 FILE_EXTENTION}: Extension to give the export file.  The
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FILE_EXTENSION
+     *                 FILE_EXTENSION}: Extension to give the export file.  The
      *                 default value is '.csv'.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FILE_TYPE

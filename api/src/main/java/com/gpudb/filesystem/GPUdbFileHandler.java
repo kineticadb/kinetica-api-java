@@ -91,7 +91,7 @@ public class GPUdbFileHandler {
 
     /** This method facilitates the upload of a single file from a given
      * local directory to a given remote directory. The filename passed in
-     * is preserved between the client and the server. This method uses the 
+     * is preserved between the client and the server. This method uses the
      * default Upload options and does not use a callback.
      *
      * @param fileName - Name of the file along with the full path
@@ -103,7 +103,7 @@ public class GPUdbFileHandler {
      * @see FileUploadListener
      * @see UploadOptions
      * @see UploadOptions#defaultOptions()
-     * @see #upload(String, String, UploadOptions, FileUploadListener) 
+     * @see #upload(String, String, UploadOptions, FileUploadListener)
      *
      */
     public void upload(final String fileName, final String remoteDirName) throws GPUdbException {
@@ -157,7 +157,7 @@ public class GPUdbFileHandler {
      * @see FileUploadListener
      * @see UploadOptions
      * @see UploadOptions#defaultOptions()
-     * @see #upload(List, String, UploadOptions, FileUploadListener) 
+     * @see #upload(List, String, UploadOptions, FileUploadListener)
      */
     public void upload(final List<String> fileNames, final String remoteDirName) throws GPUdbException {
         upload(fileNames, remoteDirName, UploadOptions.defaultOptions(), null );
@@ -218,12 +218,12 @@ public class GPUdbFileHandler {
         }
 
         FileUploader fileUploader = new FileUploader(
-                                                    db,
-                                                    fileNames,
-                                                    remoteDirName,
-                                                    uploadOptions,
-                                                    callback, this.options
-                                                    );
+                db,
+                fileNames,
+                remoteDirName,
+                uploadOptions,
+                callback, this.options
+        );
 
         fileUploader.upload();
 
@@ -298,13 +298,13 @@ public class GPUdbFileHandler {
             downloadOptions = DownloadOptions.defaultOptions();
         }
         FileDownloader downloader = new FileDownloader(
-                                                    db,
-                                                    fileNames,
-                                                    localDirName,
-                                                    downloadOptions,
-                                                    callback,
-                                                    options
-                                                    );
+                db,
+                fileNames,
+                localDirName,
+                downloadOptions,
+                callback,
+                options
+        );
 
         downloader.download();
 
@@ -320,7 +320,7 @@ public class GPUdbFileHandler {
      *                   where 'a/b/c' is a full path on the KIFS.
      * @param localDirName - String - This is the name of a local directory where the
      *                      files will be saved. This directory must exist on the
-     *                      local filesystem. 
+     *                      local filesystem.
      *
      */
     public void download(String fileName, String localDirName) throws GPUdbException {
@@ -457,7 +457,7 @@ public class GPUdbFileHandler {
      * This method takes a list of fully qualified KIFS file paths and deletes
      * the files in one go.
      *  @param fileNames - a list of files on the KIFS
-     * 
+     *
      */
     public void deleteFiles(List<String> fileNames) throws GPUdbException {
         deleteFiles(fileNames, true);
@@ -554,7 +554,7 @@ public class GPUdbFileHandler {
      * This method retrieves the directory information for a given list of KIFS
      * directories and returns the information as a list of {@link KifsDirectoryInfo}
      * objects.
-     * 
+     *
      * @param remoteDirNames - Set of KIFS directory names
      * @return - list of {@link KifsDirectoryInfo} objects
      * @throws GPUdbException - from {@link #showDirectories(Set, Map)}
@@ -655,15 +655,15 @@ public class GPUdbFileHandler {
      * This method retrieves the directory information all KIFS
      * directories and returns the information as a list of {@link KifsDirectoryInfo}
      * objects.
-     * 
+     *
      * @return - a list of {@link KifsDirectoryInfo} objects
      * @throws GPUdbException - from {@link #showAllDirectories(Map)}
-     * @see #showAllDirectories(Map) 
+     * @see #showAllDirectories(Map)
      */
     public List<KifsDirectoryInfo> showAllDirectories() throws GPUdbException {
         return showAllDirectories(new HashMap<String, String>());
     }
-    
+
     /**
      * This method retrieves the directory information all KIFS
      * directories and returns the information as a list of {@link KifsDirectoryInfo}
@@ -697,7 +697,7 @@ public class GPUdbFileHandler {
 
     /**
      * This method will create a KIFS directory with default options
-     * 
+     *
      *  @param remoteDirName - String - Name of the KIFS directory to create
      * @throws GPUdbException - from {@link #createDirectory(String, boolean)}
      */
@@ -725,7 +725,7 @@ public class GPUdbFileHandler {
 
     /**
      * This method deletes a KIFS directory. This method uses default options
-     * 
+     *
      * @param remoteDirName - Name of the KIFS directory
      * @throws GPUdbException - from {@link #deleteDirectory(String, boolean, boolean)}
      * @see #deleteDirectory(String, boolean, boolean)
@@ -744,8 +744,8 @@ public class GPUdbFileHandler {
      *                           does not exist
      */
     public void deleteDirectory(String remoteDirName,
-                                   boolean recursive,
-                                   boolean noErrorIfNotExists) throws GPUdbException {
+                                boolean recursive,
+                                boolean noErrorIfNotExists) throws GPUdbException {
 
         Map<String, String> options = new HashMap<>();
         options.put( DeleteDirectoryRequest.Options.RECURSIVE,
