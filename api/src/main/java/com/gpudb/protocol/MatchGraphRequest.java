@@ -97,6 +97,10 @@ public class MatchGraphRequest implements IndexedRecord {
      * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_CHARGING_STATIONS
      * MATCH_CHARGING_STATIONS}: Matches an optimal path across a number of
      * ev-charging stations between source and target locations.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_SIMILARITY
+     * MATCH_SIMILARITY}: Matches the intersection set(s) by computing the
+     * Jaccard similarity score between node pairs.
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -149,6 +153,12 @@ public class MatchGraphRequest implements IndexedRecord {
          * between source and target locations.
          */
         public static final String MATCH_CHARGING_STATIONS = "match_charging_stations";
+
+        /**
+         * Matches the intersection set(s) by computing the Jaccard similarity
+         * score between node pairs.
+         */
+        public static final String MATCH_SIMILARITY = "match_similarity";
 
         private SolveMethod() {  }
     }
@@ -408,6 +418,31 @@ public class MatchGraphRequest implements IndexedRecord {
      * com.gpudb.protocol.MatchGraphRequest.Options#CHARGING_PENALTY
      * CHARGING_PENALTY}: For the {@code match_charging_stations} solver only.
      * This is the penalty for full charging.  The default value is '30000.0'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#MAX_HOPS MAX_HOPS}: For the
+     * {@code match_similarity} solver only. Searches within this maximum hops
+     * for source and target node pairs to compute the Jaccard scores.  The
+     * default value is '3'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#TRAVERSAL_NODE_LIMIT
+     * TRAVERSAL_NODE_LIMIT}: For the {@code match_similarity} solver only.
+     * Limits the traversal depth if it reaches this many number of nodes.  The
+     * default value is '1000'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#PAIRED_SIMILARITY
+     * PAIRED_SIMILARITY}: For the {@code match_similarity} solver only. If
+     * true, it computes Jaccard score between each pair, otherwise it will
+     * compute Jaccard from the intersection set between the source and target
+     * nodes
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -475,15 +510,7 @@ public class MatchGraphRequest implements IndexedRecord {
          * com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
          */
         public static final String PARTIAL_LOADING = "partial_loading";
-
-        /**
-         * Solves using inverse shortest path solver.
-         */
         public static final String TRUE = "true";
-
-        /**
-         * Solves using direct shortest path solver.
-         */
         public static final String FALSE = "false";
 
         /**
@@ -773,6 +800,36 @@ public class MatchGraphRequest implements IndexedRecord {
          */
         public static final String CHARGING_PENALTY = "charging_penalty";
 
+        /**
+         * For the {@code match_similarity} solver only. Searches within this
+         * maximum hops for source and target node pairs to compute the Jaccard
+         * scores.  The default value is '3'.
+         */
+        public static final String MAX_HOPS = "max_hops";
+
+        /**
+         * For the {@code match_similarity} solver only. Limits the traversal
+         * depth if it reaches this many number of nodes.  The default value is
+         * '1000'.
+         */
+        public static final String TRAVERSAL_NODE_LIMIT = "traversal_node_limit";
+
+        /**
+         * For the {@code match_similarity} solver only. If true, it computes
+         * Jaccard score between each pair, otherwise it will compute Jaccard
+         * from the intersection set between the source and target nodes
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
+         */
+        public static final String PAIRED_SIMILARITY = "paired_similarity";
+
         private Options() {  }
     }
 
@@ -860,6 +917,11 @@ public class MatchGraphRequest implements IndexedRecord {
      *                     MATCH_CHARGING_STATIONS}: Matches an optimal path
      *                     across a number of ev-charging stations between
      *                     source and target locations.
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_SIMILARITY
+     *                     MATCH_SIMILARITY}: Matches the intersection set(s)
+     *                     by computing the Jaccard similarity score between
+     *                     node pairs.
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -1198,6 +1260,33 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 match_charging_stations} solver only. This is the
      *                 penalty for full charging.  The default value is
      *                 '30000.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_HOPS
+     *                 MAX_HOPS}: For the {@code match_similarity} solver only.
+     *                 Searches within this maximum hops for source and target
+     *                 node pairs to compute the Jaccard scores.  The default
+     *                 value is '3'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRAVERSAL_NODE_LIMIT
+     *                 TRAVERSAL_NODE_LIMIT}: For the {@code match_similarity}
+     *                 solver only. Limits the traversal depth if it reaches
+     *                 this many number of nodes.  The default value is '1000'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#PAIRED_SIMILARITY
+     *                 PAIRED_SIMILARITY}: For the {@code match_similarity}
+     *                 solver only. If true, it computes Jaccard score between
+     *                 each pair, otherwise it will compute Jaccard from the
+     *                 intersection set between the source and target nodes
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1323,6 +1412,10 @@ public class MatchGraphRequest implements IndexedRecord {
      *         MATCH_CHARGING_STATIONS}: Matches an optimal path across a
      *         number of ev-charging stations between source and target
      *         locations.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_SIMILARITY
+     *         MATCH_SIMILARITY}: Matches the intersection set(s) by computing
+     *         the Jaccard similarity score between node pairs.
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -1380,6 +1473,11 @@ public class MatchGraphRequest implements IndexedRecord {
      *                     MATCH_CHARGING_STATIONS}: Matches an optimal path
      *                     across a number of ev-charging stations between
      *                     source and target locations.
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_SIMILARITY
+     *                     MATCH_SIMILARITY}: Matches the intersection set(s)
+     *                     by computing the Jaccard similarity score between
+     *                     node pairs.
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -1734,6 +1832,31 @@ public class MatchGraphRequest implements IndexedRecord {
      *         CHARGING_PENALTY}: For the {@code match_charging_stations}
      *         solver only. This is the penalty for full charging.  The default
      *         value is '30000.0'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#MAX_HOPS MAX_HOPS}:
+     *         For the {@code match_similarity} solver only. Searches within
+     *         this maximum hops for source and target node pairs to compute
+     *         the Jaccard scores.  The default value is '3'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#TRAVERSAL_NODE_LIMIT
+     *         TRAVERSAL_NODE_LIMIT}: For the {@code match_similarity} solver
+     *         only. Limits the traversal depth if it reaches this many number
+     *         of nodes.  The default value is '1000'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#PAIRED_SIMILARITY
+     *         PAIRED_SIMILARITY}: For the {@code match_similarity} solver
+     *         only. If true, it computes Jaccard score between each pair,
+     *         otherwise it will compute Jaccard from the intersection set
+     *         between the source and target nodes
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -2059,6 +2182,33 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 match_charging_stations} solver only. This is the
      *                 penalty for full charging.  The default value is
      *                 '30000.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_HOPS
+     *                 MAX_HOPS}: For the {@code match_similarity} solver only.
+     *                 Searches within this maximum hops for source and target
+     *                 node pairs to compute the Jaccard scores.  The default
+     *                 value is '3'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRAVERSAL_NODE_LIMIT
+     *                 TRAVERSAL_NODE_LIMIT}: For the {@code match_similarity}
+     *                 solver only. Limits the traversal depth if it reaches
+     *                 this many number of nodes.  The default value is '1000'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#PAIRED_SIMILARITY
+     *                 PAIRED_SIMILARITY}: For the {@code match_similarity}
+     *                 solver only. If true, it computes Jaccard score between
+     *                 each pair, otherwise it will compute Jaccard from the
+     *                 intersection set between the source and target nodes
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

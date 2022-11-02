@@ -313,7 +313,8 @@ public class BulkInserter<T> implements AutoCloseable {
             // The key is an integer which is the original index of
             // the records as obtained from the list of encoded records
             // returned by the 'Avro.encode' method.
-            Map<Integer, Pair<String, T>> warnings = new TreeMap<>();
+            Map<Integer, Pair<String, T>> errors = new TreeMap<>();
+            List<String> warnings = new ArrayList<>();
 
             // This map stores the records which have failed client side encoding
             // and has been instantiated as a 'LinkedHashMap' which preserves
@@ -348,7 +349,7 @@ public class BulkInserter<T> implements AutoCloseable {
                 return new WorkerQueueInsertionResult<>( url, this.gpudb.getURL(),
                                                           null,
                                                           queuedRecords,
-                                                          warnings, false, false, false,
+                                                          errors, warnings, false, false, false,
                                                           this.gpudb.getNumClusterSwitches(),
                                                           0, ex );
             }
@@ -404,7 +405,13 @@ public class BulkInserter<T> implements AutoCloseable {
                 info.entrySet().stream().filter( x -> x.getKey().toLowerCase().startsWith("error_"))
                     .forEach( x -> {
                             int index = Integer.parseInt(x.getKey().substring(6));
-                            warnings.put(index, Pair.of(x.getKey().substring(6) + ":" + x.getValue(), queuedRecords.get(index)));
+                            errors.put(index, Pair.of(x.getKey().substring(6) + ":" + x.getValue(), queuedRecords.get(index)));
+                    });
+
+                // Add the warnings
+                info.entrySet().stream().filter( x -> x.getKey().toLowerCase().startsWith("warning_"))
+                    .forEach( x -> {
+                        warnings.add(x.getValue());
                     });
 
                 // Now we traverse the Map of records which failed Avro
@@ -413,7 +420,7 @@ public class BulkInserter<T> implements AutoCloseable {
                 // am empty ByteBuffer to the server.
                 recordsFailedEncoding.forEach((key, value) -> {
                     int index = Integer.parseInt(key.substring(0,key.indexOf(":")));
-                    warnings.put( index, Pair.of( key, value ));
+                    errors.put( index, Pair.of( key, value ));
                 });
 
                 // Check if shard re-balancing is under way at the server; if so,
@@ -447,6 +454,7 @@ public class BulkInserter<T> implements AutoCloseable {
             // Package the response nicely with all relevant information
             return new WorkerQueueInsertionResult<>( url, headRankURL, response,
                                                       failedRecords,
+                                                      errors,
                                                       warnings,
                                                       isSuccess,
                                                       doUpdateWorkers,
@@ -486,13 +494,15 @@ public class BulkInserter<T> implements AutoCloseable {
         private final boolean   doFailover;
         private final int       countClusterSwitches;
         private final long      insertionAttemptTimestamp;
-        private final Map<Integer, Pair<String, T>> warnings;
+        private final Map<Integer, Pair<String, T>> error_map;
+        private final List<String> warnings;
 
         public WorkerQueueInsertionResult(URL workerUrl,
                                           URL headUrl,
                                           InsertRecordsResponse insertResponse,
                                           List<T> failedRecords,
-                                          Map<Integer, Pair<String, T>> warnings,
+                                          Map<Integer, Pair<String, T>> error_map,
+                                          List<String> warnings,
                                           boolean didSucceed,
                                           boolean doUpdateWorkers,
                                           boolean doFailover,
@@ -503,6 +513,7 @@ public class BulkInserter<T> implements AutoCloseable {
             this.headUrl          = headUrl;
             this.insertResponse   = insertResponse;
             this.failedRecords    = failedRecords;
+            this.error_map        = error_map;
             this.warnings         = warnings;
             this.didSucceed       = didSucceed;
             this.doUpdateWorkers  = doUpdateWorkers;
@@ -525,6 +536,10 @@ public class BulkInserter<T> implements AutoCloseable {
         }
 
         public Map<Integer, Pair<String, T>> getErrors() {
+            return this.error_map;
+        }
+
+        public List<String> getWarnings() {
             return this.warnings;
         }
 
@@ -585,6 +600,7 @@ public class BulkInserter<T> implements AutoCloseable {
     private final AtomicLong countInserted = new AtomicLong();
     private final AtomicLong countUpdated = new AtomicLong();
     private List<InsertException> error_list = new ArrayList<>();
+    private List<InsertException> warning_list = new ArrayList<>();
     private final Object error_list_lock = new Object();
 
     /**
@@ -1419,8 +1435,7 @@ public class BulkInserter<T> implements AutoCloseable {
     }
 
     /**
-     * Gets the list of errors and warnings received since the last call to
-     * getErrors().
+     * Gets the list of errors received since the last call to getErrors().
      *
      * @return  list of InsertException objects
      */
@@ -1430,6 +1445,21 @@ public class BulkInserter<T> implements AutoCloseable {
         {
             List<InsertException> copy = error_list; // Make a copy to return
             error_list = new ArrayList<>(); // Make a new list for the future
+            return copy;
+        }
+    }
+
+    /**
+     * Gets the list of warnings received since the last call to getWarnings().
+     *
+     * @return  list of InsertException objects
+     */
+    public List<InsertException> getWarnings()
+    {
+        synchronized (error_list_lock)
+        {
+            List<InsertException> copy = warning_list; // Make a copy to return
+            warning_list = new ArrayList<>(); // Make a new list for the future
             return copy;
         }
     }
@@ -1835,6 +1865,7 @@ public class BulkInserter<T> implements AutoCloseable {
         Map<Integer, Pair<String, T>> errors = result.getErrors();
         if (errors != null) {
             errors.forEach((key,entry) -> {
+                simulateErrorMode |= returnIndividualErrors;
                 List<T> records = new ArrayList<>();
                 if (entry.getRight() != null)
                     records.add(entry.getRight());
@@ -1842,10 +1873,17 @@ public class BulkInserter<T> implements AutoCloseable {
                     String message = entry.getLeft();
                     message = message.substring( message.indexOf(":") + 1);
                     error_list.add(new InsertException(result.headUrl, records, message));
-                    if (returnIndividualErrors && !records.isEmpty())
-                        simulateErrorMode = true;
                 }
             });
+        }
+
+        List<String> warnings = result.getWarnings();
+        if (warnings != null) {
+            synchronized (error_list_lock) {
+                warnings.forEach((entry) -> {
+                    warning_list.add(new InsertException(result.headUrl, null, entry));
+                });
+            }
         }
     }
 

@@ -234,7 +234,7 @@ public class RecordRetriever<T> {
         // purposes)
         this.dbHARingSize = gpudb.getHARingSize();
 
-        // Keep track of how many times the db client has switched HA clusters
+        // Keep track of how many times the DB client has switched HA clusters
         // in order to decide later if it's time to update the worker queues
         this.numClusterSwitches = gpudb.getNumClusterSwitches();
 
@@ -267,9 +267,9 @@ public class RecordRetriever<T> {
         // a random worker, depended upon whether the database version supports
         // it.  So, we need to hardcode the versions that will have this change.
         //
-        // Since isWorkerLookupSupported is true if MH is active (by this point in init),
-        // just set it to false if the server can't support it for replicated
-        // tables
+        // Since isWorkerLookupSupported is true if MH is active (by this point
+        // in init), just set it to false if the server can't support it for
+        // replicated tables
         if ( this.isTableReplicated ) {
             // Check the server version
             GPUdbBase.GPUdbVersion serverVersion = this.gpudb.getServerVersion();
@@ -445,7 +445,7 @@ public class RecordRetriever<T> {
      * Updates the shard mapping based on the latest cluster configuration.
      * Also reconstructs the worker queues based on the new sharding.
      *
-     * @return  a bool indicating whether the shard mapping was updated or not.
+     * @return  whether the shard mapping was updated or not.
      */
     private boolean updateWorkerQueues( int countClusterSwitches ) throws GPUdbException {
         return this.updateWorkerQueues( countClusterSwitches, true );
@@ -805,7 +805,7 @@ public class RecordRetriever<T> {
             decodedResponse.setTypeName(   response.getTypeName()   );
             decodedResponse.setTypeSchema( response.getTypeSchema() );
 
-            // Decode the actual resposne
+            // Decode the actual response
             if (typeObjectMap == null)
                 decodedResponse.setData( gpudb.<T>decode(type, response.getRecordsBinary()) );
             else

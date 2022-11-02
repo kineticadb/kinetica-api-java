@@ -2,6 +2,15 @@
 
 ## Version 7.1
 
+### Version 7.1.8.5 - 2022-11-02
+
+#### Added
+-   getWarnings() method on BulkInserter
+
+#### Changed
+-   BulkInserter.getErrors() now only returns errors and not warnings -- use getWarnings() for warnings
+
+
 ### Version 7.1.8.4 - 2022-10-26
 
 #### Changed
@@ -44,6 +53,27 @@
 
 #### Fixed
 -   Java bytecode version mismatch when compiling on Java9+ and running on Java8
+
+
+### Version 7.1.7.7 - 2022-10-06
+
+#### Changed
+-   Added logging during timed flush executions
+
+
+### Version 7.1.7.6 - 2022-10-03
+
+#### Changed
+-   Reduced logging during setting of timed flush
+
+
+### Version 7.1.7.5 - 2022-09-27
+
+#### Changed
+-   BulkInserter will do a default of 3 local reries for any non-data failure
+    before attempting to fail over to another cluster
+-   Timed flush mechanism can be set or reset after BulkInserter construction
+-   No failover will be attempted if only one cluster is found
 
 
 ### Version 7.1.7.4 - 2022-09-19
@@ -147,7 +177,7 @@
     `SSLConnectionSocketFactory` to facilitate passing in
     a user supplied truststore file along with the password
 
-#### Note
+#### Notes
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
 
 
@@ -196,14 +226,14 @@
 -   Converted the `BulkInserter` flushing mechanism from single-threaded
     to parallel-threaded.
 
-#### Note
+#### Notes
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
 
 
 
 ### Version 7.1.1.0 - 2020-10-28
 
-#### Note
+#### Notes
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
 
 
@@ -342,7 +372,7 @@
 
 ### Version 7.0.20.0 - 2020-11-25
 
-#### Note
+#### Notes
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
 
 
@@ -374,7 +404,7 @@
 
 ### Version 7.0.19.0 - 2020-08-24
 
-#### Note
+#### Notes
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
 
 
