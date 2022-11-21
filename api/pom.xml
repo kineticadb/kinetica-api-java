@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.gpudb</groupId>
     <artifactId>gpudb-api</artifactId>
-    <version>7.1.8.5</version>
+    <version>7.1.8.6</version>
     <packaging>jar</packaging>
     <name>Kinetica Java API</name>
     <repositories>
@@ -16,22 +16,27 @@
         </repository>
     </repositories>
     <distributionManagement>
-         <repository>
+        <repository>
             <id>releases</id>
             <name>Releases</name>
             <url>https://nexus.kinetica.com/repository/releases</url>
-         </repository>
-         <snapshotRepository>
+        </repository>
+        <snapshotRepository>
             <id>snapshots</id>
             <name>Snapshots</name>
             <url>https://nexus.kinetica.com/repository/snapshots</url>
-         </snapshotRepository>
+        </snapshotRepository>
     </distributionManagement>
     <dependencies>
         <dependency>
             <groupId>org.apache.avro</groupId>
             <artifactId>avro</artifactId>
             <version>1.11.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>  <!-- update avro version for security -->
+            <version>2.14.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -80,7 +85,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <gpudb-api.version>7.1.8.5</gpudb-api.version>
+        <gpudb-api.version>7.1.8.6</gpudb-api.version>
         <target.build.dir>target</target.build.dir> <!-- override on cmd-line -->
     </properties>
     <profiles>

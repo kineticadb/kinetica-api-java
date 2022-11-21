@@ -2,6 +2,16 @@
 
 ## Version 7.1
 
+### Version 7.1.8.6 - 2022-11-21
+
+#### Added
+-   Table permissions check on BulkInserter instantiation
+
+#### Changed
+-   Updated Jackson databind version to 2.14.0
+-   Stopped/suspended clusters are reported as such
+
+
 ### Version 7.1.8.5 - 2022-11-02
 
 #### Added

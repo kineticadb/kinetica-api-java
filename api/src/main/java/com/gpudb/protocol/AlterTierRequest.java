@@ -77,6 +77,8 @@ public class AlterTierRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.AlterTierRequest.Options#TRUE TRUE}.
+     *         <li> {@link com.gpudb.protocol.AlterTierRequest.Options#RANK
+     * RANK}: Apply the requested change only to a specific rank.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -119,6 +121,11 @@ public class AlterTierRequest implements IndexedRecord {
         public static final String PERSIST = "persist";
         public static final String TRUE = "true";
         public static final String FALSE = "false";
+
+        /**
+         * Apply the requested change only to a specific rank.
+         */
+        public static final String RANK = "rank";
 
         private Options() {  }
     }
@@ -171,6 +178,9 @@ public class AlterTierRequest implements IndexedRecord {
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.AlterTierRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTierRequest.Options#RANK RANK}:
+     *                 Apply the requested change only to a specific rank.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -235,6 +245,9 @@ public class AlterTierRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.AlterTierRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTierRequest.Options#RANK RANK}: Apply
+     *         the requested change only to a specific rank.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -276,6 +289,9 @@ public class AlterTierRequest implements IndexedRecord {
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.AlterTierRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTierRequest.Options#RANK RANK}:
+     *                 Apply the requested change only to a specific rank.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
