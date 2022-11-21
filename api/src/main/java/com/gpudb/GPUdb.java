@@ -5693,6 +5693,9 @@ public class GPUdb extends GPUdbBase {
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.AlterTierRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTierRequest.Options#RANK RANK}:
+     *                 Apply the requested change only to a specific rank.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -19943,47 +19946,70 @@ public class GPUdb extends GPUdbBase {
      *                 algorithm to set the maximal number of threads within
      *                 these constraints.  The default value is '0'.
      *                         <li> {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUCK_SERVICE_LIMIT
-     *                 TRUCK_SERVICE_LIMIT}: For the {@code
-     *                 match_supply_demand} solver only. If specified (greater
-     *                 than zero), any truck's total service cost (distance or
-     *                 time) will be limited by the specified value including
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#SERVICE_LIMIT
+     *                 SERVICE_LIMIT}: For the {@code match_supply_demand}
+     *                 solver only. If specified (greater than zero), any
+     *                 supply actor's total service cost (distance or time)
+     *                 will be limited by the specified value including
      *                 multiple rounds (if set).  The default value is '0.0'.
      *                         <li> {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#ENABLE_TRUCK_REUSE
-     *                 ENABLE_TRUCK_REUSE}: For the {@code match_supply_demand}
-     *                 solver only. If specified (true), all trucks can be
-     *                 scheduled for second rounds from their originating
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#ENABLE_REUSE
+     *                 ENABLE_REUSE}: For the {@code match_supply_demand}
+     *                 solver only. If specified (true), all supply actors can
+     *                 be scheduled for second rounds from their originating
      *                 depots.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}:
-     *                 Allows reusing trucks for scheduling again.
+     *                 Allows reusing supply actors (trucks, e.g.) for
+     *                 scheduling again.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
-     *                 FALSE}: Trucks are scheduled only once from their
+     *                 FALSE}: Supply actors are scheduled only once from their
      *                 depots.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_TRUCK_STOPS
-     *                 MAX_TRUCK_STOPS}: For the {@code match_supply_demand}
-     *                 solver only. If specified (greater than zero), a truck
-     *                 can at most have this many stops (demand locations) in
-     *                 one round trip. Otherwise, it is unlimited. If
-     *                 'enable_truck_reuse' is on, this condition will be
-     *                 applied separately at each round trip use of the same
-     *                 truck.  The default value is '0'.
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_STOPS
+     *                 MAX_STOPS}: For the {@code match_supply_demand} solver
+     *                 only. If specified (greater than zero), a supply actor
+     *                 (truck) can at most have this many stops (demand
+     *                 locations) in one round trip. Otherwise, it is
+     *                 unlimited. If 'enable_truck_reuse' is on, this condition
+     *                 will be applied separately at each round trip use of the
+     *                 same truck.  The default value is '0'.
      *                         <li> {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUCK_SERVICE_RADIUS
-     *                 TRUCK_SERVICE_RADIUS}: For the {@code
-     *                 match_supply_demand} solver only. If specified (greater
-     *                 than zero), it filters the demands outside this radius
-     *                 centered around the truck's originating location
-     *                 (distance or time).  The default value is '0.0'.
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#SERVICE_RADIUS
+     *                 SERVICE_RADIUS}: For the {@code match_supply_demand}
+     *                 solver only. If specified (greater than zero), it
+     *                 filters the demands outside this radius centered around
+     *                 the supply actor's originating location (distance or
+     *                 time).  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#PERMUTE_SUPPLIES
+     *                 PERMUTE_SUPPLIES}: For the {@code match_supply_demand}
+     *                 solver only. If specified (true), supply side actors are
+     *                 permuted for the demand combinations during msdo
+     *                 optimization - note that this option increases
+     *                 optimization time significantly - use of
+     *                 'max_combinations' option is recommended to prevent
+     *                 prohibitively long runs
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}:
+     *                 Generates sequences over supply side permutations if
+     *                 total supply is less than twice the total demand
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}: Permutations are not performed, rather a
+     *                 specific order of supplies based on capacity is computed
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#BATCH_TSM_MODE
      *                 BATCH_TSM_MODE}: For the {@code match_supply_demand}
@@ -20005,11 +20031,30 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#RESTRICTED_TRUCK_TYPE
-     *                 RESTRICTED_TRUCK_TYPE}: For the {@code
-     *                 match_supply_demand} solver only. Optimization is
-     *                 performed by restricting routes labeled by
-     *                 'MSDO_ODDEVEN_RESTRICTED' only for this truck type
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#ROUND_TRIP
+     *                 ROUND_TRIP}: For the {@code match_supply_demand} solver
+     *                 only. When enabled, the supply will have to return back
+     *                 to the origination location.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}:
+     *                 The optimization is done for trips in round trip manner
+     *                 always returning to originating locations
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}: Supplies do not have to come back to their
+     *                 originating locations in their routes. The routes are
+     *                 considered finished at the final dropoff.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#RESTRICTED_TYPE
+     *                 RESTRICTED_TYPE}: For the {@code match_supply_demand}
+     *                 solver only. Optimization is performed by restricting
+     *                 routes labeled by 'MSDO_ODDEVEN_RESTRICTED' only for
+     *                 this supply actor (truck) type
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

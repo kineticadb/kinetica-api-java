@@ -16,6 +16,7 @@
 
 ##### Non-breaking Changes
 -   Added support for Azure, HDFS, S3 and Google Cloud storage providers to ``/create/datasink`` and ``/alter/datasink`` endpoints
+-   Added rank option to ``/alter/tier``
 
 ##### Breaking Changes
 

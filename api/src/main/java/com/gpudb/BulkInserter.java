@@ -615,7 +615,11 @@ public class BulkInserter<T> implements AutoCloseable {
      * @param type       the type of records being inserted
      * @param batchSize  the number of records to insert into GPUdb at a time
      *                   (records will queue until this number is reached)
-     * @param options    optional parameters to pass to GPUdb while inserting
+     * @param options    optional parameters to pass to GPUdb while inserting<br>
+     *                   This is the same set of options as accepted by the
+     *                   {@link GPUdb#insertRecords(String, List, Map)} call.<br>
+     *                   The details can be found at
+     *                   {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
      *
      * @throws GPUdbException if a configuration error occurs
      *
@@ -641,7 +645,11 @@ public class BulkInserter<T> implements AutoCloseable {
      *                   (records will queue until this number is reached); for
      *                   multi-head ingest, this value is per worker
      * @param options    optional parameters to pass to GPUdb while inserting
-     *                   ({@code null} for no parameters)
+     *                   ({@code null} for no parameters)<br>
+     *                   This is the same set of options as accepted by the
+     *                   {@link GPUdb#insertRecords(String, List, Map)} call.<br>
+     *                   The details can be found at
+     *                   {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
      * @param workers    worker list for multi-head ingest ({@code null} to
      *                   disable multi-head ingest)
      *
@@ -670,7 +678,11 @@ public class BulkInserter<T> implements AutoCloseable {
      *                   (records will queue until this number is reached); for
      *                   multi-head ingest, this value is per worker
      * @param options    optional parameters to pass to GPUdb while inserting
-     *                   ({@code null} for no parameters)
+     *                   ({@code null} for no parameters)<br>
+     *                   This is the same set of options as accepted by the
+     *                   {@link GPUdb#insertRecords(String, List, Map)} call.<br>
+     *                   The details can be found at
+     *                   {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
      * @param workers    worker list for multi-head ingest ({@code null} to
      *                   disable multi-head ingest)
      * @param flushOptions - instance of {@link FlushOptions} class
@@ -707,7 +719,11 @@ public class BulkInserter<T> implements AutoCloseable {
      *                       time (records will queue until this number is
      *                       reached)
      * @param options        optional parameters to pass to GPUdb while
-     *                       inserting ({@code null} for no parameters)
+     *                       inserting ({@code null} for no parameters)<br>
+     *                       This is the same set of options as accepted by the
+     *                       {@link GPUdb#insertRecords(String, List, Map)} call.<br>
+     *                       The details can be found at
+     *                       {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
      *
      * @throws GPUdbException if a configuration error occurs
      *
@@ -735,7 +751,11 @@ public class BulkInserter<T> implements AutoCloseable {
      *                       reached); for multi-head ingest, this value is per
      *                       worker
      * @param options        optional parameters to pass to GPUdb while
-     *                       inserting ({@code null} for no parameters)
+     *                       inserting ({@code null} for no parameters)<br>
+     *                       This is the same set of options as accepted by the
+     *                       {@link GPUdb#insertRecords(String, List, Map)} call.<br>
+     *                       The details can be found at
+     *                       {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
      * @param workers        worker list for multi-head ingest ({@code null} to
      *                       disable multi-head ingest)
      *
@@ -766,7 +786,11 @@ public class BulkInserter<T> implements AutoCloseable {
      *                       reached); for multi-head ingest, this value is per
      *                       worker
      * @param options        optional parameters to pass to GPUdb while
-     *                       inserting ({@code null} for no parameters)
+     *                       inserting ({@code null} for no parameters)<br>
+     *                       This is the same set of options as accepted by the
+     *                       {@link GPUdb#insertRecords(String, List, Map)} call.<br>
+     *                       The details can be found at
+     *                       {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
      * @param workers        worker list for multi-head ingest ({@code null} to
      *                       disable multi-head ingest)
      * @param flushOptions - instance of timed flush options {@link FlushOptions}
@@ -796,6 +820,13 @@ public class BulkInserter<T> implements AutoCloseable {
                          Map<String, String> options,
                          com.gpudb.WorkerList workers,
                          FlushOptions flushOptions) throws GPUdbException {
+
+        boolean hasPermissions = hasPermissionsForTable(gpudb, tableName, options);
+        if( !hasPermissions ) {
+        	String errorMsg = String.format("User %s doesn't have requisite permissions on the table %s to use BulkInserter", gpudb.getUsername(), tableName);
+            GPUdbLogger.error(errorMsg);
+            throw new GPUdbException(errorMsg);
+        }
 
         haFailoverLock = new Object();
 
@@ -1029,6 +1060,33 @@ public class BulkInserter<T> implements AutoCloseable {
 
         // Terminate the worker thread pool
         terminateWorkerThreadPool();
+    }
+
+    /**
+     * Checks whether the user has the requisite permissions on the table to
+     * use BulkInserter. This method us used in the constructor and if the
+     * permissions are not found to be adequate then the constructor throws
+     * an exception and bails out.
+     *
+     * @param gpudb     - the GPUdb instance
+     * @param tableName - the name of the table for which the BulkInserter is being created
+     * @param options - The options to be passed to "/insert/records" endpoint.
+     * @return - true (in case the insert and optional update permissions exist) or false
+     * @throws GPUdbException - in case the {@link GPUdb#hasPermission(String, String, String, String, Map)}  call fails
+     */
+    private boolean hasPermissionsForTable(final GPUdb gpudb, final String tableName, Map<String, String> options) throws GPUdbException {
+        boolean insertPermissionOk = gpudb.hasPermission("", tableName, HasPermissionRequest.ObjectType.TABLE, HasPermissionRequest.Permission.INSERT, new HashMap<String, String>()).getHasPermission();
+        boolean updatePermissionOk = true;
+
+        // If the user requests upserts, check update permission on the table
+        //   Note: either options or the map value could be null
+        if (options != null) {
+            String updateOnExistingPk = options.get(InsertRecordsRequest.Options.UPDATE_ON_EXISTING_PK);
+            if (InsertRecordsRequest.Options.TRUE.equalsIgnoreCase(updateOnExistingPk))
+                updatePermissionOk = gpudb.hasPermission("", tableName, HasPermissionRequest.ObjectType.TABLE, HasPermissionRequest.Permission.UPDATE, new HashMap<String, String>()).getHasPermission();
+        }
+
+        return (insertPermissionOk && updatePermissionOk);
     }
 
     private void terminateTimedFlushExecutor() {

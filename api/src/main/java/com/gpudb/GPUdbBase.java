@@ -88,8 +88,8 @@ public abstract class GPUdbBase {
     private static final int DEFAULT_SERVER_CONNECTION_TIMEOUT = 10000;
 
     // The amount of time of inactivity after which the connection would be
-    // validated: 200ms
-    private static final int DEFAULT_CONNECTION_INACTIVITY_VALIDATION_TIMEOUT = 200;
+    // validated: 100ms
+    private static final int DEFAULT_CONNECTION_INACTIVITY_VALIDATION_TIMEOUT = 100;
 
     // The default port for host manager URLs
     private static final int DEFAULT_HOST_MANAGER_PORT = 9300;
@@ -5813,7 +5813,6 @@ public abstract class GPUdbBase {
                 if (status.equals("ERROR")) {
                     // Check if Kinetica is shutting down
                     if (
-                            statusCode == HttpURLConnection.HTTP_UNAVAILABLE ||
                             statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR ||
                             statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT ||
                             message.contains( DB_EXITING_ERROR_MESSAGE ) ||
@@ -5826,6 +5825,11 @@ public abstract class GPUdbBase {
                                 "Throwing EXIT exception from " + url.toString() + "; response_code: " + statusCode + "; message: " + message
                         );
                         throw new GPUdbExitException( message );
+                    } else if( statusCode == HttpURLConnection.HTTP_UNAVAILABLE ) {
+                        GPUdbLogger.debug_with_info(
+                            "Throwing EXIT exception from " + url.toString() + "; response_code: " + statusCode + "; message: " + message
+                        );
+                        throw new GPUdbExitException( "cluster may be stopped or suspended" );
                     }
                     // A legitimate error
                     GPUdbLogger.debug_with_info(
