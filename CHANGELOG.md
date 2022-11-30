@@ -2,10 +2,16 @@
 
 ## Version 7.1
 
+### Version 7.1.8.7 - 2022-11-30
+
+#### Added
+-   Improved reporting of permissions errors during `BulkInserter` insert
+
+
 ### Version 7.1.8.6 - 2022-11-21
 
 #### Added
--   Table permissions check on BulkInserter instantiation
+-   Table permissions check on `BulkInserter` instantiation
 
 #### Changed
 -   Updated Jackson databind version to 2.14.0
@@ -15,16 +21,17 @@
 ### Version 7.1.8.5 - 2022-11-02
 
 #### Added
--   getWarnings() method on BulkInserter
+-   `getWarnings()` method on `BulkInserter`
 
 #### Changed
--   BulkInserter.getErrors() now only returns errors and not warnings -- use getWarnings() for warnings
+-   `BulkInserter.getErrors()` now only returns errors and not warnings -- use
+    `getWarnings()` for warnings
 
 
 ### Version 7.1.8.4 - 2022-10-26
 
 #### Changed
--   Improved performance of BulkInserter & RecordRetriever key generation
+-   Improved performance of `BulkInserter` & `RecordRetriever` key generation
 
 
 ### Version 7.1.8.3 - 2022-10-17

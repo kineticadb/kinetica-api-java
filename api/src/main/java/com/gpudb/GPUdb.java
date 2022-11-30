@@ -20876,7 +20876,8 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}.
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#AND_LABELS
      *                 AND_LABELS}: If set to {@code true}, the result of the

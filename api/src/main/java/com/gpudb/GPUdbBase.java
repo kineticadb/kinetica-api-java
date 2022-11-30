@@ -128,7 +128,9 @@ public abstract class GPUdbBase {
     // an intra-cluster failover event.  The default is 0, equivalent to infinite.
     private static final long DEFAULT_INTRA_CLUSTER_FAILOVER_TIMEOUT_MS = 0;
 
-    // The maxium number of connections across all or an individual host
+    // The maximum number of connections across all or an individual host
+    // used in setting up the {@link PoolingHttpClientConnectionManager} instance
+    // in the {@link #init} method.
     private static final int DEFAULT_MAX_TOTAL_CONNECTIONS    = 40;
     private static final int DEFAULT_MAX_CONNECTIONS_PER_HOST = 10;
 
@@ -1946,18 +1948,15 @@ public abstract class GPUdbBase {
          */
         public boolean doesClusterContainNode( String hostName ) {
             GPUdbLogger.debug_with_info( "Begin checking for hostname: " + hostName);
-            Iterator<String> iter = this.hostNames.iterator();
-            while ( iter.hasNext() ) {
+            for (String hostname_ : this.hostNames) {
                 // We need to check for a string subset match since the
                 // hostnames contain the protocol as well as the actual hostname
                 // or IP address
-                String hostname_ = iter.next();
-                GPUdbLogger.debug_with_info( "Checking for match with '" + hostname_ + "'" );
-                if( hostname_.contains( hostName ) ) {
-                    GPUdbLogger.debug_with_info( "Found matching hostname");
+                GPUdbLogger.debug_with_info("Checking for match with '" + hostname_ + "'");
+                if (hostname_.contains(hostName)) {
+                    GPUdbLogger.debug_with_info("Found matching hostname");
                     return true;
-                }
-                else    GPUdbLogger.debug_with_info( "Did NOT find matching hostname");
+                } else GPUdbLogger.debug_with_info("Did NOT find matching hostname");
             }
             GPUdbLogger.debug_with_info( "No match; returning false");
             return false; // found no match
@@ -2089,8 +2088,8 @@ public abstract class GPUdbBase {
 
             // Split the string on commas, if any
             String[] url_strings = url.split(",");
-            for (int i = 0; i < url_strings.length; ++i ) {
-                urls.add( new URL( url_strings[i] ) );
+            for (String url_string : url_strings) {
+                urls.add(new URL(url_string));
             }
         } catch (MalformedURLException ex) {
             GPUdbLogger.error( ex.getMessage() );
@@ -2381,8 +2380,8 @@ public abstract class GPUdbBase {
      */
     public List<URL> getURLs() {
         List<URL> activeHeadNodeURLs = new ArrayList<URL>();
-        for (int i = 0; i < this.hostAddresses.size(); ++i) {
-            activeHeadNodeURLs.add( this.hostAddresses.get( i ).getActiveHeadNodeUrl() );
+        for (ClusterAddressInfo hostAddress : this.hostAddresses) {
+            activeHeadNodeURLs.add(hostAddress.getActiveHeadNodeUrl());
         }
         return activeHeadNodeURLs;
     }
@@ -2414,8 +2413,8 @@ public abstract class GPUdbBase {
      */
     public List<URL> getHmURLs() {
         List<URL> hmURLs = new ArrayList<URL>();
-        for (int i = 0; i < this.hostAddresses.size(); ++i) {
-            hmURLs.add( this.hostAddresses.get( i ).getHostManagerUrl() );
+        for (ClusterAddressInfo hostAddress : this.hostAddresses) {
+            hmURLs.add(hostAddress.getHostManagerUrl());
         }
         return hmURLs;
     }
@@ -2634,12 +2633,12 @@ public abstract class GPUdbBase {
             throw new GPUdbException( errorMsg );
         }
 
-        // Ensure that the given header is not a protecte header
-        for ( int i = 0; i < PROTECTED_HEADERS.length; ++i ) {
-            if ( header == PROTECTED_HEADERS[ i ] ) {
-                String errorMsg = ( "Not allowed to change proteced header: " + header );
-                GPUdbLogger.error( errorMsg );
-                throw new GPUdbException( errorMsg );
+        // Ensure that the given header is not a protected header
+        for (String protectedHeader : PROTECTED_HEADERS) {
+            if (header.equals(protectedHeader)) {
+                String errorMsg = ("Not allowed to change proteced header: " + header);
+                GPUdbLogger.error(errorMsg);
+                throw new GPUdbException(errorMsg);
             }
         }
 
@@ -2671,12 +2670,12 @@ public abstract class GPUdbBase {
             throw new GPUdbException( errorMsg );
         }
 
-        // Ensure that the given header is not a protecte header
-        for ( int i = 0; i < PROTECTED_HEADERS.length; ++i ) {
-            if ( header == PROTECTED_HEADERS[ i ] ) {
-                String errorMsg = ( "Not allowed to remove proteced header: " + header );
-                GPUdbLogger.error( errorMsg );
-                throw new GPUdbException( errorMsg );
+        // Ensure that the given header is not a protected header
+        for (String protectedHeader : PROTECTED_HEADERS) {
+            if (header.equals(protectedHeader)) {
+                String errorMsg = ("Not allowed to remove protected header: " + header);
+                GPUdbLogger.error(errorMsg);
+                throw new GPUdbException(errorMsg);
             }
         }
 
@@ -2886,17 +2885,16 @@ public abstract class GPUdbBase {
             GPUdbLogger.debug_with_info( "Iteration #" + numRankCheckAttempt );
 
             // Check if all the ranks are up and listening
-            for ( int i = 0; i < rankUrls.size(); ++i ) {
-                URL url = rankUrls.get( i );
+            for (URL url : rankUrls) {
                 // Keep pinging this rank until it is up
                 boolean keepPingingThisRank = true;
-                while ( keepPingingThisRank ) {
-                    if ( isKineticaRunning( url ) ) {
+                while (keepPingingThisRank) {
+                    if (isKineticaRunning(url)) {
                         // We'll move on to the next rank
                         keepPingingThisRank = false;
-                        GPUdbLogger.debug_with_info( "Rank http server @ " + url.toString() + " did respond" );
+                        GPUdbLogger.debug_with_info("Rank http server @ " + url.toString() + " did respond");
                     } else {
-                        GPUdbLogger.debug_with_info( "Rank http server @ " + url.toString() + " did NOT respond" );
+                        GPUdbLogger.debug_with_info("Rank http server @ " + url.toString() + " did NOT respond");
                         // Keep track of the fact that this rank's http server
                         // did NOT respond
                         wasSomeRankUnresponsive = true;
@@ -2904,11 +2902,11 @@ public abstract class GPUdbBase {
                         // Sleep a few seconds before retrying; we will keep
                         // pinging this rank until its http server comes up
                         try {
-                            GPUdbLogger.debug_with_info( "Sleeping for " + (sleepInterval / 1000) + " seconds..." );
-                            Thread.sleep( sleepInterval );
-                        } catch ( InterruptedException ex ) {
-                            GPUdbLogger.debug_with_info( "Sleep interrupted; throwing exception: " + ex.getMessage() );
-                            throw new GPUdbException( "Intra-cluster failover interrupted: " + ex.getMessage(), ex );
+                            GPUdbLogger.debug_with_info("Sleeping for " + (sleepInterval / 1000) + " seconds...");
+                            Thread.sleep(sleepInterval);
+                        } catch (InterruptedException ex) {
+                            GPUdbLogger.debug_with_info("Sleep interrupted; throwing exception: " + ex.getMessage());
+                            throw new GPUdbException("Intra-cluster failover interrupted: " + ex.getMessage(), ex);
                         }
                     }   // end if
                 }   // end inner while
@@ -2950,29 +2948,24 @@ public abstract class GPUdbBase {
         boolean wasSomeRankUnresponsive = false;
 
         // Check if all the ranks are up and listening
-        for ( int i = 0; i < rankUrls.size(); ++i ) {
-            URL url = rankUrls.get( i );
-            if ( isKineticaRunning( url ) ) {
-                GPUdbLogger.debug_with_info( "Rank http server @ " + url.toString() + " did respond" );
+        for (URL url : rankUrls) {
+            if (isKineticaRunning(url)) {
+                GPUdbLogger.debug_with_info("Rank http server @ " + url.toString() + " did respond");
             } else {
-                GPUdbLogger.debug_with_info( "Rank http server @ " + url.toString() + " did NOT respond" );
+                GPUdbLogger.debug_with_info("Rank http server @ " + url.toString() + " did NOT respond");
                 // Keep track of the fact that this rank's http server
                 // did NOT respond
                 wasSomeRankUnresponsive = true;
             }   // end if
         } // end for loop
 
-        // Success if all ranks responded
-        if ( !wasSomeRankUnresponsive ) {
-            // Every single rank responded; the cluster is ready for business!
-            return true;
-        } else {
-            return false;
-        }
+        return !wasSomeRankUnresponsive;
     }   // end areAllRanksReadyCheckOnce
 
 
     /**
+     * THIS METHOD IS NOT USED ANYMORE, N+1 is not handled, feature removed.
+     *
      * For the given cluster in the HA ring, try to recover the new set of
      * addresses for all the ranks etc.  If N+1 failover is in progress, spin
      * and wait until it is in a good state and return the result.
