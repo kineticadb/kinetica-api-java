@@ -1404,6 +1404,12 @@ public class BulkInserter<T> implements AutoCloseable{
                 }
             } else {
                 // Something went wrong and the data was not inserted.
+                if( result.getFailureException().getMessage().equalsIgnoreCase("access denied")) {
+                    // No point retrying anymore, we won't succeed until the permissions
+                    // are available.
+                    throw new InsertException(getCurrentHeadNodeURL(), result.getFailedRecords(), String.format("No permissions on table %s for inserting/updating records", tableName));
+                }
+
                 doRetryInsertion = true;
 
                 // Figure out went wrong with the insertion and what follow-up

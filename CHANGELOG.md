@@ -2,6 +2,12 @@
 
 ## Version 7.0
 
+### Version 7.0.20.9 - 2022-11-30
+
+#### Added
+-   Improved reporting of permissions errors during `BulkInserter` insert
+
+
 ### Version 7.0.20.8 - 2022-09-08
 
 #### Changed
