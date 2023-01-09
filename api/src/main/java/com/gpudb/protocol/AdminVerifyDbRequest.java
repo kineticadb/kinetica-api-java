@@ -74,7 +74,10 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_PERSIST
      * VERIFY_PERSIST}: When {@code true}, persistent objects will be compared
-     * against their state in memory.
+     * against their state in memory and workers will be checked for orphaned
+     * table data in persist. To check for orphaned worker data, either set
+     * {@code concurrent_safe} in {@code options} to {@code true} or place the
+     * database offline.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
@@ -116,7 +119,8 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      * DELETE_ORPHANED_TABLES}: If {@code true}, orphaned table directories
      * found on workers for which there is no corresponding metadata will be
      * deleted. Must set {@code verify_persist} in {@code options} to {@code
-     * true}
+     * true}. It is recommended to run this while the database is offline OR
+     * set {@code concurrent_safe} in {@code options} to {@code true}
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
@@ -164,7 +168,10 @@ public class AdminVerifyDbRequest implements IndexedRecord {
 
         /**
          * When {@code true}, persistent objects will be compared against their
-         * state in memory.
+         * state in memory and workers will be checked for orphaned table data
+         * in persist. To check for orphaned worker data, either set {@code
+         * concurrent_safe} in {@code options} to {@code true} or place the
+         * database offline.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -211,7 +218,9 @@ public class AdminVerifyDbRequest implements IndexedRecord {
         /**
          * If {@code true}, orphaned table directories found on workers for
          * which there is no corresponding metadata will be deleted. Must set
-         * {@code verify_persist} in {@code options} to {@code true}
+         * {@code verify_persist} in {@code options} to {@code true}. It is
+         * recommended to run this while the database is offline OR set {@code
+         * concurrent_safe} in {@code options} to {@code true}
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -277,7 +286,11 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_PERSIST
      *                 VERIFY_PERSIST}: When {@code true}, persistent objects
-     *                 will be compared against their state in memory.
+     *                 will be compared against their state in memory and
+     *                 workers will be checked for orphaned table data in
+     *                 persist. To check for orphaned worker data, either set
+     *                 {@code concurrent_safe} in {@code options} to {@code
+     *                 true} or place the database offline.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -329,7 +342,10 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *                 DELETE_ORPHANED_TABLES}: If {@code true}, orphaned table
      *                 directories found on workers for which there is no
      *                 corresponding metadata will be deleted. Must set {@code
-     *                 verify_persist} in {@code options} to {@code true}
+     *                 verify_persist} in {@code options} to {@code true}. It
+     *                 is recommended to run this while the database is offline
+     *                 OR set {@code concurrent_safe} in {@code options} to
+     *                 {@code true}
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -383,7 +399,10 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_PERSIST
      *         VERIFY_PERSIST}: When {@code true}, persistent objects will be
-     *         compared against their state in memory.
+     *         compared against their state in memory and workers will be
+     *         checked for orphaned table data in persist. To check for
+     *         orphaned worker data, either set {@code concurrent_safe} in
+     *         {@code options} to {@code true} or place the database offline.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -425,6 +444,8 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *         DELETE_ORPHANED_TABLES}: If {@code true}, orphaned table
      *         directories found on workers for which there is no corresponding
      *         metadata will be deleted. Must set {@code verify_persist} in
+     *         {@code options} to {@code true}. It is recommended to run this
+     *         while the database is offline OR set {@code concurrent_safe} in
      *         {@code options} to {@code true}
      *         Supported values:
      *         <ul>
@@ -482,7 +503,11 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_PERSIST
      *                 VERIFY_PERSIST}: When {@code true}, persistent objects
-     *                 will be compared against their state in memory.
+     *                 will be compared against their state in memory and
+     *                 workers will be checked for orphaned table data in
+     *                 persist. To check for orphaned worker data, either set
+     *                 {@code concurrent_safe} in {@code options} to {@code
+     *                 true} or place the database offline.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -534,7 +559,10 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *                 DELETE_ORPHANED_TABLES}: If {@code true}, orphaned table
      *                 directories found on workers for which there is no
      *                 corresponding metadata will be deleted. Must set {@code
-     *                 verify_persist} in {@code options} to {@code true}
+     *                 verify_persist} in {@code options} to {@code true}. It
+     *                 is recommended to run this while the database is offline
+     *                 OR set {@code concurrent_safe} in {@code options} to
+     *                 {@code true}
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

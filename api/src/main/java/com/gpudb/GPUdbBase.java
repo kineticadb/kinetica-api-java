@@ -1,17 +1,16 @@
 package com.gpudb;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.ByteBuffer;
-import java.security.GeneralSecurityException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.security.*;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,16 +28,24 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.gpudb.protocol.*;
+import com.gpudb.util.url.UrlUtils;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.DecoderFactory;
+import org.apache.commons.codec.Charsets;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.NotImplementedException;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.config.RequestConfig;
@@ -49,11 +56,10 @@ import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustAllStrategy;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.conn.ssl.*;
 import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -65,14 +71,6 @@ import org.xerial.snappy.Snappy;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gpudb.protocol.ShowSystemPropertiesRequest;
-import com.gpudb.protocol.ShowSystemPropertiesResponse;
-import com.gpudb.protocol.ShowSystemStatusRequest;
-import com.gpudb.protocol.ShowSystemStatusResponse;
-import com.gpudb.protocol.ShowTableRequest;
-import com.gpudb.protocol.ShowTableResponse;
-import com.gpudb.protocol.ShowTypesRequest;
-import com.gpudb.protocol.ShowTypesResponse;
 import com.gpudb.util.ssl.X509TrustManagerBypass;
 
 
@@ -212,6 +210,8 @@ public abstract class GPUdbBase {
             this.maxConnectionsPerHost       = other.maxConnectionsPerHost;
             this.initialConnectionAttemptTimeout = other.initialConnectionAttemptTimeout;
             this.connectionInactivityValidationTimeout = other.connectionInactivityValidationTimeout;
+            this.trustStoreFilePath = other.trustStoreFilePath;
+            this.trustStorePassword = other.trustStorePassword;
 
             // Shallow copy; not cloneable and no copy constructor available
             this.executor             = other.executor;
@@ -1282,6 +1282,76 @@ public abstract class GPUdbBase {
     }  // end class GPUdbVersion
 
 
+    public static final class InsertRecordsJsonRequest extends InsertRecordsFromPayloadRequest {
+
+        @Override
+        public String getTableName() {
+            return super.getTableName();
+        }
+
+        @Override
+        public InsertRecordsFromPayloadRequest setTableName(String tableName) {
+            return super.setTableName(tableName);
+        }
+
+        @Override
+        public String getDataText() {
+            return super.getDataText();
+        }
+
+        @Override
+        public InsertRecordsFromPayloadRequest setDataText(String dataText) {
+            return super.setDataText(dataText);
+        }
+
+        @Override
+        public ByteBuffer getDataBytes() {
+            throw new NotImplementedException("Method not available");
+        }
+
+        @Override
+        public InsertRecordsFromPayloadRequest setDataBytes(ByteBuffer dataBytes) {
+            throw new NotImplementedException("Method not available");
+        }
+
+        @Override
+        public Map<String, Map<String, String>> getModifyColumns() {
+            throw new NotImplementedException("Method not available");
+        }
+
+        @Override
+        public InsertRecordsFromPayloadRequest setModifyColumns(Map<String, Map<String, String>> modifyColumns) {
+            throw new NotImplementedException("Method not available");
+        }
+
+        @Override
+        public Map<String, String> getCreateTableOptions() {
+            return super.getCreateTableOptions();
+        }
+
+        @Override
+        public InsertRecordsFromPayloadRequest setCreateTableOptions(Map<String, String> createTableOptions) {
+            return super.setCreateTableOptions(createTableOptions);
+        }
+
+        @Override
+        public Map<String, String> getOptions() {
+            return super.getOptions();
+        }
+
+        @Override
+        public InsertRecordsFromPayloadRequest setOptions(Map<String, String> options) {
+            return super.setOptions(options);
+        }
+
+        @Override
+        public Schema getSchema() {
+            throw new NotImplementedException("Method not available");
+        }
+
+        public InsertRecordsJsonRequest() {
+        }
+    }
 
     /**
      * An exception that occurred during the submission of a request to GPUdb.
@@ -1290,8 +1360,10 @@ public abstract class GPUdbBase {
         private static final long serialVersionUID = 1L;
 
         private final URL url;
-        private final transient IndexedRecord request;
-        private final int requestSize;
+        private transient IndexedRecord request;
+
+        private transient String payload;
+        private int requestSize;
 
         private SubmitException(URL url, IndexedRecord request, int requestSize, String message) {
             super(message);
@@ -1307,6 +1379,12 @@ public abstract class GPUdbBase {
             this.requestSize = requestSize;
         }
 
+        private SubmitException(URL url, String payload, String message, Throwable cause) {
+            super(message, cause);
+            this.url = url;
+            this.payload = payload;
+        }
+
         private SubmitException(URL url, IndexedRecord request, int requestSize, String message, boolean connectionFailure) {
             super(message, connectionFailure);
             this.url = url;
@@ -1319,6 +1397,12 @@ public abstract class GPUdbBase {
             this.url = url;
             this.request = request;
             this.requestSize = requestSize;
+        }
+
+        private SubmitException(URL url, String payload, String errorMsg) {
+            super( errorMsg );
+            this.url = url;
+            this.payload = payload;
         }
 
         /**
@@ -2135,7 +2219,14 @@ public abstract class GPUdbBase {
 
 
     /**
-     * Construct the GPUdbBase object based on the given URLs and options.
+     * Construct the GPUdbBase object based on the given URLs and options. This is a helper method called from the
+     * constructor of the {@link GPUdbBase} class.
+     *
+     * @param urls - List of URLs passes by the user.
+     * @param options - An instance of the {@link GPUdbBase.Options} class.
+     * @throws GPUdbException - thrown in a number of cases like:
+     *                          1. Error raised by the method in processing the URLs
+     *                          2. Error raised in case of any SSL related handling like mismatched certificate etc.
      */
     private void init(List<URL> urls, Options options) throws GPUdbException {
         // Save the options object
@@ -2186,20 +2277,15 @@ public abstract class GPUdbBase {
                 + " (0 means infinite waiting)"
         );
 
-        this.trustStoreFilePath = options.getTrustStoreFilePath();
-        this.trustStorePassword = options.getTrustStorePassword();
+        this.trustStoreFilePath = options.getTrustStoreFilePath() == null ? System.getProperty("javax.net.ssl.trustStore") : options.getTrustStoreFilePath();
+        GPUdbLogger.debug("Truststore : " + trustStoreFilePath);
+        this.trustStorePassword = options.getTrustStorePassword() == null ? System.getProperty("javax.net.ssl.trustStorePassword") : options.getTrustStorePassword();
 
         // Handle SSL certificate verification bypass for HTTPS connections
         this.bypassSslCertCheck = options.getBypassSslCertCheck();
 
-        //Cannot have both 'bypassSslCertCheck' and 'customSslConnectionSocketFactory'
-        //set at the same time; conflicting options. If both are set check
-        //and throw 'GPUdbException'.
-        if( bypassSslCertCheck && ( trustStoreFilePath != null || trustStorePassword != null ) ) {
-            throw new GPUdbException("Both 'bypassSslCertCheck' and <'trustStoreFilePath' or 'trustStorePassword'> cannot be set together; conflicting options.");
-        }
-
         if ( this.bypassSslCertCheck ) {
+            GPUdbLogger.debug("SSL certificate check bypassed");
             // This bypass works only for HTTPS connections
             try {
                 X509TrustManagerBypass.install();
@@ -2262,12 +2348,56 @@ public abstract class GPUdbBase {
             && (trustStorePassword != null && !trustStorePassword.isEmpty())) {
             SSLConnectionSocketFactory connectionSocketFactory = null;
 
+            TrustStrategy acceptingTrustStrategy = new TrustStrategy() {
+                @Override
+                public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                    String truststoreFile = trustStoreFilePath;
+                    String truststorePassword = trustStorePassword;
+                    KeyStore truststore = null;
+                    try {
+                        truststore = KeyStore.getInstance(KeyStore.getDefaultType());
+                    } catch (KeyStoreException e) {
+                        GPUdbLogger.error( e.getMessage() );
+                        return false;
+                    }
+                    try (FileInputStream truststoreInputStream = new FileInputStream(truststoreFile)) {
+                        try {
+                            truststore.load(truststoreInputStream, truststorePassword.toCharArray());
+                        } catch (IOException | NoSuchAlgorithmException | CertificateException e) {
+                            GPUdbLogger.error( e.getMessage() );
+                            return false;
+                        }
+                    } catch (IOException e) {
+                        GPUdbLogger.error( e.getMessage() );
+                        return false;
+                    }
+
+                    Certificate certificate = null;
+                    // Enumerate the certificates in the truststore
+                    try {
+                        for (String alias : Collections.list(truststore.aliases())) {
+                            try {
+                                certificate = truststore.getCertificate(alias);
+                                if( chain[0].equals( certificate))
+                                    return true;
+                            } catch (KeyStoreException e) {
+                                GPUdbLogger.error( e.getMessage());
+                            }
+                        }
+                    } catch (KeyStoreException e) {
+                        GPUdbLogger.error( e.getMessage() );
+                        return false;
+                    }
+
+                    return false;
+                }
+            };
             try {
                 SSLContext sslContext = SSLContexts.custom()
                     .loadTrustMaterial(
                         new File(trustStoreFilePath),
                         trustStorePassword.toCharArray(),
-                        new TrustSelfSignedStrategy()
+                        acceptingTrustStrategy
                     ).build();
 
                 connectionSocketFactory = new SSLConnectionSocketFactory(sslContext, new HostnameVerifier() {
@@ -2341,7 +2471,7 @@ public abstract class GPUdbBase {
         // running Kinetica--automatically discovers the HA ring head nodes,
         // takes care of the primary URL, and randomizes the backup clusters
         GPUdbLogger.debug_with_info( "Before parsing URLs" );
-        parseUrls( urls );
+        processUrls( urls );
         GPUdbLogger.debug_with_info( "After parsing URLs; ring size " + getHARingSize() + " this.haUrlIndices size " + this.haUrlIndices.size() );
 
         // Get the Kinetica server's version and store it for future use
@@ -2814,9 +2944,9 @@ public abstract class GPUdbBase {
                 }
 
                 // Check if the system is back up and running
-                if ( isSystemRunning( systemStatusInfo ) ) {
+                if ( isSystemRunning( url ) ) {
                     GPUdbLogger.debug_with_info( "Cluster is running; getting /show/sys/props ");
-                    // System is back up; re-parse the URLs for this cluster
+                    // System is back up; re-process the URLs for this cluster
 
                     // Get the latest system properties of the cluster, if
                     // can't get it, skip to the next one
@@ -3153,7 +3283,7 @@ public abstract class GPUdbBase {
                                 GPUdbLogger.debug_with_info( "Sleep interrupted; throwing exception: " + ex.getMessage() );
                                 throw new GPUdbException( "Intra-cluster failover interrupted: " + ex.getMessage(), ex );
                             }
-                        } else if ( isSystemRunning( systemStatusInfo ) ) {
+                        } else if ( isSystemRunning( url ) ) {
                             GPUdbLogger.debug_with_info( "System is running; getting sys props" );
                             // System is back up; re-parse the URLs for this cluster
 
@@ -3374,7 +3504,7 @@ public abstract class GPUdbBase {
                             GPUdbLogger.debug_with_info( "Sleep interrupted; throwing exception" );
                             throw new GPUdbException( "Intra-cluster failover interrupted: " + ex.getMessage(), ex );
                         }
-                    } else if ( isSystemRunning( systemStatusInfo ) ) {
+                    } else if ( isSystemRunning( potentialHeadRankUrl ) ) {
                         // System is back up; re-parse the URLs for this cluster
                         GPUdbLogger.debug_with_info( "System is running; getting sys props" );
 
@@ -3947,6 +4077,9 @@ public abstract class GPUdbBase {
 
 
     /**
+     * @apiNote  - This method is not used anymore. The overload {@link #isSystemRunning(URL)} is used
+     * wherever this method was used earlier.
+     *
      * Given the response to a /show/system/status query, figure out whether
      * the server is running or not.
      */
@@ -3973,30 +4106,99 @@ public abstract class GPUdbBase {
 
     /**
      * Given a URL, return whether the server is running at that address.
+     *
+     * @param url - The URL to check for
+     *
+     * @throws GPUdbException - Could be {@link GPUdbException}, {@link GPUdbExitException} or {@link GPUdbUnauthorizedAccessException}
      */
-    private boolean isSystemRunning( URL url ) {
+    private boolean isSystemRunning( URL url ) throws GPUdbException {
+        boolean isSystemRunning = false;
         try {
             JsonNode systemStatusInfo = getSystemStatusInformation( url );
 
             // Then look for 'status' and see if it is 'running'
             JsonNode systemStatus = systemStatusInfo.get( SHOW_SYSTEM_STATUS_RESPONSE_STATUS );
-            GPUdbLogger.debug_with_info( url.toString()  + " got status: " + systemStatus.toString() );
+            GPUdbLogger.debug_with_info(String.format("URL %s got status: %s", url.toString(), systemStatus.toString()));
 
             if ( ( systemStatus != null)
                 && SHOW_SYSTEM_STATUS_RESPONSE_RUNNING.equals( systemStatus.textValue() ) ) {
-                GPUdbLogger.debug_with_info( url.toString()  + " returning true");
-                return true;
+                isSystemRunning = true;
+            } else {
+                GPUdbLogger.warn(String.format("System not running at URL %s", url.toString()));
             }
         } catch ( Exception ex ) {
+            if( ex instanceof GPUdbUnauthorizedAccessException ) {
+                throw ex;
+            }
             // Any error means we don't know whether the system is running
-            GPUdbLogger.debug_with_info( url.toString() + " caught exception " + ex.toString());
+            GPUdbLogger.error(String.format("Got exception while checking whether system is running at URL %s : Exception :: %s",
+                    url.toString(),
+                    ex.toString()));
+            throw new GPUdbException( ex.getMessage() );
         }
-
-        GPUdbLogger.debug_with_info( url.toString()  + " returning false");
-        return false;
+        return isSystemRunning;
     }
 
+    /**
+     * This method inserts a JSON payload (either a single JSON record or an array) into a Kinetica table
+     * @param insertRecordsJsonRequest - an instance of {@link InsertRecordsJsonRequest} class
+     * @return - the JSON response as a Map of String to Object.
+     * @throws GPUdbException - in case of an error raised by the underlying endpoint
+     */
+    public Map<String, Object> insertRecordsFromJson(InsertRecordsJsonRequest insertRecordsJsonRequest) throws GPUdbException {
+        if( insertRecordsJsonRequest == null ) {
+            throw new GPUdbException("Request object is null");
+        }
+        return insertRecordsFromJson( insertRecordsJsonRequest.getTableName(),
+                insertRecordsJsonRequest.getDataText(),
+                insertRecordsJsonRequest.getCreateTableOptions(),
+                insertRecordsJsonRequest.getOptions());
+    }
 
+    /**
+     * This method inserts a JSON payload (either a single JSON record or an array) into a Kinetica table
+     * @param jsonRecords - A single JSON record or an array of records as JSON
+     * @param tableName - the table to insert the records into
+     * @param createTableOptions - an instance of the class {@link InsertRecordsJsonRequest.CreateTableOptions}
+     * @param options - an instance of the class {@link InsertRecordsJsonRequest.Options}
+     *
+     * @return - the JSON response as a Map of String to Object.
+     * @throws GPUdbException - in case of an error raised by the underlying endpoint
+     */
+    public Map<String, Object> insertRecordsFromJson(String jsonRecords,
+                                                     String tableName,
+                                                     Map<String, String> createTableOptions,
+                                                     Map<String, String> options) throws GPUdbException {
+        if( jsonRecords == null || jsonRecords.isEmpty() ) {
+            throw new GPUdbException( "No records to insert" );
+        }
+
+        if( tableName == null || tableName.isEmpty() ) {
+            throw new GPUdbException( "Table name not given, cannot insert" );
+        }
+
+        if( createTableOptions == null ) {
+            createTableOptions = new LinkedHashMap<>();
+        }
+
+        if( options == null ) {
+            options = new LinkedHashMap<>();
+        }
+
+        //Overwrite the value in the map with the `tableName` parameter value
+        options.put( "table_name", tableName );
+
+        Map<String, String> combinedOptions = Stream.of(createTableOptions, options)
+                .flatMap(map -> map.entrySet().stream())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (value1, value2) -> value1));
+
+        String endpoint = UrlUtils.constructEndpointUrl( "/insert/records/json", combinedOptions );
+
+        return Collections.unmodifiableMap(submitRequest(endpoint, jsonRecords, false));
+    }
 
     /**
      * Given system properties, deduce if the given cluster has N+1 failover
@@ -4449,7 +4651,7 @@ public abstract class GPUdbBase {
      * ***This method should be called from the constructor initialization
      *    method only!***
      */
-    private synchronized void parseUrls( List<URL> urls ) throws GPUdbException {
+    private synchronized void processUrls( List<URL> urls ) throws GPUdbException {
 
         // The very first time we sleep, if at all, will be for one minute
         int parseUrlsReattemptWaitInterval = 60000;
@@ -4466,7 +4668,7 @@ public abstract class GPUdbBase {
             try {
                 // Parse the URLs (a single attempt)
                 GPUdbLogger.debug_with_info( "Attempting to parse the user given URLs" );
-                this.parseUrlsOnce( urls );
+                this.processClusterInformationForAllUrls( urls );
                 return; // one successful attempt is all we need
             } catch (GPUdbHostnameRegexFailureException ex) {
                 // There's no point in keep trying since the URLs aren't
@@ -4475,6 +4677,10 @@ public abstract class GPUdbBase {
                         "Could not connect to any working Kinetica server due to hostname regex mismatch (given URLs: " + urls.toString() + "); " + ex.getMessage()
                 );
             } catch (GPUdbException ex ) {
+                if( ex instanceof GPUdbUnauthorizedAccessException ) {
+                    GPUdbLogger.error("Got Unauthorized while communicating to server, cannot proceed ..");
+                    throw ex;
+                }
                 GPUdbLogger.debug_with_info( "Attempt at parsing URLs failed: " + ex.getMessage() );
 
                 // If the user does not want us to retry, parse the URLs as is
@@ -4489,7 +4695,7 @@ public abstract class GPUdbBase {
                         GPUdbLogger.warn(
                                 "Attempt at parsing user given URLs " + Arrays.toString( urls.toArray() )
                                 + " failed; waiting for " + (parseUrlsReattemptWaitInterval / 60000)
-                                + " mintue(s) before retrying");
+                                + " minute(s) before retrying");
                         try {
                             // We will sleep before trying again
                             GPUdbLogger.debug_with_info( "Sleeping for " + (parseUrlsReattemptWaitInterval / 60000) + " minutes before trying again" );
@@ -4524,9 +4730,9 @@ public abstract class GPUdbBase {
      * of which stores all pertinent information on a given cluster.
      *
      * ***This method should be called from the constructor initialization
-     *    method only (via parseURls, not directly)!***
+     *    method only (via processUrls, not directly)!***
      */
-    private synchronized void parseUrlsOnce( List<URL> urls )
+    private synchronized void processClusterInformationForAllUrls(List<URL> urls )
         throws GPUdbHostnameRegexFailureException, GPUdbException {
 
         this.hostAddresses = new ArrayList<ClusterAddressInfo>();
@@ -4757,10 +4963,9 @@ public abstract class GPUdbBase {
             // This could fail due to a hostname regex mismatch.
             List<URL> haRingHeadNodeURLs = getHARingHeadNodeURLs( systemProperties );
             GPUdbLogger.debug_with_info( "Got ha ring head urls: " + Arrays.toString(haRingHeadNodeURLs.toArray()) );
-            for ( int i = 0; i < haRingHeadNodeURLs.size(); ++i ) {
-                URL haUrl = haRingHeadNodeURLs.get( i );
-                GPUdbLogger.debug_with_info( "Processing ha ring head urls: " + haUrl.toString() + " host is " + haUrl.getHost() );
-                if ( getIndexOfClusterContainingNode( haUrl.getHost() ) == -1 ) {
+            for (URL haUrl : haRingHeadNodeURLs) {
+                GPUdbLogger.debug_with_info("Processing ha ring head urls: " + haUrl.toString() + " host is " + haUrl.getHost());
+                if (getIndexOfClusterContainingNode(haUrl.getHost()) == -1) {
                     // We have not encountered this cluster yet; add it to the
                     // list of URLs to process
                     GPUdbLogger.debug_with_info( "Currently known clusters don't have this node; adding the url for processing" );
@@ -5385,6 +5590,152 @@ public abstract class GPUdbBase {
         } // end while
     } // end submitRequest
 
+    /**
+     * Submits an arbitrary request to GPUdb and saves the response into a
+     * pre-created response object, optionally compressing the request before
+     * sending. The request and response objects must implement the Avro
+     * {@link IndexedRecord} interface. The request will only be compressed if
+     * {@code enableCompression} is {@code true} and the
+     * {@link GPUdb#GPUdb(String, GPUdbBase.Options) GPUdb constructor} was
+     * called with the {@link Options#setUseSnappy(boolean) Snappy compression
+     * flag} set to {@code true}.
+     *
+     * @param endpoint           the GPUdb endpoint to send the request to
+     * @param payload            the payload as a JSON String
+     * @param enableCompression  whether to compress the request
+     *
+     * @return                   the response object (same as {@code response}
+     *                           parameter)
+     *
+     * @throws SubmitException if an error occurs while submitting the request
+     */
+    public Map<String, Object> submitRequest( String endpoint,
+                                                      String payload,
+                                                      boolean enableCompression ) throws SubmitException, GPUdbException {
+        // Send the request to the database server head node
+        URL url = getURL();
+        URL originalURL = url;
+
+        while (true) {
+            // We need a snapshot of the current state re: HA failover.  When
+            // multiple threads work on this object, we'll need to know how
+            // many times we've switched clusters *before* attempting another
+            // request submission.
+            int currentClusterSwitchCount = getNumClusterSwitches();
+
+            try {
+                return submitRequest(appendPathToURL(url, endpoint), payload, enableCompression);
+            } catch (MalformedURLException ex) {
+                // There's an error in creating the URL
+                throw new GPUdbRuntimeException(ex.getMessage(), ex);
+            } catch (GPUdbExitException ex) {
+                GPUdbLogger.warn(
+                        "Got EXIT exception when trying endpoint " + endpoint
+                                + " at " + url.toString()
+                                + ": " + ex.getMessage() + "; switch URL..."
+                );
+                // Handle our special exit exception
+                try {
+                    url = switchURL( originalURL, currentClusterSwitchCount );
+                    GPUdbLogger.debug_with_info( "Switched to " + url.toString() );
+                } catch (GPUdbHAUnavailableException ha_ex) {
+                    // We've now tried all the HA clusters and circled back
+                    // Get the original cause to propagate to the user
+                    String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
+                    throw new GPUdbException( originalCause + "; " + ha_ex.getMessage(), true );
+                } catch (GPUdbFailoverDisabledException ha_ex) {
+                    // Failover is disabled; return the original cause
+                    String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
+                    throw new GPUdbException( originalCause + "; " + ha_ex.getMessage(), true );
+                }
+            } catch (SubmitException ex) {
+                GPUdbLogger.warn(
+                        "Got submit exception when trying endpoint " + endpoint
+                                + " at " + url.toString()
+                                + ": " + ex.getMessage() + "; switch URL..."
+                );
+                // Some error occurred during the HTTP request
+                try {
+                    url = switchURL( originalURL, currentClusterSwitchCount );
+                    GPUdbLogger.debug_with_info( "Switched to " + url.toString() );
+                } catch (GPUdbHAUnavailableException ha_ex) {
+                    // We've now tried all the HA clusters and circled back
+                    // Get the original cause to propagate to the user
+                    String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
+                    throw new SubmitException(
+                            null,
+                            ex.getRequest(),
+                            ex.getRequestSize(),
+                            originalCause + "; " + ha_ex.getMessage(),
+                            ex.getCause(),
+                            true
+                    );
+                } catch (GPUdbFailoverDisabledException ha_ex) {
+                    // Failover is disabled; return the original cause
+                    String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
+                    throw new SubmitException(
+                            null,
+                            ex.getRequest(),
+                            ex.getRequestSize(),
+                            originalCause + "; " + ha_ex.getMessage(),
+                            ex.getCause(),
+                            true
+                    );
+                }
+            } catch (GPUdbException ex) {
+                // Any other GPUdbException is a valid failure
+                GPUdbLogger.debug_with_info( "Got GPUdbException, so propagating: " + ex.getMessage() );
+                throw ex;
+            } catch (Exception ex) {
+                GPUdbLogger.warn(
+                        "Got Java exception when trying endpoint " + endpoint
+                                + " at " + url.toString()
+                                + ": " + ex.getMessage() + "; switch URL..."
+                );
+                // And other random exceptions probably are also connection errors
+                try {
+                    url = switchURL( originalURL, currentClusterSwitchCount );
+                    GPUdbLogger.debug_with_info( "Switched to " + url.toString() );
+                } catch (GPUdbHAUnavailableException ha_ex) {
+                    // We've now tried all the HA clusters and circled back
+                    // Get the original cause to propagate to the user
+                    String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
+                    throw new GPUdbException( originalCause + "; " + ha_ex.getMessage(), true );
+                } catch (GPUdbFailoverDisabledException ha_ex) {
+                    // Failover is disabled; return the original cause
+                    String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
+                    throw new GPUdbException( originalCause + "; " + ha_ex.getMessage(), true );
+                }
+            }
+        } // end while
+    } // end submitRequest
+
+
+    /**
+     * Submits an arbitrary request to GPUdb via the specified URL and saves the
+     * response into a pre-created response object, optionally compressing the
+     * request before sending. The request and response objects must implement
+     * the Avro {@link IndexedRecord} interface. The request will only be
+     * compressed if {@code enableCompression} is {@code true} and the
+     * {@link GPUdb#GPUdb(String, GPUdbBase.Options) GPUdb constructor} was
+     * called with the {@link Options#setUseSnappy(boolean) Snappy compression
+     * flag} set to {@code true}.
+     *
+     * @param url                the URL to send the request to
+     * @param payload            the payload as a JSON String
+     * @param enableCompression  whether to compress the request
+     * @return                   the response object (same as {@code response}
+     *                           parameter)
+     *
+     * @throws SubmitException if an error occurs while submitting the request
+     */
+    public Map<String, Object> submitRequest( URL url,
+                                                      String payload,
+                                                      boolean enableCompression)
+            throws SubmitException, GPUdbExitException, GPUdbException {
+
+        return submitRequestRaw( url, payload, enableCompression );
+    }
 
     /**
      * Submits an arbitrary request to the GPUdb host manager and saves the
@@ -5671,6 +6022,33 @@ public abstract class GPUdbBase {
      * called with the {@link Options#setUseSnappy(boolean) Snappy compression
      * flag} set to {@code true}.
      *
+     * @param url                the URL to send the request to
+     * @param payload            the payload as a JSON String
+     * @param enableCompression  whether to compress the request
+     * @return                   the response object (same as {@code response}
+     *                           parameter)
+     *
+     * @throws SubmitException if an error occurs while submitting the request
+     */
+    public Map<String, Object> submitRequestRaw( URL url,
+                                                         String payload,
+                                                         boolean enableCompression )
+            throws SubmitException, GPUdbExitException, GPUdbException {
+        // Use the set timeout for the GPUdb object for the http connection
+        return submitRequestRaw( url, payload, enableCompression, this.timeout );
+    }
+
+
+    /**
+     * Submits an arbitrary request to GPUdb via the specified URL and saves the
+     * response into a pre-created response object, optionally compressing the
+     * request before sending. The request and response objects must implement
+     * the Avro {@link IndexedRecord} interface. The request will only be
+     * compressed if {@code enableCompression} is {@code true} and the
+     * {@link GPUdb#GPUdb(String, GPUdbBase.Options) GPUdb constructor} was
+     * called with the {@link Options#setUseSnappy(boolean) Snappy compression
+     * flag} set to {@code true}.
+     *
      * @param <T>                the type of the response object
      * @param url                the URL to send the request to
      * @param request            the request object
@@ -5727,9 +6105,21 @@ public abstract class GPUdbBase {
             try {
                 postResponse = this.httpClient.execute( postRequest );
             } catch ( javax.net.ssl.SSLException ex) {
-                String errorMsg = ("Encountered SSL exception when trying to connect to " + url.toString() + "; error: " + ex.getMessage() );
-                GPUdbLogger.debug_with_info( "Throwing unauthorized exception due to: " + ex.getMessage() );
-                throw new GPUdbUnauthorizedAccessException( errorMsg );
+                String errorMsg;
+                if( ex.getMessage().toLowerCase().contains("subject alternative names")) {
+                    errorMsg = "Server SSL certificate not found in specified trust store.  Please use the options to " +
+                            "bypass the certificate check or add the server's certificate or CA cert in the server's " +
+                            "certificate path to the trust store and try again.";
+                } else if( ex.getMessage().toLowerCase().contains("unable to find valid certification path")) {
+                    errorMsg = "No trust store was specified, but server requires SSL certificate validation.  " +
+                            "Please use the options to bypass the certificate check or specify a trust store containing " +
+                            "the server's certificate or CA cert in the server's certificate path and try again.";
+                } else {
+                    errorMsg = "Error: " + ex.getMessage();
+                }
+                errorMsg = String.format("Encountered SSL error when trying to connect to server at %s.  %s", url.toString(), errorMsg);
+                GPUdbLogger.error( errorMsg );
+                throw new GPUdbException( errorMsg );
             } catch (Exception ex) {
                 // Trigger an HA failover at the caller level
                 GPUdbLogger.debug_with_info( "Throwing exit exception due to: " + ex.getMessage() );
@@ -5778,9 +6168,9 @@ public abstract class GPUdbBase {
 
             // Parse response based on error code
             if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                // Got sttaus 401 -- unauthorized
+                // Got status 401 -- unauthorized
                 GPUdbLogger.debug_with_info( "Got status code: " + statusCode );
-                String errorMsg = ("Unauthorized access: " + responseMessage );
+                String errorMsg = (String.format("Server response status: %d : %s", statusCode, responseMessage));
                 throw new GPUdbUnauthorizedAccessException( errorMsg );
                 // Note: Keeping the original code here in case some unforeseen
                 // problem arises that we haven't thought of yet by changing
@@ -5867,6 +6257,176 @@ public abstract class GPUdbBase {
             GPUdbLogger.debug_with_info( "Caught Exception: " + ex.getMessage() );
             // Some sort of submission error
             throw new SubmitException(url, request, requestSize, ex.getMessage(), ex);
+        } finally {
+            // Release all resources held by the responseEntity
+            if ( responseEntity != null ) {
+                EntityUtils.consumeQuietly( responseEntity );
+            }
+
+            // Close the stream
+            if ( postResponse != null ) {
+                try {
+                    postResponse.close();
+                } catch (IOException ex) {
+                }
+            }
+        }
+    }   // end submitRequestRaw
+
+    /**
+     * Submits an arbitrary request to GPUdb via the specified URL and saves the
+     * response into a pre-created response object, optionally compressing the
+     * request before sending. The request and response objects must implement
+     * the Avro {@link IndexedRecord} interface. The request will only be
+     * compressed if {@code enableCompression} is {@code true} and the
+     * {@link GPUdb#GPUdb(String, GPUdbBase.Options) GPUdb constructor} was
+     * called with the {@link Options#setUseSnappy(boolean) Snappy compression
+     * flag} set to {@code true}.
+     *
+     * @param url                the URL to send the request to
+     * @param payload            the payload as a JSON String
+     * @param enableCompression  whether to compress the request
+     * @param timeout            a positive integer representing the number of
+     *                           milliseconds to use for connection timeout
+     * @return                   the response object (same as {@code response}
+     *                           parameter)
+     *
+     * @throws SubmitException if an error occurs while submitting the request
+     */
+    public Map<String, Object> submitRequestRaw( URL url,
+                                                         String payload,
+                                                         boolean enableCompression,
+                                                         int timeout)
+            throws SubmitException, GPUdbExitException, GPUdbException {
+
+        int requestSize = -1;
+        HttpPost              postRequest    = null;
+        HttpEntity            responseEntity = null;
+        CloseableHttpResponse postResponse   = null;
+
+        try {
+            // Log at the trace level
+            GPUdbLogger.trace_with_info( "Sending request to " + url.toString() );
+
+            // Use the given timeout, instead of the member variable one
+            postRequest = initializeHttpPostRequest( url, timeout );
+
+            // Save the payload into the http post object as a JSON payload
+            postRequest.setEntity( new StringEntity( payload, ContentType.APPLICATION_JSON ));
+
+            // Execute the request
+            try {
+                postResponse = this.httpClient.execute( postRequest );
+            } catch ( javax.net.ssl.SSLException ex) {
+                String errorMsg;
+                if( ex.getMessage().toLowerCase().contains("subject alternative names")) {
+                    errorMsg = "Server SSL certificate not found in specified trust store.  Please use the options to " +
+                            "bypass the certificate check or add the server's certificate or CA cert in the server's " +
+                            "certificate path to the trust store and try again.";
+                } else if( ex.getMessage().toLowerCase().contains("unable to find valid certification path")) {
+                    errorMsg = "No trust store was specified, but server requires SSL certificate validation.  " +
+                            "Please use the options to bypass the certificate check or specify a trust store containing " +
+                            "the server's certificate or CA cert in the server's certificate path and try again.";
+                } else {
+                    errorMsg = "Error: " + ex.getMessage();
+                }
+                errorMsg = String.format("Encountered SSL error when trying to connect to server at %s.  %s", url.toString(), errorMsg);
+                GPUdbLogger.error( errorMsg );
+                throw new GPUdbException( errorMsg );
+            } catch (Exception ex) {
+                // Trigger an HA failover at the caller level
+                GPUdbLogger.debug_with_info( "Throwing exit exception due to: " + ex.getMessage() );
+                throw new GPUdbExitException( "Error submitting endpoint request: " + ex.getMessage() );
+            }
+
+            // Get the status code and the messages of the response
+            int statusCode = postResponse.getStatusLine().getStatusCode();
+            String responseMessage = postResponse.getStatusLine().getReasonPhrase();
+
+            // Get the entity and the content of the response
+            responseEntity = postResponse.getEntity();
+            Header encodingHeader = responseEntity.getContentEncoding();
+
+            // you need to know the encoding to parse correctly
+            Charset encoding = encodingHeader == null ? StandardCharsets.UTF_8 :
+                    Charsets.toCharset(encodingHeader.getValue());
+
+            // use org.apache.http.util.EntityUtils to read json as string
+            String json = EntityUtils.toString(responseEntity, StandardCharsets.UTF_8);
+
+            TypeReference<HashMap<String,Object>> typeRef
+                    = new TypeReference<HashMap<String,Object>>() {};
+            Map<String, Object> response = JSON_MAPPER.readValue(json.getBytes(StandardCharsets.UTF_8), typeRef);
+
+            // Ensure that we're not getting any html snippet (may be
+            // returned by the HTTPD server)
+            if (
+                    (responseEntity.getContentType() != null) &&
+                            (responseEntity.getContentType().getElements().length > 0) &&
+                            responseEntity.getContentType().getElements()[0].getName().startsWith( "text" )
+            ) {
+                String errorMsg;
+                // Handle unauthorized connection specially--better error messaging
+                if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                    GPUdbLogger.debug_with_info( "Got status code: " + statusCode );
+                    errorMsg = ("Unauthorized access: " + responseMessage );
+                    throw new GPUdbUnauthorizedAccessException( errorMsg );
+                } else if ( (statusCode == HttpURLConnection.HTTP_UNAVAILABLE)
+                        || (statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR)
+                        || (statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT)
+                ) {
+                    // Some status codes should trigger an exit exception which will
+                    // in turn trigger a failover on the client side
+                    GPUdbLogger.debug_with_info(
+                            "Throwing EXIT exception from " + url.toString()
+                                    + "; response_code: " + statusCode
+                                    + "; content type " + responseEntity.getContentType().getElements()[0].getName()
+                                    + "; response message: " + responseMessage
+                    );
+                    throw new GPUdbExitException( responseMessage );
+                } else {
+                    // All other issues are simply propagated to the user
+                    errorMsg = ("Cannot parse response from server: '" + responseMessage + "'; status code: " + statusCode );
+                }
+                throw new SubmitException( url, payload, errorMsg );
+            }
+
+            // Parse response based on error code
+            if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                // Got status 401 -- unauthorized
+                GPUdbLogger.debug_with_info( "Got status code: " + statusCode );
+                String errorMsg = (String.format("Server response status: %d : %s", statusCode, responseMessage));
+                throw new GPUdbUnauthorizedAccessException( errorMsg );
+                // Note: Keeping the original code here in case some unforeseen
+                // problem arises that we haven't thought of yet by changing
+                // which exception is thrown.
+                // throw new SubmitException( url, request, requestSize,
+                //                            responseMessage );
+            }
+
+            return response;
+        } catch (GPUdbExitException ex) {
+            // An HA failover should be triggered
+            throw ex;
+        } catch (SubmitException ex) {
+            GPUdbLogger.debug_with_info( "Got SubmitException: " + ex.getMessage() );
+            // Some sort of submission error
+            throw ex;
+        } catch (GPUdbException ex) {
+            if ( ex.getMessage().contains( DB_EOF_FROM_SERVER_ERROR_MESSAGE ) ) {
+                // The server did not send a response; we need to trigger an HA
+                // failover scenario
+                throw new GPUdbExitException( ex.getMessage() );
+            }
+            // Some legitimate error
+            throw ex;
+        } catch (java.net.SocketException ex) {
+            // Any network issue should trigger an HA failover
+            throw new GPUdbExitException( ex.getMessage() );
+        } catch (Exception ex) {
+            GPUdbLogger.debug_with_info( "Caught Exception: " + ex.getMessage() );
+            // Some sort of submission error
+            throw new SubmitException(url, payload, ex.getMessage(), ex);
         } finally {
             // Release all resources held by the responseEntity
             if ( responseEntity != null ) {

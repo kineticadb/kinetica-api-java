@@ -2,6 +2,17 @@
 
 ## Version 7.1
 
+### Version 7.1.8.8 - 2023-01-08
+
+#### Added
+-   Support for boolean type
+-   `insertRecordsFromJson()` method for direct ingest of data as JSON strings
+
+#### Changed
+-   Improved reporting of SSL certificate errors
+-   Updated Jackson databind version to 2.14.1
+
+
 ### Version 7.1.8.7 - 2022-11-30
 
 #### Added

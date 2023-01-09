@@ -33,6 +33,15 @@ final class RecordKey {
         isValid = true;
     }
 
+    public void addBoolean(Boolean value) {
+        if (value == null) {
+            buffer.put((byte)0);
+            return;
+        }
+
+        buffer.put((byte)(value ? 1 : 0));
+    }
+
     public void addChar(String value, int length) {
         if (value == null) {
             for (int i = 0; i < length; i++) {

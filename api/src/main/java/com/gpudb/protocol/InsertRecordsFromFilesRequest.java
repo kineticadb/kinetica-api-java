@@ -570,6 +570,24 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * source data to
      * skip.  Mutually exclusive with {@code columns_to_load}.
      *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COMPRESSION_TYPE
+     * COMPRESSION_TYPE}: Optional: compression type
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NONE NONE}:
+     * Uncompressed file
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO AUTO}:
+     * Default. Auto detect compression type
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#GZIP GZIP}
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BZIP2 BZIP2}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO AUTO}.
+     *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DATASOURCE_NAME
      * DATASOURCE_NAME}: Name of an existing external data source from which
      * data file(s) specified in {@code filepaths} will be loaded
@@ -679,6 +697,25 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_GROUP_ID
      * KAFKA_GROUP_ID}: The group id to be used consuming data from a kakfa
      * topic (valid only for kafka datasource subscriptions).
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_OFFSET_RESET_POLICY
+     * KAFKA_OFFSET_RESET_POLICY}: Policy to determine whether the data
+     * consumption starts either at earliest offset or latest offset.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#EARLIEST
+     * EARLIEST}
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LATEST LATEST}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#EARLIEST
+     * EARLIEST}.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_SUBSCRIPTION_CANCEL_AFTER
+     * KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the subscription lifespan (in
+     * minutes). Expired subscription will be cancelled automatically.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LOADING_MODE
      * LOADING_MODE}: Scheme for distributing the extraction and loading of
@@ -1009,6 +1046,39 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String COLUMNS_TO_SKIP = "columns_to_skip";
 
         /**
+         * Optional: compression type
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NONE NONE}:
+         * Uncompressed file
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO AUTO}:
+         * Default. Auto detect compression type
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#GZIP GZIP}
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BZIP2
+         * BZIP2}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO AUTO}.
+         */
+        public static final String COMPRESSION_TYPE = "compression_type";
+
+        /**
+         * Uncompressed file
+         */
+        public static final String NONE = "none";
+
+        /**
+         * Default. Auto detect compression type
+         */
+        public static final String AUTO = "auto";
+        public static final String GZIP = "gzip";
+        public static final String BZIP2 = "bzip2";
+
+        /**
          * Name of an existing external data source from which data file(s)
          * specified in {@code filepaths} will be loaded
          */
@@ -1190,6 +1260,32 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * only for kafka datasource subscriptions).
          */
         public static final String KAFKA_GROUP_ID = "kafka_group_id";
+
+        /**
+         * Policy to determine whether the data consumption starts either at
+         * earliest offset or latest offset.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#EARLIEST
+         * EARLIEST}
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LATEST
+         * LATEST}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#EARLIEST
+         * EARLIEST}.
+         */
+        public static final String KAFKA_OFFSET_RESET_POLICY = "kafka_offset_reset_policy";
+        public static final String EARLIEST = "earliest";
+        public static final String LATEST = "latest";
+
+        /**
+         * Sets the subscription lifespan (in minutes). Expired subscription
+         * will be cancelled automatically.
+         */
+        public static final String KAFKA_SUBSCRIPTION_CANCEL_AFTER = "kafka_subscription_cancel_after";
 
         /**
          * Scheme for distributing the extraction and loading of data from the
@@ -1890,6 +1986,27 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 columns from the source data to
      *                 skip.  Mutually exclusive with {@code columns_to_load}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COMPRESSION_TYPE
+     *                 COMPRESSION_TYPE}: Optional: compression type
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NONE
+     *                 NONE}: Uncompressed file
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO
+     *                 AUTO}: Default. Auto detect compression type
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#GZIP
+     *                 GZIP}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BZIP2
+     *                 BZIP2}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO
+     *                 AUTO}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DATASOURCE_NAME
      *                 DATASOURCE_NAME}: Name of an existing external data
      *                 source from which data file(s) specified in {@code
@@ -2007,6 +2124,28 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 KAFKA_GROUP_ID}: The group id to be used consuming data
      *                 from a kakfa topic (valid only for kafka datasource
      *                 subscriptions).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_OFFSET_RESET_POLICY
+     *                 KAFKA_OFFSET_RESET_POLICY}: Policy to determine whether
+     *                 the data consumption starts either at earliest offset or
+     *                 latest offset.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#EARLIEST
+     *                 EARLIEST}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LATEST
+     *                 LATEST}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#EARLIEST
+     *                 EARLIEST}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_SUBSCRIPTION_CANCEL_AFTER
+     *                 KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the subscription
+     *                 lifespan (in minutes). Expired subscription will be
+     *                 cancelled automatically.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LOADING_MODE
      *                 LOADING_MODE}: Scheme for distributing the extraction
@@ -2894,6 +3033,27 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         from the source data to
      *         skip.  Mutually exclusive with {@code columns_to_load}.
      *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COMPRESSION_TYPE
+     *         COMPRESSION_TYPE}: Optional: compression type
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NONE
+     *         NONE}: Uncompressed file
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO
+     *         AUTO}: Default. Auto detect compression type
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#GZIP
+     *         GZIP}
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BZIP2
+     *         BZIP2}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO
+     *         AUTO}.
+     *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DATASOURCE_NAME
      *         DATASOURCE_NAME}: Name of an existing external data source from
      *         which data file(s) specified in {@code filepaths} will be loaded
@@ -3006,6 +3166,27 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_GROUP_ID
      *         KAFKA_GROUP_ID}: The group id to be used consuming data from a
      *         kakfa topic (valid only for kafka datasource subscriptions).
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_OFFSET_RESET_POLICY
+     *         KAFKA_OFFSET_RESET_POLICY}: Policy to determine whether the data
+     *         consumption starts either at earliest offset or latest offset.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#EARLIEST
+     *         EARLIEST}
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LATEST
+     *         LATEST}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#EARLIEST
+     *         EARLIEST}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_SUBSCRIPTION_CANCEL_AFTER
+     *         KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the subscription lifespan
+     *         (in minutes). Expired subscription will be cancelled
+     *         automatically.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LOADING_MODE
      *         LOADING_MODE}: Scheme for distributing the extraction and
@@ -3345,6 +3526,27 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 columns from the source data to
      *                 skip.  Mutually exclusive with {@code columns_to_load}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COMPRESSION_TYPE
+     *                 COMPRESSION_TYPE}: Optional: compression type
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NONE
+     *                 NONE}: Uncompressed file
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO
+     *                 AUTO}: Default. Auto detect compression type
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#GZIP
+     *                 GZIP}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BZIP2
+     *                 BZIP2}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO
+     *                 AUTO}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DATASOURCE_NAME
      *                 DATASOURCE_NAME}: Name of an existing external data
      *                 source from which data file(s) specified in {@code
@@ -3462,6 +3664,28 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 KAFKA_GROUP_ID}: The group id to be used consuming data
      *                 from a kakfa topic (valid only for kafka datasource
      *                 subscriptions).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_OFFSET_RESET_POLICY
+     *                 KAFKA_OFFSET_RESET_POLICY}: Policy to determine whether
+     *                 the data consumption starts either at earliest offset or
+     *                 latest offset.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#EARLIEST
+     *                 EARLIEST}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LATEST
+     *                 LATEST}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#EARLIEST
+     *                 EARLIEST}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_SUBSCRIPTION_CANCEL_AFTER
+     *                 KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the subscription
+     *                 lifespan (in minutes). Expired subscription will be
+     *                 cancelled automatically.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LOADING_MODE
      *                 LOADING_MODE}: Scheme for distributing the extraction

@@ -120,20 +120,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * send; check_values=[enabled] where if enabled is true the value of the
      * messages received are verified.
      *         <li> {@link
-     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SET_MESSAGE_TIMERS_ENABLED
-     * SET_MESSAGE_TIMERS_ENABLED}: Enables the communicator test to collect
-     * additional timing statistics when the value string is {@code true}.
-     * Disables collecting statistics when the value string is {@code false}
-     * Supported values:
-     * <ul>
-     *         <li> {@link
-     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TRUE
-     * TRUE}
-     *         <li> {@link
-     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FALSE
-     * FALSE}
-     * </ul>
-     *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#NETWORK_SPEED
      * NETWORK_SPEED}: Invoke the network speed test and report timing results.
      * Value string is a semicolon-separated list of [key]=[value] expressions.
@@ -305,22 +291,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          * messages received are verified.
          */
         public static final String COMMUNICATOR_TEST = "communicator_test";
-
-        /**
-         * Enables the communicator test to collect additional timing
-         * statistics when the value string is {@code true}. Disables
-         * collecting statistics when the value string is {@code false}
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TRUE
-         * TRUE}
-         *         <li> {@link
-         * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FALSE
-         * FALSE}
-         * </ul>
-         */
-        public static final String SET_MESSAGE_TIMERS_ENABLED = "set_message_timers_enabled";
 
         /**
          * Invoke the network speed test and report timing results. Value
@@ -593,22 +563,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            is true the value of the messages received
      *                            are verified.
      *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SET_MESSAGE_TIMERS_ENABLED
-     *                            SET_MESSAGE_TIMERS_ENABLED}: Enables the
-     *                            communicator test to collect additional
-     *                            timing statistics when the value string is
-     *                            {@code true}. Disables collecting statistics
-     *                            when the value string is {@code false}
-     *                            Supported values:
-     *                            <ul>
-     *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TRUE
-     *                            TRUE}
-     *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FALSE
-     *                            FALSE}
-     *                            </ul>
-     *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#NETWORK_SPEED
      *                            NETWORK_SPEED}: Invoke the network speed test
      *                            and report timing results. Value string is a
@@ -821,21 +775,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         check_values=[enabled] where if enabled is true the value of the
      *         messages received are verified.
      *                 <li> {@link
-     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SET_MESSAGE_TIMERS_ENABLED
-     *         SET_MESSAGE_TIMERS_ENABLED}: Enables the communicator test to
-     *         collect additional timing statistics when the value string is
-     *         {@code true}. Disables collecting statistics when the value
-     *         string is {@code false}
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TRUE
-     *         TRUE}
-     *                 <li> {@link
-     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FALSE
-     *         FALSE}
-     *         </ul>
-     *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#NETWORK_SPEED
      *         NETWORK_SPEED}: Invoke the network speed test and report timing
      *         results. Value string is a semicolon-separated list of
@@ -1017,22 +956,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            send; check_values=[enabled] where if enabled
      *                            is true the value of the messages received
      *                            are verified.
-     *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SET_MESSAGE_TIMERS_ENABLED
-     *                            SET_MESSAGE_TIMERS_ENABLED}: Enables the
-     *                            communicator test to collect additional
-     *                            timing statistics when the value string is
-     *                            {@code true}. Disables collecting statistics
-     *                            when the value string is {@code false}
-     *                            Supported values:
-     *                            <ul>
-     *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TRUE
-     *                            TRUE}
-     *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FALSE
-     *                            FALSE}
-     *                            </ul>
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#NETWORK_SPEED
      *                            NETWORK_SPEED}: Invoke the network speed test
