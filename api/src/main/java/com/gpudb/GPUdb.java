@@ -1605,7 +1605,11 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_PERSIST
      *                 VERIFY_PERSIST}: When {@code true}, persistent objects
-     *                 will be compared against their state in memory.
+     *                 will be compared against their state in memory and
+     *                 workers will be checked for orphaned table data in
+     *                 persist. To check for orphaned worker data, either set
+     *                 {@code concurrent_safe} in {@code options} to {@code
+     *                 true} or place the database offline.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -1657,7 +1661,10 @@ public class GPUdb extends GPUdbBase {
      *                 DELETE_ORPHANED_TABLES}: If {@code true}, orphaned table
      *                 directories found on workers for which there is no
      *                 corresponding metadata will be deleted. Must set {@code
-     *                 verify_persist} in {@code options} to {@code true}
+     *                 verify_persist} in {@code options} to {@code true}. It
+     *                 is recommended to run this while the database is offline
+     *                 OR set {@code concurrent_safe} in {@code options} to
+     *                 {@code true}
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -4300,7 +4307,8 @@ public class GPUdb extends GPUdbBase {
      *                             to apply to the directory. Set to -1 to
      *                             indicate no upper limit.
      *                             </ul>
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -4746,22 +4754,6 @@ public class GPUdb extends GPUdbBase {
      *                            send; check_values=[enabled] where if enabled
      *                            is true the value of the messages received
      *                            are verified.
-     *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SET_MESSAGE_TIMERS_ENABLED
-     *                            SET_MESSAGE_TIMERS_ENABLED}: Enables the
-     *                            communicator test to collect additional
-     *                            timing statistics when the value string is
-     *                            {@code true}. Disables collecting statistics
-     *                            when the value string is {@code false}
-     *                            Supported values:
-     *                            <ul>
-     *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TRUE
-     *                            TRUE}
-     *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FALSE
-     *                            FALSE}
-     *                            </ul>
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#NETWORK_SPEED
      *                            NETWORK_SPEED}: Invoke the network speed test
@@ -9104,6 +9096,27 @@ public class GPUdb extends GPUdbBase {
      *                 columns from the source data to
      *                 skip.  Mutually exclusive with {@code columns_to_load}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#COMPRESSION_TYPE
+     *                 COMPRESSION_TYPE}: Optional: compression type
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#NONE
+     *                 NONE}: Uncompressed
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AUTO
+     *                 AUTO}: Default. Auto detect compression type
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#GZIP
+     *                 GZIP}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#BZIP2
+     *                 BZIP2}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AUTO
+     *                 AUTO}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#DATASOURCE_NAME
      *                 DATASOURCE_NAME}: Name of an existing external data
      *                 source from which data file(s) specified in {@code
@@ -9244,6 +9257,28 @@ public class GPUdb extends GPUdbBase {
      *                 KAFKA_GROUP_ID}: The group id to be used consuming data
      *                 from a kakfa topic (valid only for kafka datasource
      *                 subscriptions).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_OFFSET_RESET_POLICY
+     *                 KAFKA_OFFSET_RESET_POLICY}: Policy to determine whether
+     *                 the data consumption starts either at earliest offset or
+     *                 latest offset.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#EARLIEST
+     *                 EARLIEST}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#LATEST
+     *                 LATEST}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#EARLIEST
+     *                 EARLIEST}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_SUBSCRIPTION_CANCEL_AFTER
+     *                 KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the subscription
+     *                 lifespan (in minutes). Expired subscription will be
+     *                 cancelled automatically.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#LOADING_MODE
      *                 LOADING_MODE}: Scheme for distributing the extraction
@@ -17610,6 +17645,27 @@ public class GPUdb extends GPUdbBase {
      *                 columns from the source data to
      *                 skip.  Mutually exclusive with {@code columns_to_load}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COMPRESSION_TYPE
+     *                 COMPRESSION_TYPE}: Optional: compression type
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NONE
+     *                 NONE}: Uncompressed file
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO
+     *                 AUTO}: Default. Auto detect compression type
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#GZIP
+     *                 GZIP}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BZIP2
+     *                 BZIP2}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO
+     *                 AUTO}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DATASOURCE_NAME
      *                 DATASOURCE_NAME}: Name of an existing external data
      *                 source from which data file(s) specified in {@code
@@ -17727,6 +17783,28 @@ public class GPUdb extends GPUdbBase {
      *                 KAFKA_GROUP_ID}: The group id to be used consuming data
      *                 from a kakfa topic (valid only for kafka datasource
      *                 subscriptions).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_OFFSET_RESET_POLICY
+     *                 KAFKA_OFFSET_RESET_POLICY}: Policy to determine whether
+     *                 the data consumption starts either at earliest offset or
+     *                 latest offset.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#EARLIEST
+     *                 EARLIEST}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LATEST
+     *                 LATEST}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#EARLIEST
+     *                 EARLIEST}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_SUBSCRIPTION_CANCEL_AFTER
+     *                 KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the subscription
+     *                 lifespan (in minutes). Expired subscription will be
+     *                 cancelled automatically.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LOADING_MODE
      *                 LOADING_MODE}: Scheme for distributing the extraction
@@ -18331,6 +18409,27 @@ public class GPUdb extends GPUdbBase {
      *                 COLUMNS_TO_SKIP}: Specifies a comma-delimited list of
      *                 columns from the source data to
      *                 skip.  Mutually exclusive with {@code columns_to_load}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#COMPRESSION_TYPE
+     *                 COMPRESSION_TYPE}: Optional: payload compression type
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NONE
+     *                 NONE}: Uncompressed
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO
+     *                 AUTO}: Default. Auto detect compression type
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#GZIP
+     *                 GZIP}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BZIP2
+     *                 BZIP2}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO
+     *                 AUTO}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DEFAULT_COLUMN_FORMATS
      *                 DEFAULT_COLUMN_FORMATS}: Specifies the default format to
@@ -24568,6 +24667,26 @@ public class GPUdb extends GPUdbBase {
      *                 multipart upload. Part numbers start at 1, increment by
      *                 1, and must be uploaded
      *                 sequentially
+     *                         <li> {@link
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#DELETE_IF_EXISTS
+     *                 DELETE_IF_EXISTS}: If {@code true},
+     *                 any existing files specified in {@code fileNames} will
+     *                 be deleted prior to  start of upload.
+     *                 Otherwise the file is replaced once the upload
+     *                 completes.  Rollback of the original file is
+     *                 no longer possible if the upload is cancelled, aborted
+     *                 or fails if the file was deleted beforehand.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

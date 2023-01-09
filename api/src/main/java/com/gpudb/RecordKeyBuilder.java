@@ -88,99 +88,55 @@ final class RecordKeyBuilder<T> {
             Type.Column column = typeColumns.get(i);
             this.columnNames.add( column.getName() );
 
-            switch ( column.getColumnType() ) {
-                case DOUBLE:
-                    this.columnTypes.add( Type.Column.ColumnType.DOUBLE );
-                    size += 8;
-                    break;
-                case FLOAT:
-                    this.columnTypes.add( Type.Column.ColumnType.FLOAT );
-                    size += 4;
-                    break;
-                case INTEGER:
-                    this.columnTypes.add( Type.Column.ColumnType.INTEGER );
-                    size += 4;
-                    break;
-                case INT8:
-                    this.columnTypes.add( Type.Column.ColumnType.INT8 );
-                    size += 1;
-                    break;
-                case INT16:
-                    this.columnTypes.add( Type.Column.ColumnType.INT16 );
-                    size += 2;
-                    break;
-                case LONG:
-                    this.columnTypes.add( Type.Column.ColumnType.LONG );
-                    size += 8;
-                    break;
-                case TIMESTAMP:
-                    this.columnTypes.add( Type.Column.ColumnType.TIMESTAMP );
-                    size += 8;
-                    break;
+            Type.Column.ColumnType columnType = column.getColumnType();
+            switch ( columnType ) {
+                case BOOLEAN:
                 case CHAR1:
-                    this.columnTypes.add( Type.Column.ColumnType.CHAR1 );
+                case INT8:
                     size += 1;
                     break;
+
                 case CHAR2:
-                    this.columnTypes.add( Type.Column.ColumnType.CHAR2 );
+                case INT16:
                     size += 2;
                     break;
+
                 case CHAR4:
-                    this.columnTypes.add( Type.Column.ColumnType.CHAR4 );
+                case DATE:
+                case FLOAT:
+                case INTEGER:
+                case IPV4:
+                case TIME:
                     size += 4;
                     break;
+
                 case CHAR8:
-                    this.columnTypes.add( Type.Column.ColumnType.CHAR8 );
+                case DATETIME:
+                case DECIMAL:
+                case DOUBLE:
+                case LONG:
+                case STRING:
+                case TIMESTAMP:
+                case ULONG:
                     size += 8;
                     break;
+
                 case CHAR16:
-                    this.columnTypes.add( Type.Column.ColumnType.CHAR16 );
                     size += 16;
                     break;
                 case CHAR32:
-                    this.columnTypes.add( Type.Column.ColumnType.CHAR32 );
                     size += 32;
                     break;
                 case CHAR64:
-                    this.columnTypes.add( Type.Column.ColumnType.CHAR64 );
                     size += 64;
                     break;
                 case CHAR128:
-                    this.columnTypes.add( Type.Column.ColumnType.CHAR128 );
                     size += 128;
                     break;
                 case CHAR256:
-                    this.columnTypes.add( Type.Column.ColumnType.CHAR256 );
                     size += 256;
                     break;
-                case DATE:
-                    this.columnTypes.add( Type.Column.ColumnType.DATE );
-                    size += 4;
-                    break;
-                case DATETIME:
-                    this.columnTypes.add( Type.Column.ColumnType.DATETIME );
-                    size += 8;
-                    break;
-                case DECIMAL:
-                    this.columnTypes.add( Type.Column.ColumnType.DECIMAL );
-                    size += 8;
-                    break;
-                case TIME:
-                    this.columnTypes.add( Type.Column.ColumnType.TIME );
-                    size += 4;
-                    break;
-                case IPV4:
-                    this.columnTypes.add( Type.Column.ColumnType.IPV4 );
-                    size += 4;
-                    break;
-                case ULONG:
-                    this.columnTypes.add( Type.Column.ColumnType.ULONG );
-                    size += 8;
-                    break;
-                case STRING:
-                    this.columnTypes.add( Type.Column.ColumnType.STRING );
-                    size += 8;
-                    break;
+
                 default:
                     // WKT, WKB, and bytes are not allowed for sharding
                     throw new IllegalArgumentException(
@@ -188,6 +144,8 @@ final class RecordKeyBuilder<T> {
                             "type/property <" + column.getType() + ">"
                     );
             }
+
+            this.columnTypes.add( columnType );
         }
 
         this.bufferSize = size;
@@ -195,6 +153,15 @@ final class RecordKeyBuilder<T> {
 
     private void addValue(RecordKey key, int column, Object value) throws GPUdbException {
         switch (columnTypes.get(column)) {
+            case BOOLEAN:
+                if (value instanceof Boolean)
+                    key.addBoolean((Boolean)value);
+                else if (value instanceof Number)
+                    key.addBoolean(((Number) value).intValue() != 0);
+                else
+                    key.addBoolean(Boolean.parseBoolean(value.toString()));
+                break;
+
             case CHAR1:
                 key.addChar((String)value, 1);
                 break;
@@ -376,7 +343,8 @@ final class RecordKeyBuilder<T> {
                 result.append(" and ");
             }
 
-            if (values.get(i) == null) {
+            Object value = values.get(i);
+            if (value == null) {
                 result.append("is_null(");
                 result.append(columnNames.get(i));
                 result.append(")");
@@ -403,41 +371,49 @@ final class RecordKeyBuilder<T> {
                 case STRING:
                 case TIME:
                     result.append("\"");
-                    result.append(((String)values.get(i)).replace("\"", "\"\""));
+                    result.append(((String)value).replace("\"", "\"\""));
                     result.append("\"");
                     break;
 
                 case ULONG:
-                    String value = (String)values.get(i);
                     // Need to verify if the string is an actual unsigned long value
-                    if ( !RecordKey.isUnsignedLong( value ) )
+                    if ( !RecordKey.isUnsignedLong( value.toString() ) )
                     {
-                        throw new GPUdbException( "Unable to parse string value '" + value
+                        throw new GPUdbException( "Unable to parse string value '" + value.toString()
                                                   + "' as an unsigned long while building expression" );
                     }
 
                     // For querying purposes, unsigned long values are treated
                     // as numbers, not strings
-                    result.append( value );
+                    result.append( value.toString() );
                     break;
 
                 case DOUBLE:
-                    result.append(Double.toString((Double)values.get(i)));
+                    result.append(Double.toString((Double)value));
                     break;
 
                 case FLOAT:
-                    result.append(Float.toString((Float)values.get(i)));
+                    result.append(Float.toString((Float)value));
+                    break;
+
+                case BOOLEAN:
+                    if (value instanceof Boolean)
+                        result.append((Boolean)value ? "1" : "0");
+                    else if (value instanceof Number)
+                        result.append(((Number) value).intValue() != 0 ? "1" : "0");
+                    else
+                        result.append(!value.equals(0) ? "1" : "0");
                     break;
 
                 case INTEGER:
                 case INT8:
                 case INT16:
-                    result.append(Integer.toString((Integer)values.get(i)));
+                    result.append(Integer.toString((Integer)value));
                     break;
 
                 case LONG:
                 case TIMESTAMP:
-                    result.append(Long.toString((Long)values.get(i)));
+                    result.append(Long.toString((Long)value));
                     break;
             }
         }

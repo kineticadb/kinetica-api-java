@@ -51,7 +51,7 @@ public class AlterSystemPropertiesResponse implements IndexedRecord {
 
     /**
      * 
-     * @return map of values updated, For speed tests a map of values measured
+     * @return Map of values updated; for speed tests, a map of values measured
      *         to the measurement
      * 
      */
@@ -61,7 +61,7 @@ public class AlterSystemPropertiesResponse implements IndexedRecord {
 
     /**
      * 
-     * @param updatedPropertiesMap  map of values updated, For speed tests a
+     * @param updatedPropertiesMap  Map of values updated; for speed tests, a
      *                              map of values measured to the measurement
      * 
      * @return {@code this} to mimic the builder pattern.

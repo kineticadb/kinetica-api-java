@@ -93,7 +93,8 @@ public class AlterDirectoryRequest implements IndexedRecord {
      *                             to apply to the directory. Set to -1 to
      *                             indicate no upper limit.
      *                             </ul>
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public AlterDirectoryRequest(String directoryName, Map<String, String> directoryUpdatesMap, Map<String, String> options) {
@@ -161,7 +162,7 @@ public class AlterDirectoryRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -170,7 +171,8 @@ public class AlterDirectoryRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

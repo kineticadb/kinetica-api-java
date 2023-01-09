@@ -43,6 +43,8 @@ public final class TypeObjectMap<T> {
         public Type.Column toColumn(String name) {
             switch (this) {
                 case BOOLEAN:
+                    return new Type.Column(name, Integer.class, ColumnProperty.BOOLEAN);
+
                 case BYTE:
                     return new Type.Column(name, Integer.class, ColumnProperty.INT8);
 

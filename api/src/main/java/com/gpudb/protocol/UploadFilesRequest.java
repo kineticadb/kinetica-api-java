@@ -151,6 +151,24 @@ public class UploadFilesRequest implements IndexedRecord {
      * multipart upload. Part numbers start at 1, increment by 1, and must be
      * uploaded
      * sequentially
+     *         <li> {@link
+     * com.gpudb.protocol.UploadFilesRequest.Options#DELETE_IF_EXISTS
+     * DELETE_IF_EXISTS}: If {@code true},
+     * any existing files specified in {@code fileNames} will be deleted prior
+     * to  start of upload.
+     * Otherwise the file is replaced once the upload completes.  Rollback of
+     * the original file is
+     * no longer possible if the upload is cancelled, aborted or fails if the
+     * file was deleted beforehand.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.UploadFilesRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.UploadFilesRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.UploadFilesRequest.Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -245,6 +263,28 @@ public class UploadFilesRequest implements IndexedRecord {
          */
         public static final String MULTIPART_UPLOAD_PART_NUMBER = "multipart_upload_part_number";
 
+        /**
+         * If {@code true},
+         * any existing files specified in {@code fileNames} will be deleted
+         * prior to  start of upload.
+         * Otherwise the file is replaced once the upload completes.  Rollback
+         * of the original file is
+         * no longer possible if the upload is cancelled, aborted or fails if
+         * the file was deleted beforehand.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.UploadFilesRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.UploadFilesRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.UploadFilesRequest.Options#FALSE FALSE}.
+         */
+        public static final String DELETE_IF_EXISTS = "delete_if_exists";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
         private Options() {  }
     }
 
@@ -336,6 +376,26 @@ public class UploadFilesRequest implements IndexedRecord {
      *                 multipart upload. Part numbers start at 1, increment by
      *                 1, and must be uploaded
      *                 sequentially
+     *                         <li> {@link
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#DELETE_IF_EXISTS
+     *                 DELETE_IF_EXISTS}: If {@code true},
+     *                 any existing files specified in {@code fileNames} will
+     *                 be deleted prior to  start of upload.
+     *                 Otherwise the file is replaced once the upload
+     *                 completes.  Rollback of the original file is
+     *                 no longer possible if the upload is cancelled, aborted
+     *                 or fails if the file was deleted beforehand.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -463,6 +523,24 @@ public class UploadFilesRequest implements IndexedRecord {
      *         multipart upload. Part numbers start at 1, increment by 1, and
      *         must be uploaded
      *         sequentially
+     *                 <li> {@link
+     *         com.gpudb.protocol.UploadFilesRequest.Options#DELETE_IF_EXISTS
+     *         DELETE_IF_EXISTS}: If {@code true},
+     *         any existing files specified in {@code fileNames} will be
+     *         deleted prior to  start of upload.
+     *         Otherwise the file is replaced once the upload completes.
+     *         Rollback of the original file is
+     *         no longer possible if the upload is cancelled, aborted or fails
+     *         if the file was deleted beforehand.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.UploadFilesRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.UploadFilesRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.UploadFilesRequest.Options#FALSE FALSE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -533,6 +611,26 @@ public class UploadFilesRequest implements IndexedRecord {
      *                 multipart upload. Part numbers start at 1, increment by
      *                 1, and must be uploaded
      *                 sequentially
+     *                         <li> {@link
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#DELETE_IF_EXISTS
+     *                 DELETE_IF_EXISTS}: If {@code true},
+     *                 any existing files specified in {@code fileNames} will
+     *                 be deleted prior to  start of upload.
+     *                 Otherwise the file is replaced once the upload
+     *                 completes.  Rollback of the original file is
+     *                 no longer possible if the upload is cancelled, aborted
+     *                 or fails if the file was deleted beforehand.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

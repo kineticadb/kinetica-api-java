@@ -584,7 +584,6 @@ public class BulkInserter<T> implements AutoCloseable {
     private boolean timedFlushExecutorServiceTerminated;
 
     private FlushOptions flushOptions;
-    private final boolean isReplicatedTable;
     private final boolean multiHeadEnabled;
     private final boolean useHeadNode;
     private final boolean returnIndividualErrors;
@@ -865,7 +864,7 @@ public class BulkInserter<T> implements AutoCloseable {
 
         // Check if it is a replicated table (if so, then can't do
         // multi-head ingestion; will have to force rank-0 ingestion)
-        this.isReplicatedTable = gpudb.showTable( tableName, null )
+        boolean isReplicatedTable = gpudb.showTable( tableName, null )
                 .getTableDescriptions()
                 .get( 0 )
                 .contains( ShowTableResponse.TableDescriptions.REPLICATED );
@@ -875,7 +874,7 @@ public class BulkInserter<T> implements AutoCloseable {
 
         // We should use the head node if multi-head is turned off at the server
         // or if we're working with a replicated table
-        this.useHeadNode = ( !this.multiHeadEnabled || this.isReplicatedTable);
+        this.useHeadNode = ( !this.multiHeadEnabled || isReplicatedTable);
 
         // Validate the batch size
         if (batchSize < 1) {
