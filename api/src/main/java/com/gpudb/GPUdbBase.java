@@ -6130,7 +6130,6 @@ public abstract class GPUdbBase {
                 throw new GPUdbException( errorMsg );
             } catch (Exception ex) {
                 // Trigger an HA failover at the caller level
-            	ex.printStackTrace();
                 GPUdbLogger.debug_with_info( "Throwing exit exception due to: " + ex.getMessage() );
                 throw new GPUdbExitException( "Error submitting endpoint request: " + ex.getMessage() );
             }
@@ -6344,7 +6343,6 @@ public abstract class GPUdbBase {
                 throw new GPUdbException( errorMsg );
             } catch (Exception ex) {
                 // Trigger an HA failover at the caller level
-            	ex.printStackTrace();
                 GPUdbLogger.debug_with_info( "Throwing exit exception due to: " + ex.getMessage() );
                 throw new GPUdbExitException( "Error submitting endpoint request: " + ex.getMessage() );
             }
