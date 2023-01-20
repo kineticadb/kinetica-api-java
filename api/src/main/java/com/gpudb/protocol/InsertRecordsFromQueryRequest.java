@@ -524,6 +524,15 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      * JDBC_FETCH_SIZE}: The JDBC fetch size, which determines how many rows to
      * fetch per round trip.
      *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#JDBC_SESSION_INIT_STATEMENT
+     * JDBC_SESSION_INIT_STATEMENT}: Executes the statement per each jdbc
+     * session before doing actual load.  The default value is ''.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#NUM_SPLITS_PER_RANK
+     * NUM_SPLITS_PER_RANK}: Optional: number of splits for reading data per
+     * rank. Default will be external_file_reader_num_tasks.  The default value
+     * is ''.
+     *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#NUM_TASKS_PER_RANK
      * NUM_TASKS_PER_RANK}: Optional: number of tasks for reading data per
      * rank. Default will be external_file_reader_num_tasks
@@ -551,6 +560,11 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY
      * REMOTE_QUERY}: Remote SQL query from which data will be sourced
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_ORDER_BY
+     * REMOTE_QUERY_ORDER_BY}: Name of column to be used for splitting the
+     * query into multiple sub-queries using ordering of given column.  The
+     * default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_FILTER_COLUMN
      * REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used for splitting the
@@ -693,6 +707,18 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
         public static final String JDBC_FETCH_SIZE = "jdbc_fetch_size";
 
         /**
+         * Executes the statement per each jdbc session before doing actual
+         * load.  The default value is ''.
+         */
+        public static final String JDBC_SESSION_INIT_STATEMENT = "jdbc_session_init_statement";
+
+        /**
+         * Optional: number of splits for reading data per rank. Default will
+         * be external_file_reader_num_tasks.  The default value is ''.
+         */
+        public static final String NUM_SPLITS_PER_RANK = "num_splits_per_rank";
+
+        /**
          * Optional: number of tasks for reading data per rank. Default will be
          * external_file_reader_num_tasks
          */
@@ -733,6 +759,13 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
          * Remote SQL query from which data will be sourced
          */
         public static final String REMOTE_QUERY = "remote_query";
+
+        /**
+         * Name of column to be used for splitting the query into multiple
+         * sub-queries using ordering of given column.  The default value is
+         * ''.
+         */
+        public static final String REMOTE_QUERY_ORDER_BY = "remote_query_order_by";
 
         /**
          * Name of column to be used for splitting the query into multiple
@@ -1077,6 +1110,17 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                 JDBC_FETCH_SIZE}: The JDBC fetch size, which determines
      *                 how many rows to fetch per round trip.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#JDBC_SESSION_INIT_STATEMENT
+     *                 JDBC_SESSION_INIT_STATEMENT}: Executes the statement per
+     *                 each jdbc session before doing actual load.  The default
+     *                 value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#NUM_SPLITS_PER_RANK
+     *                 NUM_SPLITS_PER_RANK}: Optional: number of splits for
+     *                 reading data per rank. Default will be
+     *                 external_file_reader_num_tasks.  The default value is
+     *                 ''.
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#NUM_TASKS_PER_RANK
      *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
      *                 reading data per rank. Default will be
@@ -1112,6 +1156,11 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY
      *                 REMOTE_QUERY}: Remote SQL query from which data will be
      *                 sourced
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_ORDER_BY
+     *                 REMOTE_QUERY_ORDER_BY}: Name of column to be used for
+     *                 splitting the query into multiple sub-queries using
+     *                 ordering of given column.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_FILTER_COLUMN
      *                 REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used
@@ -1705,6 +1754,15 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         JDBC_FETCH_SIZE}: The JDBC fetch size, which determines how many
      *         rows to fetch per round trip.
      *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#JDBC_SESSION_INIT_STATEMENT
+     *         JDBC_SESSION_INIT_STATEMENT}: Executes the statement per each
+     *         jdbc session before doing actual load.  The default value is ''.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#NUM_SPLITS_PER_RANK
+     *         NUM_SPLITS_PER_RANK}: Optional: number of splits for reading
+     *         data per rank. Default will be external_file_reader_num_tasks.
+     *         The default value is ''.
+     *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#NUM_TASKS_PER_RANK
      *         NUM_TASKS_PER_RANK}: Optional: number of tasks for reading data
      *         per rank. Default will be external_file_reader_num_tasks
@@ -1737,6 +1795,11 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY
      *         REMOTE_QUERY}: Remote SQL query from which data will be sourced
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_ORDER_BY
+     *         REMOTE_QUERY_ORDER_BY}: Name of column to be used for splitting
+     *         the query into multiple sub-queries using ordering of given
+     *         column.  The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_FILTER_COLUMN
      *         REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used for
@@ -1847,6 +1910,17 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                 JDBC_FETCH_SIZE}: The JDBC fetch size, which determines
      *                 how many rows to fetch per round trip.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#JDBC_SESSION_INIT_STATEMENT
+     *                 JDBC_SESSION_INIT_STATEMENT}: Executes the statement per
+     *                 each jdbc session before doing actual load.  The default
+     *                 value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#NUM_SPLITS_PER_RANK
+     *                 NUM_SPLITS_PER_RANK}: Optional: number of splits for
+     *                 reading data per rank. Default will be
+     *                 external_file_reader_num_tasks.  The default value is
+     *                 ''.
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#NUM_TASKS_PER_RANK
      *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
      *                 reading data per rank. Default will be
@@ -1882,6 +1956,11 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY
      *                 REMOTE_QUERY}: Remote SQL query from which data will be
      *                 sourced
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_ORDER_BY
+     *                 REMOTE_QUERY_ORDER_BY}: Name of column to be used for
+     *                 splitting the query into multiple sub-queries using
+     *                 ordering of given column.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_FILTER_COLUMN
      *                 REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used

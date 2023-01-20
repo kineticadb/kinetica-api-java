@@ -2,6 +2,15 @@
 
 ## Version 7.1
 
+### Version 7.1.8.9 - 2023-01-20
+
+#### Added
+-   Retry handler for org.apache.http.conn.ConnectionTimeoutException errors
+
+#### Changed
+-   Fixed cluster hostname matching check
+
+
 ### Version 7.1.8.8 - 2023-01-08
 
 #### Added

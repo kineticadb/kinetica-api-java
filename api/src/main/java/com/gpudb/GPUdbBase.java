@@ -2036,11 +2036,16 @@ public abstract class GPUdbBase {
                 // We need to check for a string subset match since the
                 // hostnames contain the protocol as well as the actual hostname
                 // or IP address
-                GPUdbLogger.debug_with_info("Checking for match with '" + hostname_ + "'");
-                if (hostname_.contains(hostName)) {
-                    GPUdbLogger.debug_with_info("Found matching hostname");
-                    return true;
-                } else GPUdbLogger.debug_with_info("Did NOT find matching hostname");
+                try {
+                    URL tempUrl = new URL(hostname_);
+                    GPUdbLogger.debug_with_info("Checking for match with '" + hostname_ + "'");
+                    if (tempUrl.getHost().equals(hostName)) {
+                        GPUdbLogger.debug_with_info("Found matching hostname");
+                        return true;
+                    } else GPUdbLogger.debug_with_info("Did NOT find matching hostname");
+                } catch (MalformedURLException e) {
+                    GPUdbLogger.warn(String.format("Host %s is not a well formed URL", hostname_));
+                }
             }
             GPUdbLogger.debug_with_info( "No match; returning false");
             return false; // found no match
@@ -2461,8 +2466,11 @@ public abstract class GPUdbBase {
                     if (executionCount > HTTP_REQUEST_MAX_RETRY_ATTEMPTS) {
                         return false;
                     }
-                    // Return true if the exception is NoHttpResponseException
-                    return exception instanceof org.apache.http.NoHttpResponseException;
+
+                    // Retry if the exception is one of the ones below
+                    return
+                    		exception instanceof org.apache.http.NoHttpResponseException ||
+                    		exception instanceof org.apache.http.conn.ConnectTimeoutException;
                 }
             })
             .build();
@@ -6122,6 +6130,7 @@ public abstract class GPUdbBase {
                 throw new GPUdbException( errorMsg );
             } catch (Exception ex) {
                 // Trigger an HA failover at the caller level
+            	ex.printStackTrace();
                 GPUdbLogger.debug_with_info( "Throwing exit exception due to: " + ex.getMessage() );
                 throw new GPUdbExitException( "Error submitting endpoint request: " + ex.getMessage() );
             }
@@ -6335,6 +6344,7 @@ public abstract class GPUdbBase {
                 throw new GPUdbException( errorMsg );
             } catch (Exception ex) {
                 // Trigger an HA failover at the caller level
+            	ex.printStackTrace();
                 GPUdbLogger.debug_with_info( "Throwing exit exception due to: " + ex.getMessage() );
                 throw new GPUdbExitException( "Error submitting endpoint request: " + ex.getMessage() );
             }

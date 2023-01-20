@@ -9096,27 +9096,6 @@ public class GPUdb extends GPUdbBase {
      *                 columns from the source data to
      *                 skip.  Mutually exclusive with {@code columns_to_load}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#COMPRESSION_TYPE
-     *                 COMPRESSION_TYPE}: Optional: compression type
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#NONE
-     *                 NONE}: Uncompressed
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AUTO
-     *                 AUTO}: Default. Auto detect compression type
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#GZIP
-     *                 GZIP}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#BZIP2
-     *                 BZIP2}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AUTO
-     *                 AUTO}.
-     *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#DATASOURCE_NAME
      *                 DATASOURCE_NAME}: Name of an existing external data
      *                 source from which data file(s) specified in {@code
@@ -12599,7 +12578,7 @@ public class GPUdb extends GPUdbBase {
      *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param remoteQuery  Parameterized insert query to export gpudb table
-     *                     data into remote database
+     *                     data into remote database.  The default value is ''.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -12611,6 +12590,54 @@ public class GPUdb extends GPUdbBase {
      *                 DATASINK_NAME}: Name of an existing external data sink
      *                 to which table name specified in {@code tableName} will
      *                 be exported
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#JDBC_SESSION_INIT_STATEMENT
+     *                 JDBC_SESSION_INIT_STATEMENT}: Executes the statement per
+     *                 each jdbc session before doing actual load.  The default
+     *                 value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#JDBC_CONNECTION_INIT_STATEMENT
+     *                 JDBC_CONNECTION_INIT_STATEMENT}: Executes the statement
+     *                 once before doing actual load.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#REMOTE_TABLE
+     *                 REMOTE_TABLE}: Name of the target table to which source
+     *                 table is exported. When this option is specified
+     *                 remote_query cannot be specified.  The default value is
+     *                 ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#USE_ST_GEOMFROM_CASTS
+     *                 USE_ST_GEOMFROM_CASTS}: Wraps parametrized variables
+     *                 with st_geomfromtext or st_geomfromwkb based on source
+     *                 column type
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#USE_INDEXED_PARAMETERS
+     *                 USE_INDEXED_PARAMETERS}: Uses $n style syntax when
+     *                 generating insert query for remote_table option
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#TRUE
+     *                 TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -17645,27 +17672,6 @@ public class GPUdb extends GPUdbBase {
      *                 columns from the source data to
      *                 skip.  Mutually exclusive with {@code columns_to_load}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COMPRESSION_TYPE
-     *                 COMPRESSION_TYPE}: Optional: compression type
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NONE
-     *                 NONE}: Uncompressed file
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO
-     *                 AUTO}: Default. Auto detect compression type
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#GZIP
-     *                 GZIP}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BZIP2
-     *                 BZIP2}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO
-     *                 AUTO}.
-     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DATASOURCE_NAME
      *                 DATASOURCE_NAME}: Name of an existing external data
      *                 source from which data file(s) specified in {@code
@@ -18410,27 +18416,6 @@ public class GPUdb extends GPUdbBase {
      *                 columns from the source data to
      *                 skip.  Mutually exclusive with {@code columns_to_load}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#COMPRESSION_TYPE
-     *                 COMPRESSION_TYPE}: Optional: payload compression type
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NONE
-     *                 NONE}: Uncompressed
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO
-     *                 AUTO}: Default. Auto detect compression type
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#GZIP
-     *                 GZIP}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BZIP2
-     *                 BZIP2}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO
-     *                 AUTO}.
-     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DEFAULT_COLUMN_FORMATS
      *                 DEFAULT_COLUMN_FORMATS}: Specifies the default format to
      *                 be applied to source data loaded
@@ -19128,6 +19113,17 @@ public class GPUdb extends GPUdbBase {
      *                 JDBC_FETCH_SIZE}: The JDBC fetch size, which determines
      *                 how many rows to fetch per round trip.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#JDBC_SESSION_INIT_STATEMENT
+     *                 JDBC_SESSION_INIT_STATEMENT}: Executes the statement per
+     *                 each jdbc session before doing actual load.  The default
+     *                 value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#NUM_SPLITS_PER_RANK
+     *                 NUM_SPLITS_PER_RANK}: Optional: number of splits for
+     *                 reading data per rank. Default will be
+     *                 external_file_reader_num_tasks.  The default value is
+     *                 ''.
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#NUM_TASKS_PER_RANK
      *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
      *                 reading data per rank. Default will be
@@ -19163,6 +19159,11 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY
      *                 REMOTE_QUERY}: Remote SQL query from which data will be
      *                 sourced
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_ORDER_BY
+     *                 REMOTE_QUERY_ORDER_BY}: Name of column to be used for
+     *                 splitting the query into multiple sub-queries using
+     *                 ordering of given column.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_FILTER_COLUMN
      *                 REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used
@@ -19855,6 +19856,10 @@ public class GPUdb extends GPUdbBase {
      *                     MATCH_SIMILARITY}: Matches the intersection set(s)
      *                     by computing the Jaccard similarity score between
      *                     node pairs.
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_PICKUP_DROPOFF
+     *                     MATCH_PICKUP_DROPOFF}: Matches the pickups and
+     *                     dropoffs by optimizing the total trip costs
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -19999,13 +20004,14 @@ public class GPUdb extends GPUdbBase {
      *                 depots.  The default value is 'false'.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_TRIP_COST
-     *                 MAX_TRIP_COST}: For the {@code match_supply_demand}
-     *                 solver only. If this constraint is greater than zero
-     *                 (default) then the trucks will skip travelling from one
-     *                 demand location to another if the cost between them is
-     *                 greater than this number (distance or time). Zero
-     *                 (default) value means no check is performed.  The
-     *                 default value is '0.0'.
+     *                 MAX_TRIP_COST}: For the {@code match_supply_demand} and
+     *                 {@code match_pickup_dropoff} solvers only. If this
+     *                 constraint is greater than zero (default) then the
+     *                 trucks/rides will skip travelling from one demand/pick
+     *                 location to another if the cost between them is greater
+     *                 than this number (distance or time). Zero (default)
+     *                 value means no check is performed.  The default value is
+     *                 '0.0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#FILTER_FOLDING_PATHS
      *                 FILTER_FOLDING_PATHS}: For the {@code markov_chain}
@@ -20082,11 +20088,12 @@ public class GPUdb extends GPUdbBase {
      *                 same truck.  The default value is '0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#SERVICE_RADIUS
-     *                 SERVICE_RADIUS}: For the {@code match_supply_demand}
-     *                 solver only. If specified (greater than zero), it
-     *                 filters the demands outside this radius centered around
-     *                 the supply actor's originating location (distance or
-     *                 time).  The default value is '0.0'.
+     *                 SERVICE_RADIUS}: For the {@code match_supply_demand} and
+     *                 {@code match_pickup_dropoff} solvers only. If specified
+     *                 (greater than zero), it filters the demands/picks
+     *                 outside this radius centered around the supply
+     *                 actor/ride's originating location (distance or time).
+     *                 The default value is '0.0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#PERMUTE_SUPPLIES
      *                 PERMUTE_SUPPLIES}: For the {@code match_supply_demand}

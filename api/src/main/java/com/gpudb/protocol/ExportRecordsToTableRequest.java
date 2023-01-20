@@ -54,6 +54,45 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
      * com.gpudb.protocol.ExportRecordsToTableRequest.Options#DATASINK_NAME
      * DATASINK_NAME}: Name of an existing external data sink to which table
      * name specified in {@code tableName} will be exported
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToTableRequest.Options#JDBC_SESSION_INIT_STATEMENT
+     * JDBC_SESSION_INIT_STATEMENT}: Executes the statement per each jdbc
+     * session before doing actual load.  The default value is ''.
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToTableRequest.Options#JDBC_CONNECTION_INIT_STATEMENT
+     * JDBC_CONNECTION_INIT_STATEMENT}: Executes the statement once before
+     * doing actual load.  The default value is ''.
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToTableRequest.Options#REMOTE_TABLE
+     * REMOTE_TABLE}: Name of the target table to which source table is
+     * exported. When this option is specified remote_query cannot be
+     * specified.  The default value is ''.
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToTableRequest.Options#USE_ST_GEOMFROM_CASTS
+     * USE_ST_GEOMFROM_CASTS}: Wraps parametrized variables with
+     * st_geomfromtext or st_geomfromwkb based on source column type
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToTableRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToTableRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ExportRecordsToTableRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToTableRequest.Options#USE_INDEXED_PARAMETERS
+     * USE_INDEXED_PARAMETERS}: Uses $n style syntax when generating insert
+     * query for remote_table option
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToTableRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToTableRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ExportRecordsToTableRequest.Options#TRUE TRUE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -70,6 +109,57 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
          * in {@code tableName} will be exported
          */
         public static final String DATASINK_NAME = "datasink_name";
+
+        /**
+         * Executes the statement per each jdbc session before doing actual
+         * load.  The default value is ''.
+         */
+        public static final String JDBC_SESSION_INIT_STATEMENT = "jdbc_session_init_statement";
+
+        /**
+         * Executes the statement once before doing actual load.  The default
+         * value is ''.
+         */
+        public static final String JDBC_CONNECTION_INIT_STATEMENT = "jdbc_connection_init_statement";
+
+        /**
+         * Name of the target table to which source table is exported. When
+         * this option is specified remote_query cannot be specified.  The
+         * default value is ''.
+         */
+        public static final String REMOTE_TABLE = "remote_table";
+
+        /**
+         * Wraps parametrized variables with st_geomfromtext or st_geomfromwkb
+         * based on source column type
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ExportRecordsToTableRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ExportRecordsToTableRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ExportRecordsToTableRequest.Options#FALSE FALSE}.
+         */
+        public static final String USE_ST_GEOMFROM_CASTS = "use_st_geomfrom_casts";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
+         * Uses $n style syntax when generating insert query for remote_table
+         * option
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ExportRecordsToTableRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ExportRecordsToTableRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ExportRecordsToTableRequest.Options#TRUE TRUE}.
+         */
+        public static final String USE_INDEXED_PARAMETERS = "use_indexed_parameters";
 
         private Options() {  }
     }
@@ -100,7 +190,7 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
      *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param remoteQuery  Parameterized insert query to export gpudb table
-     *                     data into remote database
+     *                     data into remote database.  The default value is ''.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -112,6 +202,54 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
      *                 DATASINK_NAME}: Name of an existing external data sink
      *                 to which table name specified in {@code tableName} will
      *                 be exported
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#JDBC_SESSION_INIT_STATEMENT
+     *                 JDBC_SESSION_INIT_STATEMENT}: Executes the statement per
+     *                 each jdbc session before doing actual load.  The default
+     *                 value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#JDBC_CONNECTION_INIT_STATEMENT
+     *                 JDBC_CONNECTION_INIT_STATEMENT}: Executes the statement
+     *                 once before doing actual load.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#REMOTE_TABLE
+     *                 REMOTE_TABLE}: Name of the target table to which source
+     *                 table is exported. When this option is specified
+     *                 remote_query cannot be specified.  The default value is
+     *                 ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#USE_ST_GEOMFROM_CASTS
+     *                 USE_ST_GEOMFROM_CASTS}: Wraps parametrized variables
+     *                 with st_geomfromtext or st_geomfromwkb based on source
+     *                 column type
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#USE_INDEXED_PARAMETERS
+     *                 USE_INDEXED_PARAMETERS}: Uses $n style syntax when
+     *                 generating insert query for remote_table option
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#TRUE
+     *                 TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -156,7 +294,7 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
     /**
      * 
      * @return Parameterized insert query to export gpudb table data into
-     *         remote database
+     *         remote database.  The default value is ''.
      * 
      */
     public String getRemoteQuery() {
@@ -166,7 +304,7 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
     /**
      * 
      * @param remoteQuery  Parameterized insert query to export gpudb table
-     *                     data into remote database
+     *                     data into remote database.  The default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -188,6 +326,51 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.ExportRecordsToTableRequest.Options#DATASINK_NAME
      *         DATASINK_NAME}: Name of an existing external data sink to which
      *         table name specified in {@code tableName} will be exported
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToTableRequest.Options#JDBC_SESSION_INIT_STATEMENT
+     *         JDBC_SESSION_INIT_STATEMENT}: Executes the statement per each
+     *         jdbc session before doing actual load.  The default value is ''.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToTableRequest.Options#JDBC_CONNECTION_INIT_STATEMENT
+     *         JDBC_CONNECTION_INIT_STATEMENT}: Executes the statement once
+     *         before doing actual load.  The default value is ''.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToTableRequest.Options#REMOTE_TABLE
+     *         REMOTE_TABLE}: Name of the target table to which source table is
+     *         exported. When this option is specified remote_query cannot be
+     *         specified.  The default value is ''.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToTableRequest.Options#USE_ST_GEOMFROM_CASTS
+     *         USE_ST_GEOMFROM_CASTS}: Wraps parametrized variables with
+     *         st_geomfromtext or st_geomfromwkb based on source column type
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToTableRequest.Options#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToTableRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ExportRecordsToTableRequest.Options#FALSE
+     *         FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToTableRequest.Options#USE_INDEXED_PARAMETERS
+     *         USE_INDEXED_PARAMETERS}: Uses $n style syntax when generating
+     *         insert query for remote_table option
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToTableRequest.Options#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToTableRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ExportRecordsToTableRequest.Options#TRUE
+     *         TRUE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -209,6 +392,54 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
      *                 DATASINK_NAME}: Name of an existing external data sink
      *                 to which table name specified in {@code tableName} will
      *                 be exported
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#JDBC_SESSION_INIT_STATEMENT
+     *                 JDBC_SESSION_INIT_STATEMENT}: Executes the statement per
+     *                 each jdbc session before doing actual load.  The default
+     *                 value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#JDBC_CONNECTION_INIT_STATEMENT
+     *                 JDBC_CONNECTION_INIT_STATEMENT}: Executes the statement
+     *                 once before doing actual load.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#REMOTE_TABLE
+     *                 REMOTE_TABLE}: Name of the target table to which source
+     *                 table is exported. When this option is specified
+     *                 remote_query cannot be specified.  The default value is
+     *                 ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#USE_ST_GEOMFROM_CASTS
+     *                 USE_ST_GEOMFROM_CASTS}: Wraps parametrized variables
+     *                 with st_geomfromtext or st_geomfromwkb based on source
+     *                 column type
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#USE_INDEXED_PARAMETERS
+     *                 USE_INDEXED_PARAMETERS}: Uses $n style syntax when
+     *                 generating insert query for remote_table option
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#TRUE
+     *                 TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
