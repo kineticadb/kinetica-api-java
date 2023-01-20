@@ -570,24 +570,6 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * source data to
      * skip.  Mutually exclusive with {@code columns_to_load}.
      *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COMPRESSION_TYPE
-     * COMPRESSION_TYPE}: Optional: compression type
-     * Supported values:
-     * <ul>
-     *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NONE NONE}:
-     * Uncompressed file
-     *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO AUTO}:
-     * Default. Auto detect compression type
-     *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#GZIP GZIP}
-     *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BZIP2 BZIP2}
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO AUTO}.
-     *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DATASOURCE_NAME
      * DATASOURCE_NAME}: Name of an existing external data source from which
      * data file(s) specified in {@code filepaths} will be loaded
@@ -1044,39 +1026,6 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * skip.  Mutually exclusive with {@code columns_to_load}.
          */
         public static final String COLUMNS_TO_SKIP = "columns_to_skip";
-
-        /**
-         * Optional: compression type
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NONE NONE}:
-         * Uncompressed file
-         *         <li> {@link
-         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO AUTO}:
-         * Default. Auto detect compression type
-         *         <li> {@link
-         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#GZIP GZIP}
-         *         <li> {@link
-         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BZIP2
-         * BZIP2}
-         * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO AUTO}.
-         */
-        public static final String COMPRESSION_TYPE = "compression_type";
-
-        /**
-         * Uncompressed file
-         */
-        public static final String NONE = "none";
-
-        /**
-         * Default. Auto detect compression type
-         */
-        public static final String AUTO = "auto";
-        public static final String GZIP = "gzip";
-        public static final String BZIP2 = "bzip2";
 
         /**
          * Name of an existing external data source from which data file(s)
@@ -1985,27 +1934,6 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 COLUMNS_TO_SKIP}: Specifies a comma-delimited list of
      *                 columns from the source data to
      *                 skip.  Mutually exclusive with {@code columns_to_load}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COMPRESSION_TYPE
-     *                 COMPRESSION_TYPE}: Optional: compression type
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NONE
-     *                 NONE}: Uncompressed file
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO
-     *                 AUTO}: Default. Auto detect compression type
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#GZIP
-     *                 GZIP}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BZIP2
-     *                 BZIP2}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO
-     *                 AUTO}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DATASOURCE_NAME
      *                 DATASOURCE_NAME}: Name of an existing external data
@@ -3033,27 +2961,6 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         from the source data to
      *         skip.  Mutually exclusive with {@code columns_to_load}.
      *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COMPRESSION_TYPE
-     *         COMPRESSION_TYPE}: Optional: compression type
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NONE
-     *         NONE}: Uncompressed file
-     *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO
-     *         AUTO}: Default. Auto detect compression type
-     *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#GZIP
-     *         GZIP}
-     *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BZIP2
-     *         BZIP2}
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO
-     *         AUTO}.
-     *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DATASOURCE_NAME
      *         DATASOURCE_NAME}: Name of an existing external data source from
      *         which data file(s) specified in {@code filepaths} will be loaded
@@ -3525,27 +3432,6 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 COLUMNS_TO_SKIP}: Specifies a comma-delimited list of
      *                 columns from the source data to
      *                 skip.  Mutually exclusive with {@code columns_to_load}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COMPRESSION_TYPE
-     *                 COMPRESSION_TYPE}: Optional: compression type
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NONE
-     *                 NONE}: Uncompressed file
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO
-     *                 AUTO}: Default. Auto detect compression type
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#GZIP
-     *                 GZIP}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BZIP2
-     *                 BZIP2}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO
-     *                 AUTO}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DATASOURCE_NAME
      *                 DATASOURCE_NAME}: Name of an existing external data

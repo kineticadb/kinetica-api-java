@@ -543,24 +543,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * source data to
      * skip.  Mutually exclusive with {@code columns_to_load}.
      *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#COMPRESSION_TYPE
-     * COMPRESSION_TYPE}: Optional: payload compression type
-     * Supported values:
-     * <ul>
-     *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NONE NONE}:
-     * Uncompressed
-     *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO AUTO}:
-     * Default. Auto detect compression type
-     *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#GZIP GZIP}
-     *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BZIP2 BZIP2}
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO AUTO}.
-     *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DEFAULT_COLUMN_FORMATS
      * DEFAULT_COLUMN_FORMATS}: Specifies the default format to be applied to
      * source data loaded
@@ -992,41 +974,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * skip.  Mutually exclusive with {@code columns_to_load}.
          */
         public static final String COLUMNS_TO_SKIP = "columns_to_skip";
-
-        /**
-         * Optional: payload compression type
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NONE
-         * NONE}: Uncompressed
-         *         <li> {@link
-         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO
-         * AUTO}: Default. Auto detect compression type
-         *         <li> {@link
-         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#GZIP
-         * GZIP}
-         *         <li> {@link
-         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BZIP2
-         * BZIP2}
-         * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO
-         * AUTO}.
-         */
-        public static final String COMPRESSION_TYPE = "compression_type";
-
-        /**
-         * Uncompressed
-         */
-        public static final String NONE = "none";
-
-        /**
-         * Default. Auto detect compression type
-         */
-        public static final String AUTO = "auto";
-        public static final String GZIP = "gzip";
-        public static final String BZIP2 = "bzip2";
 
         /**
          * Specifies the default format to be applied to source data loaded
@@ -1879,27 +1826,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 COLUMNS_TO_SKIP}: Specifies a comma-delimited list of
      *                 columns from the source data to
      *                 skip.  Mutually exclusive with {@code columns_to_load}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#COMPRESSION_TYPE
-     *                 COMPRESSION_TYPE}: Optional: payload compression type
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NONE
-     *                 NONE}: Uncompressed
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO
-     *                 AUTO}: Default. Auto detect compression type
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#GZIP
-     *                 GZIP}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BZIP2
-     *                 BZIP2}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO
-     *                 AUTO}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DEFAULT_COLUMN_FORMATS
      *                 DEFAULT_COLUMN_FORMATS}: Specifies the default format to
@@ -2862,27 +2788,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         from the source data to
      *         skip.  Mutually exclusive with {@code columns_to_load}.
      *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#COMPRESSION_TYPE
-     *         COMPRESSION_TYPE}: Optional: payload compression type
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NONE
-     *         NONE}: Uncompressed
-     *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO
-     *         AUTO}: Default. Auto detect compression type
-     *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#GZIP
-     *         GZIP}
-     *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BZIP2
-     *         BZIP2}
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO
-     *         AUTO}.
-     *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DEFAULT_COLUMN_FORMATS
      *         DEFAULT_COLUMN_FORMATS}: Specifies the default format to be
      *         applied to source data loaded
@@ -3323,27 +3228,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 COLUMNS_TO_SKIP}: Specifies a comma-delimited list of
      *                 columns from the source data to
      *                 skip.  Mutually exclusive with {@code columns_to_load}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#COMPRESSION_TYPE
-     *                 COMPRESSION_TYPE}: Optional: payload compression type
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NONE
-     *                 NONE}: Uncompressed
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO
-     *                 AUTO}: Default. Auto detect compression type
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#GZIP
-     *                 GZIP}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BZIP2
-     *                 BZIP2}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO
-     *                 AUTO}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DEFAULT_COLUMN_FORMATS
      *                 DEFAULT_COLUMN_FORMATS}: Specifies the default format to

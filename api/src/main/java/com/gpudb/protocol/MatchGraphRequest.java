@@ -101,6 +101,10 @@ public class MatchGraphRequest implements IndexedRecord {
      * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_SIMILARITY
      * MATCH_SIMILARITY}: Matches the intersection set(s) by computing the
      * Jaccard similarity score between node pairs.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_PICKUP_DROPOFF
+     * MATCH_PICKUP_DROPOFF}: Matches the pickups and dropoffs by optimizing
+     * the total trip costs
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -159,6 +163,11 @@ public class MatchGraphRequest implements IndexedRecord {
          * score between node pairs.
          */
         public static final String MATCH_SIMILARITY = "match_similarity";
+
+        /**
+         * Matches the pickups and dropoffs by optimizing the total trip costs
+         */
+        public static final String MATCH_PICKUP_DROPOFF = "match_pickup_dropoff";
 
         private SolveMethod() {  }
     }
@@ -265,11 +274,12 @@ public class MatchGraphRequest implements IndexedRecord {
      * default value is 'false'.
      *         <li> {@link
      * com.gpudb.protocol.MatchGraphRequest.Options#MAX_TRIP_COST
-     * MAX_TRIP_COST}: For the {@code match_supply_demand} solver only. If this
-     * constraint is greater than zero (default) then the trucks will skip
-     * travelling from one demand location to another if the cost between them
-     * is greater than this number (distance or time). Zero (default) value
-     * means no check is performed.  The default value is '0.0'.
+     * MAX_TRIP_COST}: For the {@code match_supply_demand} and {@code
+     * match_pickup_dropoff} solvers only. If this constraint is greater than
+     * zero (default) then the trucks/rides will skip travelling from one
+     * demand/pick location to another if the cost between them is greater than
+     * this number (distance or time). Zero (default) value means no check is
+     * performed.  The default value is '0.0'.
      *         <li> {@link
      * com.gpudb.protocol.MatchGraphRequest.Options#FILTER_FOLDING_PATHS
      * FILTER_FOLDING_PATHS}: For the {@code markov_chain} solver only. When
@@ -329,10 +339,11 @@ public class MatchGraphRequest implements IndexedRecord {
      * each round trip use of the same truck.  The default value is '0'.
      *         <li> {@link
      * com.gpudb.protocol.MatchGraphRequest.Options#SERVICE_RADIUS
-     * SERVICE_RADIUS}: For the {@code match_supply_demand} solver only. If
-     * specified (greater than zero), it filters the demands outside this
-     * radius centered around the supply actor's originating location (distance
-     * or time).  The default value is '0.0'.
+     * SERVICE_RADIUS}: For the {@code match_supply_demand} and {@code
+     * match_pickup_dropoff} solvers only. If specified (greater than zero), it
+     * filters the demands/picks outside this radius centered around the supply
+     * actor/ride's originating location (distance or time).  The default value
+     * is '0.0'.
      *         <li> {@link
      * com.gpudb.protocol.MatchGraphRequest.Options#PERMUTE_SUPPLIES
      * PERMUTE_SUPPLIES}: For the {@code match_supply_demand} solver only. If
@@ -616,11 +627,12 @@ public class MatchGraphRequest implements IndexedRecord {
         public static final String OUTPUT_TRACKS = "output_tracks";
 
         /**
-         * For the {@code match_supply_demand} solver only. If this constraint
-         * is greater than zero (default) then the trucks will skip travelling
-         * from one demand location to another if the cost between them is
-         * greater than this number (distance or time). Zero (default) value
-         * means no check is performed.  The default value is '0.0'.
+         * For the {@code match_supply_demand} and {@code match_pickup_dropoff}
+         * solvers only. If this constraint is greater than zero (default) then
+         * the trucks/rides will skip travelling from one demand/pick location
+         * to another if the cost between them is greater than this number
+         * (distance or time). Zero (default) value means no check is
+         * performed.  The default value is '0.0'.
          */
         public static final String MAX_TRIP_COST = "max_trip_cost";
 
@@ -699,10 +711,11 @@ public class MatchGraphRequest implements IndexedRecord {
         public static final String MAX_STOPS = "max_stops";
 
         /**
-         * For the {@code match_supply_demand} solver only. If specified
-         * (greater than zero), it filters the demands outside this radius
-         * centered around the supply actor's originating location (distance or
-         * time).  The default value is '0.0'.
+         * For the {@code match_supply_demand} and {@code match_pickup_dropoff}
+         * solvers only. If specified (greater than zero), it filters the
+         * demands/picks outside this radius centered around the supply
+         * actor/ride's originating location (distance or time).  The default
+         * value is '0.0'.
          */
         public static final String SERVICE_RADIUS = "service_radius";
 
@@ -997,6 +1010,10 @@ public class MatchGraphRequest implements IndexedRecord {
      *                     MATCH_SIMILARITY}: Matches the intersection set(s)
      *                     by computing the Jaccard similarity score between
      *                     node pairs.
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_PICKUP_DROPOFF
+     *                     MATCH_PICKUP_DROPOFF}: Matches the pickups and
+     *                     dropoffs by optimizing the total trip costs
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -1138,13 +1155,14 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 depots.  The default value is 'false'.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_TRIP_COST
-     *                 MAX_TRIP_COST}: For the {@code match_supply_demand}
-     *                 solver only. If this constraint is greater than zero
-     *                 (default) then the trucks will skip travelling from one
-     *                 demand location to another if the cost between them is
-     *                 greater than this number (distance or time). Zero
-     *                 (default) value means no check is performed.  The
-     *                 default value is '0.0'.
+     *                 MAX_TRIP_COST}: For the {@code match_supply_demand} and
+     *                 {@code match_pickup_dropoff} solvers only. If this
+     *                 constraint is greater than zero (default) then the
+     *                 trucks/rides will skip travelling from one demand/pick
+     *                 location to another if the cost between them is greater
+     *                 than this number (distance or time). Zero (default)
+     *                 value means no check is performed.  The default value is
+     *                 '0.0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#FILTER_FOLDING_PATHS
      *                 FILTER_FOLDING_PATHS}: For the {@code markov_chain}
@@ -1221,11 +1239,12 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 same truck.  The default value is '0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#SERVICE_RADIUS
-     *                 SERVICE_RADIUS}: For the {@code match_supply_demand}
-     *                 solver only. If specified (greater than zero), it
-     *                 filters the demands outside this radius centered around
-     *                 the supply actor's originating location (distance or
-     *                 time).  The default value is '0.0'.
+     *                 SERVICE_RADIUS}: For the {@code match_supply_demand} and
+     *                 {@code match_pickup_dropoff} solvers only. If specified
+     *                 (greater than zero), it filters the demands/picks
+     *                 outside this radius centered around the supply
+     *                 actor/ride's originating location (distance or time).
+     *                 The default value is '0.0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#PERMUTE_SUPPLIES
      *                 PERMUTE_SUPPLIES}: For the {@code match_supply_demand}
@@ -1533,6 +1552,10 @@ public class MatchGraphRequest implements IndexedRecord {
      *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_SIMILARITY
      *         MATCH_SIMILARITY}: Matches the intersection set(s) by computing
      *         the Jaccard similarity score between node pairs.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_PICKUP_DROPOFF
+     *         MATCH_PICKUP_DROPOFF}: Matches the pickups and dropoffs by
+     *         optimizing the total trip costs
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -1595,6 +1618,10 @@ public class MatchGraphRequest implements IndexedRecord {
      *                     MATCH_SIMILARITY}: Matches the intersection set(s)
      *                     by computing the Jaccard similarity score between
      *                     node pairs.
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_PICKUP_DROPOFF
+     *                     MATCH_PICKUP_DROPOFF}: Matches the pickups and
+     *                     dropoffs by optimizing the total trip costs
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -1775,12 +1802,13 @@ public class MatchGraphRequest implements IndexedRecord {
      *         from their originating depots.  The default value is 'false'.
      *                 <li> {@link
      *         com.gpudb.protocol.MatchGraphRequest.Options#MAX_TRIP_COST
-     *         MAX_TRIP_COST}: For the {@code match_supply_demand} solver only.
-     *         If this constraint is greater than zero (default) then the
-     *         trucks will skip travelling from one demand location to another
-     *         if the cost between them is greater than this number (distance
-     *         or time). Zero (default) value means no check is performed.  The
-     *         default value is '0.0'.
+     *         MAX_TRIP_COST}: For the {@code match_supply_demand} and {@code
+     *         match_pickup_dropoff} solvers only. If this constraint is
+     *         greater than zero (default) then the trucks/rides will skip
+     *         travelling from one demand/pick location to another if the cost
+     *         between them is greater than this number (distance or time).
+     *         Zero (default) value means no check is performed.  The default
+     *         value is '0.0'.
      *                 <li> {@link
      *         com.gpudb.protocol.MatchGraphRequest.Options#FILTER_FOLDING_PATHS
      *         FILTER_FOLDING_PATHS}: For the {@code markov_chain} solver only.
@@ -1848,11 +1876,11 @@ public class MatchGraphRequest implements IndexedRecord {
      *         the same truck.  The default value is '0'.
      *                 <li> {@link
      *         com.gpudb.protocol.MatchGraphRequest.Options#SERVICE_RADIUS
-     *         SERVICE_RADIUS}: For the {@code match_supply_demand} solver
-     *         only. If specified (greater than zero), it filters the demands
-     *         outside this radius centered around the supply actor's
-     *         originating location (distance or time).  The default value is
-     *         '0.0'.
+     *         SERVICE_RADIUS}: For the {@code match_supply_demand} and {@code
+     *         match_pickup_dropoff} solvers only. If specified (greater than
+     *         zero), it filters the demands/picks outside this radius centered
+     *         around the supply actor/ride's originating location (distance or
+     *         time).  The default value is '0.0'.
      *                 <li> {@link
      *         com.gpudb.protocol.MatchGraphRequest.Options#PERMUTE_SUPPLIES
      *         PERMUTE_SUPPLIES}: For the {@code match_supply_demand} solver
@@ -2143,13 +2171,14 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 depots.  The default value is 'false'.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_TRIP_COST
-     *                 MAX_TRIP_COST}: For the {@code match_supply_demand}
-     *                 solver only. If this constraint is greater than zero
-     *                 (default) then the trucks will skip travelling from one
-     *                 demand location to another if the cost between them is
-     *                 greater than this number (distance or time). Zero
-     *                 (default) value means no check is performed.  The
-     *                 default value is '0.0'.
+     *                 MAX_TRIP_COST}: For the {@code match_supply_demand} and
+     *                 {@code match_pickup_dropoff} solvers only. If this
+     *                 constraint is greater than zero (default) then the
+     *                 trucks/rides will skip travelling from one demand/pick
+     *                 location to another if the cost between them is greater
+     *                 than this number (distance or time). Zero (default)
+     *                 value means no check is performed.  The default value is
+     *                 '0.0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#FILTER_FOLDING_PATHS
      *                 FILTER_FOLDING_PATHS}: For the {@code markov_chain}
@@ -2226,11 +2255,12 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 same truck.  The default value is '0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#SERVICE_RADIUS
-     *                 SERVICE_RADIUS}: For the {@code match_supply_demand}
-     *                 solver only. If specified (greater than zero), it
-     *                 filters the demands outside this radius centered around
-     *                 the supply actor's originating location (distance or
-     *                 time).  The default value is '0.0'.
+     *                 SERVICE_RADIUS}: For the {@code match_supply_demand} and
+     *                 {@code match_pickup_dropoff} solvers only. If specified
+     *                 (greater than zero), it filters the demands/picks
+     *                 outside this radius centered around the supply
+     *                 actor/ride's originating location (distance or time).
+     *                 The default value is '0.0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#PERMUTE_SUPPLIES
      *                 PERMUTE_SUPPLIES}: For the {@code match_supply_demand}
