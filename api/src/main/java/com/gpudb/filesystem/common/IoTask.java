@@ -225,6 +225,7 @@ public class IoTask implements Callable<Result> {
         result.setFileName( fileName );
         result.setOpMode( opMode );
         result.setUploadInfo( multiPartUploadInfo );
+        result.setMultiPart(true);
 
         return result;
     }
@@ -249,6 +250,7 @@ public class IoTask implements Callable<Result> {
         downloadResult.setFileName( fileName );
         downloadResult.setOpMode( opMode );
         downloadResult.setDownloadInfo( multiPartDownloadInfo );
+        downloadResult.setMultiPart(true);
 
         return downloadResult;
     }

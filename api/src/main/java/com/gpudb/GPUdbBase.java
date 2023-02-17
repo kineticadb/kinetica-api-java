@@ -1,5 +1,52 @@
 package com.gpudb;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gpudb.protocol.*;
+import com.gpudb.util.ssl.X509TrustManagerBypass;
+import com.gpudb.util.url.UrlUtils;
+import org.apache.avro.Schema;
+import org.apache.avro.generic.IndexedRecord;
+import org.apache.avro.io.BinaryDecoder;
+import org.apache.avro.io.DecoderFactory;
+import org.apache.commons.codec.Charsets;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.hc.client5.http.ConnectTimeoutException;
+import org.apache.hc.client5.http.HttpRequestRetryStrategy;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.config.ConnectionConfig;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.socket.ConnectionSocketFactory;
+import org.apache.hc.client5.http.socket.PlainConnectionSocketFactory;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
+import org.apache.hc.client5.http.ssl.TrustAllStrategy;
+import org.apache.hc.core5.http.*;
+import org.apache.hc.core5.http.config.Registry;
+import org.apache.hc.core5.http.config.RegistryBuilder;
+import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.core5.http.message.StatusLine;
+import org.apache.hc.core5.http.protocol.HttpContext;
+import org.apache.hc.core5.io.CloseMode;
+import org.apache.hc.core5.pool.PoolConcurrencyPolicy;
+import org.apache.hc.core5.pool.PoolReusePolicy;
+import org.apache.hc.core5.ssl.SSLContextBuilder;
+import org.apache.hc.core5.ssl.SSLContexts;
+import org.apache.hc.core5.ssl.TrustStrategy;
+import org.apache.hc.core5.util.TimeValue;
+import org.apache.hc.core5.util.Timeout;
+import org.xerial.snappy.Snappy;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -10,68 +57,13 @@ import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.gpudb.protocol.*;
-import com.gpudb.util.url.UrlUtils;
-import org.apache.avro.Schema;
-import org.apache.avro.generic.IndexedRecord;
-import org.apache.avro.io.BinaryDecoder;
-import org.apache.avro.io.DecoderFactory;
-import org.apache.commons.codec.Charsets;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.NotImplementedException;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.HttpRequestRetryHandler;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.HttpClientConnectionManager;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.*;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.ssl.SSLContextBuilder;
-import org.apache.http.ssl.SSLContexts;
-import org.apache.http.util.EntityUtils;
-import org.xerial.snappy.Snappy;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gpudb.util.ssl.X509TrustManagerBypass;
 
 
 
@@ -1068,45 +1060,6 @@ public abstract class GPUdbBase {
         ClientConnectionManager#closeIdleConnections() method to close all connections that have been idle over a given period of time.
      */
 
-    private static class IdleHttpConnectionMonitorThread extends Thread {
-
-        private static final long DEFAULT_IDLE_HTTP_CONNECTION_EVICTION_TIMEOUT = 2000;
-        private static final long DEFAULT_IDLE_HTTP_CONNECTION_CLOSE_TIMEOUT = 30*1000;
-        private final HttpClientConnectionManager connMgr;
-        private volatile boolean shutdown;
-
-        public IdleHttpConnectionMonitorThread(HttpClientConnectionManager connMgr) {
-            super();
-            this.connMgr = connMgr;
-        }
-
-        @Override
-        public void run() {
-            try {
-                while (!shutdown) {
-                    synchronized (this) {
-                        wait(DEFAULT_IDLE_HTTP_CONNECTION_EVICTION_TIMEOUT);
-                        // Close expired connections
-                        connMgr.closeExpiredConnections();
-                        // Optionally, close connections
-                        // that have been idle longer than 30 sec
-                        connMgr.closeIdleConnections(DEFAULT_IDLE_HTTP_CONNECTION_CLOSE_TIMEOUT, TimeUnit.SECONDS);
-                    }
-                }
-                GPUdbLogger.info("Terminated idle HTTP connection monitor thread ...");
-            } catch (InterruptedException ex) {
-                // terminate
-            }
-        }
-
-        public void shutdown() {
-            shutdown = true;
-            synchronized (this) {
-                notifyAll();
-            }
-        }
-
-    }
 
     /**
      * Contains the version of the client API or the GPUdb server.
@@ -1267,16 +1220,14 @@ public abstract class GPUdbBase {
 
         @Override
         public String toString() {
-            StringBuilder builder = new StringBuilder();
-            builder.append( this.major );
-            builder.append( "." );
-            builder.append( this.minor );
-            builder.append( "." );
-            builder.append( this.revision );
-            builder.append( "." );
-            builder.append( this.abiVersion );
 
-            return builder.toString();
+            return this.major +
+                    "." +
+                    this.minor +
+                    "." +
+                    this.revision +
+                    "." +
+                    this.abiVersion;
         }
 
     }  // end class GPUdbVersion
@@ -1435,11 +1386,75 @@ public abstract class GPUdbBase {
         }
     }   // end class SubmitException
 
+    /**
+     * This class provides options to control JSON ingest using {@link BulkInserter}.
+     * By default, for performance reasons {@link JsonOptions#VALIDATE_JSON} is set to
+     * false and {@link JsonOptions#COMPRESSION_ON} set to true
+     */
+    public static final class JsonOptions {
+
+        public static final boolean VALIDATE_JSON = false;
+        public static final boolean COMPRESSION_ON = true;
+
+        private final boolean validateJson;
+        private final boolean compressionOn;
+
+        /**
+         * This method returns an instance of {@link JsonOptions} with default values.
+         * @return - a new instance of {@link JsonOptions} class
+         */
+        public static JsonOptions defaultOptions() {
+            return new JsonOptions();
+        }
+
+        /**
+         * Default constructor
+         */
+        public JsonOptions() {
+            this.validateJson = VALIDATE_JSON;
+            this.compressionOn = COMPRESSION_ON;
+        }
+
+        public JsonOptions(boolean validateJson, boolean compressionOn) {
+            this.validateJson = validateJson;
+            this.compressionOn = compressionOn;
+        }
+
+        public boolean isValidateJson() {
+            return validateJson;
+        }
+
+        public boolean isCompressionOn() {
+            return compressionOn;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            JsonOptions that = (JsonOptions) o;
+            return isValidateJson() == that.isValidateJson() && isCompressionOn() == that.isCompressionOn();
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(isValidateJson(), isCompressionOn());
+        }
+
+        @Override
+        public String toString() {
+            return "JsonOptions{" +
+                    "validateJson=" + validateJson +
+                    ", compressionOn=" + compressionOn +
+                    '}';
+        }
+    }
+
 
     /**
      * A special exception indicating the server is shutting down
      */
-    public class GPUdbExitException extends GPUdbException {
+    public static class GPUdbExitException extends GPUdbException {
         /**
          * Creates a new {@link GPUdbExitException} with the specified message.
          *
@@ -1534,7 +1549,7 @@ public abstract class GPUdbBase {
     /**
      * Indicates that there is an authorization-related problem occurred.
      */
-    public class GPUdbUnauthorizedAccessException extends GPUdbException {
+    public static class GPUdbUnauthorizedAccessException extends GPUdbException {
         /**
          * Creates a new {@link GPUdbUnauthorizedAccessException} with the
          * specified message.
@@ -1779,7 +1794,7 @@ public abstract class GPUdbBase {
      * for a given Kinetica cluster.  Used to keep track of the multiple
      * Kinetica clusters' addresses.
      */
-    public class ClusterAddressInfo {
+    public static class ClusterAddressInfo {
         // Members
         private URL           activeHeadNodeUrl;
         private List<URL>     workerRankUrls;
@@ -1812,8 +1827,8 @@ public abstract class GPUdbBase {
             this.activeHeadNodeUrl    = activeHeadNodeUrl;
 
             // Set default values for the rest of the members
-            this.workerRankUrls   = new ArrayList<URL>();
-            this.hostNames        = new HashSet<String>();
+            this.workerRankUrls   = new ArrayList<>();
+            this.hostNames        = new HashSet<>();
             this.isPrimaryCluster = false;
             this.isIntraClusterFailoverEnabled = false;
 
@@ -1854,8 +1869,8 @@ public abstract class GPUdbBase {
             this.activeHeadNodeUrl = activeHeadNodeUrl;
 
             // Set default values for the rest of the members
-            this.workerRankUrls   = new ArrayList<URL>();
-            this.hostNames        = new HashSet<String>();
+            this.workerRankUrls   = new ArrayList<>();
+            this.hostNames        = new HashSet<>();
             this.isPrimaryCluster = false;
             this.isIntraClusterFailoverEnabled = false;
 
@@ -2006,16 +2021,14 @@ public abstract class GPUdbBase {
 
             // Put each worker rank's hostname in the saved hostnames (only if
             // it doesn't exist there already)
-            Iterator<URL> iter = this.workerRankUrls.iterator();
-            while ( iter.hasNext() ) {
-                URL workerRank = iter.next();
+            for (URL workerRank : this.workerRankUrls) {
                 // Check if this worker rank's host is already accounted for
-                if( !doesClusterContainNode( workerRank.getHost() ) ) {
+                if (!doesClusterContainNode(workerRank.getHost())) {
                     String workerRankHostname =
                             workerRank.getProtocol() + "://" + workerRank.getHost();
-                    GPUdbLogger.debug_with_info( "Adding worker rank's hostname to hostname list: " + workerRankHostname );
+                    GPUdbLogger.debug_with_info("Adding worker rank's hostname to hostname list: " + workerRankHostname);
                     // Add the worker rank's hostname to the list
-                    this.hostNames.add( workerRankHostname );
+                    this.hostNames.add(workerRankHostname);
                 }
             }
         }
@@ -2095,21 +2108,19 @@ public abstract class GPUdbBase {
 
         @Override
         public String toString() {
-            StringBuilder builder = new StringBuilder();
-            builder.append( "{ activeHeadNodeUrl: " );
-            builder.append( this.activeHeadNodeUrl.toString() );
-            builder.append( ", workerRankUrls: " );
-            builder.append( Arrays.toString( this.workerRankUrls.toArray() ) );
-            builder.append( ", hostNames: " );
-            builder.append( Arrays.toString( this.hostNames.toArray() ) );
-            builder.append( ", hostManagerUrl: " );
-            builder.append( this.hostManagerUrl );
-            builder.append( ", isPrimaryCluster: " + this.isPrimaryCluster );
-            builder.append( ", isIntraClusterFailoverEnabled: " );
-            builder.append( this.isIntraClusterFailoverEnabled );
-            builder.append( " }" );
 
-            return builder.toString();
+            return "{ activeHeadNodeUrl: " +
+                    this.activeHeadNodeUrl.toString() +
+                    ", workerRankUrls: " +
+                    Arrays.toString(this.workerRankUrls.toArray()) +
+                    ", hostNames: " +
+                    Arrays.toString(this.hostNames.toArray()) +
+                    ", hostManagerUrl: " +
+                    this.hostManagerUrl +
+                    ", isPrimaryCluster: " + this.isPrimaryCluster +
+                    ", isIntraClusterFailoverEnabled: " +
+                    this.isIntraClusterFailoverEnabled +
+                    " }";
         }
     }   // end class ClusterAddressInfo
 
@@ -2173,7 +2184,7 @@ public abstract class GPUdbBase {
         try {
             // Not using an unmodifiable list because we'll have to update it
             // with the HA ring head node addresses
-            urls = new ArrayList<URL>();
+            urls = new ArrayList<>();
 
             // Split the string on commas, if any
             String[] url_strings = url.split(",");
@@ -2351,52 +2362,50 @@ public abstract class GPUdbBase {
         // that to create the 'secureSocketFactory' variable
         if( (trustStoreFilePath != null && !trustStoreFilePath.isEmpty())
             && (trustStorePassword != null && !trustStorePassword.isEmpty())) {
-            SSLConnectionSocketFactory connectionSocketFactory = null;
+            SSLConnectionSocketFactory connectionSocketFactory;
 
-            TrustStrategy acceptingTrustStrategy = new TrustStrategy() {
-                @Override
-                public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-                    String truststoreFile = trustStoreFilePath;
-                    String truststorePassword = trustStorePassword;
-                    KeyStore truststore = null;
-                    try {
-                        truststore = KeyStore.getInstance(KeyStore.getDefaultType());
-                    } catch (KeyStoreException e) {
-                        GPUdbLogger.error( e.getMessage() );
-                        return false;
-                    }
-                    try (FileInputStream truststoreInputStream = new FileInputStream(truststoreFile)) {
-                        try {
-                            truststore.load(truststoreInputStream, truststorePassword.toCharArray());
-                        } catch (IOException | NoSuchAlgorithmException | CertificateException e) {
-                            GPUdbLogger.error( e.getMessage() );
-                            return false;
-                        }
-                    } catch (IOException e) {
-                        GPUdbLogger.error( e.getMessage() );
-                        return false;
-                    }
-
-                    Certificate certificate = null;
-                    // Enumerate the certificates in the truststore
-                    try {
-                        for (String alias : Collections.list(truststore.aliases())) {
-                            try {
-                                certificate = truststore.getCertificate(alias);
-                                if( chain[0].equals( certificate))
-                                    return true;
-                            } catch (KeyStoreException e) {
-                                GPUdbLogger.error( e.getMessage());
-                            }
-                        }
-                    } catch (KeyStoreException e) {
-                        GPUdbLogger.error( e.getMessage() );
-                        return false;
-                    }
-
+            TrustStrategy acceptingTrustStrategy = (chain, authType) -> {
+                String truststoreFile = trustStoreFilePath;
+                String truststorePassword = trustStorePassword;
+                KeyStore truststore;
+                try {
+                    truststore = KeyStore.getInstance(KeyStore.getDefaultType());
+                } catch (KeyStoreException e) {
+                    GPUdbLogger.error( e.getMessage() );
                     return false;
                 }
+                try (FileInputStream truststoreInputStream = new FileInputStream(truststoreFile)) {
+                    try {
+                        truststore.load(truststoreInputStream, truststorePassword.toCharArray());
+                    } catch (IOException | NoSuchAlgorithmException | CertificateException e) {
+                        GPUdbLogger.error( e.getMessage() );
+                        return false;
+                    }
+                } catch (IOException e) {
+                    GPUdbLogger.error( e.getMessage() );
+                    return false;
+                }
+
+                Certificate certificate;
+                // Enumerate the certificates in the truststore
+                try {
+                    for (String alias : Collections.list(truststore.aliases())) {
+                        try {
+                            certificate = truststore.getCertificate(alias);
+                            if( chain[0].equals( certificate))
+                                return true;
+                        } catch (KeyStoreException e) {
+                            GPUdbLogger.error( e.getMessage());
+                        }
+                    }
+                } catch (KeyStoreException e) {
+                    GPUdbLogger.error( e.getMessage() );
+                    return false;
+                }
+
+                return false;
             };
+
             try {
                 SSLContext sslContext = SSLContexts.custom()
                     .loadTrustMaterial(
@@ -2405,11 +2414,7 @@ public abstract class GPUdbBase {
                         acceptingTrustStrategy
                     ).build();
 
-                connectionSocketFactory = new SSLConnectionSocketFactory(sslContext, new HostnameVerifier() {
-                    public boolean verify(String hostName, SSLSession session) {
-                        return true;
-                    }
-                });
+                connectionSocketFactory = new SSLConnectionSocketFactory(sslContext, (hostName, session) -> true);
                 secureSocketFactory = connectionSocketFactory;
             } catch (Exception e) {
                 GPUdbLogger.debug_with_info(String.format("Exception %s", e.getMessage()));
@@ -2426,51 +2431,57 @@ public abstract class GPUdbBase {
             .build();
 
         // Create a connection pool manager
-        PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager( connSocketFactoryRegistry );
+        final PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(
+                connSocketFactoryRegistry,
+                PoolConcurrencyPolicy.LAX,
+                PoolReusePolicy.LIFO,
+                TimeValue.ofMinutes(1),
+                null,
+                null,
+                null);
+
         connectionManager.setMaxTotal( options.getMaxTotalConnections() );
         connectionManager.setDefaultMaxPerRoute( options.getMaxConnectionsPerHost() );
-        connectionManager.setValidateAfterInactivity( options.getConnectionInactivityValidationTimeout() );
 
-//        monitorThread = new IdleHttpConnectionMonitorThread(connectionManager);
-//        monitorThread.start();
+        connectionManager.setDefaultConnectionConfig(ConnectionConfig.custom()
+            .setConnectTimeout(Timeout.ofSeconds(options.getServerConnectionTimeout()))
+            .setSocketTimeout(Timeout.ofSeconds(options.getTimeout()))
+            .setValidateAfterInactivity( TimeValue.ofMilliseconds( options.getConnectionInactivityValidationTimeout() ))
+            .setTimeToLive(TimeValue.ofMinutes(1))
+            .build());
 
         // Set the timeout defaults
         RequestConfig requestConfig = RequestConfig.custom()
-            .setSocketTimeout( this.timeout )
-            .setConnectTimeout( options.getServerConnectionTimeout() )
-            .setConnectionRequestTimeout( this.timeout )
-            .build();
-
-//        ConnectionKeepAliveStrategy connectionKeepAliveStrategy = new DefaultConnectionKeepAliveStrategy() {
-//
-//            @Override
-//            public long getKeepAliveDuration(HttpResponse response, HttpContext context) {
-//                long keepAlive = super.getKeepAliveDuration(response, context);
-//                if( keepAlive == -1 ) {
-//                    keepAlive = DEFAULT_HTTP_CLIENT_KEEP_ALIVE_TIMEOUT;
-//                }
-//                return keepAlive;
-//            }
-//
-//        };
+                .setConnectionRequestTimeout( Timeout.ofSeconds( options.getTimeout()) )
+                .build();
 
         // Build the http client.
-        this.httpClient = HttpClientBuilder.create()
+        this.httpClient = HttpClients.custom()
             .setConnectionManager( connectionManager )
             .setDefaultRequestConfig( requestConfig )
-            .setRetryHandler(new HttpRequestRetryHandler() {
+            .evictExpiredConnections()
+            .evictIdleConnections(TimeValue.ofSeconds(DEFAULT_CONNECTION_INACTIVITY_VALIDATION_TIMEOUT))
+            .setRetryStrategy(new HttpRequestRetryStrategy() {
                 @Override
-                public boolean retryRequest(IOException exception,
-                                            int executionCount,
-                                            HttpContext context) {
+                public boolean retryRequest(HttpRequest httpRequest, IOException e, int executionCount, HttpContext httpContext) {
                     if (executionCount > HTTP_REQUEST_MAX_RETRY_ATTEMPTS) {
                         return false;
                     }
 
                     // Retry if the exception is one of the ones below
                     return
-                    		exception instanceof org.apache.http.NoHttpResponseException ||
-                    		exception instanceof org.apache.http.conn.ConnectTimeoutException;
+                        e instanceof NoHttpResponseException ||
+                        e instanceof ConnectTimeoutException;
+                }
+
+                @Override
+                public boolean retryRequest(HttpResponse httpResponse, int i, HttpContext httpContext) {
+                    return false;
+                }
+
+                @Override
+                public TimeValue getRetryInterval(HttpResponse httpResponse, int i, HttpContext httpContext) {
+                    return null;
                 }
             })
             .build();
@@ -2495,12 +2506,9 @@ public abstract class GPUdbBase {
      *  Clean up resources--namely, the HTTPClient object(s).
      */
     protected void finalize() throws Throwable {
-        // Release the resources-- the HTTP client and connection manager and
-        // the monitoring thread
-//        monitorThread.shutdown();
+        // Release the resources-- the HTTP client
 
-        this.httpClient.getConnectionManager().shutdown();
-        httpClient.close();
+        httpClient.close(CloseMode.GRACEFUL);
     }
 
 
@@ -2517,7 +2525,7 @@ public abstract class GPUdbBase {
      * @return  the list of URLs
      */
     public List<URL> getURLs() {
-        List<URL> activeHeadNodeURLs = new ArrayList<URL>();
+        List<URL> activeHeadNodeURLs = new ArrayList<>();
         for (ClusterAddressInfo hostAddress : this.hostAddresses) {
             activeHeadNodeURLs.add(hostAddress.getActiveHeadNodeUrl());
         }
@@ -2550,7 +2558,7 @@ public abstract class GPUdbBase {
      * @return  the list of URLs
      */
     public List<URL> getHmURLs() {
-        List<URL> hmURLs = new ArrayList<URL>();
+        List<URL> hmURLs = new ArrayList<>();
         for (ClusterAddressInfo hostAddress : this.hostAddresses) {
             hmURLs.add(hostAddress.getHostManagerUrl());
         }
@@ -2732,7 +2740,7 @@ public abstract class GPUdbBase {
      * @return  the size of the HA cluster
      */
     public List<ClusterAddressInfo> getHARingInfo() {
-        return new ArrayList<ClusterAddressInfo>( this.hostAddresses );
+        return new ArrayList<>(this.hostAddresses);
     }
 
     /**
@@ -2781,7 +2789,6 @@ public abstract class GPUdbBase {
         }
 
         this.httpHeaders.put(header, value);
-        return;
     }
 
 
@@ -2921,10 +2928,10 @@ public abstract class GPUdbBase {
 
         // Generate the list of the given cluster's rank-0 URL and worker
         // rank URLs
-        List<URL> rankUrls = new ArrayList<URL>();
+        List<URL> rankUrls = new ArrayList<>();
         rankUrls.add( currHeadRankUrl );
         rankUrls.addAll( currClusterInfo.getWorkerRankUrls() );
-        GPUdbLogger.debug_with_info( "Cluster info: " + currClusterInfo.toString() );
+        GPUdbLogger.debug_with_info( "Cluster info: " + currClusterInfo);
 
         // Try to get the new addresses for shuffled ranks from the
         // currently known ranks (whichever ones are still in place)
@@ -2961,8 +2968,8 @@ public abstract class GPUdbBase {
                     Map<String, String> systemProperties = getSystemProperties( url );
                     ClusterAddressInfo clusterInfoRefreshed = createClusterAddressInfo( url, systemProperties );
 
-                    GPUdbLogger.debug_with_info( "Current cluster info:   " + currClusterInfo.toString() );
-                    GPUdbLogger.debug_with_info( "Refreshed cluster info: " + clusterInfoRefreshed.toString() );
+                    GPUdbLogger.debug_with_info( "Current cluster info:   " + currClusterInfo);
+                    GPUdbLogger.debug_with_info( "Refreshed cluster info: " + clusterInfoRefreshed);
 
                     // Check if the newly gotten addresses are the same as the old
                     // ones
@@ -2991,603 +2998,6 @@ public abstract class GPUdbBase {
         GPUdbLogger.debug_with_info( "Returning false (could/did not reset the addresses)");
         return false;
     }   // updateClusterAddresses
-
-
-
-    /**
-     * Given a ClusterAddressInfo object, check that all the worker ranks are up
-     * by pinging them individually.  Do this in an infinite loop.
-     *
-     * **Caution**: Since this method runs in an infinite loop, be very careful
-     *              of how to use it.  Ought to only be called from
-     *              doIntraClusterFailover().
-     */
-    private boolean areAllRanksReady( ClusterAddressInfo clusterAddresses ) throws GPUdbException {
-        GPUdbLogger.debug_with_info( "Start checking all rank http servers' statuses..." );
-        // Generate the list of the given cluster's rank-0 URL and worker
-        // rank URLs
-        List<URL> rankUrls = new ArrayList<URL>();
-        rankUrls.add( clusterAddresses.getActiveHeadNodeUrl() );
-        rankUrls.addAll( clusterAddresses.getWorkerRankUrls() );
-
-        // Sleep for a short amount of time (three seconds)
-        int sleepInterval = 3000;
-
-        boolean wasSomeRankUnresponsive;
-        int numRankCheckAttempt = 0;
-
-        // Keep pinging all ranks until ALL have their http servers up
-        while ( true ) {
-            // Keep track of if any rank does no respond
-            wasSomeRankUnresponsive = false;
-            GPUdbLogger.debug_with_info( "Iteration #" + numRankCheckAttempt );
-
-            // Check if all the ranks are up and listening
-            for (URL url : rankUrls) {
-                // Keep pinging this rank until it is up
-                boolean keepPingingThisRank = true;
-                while (keepPingingThisRank) {
-                    if (isKineticaRunning(url)) {
-                        // We'll move on to the next rank
-                        keepPingingThisRank = false;
-                        GPUdbLogger.debug_with_info("Rank http server @ " + url.toString() + " did respond");
-                    } else {
-                        GPUdbLogger.debug_with_info("Rank http server @ " + url.toString() + " did NOT respond");
-                        // Keep track of the fact that this rank's http server
-                        // did NOT respond
-                        wasSomeRankUnresponsive = true;
-
-                        // Sleep a few seconds before retrying; we will keep
-                        // pinging this rank until its http server comes up
-                        try {
-                            GPUdbLogger.debug_with_info("Sleeping for " + (sleepInterval / 1000) + " seconds...");
-                            Thread.sleep(sleepInterval);
-                        } catch (InterruptedException ex) {
-                            GPUdbLogger.debug_with_info("Sleep interrupted; throwing exception: " + ex.getMessage());
-                            throw new GPUdbException("Intra-cluster failover interrupted: " + ex.getMessage(), ex);
-                        }
-                    }   // end if
-                }   // end inner while
-            } // end for loop
-
-            // Success if all ranks responded
-            // Note: If during this iteration even one rank was unresponsive,
-            //       we will ping all the ranks once more to ensure everybody
-            //       is still up
-            if ( !wasSomeRankUnresponsive ) {
-                // Every single rank responded; the cluster is ready for business!
-                return true;
-            }
-
-            // Set values for the next iteration
-            numRankCheckAttempt++;
-
-            // Put a blank line for ease of reading the log
-            GPUdbLogger.debug_with_info( "" );
-        }  // end while
-    }   // end areAllRanksReady
-
-
-    /**
-     * Given a ClusterAddressInfo object, check that all the worker ranks are up
-     * by pinging them individually.  Do this one time per rank.
-     */
-    private boolean areAllRanksReadyCheckOnce( ClusterAddressInfo clusterAddresses ) throws GPUdbException {
-        GPUdbLogger.debug_with_info( "Start checking all rank http servers' statuses..." );
-        // Generate the list of the given cluster's rank-0 URL and worker
-        // rank URLs
-        List<URL> rankUrls = new ArrayList<URL>();
-        rankUrls.add( clusterAddresses.getActiveHeadNodeUrl() );
-        rankUrls.addAll( clusterAddresses.getWorkerRankUrls() );
-
-        // Sleep for a short amount of time (three seconds)
-        int sleepInterval = 3000;
-
-        boolean wasSomeRankUnresponsive = false;
-
-        // Check if all the ranks are up and listening
-        for (URL url : rankUrls) {
-            if (isKineticaRunning(url)) {
-                GPUdbLogger.debug_with_info("Rank http server @ " + url.toString() + " did respond");
-            } else {
-                GPUdbLogger.debug_with_info("Rank http server @ " + url.toString() + " did NOT respond");
-                // Keep track of the fact that this rank's http server
-                // did NOT respond
-                wasSomeRankUnresponsive = true;
-            }   // end if
-        } // end for loop
-
-        return !wasSomeRankUnresponsive;
-    }   // end areAllRanksReadyCheckOnce
-
-
-    /**
-     * THIS METHOD IS NOT USED ANYMORE, N+1 is not handled, feature removed.
-     *
-     * For the given cluster in the HA ring, try to recover the new set of
-     * addresses for all the ranks etc.  If N+1 failover is in progress, spin
-     * and wait until it is in a good state and return the result.
-     */
-    private synchronized boolean doIntraClusterFailover( int clusterIndex ) throws GPUdbException {
-        // We need to keep an eye on the clock (do NOT use
-        // System.currentTimeMillis() as that often gets adjusted by the
-        // operating system)
-        long startTime = System.nanoTime();
-
-        // Retrieve info for the given cluster
-        GPUdbLogger.debug_with_info( "BEGIN clusterIndex: " + clusterIndex );
-        ClusterAddressInfo currClusterInfo = this.hostAddresses.get( clusterIndex );
-        GPUdbLogger.debug_with_info( "Got cluster info: " + currClusterInfo.toString() );
-
-        // If N+1 failover is disabled on the server ignore all client settings
-        // and bail out.
-        if( !currClusterInfo.isIntraClusterFailoverEnabled() ) {
-            GPUdbLogger.warn(String.format("N+1 failover disabled on " +
-                "the server for URL : %s , stopping failover process", currClusterInfo.getActiveHeadNodeUrl()));
-            return false;
-        }
-
-        URL currHeadRankUrl = currClusterInfo.getActiveHeadNodeUrl();
-        GPUdbLogger.warn(
-                "Starting N+1 failover recovery for cluster with head rank "
-                + currHeadRankUrl.toString()
-                + "; timeout is: "
-                + (this.intraClusterFailoverTimeoutNS / 1000000000L)
-                + " seconds (0 means infinite waiting)"
-        );
-
-        // Generate the list of the given cluster's rank-0 URL and worker
-        // rank URLs
-        List<URL> rankUrls = new ArrayList<URL>();
-        rankUrls.add( currHeadRankUrl );
-        rankUrls.addAll( currClusterInfo.getWorkerRankUrls() );
-
-        // We will sleep for 10 seconds when we need to wait and re-ping a cluster
-        int nPlusOneFailoverSleepIntervalLong = 10000;
-        // Sleep for a shorter amount of time in certain cases (three seconds)
-        int nPlusOneFailoverSleepIntervalShort = 3000;
-
-        // Keep track of how many ranks are leaderless as we get system
-        // status from them
-        int numLeaderlessRanks = 0;
-
-        // Keep track of how many ranks do not respond
-        int numRanksNoResponse = 0;
-
-        // Keep track of how many ranks returned the current addresses; this
-        // will help us decide if it was merely a network glitch without any
-        // N+1 event happening.  In such a case, we would return the current
-        // addresses.
-        int numRanksGaveSameAddressAsCurrent = 0;
-
-        // The intra-cluster failover is done in two stages.
-        // Stage 1:
-        //
-        // The purpose of this stage is to find out from the known ranks
-        // what the state of the cluster is, and update the addresses if
-        // possible.
-        //
-        // * Query all the known ranks for the cluster status and the rank
-        //   addresses.
-        // * If any rank indicates that the cluster is in an irrecoverable
-        //   state, we return false to indicate failure.
-        // * If any rank is in a leaderless state, we skip that rank and go
-        //   to the next one.
-        // * With a good (running) status, if any rank gives a new (different)
-        //   set of rank addresses, we set those addresses and are done (return
-        //   true to indicate success).
-        // * With a good (running) status, if any rank gives addresses that are
-        //   the same as the current ones, we keep track of that and move on
-        //   to the next rank.
-        // * If a cluster operation is running, or the status is not "running",
-        //   we sleep and then query the same rank again.
-        // * We keep querying all the ranks in a loop until one of the following
-        //   conditions are met:
-        //   * Any rank is in the 'running' state and gives us a fresh set of
-        //     of addresses, we return success.
-        //   * All ranks are in the 'running' status and return the same
-        //     addresses as the current ones, we assume all is well and return
-        //     success.
-        //   * If all but one rank are leaderless, we assume we are in a bad
-        //     state and return failure.
-        //   * If we hit the timeout, we return failure.
-        //   * If all the ranks were unresponsive, we break out of stage 1
-        //     and proceed to stage 2.
-        //
-        // Stage 2:
-        //
-        // We are in this stage only if stage 1 failed in a very particular
-        // way: all ranks were unresponsive.  The reasons for which this can
-        // happen are as follows:
-        // 1) The cluster is fully down; we need to wait for the administrator
-        //    to turn it back on.
-        // 2) All the ranks were moved to other hosts.
-        // 3) There is a serious network issue, which also needs to be solved
-        //    by the administrator.
-        //
-        // In either case, we will ping all hosts to find out if rank-0 is
-        // running there.  This will happen infinitely, unless the user has
-        // set a timeout.  We will stop when we hit the timeout.  The logic
-        // for this stage is rather similar to stage 1 with some minor changes.
-        //
-        // The aim of this stage is to keep the client application going until
-        // either the cluster is fixed, or there is human intervention.  It is
-        // not good for client applications to stop working, specially if there
-        // are many long running applications.  We need to be resilient and keep
-        // on working, unless the client tells us to stop at a certain time via
-        // the intraClusterFailoverTimeout parameter.
-
-
-        GPUdbLogger.debug_with_info( "N+1 failover recovery stage 1" );
-        GPUdbLogger.debug_with_info( "-----------------------------" );
-
-        // Try to get the new addresses for shuffled ranks from the
-        // currently known ranks (whichever ones are still in place)
-        GPUdbLogger.debug_with_info( "Before for loop; will attempt until hitting"
-            + " the timeout or all ranks are unresponsive" );
-        int i = 0;
-        while ( true ) {
-            // Keep track of the iteration only for debug logging purpose
-            ++i;
-            GPUdbLogger.debug_with_info( "N+1 failover; stage 1 attempt #" + i );
-
-            // Keep track of how many ranks say they are leaderless
-            numLeaderlessRanks = 0;
-            // Keep track of how many ranks did not respond
-            numRanksNoResponse = 0;
-            // Keep track of how many ranks gave the same addresses as the
-            // current ones
-            numRanksGaveSameAddressAsCurrent = 0;
-
-            // Get information from the ranks (and try all of them if
-            // one/some don't have useful information)
-            for ( int j = 0; j < rankUrls.size(); ++j ) {
-                URL url = rankUrls.get( j );
-                GPUdbLogger.debug_with_info( "Attempt #" + i + " rank-" + j + "; URL: " + url.toString() );
-
-                boolean keepUsingThisRank = true;
-                while ( keepUsingThisRank ) {
-
-                    // If we've reached the timeout, just return
-                    long currTime = System.nanoTime();
-                    long elapsedTime = (currTime - startTime);
-
-                    if ( (this.intraClusterFailoverTimeoutNS != 0)
-                        && ( elapsedTime >= this.intraClusterFailoverTimeoutNS ) ) {
-                        GPUdbLogger.debug_with_info( "Hit N+1 failover recovery timeout; returning false" );
-                        return false;
-                    }
-
-                    // Check the system status (if this rank is responding to requests,
-                    // keep pinging until status is back up to running)
-                    try {
-                        JsonNode systemStatusInfo = getSystemStatusInformation( url );
-
-                        // Check if this rank is in an irrecoverable state
-                        if ( isClusterOperationStatusIrrecoverable( systemStatusInfo ) ) {
-                            // The system is hosed; there is no hope of recovery!
-                            GPUdbLogger.debug_with_info( "System is irrecoverable; returning false" );
-                            return false;
-                        }
-
-                        // Check if this rank has become leaderless (i.e. no
-                        // head host manager can be elected)
-                        if ( isRankLeaderless( systemStatusInfo ) ) {
-                            GPUdbLogger.debug_with_info( "Rank is leaderless; skipping to next rank" );
-                            keepUsingThisRank = false;
-                            ++numLeaderlessRanks;
-                            continue;
-                        }
-
-                        // Check if the system is back up and running
-                        if ( isClusterOperationRunning( systemStatusInfo ) ) {
-                            GPUdbLogger.debug_with_info( "Cluster operation running; will sleep" );
-                            // Some sort of cluster operation is ongoing; wait for
-                            // a certain amount of time before retrying status check
-                            try {
-                                GPUdbLogger.info(String.format("Checking whether a cluster operation is running on the server, Sleeping for %d seconds...", nPlusOneFailoverSleepIntervalLong / 1000));
-                                Thread.sleep( nPlusOneFailoverSleepIntervalLong );
-                            } catch ( InterruptedException ex ) {
-                                GPUdbLogger.debug_with_info( "Sleep interrupted; throwing exception: " + ex.getMessage() );
-                                throw new GPUdbException( "Intra-cluster failover interrupted: " + ex.getMessage(), ex );
-                            }
-                        } else if ( isSystemRunning( url ) ) {
-                            GPUdbLogger.debug_with_info( "System is running; getting sys props" );
-                            // System is back up; re-parse the URLs for this cluster
-
-                            // Get the latest system properties of the cluster, if
-                            // can't get it, skip to the next one
-                            Map<String, String> systemProperties = getSystemProperties( url );
-                            ClusterAddressInfo clusterInfoRefreshed = createClusterAddressInfo( url, systemProperties );
-
-                            GPUdbLogger.debug_with_info( "Refreshed addresses: " + clusterInfoRefreshed.toString() );
-                            GPUdbLogger.debug_with_info( "Current addresses:   " + currClusterInfo.toString() );
-                            // Check if the newly gotten addresses are the same as the old
-                            // ones
-                            if ( clusterInfoRefreshed.equals( currClusterInfo ) ) {
-                                // The addresses have remained the same; so we didn't
-                                // make any effective change
-                                GPUdbLogger.debug_with_info(
-                                        "Refrehsed addresses the same as the old one at rank "
-                                        + url.toString()
-                                        + "; either no N+1 failover happening or this rank has stale information; moving to the next rank, if any."
-                                );
-                                keepUsingThisRank = false;
-
-                                // Keep track of the fact that this rank gave
-                                // the same address as the current ones
-                                ++numRanksGaveSameAddressAsCurrent;
-                            } else {
-                                // Replace the stale cluster info with the refreshed one
-                                this.hostAddresses.set( clusterIndex, clusterInfoRefreshed );
-
-                                // We actually changed the addresses for this cluster;
-                                GPUdbLogger.debug_with_info( "Actually changed addresses; check for rank readiness...");
-                                areAllRanksReady( clusterInfoRefreshed );
-
-                                GPUdbLogger.debug_with_info( "Returning true; all ranks up and ready");
-                                return true;
-                            }
-                        } else {
-                            // For all other system statuses, we will retry (but
-                            // we'll wait a certain amount of time before that)
-                            try {
-                                GPUdbLogger.debug_with_info(
-                                        "System not yet up; Sleeping for "
-                                        + (nPlusOneFailoverSleepIntervalLong / 1000)
-                                        + " seconds..."
-                                );
-                                Thread.sleep( nPlusOneFailoverSleepIntervalLong );
-                            } catch ( InterruptedException ex ) {
-                                GPUdbLogger.debug_with_info( "Sleep interrupted; throwing exception" );
-                                throw new GPUdbException( "Intra-cluster failover interrupted: " + ex.getMessage(), ex );
-                            }
-                        }
-                    } catch ( GPUdbUnauthorizedAccessException ex ) {
-                        // Any permission related problem should get propagated
-                        throw ex;
-                    } catch ( GPUdbExitException ex ) {
-                        GPUdbLogger.debug_with_info( "Caught GPUdb EXIT exception; skipping to next rank: " + ex.getMessage() );
-                        // Try the next URL, but keep track of the fact that this
-                        // could not be connected to
-                        keepUsingThisRank = false;
-                        ++numRanksNoResponse;
-                    } catch ( GPUdbException ex ) {
-                        GPUdbLogger.debug_with_info( "Caught GPUdb exception; skipping to next rank: " + ex.getMessage() );
-                        // If error says system limited fatal then throw the exception;
-                        // in all other cases, try the next URL
-                        keepUsingThisRank = false;
-                    }  // end try
-                }   // end while (using a single rank)
-            }   // end inner for (over all ranks)
-
-            // Check if ALL ranks are claiming that the addresses have not
-            // changed.  If so, then maybe we just had a network glitch or
-            // some other issue, and no real N+1 event is happening.  In
-            // that case, we will just return the current addresses as is.
-            if ( numRanksGaveSameAddressAsCurrent == rankUrls.size() ) {
-                // There is no need to change any addresses, nor is there any
-                // need to ping all the ranks
-                GPUdbLogger.debug_with_info( "All ranks claim the addresses are the same; assuming no N+1 event happening; returning true");
-                return true;
-            }
-
-            // If we get to this spot, we've tried all known ranks and it looks
-            // like the cluster has failed to elect a leader; so, we quit trying.
-            // If all but one rank has said they're leaderless, it's good
-            // enough for us to give up.
-            if ( numLeaderlessRanks >= (rankUrls.size() - 1) ) {
-                GPUdbLogger.debug_with_info( "All but one rank are leaderless; returning false" );
-                return false; // we're giving up
-            }
-
-            // Check if ALL ranks were UNresponsive.  If so, then break out
-            // of stage 1 and proceed to stage 2.
-            if ( numRanksNoResponse == rankUrls.size() ) {
-                // There is no need to change any addresses, nor is there any
-                // need to ping all the ranks
-                GPUdbLogger.debug_with_info( "All ranks were UNresponsive; ending stage 1 of N+1 failover recovery");
-                break; // out of the while loop
-            }
-
-            // Sleep a little before trying all the ranks again
-            try {
-                GPUdbLogger.debug_with_info(
-                        "Sleeping for "
-                        + (nPlusOneFailoverSleepIntervalShort / 1000)
-                        + " seconds before trying all the ranks again"
-                );
-                Thread.sleep( nPlusOneFailoverSleepIntervalShort );
-            } catch ( InterruptedException ex ) {
-                GPUdbLogger.debug_with_info( "Sleep interrupted; throwing exception" );
-                throw new GPUdbException( "Intra-cluster failover interrupted: " + ex.getMessage(), ex );
-            }
-        }   // end while (stage 1)
-
-        GPUdbLogger.debug_with_info(
-                "N+1 failover recovery stage 1 done; at last attempt, # rank with no response: "
-                + numRanksNoResponse
-                + "; # leaderless ranks: "
-                + numLeaderlessRanks
-        );
-
-        // If we get to this spot, then all the known ranks have failed to give
-        // us the current state of the cluster.  Now, we must try to find the new
-        // head rank, hoping it's up.  We will keep searching for it the user
-        // given timeout period.
-
-        GPUdbLogger.debug_with_info( "N+1 failover recovery stage 2" );
-        GPUdbLogger.debug_with_info( "-----------------------------" );
-
-        // Generate a list of possible head rank URLs (we know all the hosts
-        // on this machine
-        GPUdbLogger.debug_with_info( "Generating head rank urls for all hosts" );
-        List<URL> headRankUrls = new ArrayList<URL>();
-        for (String hostnameWithProtocol : currClusterInfo.getHostNames()) {
-            // Get the hostname (which *may* have the protocol attached)
-            GPUdbLogger.debug_with_info( "Got hostname: " + hostnameWithProtocol );
-            // Split the hostname to extract just the host part
-            String[] splitHostname = hostnameWithProtocol.split( "://" );
-            String host;
-            if ( splitHostname.length > 1 ) {
-                host = splitHostname[ 1 ];
-            } else {
-                host = splitHostname[ 0 ];
-            }
-            GPUdbLogger.debug_with_info( "Got host: " + host );
-
-            // Create a URL with the same protocol, port, and file as the
-            // current head rank URL, but use the other hostname/IP address
-            try {
-                URL url = new URL(
-                        currHeadRankUrl.getProtocol(),
-                        host,
-                        currHeadRankUrl.getPort(),
-                        currHeadRankUrl.getFile()
-                );
-                GPUdbLogger.debug_with_info( "Created potential head rank url: " + url.toString() );
-                // Won't be of any use if we don't add it to the list! :-)
-                headRankUrls.add( url );
-            } catch ( MalformedURLException ex ) {
-                throw new GPUdbException("Could not form a valid URL for possible head rank at host '" + host + "': " + ex.getMessage(), ex);
-            }
-        }
-        GPUdbLogger.debug_with_info( "Head rank urls for all hosts: " + Arrays.toString( headRankUrls.toArray() ) );
-
-
-        // Iterate over the hosts to see where the new head rank has
-        // ended up.  Do this for the given timeout period
-        // Note: This for loop's body is very similar to the previous for loop's
-        //       body; but we need to keep them separate since they're not
-        //       exactly the same.
-        GPUdbLogger.debug_with_info( "Before starting checking for moved head rank" );
-        i = 0;
-        int stage2IterCount = 0;
-        while ( true ) {
-            // Keep track of the iteration only for debug logging purpose
-            GPUdbLogger.debug_with_info( "N+1 failover; stage 2 attempt #" + stage2IterCount );
-            ++stage2IterCount;
-
-            // Get the URL for the head rank if it were to end up at the
-            // current host
-            URL potentialHeadRankUrl = headRankUrls.get( i );
-            GPUdbLogger.debug_with_info( "URL: " + potentialHeadRankUrl.toString() );
-
-            boolean keepUsingThisHost = true;
-            while ( keepUsingThisHost ) {
-                // If we've reached the timeout, just return
-                long currTime = System.nanoTime();
-                long elapsedTime = (currTime - startTime);
-
-                if ( (this.intraClusterFailoverTimeoutNS != 0)
-                    && ( elapsedTime >= this.intraClusterFailoverTimeoutNS ) ) {
-                    GPUdbLogger.debug_with_info( "Hit N+1 failover recovery timeout; returning false" );
-                    return false;
-                }
-
-                // Check the system status (if this rank is responding to requests,
-                // keep pinging until status is back up to running)
-                try {
-                    JsonNode systemStatusInfo = getSystemStatusInformation( potentialHeadRankUrl );
-
-                    // Check if this rank is in an irrecoverable state
-                    if ( isClusterOperationStatusIrrecoverable( systemStatusInfo ) ) {
-                        // The system is hosed; there is no hope of recovery!
-                        GPUdbLogger.debug_with_info( "Cluster is irrecoverable; returning false" );
-                        return false;
-                    }
-
-                    // Note: There is no leaderless check here because it doesn't
-                    //       have any bearing on what we would do.
-
-                    // Check if the system is running
-                    if ( isClusterOperationRunning( systemStatusInfo ) ) {
-                        GPUdbLogger.debug_with_info( "Cluster operation running; will sleep" );
-                        // Some sort of cluster operation is ongoing; wait for
-                        // a certain amount of time before retrying status check
-                        try {
-                            GPUdbLogger.info(String.format("Checking whether a cluster operation is running on the server, Sleeping for %d seconds...", nPlusOneFailoverSleepIntervalLong / 1000));
-                            Thread.sleep( nPlusOneFailoverSleepIntervalLong );
-                        } catch ( InterruptedException ex ) {
-                            GPUdbLogger.debug_with_info( "Sleep interrupted; throwing exception" );
-                            throw new GPUdbException( "Intra-cluster failover interrupted: " + ex.getMessage(), ex );
-                        }
-                    } else if ( isSystemRunning( potentialHeadRankUrl ) ) {
-                        // System is back up; re-parse the URLs for this cluster
-                        GPUdbLogger.debug_with_info( "System is running; getting sys props" );
-
-                        // Get the latest system properties of the cluster, if
-                        // can't get it, skip to the next one
-                        Map<String, String> systemProperties = getSystemProperties( potentialHeadRankUrl );
-                        ClusterAddressInfo clusterInfoRefreshed = createClusterAddressInfo( potentialHeadRankUrl, systemProperties );
-
-                        GPUdbLogger.debug_with_info( "Refreshed addresses: " + clusterInfoRefreshed.toString() );
-                        GPUdbLogger.debug_with_info( "Current addresses:   " + currClusterInfo.toString() );
-                        // Check if the newly gotten addresses are the same as the old
-                        // ones
-                        if ( clusterInfoRefreshed.equals( currClusterInfo ) ) {
-                            // The addresses have remained the same; so we didn't
-                            // make any effective change
-                            GPUdbLogger.debug_with_info(
-                                    "Refrehsed addresses are the same as the old ones at rank-0 "
-                                    + potentialHeadRankUrl.toString()
-                                    + "; possibly no N+1 failover actually happened (maybe a network glitch?)"
-                            );
-
-                            // Verify that the ranks are actually up and ready
-                            GPUdbLogger.debug_with_info( "Verifying that the ranks are ready...");
-                            boolean isClusterReady = areAllRanksReadyCheckOnce( clusterInfoRefreshed );
-
-                            if ( isClusterReady ) {
-                                GPUdbLogger.debug_with_info( "Returning true; all ranks up and ready");
-                                return true;
-                            } else {
-                                GPUdbLogger.debug_with_info( "Not all ranks are ready; will retry");
-                            }
-                        } else {
-                            // Replace the stale cluster info with the refreshed one
-                            GPUdbLogger.debug_with_info( "Set the different addresses");
-                            this.hostAddresses.set( clusterIndex, clusterInfoRefreshed );
-
-                            // We actually changed the addresses for this cluster
-                            GPUdbLogger.debug_with_info( "Actually changed addresses; check for rank readiness...");
-                            areAllRanksReady( clusterInfoRefreshed );
-
-                            GPUdbLogger.debug_with_info( "Returning true; all ranks up and ready");
-                            return true;
-                        }
-                    } else {
-                        GPUdbLogger.debug_with_info( "System is NOT running; skip to the next host" );
-                        // The system is neither up nor is it running a cluster
-                        // operation; continue with the next known rank to see
-                        // what is going on.
-                        keepUsingThisHost = false;
-                    }
-                } catch ( GPUdbUnauthorizedAccessException ex ) {
-                    // Any permission related problem should get propagated
-                    throw ex;
-                } catch ( GPUdbException ex ) {
-                    GPUdbLogger.debug_with_info( "Caught GPUdb exception; skipping to next host: " + ex.getMessage() );
-                    // If error says system limited fatal then throw the
-                    // exception; in all other cases, try the next URL
-                    keepUsingThisHost = false;
-                }  // end try
-
-                // Sleep a second before retrying
-                try {
-                    GPUdbLogger.debug_with_info("Sleeping for " + (nPlusOneFailoverSleepIntervalShort / 1000) + " seconds before re-trying ..." );
-                    Thread.sleep( nPlusOneFailoverSleepIntervalShort );
-                } catch ( InterruptedException ex ) {
-                    GPUdbLogger.debug_with_info( "Sleep interrupted; throwing exception: " + ex.getMessage() );
-                    throw new GPUdbException( "Intra-cluster failover interrupted: " + ex.getMessage(), ex );
-                }
-            }   // end inner while
-
-            // Increment the counter to get the next rank-0 URL (need to loop
-            // over all the URLs)
-            i = ((i + 1) % headRankUrls.size());
-        }   // end outer while
-    }   // end doIntraClusterFailover
 
 
 
@@ -3649,7 +3059,7 @@ public abstract class GPUdbBase {
             }
 
             // Check if another thread beat us to switching the URL
-            GPUdbLogger.debug_with_info( "Current URL: " + getURL().toString() + " old URL: " + oldURL.toString() );
+            GPUdbLogger.debug_with_info(String.format("Current URL: %s old URL: %s", getURL().toString(), oldURL));
             if ( !getURL().equals( oldURL ) && (countClusterSwitchesSinceInvocation > 0) ) {
                 GPUdbLogger.debug_with_info( "Switched to URL: " + getURL().toString() );
                 // Another thread must have already switched the URL; nothing
@@ -3680,7 +3090,7 @@ public abstract class GPUdbBase {
             if ( getURL().equals( oldURL ) ) {
                 GPUdbLogger.debug_with_info(
                         "Current URL: " + getURL()
-                        + " is the same as the old URL: " + oldURL.toString()
+                        + " is the same as the old URL: " + oldURL
                         + "; randomizing URLs and throwing exception"
                 );
                 // Re-shuffle and set the index counter to zero
@@ -3693,7 +3103,7 @@ public abstract class GPUdbBase {
             // Haven't circled back to the old URL; so return the new one
             GPUdbLogger.warn(
                     "Switched to URL: " +  getURL().toString()
-                    + " (NOT the same as the old URL: " + oldURL.toString() + ")"
+                    + " (NOT the same as the old URL: " + oldURL + ")"
             );
             return getURL();
         }
@@ -3741,7 +3151,7 @@ public abstract class GPUdbBase {
             }
 
             // Check if another thread beat us to switching the URL
-            GPUdbLogger.debug_with_info( "Current HM URL: " + getHmURL().toString() + "; old URL: " + oldURL.toString() );
+            GPUdbLogger.debug_with_info( "Current HM URL: " + getHmURL().toString() + "; old URL: " + oldURL);
             if ( !getHmURL().equals( oldURL )
                 && (countClusterSwitchesSinceInvocation > 0) ) {
                 GPUdbLogger.debug_with_info( "Switched to HM URL: " + getHmURL().toString() );
@@ -3770,7 +3180,7 @@ public abstract class GPUdbBase {
             if ( getHmURL().equals( oldURL ) ) {
                 GPUdbLogger.debug_with_info(
                         "Current HM URL: " +  getHmURL()
-                        + " is the same as the old HM URL: " + oldURL.toString()
+                        + " is the same as the old HM URL: " + oldURL
                         + "; randomizing URLs and throwing exception"
                 );
                 // Re-shuffle and set the index counter to zero
@@ -3783,7 +3193,7 @@ public abstract class GPUdbBase {
             // Haven't circled back to the old URL; so return the new one
             GPUdbLogger.warn(
                     "Switched to HM URL: " +  getHmURL().toString()
-                    + " (NOT the same as the old HM URL: " + oldURL.toString() + ")"
+                    + " (NOT the same as the old HM URL: " + oldURL + ")"
             );
             return getHmURL();
         }
@@ -3822,9 +3232,8 @@ public abstract class GPUdbBase {
         // Set the timeout explicitly if it is different from the default value
         if ( timeout != this.timeout ) {
             RequestConfig requestConfigWithCustomTimeout = RequestConfig.custom()
-                .setSocketTimeout( timeout )
-                .setConnectTimeout( timeout )
-                .setConnectionRequestTimeout( timeout )
+                .setConnectTimeout( Timeout.ofSeconds(timeout ))
+                .setConnectionRequestTimeout( Timeout.ofSeconds(timeout ))
                 .build();
             connection.setConfig( requestConfigWithCustomTimeout );
         }
@@ -3989,7 +3398,7 @@ public abstract class GPUdbBase {
 
         // Get the property map from the response and return it
         if ( response != null ) {
-            GPUdbLogger.debug_with_info( "Got system properties from: " + url.toString() );
+            GPUdbLogger.debug_with_info( "Got system properties from: " + url);
             Map<String, String> systemProperties = response.getPropertyMap();
 
             // Is HTTPD being used (helps in figuring out the host manager URL
@@ -4011,31 +3420,6 @@ public abstract class GPUdbBase {
 
     /**
      * Given the response to a /show/system/status query, figure out whether
-     * the server is performing a cluster operation.
-     */
-    private boolean isClusterOperationRunning( JsonNode systemStatusInfo ) {
-        try {
-            // Then look for 'status' and see if it is 'running'
-            JsonNode clusterOpRunningVal = systemStatusInfo.get( SHOW_SYSTEM_STATUS_RESPONSE_CLUSTER_OPERATION_RUNNING );
-            GPUdbLogger.debug_with_info( "Got status: " + clusterOpRunningVal.toString() );
-
-            if ( ( clusterOpRunningVal != null)
-                && SHOW_SYSTEM_STATUS_RESPONSE_TRUE.equals( clusterOpRunningVal.textValue() ) ) {
-                GPUdbLogger.debug_with_info( "Returning true");
-                return true;
-            }
-        } catch ( Exception ex ) {
-            // Any error means we don't know whether the system is running
-            GPUdbLogger.debug_with_info( "Caught exception " + ex.toString());
-        }
-
-        GPUdbLogger.debug_with_info( "Returning false");
-        return false;
-    }
-
-
-    /**
-     * Given the response to a /show/system/status query, figure out whether
      * the server is in an irrecoverable situation.
      */
     private boolean isClusterOperationStatusIrrecoverable( JsonNode systemStatusInfo ) {
@@ -4051,7 +3435,7 @@ public abstract class GPUdbBase {
             }
         } catch ( Exception ex ) {
             // Any error means we don't know whether the system is running
-            GPUdbLogger.debug_with_info( "Caught exception " + ex.toString());
+            GPUdbLogger.debug_with_info( "Caught exception " + ex);
         }
 
         GPUdbLogger.debug_with_info( "Returning false");
@@ -4076,35 +3460,7 @@ public abstract class GPUdbBase {
             }
         } catch ( Exception ex ) {
             // Any error means we don't know whether the system is running
-            GPUdbLogger.debug_with_info( "Caught exception " + ex.toString());
-        }
-
-        GPUdbLogger.debug_with_info( "Returning false");
-        return false;
-    }
-
-
-    /**
-     * @apiNote  - This method is not used anymore. The overload {@link #isSystemRunning(URL)} is used
-     * wherever this method was used earlier.
-     *
-     * Given the response to a /show/system/status query, figure out whether
-     * the server is running or not.
-     */
-    private boolean isSystemRunning( JsonNode systemStatusInfo ) {
-        try {
-            // Then look for 'status' and see if it is 'running'
-            JsonNode systemStatus = systemStatusInfo.get( SHOW_SYSTEM_STATUS_RESPONSE_STATUS );
-            GPUdbLogger.debug_with_info( "Got status: " + systemStatus.toString() );
-
-            if ( ( systemStatus != null)
-                && SHOW_SYSTEM_STATUS_RESPONSE_RUNNING.equals( systemStatus.textValue() ) ) {
-                GPUdbLogger.debug_with_info( "Returning true");
-                return true;
-            }
-        } catch ( Exception ex ) {
-            // Any error means we don't know whether the system is running
-            GPUdbLogger.debug_with_info( "Caught exception " + ex.toString());
+            GPUdbLogger.debug_with_info( "Caught exception " + ex);
         }
 
         GPUdbLogger.debug_with_info( "Returning false");
@@ -4126,13 +3482,13 @@ public abstract class GPUdbBase {
 
             // Then look for 'status' and see if it is 'running'
             JsonNode systemStatus = systemStatusInfo.get( SHOW_SYSTEM_STATUS_RESPONSE_STATUS );
-            GPUdbLogger.debug_with_info(String.format("URL %s got status: %s", url.toString(), systemStatus.toString()));
+            GPUdbLogger.debug_with_info(String.format("URL %s got status: %s", url, systemStatus.toString()));
 
             if ( ( systemStatus != null)
                 && SHOW_SYSTEM_STATUS_RESPONSE_RUNNING.equals( systemStatus.textValue() ) ) {
                 isSystemRunning = true;
             } else {
-                GPUdbLogger.warn(String.format("System not running at URL %s", url.toString()));
+                GPUdbLogger.warn(String.format("System not running at URL %s", url));
             }
         } catch ( Exception ex ) {
             if( ex instanceof GPUdbUnauthorizedAccessException ) {
@@ -4141,7 +3497,7 @@ public abstract class GPUdbBase {
             // Any error means we don't know whether the system is running
             GPUdbLogger.error(String.format("Got exception while checking whether system is running at URL %s : Exception :: %s",
                     url.toString(),
-                    ex.toString()));
+                    ex));
             throw new GPUdbException( ex.getMessage() );
         }
         return isSystemRunning;
@@ -4153,12 +3509,13 @@ public abstract class GPUdbBase {
      * @return - the JSON response as a Map of String to Object.
      * @throws GPUdbException - in case of an error raised by the underlying endpoint
      */
-    public Map<String, Object> insertRecordsFromJson(InsertRecordsJsonRequest insertRecordsJsonRequest) throws GPUdbException {
+    public Map<String, Object> insertRecordsFromJson(InsertRecordsJsonRequest insertRecordsJsonRequest, JsonOptions jsonOptions) throws GPUdbException {
         if( insertRecordsJsonRequest == null ) {
             throw new GPUdbException("Request object is null");
         }
         return insertRecordsFromJson( insertRecordsJsonRequest.getTableName(),
                 insertRecordsJsonRequest.getDataText(),
+                jsonOptions,
                 insertRecordsJsonRequest.getCreateTableOptions(),
                 insertRecordsJsonRequest.getOptions());
     }
@@ -4167,14 +3524,18 @@ public abstract class GPUdbBase {
      * This method inserts a JSON payload (either a single JSON record or an array) into a Kinetica table
      * @param jsonRecords - A single JSON record or an array of records as JSON
      * @param tableName - the table to insert the records into
-     * @param createTableOptions - an instance of the class {@link InsertRecordsJsonRequest.CreateTableOptions}
-     * @param options - an instance of the class {@link InsertRecordsJsonRequest.Options}
+     * @param jsonOptions - Indicates whether Snappy compression is to be set on or not
+     * @param createTableOptions - an instance of the class
+     *        {@link com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions InsertRecordsJsonRequest.CreateTableOptions}
+     * @param options - an instance of the class
+     *        {@link com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options InsertRecordsJsonRequest.Options}
      *
      * @return - the JSON response as a Map of String to Object.
      * @throws GPUdbException - in case of an error raised by the underlying endpoint
      */
     public Map<String, Object> insertRecordsFromJson(String jsonRecords,
                                                      String tableName,
+                                                     JsonOptions jsonOptions,
                                                      Map<String, String> createTableOptions,
                                                      Map<String, String> options) throws GPUdbException {
         if( jsonRecords == null || jsonRecords.isEmpty() ) {
@@ -4205,7 +3566,7 @@ public abstract class GPUdbBase {
 
         String endpoint = UrlUtils.constructEndpointUrl( "/insert/records/json", combinedOptions );
 
-        return Collections.unmodifiableMap(submitRequest(endpoint, jsonRecords, false));
+        return Collections.unmodifiableMap(submitRequest(endpoint, jsonRecords, jsonOptions.isCompressionOn()));
     }
 
     /**
@@ -4274,7 +3635,7 @@ public abstract class GPUdbBase {
             protocol = "https";
         }
 
-        List<URL> rankURLs = new ArrayList<URL>();
+        List<URL> rankURLs = new ArrayList<>();
 
         propertyVal = systemProperties.get( SYSTEM_PROPERTIES_RESPONSE_SERVER_URLS );
         if ( (propertyVal != null) && !propertyVal.isEmpty() ){
@@ -4297,8 +3658,7 @@ public abstract class GPUdbBase {
                 String[] urls = urlLists[i].split(",");
                 boolean found = false;
 
-                for (int j = 0; j < urls.length; ++j) {
-                    String urlString = urls[j];
+                for (String urlString : urls) {
                     // If a regex is given, get a matching URL--if there isn't
                     // a match, throw an error.  If no regex is given, take
                     // the first URL.
@@ -4307,29 +3667,29 @@ public abstract class GPUdbBase {
 
                     // Ensure it's a valid URL
                     try {
-                        url = new URL( urlString );
+                        url = new URL(urlString);
                     } catch (MalformedURLException ex) {
                         throw new GPUdbException(ex.getMessage(), ex);
                     }
 
                     if (hostnameRegex != null) {
                         // Check if this URL matches the given regex
-                        doAdd = hostnameRegex.matcher( url.getHost() ).matches();
+                        doAdd = hostnameRegex.matcher(url.getHost()).matches();
                         GPUdbLogger.debug_with_info(
-                                "Does rank URL " + url.toString()
-                                + " match hostname regex '" + hostnameRegex.toString()
-                                + "' with host '" + url.getHost()
-                                + "'?: " + doAdd
+                                "Does rank URL " + url
+                                        + " match hostname regex '" + hostnameRegex
+                                        + "' with host '" + url.getHost()
+                                        + "'?: " + doAdd
                         );
                     } else {
                         // No regex is given, so we'll take the first one
-                        GPUdbLogger.debug_with_info( "No hostname regex given; adding rank url: " + url.toString() );
+                        GPUdbLogger.debug_with_info("No hostname regex given; adding rank url: " + url);
                         doAdd = true;
                     }
 
-                    if ( doAdd ) {
+                    if (doAdd) {
                         // Found a match (whether a regex is given or not)
-                        rankURLs.add( url );
+                        rankURLs.add(url);
                         found = true;
                         break;
                     }
@@ -4342,7 +3702,7 @@ public abstract class GPUdbBase {
                         // match the given rege
                         throw new GPUdbHostnameRegexFailureException(
                                 "No matching IP/hostname found for worker " + i
-                                + " (given hostname regex " + hostnameRegex.toString() + ")"
+                                + " (given hostname regex " + hostnameRegex + ")"
                         );
                     }
                     // We couldn't find it for some other reason
@@ -4394,11 +3754,11 @@ public abstract class GPUdbBase {
 
 
         // Extract the hostnames from the system properties
-        Set<String> clusterHostnames = new HashSet<String>();
+        Set<String> clusterHostnames = new HashSet<>();
         for (int i = 0; i < numHosts; ++i) {
             // Each hostname is listed individually in the system properties
             // as 'conf.host<i>_public_urls'
-            String hostnameKey = "conf.host" + String.valueOf( i )
+            String hostnameKey = "conf.host" + i
                 + "_public_urls";
 
             String hostnameStr = systemProperties.get( hostnameKey );
@@ -4432,7 +3792,7 @@ public abstract class GPUdbBase {
                     doAdd = hostnameRegex.matcher( host ).matches();
                     GPUdbLogger.debug_with_info(
                             "Does hostname " + host
-                            + " match hostname regex '" + hostnameRegex.toString()
+                            + " match hostname regex '" + hostnameRegex
                             + "'?: " + doAdd
                     );
                 } else {
@@ -4454,7 +3814,7 @@ public abstract class GPUdbBase {
                     // The reason we don't have a URL is because it didn't
                     // match the given reges
                     throw new GPUdbHostnameRegexFailureException(
-                            "No matching hostname found for host #" + i + " (given hostname regex " + hostnameRegex.toString() + ")" );
+                            "No matching hostname found for host #" + i + " (given hostname regex " + hostnameRegex + ")" );
                 }
                 throw new GPUdbException("No matching hostname found for host #" + i + ".");
             }
@@ -4503,7 +3863,7 @@ public abstract class GPUdbBase {
         URL hostManagerUrl;
         try {
             // Create the host manager URL using the user given (or default) port
-            if ( ( this.useHttpd == true )
+            if ( (this.useHttpd)
                 && !activeHeadNodeUrl.getPath().isEmpty() ) {
                 // We're using HTTPD, so use the appropriate URL
                 // (likely, http[s]://hostname_or_IP:port/gpudb-host-manager)
@@ -4565,7 +3925,7 @@ public abstract class GPUdbBase {
     private List<URL> getHARingHeadNodeURLs( Map<String, String> systemProperties )
         throws GPUdbHostnameRegexFailureException, GPUdbException {
 
-        List<URL> haRingHeadNodeURLs = new ArrayList<URL>();
+        List<URL> haRingHeadNodeURLs = new ArrayList<>();
 
         // First, find out if the database has a high-availability ring set up
         String is_ha_enabled_str = systemProperties.get( ShowSystemPropertiesResponse.PropertyMap.CONF_ENABLE_HA );
@@ -4588,8 +3948,7 @@ public abstract class GPUdbBase {
                     String[] urls = haRingHeadNodeUrlLists[i].split(",");
                     boolean found = false;
 
-                    for (int j = 0; j < urls.length; ++j) {
-                        String urlString = urls[j];
+                    for (String urlString : urls) {
                         // If a regex is given, get a matching URL--if there isn't
                         // a match, throw an error.  If no regex is given, take
                         // the first URL.
@@ -4598,29 +3957,29 @@ public abstract class GPUdbBase {
 
                         // Ensure it's a valid URL
                         try {
-                            url = new URL( urlString );
+                            url = new URL(urlString);
                         } catch (MalformedURLException ex) {
                             throw new GPUdbException(ex.getMessage(), ex);
                         }
 
                         if (this.hostnameRegex != null) {
                             // Check if this URL matches the given regex
-                            doAdd = this.hostnameRegex.matcher( url.getHost() ).matches();
+                            doAdd = this.hostnameRegex.matcher(url.getHost()).matches();
                             GPUdbLogger.debug_with_info(
                                     "Does cluster " + i
-                                    + " head node URL " + url.toString()
-                                    + " match hostname regex '" + hostnameRegex.toString()
-                                    + "' with host '" + url.getHost()
-                                    + "'?: " + doAdd
+                                            + " head node URL " + url
+                                            + " match hostname regex '" + hostnameRegex.toString()
+                                            + "' with host '" + url.getHost()
+                                            + "'?: " + doAdd
                             );
                         } else {
                             // No regex is given, so we'll take the first one
                             doAdd = true;
                         }
 
-                        if ( doAdd ) {
+                        if (doAdd) {
                             // Found a match (whether a regex is given or not)
-                            haRingHeadNodeURLs.add( url );
+                            haRingHeadNodeURLs.add(url);
                             found = true;
                             break;
                         }
@@ -4633,7 +3992,7 @@ public abstract class GPUdbBase {
                             // match the given reges
                             throw new GPUdbHostnameRegexFailureException(
                                     "No matching IP/hostname found for cluster with head node URLs " + haRingHeadNodeUrlLists[i]
-                                    + " (given hostname regex " + this.hostnameRegex.toString() + ")"
+                                    + " (given hostname regex " + this.hostnameRegex + ")"
                             );
                         }
                         throw new GPUdbException("No matching IP/hostname found for cluster with head node URLs " + haRingHeadNodeUrlLists[i] );
@@ -4743,7 +4102,7 @@ public abstract class GPUdbBase {
     private synchronized void processClusterInformationForAllUrls(List<URL> urls )
         throws GPUdbHostnameRegexFailureException, GPUdbException {
 
-        this.hostAddresses = new ArrayList<ClusterAddressInfo>();
+        this.hostAddresses = new ArrayList<>();
 
         // Convert the list of URLs to a set (to remove duplicates) and then
         // into a queue (so that we can add HA ring addresses as we get them
@@ -4849,7 +4208,7 @@ public abstract class GPUdbBase {
 
                 // Create a cluster info object with just the given URL and the
                 // host manager port in the option
-                ClusterAddressInfo clusterInfo = new ClusterAddressInfo( url, this.hostManagerPort );
+                ClusterAddressInfo clusterInfo = new ClusterAddressInfo(url, this.hostManagerPort);
                 this.hostAddresses.add( clusterInfo );
                 GPUdbLogger.debug_with_info( "Added cluster: " + clusterInfo.toString() );
                 continue; // skip to the next URL
@@ -4864,7 +4223,7 @@ public abstract class GPUdbBase {
                     GPUdbLogger.debug_with_info( "API-discovered URL" );
                     // Create a cluster info object with just the given URL and the
                     // host manager port in the option
-                    ClusterAddressInfo clusterInfo = new ClusterAddressInfo( url, this.hostManagerPort );
+                    ClusterAddressInfo clusterInfo = new ClusterAddressInfo(url, this.hostManagerPort);
                     this.hostAddresses.add( clusterInfo );
                     GPUdbLogger.debug_with_info( "Added cluster: " + clusterInfo.toString() );
                 } else {
@@ -4887,7 +4246,7 @@ public abstract class GPUdbBase {
                     GPUdbLogger.debug_with_info( "API-discovered URL" );
                     // Create a cluster info object with just the given URL and the
                     // host manager port in the option
-                    ClusterAddressInfo clusterInfo = new ClusterAddressInfo( url, this.hostManagerPort );
+                    ClusterAddressInfo clusterInfo = new ClusterAddressInfo(url, this.hostManagerPort);
                     this.hostAddresses.add( clusterInfo );
                     GPUdbLogger.debug_with_info( "Added cluster: " + clusterInfo.toString() );
                 } else {
@@ -5021,7 +4380,7 @@ public abstract class GPUdbBase {
             if ( this.primaryUrlHostname.isEmpty() ) {
                 GPUdbLogger.debug_with_info( "No primary host given & more than one user given URL: " + userGivenUrlsStr );
 
-                boolean allUrlsInSameCluster = ( new HashSet<Integer>( clusterIndicesOfUserGivenURLs ).size() == 1 );
+                boolean allUrlsInSameCluster = (new HashSet<>(clusterIndicesOfUserGivenURLs).size() == 1 );
                 GPUdbLogger.debug_with_info( "cluster_index_for_user_given_urls " + Arrays.toString( clusterIndicesOfUserGivenURLs.toArray() ) );
                 GPUdbLogger.debug_with_info( "Are all URLs in the same cluster? " + allUrlsInSameCluster );
                 if ( allUrlsInSameCluster ) {
@@ -5143,7 +4502,7 @@ public abstract class GPUdbBase {
             }
             // Parse each component
             for ( int i = 0; i < 4; ++i  ) {
-                components[ i ] = Integer.valueOf( componentStrings[ i ] );
+                components[ i ] = Integer.parseInt( componentStrings[ i ] );
             }
 
             return new GPUdbVersion( components[0], components[1], components[2], components[3] );
@@ -5370,8 +4729,8 @@ public abstract class GPUdbBase {
     protected <T> List<List<T>> decodeMultiple(Object typeDescriptor, List<List<ByteBuffer>> data) throws GPUdbException {
         List<List<T>> result = new ArrayList<>(data.size());
 
-        for (int i = 0; i < data.size(); i++) {
-            result.add(Avro.<T>decode(typeDescriptor, data.get(i), threadCount, executor));
+        for (List<ByteBuffer> datum : data) {
+            result.add(Avro.<T>decode(typeDescriptor, datum, threadCount, executor));
         }
 
         return result;
@@ -5403,7 +4762,7 @@ public abstract class GPUdbBase {
     }
 
     protected <T> List<ByteBuffer> encode(TypeObjectMap<T> typeObjectMap, List<T> data) throws GPUdbException {
-        return Avro.encode(typeObjectMap, data == null ? new ArrayList<T>() : data, threadCount, executor).getLeft();
+        return Avro.encode(typeObjectMap, data == null ? new ArrayList<>() : data, threadCount, executor).getLeft();
     }
 
     protected Object getTypeDescriptor(String typeId) throws GPUdbException {
@@ -6079,7 +5438,8 @@ public abstract class GPUdbBase {
         int requestSize = -1;
         HttpPost              postRequest    = null;
         HttpEntity            responseEntity = null;
-        CloseableHttpResponse postResponse   = null;
+        HttpHost              host = null;
+        ClassicHttpResponse postResponse   = null;
 
         try {
             // Log at the trace level
@@ -6087,6 +5447,7 @@ public abstract class GPUdbBase {
 
             // Use the given timeout, instead of the member variable one
             postRequest = initializeHttpPostRequest( url, timeout );
+            host = new HttpHost( url.getProtocol(), url.getHost(), url.getPort() );
 
             HttpEntity requestPacket;
             if (enableCompression && useSnappy) {
@@ -6096,14 +5457,14 @@ public abstract class GPUdbBase {
                 postRequest.addHeader( HEADER_CONTENT_TYPE, "application/x-snappy" );
 
                 // Create the entity for the compressed request
-                requestPacket = new ByteArrayEntity( encodedRequest );
+                requestPacket = new ByteArrayEntity( encodedRequest, ContentType.create("application/x-snappy")  );
             } else {
                 byte[] encodedRequest = Avro.encode(request).array();
                 requestSize = encodedRequest.length;
                 postRequest.addHeader( HEADER_CONTENT_TYPE, "application/octet-stream" );
 
                 // Create the entity for the request
-                requestPacket = new ByteArrayEntity( encodedRequest );
+                requestPacket = new ByteArrayEntity( encodedRequest, ContentType.APPLICATION_OCTET_STREAM  );
             }
 
             // Save the request into the http post object as a payload
@@ -6111,7 +5472,7 @@ public abstract class GPUdbBase {
 
             // Execute the request
             try {
-                postResponse = this.httpClient.execute( postRequest );
+                postResponse = this.httpClient.executeOpen( host, postRequest, null );
             } catch ( javax.net.ssl.SSLException ex) {
                 String errorMsg;
                 if( ex.getMessage().toLowerCase().contains("subject alternative names")) {
@@ -6130,13 +5491,14 @@ public abstract class GPUdbBase {
                 throw new GPUdbException( errorMsg );
             } catch (Exception ex) {
                 // Trigger an HA failover at the caller level
-                GPUdbLogger.debug_with_info( "Throwing exit exception due to: " + ex.getMessage() );
-                throw new GPUdbExitException( "Error submitting endpoint request: " + ex.getMessage() );
+                GPUdbLogger.error( ex, "Throwing exit exception due to ");
+                throw new GPUdbExitException("Error submitting endpoint request: " + ExceptionUtils.getRootCauseMessage(ex));
             }
 
             // Get the status code and the messages of the response
-            int statusCode = postResponse.getStatusLine().getStatusCode();
-            String responseMessage = postResponse.getStatusLine().getReasonPhrase();
+            StatusLine statusLine = new StatusLine(postResponse);
+            int statusCode = statusLine.getStatusCode();
+            String responseMessage = statusLine.getReasonPhrase();
 
             // Get the entity and the content of the response
             responseEntity = postResponse.getEntity();
@@ -6145,15 +5507,15 @@ public abstract class GPUdbBase {
             // returned by the HTTPD server)
             if (
                     (responseEntity.getContentType() != null) &&
-                    (responseEntity.getContentType().getElements().length > 0) &&
-                    responseEntity.getContentType().getElements()[0].getName().startsWith( "text" )
+                    (responseEntity.getContentType().length() > 0) &&
+                    responseEntity.getContentType().startsWith( "text" )
             ) {
                 String errorMsg;
                 // Handle unauthorized connection specially--better error messaging
                 if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
                     GPUdbLogger.debug_with_info( "Got status code: " + statusCode );
                     errorMsg = ("Unauthorized access: " + responseMessage );
-                    throw new GPUdbUnauthorizedAccessException( errorMsg );
+                    throw new GPUdbUnauthorizedAccessException(errorMsg);
                 } else if ( (statusCode == HttpURLConnection.HTTP_UNAVAILABLE)
                     || (statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR)
                     || (statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT)
@@ -6163,10 +5525,10 @@ public abstract class GPUdbBase {
                     GPUdbLogger.debug_with_info(
                             "Throwing EXIT exception from " + url.toString()
                             + "; response_code: " + statusCode
-                            + "; content type " + responseEntity.getContentType().getElements()[0].getName()
+                            + "; content type " + responseEntity.getContentType()
                             + "; response message: " + responseMessage
                     );
-                    throw new GPUdbExitException( responseMessage );
+                    throw new GPUdbExitException(responseMessage);
                 } else {
                     // All other issues are simply propagated to the user
                     errorMsg = ("Cannot parse response from server: '" + responseMessage + "'; status code: " + statusCode );
@@ -6179,7 +5541,7 @@ public abstract class GPUdbBase {
                 // Got status 401 -- unauthorized
                 GPUdbLogger.debug_with_info( "Got status code: " + statusCode );
                 String errorMsg = (String.format("Server response status: %d : %s", statusCode, responseMessage));
-                throw new GPUdbUnauthorizedAccessException( errorMsg );
+                throw new GPUdbUnauthorizedAccessException(errorMsg);
                 // Note: Keeping the original code here in case some unforeseen
                 // problem arises that we haven't thought of yet by changing
                 // which exception is thrown.
@@ -6190,7 +5552,7 @@ public abstract class GPUdbBase {
             InputStream inputStream = responseEntity.getContent();
             if (inputStream == null) {
                 // Trigger an HA failover at the caller level
-                throw new GPUdbExitException( "Server returned HTTP " + statusCode + " (" + responseMessage + "); returning EXIT exception");
+                throw new GPUdbExitException("Server returned HTTP " + statusCode + " (" + responseMessage + "); returning EXIT exception");
             }
 
             try {
@@ -6215,12 +5577,12 @@ public abstract class GPUdbBase {
                         GPUdbLogger.debug_with_info(
                                 "Throwing EXIT exception from " + url.toString() + "; response_code: " + statusCode + "; message: " + message
                         );
-                        throw new GPUdbExitException( message );
+                        throw new GPUdbExitException(message);
                     } else if( statusCode == HttpURLConnection.HTTP_UNAVAILABLE ) {
                         GPUdbLogger.debug_with_info(
                             "Throwing EXIT exception from " + url.toString() + "; response_code: " + statusCode + "; message: " + message
                         );
-                        throw new GPUdbExitException( "cluster may be stopped or suspended" );
+                        throw new GPUdbExitException("cluster may be stopped or suspended");
                     }
                     // A legitimate error
                     GPUdbLogger.debug_with_info(
@@ -6254,13 +5616,13 @@ public abstract class GPUdbBase {
             if ( ex.getMessage().contains( DB_EOF_FROM_SERVER_ERROR_MESSAGE ) ) {
                 // The server did not send a response; we need to trigger an HA
                 // failover scenario
-                throw new GPUdbExitException( ex.getMessage() );
+                throw new GPUdbExitException(ex.getMessage());
             }
             // Some legitimate error
             throw ex;
         } catch (java.net.SocketException ex) {
             // Any network issue should trigger an HA failover
-            throw new GPUdbExitException( ex.getMessage() );
+            throw new GPUdbExitException(ex.getMessage());
         } catch (Exception ex) {
             GPUdbLogger.debug_with_info( "Caught Exception: " + ex.getMessage() );
             // Some sort of submission error
@@ -6276,6 +5638,7 @@ public abstract class GPUdbBase {
                 try {
                     postResponse.close();
                 } catch (IOException ex) {
+                    GPUdbLogger.error( ex.getMessage() );
                 }
             }
         }
@@ -6310,7 +5673,8 @@ public abstract class GPUdbBase {
         int requestSize = -1;
         HttpPost              postRequest    = null;
         HttpEntity            responseEntity = null;
-        CloseableHttpResponse postResponse   = null;
+        HttpHost              host = null;
+        ClassicHttpResponse postResponse   = null;
 
         try {
             // Log at the trace level
@@ -6318,13 +5682,14 @@ public abstract class GPUdbBase {
 
             // Use the given timeout, instead of the member variable one
             postRequest = initializeHttpPostRequest( url, timeout );
+            host = new HttpHost( url.getProtocol(), url.getHost(), url.getPort() );
 
             // Save the payload into the http post object as a JSON payload
             postRequest.setEntity( new StringEntity( payload, ContentType.APPLICATION_JSON ));
 
             // Execute the request
             try {
-                postResponse = this.httpClient.execute( postRequest );
+                postResponse = this.httpClient.executeOpen( host, postRequest, null );
             } catch ( javax.net.ssl.SSLException ex) {
                 String errorMsg;
                 if( ex.getMessage().toLowerCase().contains("subject alternative names")) {
@@ -6343,21 +5708,22 @@ public abstract class GPUdbBase {
                 throw new GPUdbException( errorMsg );
             } catch (Exception ex) {
                 // Trigger an HA failover at the caller level
-                GPUdbLogger.debug_with_info( "Throwing exit exception due to: " + ex.getMessage() );
-                throw new GPUdbExitException( "Error submitting endpoint request: " + ex.getMessage() );
+                GPUdbLogger.error( ex, "Throwing exit exception due to ");
+                throw new GPUdbExitException("Error submitting endpoint request: " + ExceptionUtils.getRootCauseMessage(ex));
             }
 
             // Get the status code and the messages of the response
-            int statusCode = postResponse.getStatusLine().getStatusCode();
-            String responseMessage = postResponse.getStatusLine().getReasonPhrase();
+            StatusLine statusLine = new StatusLine(postResponse);
+            int statusCode = statusLine.getStatusCode();
+            String responseMessage = statusLine.getReasonPhrase();
 
             // Get the entity and the content of the response
             responseEntity = postResponse.getEntity();
-            Header encodingHeader = responseEntity.getContentEncoding();
+            String encodingHeader = responseEntity.getContentEncoding();
 
             // you need to know the encoding to parse correctly
             Charset encoding = encodingHeader == null ? StandardCharsets.UTF_8 :
-                    Charsets.toCharset(encodingHeader.getValue());
+                    Charsets.toCharset(encodingHeader);
 
             // use org.apache.http.util.EntityUtils to read json as string
             String json = EntityUtils.toString(responseEntity, StandardCharsets.UTF_8);
@@ -6369,16 +5735,16 @@ public abstract class GPUdbBase {
             // Ensure that we're not getting any html snippet (may be
             // returned by the HTTPD server)
             if (
-                    (responseEntity.getContentType() != null) &&
-                            (responseEntity.getContentType().getElements().length > 0) &&
-                            responseEntity.getContentType().getElements()[0].getName().startsWith( "text" )
+                (responseEntity.getContentType() != null) &&
+                (responseEntity.getContentType().length() > 0) &&
+                responseEntity.getContentType().startsWith( "text" )
             ) {
                 String errorMsg;
                 // Handle unauthorized connection specially--better error messaging
                 if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
                     GPUdbLogger.debug_with_info( "Got status code: " + statusCode );
                     errorMsg = ("Unauthorized access: " + responseMessage );
-                    throw new GPUdbUnauthorizedAccessException( errorMsg );
+                    throw new GPUdbUnauthorizedAccessException(errorMsg);
                 } else if ( (statusCode == HttpURLConnection.HTTP_UNAVAILABLE)
                         || (statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR)
                         || (statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT)
@@ -6388,10 +5754,10 @@ public abstract class GPUdbBase {
                     GPUdbLogger.debug_with_info(
                             "Throwing EXIT exception from " + url.toString()
                                     + "; response_code: " + statusCode
-                                    + "; content type " + responseEntity.getContentType().getElements()[0].getName()
+                                    + "; content type " + responseEntity.getContentType()
                                     + "; response message: " + responseMessage
                     );
-                    throw new GPUdbExitException( responseMessage );
+                    throw new GPUdbExitException(responseMessage);
                 } else {
                     // All other issues are simply propagated to the user
                     errorMsg = ("Cannot parse response from server: '" + responseMessage + "'; status code: " + statusCode );
@@ -6404,7 +5770,7 @@ public abstract class GPUdbBase {
                 // Got status 401 -- unauthorized
                 GPUdbLogger.debug_with_info( "Got status code: " + statusCode );
                 String errorMsg = (String.format("Server response status: %d : %s", statusCode, responseMessage));
-                throw new GPUdbUnauthorizedAccessException( errorMsg );
+                throw new GPUdbUnauthorizedAccessException(errorMsg);
                 // Note: Keeping the original code here in case some unforeseen
                 // problem arises that we haven't thought of yet by changing
                 // which exception is thrown.
@@ -6424,13 +5790,13 @@ public abstract class GPUdbBase {
             if ( ex.getMessage().contains( DB_EOF_FROM_SERVER_ERROR_MESSAGE ) ) {
                 // The server did not send a response; we need to trigger an HA
                 // failover scenario
-                throw new GPUdbExitException( ex.getMessage() );
+                throw new GPUdbExitException(ex.getMessage());
             }
             // Some legitimate error
             throw ex;
         } catch (java.net.SocketException ex) {
             // Any network issue should trigger an HA failover
-            throw new GPUdbExitException( ex.getMessage() );
+            throw new GPUdbExitException(ex.getMessage());
         } catch (Exception ex) {
             GPUdbLogger.debug_with_info( "Caught Exception: " + ex.getMessage() );
             // Some sort of submission error
@@ -6446,6 +5812,7 @@ public abstract class GPUdbBase {
                 try {
                     postResponse.close();
                 } catch (IOException ex) {
+                    GPUdbLogger.error( ex.getMessage() );
                 }
             }
         }

@@ -3,6 +3,12 @@
 
 ## Version 7.1
 
+### Version 7.1.8.7
+
+#### Added
+-  Added ignore_existing_pk option to all endpoints that accept update_on_existing_pk
+
+
 ### Version 7.1.8.0
 
 #### Added

@@ -18,30 +18,39 @@ import java.util.List;
  * methods for uploading and downloading files.
  *
  * This example demonstrates the following:
- *  -   Upload a set of files from a directory named '_kifs_Example_date_files'
+ *  -   Upload a set of files from a given directory,
  *      which has a few subdirectories populated with files. This example
  *      will upload all the files starting from the root directory traversing
  *      the directory hierarchy. The upload will preserver the subdirectories
  *      on the KIFS after upload.
  *  -   Download all the files that have been uploaded in one go into the
- *      directory named '_kifs_example_downloaded_files'.
+ *      given directory.
  *  -   The example also demonstrates how to use a class implementing the
  *      interface {@link FileUploadListener} {@link FileUploadObserver} to
  *      receive notifications about completion/progress of downloads.
  *
- *  Running the example
- *      This example takes two VM arguments which can be passed using the
+ * Running the Example
+ *
+ *      This example takes seven VM arguments which can be passed using the
  *      -D flag. The arguments needed by this example are -
- *      1. -Durl="some_kinetica_url"
- *      2. -DlogLevel=[INFO | DEBUG | etc.]
- *      e.g., -Durl="http://10.0.0.10:9191" -DlogLevel="INFO"
+ *
+ *      1. -Durl="<Kinetica connection URL>"
+ *      2. -Duser="<Kinetica username>"
+ *      3. -Dpass="<Kinetica password>"
+ *      4. -Dupload="<existing/path/to/recursively/upload>"
+ *      5. -Ddownload="<existing/path/to/download/uploaded/files/into>"
+ *      6. -Dkifs="<Pre-existing KiFS directory to upload into>"
+ *      7. -DlogLevel=[INFO | DEBUG | etc.]
+ *
+ *      For example:
+ *      java ... -Durl="http://10.0.0.10:9191" -Duser=auser -Dpass=12345 -Dupload=./upload -Ddownload=./download -Dkifs=example -DlogLevel="INFO"
  *
  *      Once the example jar is built this example can be run from the command
- *      line thus :
- *      java -Durl="http://10.0.0.10:9191" -DlogLevel="INFO" -cp ./target/gpudb-api-example-1.0-jar-with-dependencies.jar com.gpudb.example.GPUdbFileHandlerExample
+ *      line thus:
  *
- *      The 'url' and the 'logLevel' arguments should be changed as the command
- *      given above is just an example.
+ *      java -cp ./target/gpudb-api-example-1.0-jar-with-dependencies.jar \
+ *          -Durl="http://10.0.0.10:9191" -Duser=auser -Dpass=12345 -Dupload=./upload -Ddownload=./download -Dkifs=example \
+ *          com.gpudb.example.GPUdbFileHandlerExample
  */
 public class GPUdbFileHandlerExample {
 
@@ -73,13 +82,12 @@ public class GPUdbFileHandlerExample {
         @Override
         public void onMultiPartUploadComplete( List<Result> resultList ) {
             for ( Result result : resultList ) {
-                System.out.println( result );
-                GPUdbLogger.info( result.toString() );
+                GPUdbLogger.info( "Uploaded multipart file part: <" + result.getUploadInfo() + ">" );
             }
         }
 
         /**
-         * This method is fired everytime a part of a multi-part upload has
+         * This method is fired every time a part of a multi-part upload has
          * been completed. This can be used to show status of an ongoing large
          * upload.
          *
@@ -89,15 +97,15 @@ public class GPUdbFileHandlerExample {
         public void onPartUpload( Result result ) {
 
             StringBuilder builder = new StringBuilder();
-            builder.append( result.getUploadInfo().getUploadPartNumber())
-                    .append("th part of ")
+            builder.append("Uploaded multipart file part <")
+                    .append( result.getUploadInfo().getUploadPartNumber())
+                    .append("/")
                     .append( result.getUploadInfo().getTotalParts() )
-                    .append(" of ")
+                    .append("> of file <")
                     .append( result.getFileName() )
-                    .append( " - uploaded successfully ..");
+                    .append(">");
 
             GPUdbLogger.info( builder.toString() );
-            System.out.println( builder.toString() );
         }
 
         /**
@@ -109,47 +117,41 @@ public class GPUdbFileHandlerExample {
          */
         @Override
         public void onFullFileUpload(Result result) {
-            List<String> fileNames = result.getFullFileNames();
-            for ( String fileName : fileNames ) {
-                System.out.println( fileName );
-                GPUdbLogger.info( fileName );
-            }
+        	if (result == null)
+        		System.err.println("No result after upload");
+        	else {
+	            List<String> fileNames = result.getFullFileNames();
+	            if (fileNames == null)
+	            	System.err.println("No filenames in result after upload");
+	            else
+		            for ( String fileName : fileNames )
+		                GPUdbLogger.info( "Uploaded file: <" + fileName + ">" );
+        	}
         }
 
     }
 
-    /**
-     * main method
-     * @param args - None
-     * @throws GPUdbException
-     */
-    public static void main( String ... args ) throws GPUdbException {
-
-        String url = System.getProperty("url", "http://127.0.0.1:9191");
-
-        // Get the log level from the command line, if any
-        String logLevel = System.getProperty("logLevel", "");
-        if ( !logLevel.isEmpty() ) {
-            System.out.println( "Log level given by the user: " + logLevel );
-            GPUdbLogger.setLoggingLevel(logLevel);
-        } else {
-            System.out.println( "No log level given by the user." );
-        }
-
-        // Establish a connection with a locally running instance of GPUdb
-        GPUdb.Options options = new GPUdb.Options();
-        GPUdb gpudb = new GPUdb( url, options );
-
-        exampleUploadAndDownload( gpudb );
-        System.exit(0);
+    private static void usage() {
+    	System.err.println("Usage:  java -cp <example.jar> [<options>] com.gpudb.example.GPUdbFileHandlerExample");
+    	System.err.println("Where:");
+    	System.err.println("        <example.jar> - the path to the compiled examples JAR");
+    	System.err.println("        <options> - a list of options to the program, prefixed with -D");
+    	System.err.println("                    <url> -      Kinetica connection URL");
+    	System.err.println("                    <user> -     Kinetica connection username");
+    	System.err.println("                    <pass> -     Kinetica connection password");
+    	System.err.println("                    <upload> -   Path to directory to recusively upload");
+    	System.err.println("                    <download> - Path where uploaded files will be downloaded (must exist)");
+    	System.err.println("                    <kifs> -     KiFS directory to upload into (must exist)");
+    	System.err.println("                    <logLevel> - Level of logging for the example [INFO|DEBUG|...]");
+    	System.err.println("For Example:");
+    	System.err.println("        java -cp ./target/gpudb-api-example-1.0-jar-with-dependencies.jar \\");
+    	System.err.println("             -Durl=\"http://10.0.0.10:9191\" -Duser=auser -Dpass=12345 -Dupload=./upload -Ddownload=./download \\");
+    	System.err.println("             com.gpudb.example.GPUdbFileHandlerExample");
     }
 
     /**
-     * Example method to upload a list of files to KIFS
-     * This method uploads all files from the directory
-     * '_kifs_example_data_files' which is pre-created with subdirectories
-     * and files residing in them.
-     *
+     * Example method to upload files under the given directory to KIFS.
+     * 
      * The method {@link GPUdbFileHandler#upload(List, String, UploadOptions, FileUploadListener)}
      * is invoked with a 'null' value for the third argument which is of type
      * {@link UploadOptions} as a result of which the default options
@@ -159,34 +161,71 @@ public class GPUdbFileHandlerExample {
      * directory hierarchy.
      *
      * @param db - the {@link GPUdb} object
+     * @param uploadDir - the path of the directory to upload to KiFS
+     * @param downloadDir - the path of the existing directory to download
+     *                      uploaded files into
+     * @param kifsDir - the name of the existing KiFS directory to upload into
      *
      * @throws GPUdbException
      */
-    public static void exampleUploadAndDownload(GPUdb db ) throws GPUdbException {
+    public static void exampleUploadAndDownload(GPUdb db, String uploadDir, String downloadDir, String kifsDir) throws GPUdbException {
 
         FileUploadObserver observer = new FileUploadObserver();
 
-        String m_kifsRemoteRootDir = "kifs_example-uploads";
+        GPUdbFileHandler fh = new GPUdbFileHandler( db );
 
-        GPUdbFileHandler gpUdbFileHandler = new GPUdbFileHandler( db );
+        List<String> localFileNames = Collections.singletonList( uploadDir + "/**" );
 
-        List<String> localFileNames = Collections.singletonList( "./_kifs_example_data_files/**" );
-
-        gpUdbFileHandler.upload( localFileNames, m_kifsRemoteRootDir, null, observer );
+        fh.upload( localFileNames, kifsDir, null, observer );
 
         //Invoke 'showFiles' after upload and list the files uploaded
-        ShowFilesResponse resp = db.showFiles( Collections.singletonList( m_kifsRemoteRootDir ),
-                new HashMap<String, String>());
+        ShowFilesResponse resp = db.showFiles( Collections.singletonList( kifsDir ), new HashMap<String, String>());
 
-        for ( String fileName: resp.getFileNames() ) {
-            System.out.println( fileName );
-        }
+        for ( String fileName: resp.getFileNames() )
+            GPUdbLogger.info( "Found uploaded file for download: <" + fileName + ">" );
 
         //Download the same files
-        gpUdbFileHandler.download( resp.getFileNames(),
-                        "_kifs_example_downloaded_files",
-                    null,
-                        null );
+        fh.download( resp.getFileNames(), downloadDir, null, null );
+    }
+    
+    /**
+     * main method
+     * @param args - Options for running the example.  See
+     *               {@link GPUdbFileHandler} for details
+     * @throws GPUdbException
+     */
+    public static void main( String ... args ) throws GPUdbException {
 
+        String url = System.getProperty("url", "http://127.0.0.1:9191");
+        String user = System.getProperty("user", "");
+        String pass = System.getProperty("pass", "");
+        String uploadDir = System.getProperty("upload", "");
+        String downloadDir = System.getProperty("download", "");
+        String kifsDir = System.getProperty("kifs", "kifs_example-uploads");
+        String logLevel = System.getProperty("logLevel", "INFO");
+
+        if ( uploadDir.isEmpty() ) {
+            System.err.println("Please specify a directory to upload files from");
+            usage();
+            System.exit(1);
+        }
+
+        if ( downloadDir.isEmpty() ) {
+            System.err.println("Please specify a directory to download files to");
+            usage();
+            System.exit(1);
+        }
+
+        if ( !logLevel.isEmpty() )
+            GPUdbLogger.setLoggingLevel(logLevel);
+
+        // Establish a connection with a locally running instance of GPUdb
+        GPUdb.Options options = new GPUdb.Options();
+        options.setUsername(user);
+        options.setPassword(pass);
+        GPUdb gpudb = new GPUdb( url, options );
+
+        exampleUploadAndDownload( gpudb, uploadDir, downloadDir, kifsDir );
+        System.exit(0);
     }
 }

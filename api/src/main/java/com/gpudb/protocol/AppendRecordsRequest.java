@@ -82,7 +82,27 @@ public class AppendRecordsRequest implements IndexedRecord {
      * to {@code false}, any existing target table record with primary key
      * values that match those of a source table record being inserted will
      * remain unchanged and the new record discarded.  If the specified table
-     * does not have a primary key, then this option is ignored.
+     * does not have a primary key, then this option has no effect.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.AppendRecordsRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.AppendRecordsRequest.Options#IGNORE_EXISTING_PK
+     * IGNORE_EXISTING_PK}: Specifies the record collision policy for inserting
+     * the source table records (specified by {@code sourceTableName}) into the
+     * target table (specified by {@code tableName}) table with a <a
+     * href="../../../../../../concepts/tables/#primary-keys"
+     * target="_top">primary key</a>.  If set to {@code true}, any source table
+     * records being inserted with primary key values that match those of an
+     * existing target table record will be ignored with no error generated.
+     * If the specified table does not have a primary key, then this option has
+     * no affect.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.AppendRecordsRequest.Options#TRUE
@@ -154,7 +174,7 @@ public class AppendRecordsRequest implements IndexedRecord {
          * with primary key values that match those of a source table record
          * being inserted will remain unchanged and the new record discarded.
          * If the specified table does not have a primary key, then this option
-         * is ignored.
+         * has no effect.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -168,6 +188,28 @@ public class AppendRecordsRequest implements IndexedRecord {
         public static final String UPDATE_ON_EXISTING_PK = "update_on_existing_pk";
         public static final String TRUE = "true";
         public static final String FALSE = "false";
+
+        /**
+         * Specifies the record collision policy for inserting the source table
+         * records (specified by {@code sourceTableName}) into the target table
+         * (specified by {@code tableName}) table with a <a
+         * href="../../../../../../concepts/tables/#primary-keys"
+         * target="_top">primary key</a>.  If set to {@code true}, any source
+         * table records being inserted with primary key values that match
+         * those of an existing target table record will be ignored with no
+         * error generated.  If the specified table does not have a primary
+         * key, then this option has no affect.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AppendRecordsRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}.
+         */
+        public static final String IGNORE_EXISTING_PK = "ignore_existing_pk";
 
         /**
          * If set to {@code true}, it allows inserting longer strings into
@@ -269,7 +311,32 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                 key values that match those of a source table record
      *                 being inserted will remain unchanged and the new record
      *                 discarded.  If the specified table does not have a
-     *                 primary key, then this option is ignored.
+     *                 primary key, then this option has no effect.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#IGNORE_EXISTING_PK
+     *                 IGNORE_EXISTING_PK}: Specifies the record collision
+     *                 policy for inserting the source table records (specified
+     *                 by {@code sourceTableName}) into the target table
+     *                 (specified by {@code tableName}) table with a <a
+     *                 href="../../../../../../concepts/tables/#primary-keys"
+     *                 target="_top">primary key</a>.  If set to {@code true},
+     *                 any source table records being inserted with primary key
+     *                 values that match those of an existing target table
+     *                 record will be ignored with no error generated.  If the
+     *                 specified table does not have a primary key, then this
+     *                 option has no affect.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -446,7 +513,28 @@ public class AppendRecordsRequest implements IndexedRecord {
      *         target table record with primary key values that match those of
      *         a source table record being inserted will remain unchanged and
      *         the new record discarded.  If the specified table does not have
-     *         a primary key, then this option is ignored.
+     *         a primary key, then this option has no effect.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AppendRecordsRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AppendRecordsRequest.Options#IGNORE_EXISTING_PK
+     *         IGNORE_EXISTING_PK}: Specifies the record collision policy for
+     *         inserting the source table records (specified by {@code
+     *         sourceTableName}) into the target table (specified by {@code
+     *         tableName}) table with a <a
+     *         href="../../../../../../concepts/tables/#primary-keys"
+     *         target="_top">primary key</a>.  If set to {@code true}, any
+     *         source table records being inserted with primary key values that
+     *         match those of an existing target table record will be ignored
+     *         with no error generated.  If the specified table does not have a
+     *         primary key, then this option has no affect.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -522,7 +610,32 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                 key values that match those of a source table record
      *                 being inserted will remain unchanged and the new record
      *                 discarded.  If the specified table does not have a
-     *                 primary key, then this option is ignored.
+     *                 primary key, then this option has no effect.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#IGNORE_EXISTING_PK
+     *                 IGNORE_EXISTING_PK}: Specifies the record collision
+     *                 policy for inserting the source table records (specified
+     *                 by {@code sourceTableName}) into the target table
+     *                 (specified by {@code tableName}) table with a <a
+     *                 href="../../../../../../concepts/tables/#primary-keys"
+     *                 target="_top">primary key</a>.  If set to {@code true},
+     *                 any source table records being inserted with primary key
+     *                 values that match those of an existing target table
+     *                 record will be ignored with no error generated.  If the
+     *                 specified table does not have a primary key, then this
+     *                 option has no affect.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

@@ -226,6 +226,20 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
      *         <li> {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#IGNORE_EXISTING_PK
+     * IGNORE_EXISTING_PK}: Can be used to customize behavior when the updated
+     * primary key value already exists as described in {@link
+     * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
+     *         <li> {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#PRESERVE_DICT_ENCODING
      * PRESERVE_DICT_ENCODING}: If {@code true}, then columns that were dict
      * encoded in the source table will be dict encoded in the projection
@@ -450,6 +464,22 @@ public class ExecuteSqlRequest implements IndexedRecord {
          * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
          */
         public static final String UPDATE_ON_EXISTING_PK = "update_on_existing_pk";
+
+        /**
+         * Can be used to customize behavior when the updated primary key value
+         * already exists as described in {@link
+         * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
+         */
+        public static final String IGNORE_EXISTING_PK = "ignore_existing_pk";
 
         /**
          * If {@code true}, then columns that were dict encoded in the source
@@ -713,6 +743,23 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 UPDATE_ON_EXISTING_PK}: Can be used to customize
      *                 behavior when the updated primary key value already
      *                 exists as described in {@link
+     *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#IGNORE_EXISTING_PK
+     *                 IGNORE_EXISTING_PK}: Can be used to customize behavior
+     *                 when the updated primary key value already exists as
+     *                 described in {@link
      *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
      *                 Supported values:
      *                 <ul>
@@ -993,6 +1040,23 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 UPDATE_ON_EXISTING_PK}: Can be used to customize
      *                 behavior when the updated primary key value already
      *                 exists as described in {@link
+     *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#IGNORE_EXISTING_PK
+     *                 IGNORE_EXISTING_PK}: Can be used to customize behavior
+     *                 when the updated primary key value already exists as
+     *                 described in {@link
      *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
      *                 Supported values:
      *                 <ul>
@@ -1411,6 +1475,20 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
      *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#IGNORE_EXISTING_PK
+     *         IGNORE_EXISTING_PK}: Can be used to customize behavior when the
+     *         updated primary key value already exists as described in {@link
+     *         com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#PRESERVE_DICT_ENCODING
      *         PRESERVE_DICT_ENCODING}: If {@code true}, then columns that were
      *         dict encoded in the source table will be dict encoded in the
@@ -1628,6 +1706,23 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 UPDATE_ON_EXISTING_PK}: Can be used to customize
      *                 behavior when the updated primary key value already
      *                 exists as described in {@link
+     *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#IGNORE_EXISTING_PK
+     *                 IGNORE_EXISTING_PK}: Can be used to customize behavior
+     *                 when the updated primary key value already exists as
+     *                 described in {@link
      *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
      *                 Supported values:
      *                 <ul>

@@ -155,7 +155,7 @@ public class UploadFilesRequest implements IndexedRecord {
      * com.gpudb.protocol.UploadFilesRequest.Options#DELETE_IF_EXISTS
      * DELETE_IF_EXISTS}: If {@code true},
      * any existing files specified in {@code fileNames} will be deleted prior
-     * to  start of upload.
+     * to start of upload.
      * Otherwise the file is replaced once the upload completes.  Rollback of
      * the original file is
      * no longer possible if the upload is cancelled, aborted or fails if the
@@ -266,7 +266,7 @@ public class UploadFilesRequest implements IndexedRecord {
         /**
          * If {@code true},
          * any existing files specified in {@code fileNames} will be deleted
-         * prior to  start of upload.
+         * prior to start of upload.
          * Otherwise the file is replaced once the upload completes.  Rollback
          * of the original file is
          * no longer possible if the upload is cancelled, aborted or fails if
@@ -380,7 +380,7 @@ public class UploadFilesRequest implements IndexedRecord {
      *                 com.gpudb.protocol.UploadFilesRequest.Options#DELETE_IF_EXISTS
      *                 DELETE_IF_EXISTS}: If {@code true},
      *                 any existing files specified in {@code fileNames} will
-     *                 be deleted prior to  start of upload.
+     *                 be deleted prior to start of upload.
      *                 Otherwise the file is replaced once the upload
      *                 completes.  Rollback of the original file is
      *                 no longer possible if the upload is cancelled, aborted
@@ -527,7 +527,7 @@ public class UploadFilesRequest implements IndexedRecord {
      *         com.gpudb.protocol.UploadFilesRequest.Options#DELETE_IF_EXISTS
      *         DELETE_IF_EXISTS}: If {@code true},
      *         any existing files specified in {@code fileNames} will be
-     *         deleted prior to  start of upload.
+     *         deleted prior to start of upload.
      *         Otherwise the file is replaced once the upload completes.
      *         Rollback of the original file is
      *         no longer possible if the upload is cancelled, aborted or fails
@@ -615,7 +615,7 @@ public class UploadFilesRequest implements IndexedRecord {
      *                 com.gpudb.protocol.UploadFilesRequest.Options#DELETE_IF_EXISTS
      *                 DELETE_IF_EXISTS}: If {@code true},
      *                 any existing files specified in {@code fileNames} will
-     *                 be deleted prior to  start of upload.
+     *                 be deleted prior to start of upload.
      *                 Otherwise the file is replaced once the upload
      *                 completes.  Rollback of the original file is
      *                 no longer possible if the upload is cancelled, aborted

@@ -1,13 +1,10 @@
 package com.gpudb.example;
 
 import com.gpudb.*;
-import com.gpudb.protocol.ClearTableRequest;
 import com.gpudb.protocol.ShowTableRequest;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * This class demonstrates the usage of the BulkInserter class in a
