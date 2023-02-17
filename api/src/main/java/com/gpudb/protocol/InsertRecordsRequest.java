@@ -55,7 +55,25 @@ public class InsertRecordsRequest<T> {
      * any existing table record with primary key values that match those of a
      * record being inserted will remain unchanged and the new record
      * discarded.  If the specified table does not have a primary key, then
-     * this option is ignored.
+     * this option has no affect.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.RawInsertRecordsRequest.Options#IGNORE_EXISTING_PK
+     * IGNORE_EXISTING_PK}: Specifies the record collision policy for inserting
+     * into a table with a <a
+     * href="../../../../../../concepts/tables/#primary-keys"
+     * target="_top">primary key</a>.  If set to {@code true}, any record being
+     * inserted with primary key values that match those of an existing table
+     * record will be ignored with no error generated.  If the specified table
+     * does not have a primary key, then this option has no affect.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -150,7 +168,7 @@ public class InsertRecordsRequest<T> {
          * {@code false}, any existing table record with primary key values
          * that match those of a record being inserted will remain unchanged
          * and the new record discarded.  If the specified table does not have
-         * a primary key, then this option is ignored.
+         * a primary key, then this option has no affect.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -164,6 +182,26 @@ public class InsertRecordsRequest<T> {
         public static final String UPDATE_ON_EXISTING_PK = "update_on_existing_pk";
         public static final String TRUE = "true";
         public static final String FALSE = "false";
+
+        /**
+         * Specifies the record collision policy for inserting into a table
+         * with a <a href="../../../../../../concepts/tables/#primary-keys"
+         * target="_top">primary key</a>.  If set to {@code true}, any record
+         * being inserted with primary key values that match those of an
+         * existing table record will be ignored with no error generated.  If
+         * the specified table does not have a primary key, then this option
+         * has no affect.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
+         */
+        public static final String IGNORE_EXISTING_PK = "ignore_existing_pk";
 
         /**
          * If {@code true} then return the internal record id along for each
@@ -286,8 +324,30 @@ public class InsertRecordsRequest<T> {
      *                 existing table record with primary key values that match
      *                 those of a record being inserted will remain unchanged
      *                 and the new record discarded.  If the specified table
-     *                 does not have a primary key, then this option is
-     *                 ignored.
+     *                 does not have a primary key, then this option has no
+     *                 affect.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#IGNORE_EXISTING_PK
+     *                 IGNORE_EXISTING_PK}: Specifies the record collision
+     *                 policy for inserting into a table with a <a
+     *                 href="../../../../../../concepts/tables/#primary-keys"
+     *                 target="_top">primary key</a>.  If set to {@code true},
+     *                 any record being inserted with primary key values that
+     *                 match those of an existing table record will be ignored
+     *                 with no error generated.  If the specified table does
+     *                 not have a primary key, then this option has no affect.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -467,7 +527,27 @@ public class InsertRecordsRequest<T> {
      *         If set to {@code false}, any existing table record with primary
      *         key values that match those of a record being inserted will
      *         remain unchanged and the new record discarded.  If the specified
-     *         table does not have a primary key, then this option is ignored.
+     *         table does not have a primary key, then this option has no
+     *         affect.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#IGNORE_EXISTING_PK
+     *         IGNORE_EXISTING_PK}: Specifies the record collision policy for
+     *         inserting into a table with a <a
+     *         href="../../../../../../concepts/tables/#primary-keys"
+     *         target="_top">primary key</a>.  If set to {@code true}, any
+     *         record being inserted with primary key values that match those
+     *         of an existing table record will be ignored with no error
+     *         generated.  If the specified table does not have a primary key,
+     *         then this option has no affect.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -573,8 +653,30 @@ public class InsertRecordsRequest<T> {
      *                 existing table record with primary key values that match
      *                 those of a record being inserted will remain unchanged
      *                 and the new record discarded.  If the specified table
-     *                 does not have a primary key, then this option is
-     *                 ignored.
+     *                 does not have a primary key, then this option has no
+     *                 affect.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#IGNORE_EXISTING_PK
+     *                 IGNORE_EXISTING_PK}: Specifies the record collision
+     *                 policy for inserting into a table with a <a
+     *                 href="../../../../../../concepts/tables/#primary-keys"
+     *                 target="_top">primary key</a>.  If set to {@code true},
+     *                 any record being inserted with primary key values that
+     *                 match those of an existing table record will be ignored
+     *                 with no error generated.  If the specified table does
+     *                 not have a primary key, then this option has no affect.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

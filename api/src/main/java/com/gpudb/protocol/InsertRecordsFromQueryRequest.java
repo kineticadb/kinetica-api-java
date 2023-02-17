@@ -586,6 +586,18 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#IGNORE_EXISTING_PK
+     * IGNORE_EXISTING_PK}:
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -793,6 +805,21 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
          * FALSE}.
          */
         public static final String UPDATE_ON_EXISTING_PK = "update_on_existing_pk";
+
+        /**
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+         * FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+         * FALSE}.
+         */
+        public static final String IGNORE_EXISTING_PK = "ignore_existing_pk";
 
         private Options() {  }
     }
@@ -1174,6 +1201,21 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#IGNORE_EXISTING_PK
+     *                 IGNORE_EXISTING_PK}:
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -1824,6 +1866,21 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
      *         FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#IGNORE_EXISTING_PK
+     *         IGNORE_EXISTING_PK}:
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *         FALSE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1974,6 +2031,21 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#IGNORE_EXISTING_PK
+     *                 IGNORE_EXISTING_PK}:
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

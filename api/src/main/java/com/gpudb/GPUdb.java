@@ -5919,7 +5919,32 @@ public class GPUdb extends GPUdbBase {
      *                 key values that match those of a source table record
      *                 being inserted will remain unchanged and the new record
      *                 discarded.  If the specified table does not have a
-     *                 primary key, then this option is ignored.
+     *                 primary key, then this option has no effect.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#IGNORE_EXISTING_PK
+     *                 IGNORE_EXISTING_PK}: Specifies the record collision
+     *                 policy for inserting the source table records (specified
+     *                 by {@code sourceTableName}) into the target table
+     *                 (specified by {@code tableName}) table with a <a
+     *                 href="../../../../../concepts/tables/#primary-keys"
+     *                 target="_top">primary key</a>.  If set to {@code true},
+     *                 any source table records being inserted with primary key
+     *                 values that match those of an existing target table
+     *                 record will be ignored with no error generated.  If the
+     *                 specified table does not have a primary key, then this
+     *                 option has no affect.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -9549,6 +9574,21 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#IGNORE_EXISTING_PK
+     *                 IGNORE_EXISTING_PK}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -12182,6 +12222,23 @@ public class GPUdb extends GPUdbBase {
      *                 UPDATE_ON_EXISTING_PK}: Can be used to customize
      *                 behavior when the updated primary key value already
      *                 exists as described in {@link
+     *                 GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#IGNORE_EXISTING_PK
+     *                 IGNORE_EXISTING_PK}: Can be used to customize behavior
+     *                 when the updated primary key value already exists as
+     *                 described in {@link
      *                 GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
      *                 Supported values:
      *                 <ul>
@@ -16965,8 +17022,30 @@ public class GPUdb extends GPUdbBase {
      *                 existing table record with primary key values that match
      *                 those of a record being inserted will remain unchanged
      *                 and the new record discarded.  If the specified table
-     *                 does not have a primary key, then this option is
-     *                 ignored.
+     *                 does not have a primary key, then this option has no
+     *                 affect.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#IGNORE_EXISTING_PK
+     *                 IGNORE_EXISTING_PK}: Specifies the record collision
+     *                 policy for inserting into a table with a <a
+     *                 href="../../../../../concepts/tables/#primary-keys"
+     *                 target="_top">primary key</a>.  If set to {@code true},
+     *                 any record being inserted with primary key values that
+     *                 match those of an existing table record will be ignored
+     *                 with no error generated.  If the specified table does
+     *                 not have a primary key, then this option has no affect.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -17132,8 +17211,30 @@ public class GPUdb extends GPUdbBase {
      *                 existing table record with primary key values that match
      *                 those of a record being inserted will remain unchanged
      *                 and the new record discarded.  If the specified table
-     *                 does not have a primary key, then this option is
-     *                 ignored.
+     *                 does not have a primary key, then this option has no
+     *                 affect.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#IGNORE_EXISTING_PK
+     *                 IGNORE_EXISTING_PK}: Specifies the record collision
+     *                 policy for inserting into a table with a <a
+     *                 href="../../../../../concepts/tables/#primary-keys"
+     *                 target="_top">primary key</a>.  If set to {@code true},
+     *                 any record being inserted with primary key values that
+     *                 match those of an existing table record will be ignored
+     *                 with no error generated.  If the specified table does
+     *                 not have a primary key, then this option has no affect.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -18066,6 +18167,21 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#IGNORE_EXISTING_PK
+     *                 IGNORE_EXISTING_PK}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -18778,6 +18894,21 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#IGNORE_EXISTING_PK
+     *                 IGNORE_EXISTING_PK}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -19177,6 +19308,21 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#IGNORE_EXISTING_PK
+     *                 IGNORE_EXISTING_PK}:
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -24091,6 +24237,32 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#IGNORE_EXISTING_PK
+     *                 IGNORE_EXISTING_PK}: Specifies the record collision
+     *                 policy for tables with a <a
+     *                 href="../../../../../concepts/tables/#primary-keys"
+     *                 target="_top">primary key</a> when updating columns of
+     *                 the <a
+     *                 href="../../../../../concepts/tables/#primary-keys"
+     *                 target="_top">primary key</a> or inserting new records.
+     *                 If set to {@code true}, any record being updated or
+     *                 inserted with primary key values that match those of an
+     *                 existing record will be ignored with no error generated.
+     *                 If the specified table does not have a primary key, then
+     *                 this option has no affect.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_PARTITION
      *                 UPDATE_PARTITION}: Force qualifying records to be
      *                 deleted and reinserted so their partition membership
@@ -24289,6 +24461,32 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
      *                 FALSE}: Discard updated and inserted records when the
      *                 same primary keys already exist
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#IGNORE_EXISTING_PK
+     *                 IGNORE_EXISTING_PK}: Specifies the record collision
+     *                 policy for tables with a <a
+     *                 href="../../../../../concepts/tables/#primary-keys"
+     *                 target="_top">primary key</a> when updating columns of
+     *                 the <a
+     *                 href="../../../../../concepts/tables/#primary-keys"
+     *                 target="_top">primary key</a> or inserting new records.
+     *                 If set to {@code true}, any record being updated or
+     *                 inserted with primary key values that match those of an
+     *                 existing record will be ignored with no error generated.
+     *                 If the specified table does not have a primary key, then
+     *                 this option has no affect.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
@@ -24678,7 +24876,7 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.UploadFilesRequest.Options#DELETE_IF_EXISTS
      *                 DELETE_IF_EXISTS}: If {@code true},
      *                 any existing files specified in {@code fileNames} will
-     *                 be deleted prior to  start of upload.
+     *                 be deleted prior to start of upload.
      *                 Otherwise the file is replaced once the upload
      *                 completes.  Rollback of the original file is
      *                 no longer possible if the upload is cancelled, aborted

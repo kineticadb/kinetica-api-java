@@ -49,40 +49,23 @@ public class UploadIoJob {
      */
     private final String jobId;
 
-    /**
-     *
-     */
     private final String uploadFileName;
 
     private final String uploadRemoteFileName;
 
     private final UploadOptions uploadOptions;
 
-    /**
-     *
-     */
     private final String kifsDirName;
 
-    /**
-     *
-     */
-    private final List<IoTask> listOfTasks;
+    private final List<Result> resultList;
 
     private final FileUploadListener callback;
 
     /**
-     * Fixed threadpool of size 1 uses {@link Executors#newSingleThreadExecutor()}
+     * Fixed thread pool of size 1 uses {@link Executors#newSingleThreadExecutor()}
      */
     private final ExecutorService threadPool;
 
-    /**
-     *
-     */
-    private final CompletionService<Result> jobExecutor;
-
-    /**
-     *
-     */
     private final OpMode opMode;
     private final GPUdbFileHandler.Options fileHandlerOptions;
 
@@ -123,9 +106,8 @@ public class UploadIoJob {
         this.callback = callback;
 
         threadPool = Executors.newSingleThreadExecutor();
-        jobExecutor = new ExecutorCompletionService<>( threadPool );
 
-        this.listOfTasks = new ArrayList<>();
+        this.resultList = new ArrayList<>();
 
         jobId = UUID.randomUUID().toString();
     }
@@ -173,15 +155,28 @@ public class UploadIoJob {
         return threadPool;
     }
 
-    public CompletionService<Result> getJobExecutor() {
-        return jobExecutor;
+    private CompletableFuture<Result> doUpload(final IoTask task) {
+        return CompletableFuture.supplyAsync(task::call, getThreadPool());
+    }
+
+    private void handleUploadResult(final IoTask task) throws GPUdbException {
+        try {
+            Result taskResult = doUpload(task).get();
+            resultList.add( taskResult );
+            if( callback != null ) {
+                callback.onPartUpload( taskResult );
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            throw new GPUdbException(String.format("Could not complete upload stage - %s : exception : %s",task.getMultiPartUploadInfo().getPartOperation().getValue(), e.getMessage()));
+        }
+
     }
 
     /** This method starts the job to upload the multipart file by submitting
      * different stages {@link com.gpudb.filesystem.upload.MultiPartUploadInfo.MultiPartOperation}
      * to indicate which stage is being executed. Each stage is modeled as an
      * {@link IoTask} which is an instance of {@link Callable} and the
-     * task instance is submitted to the {@link #jobExecutor} member of the class
+     * task instance is submitted to the {@link #handleUploadResult(IoTask)} member of the class
      */
     public void start() throws GPUdbException {
 
@@ -204,9 +199,8 @@ public class UploadIoJob {
                 0,
                 null);
         initTask.setMultiPartUploadInfo( initInfo );
-        jobExecutor.submit( initTask );
 
-        listOfTasks.add( initTask );
+        handleUploadResult( initTask );
 
         //Upload the file chunks with data
         try (RandomAccessFile sourceFile = new RandomAccessFile( uploadFileName, "r" );
@@ -224,13 +218,13 @@ public class UploadIoJob {
                 ByteBuffer buffer = ByteBuffer.allocate( bytesPerSplit );
                 sourceChannel.read( buffer, (long) position * bytesPerSplit );
 
-                IoTask newTask = uploadPartFile( uuid,
+                IoTask newTask = createPartialUploadTask( uuid,
                         uploadRemoteFileName,
                         position,
                         buffer,
                         totalParts );
 
-                listOfTasks.add( newTask );
+                handleUploadResult( newTask );
             }
 
             if ( remainingBytes > 0 ) {
@@ -238,13 +232,13 @@ public class UploadIoJob {
                 sourceChannel.read( remaining, (long) position * bytesPerSplit );
 
                 //Set up MultiPartUploadInfo instance as appropriate
-                IoTask newTask = uploadPartFile( uuid,
+                IoTask newTask = createPartialUploadTask( uuid,
                         uploadRemoteFileName,
                         position,
                         remaining,
                         totalParts);
 
-                listOfTasks.add( newTask );
+                handleUploadResult( newTask );
 
             }
         } catch (IOException e) {
@@ -268,9 +262,10 @@ public class UploadIoJob {
                 null);
         completeTask.setMultiPartUploadInfo( completeInfo );
 
-        jobExecutor.submit( completeTask );
-
-        listOfTasks.add( completeTask );
+        handleUploadResult( completeTask );
+        if( callback != null ) {
+            callback.onMultiPartUploadComplete( resultList );
+        }
 
     }
 
@@ -290,11 +285,11 @@ public class UploadIoJob {
      * @param totalParts - total number of parts to upload
      * @return - IoTask - An instance of an {@link IoTask}.
      */
-    private IoTask uploadPartFile(UUID uuid,
-                                  String kifsFileName,
-                                  int partNumber,
-                                  ByteBuffer buffer,
-                                  long totalParts) {
+    private IoTask createPartialUploadTask(UUID uuid,
+                                           String kifsFileName,
+                                           int partNumber,
+                                           ByteBuffer buffer,
+                                           long totalParts) {
 
         //Set up MultiPartUploadInfo instance as appropriate
         MultiPartUploadInfo uploadInfo = new MultiPartUploadInfo();
@@ -322,18 +317,12 @@ public class UploadIoJob {
                 buffer );
         newTask.setMultiPartUploadInfo( uploadInfo );
 
-        jobExecutor.submit( newTask );
-
         return newTask;
     }
 
     /**
-     * This method is used to stop all the running {@link IoTask} instances
-     * by handling the completed {@link Future} objects returned by the
-     * running {@link CompletionService} instance identified by the {@link #jobExecutor}
-     * instance variable. Each completed {@link Future} object will return a
-     * {@link Result} object which can be examined to get the exact status of
-     * the background job.
+     * This method is used to stop all the running threadpool and return the
+     * result list.
      *
      * @see Result
      * @see CompletionService
@@ -342,33 +331,10 @@ public class UploadIoJob {
      * @return - A list of Result objects.
      */
     public List<Result> stop() {
-        List<Result> results = new ArrayList<>();
-
-        int countTasks = listOfTasks.size();
-
-        while( countTasks-- > 0 ) {
-            try {
-                Result result = jobExecutor.take().get();
-                if( result != null ) {
-                    results.add(result);
-
-                    if (callback != null) {
-                        callback.onPartUpload(result);
-                    }
-                }
-            } catch (InterruptedException | ExecutionException e) {
-                GPUdbLogger.error( e.getMessage() );
-            }
-        }
-
-        if( callback != null ) {
-            callback.onMultiPartUploadComplete( results );
-        }
-        listOfTasks.clear();
 
         GPUdbFileHandlerUtils.awaitTerminationAfterShutdown( this.threadPool, GPUdbFileHandler.getDefaultThreadPoolTerminationTimeout() );
 
-        return results;
+        return resultList;
 
     }
 

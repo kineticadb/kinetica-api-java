@@ -988,6 +988,18 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#IGNORE_EXISTING_PK
+     * IGNORE_EXISTING_PK}:
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -1718,6 +1730,19 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}.
          */
         public static final String UPDATE_ON_EXISTING_PK = "update_on_existing_pk";
+
+        /**
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}.
+         */
+        public static final String IGNORE_EXISTING_PK = "ignore_existing_pk";
 
         private Options() {  }
     }
@@ -2515,6 +2540,21 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#IGNORE_EXISTING_PK
+     *                 IGNORE_EXISTING_PK}:
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -3608,6 +3648,20 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
      *         FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#IGNORE_EXISTING_PK
+     *         IGNORE_EXISTING_PK}:
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *         FALSE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -4138,6 +4192,21 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#IGNORE_EXISTING_PK
+     *                 IGNORE_EXISTING_PK}:
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

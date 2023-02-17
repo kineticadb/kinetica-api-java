@@ -45,24 +45,12 @@ public class FileUploader extends FileOperation {
 
     private final FileUploadListener callback;
 
-    /**
-     *
-     */
     private UploadOptions uploadOptions;
 
-    /**
-     *
-     */
     private int rankForLocalDist = 0;
 
-    /**
-     *
-     */
     private String encoding;
 
-    /**
-     *
-     */
     private Map<String, UploadIoJob> multiPartInfoMap;
 
     /**
@@ -219,7 +207,7 @@ public class FileUploader extends FileOperation {
             idJobPair.getValue().start();
 
             // Wait for it to stop before processing the next file
-            List<Result> resultList = idJobPair.getValue().stop();
+            idJobPair.getValue().stop();
 
             // Store the jobId-UploadIoJob pair in a map so that we can use them
             // later to start and stop the jobs as has been done in the methods

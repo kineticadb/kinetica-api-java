@@ -2,10 +2,25 @@
 
 ## Version 7.1
 
+### Version 7.1.8.10 - 2023-02-16
+
+#### Added
+-   JSON support in `BulkInserter`
+
+#### Changed
+-   Upgraded Apache HTTP client library from 4.5.13 to 5.2.1
+-   Fixed OOM errors during large file uploads
+-   Improved handling of non-retryable `BulkInserter` errors
+-   Improved usability of file handler example
+
+#### Removed
+-   Unneeded class references in logging output
+
+
 ### Version 7.1.8.9 - 2023-01-20
 
 #### Added
--   Retry handler for org.apache.http.conn.ConnectionTimeoutException errors
+-   Retry handler for `org.apache.http.conn.ConnectionTimeoutException` errors
 
 #### Changed
 -   Fixed cluster hostname matching check

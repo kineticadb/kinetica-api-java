@@ -1,5 +1,6 @@
 package com.gpudb;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +43,26 @@ public class GPUdbLogger {
 
     public static void error(String message) {
         LOGGER.error( message );
+    }
+
+    public static void error(Throwable exception, String message) {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+
+        // We want the calling method and class name and the line number
+        StackTraceElement callingPoint = stackTrace[ 2 ];
+
+        // Build the message
+        StringBuilder builder = new StringBuilder();
+        builder.append( "[" );
+        builder.append( callingPoint.toString() );
+        builder.append( "] " );
+        builder.append( message );
+
+        String rootCauseMessage = ExceptionUtils.getRootCauseMessage(exception);
+
+        builder.append(" :: root cause : [ ").append(rootCauseMessage).append(" ] ");
+
+        LOGGER.error( builder.toString() );
     }
 
     public static void warn(String message) {

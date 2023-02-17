@@ -155,6 +155,26 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
      *         <li> {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#IGNORE_EXISTING_PK
+     * IGNORE_EXISTING_PK}: Specifies the record collision policy for tables
+     * with a <a href="../../../../../../concepts/tables/#primary-keys"
+     * target="_top">primary key</a> when updating columns of the <a
+     * href="../../../../../../concepts/tables/#primary-keys"
+     * target="_top">primary key</a> or inserting new records.  If set to
+     * {@code true}, any record being updated or inserted with primary key
+     * values that match those of an existing record will be ignored with no
+     * error generated.  If the specified table does not have a primary key,
+     * then this option has no affect.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
+     *         <li> {@link
      * com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_PARTITION
      * UPDATE_PARTITION}: Force qualifying records to be deleted and reinserted
      * so their partition membership will be reevaluated.
@@ -263,6 +283,28 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
          * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
          */
         public static final String UPDATE_ON_EXISTING_PK = "update_on_existing_pk";
+
+        /**
+         * Specifies the record collision policy for tables with a <a
+         * href="../../../../../../concepts/tables/#primary-keys"
+         * target="_top">primary key</a> when updating columns of the <a
+         * href="../../../../../../concepts/tables/#primary-keys"
+         * target="_top">primary key</a> or inserting new records.  If set to
+         * {@code true}, any record being updated or inserted with primary key
+         * values that match those of an existing record will be ignored with
+         * no error generated.  If the specified table does not have a primary
+         * key, then this option has no affect.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
+         */
+        public static final String IGNORE_EXISTING_PK = "ignore_existing_pk";
 
         /**
          * Force qualifying records to be deleted and reinserted so their
@@ -427,6 +469,32 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
      *                 FALSE}: Discard updated and inserted records when the
      *                 same primary keys already exist
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#IGNORE_EXISTING_PK
+     *                 IGNORE_EXISTING_PK}: Specifies the record collision
+     *                 policy for tables with a <a
+     *                 href="../../../../../../concepts/tables/#primary-keys"
+     *                 target="_top">primary key</a> when updating columns of
+     *                 the <a
+     *                 href="../../../../../../concepts/tables/#primary-keys"
+     *                 target="_top">primary key</a> or inserting new records.
+     *                 If set to {@code true}, any record being updated or
+     *                 inserted with primary key values that match those of an
+     *                 existing record will be ignored with no error generated.
+     *                 If the specified table does not have a primary key, then
+     *                 this option has no affect.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
@@ -609,6 +677,32 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
      *                 FALSE}: Discard updated and inserted records when the
      *                 same primary keys already exist
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#IGNORE_EXISTING_PK
+     *                 IGNORE_EXISTING_PK}: Specifies the record collision
+     *                 policy for tables with a <a
+     *                 href="../../../../../../concepts/tables/#primary-keys"
+     *                 target="_top">primary key</a> when updating columns of
+     *                 the <a
+     *                 href="../../../../../../concepts/tables/#primary-keys"
+     *                 target="_top">primary key</a> or inserting new records.
+     *                 If set to {@code true}, any record being updated or
+     *                 inserted with primary key values that match those of an
+     *                 existing record will be ignored with no error generated.
+     *                 If the specified table does not have a primary key, then
+     *                 this option has no affect.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
@@ -935,6 +1029,27 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
      *                 <li> {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#IGNORE_EXISTING_PK
+     *         IGNORE_EXISTING_PK}: Specifies the record collision policy for
+     *         tables with a <a
+     *         href="../../../../../../concepts/tables/#primary-keys"
+     *         target="_top">primary key</a> when updating columns of the <a
+     *         href="../../../../../../concepts/tables/#primary-keys"
+     *         target="_top">primary key</a> or inserting new records.  If set
+     *         to {@code true}, any record being updated or inserted with
+     *         primary key values that match those of an existing record will
+     *         be ignored with no error generated.  If the specified table does
+     *         not have a primary key, then this option has no affect.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_PARTITION
      *         UPDATE_PARTITION}: Force qualifying records to be deleted and
      *         reinserted so their partition membership will be reevaluated.
@@ -1052,6 +1167,32 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
      *                 FALSE}: Discard updated and inserted records when the
      *                 same primary keys already exist
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#IGNORE_EXISTING_PK
+     *                 IGNORE_EXISTING_PK}: Specifies the record collision
+     *                 policy for tables with a <a
+     *                 href="../../../../../../concepts/tables/#primary-keys"
+     *                 target="_top">primary key</a> when updating columns of
+     *                 the <a
+     *                 href="../../../../../../concepts/tables/#primary-keys"
+     *                 target="_top">primary key</a> or inserting new records.
+     *                 If set to {@code true}, any record being updated or
+     *                 inserted with primary key values that match those of an
+     *                 existing record will be ignored with no error generated.
+     *                 If the specified table does not have a primary key, then
+     *                 this option has no affect.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
