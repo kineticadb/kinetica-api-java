@@ -54,10 +54,9 @@ public class ShowSqlProcResponse implements IndexedRecord {
     public static final class AdditionalInfo {
 
         /**
-         * The initial date/time that periodic execution began.  The default
-         * value is ''.
+         * The periodic execution impersonate user.  The default value is ''.
          */
-        public static final String EXECUTE_START_TIME = "execute_start_time";
+        public static final String EXECUTE_AS = "execute_as";
 
         /**
          * The periodic execution interval in seconds.  The default value is
@@ -66,9 +65,16 @@ public class ShowSqlProcResponse implements IndexedRecord {
         public static final String EXECUTE_INTERVAL = "execute_interval";
 
         /**
-         * The periodic execution impersonate user.  The default value is ''.
+         * The initial date/time that periodic execution began.  The default
+         * value is ''.
          */
-        public static final String EXECUTE_AS = "execute_as";
+        public static final String EXECUTE_START_TIME = "execute_start_time";
+
+        /**
+         * Time at which the periodic execution stops.  The default value is
+         * ''.
+         */
+        public static final String EXECUTE_STOP_TIME = "execute_stop_time";
 
         private AdditionalInfo() {  }
     }

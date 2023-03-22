@@ -77,19 +77,6 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *         <li> {@link
-     * com.gpudb.protocol.ExecuteSqlRequest.Options#PARALLEL_EXECUTION
-     * PARALLEL_EXECUTION}: If {@code false}, disables the parallel step
-     * execution of the given query.
-     * Supported values:
-     * <ul>
-     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE
-     * TRUE}
-     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     * FALSE}
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *         <li> {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#COST_BASED_OPTIMIZATION
      * COST_BASED_OPTIMIZATION}: If {@code false}, disables the cost-based
      * optimization of the given query.
@@ -102,54 +89,6 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
-     *         <li> {@link
-     * com.gpudb.protocol.ExecuteSqlRequest.Options#PLAN_CACHE PLAN_CACHE}: If
-     * {@code false}, disables plan caching for the given query.
-     * Supported values:
-     * <ul>
-     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE
-     * TRUE}
-     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     * FALSE}
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *         <li> {@link
-     * com.gpudb.protocol.ExecuteSqlRequest.Options#RULE_BASED_OPTIMIZATION
-     * RULE_BASED_OPTIMIZATION}: If {@code false}, disables rule-based rewrite
-     * optimizations for the given query
-     * Supported values:
-     * <ul>
-     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE
-     * TRUE}
-     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     * FALSE}
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *         <li> {@link
-     * com.gpudb.protocol.ExecuteSqlRequest.Options#RESULTS_CACHING
-     * RESULTS_CACHING}: If {@code false}, disables caching of the results of
-     * the given query
-     * Supported values:
-     * <ul>
-     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE
-     * TRUE}
-     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     * FALSE}
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *         <li> {@link
-     * com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE PAGING_TABLE}:
-     * When empty or the specified paging table not exists, the system will
-     * create a paging table and return when query output has more records than
-     * the user asked. If the paging table exists in the system, the records
-     * from the paging table are returned without evaluating the query.
-     *         <li> {@link
-     * com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE_TTL
-     * PAGING_TABLE_TTL}: Sets the <a href="../../../../../../concepts/ttl/"
-     * target="_top">TTL</a> of the paging table.
      *         <li> {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#DISTRIBUTED_JOINS
      * DISTRIBUTED_JOINS}: If {@code true}, enables the use of distributed
@@ -182,9 +121,10 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
      *         <li> {@link
-     * com.gpudb.protocol.ExecuteSqlRequest.Options#SSQ_OPTIMIZATION
-     * SSQ_OPTIMIZATION}: If {@code false}, scalar subqueries will be
-     * translated into joins
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#IGNORE_EXISTING_PK
+     * IGNORE_EXISTING_PK}: Can be used to customize behavior when the updated
+     * primary key value already exists as described in {@link
+     * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE
@@ -193,7 +133,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * FALSE}
      * </ul>
      * The default value is {@link
-     * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#LATE_MATERIALIZATION
      * LATE_MATERIALIZATION}: If {@code true}, Joins/Filters results  will
@@ -207,15 +147,20 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
-     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#TTL
-     * TTL}: Sets the <a href="../../../../../../concepts/ttl/"
-     * target="_top">TTL</a> of the intermediate result tables used in query
-     * execution.
      *         <li> {@link
-     * com.gpudb.protocol.ExecuteSqlRequest.Options#UPDATE_ON_EXISTING_PK
-     * UPDATE_ON_EXISTING_PK}: Can be used to customize behavior when the
-     * updated primary key value already exists as described in {@link
-     * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE PAGING_TABLE}:
+     * When empty or the specified paging table not exists, the system will
+     * create a paging table and return when query output has more records than
+     * the user asked. If the paging table exists in the system, the records
+     * from the paging table are returned without evaluating the query.
+     *         <li> {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE_TTL
+     * PAGING_TABLE_TTL}: Sets the <a href="../../../../../../concepts/ttl/"
+     * target="_top">TTL</a> of the paging table.
+     *         <li> {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#PARALLEL_EXECUTION
+     * PARALLEL_EXECUTION}: If {@code false}, disables the parallel step
+     * execution of the given query.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE
@@ -224,12 +169,24 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * FALSE}
      * </ul>
      * The default value is {@link
-     * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *         <li> {@link
-     * com.gpudb.protocol.ExecuteSqlRequest.Options#IGNORE_EXISTING_PK
-     * IGNORE_EXISTING_PK}: Can be used to customize behavior when the updated
-     * primary key value already exists as described in {@link
-     * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#PLAN_CACHE PLAN_CACHE}: If
+     * {@code false}, disables plan caching for the given query.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *         <li> {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#PREPARE_MODE PREPARE_MODE}:
+     * If {@code true}, compiles a query into an execution plan and saves it in
+     * query cache. Query execution is not performed and an empty response will
+     * be returned to user
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE
@@ -254,6 +211,68 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *         <li> {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#QUERY_PARAMETERS
+     * QUERY_PARAMETERS}: Query parameters in JSON array or arrays (for
+     * inserting multiple rows).  This can be used instead of {@code data} and
+     * {@code requestSchemaStr}.
+     *         <li> {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#RESULTS_CACHING
+     * RESULTS_CACHING}: If {@code false}, disables caching of the results of
+     * the given query
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *         <li> {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#RULE_BASED_OPTIMIZATION
+     * RULE_BASED_OPTIMIZATION}: If {@code false}, disables rule-based rewrite
+     * optimizations for the given query
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *         <li> {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#SSQ_OPTIMIZATION
+     * SSQ_OPTIMIZATION}: If {@code false}, scalar subqueries will be
+     * translated into joins
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#TTL
+     * TTL}: Sets the <a href="../../../../../../concepts/ttl/"
+     * target="_top">TTL</a> of the intermediate result tables used in query
+     * execution.
+     *         <li> {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#UPDATE_ON_EXISTING_PK
+     * UPDATE_ON_EXISTING_PK}: Can be used to customize behavior when the
+     * updated primary key value already exists as described in {@link
+     * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
+     *         <li> {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#VALIDATE_CHANGE_COLUMN
      * VALIDATE_CHANGE_COLUMN}: When changing a column using alter table,
      * validate the change before applying it. If {@code true}, then validate
@@ -269,42 +288,11 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *         <li> {@link
-     * com.gpudb.protocol.ExecuteSqlRequest.Options#PREPARE_MODE PREPARE_MODE}:
-     * If {@code true}, compiles a query into an execution plan and saves it in
-     * query cache. Query execution is not performed and an empty response will
-     * be returned to user
-     * Supported values:
-     * <ul>
-     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE
-     * TRUE}
-     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     * FALSE}
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
-
-        /**
-         * If {@code false}, disables the parallel step execution of the given
-         * query.
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-         *         <li> {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-         */
-        public static final String PARALLEL_EXECUTION = "parallel_execution";
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
 
         /**
          * If {@code false}, disables the cost-based optimization of the given
@@ -320,64 +308,8 @@ public class ExecuteSqlRequest implements IndexedRecord {
          * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
          */
         public static final String COST_BASED_OPTIMIZATION = "cost_based_optimization";
-
-        /**
-         * If {@code false}, disables plan caching for the given query.
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-         *         <li> {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-         */
-        public static final String PLAN_CACHE = "plan_cache";
-
-        /**
-         * If {@code false}, disables rule-based rewrite optimizations for the
-         * given query
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-         *         <li> {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-         */
-        public static final String RULE_BASED_OPTIMIZATION = "rule_based_optimization";
-
-        /**
-         * If {@code false}, disables caching of the results of the given query
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-         *         <li> {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-         */
-        public static final String RESULTS_CACHING = "results_caching";
-
-        /**
-         * When empty or the specified paging table not exists, the system will
-         * create a paging table and return when query output has more records
-         * than the user asked. If the paging table exists in the system, the
-         * records from the paging table are returned without evaluating the
-         * query.
-         */
-        public static final String PAGING_TABLE = "paging_table";
-
-        /**
-         * Sets the <a href="../../../../../../concepts/ttl/"
-         * target="_top">TTL</a> of the paging table.
-         */
-        public static final String PAGING_TABLE_TTL = "paging_table_ttl";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
 
         /**
          * If {@code true}, enables the use of distributed joins in servicing
@@ -414,7 +346,9 @@ public class ExecuteSqlRequest implements IndexedRecord {
         public static final String DISTRIBUTED_OPERATIONS = "distributed_operations";
 
         /**
-         * If {@code false}, scalar subqueries will be translated into joins
+         * Can be used to customize behavior when the updated primary key value
+         * already exists as described in {@link
+         * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -423,9 +357,9 @@ public class ExecuteSqlRequest implements IndexedRecord {
          * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
          * </ul>
          * The default value is {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
          */
-        public static final String SSQ_OPTIMIZATION = "ssq_optimization";
+        public static final String IGNORE_EXISTING_PK = "ignore_existing_pk";
 
         /**
          * If {@code true}, Joins/Filters results  will always be materialized
@@ -441,6 +375,131 @@ public class ExecuteSqlRequest implements IndexedRecord {
          * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
          */
         public static final String LATE_MATERIALIZATION = "late_materialization";
+
+        /**
+         * When empty or the specified paging table not exists, the system will
+         * create a paging table and return when query output has more records
+         * than the user asked. If the paging table exists in the system, the
+         * records from the paging table are returned without evaluating the
+         * query.
+         */
+        public static final String PAGING_TABLE = "paging_table";
+
+        /**
+         * Sets the <a href="../../../../../../concepts/ttl/"
+         * target="_top">TTL</a> of the paging table.
+         */
+        public static final String PAGING_TABLE_TTL = "paging_table_ttl";
+
+        /**
+         * If {@code false}, disables the parallel step execution of the given
+         * query.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+         */
+        public static final String PARALLEL_EXECUTION = "parallel_execution";
+
+        /**
+         * If {@code false}, disables plan caching for the given query.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+         */
+        public static final String PLAN_CACHE = "plan_cache";
+
+        /**
+         * If {@code true}, compiles a query into an execution plan and saves
+         * it in query cache. Query execution is not performed and an empty
+         * response will be returned to user
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
+         */
+        public static final String PREPARE_MODE = "prepare_mode";
+
+        /**
+         * If {@code true}, then columns that were dict encoded in the source
+         * table will be dict encoded in the projection table.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+         */
+        public static final String PRESERVE_DICT_ENCODING = "preserve_dict_encoding";
+
+        /**
+         * Query parameters in JSON array or arrays (for inserting multiple
+         * rows).  This can be used instead of {@code data} and {@code
+         * requestSchemaStr}.
+         */
+        public static final String QUERY_PARAMETERS = "query_parameters";
+
+        /**
+         * If {@code false}, disables caching of the results of the given query
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+         */
+        public static final String RESULTS_CACHING = "results_caching";
+
+        /**
+         * If {@code false}, disables rule-based rewrite optimizations for the
+         * given query
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+         */
+        public static final String RULE_BASED_OPTIMIZATION = "rule_based_optimization";
+
+        /**
+         * If {@code false}, scalar subqueries will be translated into joins
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+         */
+        public static final String SSQ_OPTIMIZATION = "ssq_optimization";
 
         /**
          * Sets the <a href="../../../../../../concepts/ttl/"
@@ -466,37 +525,6 @@ public class ExecuteSqlRequest implements IndexedRecord {
         public static final String UPDATE_ON_EXISTING_PK = "update_on_existing_pk";
 
         /**
-         * Can be used to customize behavior when the updated primary key value
-         * already exists as described in {@link
-         * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-         *         <li> {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
-         */
-        public static final String IGNORE_EXISTING_PK = "ignore_existing_pk";
-
-        /**
-         * If {@code true}, then columns that were dict encoded in the source
-         * table will be dict encoded in the projection table.
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-         *         <li> {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-         */
-        public static final String PRESERVE_DICT_ENCODING = "preserve_dict_encoding";
-
-        /**
          * When changing a column using alter table, validate the change before
          * applying it. If {@code true}, then validate all values. A value too
          * large (or too long) for the new type will prevent any change. If
@@ -513,22 +541,6 @@ public class ExecuteSqlRequest implements IndexedRecord {
          * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
          */
         public static final String VALIDATE_CHANGE_COLUMN = "validate_change_column";
-
-        /**
-         * If {@code true}, compiles a query into an execution plan and saves
-         * it in query cache. Query execution is not performed and an empty
-         * response will be returned to user
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-         *         <li> {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
-         */
-        public static final String PREPARE_MODE = "prepare_mode";
 
         private Options() {  }
     }
@@ -577,24 +589,11 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * @param requestSchemaStr  Avro schema of {@code data}.  The default value
      *                          is ''.
      * @param data  An array of binary-encoded data for the records to be
-     *              binded to the SQL query.  The default value is an empty
-     *              {@link List}.
+     *              binded to the SQL query.  Or use {@code query_parameters}
+     *              to pass the data in JSON format.  The default value is an
+     *              empty {@link List}.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PARALLEL_EXECUTION
-     *                 PARALLEL_EXECUTION}: If {@code false}, disables the
-     *                 parallel step execution of the given query.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#COST_BASED_OPTIMIZATION
      *                 COST_BASED_OPTIMIZATION}: If {@code false}, disables the
@@ -610,61 +609,6 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PLAN_CACHE
-     *                 PLAN_CACHE}: If {@code false}, disables plan caching for
-     *                 the given query.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#RULE_BASED_OPTIMIZATION
-     *                 RULE_BASED_OPTIMIZATION}: If {@code false}, disables
-     *                 rule-based rewrite optimizations for the given query
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#RESULTS_CACHING
-     *                 RESULTS_CACHING}: If {@code false}, disables caching of
-     *                 the results of the given query
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE
-     *                 PAGING_TABLE}: When empty or the specified paging table
-     *                 not exists, the system will create a paging table and
-     *                 return when query output has more records than the user
-     *                 asked. If the paging table exists in the system, the
-     *                 records from the paging table are returned without
-     *                 evaluating the query.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE_TTL
-     *                 PAGING_TABLE_TTL}: Sets the <a
-     *                 href="../../../../../../concepts/ttl/"
-     *                 target="_top">TTL</a> of the paging table.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#DISTRIBUTED_JOINS
      *                 DISTRIBUTED_JOINS}: If {@code true}, enables the use of
@@ -704,58 +648,6 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#SSQ_OPTIMIZATION
-     *                 SSQ_OPTIMIZATION}: If {@code false}, scalar subqueries
-     *                 will be translated into joins
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#LATE_MATERIALIZATION
-     *                 LATE_MATERIALIZATION}: If {@code true}, Joins/Filters
-     *                 results  will always be materialized ( saved to result
-     *                 tables format)
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TTL TTL}:
-     *                 Sets the <a href="../../../../../../concepts/ttl/"
-     *                 target="_top">TTL</a> of the intermediate result tables
-     *                 used in query execution.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#UPDATE_ON_EXISTING_PK
-     *                 UPDATE_ON_EXISTING_PK}: Can be used to customize
-     *                 behavior when the updated primary key value already
-     *                 exists as described in {@link
-     *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#IGNORE_EXISTING_PK
      *                 IGNORE_EXISTING_PK}: Can be used to customize behavior
      *                 when the updated primary key value already exists as
@@ -773,10 +665,38 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PRESERVE_DICT_ENCODING
-     *                 PRESERVE_DICT_ENCODING}: If {@code true}, then columns
-     *                 that were dict encoded in the source table will be dict
-     *                 encoded in the projection table.
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#LATE_MATERIALIZATION
+     *                 LATE_MATERIALIZATION}: If {@code true}, Joins/Filters
+     *                 results  will always be materialized ( saved to result
+     *                 tables format)
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE
+     *                 PAGING_TABLE}: When empty or the specified paging table
+     *                 not exists, the system will create a paging table and
+     *                 return when query output has more records than the user
+     *                 asked. If the paging table exists in the system, the
+     *                 records from the paging table are returned without
+     *                 evaluating the query.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE_TTL
+     *                 PAGING_TABLE_TTL}: Sets the <a
+     *                 href="../../../../../../concepts/ttl/"
+     *                 target="_top">TTL</a> of the paging table.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PARALLEL_EXECUTION
+     *                 PARALLEL_EXECUTION}: If {@code false}, disables the
+     *                 parallel step execution of the given query.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -788,13 +708,9 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#VALIDATE_CHANGE_COLUMN
-     *                 VALIDATE_CHANGE_COLUMN}: When changing a column using
-     *                 alter table, validate the change before applying it. If
-     *                 {@code true}, then validate all values. A value too
-     *                 large (or too long) for the new type will prevent any
-     *                 change. If {@code false}, then when a value is too large
-     *                 or long, it will be truncated.
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PLAN_CACHE
+     *                 PLAN_CACHE}: If {@code false}, disables plan caching for
+     *                 the given query.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -822,6 +738,108 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PRESERVE_DICT_ENCODING
+     *                 PRESERVE_DICT_ENCODING}: If {@code true}, then columns
+     *                 that were dict encoded in the source table will be dict
+     *                 encoded in the projection table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#QUERY_PARAMETERS
+     *                 QUERY_PARAMETERS}: Query parameters in JSON array or
+     *                 arrays (for inserting multiple rows).  This can be used
+     *                 instead of {@code data} and {@code requestSchemaStr}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#RESULTS_CACHING
+     *                 RESULTS_CACHING}: If {@code false}, disables caching of
+     *                 the results of the given query
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#RULE_BASED_OPTIMIZATION
+     *                 RULE_BASED_OPTIMIZATION}: If {@code false}, disables
+     *                 rule-based rewrite optimizations for the given query
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#SSQ_OPTIMIZATION
+     *                 SSQ_OPTIMIZATION}: If {@code false}, scalar subqueries
+     *                 will be translated into joins
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TTL TTL}:
+     *                 Sets the <a href="../../../../../../concepts/ttl/"
+     *                 target="_top">TTL</a> of the intermediate result tables
+     *                 used in query execution.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#UPDATE_ON_EXISTING_PK
+     *                 UPDATE_ON_EXISTING_PK}: Can be used to customize
+     *                 behavior when the updated primary key value already
+     *                 exists as described in {@link
+     *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#VALIDATE_CHANGE_COLUMN
+     *                 VALIDATE_CHANGE_COLUMN}: When changing a column using
+     *                 alter table, validate the change before applying it. If
+     *                 {@code true}, then validate all values. A value too
+     *                 large (or too long) for the new type will prevent any
+     *                 change. If {@code false}, then when a value is too large
+     *                 or long, it will be truncated.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -874,24 +892,11 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * @param requestSchemaStr  Avro schema of {@code data}.  The default value
      *                          is ''.
      * @param data  An array of binary-encoded data for the records to be
-     *              binded to the SQL query.  The default value is an empty
-     *              {@link List}.
+     *              binded to the SQL query.  Or use {@code query_parameters}
+     *              to pass the data in JSON format.  The default value is an
+     *              empty {@link List}.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PARALLEL_EXECUTION
-     *                 PARALLEL_EXECUTION}: If {@code false}, disables the
-     *                 parallel step execution of the given query.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#COST_BASED_OPTIMIZATION
      *                 COST_BASED_OPTIMIZATION}: If {@code false}, disables the
@@ -907,61 +912,6 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PLAN_CACHE
-     *                 PLAN_CACHE}: If {@code false}, disables plan caching for
-     *                 the given query.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#RULE_BASED_OPTIMIZATION
-     *                 RULE_BASED_OPTIMIZATION}: If {@code false}, disables
-     *                 rule-based rewrite optimizations for the given query
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#RESULTS_CACHING
-     *                 RESULTS_CACHING}: If {@code false}, disables caching of
-     *                 the results of the given query
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE
-     *                 PAGING_TABLE}: When empty or the specified paging table
-     *                 not exists, the system will create a paging table and
-     *                 return when query output has more records than the user
-     *                 asked. If the paging table exists in the system, the
-     *                 records from the paging table are returned without
-     *                 evaluating the query.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE_TTL
-     *                 PAGING_TABLE_TTL}: Sets the <a
-     *                 href="../../../../../../concepts/ttl/"
-     *                 target="_top">TTL</a> of the paging table.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#DISTRIBUTED_JOINS
      *                 DISTRIBUTED_JOINS}: If {@code true}, enables the use of
@@ -1001,58 +951,6 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#SSQ_OPTIMIZATION
-     *                 SSQ_OPTIMIZATION}: If {@code false}, scalar subqueries
-     *                 will be translated into joins
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#LATE_MATERIALIZATION
-     *                 LATE_MATERIALIZATION}: If {@code true}, Joins/Filters
-     *                 results  will always be materialized ( saved to result
-     *                 tables format)
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TTL TTL}:
-     *                 Sets the <a href="../../../../../../concepts/ttl/"
-     *                 target="_top">TTL</a> of the intermediate result tables
-     *                 used in query execution.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#UPDATE_ON_EXISTING_PK
-     *                 UPDATE_ON_EXISTING_PK}: Can be used to customize
-     *                 behavior when the updated primary key value already
-     *                 exists as described in {@link
-     *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#IGNORE_EXISTING_PK
      *                 IGNORE_EXISTING_PK}: Can be used to customize behavior
      *                 when the updated primary key value already exists as
@@ -1070,10 +968,38 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PRESERVE_DICT_ENCODING
-     *                 PRESERVE_DICT_ENCODING}: If {@code true}, then columns
-     *                 that were dict encoded in the source table will be dict
-     *                 encoded in the projection table.
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#LATE_MATERIALIZATION
+     *                 LATE_MATERIALIZATION}: If {@code true}, Joins/Filters
+     *                 results  will always be materialized ( saved to result
+     *                 tables format)
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE
+     *                 PAGING_TABLE}: When empty or the specified paging table
+     *                 not exists, the system will create a paging table and
+     *                 return when query output has more records than the user
+     *                 asked. If the paging table exists in the system, the
+     *                 records from the paging table are returned without
+     *                 evaluating the query.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE_TTL
+     *                 PAGING_TABLE_TTL}: Sets the <a
+     *                 href="../../../../../../concepts/ttl/"
+     *                 target="_top">TTL</a> of the paging table.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PARALLEL_EXECUTION
+     *                 PARALLEL_EXECUTION}: If {@code false}, disables the
+     *                 parallel step execution of the given query.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -1085,13 +1011,9 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#VALIDATE_CHANGE_COLUMN
-     *                 VALIDATE_CHANGE_COLUMN}: When changing a column using
-     *                 alter table, validate the change before applying it. If
-     *                 {@code true}, then validate all values. A value too
-     *                 large (or too long) for the new type will prevent any
-     *                 change. If {@code false}, then when a value is too large
-     *                 or long, it will be truncated.
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PLAN_CACHE
+     *                 PLAN_CACHE}: If {@code false}, disables plan caching for
+     *                 the given query.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -1119,6 +1041,108 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PRESERVE_DICT_ENCODING
+     *                 PRESERVE_DICT_ENCODING}: If {@code true}, then columns
+     *                 that were dict encoded in the source table will be dict
+     *                 encoded in the projection table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#QUERY_PARAMETERS
+     *                 QUERY_PARAMETERS}: Query parameters in JSON array or
+     *                 arrays (for inserting multiple rows).  This can be used
+     *                 instead of {@code data} and {@code requestSchemaStr}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#RESULTS_CACHING
+     *                 RESULTS_CACHING}: If {@code false}, disables caching of
+     *                 the results of the given query
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#RULE_BASED_OPTIMIZATION
+     *                 RULE_BASED_OPTIMIZATION}: If {@code false}, disables
+     *                 rule-based rewrite optimizations for the given query
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#SSQ_OPTIMIZATION
+     *                 SSQ_OPTIMIZATION}: If {@code false}, scalar subqueries
+     *                 will be translated into joins
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TTL TTL}:
+     *                 Sets the <a href="../../../../../../concepts/ttl/"
+     *                 target="_top">TTL</a> of the intermediate result tables
+     *                 used in query execution.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#UPDATE_ON_EXISTING_PK
+     *                 UPDATE_ON_EXISTING_PK}: Can be used to customize
+     *                 behavior when the updated primary key value already
+     *                 exists as described in {@link
+     *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#VALIDATE_CHANGE_COLUMN
+     *                 VALIDATE_CHANGE_COLUMN}: When changing a column using
+     *                 alter table, validate the change before applying it. If
+     *                 {@code true}, then validate all values. A value too
+     *                 large (or too long) for the new type will prevent any
+     *                 change. If {@code false}, then when a value is too large
+     *                 or long, it will be truncated.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1295,7 +1319,8 @@ public class ExecuteSqlRequest implements IndexedRecord {
     /**
      * 
      * @return An array of binary-encoded data for the records to be binded to
-     *         the SQL query.  The default value is an empty {@link List}.
+     *         the SQL query.  Or use {@code query_parameters} to pass the data
+     *         in JSON format.  The default value is an empty {@link List}.
      * 
      */
     public List<ByteBuffer> getData() {
@@ -1305,8 +1330,9 @@ public class ExecuteSqlRequest implements IndexedRecord {
     /**
      * 
      * @param data  An array of binary-encoded data for the records to be
-     *              binded to the SQL query.  The default value is an empty
-     *              {@link List}.
+     *              binded to the SQL query.  Or use {@code query_parameters}
+     *              to pass the data in JSON format.  The default value is an
+     *              empty {@link List}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -1321,19 +1347,6 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * @return Optional parameters.
      *         <ul>
      *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#PARALLEL_EXECUTION
-     *         PARALLEL_EXECUTION}: If {@code false}, disables the parallel
-     *         step execution of the given query.
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *                 <li> {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#COST_BASED_OPTIMIZATION
      *         COST_BASED_OPTIMIZATION}: If {@code false}, disables the
      *         cost-based optimization of the given query.
@@ -1346,57 +1359,6 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
-     *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#PLAN_CACHE
-     *         PLAN_CACHE}: If {@code false}, disables plan caching for the
-     *         given query.
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#RULE_BASED_OPTIMIZATION
-     *         RULE_BASED_OPTIMIZATION}: If {@code false}, disables rule-based
-     *         rewrite optimizations for the given query
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#RESULTS_CACHING
-     *         RESULTS_CACHING}: If {@code false}, disables caching of the
-     *         results of the given query
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE
-     *         PAGING_TABLE}: When empty or the specified paging table not
-     *         exists, the system will create a paging table and return when
-     *         query output has more records than the user asked. If the paging
-     *         table exists in the system, the records from the paging table
-     *         are returned without evaluating the query.
-     *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE_TTL
-     *         PAGING_TABLE_TTL}: Sets the <a
-     *         href="../../../../../../concepts/ttl/" target="_top">TTL</a> of
-     *         the paging table.
      *                 <li> {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#DISTRIBUTED_JOINS
      *         DISTRIBUTED_JOINS}: If {@code true}, enables the use of
@@ -1430,9 +1392,10 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
      *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#SSQ_OPTIMIZATION
-     *         SSQ_OPTIMIZATION}: If {@code false}, scalar subqueries will be
-     *         translated into joins
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#IGNORE_EXISTING_PK
+     *         IGNORE_EXISTING_PK}: Can be used to customize behavior when the
+     *         updated primary key value already exists as described in {@link
+     *         com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -1441,7 +1404,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#LATE_MATERIALIZATION
      *         LATE_MATERIALIZATION}: If {@code true}, Joins/Filters results
@@ -1456,15 +1419,21 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
      *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TTL TTL}: Sets the
-     *         <a href="../../../../../../concepts/ttl/" target="_top">TTL</a>
-     *         of the intermediate result tables used in query execution.
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE
+     *         PAGING_TABLE}: When empty or the specified paging table not
+     *         exists, the system will create a paging table and return when
+     *         query output has more records than the user asked. If the paging
+     *         table exists in the system, the records from the paging table
+     *         are returned without evaluating the query.
      *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#UPDATE_ON_EXISTING_PK
-     *         UPDATE_ON_EXISTING_PK}: Can be used to customize behavior when
-     *         the updated primary key value already exists as described in
-     *         {@link
-     *         com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE_TTL
+     *         PAGING_TABLE_TTL}: Sets the <a
+     *         href="../../../../../../concepts/ttl/" target="_top">TTL</a> of
+     *         the paging table.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#PARALLEL_EXECUTION
+     *         PARALLEL_EXECUTION}: If {@code false}, disables the parallel
+     *         step execution of the given query.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -1473,12 +1442,25 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#IGNORE_EXISTING_PK
-     *         IGNORE_EXISTING_PK}: Can be used to customize behavior when the
-     *         updated primary key value already exists as described in {@link
-     *         com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#PLAN_CACHE
+     *         PLAN_CACHE}: If {@code false}, disables plan caching for the
+     *         given query.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#PREPARE_MODE
+     *         PREPARE_MODE}: If {@code true}, compiles a query into an
+     *         execution plan and saves it in query cache. Query execution is
+     *         not performed and an empty response will be returned to user
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -1503,6 +1485,69 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#QUERY_PARAMETERS
+     *         QUERY_PARAMETERS}: Query parameters in JSON array or arrays (for
+     *         inserting multiple rows).  This can be used instead of {@code
+     *         data} and {@code requestSchemaStr}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#RESULTS_CACHING
+     *         RESULTS_CACHING}: If {@code false}, disables caching of the
+     *         results of the given query
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#RULE_BASED_OPTIMIZATION
+     *         RULE_BASED_OPTIMIZATION}: If {@code false}, disables rule-based
+     *         rewrite optimizations for the given query
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#SSQ_OPTIMIZATION
+     *         SSQ_OPTIMIZATION}: If {@code false}, scalar subqueries will be
+     *         translated into joins
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TTL TTL}: Sets the
+     *         <a href="../../../../../../concepts/ttl/" target="_top">TTL</a>
+     *         of the intermediate result tables used in query execution.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#UPDATE_ON_EXISTING_PK
+     *         UPDATE_ON_EXISTING_PK}: Can be used to customize behavior when
+     *         the updated primary key value already exists as described in
+     *         {@link
+     *         com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#VALIDATE_CHANGE_COLUMN
      *         VALIDATE_CHANGE_COLUMN}: When changing a column using alter
      *         table, validate the change before applying it. If {@code true},
@@ -1518,20 +1563,6 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#PREPARE_MODE
-     *         PREPARE_MODE}: If {@code true}, compiles a query into an
-     *         execution plan and saves it in query cache. Query execution is
-     *         not performed and an empty response will be returned to user
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1544,20 +1575,6 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PARALLEL_EXECUTION
-     *                 PARALLEL_EXECUTION}: If {@code false}, disables the
-     *                 parallel step execution of the given query.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#COST_BASED_OPTIMIZATION
      *                 COST_BASED_OPTIMIZATION}: If {@code false}, disables the
@@ -1573,61 +1590,6 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PLAN_CACHE
-     *                 PLAN_CACHE}: If {@code false}, disables plan caching for
-     *                 the given query.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#RULE_BASED_OPTIMIZATION
-     *                 RULE_BASED_OPTIMIZATION}: If {@code false}, disables
-     *                 rule-based rewrite optimizations for the given query
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#RESULTS_CACHING
-     *                 RESULTS_CACHING}: If {@code false}, disables caching of
-     *                 the results of the given query
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE
-     *                 PAGING_TABLE}: When empty or the specified paging table
-     *                 not exists, the system will create a paging table and
-     *                 return when query output has more records than the user
-     *                 asked. If the paging table exists in the system, the
-     *                 records from the paging table are returned without
-     *                 evaluating the query.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE_TTL
-     *                 PAGING_TABLE_TTL}: Sets the <a
-     *                 href="../../../../../../concepts/ttl/"
-     *                 target="_top">TTL</a> of the paging table.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#DISTRIBUTED_JOINS
      *                 DISTRIBUTED_JOINS}: If {@code true}, enables the use of
@@ -1667,58 +1629,6 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#SSQ_OPTIMIZATION
-     *                 SSQ_OPTIMIZATION}: If {@code false}, scalar subqueries
-     *                 will be translated into joins
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#LATE_MATERIALIZATION
-     *                 LATE_MATERIALIZATION}: If {@code true}, Joins/Filters
-     *                 results  will always be materialized ( saved to result
-     *                 tables format)
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TTL TTL}:
-     *                 Sets the <a href="../../../../../../concepts/ttl/"
-     *                 target="_top">TTL</a> of the intermediate result tables
-     *                 used in query execution.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#UPDATE_ON_EXISTING_PK
-     *                 UPDATE_ON_EXISTING_PK}: Can be used to customize
-     *                 behavior when the updated primary key value already
-     *                 exists as described in {@link
-     *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#IGNORE_EXISTING_PK
      *                 IGNORE_EXISTING_PK}: Can be used to customize behavior
      *                 when the updated primary key value already exists as
@@ -1736,10 +1646,38 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PRESERVE_DICT_ENCODING
-     *                 PRESERVE_DICT_ENCODING}: If {@code true}, then columns
-     *                 that were dict encoded in the source table will be dict
-     *                 encoded in the projection table.
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#LATE_MATERIALIZATION
+     *                 LATE_MATERIALIZATION}: If {@code true}, Joins/Filters
+     *                 results  will always be materialized ( saved to result
+     *                 tables format)
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE
+     *                 PAGING_TABLE}: When empty or the specified paging table
+     *                 not exists, the system will create a paging table and
+     *                 return when query output has more records than the user
+     *                 asked. If the paging table exists in the system, the
+     *                 records from the paging table are returned without
+     *                 evaluating the query.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE_TTL
+     *                 PAGING_TABLE_TTL}: Sets the <a
+     *                 href="../../../../../../concepts/ttl/"
+     *                 target="_top">TTL</a> of the paging table.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PARALLEL_EXECUTION
+     *                 PARALLEL_EXECUTION}: If {@code false}, disables the
+     *                 parallel step execution of the given query.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -1751,13 +1689,9 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#VALIDATE_CHANGE_COLUMN
-     *                 VALIDATE_CHANGE_COLUMN}: When changing a column using
-     *                 alter table, validate the change before applying it. If
-     *                 {@code true}, then validate all values. A value too
-     *                 large (or too long) for the new type will prevent any
-     *                 change. If {@code false}, then when a value is too large
-     *                 or long, it will be truncated.
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PLAN_CACHE
+     *                 PLAN_CACHE}: If {@code false}, disables plan caching for
+     *                 the given query.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -1785,6 +1719,108 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PRESERVE_DICT_ENCODING
+     *                 PRESERVE_DICT_ENCODING}: If {@code true}, then columns
+     *                 that were dict encoded in the source table will be dict
+     *                 encoded in the projection table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#QUERY_PARAMETERS
+     *                 QUERY_PARAMETERS}: Query parameters in JSON array or
+     *                 arrays (for inserting multiple rows).  This can be used
+     *                 instead of {@code data} and {@code requestSchemaStr}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#RESULTS_CACHING
+     *                 RESULTS_CACHING}: If {@code false}, disables caching of
+     *                 the results of the given query
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#RULE_BASED_OPTIMIZATION
+     *                 RULE_BASED_OPTIMIZATION}: If {@code false}, disables
+     *                 rule-based rewrite optimizations for the given query
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#SSQ_OPTIMIZATION
+     *                 SSQ_OPTIMIZATION}: If {@code false}, scalar subqueries
+     *                 will be translated into joins
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TTL TTL}:
+     *                 Sets the <a href="../../../../../../concepts/ttl/"
+     *                 target="_top">TTL</a> of the intermediate result tables
+     *                 used in query execution.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#UPDATE_ON_EXISTING_PK
+     *                 UPDATE_ON_EXISTING_PK}: Can be used to customize
+     *                 behavior when the updated primary key value already
+     *                 exists as described in {@link
+     *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#VALIDATE_CHANGE_COLUMN
+     *                 VALIDATE_CHANGE_COLUMN}: When changing a column using
+     *                 alter table, validate the change before applying it. If
+     *                 {@code true}, then validate all values. A value too
+     *                 large (or too long) for the new type will prevent any
+     *                 change. If {@code false}, then when a value is too large
+     *                 or long, it will be truncated.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

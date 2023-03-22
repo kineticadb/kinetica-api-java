@@ -405,6 +405,12 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String REFRESH_START_TIME = "refresh_start_time";
 
         /**
+         * Time at which the periodic view refresh stops.  The default value is
+         * ''.
+         */
+        public static final String REFRESH_STOP_TIME = "refresh_stop_time";
+
+        /**
          * For materialized view with periodic refresh_method the current
          * refresh period in seconds.  The default value is ''.
          */

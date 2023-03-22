@@ -42,27 +42,29 @@ public class GPUdbLogger {
     }
 
     public static void error(String message) {
-        LOGGER.error( message );
+        error( null, message);
     }
 
     public static void error(Throwable exception, String message) {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 
+        boolean calledFromErrorMethod = stackTrace[2].getMethodName().equals("error") && stackTrace[2].getClassName().equals("com.gpudb.GPUdbLogger");
+
         // We want the calling method and class name and the line number
-        StackTraceElement callingPoint = stackTrace[ 2 ];
+        StackTraceElement callingPoint = calledFromErrorMethod ? stackTrace[ 3 ] : stackTrace[2];
 
         // Build the message
-        StringBuilder builder = new StringBuilder();
-        builder.append( "[" );
-        builder.append( callingPoint.toString() );
-        builder.append( "] " );
-        builder.append( message );
+        String callingPointString = String.format("[%s] %s", callingPoint.toString(), message);
 
-        String rootCauseMessage = ExceptionUtils.getRootCauseMessage(exception);
+        String errorMessageString;
+        if( exception != null ) {
+            String rootCauseMessage = String.format(" :: root cause : [ %s ] ", ExceptionUtils.getRootCauseMessage(exception));
+            errorMessageString = String.format("%s%s", callingPointString, rootCauseMessage);
+        } else {
+            errorMessageString = callingPointString;
+        }
 
-        builder.append(" :: root cause : [ ").append(rootCauseMessage).append(" ] ");
-
-        LOGGER.error( builder.toString() );
+        LOGGER.error(errorMessageString);
     }
 
     public static void warn(String message) {
@@ -92,14 +94,10 @@ public class GPUdbLogger {
             StackTraceElement callingPoint = stackTrace[ 2 ];
 
             // Build the message
-            StringBuilder builder = new StringBuilder();
-            builder.append( "[" );
-            builder.append( callingPoint.toString() );
-            builder.append( "] " );
-            builder.append( message );
+            String messageString = String.format("[%s] %s", callingPoint.toString(), message);
 
             // Finally, log the debug message
-            LOGGER.debug( builder.toString() );
+            LOGGER.debug(messageString);
         } else {
             // Nothing fancy to calculate if the log level is not debug
             LOGGER.debug( message );
@@ -120,14 +118,10 @@ public class GPUdbLogger {
             StackTraceElement callingPoint = stackTrace[ 2 ];
 
             // Build the message
-            StringBuilder builder = new StringBuilder();
-            builder.append( "[" );
-            builder.append( callingPoint.toString() );
-            builder.append( "] " );
-            builder.append( message );
+            String messageString = String.format("[%s] %s", callingPoint.toString(), message);
 
             // Finally, log the debug message
-            LOGGER.trace( builder.toString() );
+            LOGGER.trace(messageString);
         } else {
             // Nothing fancy to calculate if the log level is not debug
             LOGGER.trace( message );

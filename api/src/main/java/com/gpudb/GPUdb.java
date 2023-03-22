@@ -4827,18 +4827,18 @@ public class GPUdb extends GPUdbBase {
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_BATCH_SIZE
      *                            KAFKA_BATCH_SIZE}: Maximum number of records
-     *                            to be read in a single kafka batched request.
-     *                            The default value is '1000'.
+     *                            to be ingested in a single batch.  The
+     *                            default value is '1000'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_POLL_TIMEOUT
+     *                            KAFKA_POLL_TIMEOUT}: Maximum time
+     *                            (milliseconds) for each poll to get records
+     *                            from kafka.  The default value is '0'.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_WAIT_TIME
-     *                            KAFKA_WAIT_TIME}: Maximum number of seconds
-     *                            to wait in a single kafka batched request.
-     *                            The default value is '30'.
-     *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_TIMEOUT
-     *                            KAFKA_TIMEOUT}: Number of seconds after which
-     *                            kakfa poll will timeout if datasource has no
-     *                            records.  The default value is '5'.
+     *                            KAFKA_WAIT_TIME}: Maximum time (seconds) to
+     *                            buffer records received from kafka before
+     *                            ingestion.  The default value is '30'.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EGRESS_SINGLE_FILE_MAX_SIZE
      *                            EGRESS_SINGLE_FILE_MAX_SIZE}: Max file size
@@ -5192,6 +5192,14 @@ public class GPUdb extends GPUdbBase {
      *                HH:MM:SS'.  Subsequent refreshes occur at the specified
      *                time + N * the refresh period.
      *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_STOP_TIME
+     *                SET_REFRESH_STOP_TIME}: Sets the time to stop periodic
+     *                refreshes of this <a
+     *                href="../../../../../concepts/materialized_views/"
+     *                target="_top">materialized view</a> to the datetime
+     *                string specified in {@code value} with format 'YYYY-MM-DD
+     *                HH:MM:SS'.
+     *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
      *                SET_REFRESH_PERIOD}: Sets the time interval in seconds at
      *                which to refresh this <a
@@ -5199,6 +5207,10 @@ public class GPUdb extends GPUdbBase {
      *                target="_top">materialized view</a> to the value
      *                specified in {@code value}.  Also, sets the refresh
      *                method to periodic if not already set.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_SPAN
+     *                SET_REFRESH_SPAN}: Sets the future time-offset(in
+     *                seconds) for the view refresh to stop.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_EXECUTE_AS
      *                SET_REFRESH_EXECUTE_AS}: Sets the user name to refresh
@@ -7612,10 +7624,8 @@ public class GPUdb extends GPUdbBase {
      *                 newly created view. If the schema provided is
      *                 non-existent, it will be automatically created.
      *                         <li> {@link
-     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#TTL
-     *                 TTL}: Sets the <a href="../../../../../concepts/ttl/"
-     *                 target="_top">TTL</a> of the table specified in {@code
-     *                 tableName}.
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#EXECUTE_AS
+     *                 EXECUTE_AS}: User name to use to run the refresh job
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#PERSIST
      *                 PERSIST}: If {@code true}, then the materialized view
@@ -7636,6 +7646,16 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_SPAN
+     *                 REFRESH_SPAN}: Sets the future time-offset(in seconds)
+     *                 at which periodic refresh stops
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_STOP_TIME
+     *                 REFRESH_STOP_TIME}: When {@code refresh_method} is
+     *                 {@code periodic}, specifies the time at which a periodic
+     *                 refresh is stopped.  Value is a datetime string with
+     *                 format 'YYYY-MM-DD HH:MM:SS'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_METHOD
      *                 REFRESH_METHOD}: Method by which the join can be
@@ -7678,8 +7698,10 @@ public class GPUdb extends GPUdbBase {
      *                 refresh is to be done.  Value is a datetime string with
      *                 format 'YYYY-MM-DD HH:MM:SS'.
      *                         <li> {@link
-     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#EXECUTE_AS
-     *                 EXECUTE_AS}: User name to use to run the refresh job
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#TTL
+     *                 TTL}: Sets the <a href="../../../../../concepts/ttl/"
+     *                 target="_top">TTL</a> of the table specified in {@code
+     *                 tableName}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -7987,9 +8009,14 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#OFFSET
+     *                 OFFSET}: The number of initial results to skip (this can
+     *                 be useful for paging through the results).  The default
+     *                 value is '0'.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#LIMIT
      *                 LIMIT}: The number of records to keep.  The default
-     *                 value is ''.
+     *                 value is '-9999'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#ORDER_BY
      *                 ORDER_BY}: Comma-separated list of the columns to be
@@ -9045,6 +9072,15 @@ public class GPUdb extends GPUdbBase {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_NUM_RECORDS
+     *                 AVRO_NUM_RECORDS}: Optional number of avro records, if
+     *                 data includes only records.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_SCHEMA
+     *                 AVRO_SCHEMA}: Optional string representing avro schema,
+     *                 for insert records in avro format, that does not include
+     *                 is schema.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#BAD_RECORD_TABLE_NAME
      *                 BAD_RECORD_TABLE_NAME}: Optional name of a table to
      *                 which records that were rejected are written.  The
@@ -9120,6 +9156,27 @@ public class GPUdb extends GPUdbBase {
      *                 COLUMNS_TO_SKIP}: Specifies a comma-delimited list of
      *                 columns from the source data to
      *                 skip.  Mutually exclusive with {@code columns_to_load}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#COMPRESSION_TYPE
+     *                 COMPRESSION_TYPE}: Optional: compression type
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#NONE
+     *                 NONE}: Uncompressed
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AUTO
+     *                 AUTO}: Default. Auto detect compression type
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#GZIP
+     *                 GZIP}: gzip file compression.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#BZIP2
+     *                 BZIP2}: bzip2 file compression.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AUTO
+     *                 AUTO}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#DATASOURCE_NAME
      *                 DATASOURCE_NAME}: Name of an existing external data
@@ -9337,6 +9394,13 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#LOCAL_TIME_OFFSET
      *                 LOCAL_TIME_OFFSET}: For Avro local timestamp columns
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#MAX_RECORDS_TO_LOAD
+     *                 MAX_RECORDS_TO_LOAD}: Limit the number of records to
+     *                 load in this request: If this number is larger than a
+     *                 batch_size, then the number of records loaded will be
+     *                 limited to the next whole number of batch_size (per
+     *                 working thread).  The default value is ''.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#NUM_TASKS_PER_RANK
      *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
      *                 reading file per rank. Default will be
@@ -9512,6 +9576,23 @@ public class GPUdb extends GPUdbBase {
      *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
      *                 Used only when 'text_search_columns' has a value.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUNCATE_STRINGS
+     *                 TRUNCATE_STRINGS}: If set to {@code true}, truncate
+     *                 string values that are longer than the column's type
+     *                 size.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUNCATE_TABLE
      *                 TRUNCATE_TABLE}: If set to {@code true}, truncates the
      *                 table specified by {@code tableName} prior to loading
@@ -9555,6 +9636,11 @@ public class GPUdb extends GPUdbBase {
      *                 for splitting the query into multiple sub-queries using
      *                 the data distribution of given column.  The default
      *                 value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_INCREASING_COLUMN
+     *                 REMOTE_QUERY_INCREASING_COLUMN}: Column on subscribed
+     *                 remote query result that will increase for new records
+     *                 (e.g., TIMESTAMP).  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
      *                 REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
@@ -12056,24 +12142,11 @@ public class GPUdb extends GPUdbBase {
      * @param requestSchemaStr  Avro schema of {@code data}.  The default value
      *                          is ''.
      * @param data  An array of binary-encoded data for the records to be
-     *              binded to the SQL query.  The default value is an empty
-     *              {@link List}.
+     *              binded to the SQL query.  Or use {@code query_parameters}
+     *              to pass the data in JSON format.  The default value is an
+     *              empty {@link List}.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PARALLEL_EXECUTION
-     *                 PARALLEL_EXECUTION}: If {@code false}, disables the
-     *                 parallel step execution of the given query.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#COST_BASED_OPTIMIZATION
      *                 COST_BASED_OPTIMIZATION}: If {@code false}, disables the
@@ -12089,61 +12162,6 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PLAN_CACHE
-     *                 PLAN_CACHE}: If {@code false}, disables plan caching for
-     *                 the given query.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#RULE_BASED_OPTIMIZATION
-     *                 RULE_BASED_OPTIMIZATION}: If {@code false}, disables
-     *                 rule-based rewrite optimizations for the given query
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#RESULTS_CACHING
-     *                 RESULTS_CACHING}: If {@code false}, disables caching of
-     *                 the results of the given query
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE
-     *                 PAGING_TABLE}: When empty or the specified paging table
-     *                 not exists, the system will create a paging table and
-     *                 return when query output has more records than the user
-     *                 asked. If the paging table exists in the system, the
-     *                 records from the paging table are returned without
-     *                 evaluating the query.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE_TTL
-     *                 PAGING_TABLE_TTL}: Sets the <a
-     *                 href="../../../../../concepts/ttl/"
-     *                 target="_top">TTL</a> of the paging table.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#DISTRIBUTED_JOINS
      *                 DISTRIBUTED_JOINS}: If {@code true}, enables the use of
@@ -12183,58 +12201,6 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#SSQ_OPTIMIZATION
-     *                 SSQ_OPTIMIZATION}: If {@code false}, scalar subqueries
-     *                 will be translated into joins
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#LATE_MATERIALIZATION
-     *                 LATE_MATERIALIZATION}: If {@code true}, Joins/Filters
-     *                 results  will always be materialized ( saved to result
-     *                 tables format)
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TTL TTL}:
-     *                 Sets the <a href="../../../../../concepts/ttl/"
-     *                 target="_top">TTL</a> of the intermediate result tables
-     *                 used in query execution.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#UPDATE_ON_EXISTING_PK
-     *                 UPDATE_ON_EXISTING_PK}: Can be used to customize
-     *                 behavior when the updated primary key value already
-     *                 exists as described in {@link
-     *                 GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#IGNORE_EXISTING_PK
      *                 IGNORE_EXISTING_PK}: Can be used to customize behavior
      *                 when the updated primary key value already exists as
@@ -12252,10 +12218,38 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PRESERVE_DICT_ENCODING
-     *                 PRESERVE_DICT_ENCODING}: If {@code true}, then columns
-     *                 that were dict encoded in the source table will be dict
-     *                 encoded in the projection table.
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#LATE_MATERIALIZATION
+     *                 LATE_MATERIALIZATION}: If {@code true}, Joins/Filters
+     *                 results  will always be materialized ( saved to result
+     *                 tables format)
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE
+     *                 PAGING_TABLE}: When empty or the specified paging table
+     *                 not exists, the system will create a paging table and
+     *                 return when query output has more records than the user
+     *                 asked. If the paging table exists in the system, the
+     *                 records from the paging table are returned without
+     *                 evaluating the query.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE_TTL
+     *                 PAGING_TABLE_TTL}: Sets the <a
+     *                 href="../../../../../concepts/ttl/"
+     *                 target="_top">TTL</a> of the paging table.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PARALLEL_EXECUTION
+     *                 PARALLEL_EXECUTION}: If {@code false}, disables the
+     *                 parallel step execution of the given query.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -12267,13 +12261,9 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#VALIDATE_CHANGE_COLUMN
-     *                 VALIDATE_CHANGE_COLUMN}: When changing a column using
-     *                 alter table, validate the change before applying it. If
-     *                 {@code true}, then validate all values. A value too
-     *                 large (or too long) for the new type will prevent any
-     *                 change. If {@code false}, then when a value is too large
-     *                 or long, it will be truncated.
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PLAN_CACHE
+     *                 PLAN_CACHE}: If {@code false}, disables plan caching for
+     *                 the given query.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -12301,6 +12291,108 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PRESERVE_DICT_ENCODING
+     *                 PRESERVE_DICT_ENCODING}: If {@code true}, then columns
+     *                 that were dict encoded in the source table will be dict
+     *                 encoded in the projection table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#QUERY_PARAMETERS
+     *                 QUERY_PARAMETERS}: Query parameters in JSON array or
+     *                 arrays (for inserting multiple rows).  This can be used
+     *                 instead of {@code data} and {@code requestSchemaStr}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#RESULTS_CACHING
+     *                 RESULTS_CACHING}: If {@code false}, disables caching of
+     *                 the results of the given query
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#RULE_BASED_OPTIMIZATION
+     *                 RULE_BASED_OPTIMIZATION}: If {@code false}, disables
+     *                 rule-based rewrite optimizations for the given query
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#SSQ_OPTIMIZATION
+     *                 SSQ_OPTIMIZATION}: If {@code false}, scalar subqueries
+     *                 will be translated into joins
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TTL TTL}:
+     *                 Sets the <a href="../../../../../concepts/ttl/"
+     *                 target="_top">TTL</a> of the intermediate result tables
+     *                 used in query execution.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#UPDATE_ON_EXISTING_PK
+     *                 UPDATE_ON_EXISTING_PK}: Can be used to customize
+     *                 behavior when the updated primary key value already
+     *                 exists as described in {@link
+     *                 GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#VALIDATE_CHANGE_COLUMN
+     *                 VALIDATE_CHANGE_COLUMN}: When changing a column using
+     *                 alter table, validate the change before applying it. If
+     *                 {@code true}, then validate all values. A value too
+     *                 large (or too long) for the new type will prevent any
+     *                 change. If {@code false}, then when a value is too large
+     *                 or long, it will be truncated.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -17695,6 +17787,14 @@ public class GPUdb extends GPUdbBase {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AVRO_NUM_RECORDS
+     *                 AVRO_NUM_RECORDS}: Optional number of avro records, if
+     *                 data includes only records.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AVRO_SCHEMA
+     *                 AVRO_SCHEMA}: Optional string representing avro schema,
+     *                 if data includes only records.
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BAD_RECORD_TABLE_NAME
      *                 BAD_RECORD_TABLE_NAME}: Optional name of a table to
      *                 which records that were rejected are written.  The
@@ -17772,6 +17872,27 @@ public class GPUdb extends GPUdbBase {
      *                 COLUMNS_TO_SKIP}: Specifies a comma-delimited list of
      *                 columns from the source data to
      *                 skip.  Mutually exclusive with {@code columns_to_load}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COMPRESSION_TYPE
+     *                 COMPRESSION_TYPE}: Optional: compression type
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NONE
+     *                 NONE}: Uncompressed file
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO
+     *                 AUTO}: Default. Auto detect compression type
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#GZIP
+     *                 GZIP}: gzip file compression.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BZIP2
+     *                 BZIP2}: bzip2 file compression.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO
+     *                 AUTO}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DATASOURCE_NAME
      *                 DATASOURCE_NAME}: Name of an existing external data
@@ -17966,6 +18087,13 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LOCAL_TIME_OFFSET
      *                 LOCAL_TIME_OFFSET}: For Avro local timestamp columns
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#MAX_RECORDS_TO_LOAD
+     *                 MAX_RECORDS_TO_LOAD}: Limit the number of records to
+     *                 load in this request: If this number is larger than a
+     *                 batch_size, then the number of records loaded will be
+     *                 limited to the next whole number of batch_size (per
+     *                 working thread).  The default value is ''.
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NUM_TASKS_PER_RANK
      *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
      *                 reading file per rank. Default will be
@@ -18118,6 +18246,23 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
      *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
      *                 Used only when 'text_search_columns' has a value.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUNCATE_STRINGS
+     *                 TRUNCATE_STRINGS}: If set to {@code true}, truncate
+     *                 string values that are longer than the column's type
+     *                 size.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUNCATE_TABLE
      *                 TRUNCATE_TABLE}: If set to {@code true}, truncates the
@@ -18456,6 +18601,15 @@ public class GPUdb extends GPUdbBase {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AVRO_NUM_RECORDS
+     *                 AVRO_NUM_RECORDS}: Optional number of avro records, if
+     *                 data includes only records.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AVRO_SCHEMA
+     *                 AVRO_SCHEMA}: Optional string representing avro schema,
+     *                 for insert records in avro format, that does not include
+     *                 is schema.
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BAD_RECORD_TABLE_NAME
      *                 BAD_RECORD_TABLE_NAME}: Optional name of a table to
      *                 which records that were rejected are written.  The
@@ -18531,6 +18685,27 @@ public class GPUdb extends GPUdbBase {
      *                 COLUMNS_TO_SKIP}: Specifies a comma-delimited list of
      *                 columns from the source data to
      *                 skip.  Mutually exclusive with {@code columns_to_load}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#COMPRESSION_TYPE
+     *                 COMPRESSION_TYPE}: Optional: payload compression type
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NONE
+     *                 NONE}: Uncompressed
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO
+     *                 AUTO}: Default. Auto detect compression type
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#GZIP
+     *                 GZIP}: gzip file compression.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BZIP2
+     *                 BZIP2}: bzip2 file compression.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO
+     *                 AUTO}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DEFAULT_COLUMN_FORMATS
      *                 DEFAULT_COLUMN_FORMATS}: Specifies the default format to
@@ -18693,6 +18868,13 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#LOCAL_TIME_OFFSET
      *                 LOCAL_TIME_OFFSET}: For Avro local timestamp columns
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#MAX_RECORDS_TO_LOAD
+     *                 MAX_RECORDS_TO_LOAD}: Limit the number of records to
+     *                 load in this request: If this number is larger than a
+     *                 batch_size, then the number of records loaded will be
+     *                 limited to the next whole number of batch_size (per
+     *                 working thread).  The default value is ''.
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NUM_TASKS_PER_RANK
      *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
      *                 reading file per rank. Default will be
@@ -18845,6 +19027,23 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
      *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
      *                 Used only when 'text_search_columns' has a value.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUNCATE_STRINGS
+     *                 TRUNCATE_STRINGS}: If set to {@code true}, truncate
+     *                 string values that are longer than the column's type
+     *                 size.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUNCATE_TABLE
      *                 TRUNCATE_TABLE}: If set to {@code true}, truncates the
@@ -19270,6 +19469,22 @@ public class GPUdb extends GPUdbBase {
      *                 names, to set as primary keys, when not specified in the
      *                 type.  The default value is ''.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#SUBSCRIBE
+     *                 SUBSCRIBE}: Continuously poll the data source to check
+     *                 for new data and load it into the table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUNCATE_TABLE
      *                 TRUNCATE_TABLE}: If set to {@code true}, truncates the
      *                 table specified by {@code tableName} prior to loading
@@ -19301,6 +19516,11 @@ public class GPUdb extends GPUdbBase {
      *                 for splitting the query into multiple sub-queries using
      *                 the data distribution of given column.  The default
      *                 value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_INCREASING_COLUMN
+     *                 REMOTE_QUERY_INCREASING_COLUMN}: Column on subscribed
+     *                 remote query result that will increase for new records
+     *                 (e.g., TIMESTAMP).  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
      *                 REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
@@ -20006,6 +20226,10 @@ public class GPUdb extends GPUdbBase {
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_PICKUP_DROPOFF
      *                     MATCH_PICKUP_DROPOFF}: Matches the pickups and
      *                     dropoffs by optimizing the total trip costs
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_CLUSTERS
+     *                     MATCH_CLUSTERS}: Matches the graph nodes with a
+     *                     cluster index using Louvain clustering algorithm
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -20301,6 +20525,46 @@ public class GPUdb extends GPUdbBase {
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#NUM_CYCLES
+     *                 NUM_CYCLES}: For the {@code match_clusters} solver only.
+     *                 Terminates the cluster exchange iterations across
+     *                 2-step-cycles (outer loop) when quality does not improve
+     *                 during iterations.  The default value is '10'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#NUM_LOOPS_PER_CYCLE
+     *                 NUM_LOOPS_PER_CYCLE}: For the {@code match_clusters}
+     *                 solver only. Terminates the cluster exchanges within the
+     *                 first step iterations of a cycle (inner loop) unless
+     *                 convergence is reached.  The default value is '10'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#NUM_OUTPUT_CLUSTERS
+     *                 NUM_OUTPUT_CLUSTERS}: For the {@code match_clusters}
+     *                 solver only.  Limits the output to the top
+     *                 'num_output_clusters' clusters based on density. Default
+     *                 value of zero outputs all clusters.  The default value
+     *                 is '0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_NUM_CLUSTERS
+     *                 MAX_NUM_CLUSTERS}: For the {@code match_clusters} solver
+     *                 only. If set (value greater than zero), it terminates
+     *                 when the number of clusters goes below than this number.
+     *                 The default value is '0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#CLUSTER_QUALITY_METRIC
+     *                 CLUSTER_QUALITY_METRIC}: For the {@code match_clusters}
+     *                 solver only. The quality metric for Louvain modularity
+     *                 optimization solver.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#GIRWAN
+     *                 GIRWAN}: Uses the Newman Girwan quality metric for
+     *                 cluster solver
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#GIRWAN
+     *                 GIRWAN}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#RESTRICTED_TYPE
      *                 RESTRICTED_TYPE}: For the {@code match_supply_demand}

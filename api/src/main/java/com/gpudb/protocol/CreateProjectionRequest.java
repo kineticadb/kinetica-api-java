@@ -126,8 +126,12 @@ public class CreateProjectionRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
      *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#OFFSET OFFSET}: The
+     * number of initial results to skip (this can be useful for paging through
+     * the results).  The default value is '0'.
+     *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#LIMIT LIMIT}: The
-     * number of records to keep.  The default value is ''.
+     * number of records to keep.  The default value is '-9999'.
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#ORDER_BY ORDER_BY}:
      * Comma-separated list of the columns to be sorted by; e.g. 'timestamp
@@ -322,7 +326,13 @@ public class CreateProjectionRequest implements IndexedRecord {
         public static final String IS_REPLICATED = "is_replicated";
 
         /**
-         * The number of records to keep.  The default value is ''.
+         * The number of initial results to skip (this can be useful for paging
+         * through the results).  The default value is '0'.
+         */
+        public static final String OFFSET = "offset";
+
+        /**
+         * The number of records to keep.  The default value is '-9999'.
          */
         public static final String LIMIT = "limit";
 
@@ -623,9 +633,14 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#OFFSET
+     *                 OFFSET}: The number of initial results to skip (this can
+     *                 be useful for paging through the results).  The default
+     *                 value is '0'.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#LIMIT
      *                 LIMIT}: The number of records to keep.  The default
-     *                 value is ''.
+     *                 value is '-9999'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#ORDER_BY
      *                 ORDER_BY}: Comma-separated list of the columns to be
@@ -943,8 +958,13 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#OFFSET
+     *         OFFSET}: The number of initial results to skip (this can be
+     *         useful for paging through the results).  The default value is
+     *         '0'.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#LIMIT LIMIT}:
-     *         The number of records to keep.  The default value is ''.
+     *         The number of records to keep.  The default value is '-9999'.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#ORDER_BY
      *         ORDER_BY}: Comma-separated list of the columns to be sorted by;
@@ -1156,9 +1176,14 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#OFFSET
+     *                 OFFSET}: The number of initial results to skip (this can
+     *                 be useful for paging through the results).  The default
+     *                 value is '0'.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#LIMIT
      *                 LIMIT}: The number of records to keep.  The default
-     *                 value is ''.
+     *                 value is '-9999'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#ORDER_BY
      *                 ORDER_BY}: Comma-separated list of the columns to be

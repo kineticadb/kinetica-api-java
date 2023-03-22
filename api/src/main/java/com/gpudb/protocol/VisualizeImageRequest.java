@@ -162,6 +162,10 @@ public class VisualizeImageRequest implements IndexedRecord {
 
     public static final class Options {
 
+        public static final String POINTCOLOR_ATTR = "pointcolor_attr";
+
+        public static final String SHAPEFILLCOLOR_ATTR = "shapefillcolor_attr";
+
         public static final String TRACK_ID_COLUMN_NAME = "track_id_column_name";
 
         public static final String TRACK_ORDER_COLUMN_NAME = "track_order_column_name";

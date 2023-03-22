@@ -2,6 +2,20 @@
 
 ## Version 7.1
 
+### Version 7.1.9.0 - 2023-03-19
+
+#### Added
+-   Examples of secure/unsecure connections; improved SSL failure error message
+
+#### Changed
+-   Fixed handling of timeout units
+-   Fixed application of SSL handshake timeout to read requests
+-   Improved error logging format
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
 ### Version 7.1.8.10 - 2023-02-16
 
 #### Added

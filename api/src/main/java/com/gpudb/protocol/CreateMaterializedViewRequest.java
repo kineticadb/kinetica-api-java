@@ -64,9 +64,8 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      * view. If the schema provided is non-existent, it will be automatically
      * created.
      *         <li> {@link
-     * com.gpudb.protocol.CreateMaterializedViewRequest.Options#TTL TTL}: Sets
-     * the <a href="../../../../../../concepts/ttl/" target="_top">TTL</a> of
-     * the table specified in {@code tableName}.
+     * com.gpudb.protocol.CreateMaterializedViewRequest.Options#EXECUTE_AS
+     * EXECUTE_AS}: User name to use to run the refresh job
      *         <li> {@link
      * com.gpudb.protocol.CreateMaterializedViewRequest.Options#PERSIST
      * PERSIST}: If {@code true}, then the materialized view specified in
@@ -83,6 +82,15 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.CreateMaterializedViewRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_SPAN
+     * REFRESH_SPAN}: Sets the future time-offset(in seconds) at which periodic
+     * refresh stops
+     *         <li> {@link
+     * com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_STOP_TIME
+     * REFRESH_STOP_TIME}: When {@code refresh_method} is {@code periodic},
+     * specifies the time at which a periodic refresh is stopped.  Value is a
+     * datetime string with format 'YYYY-MM-DD HH:MM:SS'.
      *         <li> {@link
      * com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_METHOD
      * REFRESH_METHOD}: Method by which the join can be refreshed when the data
@@ -120,8 +128,9 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      * specifies the first time at which a refresh is to be done.  Value is a
      * datetime string with format 'YYYY-MM-DD HH:MM:SS'.
      *         <li> {@link
-     * com.gpudb.protocol.CreateMaterializedViewRequest.Options#EXECUTE_AS
-     * EXECUTE_AS}: User name to use to run the refresh job
+     * com.gpudb.protocol.CreateMaterializedViewRequest.Options#TTL TTL}: Sets
+     * the <a href="../../../../../../concepts/ttl/" target="_top">TTL</a> of
+     * the table specified in {@code tableName}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -139,10 +148,9 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
         public static final String COLLECTION_NAME = "collection_name";
 
         /**
-         * Sets the <a href="../../../../../../concepts/ttl/"
-         * target="_top">TTL</a> of the table specified in {@code tableName}.
+         * User name to use to run the refresh job
          */
-        public static final String TTL = "ttl";
+        public static final String EXECUTE_AS = "execute_as";
 
         /**
          * If {@code true}, then the materialized view specified in {@code
@@ -165,6 +173,19 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
         public static final String PERSIST = "persist";
         public static final String TRUE = "true";
         public static final String FALSE = "false";
+
+        /**
+         * Sets the future time-offset(in seconds) at which periodic refresh
+         * stops
+         */
+        public static final String REFRESH_SPAN = "refresh_span";
+
+        /**
+         * When {@code refresh_method} is {@code periodic}, specifies the time
+         * at which a periodic refresh is stopped.  Value is a datetime string
+         * with format 'YYYY-MM-DD HH:MM:SS'.
+         */
+        public static final String REFRESH_STOP_TIME = "refresh_stop_time";
 
         /**
          * Method by which the join can be refreshed when the data in
@@ -236,9 +257,10 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
         public static final String REFRESH_START_TIME = "refresh_start_time";
 
         /**
-         * User name to use to run the refresh job
+         * Sets the <a href="../../../../../../concepts/ttl/"
+         * target="_top">TTL</a> of the table specified in {@code tableName}.
          */
-        public static final String EXECUTE_AS = "execute_as";
+        public static final String TTL = "ttl";
 
         private Options() {  }
     }
@@ -280,10 +302,8 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                 schema provided is non-existent, it will be
      *                 automatically created.
      *                         <li> {@link
-     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#TTL
-     *                 TTL}: Sets the <a href="../../../../../../concepts/ttl/"
-     *                 target="_top">TTL</a> of the table specified in {@code
-     *                 tableName}.
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#EXECUTE_AS
+     *                 EXECUTE_AS}: User name to use to run the refresh job
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#PERSIST
      *                 PERSIST}: If {@code true}, then the materialized view
@@ -304,6 +324,16 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_SPAN
+     *                 REFRESH_SPAN}: Sets the future time-offset(in seconds)
+     *                 at which periodic refresh stops
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_STOP_TIME
+     *                 REFRESH_STOP_TIME}: When {@code refresh_method} is
+     *                 {@code periodic}, specifies the time at which a periodic
+     *                 refresh is stopped.  Value is a datetime string with
+     *                 format 'YYYY-MM-DD HH:MM:SS'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_METHOD
      *                 REFRESH_METHOD}: Method by which the join can be
@@ -347,8 +377,10 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                 refresh is to be done.  Value is a datetime string with
      *                 format 'YYYY-MM-DD HH:MM:SS'.
      *                         <li> {@link
-     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#EXECUTE_AS
-     *                 EXECUTE_AS}: User name to use to run the refresh job
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#TTL
+     *                 TTL}: Sets the <a href="../../../../../../concepts/ttl/"
+     *                 target="_top">TTL</a> of the table specified in {@code
+     *                 tableName}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -405,10 +437,8 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *         the newly created view. If the schema provided is non-existent,
      *         it will be automatically created.
      *                 <li> {@link
-     *         com.gpudb.protocol.CreateMaterializedViewRequest.Options#TTL
-     *         TTL}: Sets the <a href="../../../../../../concepts/ttl/"
-     *         target="_top">TTL</a> of the table specified in {@code
-     *         tableName}.
+     *         com.gpudb.protocol.CreateMaterializedViewRequest.Options#EXECUTE_AS
+     *         EXECUTE_AS}: User name to use to run the refresh job
      *                 <li> {@link
      *         com.gpudb.protocol.CreateMaterializedViewRequest.Options#PERSIST
      *         PERSIST}: If {@code true}, then the materialized view specified
@@ -428,6 +458,16 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.CreateMaterializedViewRequest.Options#FALSE
      *         FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_SPAN
+     *         REFRESH_SPAN}: Sets the future time-offset(in seconds) at which
+     *         periodic refresh stops
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_STOP_TIME
+     *         REFRESH_STOP_TIME}: When {@code refresh_method} is {@code
+     *         periodic}, specifies the time at which a periodic refresh is
+     *         stopped.  Value is a datetime string with format 'YYYY-MM-DD
+     *         HH:MM:SS'.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_METHOD
      *         REFRESH_METHOD}: Method by which the join can be refreshed when
@@ -468,8 +508,10 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *         done.  Value is a datetime string with format 'YYYY-MM-DD
      *         HH:MM:SS'.
      *                 <li> {@link
-     *         com.gpudb.protocol.CreateMaterializedViewRequest.Options#EXECUTE_AS
-     *         EXECUTE_AS}: User name to use to run the refresh job
+     *         com.gpudb.protocol.CreateMaterializedViewRequest.Options#TTL
+     *         TTL}: Sets the <a href="../../../../../../concepts/ttl/"
+     *         target="_top">TTL</a> of the table specified in {@code
+     *         tableName}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -493,10 +535,8 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                 schema provided is non-existent, it will be
      *                 automatically created.
      *                         <li> {@link
-     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#TTL
-     *                 TTL}: Sets the <a href="../../../../../../concepts/ttl/"
-     *                 target="_top">TTL</a> of the table specified in {@code
-     *                 tableName}.
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#EXECUTE_AS
+     *                 EXECUTE_AS}: User name to use to run the refresh job
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#PERSIST
      *                 PERSIST}: If {@code true}, then the materialized view
@@ -517,6 +557,16 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_SPAN
+     *                 REFRESH_SPAN}: Sets the future time-offset(in seconds)
+     *                 at which periodic refresh stops
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_STOP_TIME
+     *                 REFRESH_STOP_TIME}: When {@code refresh_method} is
+     *                 {@code periodic}, specifies the time at which a periodic
+     *                 refresh is stopped.  Value is a datetime string with
+     *                 format 'YYYY-MM-DD HH:MM:SS'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_METHOD
      *                 REFRESH_METHOD}: Method by which the join can be
@@ -560,8 +610,10 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                 refresh is to be done.  Value is a datetime string with
      *                 format 'YYYY-MM-DD HH:MM:SS'.
      *                         <li> {@link
-     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#EXECUTE_AS
-     *                 EXECUTE_AS}: User name to use to run the refresh job
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#TTL
+     *                 TTL}: Sets the <a href="../../../../../../concepts/ttl/"
+     *                 target="_top">TTL</a> of the table specified in {@code
+     *                 tableName}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
