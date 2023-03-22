@@ -105,6 +105,10 @@ public class MatchGraphRequest implements IndexedRecord {
      * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_PICKUP_DROPOFF
      * MATCH_PICKUP_DROPOFF}: Matches the pickups and dropoffs by optimizing
      * the total trip costs
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_CLUSTERS
+     * MATCH_CLUSTERS}: Matches the graph nodes with a cluster index using
+     * Louvain clustering algorithm
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -168,6 +172,12 @@ public class MatchGraphRequest implements IndexedRecord {
          * Matches the pickups and dropoffs by optimizing the total trip costs
          */
         public static final String MATCH_PICKUP_DROPOFF = "match_pickup_dropoff";
+
+        /**
+         * Matches the graph nodes with a cluster index using Louvain
+         * clustering algorithm
+         */
+        public static final String MATCH_CLUSTERS = "match_clusters";
 
         private SolveMethod() {  }
     }
@@ -393,6 +403,39 @@ public class MatchGraphRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#NUM_CYCLES NUM_CYCLES}: For
+     * the {@code match_clusters} solver only. Terminates the cluster exchange
+     * iterations across 2-step-cycles (outer loop) when quality does not
+     * improve during iterations.  The default value is '10'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#NUM_LOOPS_PER_CYCLE
+     * NUM_LOOPS_PER_CYCLE}: For the {@code match_clusters} solver only.
+     * Terminates the cluster exchanges within the first step iterations of a
+     * cycle (inner loop) unless convergence is reached.  The default value is
+     * '10'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#NUM_OUTPUT_CLUSTERS
+     * NUM_OUTPUT_CLUSTERS}: For the {@code match_clusters} solver only.
+     * Limits the output to the top 'num_output_clusters' clusters based on
+     * density. Default value of zero outputs all clusters.  The default value
+     * is '0'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#MAX_NUM_CLUSTERS
+     * MAX_NUM_CLUSTERS}: For the {@code match_clusters} solver only. If set
+     * (value greater than zero), it terminates when the number of clusters
+     * goes below than this number.  The default value is '0'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#CLUSTER_QUALITY_METRIC
+     * CLUSTER_QUALITY_METRIC}: For the {@code match_clusters} solver only. The
+     * quality metric for Louvain modularity optimization solver.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#GIRWAN
+     * GIRWAN}: Uses the Newman Girwan quality metric for cluster solver
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#GIRWAN GIRWAN}.
      *         <li> {@link
      * com.gpudb.protocol.MatchGraphRequest.Options#RESTRICTED_TYPE
      * RESTRICTED_TYPE}: For the {@code match_supply_demand} solver only.
@@ -780,6 +823,53 @@ public class MatchGraphRequest implements IndexedRecord {
         public static final String ROUND_TRIP = "round_trip";
 
         /**
+         * For the {@code match_clusters} solver only. Terminates the cluster
+         * exchange iterations across 2-step-cycles (outer loop) when quality
+         * does not improve during iterations.  The default value is '10'.
+         */
+        public static final String NUM_CYCLES = "num_cycles";
+
+        /**
+         * For the {@code match_clusters} solver only. Terminates the cluster
+         * exchanges within the first step iterations of a cycle (inner loop)
+         * unless convergence is reached.  The default value is '10'.
+         */
+        public static final String NUM_LOOPS_PER_CYCLE = "num_loops_per_cycle";
+
+        /**
+         * For the {@code match_clusters} solver only.  Limits the output to
+         * the top 'num_output_clusters' clusters based on density. Default
+         * value of zero outputs all clusters.  The default value is '0'.
+         */
+        public static final String NUM_OUTPUT_CLUSTERS = "num_output_clusters";
+
+        /**
+         * For the {@code match_clusters} solver only. If set (value greater
+         * than zero), it terminates when the number of clusters goes below
+         * than this number.  The default value is '0'.
+         */
+        public static final String MAX_NUM_CLUSTERS = "max_num_clusters";
+
+        /**
+         * For the {@code match_clusters} solver only. The quality metric for
+         * Louvain modularity optimization solver.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#GIRWAN GIRWAN}: Uses
+         * the Newman Girwan quality metric for cluster solver
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#GIRWAN GIRWAN}.
+         */
+        public static final String CLUSTER_QUALITY_METRIC = "cluster_quality_metric";
+
+        /**
+         * Uses the Newman Girwan quality metric for cluster solver
+         */
+        public static final String GIRWAN = "girwan";
+
+        /**
          * For the {@code match_supply_demand} solver only. Optimization is
          * performed by restricting routes labeled by 'MSDO_ODDEVEN_RESTRICTED'
          * only for this supply actor (truck) type
@@ -1014,6 +1104,10 @@ public class MatchGraphRequest implements IndexedRecord {
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_PICKUP_DROPOFF
      *                     MATCH_PICKUP_DROPOFF}: Matches the pickups and
      *                     dropoffs by optimizing the total trip costs
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_CLUSTERS
+     *                     MATCH_CLUSTERS}: Matches the graph nodes with a
+     *                     cluster index using Louvain clustering algorithm
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -1307,6 +1401,46 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#NUM_CYCLES
+     *                 NUM_CYCLES}: For the {@code match_clusters} solver only.
+     *                 Terminates the cluster exchange iterations across
+     *                 2-step-cycles (outer loop) when quality does not improve
+     *                 during iterations.  The default value is '10'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#NUM_LOOPS_PER_CYCLE
+     *                 NUM_LOOPS_PER_CYCLE}: For the {@code match_clusters}
+     *                 solver only. Terminates the cluster exchanges within the
+     *                 first step iterations of a cycle (inner loop) unless
+     *                 convergence is reached.  The default value is '10'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#NUM_OUTPUT_CLUSTERS
+     *                 NUM_OUTPUT_CLUSTERS}: For the {@code match_clusters}
+     *                 solver only.  Limits the output to the top
+     *                 'num_output_clusters' clusters based on density. Default
+     *                 value of zero outputs all clusters.  The default value
+     *                 is '0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_NUM_CLUSTERS
+     *                 MAX_NUM_CLUSTERS}: For the {@code match_clusters} solver
+     *                 only. If set (value greater than zero), it terminates
+     *                 when the number of clusters goes below than this number.
+     *                 The default value is '0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#CLUSTER_QUALITY_METRIC
+     *                 CLUSTER_QUALITY_METRIC}: For the {@code match_clusters}
+     *                 solver only. The quality metric for Louvain modularity
+     *                 optimization solver.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#GIRWAN
+     *                 GIRWAN}: Uses the Newman Girwan quality metric for
+     *                 cluster solver
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#GIRWAN
+     *                 GIRWAN}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#RESTRICTED_TYPE
      *                 RESTRICTED_TYPE}: For the {@code match_supply_demand}
      *                 solver only. Optimization is performed by restricting
@@ -1556,6 +1690,10 @@ public class MatchGraphRequest implements IndexedRecord {
      *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_PICKUP_DROPOFF
      *         MATCH_PICKUP_DROPOFF}: Matches the pickups and dropoffs by
      *         optimizing the total trip costs
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_CLUSTERS
+     *         MATCH_CLUSTERS}: Matches the graph nodes with a cluster index
+     *         using Louvain clustering algorithm
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -1622,6 +1760,10 @@ public class MatchGraphRequest implements IndexedRecord {
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_PICKUP_DROPOFF
      *                     MATCH_PICKUP_DROPOFF}: Matches the pickups and
      *                     dropoffs by optimizing the total trip costs
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_CLUSTERS
+     *                     MATCH_CLUSTERS}: Matches the graph nodes with a
+     *                     cluster index using Louvain clustering algorithm
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -1938,6 +2080,43 @@ public class MatchGraphRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#NUM_CYCLES
+     *         NUM_CYCLES}: For the {@code match_clusters} solver only.
+     *         Terminates the cluster exchange iterations across 2-step-cycles
+     *         (outer loop) when quality does not improve during iterations.
+     *         The default value is '10'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#NUM_LOOPS_PER_CYCLE
+     *         NUM_LOOPS_PER_CYCLE}: For the {@code match_clusters} solver
+     *         only. Terminates the cluster exchanges within the first step
+     *         iterations of a cycle (inner loop) unless convergence is
+     *         reached.  The default value is '10'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#NUM_OUTPUT_CLUSTERS
+     *         NUM_OUTPUT_CLUSTERS}: For the {@code match_clusters} solver
+     *         only.  Limits the output to the top 'num_output_clusters'
+     *         clusters based on density. Default value of zero outputs all
+     *         clusters.  The default value is '0'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#MAX_NUM_CLUSTERS
+     *         MAX_NUM_CLUSTERS}: For the {@code match_clusters} solver only.
+     *         If set (value greater than zero), it terminates when the number
+     *         of clusters goes below than this number.  The default value is
+     *         '0'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#CLUSTER_QUALITY_METRIC
+     *         CLUSTER_QUALITY_METRIC}: For the {@code match_clusters} solver
+     *         only. The quality metric for Louvain modularity optimization
+     *         solver.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#GIRWAN GIRWAN}:
+     *         Uses the Newman Girwan quality metric for cluster solver
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#GIRWAN GIRWAN}.
      *                 <li> {@link
      *         com.gpudb.protocol.MatchGraphRequest.Options#RESTRICTED_TYPE
      *         RESTRICTED_TYPE}: For the {@code match_supply_demand} solver
@@ -2322,6 +2501,46 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#NUM_CYCLES
+     *                 NUM_CYCLES}: For the {@code match_clusters} solver only.
+     *                 Terminates the cluster exchange iterations across
+     *                 2-step-cycles (outer loop) when quality does not improve
+     *                 during iterations.  The default value is '10'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#NUM_LOOPS_PER_CYCLE
+     *                 NUM_LOOPS_PER_CYCLE}: For the {@code match_clusters}
+     *                 solver only. Terminates the cluster exchanges within the
+     *                 first step iterations of a cycle (inner loop) unless
+     *                 convergence is reached.  The default value is '10'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#NUM_OUTPUT_CLUSTERS
+     *                 NUM_OUTPUT_CLUSTERS}: For the {@code match_clusters}
+     *                 solver only.  Limits the output to the top
+     *                 'num_output_clusters' clusters based on density. Default
+     *                 value of zero outputs all clusters.  The default value
+     *                 is '0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_NUM_CLUSTERS
+     *                 MAX_NUM_CLUSTERS}: For the {@code match_clusters} solver
+     *                 only. If set (value greater than zero), it terminates
+     *                 when the number of clusters goes below than this number.
+     *                 The default value is '0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#CLUSTER_QUALITY_METRIC
+     *                 CLUSTER_QUALITY_METRIC}: For the {@code match_clusters}
+     *                 solver only. The quality metric for Louvain modularity
+     *                 optimization solver.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#GIRWAN
+     *                 GIRWAN}: Uses the Newman Girwan quality metric for
+     *                 cluster solver
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#GIRWAN
+     *                 GIRWAN}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#RESTRICTED_TYPE
      *                 RESTRICTED_TYPE}: For the {@code match_supply_demand}

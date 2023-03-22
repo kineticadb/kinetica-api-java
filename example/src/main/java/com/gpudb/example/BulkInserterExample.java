@@ -4,7 +4,16 @@ import com.gpudb.*;
 import com.gpudb.protocol.ShowTableRequest;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * This class demonstrates the usage of the BulkInserter class in a
@@ -35,6 +44,7 @@ public class BulkInserterExample {
         GPUdb.Options options = new GPUdb.Options();
         options.setUsername(user);
         options.setPassword(pass);
+        options.setBypassSslCertCheck(true);
         GPUdbLogger.setLoggingLevel(logLevel);
 
         // Establish a connection with a locally running instance of GPUdb
@@ -45,6 +55,8 @@ public class BulkInserterExample {
         bulkInserterWithExplicitCloseCall( gpudb );
 
         bulkInserterWithExplicitCloseCallWithTimedFlush(gpudb);
+
+        bulkInserterMTExample(gpudb);
 
     }
 
@@ -113,16 +125,122 @@ public class BulkInserterExample {
 
         // Try to insert enough records such that at least one batch
         // is pushed automatically and then we have some leftovers to flush
-        for (int x = 0; x < numRecords; ++x) {
-            GenericRecord gr = new GenericRecord(tableDefinition);
-            gr.put(0, x);
-            gr.put(1, x);
-            bi.insert(gr);
+        try {
+            for (int x = 0; x < numRecords; ++x) {
+                GenericRecord gr = new GenericRecord(tableDefinition);
+                gr.put(0, x);
+                gr.put(1, x);
+                bi.insert(gr);
+            }
+        } catch (BulkInserter.InsertException ie ) {
+            GPUdbLogger.error(ie, "Error in inserting records");
+        } finally {
+            // Call close explicitly; will automatically flush pending updates
+            bi.close();
         }
 
-        // Call close explicitly; will automatically flush pending updates
-        bi.close();
 
+        Map<String,String> stOptions = GPUdb.options( ShowTableRequest.Options.GET_SIZES, ShowTableRequest.Options.TRUE );
+        Long tableRecordCount = gpudb.showTable(tableName, stOptions).getFullSizes().get( 0 );
+        if ( tableRecordCount != numRecords ) {
+            GPUdbLogger.error(
+                    "Failed to insert <" + numRecords + "> records into table <" + tableName + ">; " +
+                    "got <" + tableRecordCount + "> instead"
+            );
+        } else {
+            GPUdbLogger.info(
+                    "Successfully inserted <" + numRecords + "> records into table <" + tableName + ">"
+            );
+        }
+
+    }
+
+    /**
+     * Method to demonstrate insertion using {@link BulkInserter} from multiple threads
+     * This method inserts into the same table but the same pattern can be used for
+     * multiple tables as well. The code {@code ExecutorService executors = Executors.newFixedThreadPool(20);}
+     * may be dropped and the {@code CompletableFuture.supplyAsync} call could be used without the 'executors'
+     * parameter, in that case it will just work off the built-in {@link java.util.concurrent.ForkJoinPool}
+     *
+     * @param gpudb - a {@link GPUdb} instance
+     * @throws Exception
+     */
+    public static void bulkInserterMTExample(GPUdb gpudb ) throws Exception {
+
+        Pair<String, Type> tableNameTypePair = setUp(gpudb, true);
+
+        String tableName = tableNameTypePair.getLeft();
+        Type tableDefinition = tableNameTypePair.getRight();
+
+        int numRecords = 25_000_000;
+
+        // Generate a simple list of record numbers
+        List<Integer> integerList = IntStream.range(0, numRecords)
+              .mapToObj(Integer::new)
+              .collect(Collectors.toList());
+
+        int listSize = integerList.size();
+        int chunkSize = numRecords / 10;
+
+        // Break the list of record numbers in chunks
+        List<List<Integer>> listOfIntegerLists = IntStream.range(0, (listSize-1)/chunkSize+1)
+             .mapToObj(i -> integerList.subList(i *= chunkSize,
+                                       listSize-chunkSize >= i ? i + chunkSize : listSize))
+             .collect(Collectors.toList());
+
+        ExecutorService executors = Executors.newFixedThreadPool(20);
+        List<Pair<CompletableFuture<String>, Integer>> futuresList = new ArrayList<>();
+
+        listOfIntegerLists.forEach( list -> {
+            CompletableFuture<String> errorInInsertingRecords = CompletableFuture.supplyAsync(() -> {
+                String result = null;
+                GPUdbLogger.info(String.format("Thread ID = %s", Thread.currentThread().getName()));
+
+                int nRecords = list.size();
+
+                try (BulkInserter<GenericRecord> bi = new BulkInserter<>(
+                        gpudb,
+                        tableName,
+                        tableDefinition,
+                        20000,
+                        null,
+                        new WorkerList(gpudb)
+                )) {
+                    for (int x = 0; x < nRecords; ++x) {
+                        GenericRecord gr = new GenericRecord(tableDefinition);
+                        gr.put(0, x);
+                        gr.put(1, x);
+                        bi.insert(gr);
+                    }
+                } catch (BulkInserter.InsertException ie) {
+                    GPUdbLogger.error(ie, "Error in inserting records");
+                } catch (GPUdbException e) {
+                    GPUdbLogger.error(e, "Error creating BulkInserter");
+                    result = e.getMessage();
+                }
+                return result;
+            }, executors); //end supplyAsync
+
+            futuresList.add( Pair.of( errorInInsertingRecords, list.size() ) );
+        });
+
+        // All threads have started, we wait for the results now
+        futuresList.forEach( errorInInsertingRecords -> {
+            try {
+                String errorInInsertion = errorInInsertingRecords.getLeft().get();
+                if( errorInInsertion == null) {
+                    GPUdbLogger.info(String.format("Successfully inserted %d records ", errorInInsertingRecords.getRight()));
+                } else {
+                    GPUdbLogger.warn("Got some error in current batch execution : " + errorInInsertion);
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                GPUdbLogger.error( e, "Error in getting insertion results");
+                GPUdbLogger.info("Failed to insert current batch");
+            }
+
+        });
+
+        executors.shutdown();
 
         Map<String,String> stOptions = GPUdb.options( ShowTableRequest.Options.GET_SIZES, ShowTableRequest.Options.TRUE );
         Long tableRecordCount = gpudb.showTable(tableName, stOptions).getFullSizes().get( 0 );
@@ -162,15 +280,19 @@ public class BulkInserterExample {
 
         // Try to insert enough records such that at least one batch
         // is pushed automatically and then we have some leftovers to flush
-        for (int x = 0; x < numRecords; ++x) {
-            GenericRecord gr = new GenericRecord(tableDefinition);
-            gr.put(0, x);
-            gr.put(1, x);
-            bi.insert(gr);
+        try {
+            for (int x = 0; x < numRecords; ++x) {
+                GenericRecord gr = new GenericRecord(tableDefinition);
+                gr.put(0, x);
+                gr.put(1, x);
+                bi.insert(gr);
+            }
+        } catch (BulkInserter.InsertException ie) {
+            GPUdbLogger.error( ie, "Error in inserting records");
+        } finally {
+            // Call close explicitly; will automatically flush pending updates
+            bi.close();
         }
-
-        // Call close explicitly; will automatically flush pending updates
-        bi.close();
 
 
         Map<String,String> stOptions = GPUdb.options( ShowTableRequest.Options.GET_SIZES, ShowTableRequest.Options.TRUE );

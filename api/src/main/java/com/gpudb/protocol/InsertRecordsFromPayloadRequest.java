@@ -466,6 +466,14 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AVRO_NUM_RECORDS
+     * AVRO_NUM_RECORDS}: Optional number of avro records, if data includes
+     * only records.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AVRO_SCHEMA
+     * AVRO_SCHEMA}: Optional string representing avro schema, for insert
+     * records in avro format, that does not include is schema.
+     *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BAD_RECORD_TABLE_NAME
      * BAD_RECORD_TABLE_NAME}: Optional name of a table to which records that
      * were rejected are written.  The bad-record-table has the following
@@ -542,6 +550,26 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * COLUMNS_TO_SKIP}: Specifies a comma-delimited list of columns from the
      * source data to
      * skip.  Mutually exclusive with {@code columns_to_load}.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#COMPRESSION_TYPE
+     * COMPRESSION_TYPE}: Optional: payload compression type
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NONE NONE}:
+     * Uncompressed
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO AUTO}:
+     * Default. Auto detect compression type
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#GZIP GZIP}:
+     * gzip file compression.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BZIP2 BZIP2}:
+     * bzip2 file compression.
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO AUTO}.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DEFAULT_COLUMN_FORMATS
      * DEFAULT_COLUMN_FORMATS}: Specifies the default format to be applied to
@@ -698,6 +726,12 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#LOCAL_TIME_OFFSET
      * LOCAL_TIME_OFFSET}: For Avro local timestamp columns
      *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#MAX_RECORDS_TO_LOAD
+     * MAX_RECORDS_TO_LOAD}: Limit the number of records to load in this
+     * request: If this number is larger than a batch_size, then the number of
+     * records loaded will be limited to the next whole number of batch_size
+     * (per working thread).  The default value is ''.
+     *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NUM_TASKS_PER_RANK
      * NUM_TASKS_PER_RANK}: Optional: number of tasks for reading file per
      * rank. Default will be external_file_reader_num_tasks
@@ -842,6 +876,19 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used only when
      * 'text_search_columns' has a value.
      *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUNCATE_STRINGS
+     * TRUNCATE_STRINGS}: If set to {@code true}, truncate string values that
+     * are longer than the column's type size.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE FALSE}.
+     *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUNCATE_TABLE
      * TRUNCATE_TABLE}: If set to {@code true}, truncates the table specified
      * by {@code tableName} prior to loading the file(s).
@@ -899,6 +946,17 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
+
+        /**
+         * Optional number of avro records, if data includes only records.
+         */
+        public static final String AVRO_NUM_RECORDS = "avro_num_records";
+
+        /**
+         * Optional string representing avro schema, for insert records in avro
+         * format, that does not include is schema.
+         */
+        public static final String AVRO_SCHEMA = "avro_schema";
 
         /**
          * Optional name of a table to which records that were rejected are
@@ -986,6 +1044,49 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * skip.  Mutually exclusive with {@code columns_to_load}.
          */
         public static final String COLUMNS_TO_SKIP = "columns_to_skip";
+
+        /**
+         * Optional: payload compression type
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NONE
+         * NONE}: Uncompressed
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO
+         * AUTO}: Default. Auto detect compression type
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#GZIP
+         * GZIP}: gzip file compression.
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BZIP2
+         * BZIP2}: bzip2 file compression.
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO
+         * AUTO}.
+         */
+        public static final String COMPRESSION_TYPE = "compression_type";
+
+        /**
+         * Uncompressed
+         */
+        public static final String NONE = "none";
+
+        /**
+         * Default. Auto detect compression type
+         */
+        public static final String AUTO = "auto";
+
+        /**
+         * gzip file compression.
+         */
+        public static final String GZIP = "gzip";
+
+        /**
+         * bzip2 file compression.
+         */
+        public static final String BZIP2 = "bzip2";
 
         /**
          * Specifies the default format to be applied to source data loaded
@@ -1269,6 +1370,14 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String LOCAL_TIME_OFFSET = "local_time_offset";
 
         /**
+         * Limit the number of records to load in this request: If this number
+         * is larger than a batch_size, then the number of records loaded will
+         * be limited to the next whole number of batch_size (per working
+         * thread).  The default value is ''.
+         */
+        public static final String MAX_RECORDS_TO_LOAD = "max_records_to_load";
+
+        /**
          * Optional: number of tasks for reading file per rank. Default will be
          * external_file_reader_num_tasks
          */
@@ -1448,6 +1557,24 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * value.
          */
         public static final String TEXT_SEARCH_MIN_COLUMN_LENGTH = "text_search_min_column_length";
+
+        /**
+         * If set to {@code true}, truncate string values that are longer than
+         * the column's type size.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUE
+         * TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+         * FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+         * FALSE}.
+         */
+        public static final String TRUNCATE_STRINGS = "truncate_strings";
 
         /**
          * If set to {@code true}, truncates the table specified by {@code
@@ -1779,6 +1906,15 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AVRO_NUM_RECORDS
+     *                 AVRO_NUM_RECORDS}: Optional number of avro records, if
+     *                 data includes only records.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AVRO_SCHEMA
+     *                 AVRO_SCHEMA}: Optional string representing avro schema,
+     *                 for insert records in avro format, that does not include
+     *                 is schema.
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BAD_RECORD_TABLE_NAME
      *                 BAD_RECORD_TABLE_NAME}: Optional name of a table to
      *                 which records that were rejected are written.  The
@@ -1854,6 +1990,27 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 COLUMNS_TO_SKIP}: Specifies a comma-delimited list of
      *                 columns from the source data to
      *                 skip.  Mutually exclusive with {@code columns_to_load}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#COMPRESSION_TYPE
+     *                 COMPRESSION_TYPE}: Optional: payload compression type
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NONE
+     *                 NONE}: Uncompressed
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO
+     *                 AUTO}: Default. Auto detect compression type
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#GZIP
+     *                 GZIP}: gzip file compression.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BZIP2
+     *                 BZIP2}: bzip2 file compression.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO
+     *                 AUTO}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DEFAULT_COLUMN_FORMATS
      *                 DEFAULT_COLUMN_FORMATS}: Specifies the default format to
@@ -2016,6 +2173,13 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#LOCAL_TIME_OFFSET
      *                 LOCAL_TIME_OFFSET}: For Avro local timestamp columns
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#MAX_RECORDS_TO_LOAD
+     *                 MAX_RECORDS_TO_LOAD}: Limit the number of records to
+     *                 load in this request: If this number is larger than a
+     *                 batch_size, then the number of records loaded will be
+     *                 limited to the next whole number of batch_size (per
+     *                 working thread).  The default value is ''.
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NUM_TASKS_PER_RANK
      *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
      *                 reading file per rank. Default will be
@@ -2168,6 +2332,23 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
      *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
      *                 Used only when 'text_search_columns' has a value.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUNCATE_STRINGS
+     *                 TRUNCATE_STRINGS}: If set to {@code true}, truncate
+     *                 string values that are longer than the column's type
+     *                 size.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUNCATE_TABLE
      *                 TRUNCATE_TABLE}: If set to {@code true}, truncates the
@@ -2758,6 +2939,14 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * @return Optional parameters.
      *         <ul>
      *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AVRO_NUM_RECORDS
+     *         AVRO_NUM_RECORDS}: Optional number of avro records, if data
+     *         includes only records.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AVRO_SCHEMA
+     *         AVRO_SCHEMA}: Optional string representing avro schema, for
+     *         insert records in avro format, that does not include is schema.
+     *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BAD_RECORD_TABLE_NAME
      *         BAD_RECORD_TABLE_NAME}: Optional name of a table to which
      *         records that were rejected are written.  The bad-record-table
@@ -2830,6 +3019,27 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         COLUMNS_TO_SKIP}: Specifies a comma-delimited list of columns
      *         from the source data to
      *         skip.  Mutually exclusive with {@code columns_to_load}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#COMPRESSION_TYPE
+     *         COMPRESSION_TYPE}: Optional: payload compression type
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NONE
+     *         NONE}: Uncompressed
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO
+     *         AUTO}: Default. Auto detect compression type
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#GZIP
+     *         GZIP}: gzip file compression.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BZIP2
+     *         BZIP2}: bzip2 file compression.
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO
+     *         AUTO}.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DEFAULT_COLUMN_FORMATS
      *         DEFAULT_COLUMN_FORMATS}: Specifies the default format to be
@@ -2988,6 +3198,13 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#LOCAL_TIME_OFFSET
      *         LOCAL_TIME_OFFSET}: For Avro local timestamp columns
      *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#MAX_RECORDS_TO_LOAD
+     *         MAX_RECORDS_TO_LOAD}: Limit the number of records to load in
+     *         this request: If this number is larger than a batch_size, then
+     *         the number of records loaded will be limited to the next whole
+     *         number of batch_size (per working thread).  The default value is
+     *         ''.
+     *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NUM_TASKS_PER_RANK
      *         NUM_TASKS_PER_RANK}: Optional: number of tasks for reading file
      *         per rank. Default will be external_file_reader_num_tasks
@@ -3136,6 +3353,22 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used
      *         only when 'text_search_columns' has a value.
      *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUNCATE_STRINGS
+     *         TRUNCATE_STRINGS}: If set to {@code true}, truncate string
+     *         values that are longer than the column's type size.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *         FALSE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUNCATE_TABLE
      *         TRUNCATE_TABLE}: If set to {@code true}, truncates the table
      *         specified by {@code tableName} prior to loading the file(s).
@@ -3210,6 +3443,15 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AVRO_NUM_RECORDS
+     *                 AVRO_NUM_RECORDS}: Optional number of avro records, if
+     *                 data includes only records.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AVRO_SCHEMA
+     *                 AVRO_SCHEMA}: Optional string representing avro schema,
+     *                 for insert records in avro format, that does not include
+     *                 is schema.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BAD_RECORD_TABLE_NAME
      *                 BAD_RECORD_TABLE_NAME}: Optional name of a table to
@@ -3286,6 +3528,27 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 COLUMNS_TO_SKIP}: Specifies a comma-delimited list of
      *                 columns from the source data to
      *                 skip.  Mutually exclusive with {@code columns_to_load}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#COMPRESSION_TYPE
+     *                 COMPRESSION_TYPE}: Optional: payload compression type
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NONE
+     *                 NONE}: Uncompressed
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO
+     *                 AUTO}: Default. Auto detect compression type
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#GZIP
+     *                 GZIP}: gzip file compression.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BZIP2
+     *                 BZIP2}: bzip2 file compression.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO
+     *                 AUTO}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DEFAULT_COLUMN_FORMATS
      *                 DEFAULT_COLUMN_FORMATS}: Specifies the default format to
@@ -3448,6 +3711,13 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#LOCAL_TIME_OFFSET
      *                 LOCAL_TIME_OFFSET}: For Avro local timestamp columns
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#MAX_RECORDS_TO_LOAD
+     *                 MAX_RECORDS_TO_LOAD}: Limit the number of records to
+     *                 load in this request: If this number is larger than a
+     *                 batch_size, then the number of records loaded will be
+     *                 limited to the next whole number of batch_size (per
+     *                 working thread).  The default value is ''.
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NUM_TASKS_PER_RANK
      *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
      *                 reading file per rank. Default will be
@@ -3600,6 +3870,23 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
      *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
      *                 Used only when 'text_search_columns' has a value.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUNCATE_STRINGS
+     *                 TRUNCATE_STRINGS}: If set to {@code true}, truncate
+     *                 string values that are longer than the column's type
+     *                 size.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUNCATE_TABLE
      *                 TRUNCATE_TABLE}: If set to {@code true}, truncates the

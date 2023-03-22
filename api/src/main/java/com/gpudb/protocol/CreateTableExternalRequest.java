@@ -495,6 +495,14 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_NUM_RECORDS
+     * AVRO_NUM_RECORDS}: Optional number of avro records, if data includes
+     * only records.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_SCHEMA
+     * AVRO_SCHEMA}: Optional string representing avro schema, for insert
+     * records in avro format, that does not include is schema.
+     *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#BAD_RECORD_TABLE_NAME
      * BAD_RECORD_TABLE_NAME}: Optional name of a table to which records that
      * were rejected are written.  The bad-record-table has the following
@@ -571,6 +579,26 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * COLUMNS_TO_SKIP}: Specifies a comma-delimited list of columns from the
      * source data to
      * skip.  Mutually exclusive with {@code columns_to_load}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#COMPRESSION_TYPE
+     * COMPRESSION_TYPE}: Optional: compression type
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#NONE NONE}:
+     * Uncompressed
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#AUTO AUTO}:
+     * Default. Auto detect compression type
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#GZIP GZIP}: gzip
+     * file compression.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#BZIP2 BZIP2}:
+     * bzip2 file compression.
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#AUTO AUTO}.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#DATASOURCE_NAME
      * DATASOURCE_NAME}: Name of an existing external data source from which
@@ -775,6 +803,12 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateTableExternalRequest.Options#LOCAL_TIME_OFFSET
      * LOCAL_TIME_OFFSET}: For Avro local timestamp columns
      *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#MAX_RECORDS_TO_LOAD
+     * MAX_RECORDS_TO_LOAD}: Limit the number of records to load in this
+     * request: If this number is larger than a batch_size, then the number of
+     * records loaded will be limited to the next whole number of batch_size
+     * (per working thread).  The default value is ''.
+     *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#NUM_TASKS_PER_RANK
      * NUM_TASKS_PER_RANK}: Optional: number of tasks for reading file per
      * rank. Default will be external_file_reader_num_tasks
@@ -936,6 +970,19 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used only when
      * 'text_search_columns' has a value.
      *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#TRUNCATE_STRINGS
+     * TRUNCATE_STRINGS}: If set to {@code true}, truncate string values that
+     * are longer than the column's type size.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}.
+     *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#TRUNCATE_TABLE
      * TRUNCATE_TABLE}: If set to {@code true}, truncates the table specified
      * by {@code tableName} prior to loading the file(s).
@@ -973,6 +1020,11 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * query into multiple sub-queries using the data distribution of given
      * column.  The default value is ''.
      *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_INCREASING_COLUMN
+     * REMOTE_QUERY_INCREASING_COLUMN}: Column on subscribed remote query
+     * result that will increase for new records (e.g., TIMESTAMP).  The
+     * default value is ''.
+     *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
      * REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
      * remote_query_filter_column.  The default value is ''.
@@ -1005,6 +1057,17 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
+
+        /**
+         * Optional number of avro records, if data includes only records.
+         */
+        public static final String AVRO_NUM_RECORDS = "avro_num_records";
+
+        /**
+         * Optional string representing avro schema, for insert records in avro
+         * format, that does not include is schema.
+         */
+        public static final String AVRO_SCHEMA = "avro_schema";
 
         /**
          * Optional name of a table to which records that were rejected are
@@ -1092,6 +1155,48 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * skip.  Mutually exclusive with {@code columns_to_load}.
          */
         public static final String COLUMNS_TO_SKIP = "columns_to_skip";
+
+        /**
+         * Optional: compression type
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#NONE NONE}:
+         * Uncompressed
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#AUTO AUTO}:
+         * Default. Auto detect compression type
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#GZIP GZIP}:
+         * gzip file compression.
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#BZIP2 BZIP2}:
+         * bzip2 file compression.
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#AUTO AUTO}.
+         */
+        public static final String COMPRESSION_TYPE = "compression_type";
+
+        /**
+         * Uncompressed
+         */
+        public static final String NONE = "none";
+
+        /**
+         * Default. Auto detect compression type
+         */
+        public static final String AUTO = "auto";
+
+        /**
+         * gzip file compression.
+         */
+        public static final String GZIP = "gzip";
+
+        /**
+         * bzip2 file compression.
+         */
+        public static final String BZIP2 = "bzip2";
 
         /**
          * Name of an existing external data source from which data file(s)
@@ -1448,6 +1553,14 @@ public class CreateTableExternalRequest implements IndexedRecord {
         public static final String LOCAL_TIME_OFFSET = "local_time_offset";
 
         /**
+         * Limit the number of records to load in this request: If this number
+         * is larger than a batch_size, then the number of records loaded will
+         * be limited to the next whole number of batch_size (per working
+         * thread).  The default value is ''.
+         */
+        public static final String MAX_RECORDS_TO_LOAD = "max_records_to_load";
+
+        /**
          * Optional: number of tasks for reading file per rank. Default will be
          * external_file_reader_num_tasks
          */
@@ -1657,6 +1770,21 @@ public class CreateTableExternalRequest implements IndexedRecord {
         public static final String TEXT_SEARCH_MIN_COLUMN_LENGTH = "text_search_min_column_length";
 
         /**
+         * If set to {@code true}, truncate string values that are longer than
+         * the column's type size.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}.
+         */
+        public static final String TRUNCATE_STRINGS = "truncate_strings";
+
+        /**
          * If set to {@code true}, truncates the table specified by {@code
          * tableName} prior to loading the file(s).
          * Supported values:
@@ -1712,6 +1840,12 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * default value is ''.
          */
         public static final String REMOTE_QUERY_FILTER_COLUMN = "remote_query_filter_column";
+
+        /**
+         * Column on subscribed remote query result that will increase for new
+         * records (e.g., TIMESTAMP).  The default value is ''.
+         */
+        public static final String REMOTE_QUERY_INCREASING_COLUMN = "remote_query_increasing_column";
 
         /**
          * Alias name for remote_query_filter_column.  The default value is ''.
@@ -2023,6 +2157,15 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_NUM_RECORDS
+     *                 AVRO_NUM_RECORDS}: Optional number of avro records, if
+     *                 data includes only records.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_SCHEMA
+     *                 AVRO_SCHEMA}: Optional string representing avro schema,
+     *                 for insert records in avro format, that does not include
+     *                 is schema.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#BAD_RECORD_TABLE_NAME
      *                 BAD_RECORD_TABLE_NAME}: Optional name of a table to
      *                 which records that were rejected are written.  The
@@ -2098,6 +2241,27 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 COLUMNS_TO_SKIP}: Specifies a comma-delimited list of
      *                 columns from the source data to
      *                 skip.  Mutually exclusive with {@code columns_to_load}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#COMPRESSION_TYPE
+     *                 COMPRESSION_TYPE}: Optional: compression type
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#NONE
+     *                 NONE}: Uncompressed
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AUTO
+     *                 AUTO}: Default. Auto detect compression type
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#GZIP
+     *                 GZIP}: gzip file compression.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#BZIP2
+     *                 BZIP2}: bzip2 file compression.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AUTO
+     *                 AUTO}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#DATASOURCE_NAME
      *                 DATASOURCE_NAME}: Name of an existing external data
@@ -2315,6 +2479,13 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#LOCAL_TIME_OFFSET
      *                 LOCAL_TIME_OFFSET}: For Avro local timestamp columns
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#MAX_RECORDS_TO_LOAD
+     *                 MAX_RECORDS_TO_LOAD}: Limit the number of records to
+     *                 load in this request: If this number is larger than a
+     *                 batch_size, then the number of records loaded will be
+     *                 limited to the next whole number of batch_size (per
+     *                 working thread).  The default value is ''.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#NUM_TASKS_PER_RANK
      *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
      *                 reading file per rank. Default will be
@@ -2490,6 +2661,23 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
      *                 Used only when 'text_search_columns' has a value.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUNCATE_STRINGS
+     *                 TRUNCATE_STRINGS}: If set to {@code true}, truncate
+     *                 string values that are longer than the column's type
+     *                 size.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUNCATE_TABLE
      *                 TRUNCATE_TABLE}: If set to {@code true}, truncates the
      *                 table specified by {@code tableName} prior to loading
@@ -2533,6 +2721,11 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 for splitting the query into multiple sub-queries using
      *                 the data distribution of given column.  The default
      *                 value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_INCREASING_COLUMN
+     *                 REMOTE_QUERY_INCREASING_COLUMN}: Column on subscribed
+     *                 remote query result that will increase for new records
+     *                 (e.g., TIMESTAMP).  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
      *                 REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
@@ -3143,6 +3336,14 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * @return Optional parameters.
      *         <ul>
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_NUM_RECORDS
+     *         AVRO_NUM_RECORDS}: Optional number of avro records, if data
+     *         includes only records.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_SCHEMA
+     *         AVRO_SCHEMA}: Optional string representing avro schema, for
+     *         insert records in avro format, that does not include is schema.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#BAD_RECORD_TABLE_NAME
      *         BAD_RECORD_TABLE_NAME}: Optional name of a table to which
      *         records that were rejected are written.  The bad-record-table
@@ -3215,6 +3416,27 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         COLUMNS_TO_SKIP}: Specifies a comma-delimited list of columns
      *         from the source data to
      *         skip.  Mutually exclusive with {@code columns_to_load}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#COMPRESSION_TYPE
+     *         COMPRESSION_TYPE}: Optional: compression type
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#NONE
+     *         NONE}: Uncompressed
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#AUTO
+     *         AUTO}: Default. Auto detect compression type
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#GZIP
+     *         GZIP}: gzip file compression.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#BZIP2
+     *         BZIP2}: bzip2 file compression.
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#AUTO
+     *         AUTO}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#DATASOURCE_NAME
      *         DATASOURCE_NAME}: Name of an existing external data source from
@@ -3425,6 +3647,13 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#LOCAL_TIME_OFFSET
      *         LOCAL_TIME_OFFSET}: For Avro local timestamp columns
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#MAX_RECORDS_TO_LOAD
+     *         MAX_RECORDS_TO_LOAD}: Limit the number of records to load in
+     *         this request: If this number is larger than a batch_size, then
+     *         the number of records loaded will be limited to the next whole
+     *         number of batch_size (per working thread).  The default value is
+     *         ''.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#NUM_TASKS_PER_RANK
      *         NUM_TASKS_PER_RANK}: Optional: number of tasks for reading file
      *         per rank. Default will be external_file_reader_num_tasks
@@ -3591,6 +3820,21 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used
      *         only when 'text_search_columns' has a value.
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#TRUNCATE_STRINGS
+     *         TRUNCATE_STRINGS}: If set to {@code true}, truncate string
+     *         values that are longer than the column's type size.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *         FALSE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#TRUNCATE_TABLE
      *         TRUNCATE_TABLE}: If set to {@code true}, truncates the table
      *         specified by {@code tableName} prior to loading the file(s).
@@ -3630,6 +3874,11 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used for
      *         splitting the query into multiple sub-queries using the data
      *         distribution of given column.  The default value is ''.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_INCREASING_COLUMN
+     *         REMOTE_QUERY_INCREASING_COLUMN}: Column on subscribed remote
+     *         query result that will increase for new records (e.g.,
+     *         TIMESTAMP).  The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
      *         REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
@@ -3674,6 +3923,15 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_NUM_RECORDS
+     *                 AVRO_NUM_RECORDS}: Optional number of avro records, if
+     *                 data includes only records.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_SCHEMA
+     *                 AVRO_SCHEMA}: Optional string representing avro schema,
+     *                 for insert records in avro format, that does not include
+     *                 is schema.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#BAD_RECORD_TABLE_NAME
      *                 BAD_RECORD_TABLE_NAME}: Optional name of a table to
@@ -3750,6 +4008,27 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 COLUMNS_TO_SKIP}: Specifies a comma-delimited list of
      *                 columns from the source data to
      *                 skip.  Mutually exclusive with {@code columns_to_load}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#COMPRESSION_TYPE
+     *                 COMPRESSION_TYPE}: Optional: compression type
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#NONE
+     *                 NONE}: Uncompressed
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AUTO
+     *                 AUTO}: Default. Auto detect compression type
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#GZIP
+     *                 GZIP}: gzip file compression.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#BZIP2
+     *                 BZIP2}: bzip2 file compression.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AUTO
+     *                 AUTO}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#DATASOURCE_NAME
      *                 DATASOURCE_NAME}: Name of an existing external data
@@ -3967,6 +4246,13 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#LOCAL_TIME_OFFSET
      *                 LOCAL_TIME_OFFSET}: For Avro local timestamp columns
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#MAX_RECORDS_TO_LOAD
+     *                 MAX_RECORDS_TO_LOAD}: Limit the number of records to
+     *                 load in this request: If this number is larger than a
+     *                 batch_size, then the number of records loaded will be
+     *                 limited to the next whole number of batch_size (per
+     *                 working thread).  The default value is ''.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#NUM_TASKS_PER_RANK
      *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
      *                 reading file per rank. Default will be
@@ -4142,6 +4428,23 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
      *                 Used only when 'text_search_columns' has a value.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUNCATE_STRINGS
+     *                 TRUNCATE_STRINGS}: If set to {@code true}, truncate
+     *                 string values that are longer than the column's type
+     *                 size.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUNCATE_TABLE
      *                 TRUNCATE_TABLE}: If set to {@code true}, truncates the
      *                 table specified by {@code tableName} prior to loading
@@ -4185,6 +4488,11 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 for splitting the query into multiple sub-queries using
      *                 the data distribution of given column.  The default
      *                 value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_INCREASING_COLUMN
+     *                 REMOTE_QUERY_INCREASING_COLUMN}: Column on subscribed
+     *                 remote query result that will increase for new records
+     *                 (e.g., TIMESTAMP).  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
      *                 REMOTE_QUERY_PARTITION_COLUMN}: Alias name for

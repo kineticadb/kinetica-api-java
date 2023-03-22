@@ -30,6 +30,7 @@ import org.apache.hc.client5.http.ssl.TrustAllStrategy;
 import org.apache.hc.core5.http.*;
 import org.apache.hc.core5.http.config.Registry;
 import org.apache.hc.core5.http.config.RegistryBuilder;
+import org.apache.hc.core5.http.io.SocketConfig;
 import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
@@ -47,6 +48,7 @@ import org.xerial.snappy.Snappy;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -71,7 +73,83 @@ import java.util.stream.Stream;
  * Base class for the GPUdb API that provides general functionality not specific
  * to any particular GPUdb request. This class is never instantiated directly;
  * its functionality is accessed via instances of the {@link GPUdb} class.
- */
+  *
+ * Usage patterns:
+ * 1. Unsecured setup
+ * <pre>
+ *         String url = "http://your_server_ip_or_FQDN:9191";
+ *
+ *         GPUdb.Options options = new GPUdb.Options();
+ *         options.setUsername("user");
+ *         options.setPassword("password");
+ *
+ *         GPUdb gpudb = new GPUdb( url, options );
+ *
+ * </pre>
+ *
+ * 2. Secured setup
+ *
+ * @apiNote - If {@code options.setBypassSslCertCheck( true )} is set, then all forms
+ * of certificate checking whether self-signed or one issued by a known CA will be
+ * bypassed and an unsecured connection will be set up.
+ *
+ * A) This setup will enforce checking the truststore and the
+ *    connection will fail if a mismatch is found
+ * <pre>
+ *         String url = "https://your_server_ip_or_FQDN:8082/gpudb-0";
+ *
+ *         GPUdb.Options options = new GPUdb.Options();
+ *         options.setUsername("user");
+ *         options.setPassword("password");
+ *         options.setTrustStoreFilePath("/path/to/truststore.jks");
+ *         options.setTrustStorePassword("password_for_truststore");
+ *
+ *         GPUdb gpudb = new GPUdb( url, options );
+ * </pre>
+ *
+ * B) This setup will not enforce checking the truststore and the
+ *    connection will succeed since the truststore will not be verified.
+ *
+ *    if {@code options.setBypassSslCertCheck(true)} is there, then all other
+ *    checks will be left out and the connection will succeed unless
+ *    there are other errors like wrong credentials, non-responsive
+ *    server etc.
+ *
+ *    If a truststore (only for self-signed certificates) has to be used,
+ *    one can set {@code options.setTrustStoreFilePath("/path/to/truststore.jks")}
+ *    and {@code options.setTrustStorePassword("password_for_truststore")}, but in
+ *    this case {@code options.setBypassSslCertCheck( true )} cannot be used.
+ * <pre>
+ *         String url = "https://your_server_ip_or_FQDN:8082/gpudb-0";
+ *
+ *         GPUdb.Options options = new GPUdb.Options();
+ *         options.setUsername("user");
+ *         options.setPassword("password");
+ *         options.setBypassSslCertCheck( true );
+ *
+ *         GPUdb gpudb = new GPUdb( url, options );
+ * </pre>
+ *
+ * C) This setup will enforce checking any security related configurations
+ * and will proceed to set up a secured connection only if the server has SSL set
+ * up and a certificate from a well-known CA is available. In this case, the Java
+ * runtime makes sure that the server certificate is validated without the user
+ * having to specify anything.
+ *
+ * <pre>
+ *         String url = "https://your_server_ip_or_FQDN:8082/gpudb-0";
+ *
+ *         GPUdb.Options options = new GPUdb.Options();
+ *         options.setUsername("user");
+ *         options.setPassword("password");
+ *
+ *         GPUdb gpudb = new GPUdb( url, options );
+ * </pre>
+ *
+ * @see GPUdbBase.Options
+ * @see GPUdbBase.Options#setBypassSslCertCheck(boolean)
+*/
+
 public abstract class GPUdbBase {
 
     // The amount of time for checking if a given IP/hostname is good (10 seconds)
@@ -129,7 +207,11 @@ public abstract class GPUdbBase {
     // NoHttpResponseException due to socket HALF_OPEN states.
     private static final int HTTP_REQUEST_MAX_RETRY_ATTEMPTS = 5;
 
-//    private IdleHttpConnectionMonitorThread monitorThread;
+    // This is used to control the timeout value for obtaining
+    // a connection from the HTTP connection pool. Right now it is
+    // set to 3 minutes which is the default as per the Apache
+    // HttpClient RequestConfig.Builder javadocs.
+    private static final int DEFAULT_CONNECTION_REQUEST_TIMEOUT = 3; // Minutes
 
     // JSON parser
     private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
@@ -701,10 +783,10 @@ public abstract class GPUdbBase {
 
         /**
          * Sets the value of the flag indicating whether to disable failover
-         * upon failures (both high availability--or inter-cluster--failover
-         * and N+1--or intra-cluster--failover.  If {@code true}, then no
-         * failover would be attempted upon triggering events regardless of
-         * the availabilty of a high availability cluster or N+1 failover.
+         * upon failures (for high availability--or inter-cluster--failover.
+         * If {@code true}, then no failover would be attempted upon triggering
+         * events regardless of the availabilty of a high availability cluster.
+         *
          * The default is {@code false}.
          *
          * @param value  the value of the failover disabling flag
@@ -1784,7 +1866,10 @@ public abstract class GPUdbBase {
         HEADER_CONTENT_TYPE
     };
 
-
+    protected static final String SslErrorMessageFormat = "<%s>.  To fix, either:\n" +
+            "* Specify a trust store containing the server's certificate or a CA cert in the server's certificate path\n" +
+            "* Skip the certificate check using the bypassSslCertCheck option\n" +
+            "  Examples:  https://docs.kinetica.com/7.1/api/concepts/#https-without-certificate-validation";
 
     // Internal classes
     // ----------------
@@ -2299,9 +2384,9 @@ public abstract class GPUdbBase {
 
         // Handle SSL certificate verification bypass for HTTPS connections
         this.bypassSslCertCheck = options.getBypassSslCertCheck();
+        GPUdbLogger.debug(String.format("Bypass SSL Certificate check %s", bypassSslCertCheck));
 
         if ( this.bypassSslCertCheck ) {
-            GPUdbLogger.debug("SSL certificate check bypassed");
             // This bypass works only for HTTPS connections
             try {
                 X509TrustManagerBypass.install();
@@ -2359,9 +2444,10 @@ public abstract class GPUdbBase {
         }
 
         // If 'trustStoreFilePath' and 'trustStorePassword' are both set, use
-        // that to create the 'secureSocketFactory' variable
+        // that to create the 'secureSocketFactory' variable unless 'bypassSslCertCheck` is
+        // set to 'true'.
         if( (trustStoreFilePath != null && !trustStoreFilePath.isEmpty())
-            && (trustStorePassword != null && !trustStorePassword.isEmpty())) {
+            && (trustStorePassword != null && !trustStorePassword.isEmpty()) && !options.getBypassSslCertCheck()) {
             SSLConnectionSocketFactory connectionSocketFactory;
 
             TrustStrategy acceptingTrustStrategy = (chain, authType) -> {
@@ -2371,14 +2457,16 @@ public abstract class GPUdbBase {
                 try {
                     truststore = KeyStore.getInstance(KeyStore.getDefaultType());
                 } catch (KeyStoreException e) {
-                    GPUdbLogger.error( e.getMessage() );
+                    String errorMessage = String.format(SslErrorMessageFormat, e.getMessage());
+                    GPUdbLogger.error( errorMessage );
                     return false;
                 }
                 try (FileInputStream truststoreInputStream = new FileInputStream(truststoreFile)) {
                     try {
                         truststore.load(truststoreInputStream, truststorePassword.toCharArray());
                     } catch (IOException | NoSuchAlgorithmException | CertificateException e) {
-                        GPUdbLogger.error( e.getMessage() );
+                        String errorMessage = String.format(SslErrorMessageFormat, e.getMessage());
+                        GPUdbLogger.error( errorMessage );
                         return false;
                     }
                 } catch (IOException e) {
@@ -2389,17 +2477,27 @@ public abstract class GPUdbBase {
                 Certificate certificate;
                 // Enumerate the certificates in the truststore
                 try {
-                    for (String alias : Collections.list(truststore.aliases())) {
+                    ArrayList<String> trustStoreAliasList = Collections.list(truststore.aliases());
+                    int trustStoreAliasListSize = trustStoreAliasList.size();
+                    if( trustStoreAliasList.size() <= 0 ) {
+                        GPUdbLogger.error(String.format("User supplied truststore %s contains no certificates", truststoreFile));
+                        return false;
+                    }
+                    for (int i = 0; i < trustStoreAliasListSize; i++) {
+                        String alias = trustStoreAliasList.get(i);
                         try {
                             certificate = truststore.getCertificate(alias);
-                            if( chain[0].equals( certificate))
+                            if (chain[0].equals(certificate))
                                 return true;
                         } catch (KeyStoreException e) {
-                            GPUdbLogger.error( e.getMessage());
+                            GPUdbLogger.error(e.getMessage());
+                            if( i == trustStoreAliasListSize - 1)
+                                return false;
                         }
                     }
                 } catch (KeyStoreException e) {
-                    GPUdbLogger.error( e.getMessage() );
+                    String errorMessage = String.format(SslErrorMessageFormat, e.getMessage());
+                    GPUdbLogger.error( errorMessage );
                     return false;
                 }
 
@@ -2414,10 +2512,15 @@ public abstract class GPUdbBase {
                         acceptingTrustStrategy
                     ).build();
 
-                connectionSocketFactory = new SSLConnectionSocketFactory(sslContext, (hostName, session) -> true);
+                connectionSocketFactory = new SSLConnectionSocketFactory(sslContext, new HostnameVerifier() {
+                    @Override
+                    public boolean verify(String hostName, SSLSession session) {
+                        return true;
+                    }
+                });
                 secureSocketFactory = connectionSocketFactory;
             } catch (Exception e) {
-                GPUdbLogger.debug_with_info(String.format("Exception %s", e.getMessage()));
+                GPUdbLogger.error(String.format("Exception : %s", e.getMessage()));
                 throw new GPUdbException(e.getMessage());
             }
 
@@ -2444,15 +2547,18 @@ public abstract class GPUdbBase {
         connectionManager.setDefaultMaxPerRoute( options.getMaxConnectionsPerHost() );
 
         connectionManager.setDefaultConnectionConfig(ConnectionConfig.custom()
-            .setConnectTimeout(Timeout.ofSeconds(options.getServerConnectionTimeout()))
-            .setSocketTimeout(Timeout.ofSeconds(options.getTimeout()))
+            .setConnectTimeout(Timeout.ofMilliseconds(options.getServerConnectionTimeout()))
+            .setSocketTimeout(Timeout.ofMilliseconds(options.getTimeout()))
             .setValidateAfterInactivity( TimeValue.ofMilliseconds( options.getConnectionInactivityValidationTimeout() ))
             .setTimeToLive(TimeValue.ofMinutes(1))
             .build());
 
+        // ToDo - check the config n the next line - commented for now
+//        connectionManager.setDefaultSocketConfig(SocketConfig.custom().setSoTimeout(Timeout.ofMilliseconds(options.getServerConnectionTimeout())).build());
+
         // Set the timeout defaults
         RequestConfig requestConfig = RequestConfig.custom()
-                .setConnectionRequestTimeout( Timeout.ofSeconds( options.getTimeout()) )
+                .setConnectionRequestTimeout( Timeout.ofMinutes( DEFAULT_CONNECTION_REQUEST_TIMEOUT ) )
                 .build();
 
         // Build the http client.
@@ -3232,8 +3338,8 @@ public abstract class GPUdbBase {
         // Set the timeout explicitly if it is different from the default value
         if ( timeout != this.timeout ) {
             RequestConfig requestConfigWithCustomTimeout = RequestConfig.custom()
-                .setConnectTimeout( Timeout.ofSeconds(timeout ))
-                .setConnectionRequestTimeout( Timeout.ofSeconds(timeout ))
+                .setConnectTimeout( Timeout.ofMilliseconds(timeout ))
+                .setConnectionRequestTimeout( Timeout.ofMilliseconds(timeout ))
                 .build();
             connection.setConfig( requestConfigWithCustomTimeout );
         }
@@ -3494,11 +3600,11 @@ public abstract class GPUdbBase {
             if( ex instanceof GPUdbUnauthorizedAccessException ) {
                 throw ex;
             }
+
             // Any error means we don't know whether the system is running
             GPUdbLogger.error(String.format("Got exception while checking whether system is running at URL %s : Exception :: %s",
                     url.toString(),
                     ex));
-            throw new GPUdbException( ex.getMessage() );
         }
         return isSystemRunning;
     }
@@ -4048,6 +4154,7 @@ public abstract class GPUdbBase {
                     GPUdbLogger.error("Got Unauthorized while communicating to server, cannot proceed ..");
                     throw ex;
                 }
+
                 GPUdbLogger.debug_with_info( "Attempt at parsing URLs failed: " + ex.getMessage() );
 
                 // If the user does not want us to retry, parse the URLs as is
@@ -5474,19 +5581,14 @@ public abstract class GPUdbBase {
             try {
                 postResponse = this.httpClient.executeOpen( host, postRequest, null );
             } catch ( javax.net.ssl.SSLException ex) {
-                String errorMsg;
+                String errorMsg = null;
                 if( ex.getMessage().toLowerCase().contains("subject alternative names")) {
-                    errorMsg = "Server SSL certificate not found in specified trust store.  Please use the options to " +
-                            "bypass the certificate check or add the server's certificate or CA cert in the server's " +
-                            "certificate path to the trust store and try again.";
+                    errorMsg = String.format(SslErrorMessageFormat, "Server SSL certificate not found in specified trust store.");
                 } else if( ex.getMessage().toLowerCase().contains("unable to find valid certification path")) {
-                    errorMsg = "No trust store was specified, but server requires SSL certificate validation.  " +
-                            "Please use the options to bypass the certificate check or specify a trust store containing " +
-                            "the server's certificate or CA cert in the server's certificate path and try again.";
+                    errorMsg = String.format(SslErrorMessageFormat, "No trust store was specified, but server requires SSL certificate validation.");
                 } else {
-                    errorMsg = "Error: " + ex.getMessage();
+                    errorMsg = String.format(SslErrorMessageFormat, "Error: " + ex.getMessage());
                 }
-                errorMsg = String.format("Encountered SSL error when trying to connect to server at %s.  %s", url.toString(), errorMsg);
                 GPUdbLogger.error( errorMsg );
                 throw new GPUdbException( errorMsg );
             } catch (Exception ex) {

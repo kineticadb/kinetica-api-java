@@ -545,6 +545,19 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      * SHARD_KEYS}: Optional: comma separated list of column names, to set as
      * primary keys, when not specified in the type.  The default value is ''.
      *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#SUBSCRIBE
+     * SUBSCRIBE}: Continuously poll the data source to check for new data and
+     * load it into the table.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE FALSE}.
+     *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUNCATE_TABLE
      * TRUNCATE_TABLE}: If set to {@code true}, truncates the table specified
      * by {@code tableName} prior to loading the data.
@@ -570,6 +583,11 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      * REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used for splitting the
      * query into multiple sub-queries using the data distribution of given
      * column.  The default value is ''.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_INCREASING_COLUMN
+     * REMOTE_QUERY_INCREASING_COLUMN}: Column on subscribed remote query
+     * result that will increase for new records (e.g., TIMESTAMP).  The
+     * default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
      * REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
@@ -749,6 +767,25 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
         public static final String SHARD_KEYS = "shard_keys";
 
         /**
+         * Continuously poll the data source to check for new data and load it
+         * into the table.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+         * FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+         * FALSE}.
+         */
+        public static final String SUBSCRIBE = "subscribe";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
          * If set to {@code true}, truncates the table specified by {@code
          * tableName} prior to loading the data.
          * Supported values:
@@ -764,8 +801,6 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
          * FALSE}.
          */
         public static final String TRUNCATE_TABLE = "truncate_table";
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
 
         /**
          * Remote SQL query from which data will be sourced
@@ -785,6 +820,12 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
          * default value is ''.
          */
         public static final String REMOTE_QUERY_FILTER_COLUMN = "remote_query_filter_column";
+
+        /**
+         * Column on subscribed remote query result that will increase for new
+         * records (e.g., TIMESTAMP).  The default value is ''.
+         */
+        public static final String REMOTE_QUERY_INCREASING_COLUMN = "remote_query_increasing_column";
 
         /**
          * Alias name for remote_query_filter_column.  The default value is ''.
@@ -1163,6 +1204,22 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                 names, to set as primary keys, when not specified in the
      *                 type.  The default value is ''.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#SUBSCRIBE
+     *                 SUBSCRIBE}: Continuously poll the data source to check
+     *                 for new data and load it into the table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUNCATE_TABLE
      *                 TRUNCATE_TABLE}: If set to {@code true}, truncates the
      *                 table specified by {@code tableName} prior to loading
@@ -1194,6 +1251,11 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                 for splitting the query into multiple sub-queries using
      *                 the data distribution of given column.  The default
      *                 value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_INCREASING_COLUMN
+     *                 REMOTE_QUERY_INCREASING_COLUMN}: Column on subscribed
+     *                 remote query result that will increase for new records
+     *                 (e.g., TIMESTAMP).  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
      *                 REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
@@ -1819,6 +1881,22 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         set as primary keys, when not specified in the type.  The
      *         default value is ''.
      *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#SUBSCRIBE
+     *         SUBSCRIBE}: Continuously poll the data source to check for new
+     *         data and load it into the table.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *         FALSE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUNCATE_TABLE
      *         TRUNCATE_TABLE}: If set to {@code true}, truncates the table
      *         specified by {@code tableName} prior to loading the data.
@@ -1847,6 +1925,11 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used for
      *         splitting the query into multiple sub-queries using the data
      *         distribution of given column.  The default value is ''.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_INCREASING_COLUMN
+     *         REMOTE_QUERY_INCREASING_COLUMN}: Column on subscribed remote
+     *         query result that will increase for new records (e.g.,
+     *         TIMESTAMP).  The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
      *         REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
@@ -1993,6 +2076,22 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                 names, to set as primary keys, when not specified in the
      *                 type.  The default value is ''.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#SUBSCRIBE
+     *                 SUBSCRIBE}: Continuously poll the data source to check
+     *                 for new data and load it into the table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUNCATE_TABLE
      *                 TRUNCATE_TABLE}: If set to {@code true}, truncates the
      *                 table specified by {@code tableName} prior to loading
@@ -2024,6 +2123,11 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                 for splitting the query into multiple sub-queries using
      *                 the data distribution of given column.  The default
      *                 value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_INCREASING_COLUMN
+     *                 REMOTE_QUERY_INCREASING_COLUMN}: Column on subscribed
+     *                 remote query result that will increase for new records
+     *                 (e.g., TIMESTAMP).  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
      *                 REMOTE_QUERY_PARTITION_COLUMN}: Alias name for

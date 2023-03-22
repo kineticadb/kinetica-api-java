@@ -238,11 +238,21 @@ public class AlterTableRequest implements IndexedRecord {
      * {@code value} with format 'YYYY-MM-DD HH:MM:SS'.  Subsequent refreshes
      * occur at the specified time + N * the refresh period.
      *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_STOP_TIME
+     * SET_REFRESH_STOP_TIME}: Sets the time to stop periodic refreshes of this
+     * <a href="../../../../../../concepts/materialized_views/"
+     * target="_top">materialized view</a> to the datetime string specified in
+     * {@code value} with format 'YYYY-MM-DD HH:MM:SS'.
+     *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
      * SET_REFRESH_PERIOD}: Sets the time interval in seconds at which to
      * refresh this <a href="../../../../../../concepts/materialized_views/"
      * target="_top">materialized view</a> to the value specified in {@code
      * value}.  Also, sets the refresh method to periodic if not already set.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_SPAN
+     * SET_REFRESH_SPAN}: Sets the future time-offset(in seconds) for the view
+     * refresh to stop.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_EXECUTE_AS
      * SET_REFRESH_EXECUTE_AS}: Sets the user name to refresh this <a
@@ -468,6 +478,14 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String SET_REFRESH_START_TIME = "set_refresh_start_time";
 
         /**
+         * Sets the time to stop periodic refreshes of this <a
+         * href="../../../../../../concepts/materialized_views/"
+         * target="_top">materialized view</a> to the datetime string specified
+         * in {@code value} with format 'YYYY-MM-DD HH:MM:SS'.
+         */
+        public static final String SET_REFRESH_STOP_TIME = "set_refresh_stop_time";
+
+        /**
          * Sets the time interval in seconds at which to refresh this <a
          * href="../../../../../../concepts/materialized_views/"
          * target="_top">materialized view</a> to the value specified in {@code
@@ -475,6 +493,12 @@ public class AlterTableRequest implements IndexedRecord {
          * set.
          */
         public static final String SET_REFRESH_PERIOD = "set_refresh_period";
+
+        /**
+         * Sets the future time-offset(in seconds) for the view refresh to
+         * stop.
+         */
+        public static final String SET_REFRESH_SPAN = "set_refresh_span";
 
         /**
          * Sets the user name to refresh this <a
@@ -996,6 +1020,14 @@ public class AlterTableRequest implements IndexedRecord {
      *                HH:MM:SS'.  Subsequent refreshes occur at the specified
      *                time + N * the refresh period.
      *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_STOP_TIME
+     *                SET_REFRESH_STOP_TIME}: Sets the time to stop periodic
+     *                refreshes of this <a
+     *                href="../../../../../../concepts/materialized_views/"
+     *                target="_top">materialized view</a> to the datetime
+     *                string specified in {@code value} with format 'YYYY-MM-DD
+     *                HH:MM:SS'.
+     *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
      *                SET_REFRESH_PERIOD}: Sets the time interval in seconds at
      *                which to refresh this <a
@@ -1003,6 +1035,10 @@ public class AlterTableRequest implements IndexedRecord {
      *                target="_top">materialized view</a> to the value
      *                specified in {@code value}.  Also, sets the refresh
      *                method to periodic if not already set.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_SPAN
+     *                SET_REFRESH_SPAN}: Sets the future time-offset(in
+     *                seconds) for the view refresh to stop.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_EXECUTE_AS
      *                SET_REFRESH_EXECUTE_AS}: Sets the user name to refresh
@@ -1383,6 +1419,12 @@ public class AlterTableRequest implements IndexedRecord {
      *         Subsequent refreshes occur at the specified time + N * the
      *         refresh period.
      *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_STOP_TIME
+     *         SET_REFRESH_STOP_TIME}: Sets the time to stop periodic refreshes
+     *         of this <a href="../../../../../../concepts/materialized_views/"
+     *         target="_top">materialized view</a> to the datetime string
+     *         specified in {@code value} with format 'YYYY-MM-DD HH:MM:SS'.
+     *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
      *         SET_REFRESH_PERIOD}: Sets the time interval in seconds at which
      *         to refresh this <a
@@ -1390,6 +1432,10 @@ public class AlterTableRequest implements IndexedRecord {
      *         target="_top">materialized view</a> to the value specified in
      *         {@code value}.  Also, sets the refresh method to periodic if not
      *         already set.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_SPAN
+     *         SET_REFRESH_SPAN}: Sets the future time-offset(in seconds) for
+     *         the view refresh to stop.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_EXECUTE_AS
      *         SET_REFRESH_EXECUTE_AS}: Sets the user name to refresh this <a
@@ -1599,6 +1645,14 @@ public class AlterTableRequest implements IndexedRecord {
      *                HH:MM:SS'.  Subsequent refreshes occur at the specified
      *                time + N * the refresh period.
      *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_STOP_TIME
+     *                SET_REFRESH_STOP_TIME}: Sets the time to stop periodic
+     *                refreshes of this <a
+     *                href="../../../../../../concepts/materialized_views/"
+     *                target="_top">materialized view</a> to the datetime
+     *                string specified in {@code value} with format 'YYYY-MM-DD
+     *                HH:MM:SS'.
+     *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
      *                SET_REFRESH_PERIOD}: Sets the time interval in seconds at
      *                which to refresh this <a
@@ -1606,6 +1660,10 @@ public class AlterTableRequest implements IndexedRecord {
      *                target="_top">materialized view</a> to the value
      *                specified in {@code value}.  Also, sets the refresh
      *                method to periodic if not already set.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_SPAN
+     *                SET_REFRESH_SPAN}: Sets the future time-offset(in
+     *                seconds) for the view refresh to stop.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_EXECUTE_AS
      *                SET_REFRESH_EXECUTE_AS}: Sets the user name to refresh

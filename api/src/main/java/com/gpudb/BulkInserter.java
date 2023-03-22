@@ -1928,21 +1928,15 @@ public class BulkInserter<T> implements AutoCloseable {
             } else {
                 if (result.getInsertResponse() != null) {
                     // Something went wrong and the data was not inserted.
-                    // TODO: Improve handling of non-retryable errors; currently message-based
-                    if( !( result.getFailureException() instanceof GPUdbExitException )) {
-                        String message = result.getFailureException().getMessage();
-                        if( message !=  null ) {
-                            if (message.equalsIgnoreCase("access denied")) {
-                                // No point retrying anymore, we won't succeed until the permissions
-                                // are available.
-                                throw new InsertException(getCurrentHeadNodeURL(), result.getFailedRecords(), String.format("No permissions on table %s for inserting/updating records", tableName));
-                            } else if (message.contains("Cannot specify both update_on_existing_pk and ignore_existing_pk")) {
-                                throw new InsertException(getCurrentHeadNodeURL(), result.getFailedRecords(), "Cannot specify both update_on_existing_pk and ignore_existing_pk as 'true'");
-                            }
+                    if( result.getFailureException() instanceof GPUdbException ) {
+                        GPUdbException exception = (GPUdbException) result.getFailureException();
+                        if( !exception.hadConnectionFailure() ) {
+                            throw new InsertException(getCurrentHeadNodeURL(), result.getFailedRecords(), exception.getMessage());
                         }
-                    } else {
-                        GPUdbLogger.debug_with_info("Setting retry to true");
-                        doRetryInsertion = true;
+                        else {
+                            GPUdbLogger.debug_with_info("Setting retry to true");
+                            doRetryInsertion = true;
+                        }
                     }
 
 

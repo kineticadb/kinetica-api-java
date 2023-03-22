@@ -172,16 +172,16 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * default value is 'true'.
      *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_BATCH_SIZE
-     * KAFKA_BATCH_SIZE}: Maximum number of records to be read in a single
-     * kafka batched request.  The default value is '1000'.
+     * KAFKA_BATCH_SIZE}: Maximum number of records to be ingested in a single
+     * batch.  The default value is '1000'.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_POLL_TIMEOUT
+     * KAFKA_POLL_TIMEOUT}: Maximum time (milliseconds) for each poll to get
+     * records from kafka.  The default value is '0'.
      *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_WAIT_TIME
-     * KAFKA_WAIT_TIME}: Maximum number of seconds to wait in a single kafka
-     * batched request.  The default value is '30'.
-     *         <li> {@link
-     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_TIMEOUT
-     * KAFKA_TIMEOUT}: Number of seconds after which kakfa poll will timeout if
-     * datasource has no records.  The default value is '5'.
+     * KAFKA_WAIT_TIME}: Maximum time (seconds) to buffer records received from
+     * kafka before ingestion.  The default value is '30'.
      *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EGRESS_SINGLE_FILE_MAX_SIZE
      * EGRESS_SINGLE_FILE_MAX_SIZE}: Max file size (in MB) to allow saving to a
@@ -368,22 +368,22 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String ENABLE_OVERLAPPED_EQUI_JOIN = "enable_overlapped_equi_join";
 
         /**
-         * Maximum number of records to be read in a single kafka batched
-         * request.  The default value is '1000'.
+         * Maximum number of records to be ingested in a single batch.  The
+         * default value is '1000'.
          */
         public static final String KAFKA_BATCH_SIZE = "kafka_batch_size";
 
         /**
-         * Maximum number of seconds to wait in a single kafka batched request.
-         * The default value is '30'.
+         * Maximum time (milliseconds) for each poll to get records from kafka.
+         * The default value is '0'.
          */
-        public static final String KAFKA_WAIT_TIME = "kafka_wait_time";
+        public static final String KAFKA_POLL_TIMEOUT = "kafka_poll_timeout";
 
         /**
-         * Number of seconds after which kakfa poll will timeout if datasource
-         * has no records.  The default value is '5'.
+         * Maximum time (seconds) to buffer records received from kafka before
+         * ingestion.  The default value is '30'.
          */
-        public static final String KAFKA_TIMEOUT = "kafka_timeout";
+        public static final String KAFKA_WAIT_TIME = "kafka_wait_time";
 
         /**
          * Max file size (in MB) to allow saving to a single file. May be
@@ -635,18 +635,18 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_BATCH_SIZE
      *                            KAFKA_BATCH_SIZE}: Maximum number of records
-     *                            to be read in a single kafka batched request.
-     *                            The default value is '1000'.
+     *                            to be ingested in a single batch.  The
+     *                            default value is '1000'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_POLL_TIMEOUT
+     *                            KAFKA_POLL_TIMEOUT}: Maximum time
+     *                            (milliseconds) for each poll to get records
+     *                            from kafka.  The default value is '0'.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_WAIT_TIME
-     *                            KAFKA_WAIT_TIME}: Maximum number of seconds
-     *                            to wait in a single kafka batched request.
-     *                            The default value is '30'.
-     *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_TIMEOUT
-     *                            KAFKA_TIMEOUT}: Number of seconds after which
-     *                            kakfa poll will timeout if datasource has no
-     *                            records.  The default value is '5'.
+     *                            KAFKA_WAIT_TIME}: Maximum time (seconds) to
+     *                            buffer records received from kafka before
+     *                            ingestion.  The default value is '30'.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EGRESS_SINGLE_FILE_MAX_SIZE
      *                            EGRESS_SINGLE_FILE_MAX_SIZE}: Max file size
@@ -832,16 +832,17 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         filter.  The default value is 'true'.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_BATCH_SIZE
-     *         KAFKA_BATCH_SIZE}: Maximum number of records to be read in a
-     *         single kafka batched request.  The default value is '1000'.
+     *         KAFKA_BATCH_SIZE}: Maximum number of records to be ingested in a
+     *         single batch.  The default value is '1000'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_POLL_TIMEOUT
+     *         KAFKA_POLL_TIMEOUT}: Maximum time (milliseconds) for each poll
+     *         to get records from kafka.  The default value is '0'.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_WAIT_TIME
-     *         KAFKA_WAIT_TIME}: Maximum number of seconds to wait in a single
-     *         kafka batched request.  The default value is '30'.
-     *                 <li> {@link
-     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_TIMEOUT
-     *         KAFKA_TIMEOUT}: Number of seconds after which kakfa poll will
-     *         timeout if datasource has no records.  The default value is '5'.
+     *         KAFKA_WAIT_TIME}: Maximum time (seconds) to buffer records
+     *         received from kafka before ingestion.  The default value is
+     *         '30'.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EGRESS_SINGLE_FILE_MAX_SIZE
      *         EGRESS_SINGLE_FILE_MAX_SIZE}: Max file size (in MB) to allow
@@ -1029,18 +1030,18 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_BATCH_SIZE
      *                            KAFKA_BATCH_SIZE}: Maximum number of records
-     *                            to be read in a single kafka batched request.
-     *                            The default value is '1000'.
+     *                            to be ingested in a single batch.  The
+     *                            default value is '1000'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_POLL_TIMEOUT
+     *                            KAFKA_POLL_TIMEOUT}: Maximum time
+     *                            (milliseconds) for each poll to get records
+     *                            from kafka.  The default value is '0'.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_WAIT_TIME
-     *                            KAFKA_WAIT_TIME}: Maximum number of seconds
-     *                            to wait in a single kafka batched request.
-     *                            The default value is '30'.
-     *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_TIMEOUT
-     *                            KAFKA_TIMEOUT}: Number of seconds after which
-     *                            kakfa poll will timeout if datasource has no
-     *                            records.  The default value is '5'.
+     *                            KAFKA_WAIT_TIME}: Maximum time (seconds) to
+     *                            buffer records received from kafka before
+     *                            ingestion.  The default value is '30'.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EGRESS_SINGLE_FILE_MAX_SIZE
      *                            EGRESS_SINGLE_FILE_MAX_SIZE}: Max file size
