@@ -188,9 +188,7 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.AdminAddHostRequest.Options#ACCEPTS_FAILOVER
      *                 ACCEPTS_FAILOVER}: If set to {@code true}, the host will
      *                 accept processes (ranks, graph server, etc.) in the
-     *                 event of a failover on another node in the cluster. See
-     *                 <a href="../../../../../n_plus_1/" target="_top">Cluster
-     *                 Resilience</a> for more information.
+     *                 event of a failover on another node in the cluster.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -456,9 +454,7 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.AdminAlterHostRequest.Options#ACCEPTS_FAILOVER
      *                 ACCEPTS_FAILOVER}: If set to {@code true}, the host will
      *                 accept processes (ranks, graph server, etc.) in the
-     *                 event of a failover on another node in the cluster. See
-     *                 <a href="../../../../../n_plus_1/" target="_top">Cluster
-     *                 Resilience</a> for more information.
+     *                 event of a failover on another node in the cluster.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -4839,6 +4835,25 @@ public class GPUdb extends GPUdbBase {
      *                            KAFKA_WAIT_TIME}: Maximum time (seconds) to
      *                            buffer records received from kafka before
      *                            ingestion.  The default value is '30'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EGRESS_PARQUET_COMPRESSION
+     *                            EGRESS_PARQUET_COMPRESSION}: Parquet file
+     *                            compression type
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#UNCOMPRESSED
+     *                            UNCOMPRESSED}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SNAPPY
+     *                            SNAPPY}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#GZIP
+     *                            GZIP}
+     *                            </ul>
+     *                            The default value is {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SNAPPY
+     *                            SNAPPY}.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EGRESS_SINGLE_FILE_MAX_SIZE
      *                            EGRESS_SINGLE_FILE_MAX_SIZE}: Max file size
@@ -11079,7 +11094,12 @@ public class GPUdb extends GPUdbBase {
      * Deletes one or more files from <a href="../../../../../tools/kifs/"
      * target="_top">KiFS</a>.
      * 
-     * @param fileNames  An array of names of files to be deleted.
+     * @param fileNames  An array of names of files to be deleted. File paths
+     *                   may contain wildcard characters after the KiFS
+     *                   directory delimeter.
+     *                   Accepted wildcard characters are asterisk (*) to
+     *                   represent any string of zero or more characters, and
+     *                   question mark (?) to indicate a single character.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -11523,8 +11543,12 @@ public class GPUdb extends GPUdbBase {
      * Downloads one or more files from <a href="../../../../../tools/kifs/"
      * target="_top">KiFS</a>.
      * 
-     * @param fileNames  An array of the file names to download from KiFS. The
-     *                   full path must be provided.
+     * @param fileNames  An array of the file names to download from KiFS. File
+     *                   paths may contain wildcard characters after the KiFS
+     *                   directory delimeter.
+     *                   Accepted wildcard characters are asterisk (*) to
+     *                   represent any string of zero or more characters, and
+     *                   question mark (?) to indicate a single character.
      * @param readOffsets  An array of starting byte offsets from which to read
      *                     each
      *                     respective file in {@code fileNames}. Must either be
@@ -12626,6 +12650,26 @@ public class GPUdb extends GPUdbBase {
      *                 header is included, then specify a
      *                 property separator. Different from column delimiter.
      *                 The default value is '|'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COMPRESSION_TYPE
+     *                 COMPRESSION_TYPE}: File compression type. Different file
+     *                 types support different compresion types. text:
+     *                 uncompressed. parquet: uncompressed, snappy, gzip.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#UNCOMPRESSED
+     *                 UNCOMPRESSED}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#SNAPPY
+     *                 SNAPPY}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#GZIP
+     *                 GZIP}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#SNAPPY
+     *                 SNAPPY}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#SINGLE_FILE
      *                 SINGLE_FILE}: Save records to a single file. This option
@@ -21374,10 +21418,9 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#LIMIT
-     *                 LIMIT}: When specified, limits the number of query
+     *                 LIMIT}: When specified (>0), limits the number of query
      *                 results. The size of the nodes table will be limited by
-     *                 the {@code limit} value.  The default value is an empty
-     *                 {@link Map}.
+     *                 the {@code limit} value.  The default value is '0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#OUTPUT_WKT_PATH
      *                 OUTPUT_WKT_PATH}: If true then concatenated wkt line
@@ -22344,7 +22387,12 @@ public class GPUdb extends GPUdbBase {
      * files in a given directory.
      * 
      * @param paths  File paths to show. Each path can be a KiFS directory
-     *               name, or a full path to a KiFS file.
+     *               name, or a full path to a KiFS file. File paths may
+     *               contain wildcard characters after the KiFS directory
+     *               delimeter.
+     *               Accepted wildcard characters are asterisk (*) to represent
+     *               any string of zero or more characters, and question mark
+     *               (?) to indicate a single character.
      * @param options  Optional parameters.  The default value is an empty
      *                 {@link Map}.
      * 

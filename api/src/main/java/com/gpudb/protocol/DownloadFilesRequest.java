@@ -119,8 +119,12 @@ public class DownloadFilesRequest implements IndexedRecord {
     /**
      * Constructs a DownloadFilesRequest object with the specified parameters.
      * 
-     * @param fileNames  An array of the file names to download from KiFS. The
-     *                   full path must be provided.
+     * @param fileNames  An array of the file names to download from KiFS. File
+     *                   paths may contain wildcard characters after the KiFS
+     *                   directory delimeter.
+     *                   Accepted wildcard characters are asterisk (*) to
+     *                   represent any string of zero or more characters, and
+     *                   question mark (?) to indicate a single character.
      * @param readOffsets  An array of starting byte offsets from which to read
      *                     each
      *                     respective file in {@code fileNames}. Must either be
@@ -168,8 +172,11 @@ public class DownloadFilesRequest implements IndexedRecord {
 
     /**
      * 
-     * @return An array of the file names to download from KiFS. The full path
-     *         must be provided.
+     * @return An array of the file names to download from KiFS. File paths may
+     *         contain wildcard characters after the KiFS directory delimeter.
+     *         Accepted wildcard characters are asterisk (*) to represent any
+     *         string of zero or more characters, and question mark (?) to
+     *         indicate a single character.
      * 
      */
     public List<String> getFileNames() {
@@ -178,8 +185,12 @@ public class DownloadFilesRequest implements IndexedRecord {
 
     /**
      * 
-     * @param fileNames  An array of the file names to download from KiFS. The
-     *                   full path must be provided.
+     * @param fileNames  An array of the file names to download from KiFS. File
+     *                   paths may contain wildcard characters after the KiFS
+     *                   directory delimeter.
+     *                   Accepted wildcard characters are asterisk (*) to
+     *                   represent any string of zero or more characters, and
+     *                   question mark (?) to indicate a single character.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -1347,8 +1347,7 @@ public class BulkInserter<T> implements AutoCloseable {
 
 
     /**
-     * Force a high-availability cluster (inter-cluster) or ring-resiliency
-     * (intra-cluster) failover over, as appropriate.  Check the health of the
+     * Force a high-availability cluster failover.  Check the health of the
      * cluster (either head node only, or head node and worker ranks, based on
      * the retriever configuration), and use it if healthy.  If no healthy cluster
      * is found, then throw an error.  Otherwise, stop at the first healthy cluster.
@@ -1447,7 +1446,8 @@ public class BulkInserter<T> implements AutoCloseable {
                                             && !this.useHeadNode );
 
         try {
-            // Get the latest shard mapping information
+            // Get the latest shard mapping information; note that this endpoint
+            // call might trigger an HA failover in the GPUdb object
             AdminShowShardsResponse shardInfo = gpudb.adminShowShards(new AdminShowShardsRequest());
 
             // Get the shard version
@@ -1461,8 +1461,6 @@ public class BulkInserter<T> implements AutoCloseable {
                 if ( countClusterSwitches == _numClusterSwitches ) {
                     GPUdbLogger.debug_with_info( "# cluster switches and shard versions the same" );
 
-                    // Still using the same cluster; but may have done an N+1
-                    // failover
                     if ( reconstructWorkerQueues )
                     {
                         // The caller needs to know if we ended up updating the
@@ -2203,7 +2201,7 @@ public class BulkInserter<T> implements AutoCloseable {
 
         if( record instanceof String ) {
             // Handle JSON records
-            workerQueue = workerQueues.get(0);
+            workerQueue = workerQueues.get(routingTable.get(ThreadLocalRandom.current().nextInt(routingTable.size())) - 1);
         } else {
             //Handle GenericRecords or RecordObjects
             try {
