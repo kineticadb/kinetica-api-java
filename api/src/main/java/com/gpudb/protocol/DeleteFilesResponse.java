@@ -5,7 +5,9 @@
  */
 package com.gpudb.protocol;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
@@ -22,6 +24,7 @@ public class DeleteFilesResponse implements IndexedRecord {
             .record("DeleteFilesResponse")
             .namespace("com.gpudb")
             .fields()
+                .name("fileNames").type().array().items().stringType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -37,6 +40,7 @@ public class DeleteFilesResponse implements IndexedRecord {
         return schema$;
     }
 
+    private List<String> fileNames;
     private Map<String, String> info;
 
 
@@ -44,6 +48,27 @@ public class DeleteFilesResponse implements IndexedRecord {
      * Constructs a DeleteFilesResponse object with default parameters.
      */
     public DeleteFilesResponse() {
+    }
+
+    /**
+     * 
+     * @return Names of the files deleted from KiFS
+     * 
+     */
+    public List<String> getFileNames() {
+        return fileNames;
+    }
+
+    /**
+     * 
+     * @param fileNames  Names of the files deleted from KiFS
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public DeleteFilesResponse setFileNames(List<String> fileNames) {
+        this.fileNames = (fileNames == null) ? new ArrayList<String>() : fileNames;
+        return this;
     }
 
     /**
@@ -94,6 +119,9 @@ public class DeleteFilesResponse implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
+                return this.fileNames;
+
+            case 1:
                 return this.info;
 
             default:
@@ -116,6 +144,10 @@ public class DeleteFilesResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
+                this.fileNames = (List<String>)value;
+                break;
+
+            case 1:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -136,7 +168,8 @@ public class DeleteFilesResponse implements IndexedRecord {
 
         DeleteFilesResponse that = (DeleteFilesResponse)obj;
 
-        return ( this.info.equals( that.info ) );
+        return ( this.fileNames.equals( that.fileNames )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -144,6 +177,10 @@ public class DeleteFilesResponse implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
+        builder.append( gd.toString( "fileNames" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.fileNames ) );
+        builder.append( ", " );
         builder.append( gd.toString( "info" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.info ) );
@@ -155,6 +192,7 @@ public class DeleteFilesResponse implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
+        hashCode = (31 * hashCode) + this.fileNames.hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }

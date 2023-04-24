@@ -183,6 +183,24 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * KAFKA_WAIT_TIME}: Maximum time (seconds) to buffer records received from
      * kafka before ingestion.  The default value is '30'.
      *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EGRESS_PARQUET_COMPRESSION
+     * EGRESS_PARQUET_COMPRESSION}: Parquet file compression type
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#UNCOMPRESSED
+     * UNCOMPRESSED}
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SNAPPY
+     * SNAPPY}
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#GZIP
+     * GZIP}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SNAPPY
+     * SNAPPY}.
+     *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EGRESS_SINGLE_FILE_MAX_SIZE
      * EGRESS_SINGLE_FILE_MAX_SIZE}: Max file size (in MB) to allow saving to a
      * single file. May be overridden by target limitations.  The default value
@@ -384,6 +402,29 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          * ingestion.  The default value is '30'.
          */
         public static final String KAFKA_WAIT_TIME = "kafka_wait_time";
+
+        /**
+         * Parquet file compression type
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#UNCOMPRESSED
+         * UNCOMPRESSED}
+         *         <li> {@link
+         * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SNAPPY
+         * SNAPPY}
+         *         <li> {@link
+         * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#GZIP
+         * GZIP}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SNAPPY
+         * SNAPPY}.
+         */
+        public static final String EGRESS_PARQUET_COMPRESSION = "egress_parquet_compression";
+        public static final String UNCOMPRESSED = "uncompressed";
+        public static final String SNAPPY = "snappy";
+        public static final String GZIP = "gzip";
 
         /**
          * Max file size (in MB) to allow saving to a single file. May be
@@ -648,6 +689,25 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            buffer records received from kafka before
      *                            ingestion.  The default value is '30'.
      *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EGRESS_PARQUET_COMPRESSION
+     *                            EGRESS_PARQUET_COMPRESSION}: Parquet file
+     *                            compression type
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#UNCOMPRESSED
+     *                            UNCOMPRESSED}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SNAPPY
+     *                            SNAPPY}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#GZIP
+     *                            GZIP}
+     *                            </ul>
+     *                            The default value is {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SNAPPY
+     *                            SNAPPY}.
+     *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EGRESS_SINGLE_FILE_MAX_SIZE
      *                            EGRESS_SINGLE_FILE_MAX_SIZE}: Max file size
      *                            (in MB) to allow saving to a single file. May
@@ -843,6 +903,24 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         KAFKA_WAIT_TIME}: Maximum time (seconds) to buffer records
      *         received from kafka before ingestion.  The default value is
      *         '30'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EGRESS_PARQUET_COMPRESSION
+     *         EGRESS_PARQUET_COMPRESSION}: Parquet file compression type
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#UNCOMPRESSED
+     *         UNCOMPRESSED}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SNAPPY
+     *         SNAPPY}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#GZIP
+     *         GZIP}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SNAPPY
+     *         SNAPPY}.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EGRESS_SINGLE_FILE_MAX_SIZE
      *         EGRESS_SINGLE_FILE_MAX_SIZE}: Max file size (in MB) to allow
@@ -1042,6 +1120,25 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            KAFKA_WAIT_TIME}: Maximum time (seconds) to
      *                            buffer records received from kafka before
      *                            ingestion.  The default value is '30'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EGRESS_PARQUET_COMPRESSION
+     *                            EGRESS_PARQUET_COMPRESSION}: Parquet file
+     *                            compression type
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#UNCOMPRESSED
+     *                            UNCOMPRESSED}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SNAPPY
+     *                            SNAPPY}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#GZIP
+     *                            GZIP}
+     *                            </ul>
+     *                            The default value is {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SNAPPY
+     *                            SNAPPY}.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EGRESS_SINGLE_FILE_MAX_SIZE
      *                            EGRESS_SINGLE_FILE_MAX_SIZE}: Max file size

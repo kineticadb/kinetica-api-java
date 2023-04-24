@@ -101,7 +101,12 @@ public class DeleteFilesRequest implements IndexedRecord {
     /**
      * Constructs a DeleteFilesRequest object with the specified parameters.
      * 
-     * @param fileNames  An array of names of files to be deleted.
+     * @param fileNames  An array of names of files to be deleted. File paths
+     *                   may contain wildcard characters after the KiFS
+     *                   directory delimeter.
+     *                   Accepted wildcard characters are asterisk (*) to
+     *                   represent any string of zero or more characters, and
+     *                   question mark (?) to indicate a single character.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -130,7 +135,11 @@ public class DeleteFilesRequest implements IndexedRecord {
 
     /**
      * 
-     * @return An array of names of files to be deleted.
+     * @return An array of names of files to be deleted. File paths may contain
+     *         wildcard characters after the KiFS directory delimeter.
+     *         Accepted wildcard characters are asterisk (*) to represent any
+     *         string of zero or more characters, and question mark (?) to
+     *         indicate a single character.
      * 
      */
     public List<String> getFileNames() {
@@ -139,7 +148,12 @@ public class DeleteFilesRequest implements IndexedRecord {
 
     /**
      * 
-     * @param fileNames  An array of names of files to be deleted.
+     * @param fileNames  An array of names of files to be deleted. File paths
+     *                   may contain wildcard characters after the KiFS
+     *                   directory delimeter.
+     *                   Accepted wildcard characters are asterisk (*) to
+     *                   represent any string of zero or more characters, and
+     *                   question mark (?) to indicate a single character.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

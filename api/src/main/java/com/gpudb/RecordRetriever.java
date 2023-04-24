@@ -353,12 +353,10 @@ public class RecordRetriever<T> {
 
 
     /**
-     * Force a high-availability cluster (inter-cluster) or ring-resiliency
-     * (intra-cluster) failover over, as appropriate.  Check the health of the
+     * Force a high-availability cluster failover.  Check the health of the
      * cluster (either head node only, or head node and worker ranks, based on
      * the retriever configuration), and use it if healthy.  If no healthy cluster
      * is found, then throw an error.  Otherwise, stop at the first healthy cluster.
-     *
      *
      * @returns whether a successful failover recovery happened.
      *
@@ -475,7 +473,7 @@ public class RecordRetriever<T> {
         // single-threading this part is acceptable
         try {
             // Get the latest shard mapping information; note that this endpoint
-            // call might trigger an N+1 or HA failover in the GPUdb object
+            // call might trigger an HA failover in the GPUdb object
             AdminShowShardsResponse shardInfo = gpudb.adminShowShards(new AdminShowShardsRequest());
 
             // Get the shard version
@@ -489,8 +487,6 @@ public class RecordRetriever<T> {
                 if ( countClusterSwitches == _numClusterSwitches ) {
                     GPUdbLogger.debug_with_info( "# cluster switches and shard versions the same" );
 
-                    // Still using the same cluster; but may have done an N+1
-                    // failover
                     if ( reconstructWorkerURLS )
                     {
                         // The caller needs to know if we ended up updating the

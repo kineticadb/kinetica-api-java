@@ -50,8 +50,7 @@ public class AdminAlterHostRequest implements IndexedRecord {
      * com.gpudb.protocol.AdminAlterHostRequest.Options#ACCEPTS_FAILOVER
      * ACCEPTS_FAILOVER}: If set to {@code true}, the host will accept
      * processes (ranks, graph server, etc.) in the event of a failover on
-     * another node in the cluster. See <a href="../../../../../../n_plus_1/"
-     * target="_top">Cluster Resilience</a> for more information.
+     * another node in the cluster.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -70,8 +69,7 @@ public class AdminAlterHostRequest implements IndexedRecord {
         /**
          * If set to {@code true}, the host will accept processes (ranks, graph
          * server, etc.) in the event of a failover on another node in the
-         * cluster. See <a href="../../../../../../n_plus_1/"
-         * target="_top">Cluster Resilience</a> for more information.
+         * cluster.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -114,10 +112,7 @@ public class AdminAlterHostRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AdminAlterHostRequest.Options#ACCEPTS_FAILOVER
      *                 ACCEPTS_FAILOVER}: If set to {@code true}, the host will
      *                 accept processes (ranks, graph server, etc.) in the
-     *                 event of a failover on another node in the cluster. See
-     *                 <a href="../../../../../../n_plus_1/"
-     *                 target="_top">Cluster Resilience</a> for more
-     *                 information.
+     *                 event of a failover on another node in the cluster.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -172,9 +167,7 @@ public class AdminAlterHostRequest implements IndexedRecord {
      *         com.gpudb.protocol.AdminAlterHostRequest.Options#ACCEPTS_FAILOVER
      *         ACCEPTS_FAILOVER}: If set to {@code true}, the host will accept
      *         processes (ranks, graph server, etc.) in the event of a failover
-     *         on another node in the cluster. See <a
-     *         href="../../../../../../n_plus_1/" target="_top">Cluster
-     *         Resilience</a> for more information.
+     *         on another node in the cluster.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -200,10 +193,7 @@ public class AdminAlterHostRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AdminAlterHostRequest.Options#ACCEPTS_FAILOVER
      *                 ACCEPTS_FAILOVER}: If set to {@code true}, the host will
      *                 accept processes (ranks, graph server, etc.) in the
-     *                 event of a failover on another node in the cluster. See
-     *                 <a href="../../../../../../n_plus_1/"
-     *                 target="_top">Cluster Resilience</a> for more
-     *                 information.
+     *                 event of a failover on another node in the cluster.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

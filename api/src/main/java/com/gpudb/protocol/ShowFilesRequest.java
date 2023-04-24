@@ -59,7 +59,12 @@ public class ShowFilesRequest implements IndexedRecord {
      * Constructs a ShowFilesRequest object with the specified parameters.
      * 
      * @param paths  File paths to show. Each path can be a KiFS directory
-     *               name, or a full path to a KiFS file.
+     *               name, or a full path to a KiFS file. File paths may
+     *               contain wildcard characters after the KiFS directory
+     *               delimeter.
+     *               Accepted wildcard characters are asterisk (*) to represent
+     *               any string of zero or more characters, and question mark
+     *               (?) to indicate a single character.
      * @param options  Optional parameters.  The default value is an empty
      *                 {@link Map}.
      * 
@@ -72,7 +77,11 @@ public class ShowFilesRequest implements IndexedRecord {
     /**
      * 
      * @return File paths to show. Each path can be a KiFS directory name, or a
-     *         full path to a KiFS file.
+     *         full path to a KiFS file. File paths may contain wildcard
+     *         characters after the KiFS directory delimeter.
+     *         Accepted wildcard characters are asterisk (*) to represent any
+     *         string of zero or more characters, and question mark (?) to
+     *         indicate a single character.
      * 
      */
     public List<String> getPaths() {
@@ -82,7 +91,12 @@ public class ShowFilesRequest implements IndexedRecord {
     /**
      * 
      * @param paths  File paths to show. Each path can be a KiFS directory
-     *               name, or a full path to a KiFS file.
+     *               name, or a full path to a KiFS file. File paths may
+     *               contain wildcard characters after the KiFS directory
+     *               delimeter.
+     *               Accepted wildcard characters are asterisk (*) to represent
+     *               any string of zero or more characters, and question mark
+     *               (?) to indicate a single character.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -98,9 +98,9 @@ public class QueryGraphRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
      *         <li> {@link com.gpudb.protocol.QueryGraphRequest.Options#LIMIT
-     * LIMIT}: When specified, limits the number of query results. The size of
-     * the nodes table will be limited by the {@code limit} value.  The default
-     * value is an empty {@link Map}.
+     * LIMIT}: When specified (>0), limits the number of query results. The
+     * size of the nodes table will be limited by the {@code limit} value.  The
+     * default value is '0'.
      *         <li> {@link
      * com.gpudb.protocol.QueryGraphRequest.Options#OUTPUT_WKT_PATH
      * OUTPUT_WKT_PATH}: If true then concatenated wkt line segments will be
@@ -161,9 +161,9 @@ public class QueryGraphRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * When specified, limits the number of query results. The size of the
-         * nodes table will be limited by the {@code limit} value.  The default
-         * value is an empty {@link Map}.
+         * When specified (>0), limits the number of query results. The size of
+         * the nodes table will be limited by the {@code limit} value.  The
+         * default value is '0'.
          */
         public static final String LIMIT = "limit";
 
@@ -311,10 +311,9 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#LIMIT
-     *                 LIMIT}: When specified, limits the number of query
+     *                 LIMIT}: When specified (>0), limits the number of query
      *                 results. The size of the nodes table will be limited by
-     *                 the {@code limit} value.  The default value is an empty
-     *                 {@link Map}.
+     *                 the {@code limit} value.  The default value is '0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#OUTPUT_WKT_PATH
      *                 OUTPUT_WKT_PATH}: If true then concatenated wkt line
@@ -592,9 +591,9 @@ public class QueryGraphRequest implements IndexedRecord {
      *         com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.QueryGraphRequest.Options#LIMIT LIMIT}: When
-     *         specified, limits the number of query results. The size of the
-     *         nodes table will be limited by the {@code limit} value.  The
-     *         default value is an empty {@link Map}.
+     *         specified (>0), limits the number of query results. The size of
+     *         the nodes table will be limited by the {@code limit} value.  The
+     *         default value is '0'.
      *                 <li> {@link
      *         com.gpudb.protocol.QueryGraphRequest.Options#OUTPUT_WKT_PATH
      *         OUTPUT_WKT_PATH}: If true then concatenated wkt line segments
@@ -662,10 +661,9 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#LIMIT
-     *                 LIMIT}: When specified, limits the number of query
+     *                 LIMIT}: When specified (>0), limits the number of query
      *                 results. The size of the nodes table will be limited by
-     *                 the {@code limit} value.  The default value is an empty
-     *                 {@link Map}.
+     *                 the {@code limit} value.  The default value is '0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#OUTPUT_WKT_PATH
      *                 OUTPUT_WKT_PATH}: If true then concatenated wkt line
