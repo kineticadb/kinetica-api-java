@@ -258,14 +258,14 @@ public class RecordRetriever<T> {
                 .get(0)
                 .contains( ShowTableResponse.TableDescriptions.REPLICATED );
         } catch ( GPUdbException ex ) {
-            // Ignore any issue and carry on; it's ok if the table does not
+            // Ignore any issue and carry on; it's OK if the table does not
             // exist yet.  Who knows when the user would instantiate this
             // object--quite possibly before creating the table.  So no worries.
         }
 
         // For replicated tables, we might have to use the head node instead of
         // a random worker, depended upon whether the database version supports
-        // it.  So, we need to hardcode the versions that will have this change.
+        // it. So, we need to hard-code the versions that will have this change.
         //
         // Since isWorkerLookupSupported is true if MH is active (by this point
         // in init), just set it to false if the server can't support it for
@@ -366,7 +366,7 @@ public class RecordRetriever<T> {
         throws GPUdbException {
         GPUdbLogger.debug_with_info( "Forced failover begin..." );
         // The whole failover scenario needs to happen in a thread-safe
-        // manner; since this happens only upon failure, it's ok to
+        // manner; since this happens only upon failure, it's OK to
         // synchronize the whole method
 
         // We'll need to know which URL we're using at the moment
@@ -457,7 +457,7 @@ public class RecordRetriever<T> {
      * @param doReconstructWorkerQueues  Boolean flag indicating if the worker
      *                                   queues ought to be re-built.
      *
-     * @return  a bool indicating whether the shard mapping was updated or not.
+     * @return  a boolean indicating whether the shard mapping was updated.
      */
     private synchronized boolean updateWorkerQueues( int countClusterSwitches, boolean doReconstructWorkerURLs ) throws GPUdbException {
 
@@ -481,8 +481,8 @@ public class RecordRetriever<T> {
 
             // No-op if the shard version hasn't changed (and it's not the first time)
             if (this.shardVersion == newShardVersion) {
-                // Also check if the db client has failed over to a different HA
-                // ring node
+                // Also check if the database client has failed over to a
+                // different HA ring node
                 int _numClusterSwitches = this.gpudb.getNumClusterSwitches();
                 if ( countClusterSwitches == _numClusterSwitches ) {
                     GPUdbLogger.debug_with_info( "# cluster switches and shard versions the same" );

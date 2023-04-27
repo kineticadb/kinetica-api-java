@@ -70,7 +70,11 @@ public class WorkerList extends ArrayList<URL> {
     public WorkerList(GPUdb gpudb, Pattern ipRegex) throws GPUdbException {
 
         this.ipRegex = ipRegex;
-        
+
+        // Check if multi-head I/O is disabled on the connection
+        if (!gpudb.isAutoDiscoveryEnabled())
+            return;
+
         Map<String, String> systemProperties = gpudb.showSystemProperties(GPUdb.options()).getPropertyMap();
 
         String s = systemProperties.get("conf.enable_worker_http_servers");
@@ -200,7 +204,7 @@ public class WorkerList extends ArrayList<URL> {
      * list will be empty and multi-head operations will not be used.) Note that
      * in some cases, workers may be configured to use more than one IP
      * address, not all of which may be accessible to the client; the
-     * optional {@code ipprefix} parameter can be used in such cases to
+     * optional {@code ipPrefix} parameter can be used in such cases to
      * filter for an IP range that is accessible, e.g., a prefix of
      * {@code "192.168."} will use worker IP addresses in the 192.168.*
      * range.

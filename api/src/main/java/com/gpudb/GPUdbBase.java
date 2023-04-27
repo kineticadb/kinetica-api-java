@@ -409,7 +409,7 @@ public abstract class GPUdbBase {
          * then the GPUdb object will not connect to the database at initialization
          * time, and will only work with the URLs given.  Default is false.
          *
-         * @return  the value of the automatic disovery disabling flag
+         * @return  the value of the automatic discovery disabling flag
          *
          * @see #setDisableAutoDiscovery(boolean)
          */
@@ -488,7 +488,7 @@ public abstract class GPUdbBase {
          * This is for fine-tuning server connection parameters.  Using the
          * default of 200ms should suffice for most users.
          *
-         * @return  the connection inactivity period (in ms)
+         * @return  the connection inactivity period (in milliseconds)
          *
          * @see #setConnectionInactivityValidationTimeout(int)
          */
@@ -1013,7 +1013,7 @@ public abstract class GPUdbBase {
          * *Note*: Non-positive value passed to this method disables connection
          *         validation.  So, use with great caution!
          *
-         * @param value  the connection inactivity timeout (in ms)
+         * @param value  the connection inactivity timeout (in milliseconds)
          * @return       the current {@link Options} instance
          *
          * @see #getServerConnectionTimeout()
@@ -1854,12 +1854,12 @@ public abstract class GPUdbBase {
     private static final String SYSTEM_PROPERTIES_RESPONSE_SERVER_URLS     = "conf.worker_http_server_urls";
     private static final String SYSTEM_PROPERTIES_RESPONSE_TRUE            = "TRUE";
 
-    // Internally used headers (make sure to add them to PROTECTED_HEADERS
+    // Internally used headers (make sure to add them to PROTECTED_HEADERS)
     protected static final String HEADER_HA_SYNC_MODE  = "X-Kinetica-Group";
     protected static final String HEADER_AUTHORIZATION = "Authorization";
     protected static final String HEADER_CONTENT_TYPE  = "Content-type";
 
-    // Headers that are prt
+    // Headers that are read-only once the connection has been created
     protected static final String[] PROTECTED_HEADERS = new String[]{
         HEADER_HA_SYNC_MODE,
         HEADER_AUTHORIZATION,
@@ -2375,7 +2375,7 @@ public abstract class GPUdbBase {
         GPUdbLogger.debug_with_info( "Options: " + options.toString());
 
         // Convert the initial connection attempt timeout from milliseconds
-        // to nano seconds
+        // to nanoseconds
         this.initialConnectionAttemptTimeoutNS = this.initialConnectionAttemptTimeoutNS * 1000000L;
 
         this.trustStoreFilePath = options.getTrustStoreFilePath() == null ? System.getProperty("javax.net.ssl.trustStore") : options.getTrustStoreFilePath();
@@ -2426,7 +2426,7 @@ public abstract class GPUdbBase {
         // Create a socket factory in order to use an http connection manager
         SSLConnectionSocketFactory secureSocketFactory = SSLConnectionSocketFactory.getSocketFactory();
         if ( this.bypassSslCertCheck ) {
-            // Allow self-signed certs
+            // Allow self-signed certificates
             SSLContext sslContext = null;
             try {
                 sslContext = SSLContextBuilder
@@ -2650,7 +2650,7 @@ public abstract class GPUdbBase {
     public List<URL> getFailoverURLs() {
         List<URL> failoverUrls = new ArrayList<>();
         for (int urlIndex : this.haUrlIndices)
-        	failoverUrls.add(this.hostAddresses.get(urlIndex).getActiveHeadNodeUrl());
+            failoverUrls.add(this.hostAddresses.get(urlIndex).getActiveHeadNodeUrl());
         return failoverUrls;
     }
 
@@ -2794,6 +2794,15 @@ public abstract class GPUdbBase {
     }
 
     /**
+     * Gets whether auto-discovery is enabled or not on the current connection.
+     *
+     * @return  true if auto-discovery is enabled; false otherwise
+     */
+    public boolean isAutoDiscoveryEnabled() {
+        return !disableAutoDiscovery;
+    }
+
+    /**
      * Gets the number of threads used during data encoding and decoding
      * operations. Will be one if not overridden using the {@link
      * GPUdb#GPUdb(String, GPUdbBase.Options) GPUdb constructor} via {@link
@@ -2904,7 +2913,7 @@ public abstract class GPUdbBase {
         // Ensure that the given header is not a protected header
         for (String protectedHeader : PROTECTED_HEADERS) {
             if (header.equals(protectedHeader)) {
-                String errorMsg = ("Not allowed to change proteced header: " + header);
+                String errorMsg = ("Not allowed to change protected header: " + header);
                 GPUdbLogger.error(errorMsg);
                 throw new GPUdbException(errorMsg);
             }
@@ -3038,22 +3047,22 @@ public abstract class GPUdbBase {
      */
     protected synchronized void selectNextCluster() {
 
-    	int currClusterIndexPointer = getCurrClusterIndexPointer();
+        int currClusterIndexPointer = getCurrClusterIndexPointer();
 
-    	GPUdbLogger.debug_with_info(String.format(
-        		"Cluster switch #%s from cluster #%s (%s) to the next one in %s",
-        		getNumClusterSwitches() + 1, currClusterIndexPointer + 1, getURL(), getFailoverURLs()
+        GPUdbLogger.debug_with_info(String.format(
+                "Cluster switch #%s from cluster #%s (%s) to the next one in %s",
+                getNumClusterSwitches() + 1, currClusterIndexPointer + 1, getURL(), getFailoverURLs()
         ));
 
-    	// Increment the index by one (mod url list length)
+        // Increment the index by one (wrapping around at the list end)
         this.setCurrClusterIndexPointer( (currClusterIndexPointer + 1) % getHARingSize() );
 
         // Keep a running count of how many times we had to switch clusters
         this.incrementNumClusterSwitches();
 
         GPUdbLogger.debug_with_info(String.format(
-        		"Cluster switch #%s to cluster #%s (%s)",
-        		getNumClusterSwitches(), getCurrClusterIndexPointer() + 1, getURL()
+                "Cluster switch #%s to cluster #%s (%s)",
+                getNumClusterSwitches(), getCurrClusterIndexPointer() + 1, getURL()
         ));
     }
 
@@ -3500,7 +3509,7 @@ public abstract class GPUdbBase {
 
             // Any error means we don't know whether the system is running
             GPUdbLogger.warn(String.format(
-            		"Exception checking running status of URL %s -- %s",
+                    "Exception checking running status of URL %s -- %s",
                     url.toString(), ex
             ));
         }
@@ -4302,7 +4311,7 @@ public abstract class GPUdbBase {
             // Also save it in the options for the future
             this.options.setPrimaryUrl( this.primaryUrlHostname );
             GPUdbLogger.debug_with_info(String.format(
-            		"Updated primary host name %s -> %s for single-cluster connection",
+                    "Updated primary host name %s -> %s for single-cluster connection",
                     originalPrimaryUrlHostname, this.primaryUrlHostname
             ));
         } else {
@@ -4325,7 +4334,7 @@ public abstract class GPUdbBase {
                     // Also save it in the options
                     this.options.setPrimaryUrl( primaryUrlHostname );
                     GPUdbLogger.debug_with_info(String.format(
-                    		"Updated primary host name %s -> %s for multi-cluster connection",
+                            "Updated primary host name %s -> %s for multi-cluster connection",
                             originalPrimaryUrlHostname, this.primaryUrlHostname
                     ));
                 } else {
@@ -5442,7 +5451,7 @@ public abstract class GPUdbBase {
             // Get the entity and the content of the response
             responseEntity = postResponse.getEntity();
 
-            // Ensure that we're not getting any html snippet (may be
+            // Ensure that we're not getting any HTML snippet (may be
             // returned by the HTTPD server)
             if (
                     (responseEntity.getContentType() != null) &&
@@ -5663,14 +5672,14 @@ public abstract class GPUdbBase {
             Charset encoding = encodingHeader == null ? StandardCharsets.UTF_8 :
                     Charsets.toCharset(encodingHeader);
 
-            // use org.apache.http.util.EntityUtils to read json as string
+            // use org.apache.http.util.EntityUtils to read JSON as string
             String json = EntityUtils.toString(responseEntity, StandardCharsets.UTF_8);
 
             TypeReference<HashMap<String,Object>> typeRef
                     = new TypeReference<HashMap<String,Object>>() {};
             Map<String, Object> response = JSON_MAPPER.readValue(json.getBytes(StandardCharsets.UTF_8), typeRef);
 
-            // Ensure that we're not getting any html snippet (may be
+            // Ensure that we're not getting any HTML snippet (may be
             // returned by the HTTPD server)
             if (
                 (responseEntity.getContentType() != null) &&

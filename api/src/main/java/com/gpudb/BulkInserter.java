@@ -496,6 +496,7 @@ public class BulkInserter<T> implements AutoCloseable {
 
             Map<String, Object> insertRecordsFromJsonResponse = null;
 
+            @SuppressWarnings("unchecked")
             String jsonPayload = JsonUtils.toJsonArray((List<String>) queuedRecords);
 
             if( jsonPayload != null ) {
@@ -1019,7 +1020,7 @@ public class BulkInserter<T> implements AutoCloseable {
         // purposes)
         this.dbHARingSize = gpudb.getHARingSize();
 
-        // Keep track of how many times the db client has switched HA clusters
+        // Keep track of how many times the DB client has switched HA clusters
         // in order to decide later if it's time to update the worker queues
         this.numClusterSwitches = gpudb.getNumClusterSwitches();
 
@@ -1418,7 +1419,7 @@ public class BulkInserter<T> implements AutoCloseable {
      * Updates the shard mapping based on the latest cluster configuration.
      * Also reconstructs the worker queues based on the new sharding.
      *
-     * @return  a bool indicating whether the shard mapping was updated or not.
+     * @return  a boolean indicating whether the shard mapping was updated.
      */
     private boolean updateWorkerQueues( int countClusterSwitches ) throws GPUdbException {
         return this.updateWorkerQueues( countClusterSwitches, true );
@@ -1435,7 +1436,7 @@ public class BulkInserter<T> implements AutoCloseable {
      * @param doReconstructWorkerQueues  Boolean flag indicating if the worker
      *                                   queues ought to be re-built.
      *
-     * @return  a bool indicating whether the shard mapping was updated or not.
+     * @return  a boolean indicating whether the shard mapping was updated.
      */
     private synchronized boolean updateWorkerQueues( int countClusterSwitches, boolean doReconstructWorkerQueues ) throws GPUdbException {
 
@@ -1455,8 +1456,8 @@ public class BulkInserter<T> implements AutoCloseable {
 
             // No-op if the shard version hasn't changed (and it's not the first time)
             if (this.shardVersion == newShardVersion) {
-                // Also check if the db client has failed over to a different HA
-                // ring node
+                // Also check if the database client has failed over to a
+                // different HA ring node
                 int _numClusterSwitches = this.gpudb.getNumClusterSwitches();
                 if ( countClusterSwitches == _numClusterSwitches ) {
                     GPUdbLogger.debug_with_info( "# cluster switches and shard versions the same" );
@@ -1729,7 +1730,7 @@ public class BulkInserter<T> implements AutoCloseable {
      */
     public void flush() throws InsertException {
         // Flush all queues, regardless of how full they are.  Also, we will
-        // retry based on user configuration.  Note the last param
+        // retry based on user configuration.  Note the last parameter
         // lets the called method know that the user is forcing this flush;
         // this is important for recursive calls.
         this.flush( this.retryCount );
@@ -1748,7 +1749,7 @@ public class BulkInserter<T> implements AutoCloseable {
      */
     private void flush( int retryCount ) throws InsertException {
         // Flush all queues, regardless of how full they are.  Also, we will
-        // retry based on user configuration.  Note the last param
+        // retry based on user configuration.  Note the last parameter
         // lets the called method know that the user is forcing this flush;
         // this is important for recursive calls.
         this.flushQueues( this.workerQueues, retryCount, true );
@@ -1917,6 +1918,7 @@ public class BulkInserter<T> implements AutoCloseable {
                 // Handle JSON insert response
                 Map<String, Object> insertJsonResponse = result.getInsertJsonResponse();
                 if( insertJsonResponse != null ) {
+                    @SuppressWarnings("unchecked")
                     Map<String, Object> responseData = (Map<String, Object>) insertJsonResponse.get("data");
                     int countInserted = (Integer) responseData.get("count_inserted");
                     this.countInserted.addAndGet(countInserted);
@@ -2127,7 +2129,7 @@ public class BulkInserter<T> implements AutoCloseable {
             }
         }
 
-        // Here we reset the local retrycount variable to what was set as the
+        // Here we reset the local retryCount variable to what was set as the
         // value of the instance variable retryCount. This block will retry
         // insertion after an HA failover has taken place, so it will start with
         // original retryCount once more into the new cluster.
@@ -2264,7 +2266,7 @@ public class BulkInserter<T> implements AutoCloseable {
         // was single threaded; so each time records got inserted to this class
         // (whether via this insert(single record) or the insert( many records ) )
         // method, we always flushed any queue that became full.  Now that we
-        // are using background threads to flush the queues paralelly, if we
+        // are using background threads to flush the queues in parallel, if we
         // don't have this 'flushWhenFull' mechanism, the insert( single record )
         // method would _never_ flush any queue.  We can't change the method's
         // behavior that much; it would break existing client code potentially.
@@ -2358,6 +2360,7 @@ public class BulkInserter<T> implements AutoCloseable {
      *
      * @throws InsertException if an error occurs while inserting
      */
+    @SuppressWarnings("unchecked")
     public void insert(List<T> records) throws InsertException {
         // Try to insert all the records with the allotted retry count
         if( this.jsonOptions.isValidateJson() ) {
