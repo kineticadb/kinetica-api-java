@@ -2,6 +2,12 @@
 
 ## Version 7.1
 
+### Version 7.1.9.2 - 2023-04-26
+
+#### Fixed
+-   Support for routing through the head node all disabled multi-head operations
+
+
 ### Version 7.1.9.1 - 2023-04-23
 
 #### Added
