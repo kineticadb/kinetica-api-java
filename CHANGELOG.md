@@ -2,6 +2,12 @@
 
 ## Version 7.1
 
+### Version 7.1.9.3 - 2023-04-30
+
+#### Changed
+-   Upgraded JSON library from 20220924 to 20230227
+
+
 ### Version 7.1.9.2 - 2023-04-26
 
 #### Fixed
