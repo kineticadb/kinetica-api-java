@@ -79,6 +79,22 @@ public class CreateDatasourceRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateDatasourceRequest.Options#S3_REGION S3_REGION}:
      * Name of the Amazon S3 region where the given bucket is located
      *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#S3_USE_VIRTUAL_ADDRESSING
+     * S3_USE_VIRTUAL_ADDRESSING}: When true (default), the requests URI should
+     * be specified in virtual-hosted-style format where the bucket name is
+     * part of the domain name in the URL.
+     * <p>
+     * Otherwise set to false to use path-style URI for requests.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}.
+     *         <li> {@link
      * com.gpudb.protocol.CreateDatasourceRequest.Options#S3_AWS_ROLE_ARN
      * S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which has required S3 permissions
      * that can be assumed for the given S3 IAM user
@@ -248,6 +264,24 @@ public class CreateDatasourceRequest implements IndexedRecord {
          * Name of the Amazon S3 region where the given bucket is located
          */
         public static final String S3_REGION = "s3_region";
+
+        /**
+         * When true (default), the requests URI should be specified in
+         * virtual-hosted-style format where the bucket name is part of the
+         * domain name in the URL.
+         * <p>
+         * Otherwise set to false to use path-style URI for requests.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}.
+         */
+        public static final String S3_USE_VIRTUAL_ADDRESSING = "s3_use_virtual_addressing";
 
         /**
          * Amazon IAM Role ARN which has required S3 permissions that can be
@@ -479,6 +513,26 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#S3_REGION
      *                 S3_REGION}: Name of the Amazon S3 region where the given
      *                 bucket is located
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#S3_USE_VIRTUAL_ADDRESSING
+     *                 S3_USE_VIRTUAL_ADDRESSING}: When true (default), the
+     *                 requests URI should be specified in virtual-hosted-style
+     *                 format where the bucket name is part of the domain name
+     *                 in the URL.
+     *                 Otherwise set to false to use path-style URI for
+     *                 requests.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
+     *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#S3_AWS_ROLE_ARN
      *                 S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which has required
@@ -768,6 +822,21 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         S3_REGION}: Name of the Amazon S3 region where the given bucket
      *         is located
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#S3_USE_VIRTUAL_ADDRESSING
+     *         S3_USE_VIRTUAL_ADDRESSING}: When true (default), the requests
+     *         URI should be specified in virtual-hosted-style format where the
+     *         bucket name is part of the domain name in the URL.
+     *         Otherwise set to false to use path-style URI for requests.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateDatasourceRequest.Options#S3_AWS_ROLE_ARN
      *         S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which has required S3
      *         permissions that can be assumed for the given S3 IAM user
@@ -943,6 +1012,26 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#S3_REGION
      *                 S3_REGION}: Name of the Amazon S3 region where the given
      *                 bucket is located
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#S3_USE_VIRTUAL_ADDRESSING
+     *                 S3_USE_VIRTUAL_ADDRESSING}: When true (default), the
+     *                 requests URI should be specified in virtual-hosted-style
+     *                 format where the bucket name is part of the domain name
+     *                 in the URL.
+     *                 Otherwise set to false to use path-style URI for
+     *                 requests.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
+     *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#S3_AWS_ROLE_ARN
      *                 S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which has required

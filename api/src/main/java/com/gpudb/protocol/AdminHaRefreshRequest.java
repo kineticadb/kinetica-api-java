@@ -14,16 +14,19 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link
- * com.gpudb.GPUdb#appendRecords(AppendRecordsRequest)}.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#adminHaRefresh(AdminHaRefreshRequest)}.
+ * <p>
+ * Restarts the HA processing on the given cluster as a mechanism of accepting
+ * breaking HA conf changes. Additionally the cluster is put into read-only
+ * while HA is restarting.
  */
-public class AppendRecordsResponse implements IndexedRecord {
+public class AdminHaRefreshRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("AppendRecordsResponse")
+            .record("AdminHaRefreshRequest")
             .namespace("com.gpudb")
             .fields()
-                .name("tableName").type().stringType().noDefault()
-                .name("info").type().map().values().stringType().noDefault()
+                .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -38,51 +41,47 @@ public class AppendRecordsResponse implements IndexedRecord {
         return schema$;
     }
 
-    private String tableName;
-    private Map<String, String> info;
+    private Map<String, String> options;
 
 
     /**
-     * Constructs an AppendRecordsResponse object with default parameters.
+     * Constructs an AdminHaRefreshRequest object with default parameters.
      */
-    public AppendRecordsResponse() {
+    public AdminHaRefreshRequest() {
+        options = new LinkedHashMap<>();
     }
-    public String getTableName() {
-        return tableName;
+
+    /**
+     * Constructs an AdminHaRefreshRequest object with the specified
+     * parameters.
+     * 
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
+     * 
+     */
+    public AdminHaRefreshRequest(Map<String, String> options) {
+        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
     /**
      * 
-     * @param tableName
+     * @return Optional parameters.  The default value is an empty {@link Map}.
+     * 
+     */
+    public Map<String, String> getOptions() {
+        return options;
+    }
+
+    /**
+     * 
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public AppendRecordsResponse setTableName(String tableName) {
-        this.tableName = (tableName == null) ? "" : tableName;
-        return this;
-    }
-
-    /**
-     * 
-     * @return Additional information.  The default value is an empty {@link
-     *         Map}.
-     * 
-     */
-    public Map<String, String> getInfo() {
-        return info;
-    }
-
-    /**
-     * 
-     * @param info  Additional information.  The default value is an empty
-     *              {@link Map}.
-     * 
-     * @return {@code this} to mimic the builder pattern.
-     * 
-     */
-    public AppendRecordsResponse setInfo(Map<String, String> info) {
-        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+    public AdminHaRefreshRequest setOptions(Map<String, String> options) {
+        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
         return this;
     }
 
@@ -113,10 +112,7 @@ public class AppendRecordsResponse implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.tableName;
-
-            case 1:
-                return this.info;
+                return this.options;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -138,11 +134,7 @@ public class AppendRecordsResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.tableName = (String)value;
-                break;
-
-            case 1:
-                this.info = (Map<String, String>)value;
+                this.options = (Map<String, String>)value;
                 break;
 
             default:
@@ -160,10 +152,9 @@ public class AppendRecordsResponse implements IndexedRecord {
             return false;
         }
 
-        AppendRecordsResponse that = (AppendRecordsResponse)obj;
+        AdminHaRefreshRequest that = (AdminHaRefreshRequest)obj;
 
-        return ( this.tableName.equals( that.tableName )
-                 && this.info.equals( that.info ) );
+        return ( this.options.equals( that.options ) );
     }
 
     @Override
@@ -171,13 +162,9 @@ public class AppendRecordsResponse implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "tableName" ) );
+        builder.append( gd.toString( "options" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.tableName ) );
-        builder.append( ", " );
-        builder.append( gd.toString( "info" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.info ) );
+        builder.append( gd.toString( this.options ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -186,8 +173,7 @@ public class AppendRecordsResponse implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.tableName.hashCode();
-        hashCode = (31 * hashCode) + this.info.hashCode();
+        hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }
 

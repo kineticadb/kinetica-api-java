@@ -2,6 +2,13 @@
 
 ## Version 7.1
 
+### Version 7.1.9.4 - 2023-06-08
+
+#### Added
+-   Support for ULONG column type
+-   Support for UUID column type & primary key
+
+
 ### Version 7.1.9.3 - 2023-04-30
 
 #### Changed

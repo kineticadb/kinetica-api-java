@@ -42,11 +42,15 @@ import org.apache.avro.generic.GenericData;
  * restrictions can be removed by utilizing some available options through
  * {@code options}.
  * <p>
- * The {@code update_on_existing_pk} option specifies the record
- * collision policy for tables with a <a
+ * The {@code update_on_existing_pk} option specifies the record primary key
+ * collision
+ * policy for tables with a <a
  * href="../../../../../../concepts/tables/#primary-keys" target="_top">primary
- * key</a>, and
- * is ignored on tables with no primary key.
+ * key</a>, while
+ * {@code ignore_existing_pk} specifies the record primary key collision
+ * error-suppression policy when those collisions result in the update being
+ * rejected.  Both are
+ * ignored on tables with no primary key.
  * 
  * @param <T>  The type of object being processed.
  * 
@@ -63,13 +67,15 @@ public class UpdateRecordsRequest<T> {
      * value is ''.
      *         <li> {@link
      * com.gpudb.protocol.RawUpdateRecordsRequest.Options#BYPASS_SAFETY_CHECKS
-     * BYPASS_SAFETY_CHECKS}: When set to {@code true}, all predicates are
-     * available for primary key updates.  Keep in mind that it is possible to
-     * destroy data in this case, since a single predicate may match multiple
-     * objects (potentially all of records of a table), and then updating all
-     * of those records to have the same primary key will, due to the primary
-     * key uniqueness constraints, effectively delete all but one of those
-     * updated records.
+     * BYPASS_SAFETY_CHECKS}: When set to {@code true},
+     * all predicates are available for primary key updates.  Keep in mind that
+     * it is possible to destroy
+     * data in this case, since a single predicate may match multiple objects
+     * (potentially all of records
+     * of a table), and then updating all of those records to have the same
+     * primary key will, due to the
+     * primary key uniqueness constraints, effectively delete all but one of
+     * those updated records.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -81,47 +87,85 @@ public class UpdateRecordsRequest<T> {
      * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
-     * UPDATE_ON_EXISTING_PK}: Specifies the record collision policy for tables
-     * with a <a href="../../../../../../concepts/tables/#primary-keys"
-     * target="_top">primary key</a> when updating columns of the <a
-     * href="../../../../../../concepts/tables/#primary-keys"
-     * target="_top">primary key</a> or inserting new records.  If {@code
-     * true}, existing records with primary key values that match those of a
-     * record being updated or inserted will be replaced by the updated and new
-     * records.  If {@code false}, existing records with matching primary key
-     * values will remain unchanged, and the updated or new records with
-     * primary key values that match those of existing records will be
-     * discarded.  If the specified table does not have a primary key, then
-     * this option has no effect.
+     * UPDATE_ON_EXISTING_PK}: Specifies the record collision policy for
+     * updating a table with a
+     * <a href="../../../../../../concepts/tables/#primary-keys"
+     * target="_top">primary key</a>.  There are two ways that a record
+     * collision can
+     * occur.
+     * <p>
+     * The first is an "update collision", which happens when the update
+     * changes the value of the updated
+     * record's primary key, and that new primary key already exists as the
+     * primary key of another record
+     * in the table.
+     * <p>
+     * The second is an "insert collision", which occurs when a given filter in
+     * {@code expressions}
+     * finds no records to update, and the alternate insert record given in
+     * {@code recordsToInsert} (or
+     * {@code recordsToInsertStr}) contains a primary key matching that of an
+     * existing record in the
+     * table.
+     * <p>
+     * If {@code update_on_existing_pk} is set to
+     * {@code true}, "update collisions" will result in the
+     * updated record being removed and the existing record collided into being
+     * updated with the values
+     * specified in {@code newValuesMaps}; "insert collisions" will result in
+     * the collided-into record
+     * being updated with the values in {@code recordsToInsert}/{@code
+     * recordsToInsertStr} (if
+     * given).
+     * <p>
+     * If set to {@code false}, the existing collided-into
+     * record will remain unchanged, while the update will be rejected and the
+     * error handled as determined
+     * by {@code ignore_existing_pk}.  If the specified table does not have a
+     * primary key,
+     * then this option has no effect.
      * Supported values:
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}: Overwrite
-     * existing records when updated and inserted records have the same primary
-     * keys
+     * the collided-into record when updating a
+     * record's primary key or inserting an alternate record causes a primary
+     * key collision between the
+     * record being updated/inserted and another existing record in the table
      *         <li> {@link
-     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}: Discard
-     * updated and inserted records when the same primary keys already exist
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}: Reject
+     * updates which cause primary key collisions
+     * between the record being updated/inserted and an existing record in the
+     * table
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.RawUpdateRecordsRequest.Options#IGNORE_EXISTING_PK
-     * IGNORE_EXISTING_PK}: Specifies the record collision policy for tables
-     * with a <a href="../../../../../../concepts/tables/#primary-keys"
-     * target="_top">primary key</a> when updating columns of the <a
+     * IGNORE_EXISTING_PK}: Specifies the record collision error-suppression
+     * policy for
+     * updating a table with a <a
      * href="../../../../../../concepts/tables/#primary-keys"
-     * target="_top">primary key</a> or inserting new records.  If set to
-     * {@code true}, any record being updated or inserted with primary key
-     * values that match those of an existing record will be ignored with no
-     * error generated.  If the specified table does not have a primary key,
-     * then this option has no affect.
+     * target="_top">primary key</a>, only used when primary
+     * key record collisions are rejected ({@code update_on_existing_pk} is
+     * {@code false}).  If set to
+     * {@code true}, any record update that is rejected for
+     * resulting in a primary key collision with an existing table record will
+     * be ignored with no error
+     * generated.  If {@code false}, the rejection of any update
+     * for resulting in a primary key collision will cause an error to be
+     * reported.  If the specified table
+     * does not have a primary key or if {@code update_on_existing_pk} is
+     * {@code true}, then this option has no effect.
      * Supported values:
      * <ul>
      *         <li> {@link
-     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}: Ignore
+     * updates that result in primary key collisions with existing records
      *         <li> {@link
-     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}: Treat
+     * as errors any updates that result in primary key collisions with
+     * existing records
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
@@ -153,11 +197,13 @@ public class UpdateRecordsRequest<T> {
      * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.RawUpdateRecordsRequest.Options#USE_EXPRESSIONS_IN_NEW_VALUES_MAPS
-     * USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to {@code true}, all new
-     * values in {@code newValuesMaps} are considered as expression values.
-     * When set to {@code false}, all new values in {@code newValuesMaps} are
-     * considered as constants.  NOTE:  When {@code true}, string constants
-     * will need to be quoted to avoid being evaluated as expressions.
+     * USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to {@code true},
+     * all new values in {@code newValuesMaps} are considered as expression
+     * values. When set to
+     * {@code false}, all new values in
+     * {@code newValuesMaps} are considered as constants.  NOTE:  When
+     * {@code true}, string constants will need
+     * to be quoted to avoid being evaluated as expressions.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -186,13 +232,15 @@ public class UpdateRecordsRequest<T> {
         public static final String GLOBAL_EXPRESSION = "global_expression";
 
         /**
-         * When set to {@code true}, all predicates are available for primary
-         * key updates.  Keep in mind that it is possible to destroy data in
-         * this case, since a single predicate may match multiple objects
-         * (potentially all of records of a table), and then updating all of
-         * those records to have the same primary key will, due to the primary
-         * key uniqueness constraints, effectively delete all but one of those
-         * updated records.
+         * When set to {@code true},
+         * all predicates are available for primary key updates.  Keep in mind
+         * that it is possible to destroy
+         * data in this case, since a single predicate may match multiple
+         * objects (potentially all of records
+         * of a table), and then updating all of those records to have the same
+         * primary key will, due to the
+         * primary key uniqueness constraints, effectively delete all but one
+         * of those updated records.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -208,28 +256,56 @@ public class UpdateRecordsRequest<T> {
         public static final String FALSE = "false";
 
         /**
-         * Specifies the record collision policy for tables with a <a
-         * href="../../../../../../concepts/tables/#primary-keys"
-         * target="_top">primary key</a> when updating columns of the <a
-         * href="../../../../../../concepts/tables/#primary-keys"
-         * target="_top">primary key</a> or inserting new records.  If {@code
-         * true}, existing records with primary key values that match those of
-         * a record being updated or inserted will be replaced by the updated
-         * and new records.  If {@code false}, existing records with matching
-         * primary key values will remain unchanged, and the updated or new
-         * records with primary key values that match those of existing records
-         * will be discarded.  If the specified table does not have a primary
-         * key, then this option has no effect.
+         * Specifies the record collision policy for updating a table with a
+         * <a href="../../../../../../concepts/tables/#primary-keys"
+         * target="_top">primary key</a>.  There are two ways that a record
+         * collision can
+         * occur.
+         * <p>
+         * The first is an "update collision", which happens when the update
+         * changes the value of the updated
+         * record's primary key, and that new primary key already exists as the
+         * primary key of another record
+         * in the table.
+         * <p>
+         * The second is an "insert collision", which occurs when a given
+         * filter in {@code expressions}
+         * finds no records to update, and the alternate insert record given in
+         * {@code recordsToInsert} (or
+         * {@code recordsToInsertStr}) contains a primary key matching that of
+         * an existing record in the
+         * table.
+         * <p>
+         * If {@code update_on_existing_pk} is set to
+         * {@code true}, "update collisions" will result in the
+         * updated record being removed and the existing record collided into
+         * being updated with the values
+         * specified in {@code newValuesMaps}; "insert collisions" will result
+         * in the collided-into record
+         * being updated with the values in {@code recordsToInsert}/{@code
+         * recordsToInsertStr} (if
+         * given).
+         * <p>
+         * If set to {@code false}, the existing collided-into
+         * record will remain unchanged, while the update will be rejected and
+         * the error handled as determined
+         * by {@code ignore_existing_pk}.  If the specified table does not have
+         * a primary key,
+         * then this option has no effect.
          * Supported values:
          * <ul>
          *         <li> {@link
          * com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}:
-         * Overwrite existing records when updated and inserted records have
-         * the same primary keys
+         * Overwrite the collided-into record when updating a
+         * record's primary key or inserting an alternate record causes a
+         * primary key collision between the
+         * record being updated/inserted and another existing record in the
+         * table
          *         <li> {@link
          * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}:
-         * Discard updated and inserted records when the same primary keys
-         * already exist
+         * Reject updates which cause primary key collisions
+         * between the record being updated/inserted and an existing record in
+         * the table
          * </ul>
          * The default value is {@link
          * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
@@ -237,21 +313,30 @@ public class UpdateRecordsRequest<T> {
         public static final String UPDATE_ON_EXISTING_PK = "update_on_existing_pk";
 
         /**
-         * Specifies the record collision policy for tables with a <a
+         * Specifies the record collision error-suppression policy for
+         * updating a table with a <a
          * href="../../../../../../concepts/tables/#primary-keys"
-         * target="_top">primary key</a> when updating columns of the <a
-         * href="../../../../../../concepts/tables/#primary-keys"
-         * target="_top">primary key</a> or inserting new records.  If set to
-         * {@code true}, any record being updated or inserted with primary key
-         * values that match those of an existing record will be ignored with
-         * no error generated.  If the specified table does not have a primary
-         * key, then this option has no affect.
+         * target="_top">primary key</a>, only used when primary
+         * key record collisions are rejected ({@code update_on_existing_pk} is
+         * {@code false}).  If set to
+         * {@code true}, any record update that is rejected for
+         * resulting in a primary key collision with an existing table record
+         * will be ignored with no error
+         * generated.  If {@code false}, the rejection of any update
+         * for resulting in a primary key collision will cause an error to be
+         * reported.  If the specified table
+         * does not have a primary key or if {@code update_on_existing_pk} is
+         * {@code true}, then this option has no effect.
          * Supported values:
          * <ul>
          *         <li> {@link
-         * com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}
+         * com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}:
+         * Ignore updates that result in primary key collisions with existing
+         * records
          *         <li> {@link
-         * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}
+         * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}:
+         * Treat as errors any updates that result in primary key collisions
+         * with existing records
          * </ul>
          * The default value is {@link
          * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
@@ -289,11 +374,13 @@ public class UpdateRecordsRequest<T> {
         public static final String TRUNCATE_STRINGS = "truncate_strings";
 
         /**
-         * When set to {@code true}, all new values in {@code newValuesMaps}
-         * are considered as expression values. When set to {@code false}, all
-         * new values in {@code newValuesMaps} are considered as constants.
-         * NOTE:  When {@code true}, string constants will need to be quoted to
-         * avoid being evaluated as expressions.
+         * When set to {@code true},
+         * all new values in {@code newValuesMaps} are considered as expression
+         * values. When set to
+         * {@code false}, all new values in
+         * {@code newValuesMaps} are considered as constants.  NOTE:  When
+         * {@code true}, string constants will need
+         * to be quoted to avoid being evaluated as expressions.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -339,22 +426,26 @@ public class UpdateRecordsRequest<T> {
      * Constructs an UpdateRecordsRequest object with the specified parameters.
      * 
      * @param tableName  Name of table to be updated, in
-     *                   [schema_name.]table_name format, using standard <a
+     *                   [schema_name.]table_name format, using standard
+     *                   <a
      *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be a
-     *                   currently existing table and not a view.
+     *                   currently
+     *                   existing table and not a view.
      * @param expressions  A list of the actual predicates, one for each
      *                     update; format should follow the guidelines {@link
      *                     com.gpudb.GPUdb#filter(FilterRequest) here}.
      * @param newValuesMaps  List of new values for the matching records.  Each
-     *                       element is a map with (key, value) pairs where the
-     *                       keys are the names of the columns whose values are
-     *                       to be updated; the values are the new values.  The
-     *                       number of elements in the list should match the
-     *                       length of {@code expressions}.
+     *                       element is a map with
+     *                       (key, value) pairs where the keys are the names of
+     *                       the columns whose values are to be updated; the
+     *                       values are the new values.  The number of elements
+     *                       in the list should match the length of {@code
+     *                       expressions}.
      * @param data  An *optional* list of new binary-avro encoded records to
-     *              insert, one for each update.  If one of {@code expressions}
-     *              does not yield a matching record to be updated, then the
+     *              insert, one for each
+     *              update.  If one of {@code expressions} does not yield a
+     *              matching record to be updated, then the
      *              corresponding element from this list will be added to the
      *              table.  The default value is an empty {@link List}.
      * @param options  Optional parameters.
@@ -366,15 +457,15 @@ public class UpdateRecordsRequest<T> {
      *                 {@code expressions}.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#BYPASS_SAFETY_CHECKS
-     *                 BYPASS_SAFETY_CHECKS}: When set to {@code true}, all
-     *                 predicates are available for primary key updates.  Keep
-     *                 in mind that it is possible to destroy data in this
-     *                 case, since a single predicate may match multiple
-     *                 objects (potentially all of records of a table), and
-     *                 then updating all of those records to have the same
-     *                 primary key will, due to the primary key uniqueness
-     *                 constraints, effectively delete all but one of those
-     *                 updated records.
+     *                 BYPASS_SAFETY_CHECKS}: When set to {@code true},
+     *                 all predicates are available for primary key updates.
+     *                 Keep in mind that it is possible to destroy
+     *                 data in this case, since a single predicate may match
+     *                 multiple objects (potentially all of records
+     *                 of a table), and then updating all of those records to
+     *                 have the same primary key will, due to the
+     *                 primary key uniqueness constraints, effectively delete
+     *                 all but one of those updated records.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -390,31 +481,55 @@ public class UpdateRecordsRequest<T> {
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
-     *                 policy for tables with a <a
+     *                 policy for updating a table with a
+     *                 <a
      *                 href="../../../../../../concepts/tables/#primary-keys"
-     *                 target="_top">primary key</a> when updating columns of
-     *                 the <a
-     *                 href="../../../../../../concepts/tables/#primary-keys"
-     *                 target="_top">primary key</a> or inserting new records.
-     *                 If {@code true}, existing records with primary key
-     *                 values that match those of a record being updated or
-     *                 inserted will be replaced by the updated and new
-     *                 records.  If {@code false}, existing records with
-     *                 matching primary key values will remain unchanged, and
-     *                 the updated or new records with primary key values that
-     *                 match those of existing records will be discarded.  If
-     *                 the specified table does not have a primary key, then
-     *                 this option has no effect.
+     *                 target="_top">primary key</a>.  There are two ways that
+     *                 a record collision can
+     *                 occur.
+     *                 The first is an "update collision", which happens when
+     *                 the update changes the value of the updated
+     *                 record's primary key, and that new primary key already
+     *                 exists as the primary key of another record
+     *                 in the table.
+     *                 The second is an "insert collision", which occurs when a
+     *                 given filter in {@code expressions}
+     *                 finds no records to update, and the alternate insert
+     *                 record given in {@code recordsToInsert} (or
+     *                 {@code recordsToInsertStr}) contains a primary key
+     *                 matching that of an existing record in the
+     *                 table.
+     *                 If {@code update_on_existing_pk} is set to
+     *                 {@code true}, "update collisions" will result in the
+     *                 updated record being removed and the existing record
+     *                 collided into being updated with the values
+     *                 specified in {@code newValuesMaps}; "insert collisions"
+     *                 will result in the collided-into record
+     *                 being updated with the values in {@code
+     *                 recordsToInsert}/{@code recordsToInsertStr} (if
+     *                 given).
+     *                 If set to {@code false}, the existing collided-into
+     *                 record will remain unchanged, while the update will be
+     *                 rejected and the error handled as determined
+     *                 by {@code ignore_existing_pk}.  If the specified table
+     *                 does not have a primary key,
+     *                 then this option has no effect.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
-     *                 TRUE}: Overwrite existing records when updated and
-     *                 inserted records have the same primary keys
+     *                 TRUE}: Overwrite the collided-into record when updating
+     *                 a
+     *                 record's primary key or inserting an alternate record
+     *                 causes a primary key collision between the
+     *                 record being updated/inserted and another existing
+     *                 record in the table
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
-     *                 FALSE}: Discard updated and inserted records when the
-     *                 same primary keys already exist
+     *                 FALSE}: Reject updates which cause primary key
+     *                 collisions
+     *                 between the record being updated/inserted and an
+     *                 existing record in the table
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
@@ -422,25 +537,33 @@ public class UpdateRecordsRequest<T> {
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#IGNORE_EXISTING_PK
      *                 IGNORE_EXISTING_PK}: Specifies the record collision
-     *                 policy for tables with a <a
+     *                 error-suppression policy for
+     *                 updating a table with a <a
      *                 href="../../../../../../concepts/tables/#primary-keys"
-     *                 target="_top">primary key</a> when updating columns of
-     *                 the <a
-     *                 href="../../../../../../concepts/tables/#primary-keys"
-     *                 target="_top">primary key</a> or inserting new records.
-     *                 If set to {@code true}, any record being updated or
-     *                 inserted with primary key values that match those of an
-     *                 existing record will be ignored with no error generated.
-     *                 If the specified table does not have a primary key, then
-     *                 this option has no affect.
+     *                 target="_top">primary key</a>, only used when primary
+     *                 key record collisions are rejected ({@code
+     *                 update_on_existing_pk} is
+     *                 {@code false}).  If set to
+     *                 {@code true}, any record update that is rejected for
+     *                 resulting in a primary key collision with an existing
+     *                 table record will be ignored with no error
+     *                 generated.  If {@code false}, the rejection of any
+     *                 update
+     *                 for resulting in a primary key collision will cause an
+     *                 error to be reported.  If the specified table
+     *                 does not have a primary key or if {@code
+     *                 update_on_existing_pk} is
+     *                 {@code true}, then this option has no effect.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
-     *                 TRUE}
+     *                 TRUE}: Ignore updates that result in primary key
+     *                 collisions with existing records
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
-     *                 FALSE}
+     *                 FALSE}: Treat as errors any updates that result in
+     *                 primary key collisions with existing records
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
@@ -482,12 +605,14 @@ public class UpdateRecordsRequest<T> {
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#USE_EXPRESSIONS_IN_NEW_VALUES_MAPS
      *                 USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to {@code
-     *                 true}, all new values in {@code newValuesMaps} are
-     *                 considered as expression values. When set to {@code
-     *                 false}, all new values in {@code newValuesMaps} are
-     *                 considered as constants.  NOTE:  When {@code true},
-     *                 string constants will need to be quoted to avoid being
-     *                 evaluated as expressions.
+     *                 true},
+     *                 all new values in {@code newValuesMaps} are considered
+     *                 as expression values. When set to
+     *                 {@code false}, all new values in
+     *                 {@code newValuesMaps} are considered as constants.
+     *                 NOTE:  When
+     *                 {@code true}, string constants will need
+     *                 to be quoted to avoid being evaluated as expressions.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -522,7 +647,8 @@ public class UpdateRecordsRequest<T> {
     /**
      * 
      * @return Name of table to be updated, in [schema_name.]table_name format,
-     *         using standard <a
+     *         using standard
+     *         <a
      *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.  Must be a currently
      *         existing table and not a view.
@@ -535,10 +661,12 @@ public class UpdateRecordsRequest<T> {
     /**
      * 
      * @param tableName  Name of table to be updated, in
-     *                   [schema_name.]table_name format, using standard <a
+     *                   [schema_name.]table_name format, using standard
+     *                   <a
      *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be a
-     *                   currently existing table and not a view.
+     *                   currently
+     *                   existing table and not a view.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -576,10 +704,11 @@ public class UpdateRecordsRequest<T> {
     /**
      * 
      * @return List of new values for the matching records.  Each element is a
-     *         map with (key, value) pairs where the keys are the names of the
-     *         columns whose values are to be updated; the values are the new
-     *         values.  The number of elements in the list should match the
-     *         length of {@code expressions}.
+     *         map with
+     *         (key, value) pairs where the keys are the names of the columns
+     *         whose values are to be updated; the
+     *         values are the new values.  The number of elements in the list
+     *         should match the length of {@code expressions}.
      * 
      */
     public List<Map<String, String>> getNewValuesMaps() {
@@ -589,11 +718,12 @@ public class UpdateRecordsRequest<T> {
     /**
      * 
      * @param newValuesMaps  List of new values for the matching records.  Each
-     *                       element is a map with (key, value) pairs where the
-     *                       keys are the names of the columns whose values are
-     *                       to be updated; the values are the new values.  The
-     *                       number of elements in the list should match the
-     *                       length of {@code expressions}.
+     *                       element is a map with
+     *                       (key, value) pairs where the keys are the names of
+     *                       the columns whose values are to be updated; the
+     *                       values are the new values.  The number of elements
+     *                       in the list should match the length of {@code
+     *                       expressions}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -606,10 +736,11 @@ public class UpdateRecordsRequest<T> {
     /**
      * 
      * @return An *optional* list of new binary-avro encoded records to insert,
-     *         one for each update.  If one of {@code expressions} does not
-     *         yield a matching record to be updated, then the corresponding
-     *         element from this list will be added to the table.  The default
-     *         value is an empty {@link List}.
+     *         one for each
+     *         update.  If one of {@code expressions} does not yield a matching
+     *         record to be updated, then the
+     *         corresponding element from this list will be added to the table.
+     *         The default value is an empty {@link List}.
      * 
      */
     public List<T> getData() {
@@ -619,8 +750,9 @@ public class UpdateRecordsRequest<T> {
     /**
      * 
      * @param data  An *optional* list of new binary-avro encoded records to
-     *              insert, one for each update.  If one of {@code expressions}
-     *              does not yield a matching record to be updated, then the
+     *              insert, one for each
+     *              update.  If one of {@code expressions} does not yield a
+     *              matching record to be updated, then the
      *              corresponding element from this list will be added to the
      *              table.  The default value is an empty {@link List}.
      * 
@@ -643,13 +775,15 @@ public class UpdateRecordsRequest<T> {
      *         The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#BYPASS_SAFETY_CHECKS
-     *         BYPASS_SAFETY_CHECKS}: When set to {@code true}, all predicates
-     *         are available for primary key updates.  Keep in mind that it is
-     *         possible to destroy data in this case, since a single predicate
-     *         may match multiple objects (potentially all of records of a
-     *         table), and then updating all of those records to have the same
-     *         primary key will, due to the primary key uniqueness constraints,
-     *         effectively delete all but one of those updated records.
+     *         BYPASS_SAFETY_CHECKS}: When set to {@code true},
+     *         all predicates are available for primary key updates.  Keep in
+     *         mind that it is possible to destroy
+     *         data in this case, since a single predicate may match multiple
+     *         objects (potentially all of records
+     *         of a table), and then updating all of those records to have the
+     *         same primary key will, due to the
+     *         primary key uniqueness constraints, effectively delete all but
+     *         one of those updated records.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -662,50 +796,84 @@ public class UpdateRecordsRequest<T> {
      *                 <li> {@link
      *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *         UPDATE_ON_EXISTING_PK}: Specifies the record collision policy
-     *         for tables with a <a
-     *         href="../../../../../../concepts/tables/#primary-keys"
-     *         target="_top">primary key</a> when updating columns of the <a
-     *         href="../../../../../../concepts/tables/#primary-keys"
-     *         target="_top">primary key</a> or inserting new records.  If
-     *         {@code true}, existing records with primary key values that
-     *         match those of a record being updated or inserted will be
-     *         replaced by the updated and new records.  If {@code false},
-     *         existing records with matching primary key values will remain
-     *         unchanged, and the updated or new records with primary key
-     *         values that match those of existing records will be discarded.
-     *         If the specified table does not have a primary key, then this
-     *         option has no effect.
+     *         for updating a table with a
+     *         <a href="../../../../../../concepts/tables/#primary-keys"
+     *         target="_top">primary key</a>.  There are two ways that a record
+     *         collision can
+     *         occur.
+     *         The first is an "update collision", which happens when the
+     *         update changes the value of the updated
+     *         record's primary key, and that new primary key already exists as
+     *         the primary key of another record
+     *         in the table.
+     *         The second is an "insert collision", which occurs when a given
+     *         filter in {@code expressions}
+     *         finds no records to update, and the alternate insert record
+     *         given in {@code recordsToInsert} (or
+     *         {@code recordsToInsertStr}) contains a primary key matching that
+     *         of an existing record in the
+     *         table.
+     *         If {@code update_on_existing_pk} is set to
+     *         {@code true}, "update collisions" will result in the
+     *         updated record being removed and the existing record collided
+     *         into being updated with the values
+     *         specified in {@code newValuesMaps}; "insert collisions" will
+     *         result in the collided-into record
+     *         being updated with the values in {@code recordsToInsert}/{@code
+     *         recordsToInsertStr} (if
+     *         given).
+     *         If set to {@code false}, the existing collided-into
+     *         record will remain unchanged, while the update will be rejected
+     *         and the error handled as determined
+     *         by {@code ignore_existing_pk}.  If the specified table does not
+     *         have a primary key,
+     *         then this option has no effect.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}:
-     *         Overwrite existing records when updated and inserted records
-     *         have the same primary keys
+     *         Overwrite the collided-into record when updating a
+     *         record's primary key or inserting an alternate record causes a
+     *         primary key collision between the
+     *         record being updated/inserted and another existing record in the
+     *         table
      *                 <li> {@link
      *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}:
-     *         Discard updated and inserted records when the same primary keys
-     *         already exist
+     *         Reject updates which cause primary key collisions
+     *         between the record being updated/inserted and an existing record
+     *         in the table
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#IGNORE_EXISTING_PK
-     *         IGNORE_EXISTING_PK}: Specifies the record collision policy for
-     *         tables with a <a
+     *         IGNORE_EXISTING_PK}: Specifies the record collision
+     *         error-suppression policy for
+     *         updating a table with a <a
      *         href="../../../../../../concepts/tables/#primary-keys"
-     *         target="_top">primary key</a> when updating columns of the <a
-     *         href="../../../../../../concepts/tables/#primary-keys"
-     *         target="_top">primary key</a> or inserting new records.  If set
-     *         to {@code true}, any record being updated or inserted with
-     *         primary key values that match those of an existing record will
-     *         be ignored with no error generated.  If the specified table does
-     *         not have a primary key, then this option has no affect.
+     *         target="_top">primary key</a>, only used when primary
+     *         key record collisions are rejected ({@code
+     *         update_on_existing_pk} is
+     *         {@code false}).  If set to
+     *         {@code true}, any record update that is rejected for
+     *         resulting in a primary key collision with an existing table
+     *         record will be ignored with no error
+     *         generated.  If {@code false}, the rejection of any update
+     *         for resulting in a primary key collision will cause an error to
+     *         be reported.  If the specified table
+     *         does not have a primary key or if {@code update_on_existing_pk}
+     *         is
+     *         {@code true}, then this option has no effect.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
-     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}:
+     *         Ignore updates that result in primary key collisions with
+     *         existing records
      *                 <li> {@link
-     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}:
+     *         Treat as errors any updates that result in primary key
+     *         collisions with existing records
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
@@ -739,10 +907,11 @@ public class UpdateRecordsRequest<T> {
      *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#USE_EXPRESSIONS_IN_NEW_VALUES_MAPS
      *         USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to {@code true},
      *         all new values in {@code newValuesMaps} are considered as
-     *         expression values. When set to {@code false}, all new values in
+     *         expression values. When set to
+     *         {@code false}, all new values in
      *         {@code newValuesMaps} are considered as constants.  NOTE:  When
-     *         {@code true}, string constants will need to be quoted to avoid
-     *         being evaluated as expressions.
+     *         {@code true}, string constants will need
+     *         to be quoted to avoid being evaluated as expressions.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -778,15 +947,15 @@ public class UpdateRecordsRequest<T> {
      *                 {@code expressions}.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#BYPASS_SAFETY_CHECKS
-     *                 BYPASS_SAFETY_CHECKS}: When set to {@code true}, all
-     *                 predicates are available for primary key updates.  Keep
-     *                 in mind that it is possible to destroy data in this
-     *                 case, since a single predicate may match multiple
-     *                 objects (potentially all of records of a table), and
-     *                 then updating all of those records to have the same
-     *                 primary key will, due to the primary key uniqueness
-     *                 constraints, effectively delete all but one of those
-     *                 updated records.
+     *                 BYPASS_SAFETY_CHECKS}: When set to {@code true},
+     *                 all predicates are available for primary key updates.
+     *                 Keep in mind that it is possible to destroy
+     *                 data in this case, since a single predicate may match
+     *                 multiple objects (potentially all of records
+     *                 of a table), and then updating all of those records to
+     *                 have the same primary key will, due to the
+     *                 primary key uniqueness constraints, effectively delete
+     *                 all but one of those updated records.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -802,31 +971,55 @@ public class UpdateRecordsRequest<T> {
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
-     *                 policy for tables with a <a
+     *                 policy for updating a table with a
+     *                 <a
      *                 href="../../../../../../concepts/tables/#primary-keys"
-     *                 target="_top">primary key</a> when updating columns of
-     *                 the <a
-     *                 href="../../../../../../concepts/tables/#primary-keys"
-     *                 target="_top">primary key</a> or inserting new records.
-     *                 If {@code true}, existing records with primary key
-     *                 values that match those of a record being updated or
-     *                 inserted will be replaced by the updated and new
-     *                 records.  If {@code false}, existing records with
-     *                 matching primary key values will remain unchanged, and
-     *                 the updated or new records with primary key values that
-     *                 match those of existing records will be discarded.  If
-     *                 the specified table does not have a primary key, then
-     *                 this option has no effect.
+     *                 target="_top">primary key</a>.  There are two ways that
+     *                 a record collision can
+     *                 occur.
+     *                 The first is an "update collision", which happens when
+     *                 the update changes the value of the updated
+     *                 record's primary key, and that new primary key already
+     *                 exists as the primary key of another record
+     *                 in the table.
+     *                 The second is an "insert collision", which occurs when a
+     *                 given filter in {@code expressions}
+     *                 finds no records to update, and the alternate insert
+     *                 record given in {@code recordsToInsert} (or
+     *                 {@code recordsToInsertStr}) contains a primary key
+     *                 matching that of an existing record in the
+     *                 table.
+     *                 If {@code update_on_existing_pk} is set to
+     *                 {@code true}, "update collisions" will result in the
+     *                 updated record being removed and the existing record
+     *                 collided into being updated with the values
+     *                 specified in {@code newValuesMaps}; "insert collisions"
+     *                 will result in the collided-into record
+     *                 being updated with the values in {@code
+     *                 recordsToInsert}/{@code recordsToInsertStr} (if
+     *                 given).
+     *                 If set to {@code false}, the existing collided-into
+     *                 record will remain unchanged, while the update will be
+     *                 rejected and the error handled as determined
+     *                 by {@code ignore_existing_pk}.  If the specified table
+     *                 does not have a primary key,
+     *                 then this option has no effect.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
-     *                 TRUE}: Overwrite existing records when updated and
-     *                 inserted records have the same primary keys
+     *                 TRUE}: Overwrite the collided-into record when updating
+     *                 a
+     *                 record's primary key or inserting an alternate record
+     *                 causes a primary key collision between the
+     *                 record being updated/inserted and another existing
+     *                 record in the table
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
-     *                 FALSE}: Discard updated and inserted records when the
-     *                 same primary keys already exist
+     *                 FALSE}: Reject updates which cause primary key
+     *                 collisions
+     *                 between the record being updated/inserted and an
+     *                 existing record in the table
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
@@ -834,25 +1027,33 @@ public class UpdateRecordsRequest<T> {
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#IGNORE_EXISTING_PK
      *                 IGNORE_EXISTING_PK}: Specifies the record collision
-     *                 policy for tables with a <a
+     *                 error-suppression policy for
+     *                 updating a table with a <a
      *                 href="../../../../../../concepts/tables/#primary-keys"
-     *                 target="_top">primary key</a> when updating columns of
-     *                 the <a
-     *                 href="../../../../../../concepts/tables/#primary-keys"
-     *                 target="_top">primary key</a> or inserting new records.
-     *                 If set to {@code true}, any record being updated or
-     *                 inserted with primary key values that match those of an
-     *                 existing record will be ignored with no error generated.
-     *                 If the specified table does not have a primary key, then
-     *                 this option has no affect.
+     *                 target="_top">primary key</a>, only used when primary
+     *                 key record collisions are rejected ({@code
+     *                 update_on_existing_pk} is
+     *                 {@code false}).  If set to
+     *                 {@code true}, any record update that is rejected for
+     *                 resulting in a primary key collision with an existing
+     *                 table record will be ignored with no error
+     *                 generated.  If {@code false}, the rejection of any
+     *                 update
+     *                 for resulting in a primary key collision will cause an
+     *                 error to be reported.  If the specified table
+     *                 does not have a primary key or if {@code
+     *                 update_on_existing_pk} is
+     *                 {@code true}, then this option has no effect.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
-     *                 TRUE}
+     *                 TRUE}: Ignore updates that result in primary key
+     *                 collisions with existing records
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
-     *                 FALSE}
+     *                 FALSE}: Treat as errors any updates that result in
+     *                 primary key collisions with existing records
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
@@ -894,12 +1095,14 @@ public class UpdateRecordsRequest<T> {
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#USE_EXPRESSIONS_IN_NEW_VALUES_MAPS
      *                 USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to {@code
-     *                 true}, all new values in {@code newValuesMaps} are
-     *                 considered as expression values. When set to {@code
-     *                 false}, all new values in {@code newValuesMaps} are
-     *                 considered as constants.  NOTE:  When {@code true},
-     *                 string constants will need to be quoted to avoid being
-     *                 evaluated as expressions.
+     *                 true},
+     *                 all new values in {@code newValuesMaps} are considered
+     *                 as expression values. When set to
+     *                 {@code false}, all new values in
+     *                 {@code newValuesMaps} are considered as constants.
+     *                 NOTE:  When
+     *                 {@code true}, string constants will need
+     *                 to be quoted to avoid being evaluated as expressions.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

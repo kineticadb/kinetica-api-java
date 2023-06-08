@@ -92,39 +92,63 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.RawInsertRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      * UPDATE_ON_EXISTING_PK}: Specifies the record collision policy for
-     * inserting into a table with a <a
-     * href="../../../../../../concepts/tables/#primary-keys"
-     * target="_top">primary key</a>.  If set to {@code true}, any existing
-     * table record with primary key values that match those of a record being
-     * inserted will be replaced by that new record.  If set to {@code false},
+     * inserting into a table
+     * with a <a href="../../../../../../concepts/tables/#primary-keys"
+     * target="_top">primary key</a>. If set to
+     * {@code true}, any existing table record with primary
+     * key values that match those of a record being inserted will be replaced
+     * by that new record (the new
+     * data will be "upserted"). If set to {@code false},
      * any existing table record with primary key values that match those of a
-     * record being inserted will remain unchanged and the new record
-     * discarded.  If the specified table does not have a primary key, then
-     * this option has no affect.
+     * record being inserted will
+     * remain unchanged, while the new record will be rejected and the error
+     * handled as determined by
+     * {@code ignore_existing_pk}, {@code allow_partial_batch}, &
+     * {@code return_individual_errors}.  If the specified table does not have
+     * a primary
+     * key, then this option has no effect.
      * Supported values:
      * <ul>
      *         <li> {@link
-     * com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}
+     * com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}: Upsert
+     * new records when primary keys match existing records
      *         <li> {@link
-     * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}
+     * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}: Reject
+     * new records when primary keys match existing records
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.RawInsertRecordsRequest.Options#IGNORE_EXISTING_PK
-     * IGNORE_EXISTING_PK}: Specifies the record collision policy for inserting
-     * into a table with a <a
+     * IGNORE_EXISTING_PK}: Specifies the record collision error-suppression
+     * policy for
+     * inserting into a table with a <a
      * href="../../../../../../concepts/tables/#primary-keys"
-     * target="_top">primary key</a>.  If set to {@code true}, any record being
-     * inserted with primary key values that match those of an existing table
-     * record will be ignored with no error generated.  If the specified table
-     * does not have a primary key, then this option has no affect.
+     * target="_top">primary key</a>, only used when
+     * not in upsert mode (upsert mode is disabled when {@code
+     * update_on_existing_pk} is
+     * {@code false}).  If set to
+     * {@code true}, any record being inserted that is rejected
+     * for having primary key values that match those of an existing table
+     * record will be ignored with no
+     * error generated.  If {@code false}, the rejection of any
+     * record for having primary key values matching an existing record will
+     * result in an error being
+     * reported, as determined by {@code allow_partial_batch} &
+     * {@code return_individual_errors}.  If the specified table does not
+     * have a primary key or if upsert mode is in effect ({@code
+     * update_on_existing_pk} is
+     * {@code true}), then this option has no effect.
      * Supported values:
      * <ul>
      *         <li> {@link
-     * com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}
+     * com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}: Ignore
+     * new records whose primary key values collide with those of existing
+     * records
      *         <li> {@link
-     * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}
+     * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}: Treat
+     * as errors any new records whose primary key values collide with those of
+     * existing records
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
@@ -207,19 +231,27 @@ public class RawInsertRecordsRequest implements IndexedRecord {
         /**
          * Specifies the record collision policy for inserting into a table
          * with a <a href="../../../../../../concepts/tables/#primary-keys"
-         * target="_top">primary key</a>.  If set to {@code true}, any existing
-         * table record with primary key values that match those of a record
-         * being inserted will be replaced by that new record.  If set to
-         * {@code false}, any existing table record with primary key values
-         * that match those of a record being inserted will remain unchanged
-         * and the new record discarded.  If the specified table does not have
-         * a primary key, then this option has no affect.
+         * target="_top">primary key</a>. If set to
+         * {@code true}, any existing table record with primary
+         * key values that match those of a record being inserted will be
+         * replaced by that new record (the new
+         * data will be "upserted"). If set to {@code false},
+         * any existing table record with primary key values that match those
+         * of a record being inserted will
+         * remain unchanged, while the new record will be rejected and the
+         * error handled as determined by
+         * {@code ignore_existing_pk}, {@code allow_partial_batch}, &
+         * {@code return_individual_errors}.  If the specified table does not
+         * have a primary
+         * key, then this option has no effect.
          * Supported values:
          * <ul>
          *         <li> {@link
-         * com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}
+         * com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}:
+         * Upsert new records when primary keys match existing records
          *         <li> {@link
-         * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}
+         * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}:
+         * Reject new records when primary keys match existing records
          * </ul>
          * The default value is {@link
          * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
@@ -229,19 +261,34 @@ public class RawInsertRecordsRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * Specifies the record collision policy for inserting into a table
-         * with a <a href="../../../../../../concepts/tables/#primary-keys"
-         * target="_top">primary key</a>.  If set to {@code true}, any record
-         * being inserted with primary key values that match those of an
-         * existing table record will be ignored with no error generated.  If
-         * the specified table does not have a primary key, then this option
-         * has no affect.
+         * Specifies the record collision error-suppression policy for
+         * inserting into a table with a <a
+         * href="../../../../../../concepts/tables/#primary-keys"
+         * target="_top">primary key</a>, only used when
+         * not in upsert mode (upsert mode is disabled when {@code
+         * update_on_existing_pk} is
+         * {@code false}).  If set to
+         * {@code true}, any record being inserted that is rejected
+         * for having primary key values that match those of an existing table
+         * record will be ignored with no
+         * error generated.  If {@code false}, the rejection of any
+         * record for having primary key values matching an existing record
+         * will result in an error being
+         * reported, as determined by {@code allow_partial_batch} &
+         * {@code return_individual_errors}.  If the specified table does not
+         * have a primary key or if upsert mode is in effect ({@code
+         * update_on_existing_pk} is
+         * {@code true}), then this option has no effect.
          * Supported values:
          * <ul>
          *         <li> {@link
-         * com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}
+         * com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}:
+         * Ignore new records whose primary key values collide with those of
+         * existing records
          *         <li> {@link
-         * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}
+         * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}:
+         * Treat as errors any new records whose primary key values collide
+         * with those of existing records
          * </ul>
          * The default value is {@link
          * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
@@ -365,25 +412,33 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
-     *                 policy for inserting into a table with a <a
+     *                 policy for inserting into a table
+     *                 with a <a
      *                 href="../../../../../../concepts/tables/#primary-keys"
-     *                 target="_top">primary key</a>.  If set to {@code true},
+     *                 target="_top">primary key</a>. If set to
+     *                 {@code true}, any existing table record with primary
+     *                 key values that match those of a record being inserted
+     *                 will be replaced by that new record (the new
+     *                 data will be "upserted"). If set to {@code false},
      *                 any existing table record with primary key values that
-     *                 match those of a record being inserted will be replaced
-     *                 by that new record.  If set to {@code false}, any
-     *                 existing table record with primary key values that match
-     *                 those of a record being inserted will remain unchanged
-     *                 and the new record discarded.  If the specified table
-     *                 does not have a primary key, then this option has no
-     *                 affect.
+     *                 match those of a record being inserted will
+     *                 remain unchanged, while the new record will be rejected
+     *                 and the error handled as determined by
+     *                 {@code ignore_existing_pk}, {@code allow_partial_batch},
+     *                 &
+     *                 {@code return_individual_errors}.  If the specified
+     *                 table does not have a primary
+     *                 key, then this option has no effect.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
-     *                 TRUE}
+     *                 TRUE}: Upsert new records when primary keys match
+     *                 existing records
      *                         <li> {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
-     *                 FALSE}
+     *                 FALSE}: Reject new records when primary keys match
+     *                 existing records
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
@@ -391,21 +446,35 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#IGNORE_EXISTING_PK
      *                 IGNORE_EXISTING_PK}: Specifies the record collision
-     *                 policy for inserting into a table with a <a
+     *                 error-suppression policy for
+     *                 inserting into a table with a <a
      *                 href="../../../../../../concepts/tables/#primary-keys"
-     *                 target="_top">primary key</a>.  If set to {@code true},
-     *                 any record being inserted with primary key values that
-     *                 match those of an existing table record will be ignored
-     *                 with no error generated.  If the specified table does
-     *                 not have a primary key, then this option has no affect.
+     *                 target="_top">primary key</a>, only used when
+     *                 not in upsert mode (upsert mode is disabled when {@code
+     *                 update_on_existing_pk} is
+     *                 {@code false}).  If set to
+     *                 {@code true}, any record being inserted that is rejected
+     *                 for having primary key values that match those of an
+     *                 existing table record will be ignored with no
+     *                 error generated.  If {@code false}, the rejection of any
+     *                 record for having primary key values matching an
+     *                 existing record will result in an error being
+     *                 reported, as determined by {@code allow_partial_batch} &
+     *                 {@code return_individual_errors}.  If the specified
+     *                 table does not
+     *                 have a primary key or if upsert mode is in effect
+     *                 ({@code update_on_existing_pk} is
+     *                 {@code true}), then this option has no effect.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
-     *                 TRUE}
+     *                 TRUE}: Ignore new records whose primary key values
+     *                 collide with those of existing records
      *                         <li> {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
-     *                 FALSE}
+     *                 FALSE}: Treat as errors any new records whose primary
+     *                 key values collide with those of existing records
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
@@ -544,25 +613,33 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
-     *                 policy for inserting into a table with a <a
+     *                 policy for inserting into a table
+     *                 with a <a
      *                 href="../../../../../../concepts/tables/#primary-keys"
-     *                 target="_top">primary key</a>.  If set to {@code true},
+     *                 target="_top">primary key</a>. If set to
+     *                 {@code true}, any existing table record with primary
+     *                 key values that match those of a record being inserted
+     *                 will be replaced by that new record (the new
+     *                 data will be "upserted"). If set to {@code false},
      *                 any existing table record with primary key values that
-     *                 match those of a record being inserted will be replaced
-     *                 by that new record.  If set to {@code false}, any
-     *                 existing table record with primary key values that match
-     *                 those of a record being inserted will remain unchanged
-     *                 and the new record discarded.  If the specified table
-     *                 does not have a primary key, then this option has no
-     *                 affect.
+     *                 match those of a record being inserted will
+     *                 remain unchanged, while the new record will be rejected
+     *                 and the error handled as determined by
+     *                 {@code ignore_existing_pk}, {@code allow_partial_batch},
+     *                 &
+     *                 {@code return_individual_errors}.  If the specified
+     *                 table does not have a primary
+     *                 key, then this option has no effect.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
-     *                 TRUE}
+     *                 TRUE}: Upsert new records when primary keys match
+     *                 existing records
      *                         <li> {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
-     *                 FALSE}
+     *                 FALSE}: Reject new records when primary keys match
+     *                 existing records
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
@@ -570,21 +647,35 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#IGNORE_EXISTING_PK
      *                 IGNORE_EXISTING_PK}: Specifies the record collision
-     *                 policy for inserting into a table with a <a
+     *                 error-suppression policy for
+     *                 inserting into a table with a <a
      *                 href="../../../../../../concepts/tables/#primary-keys"
-     *                 target="_top">primary key</a>.  If set to {@code true},
-     *                 any record being inserted with primary key values that
-     *                 match those of an existing table record will be ignored
-     *                 with no error generated.  If the specified table does
-     *                 not have a primary key, then this option has no affect.
+     *                 target="_top">primary key</a>, only used when
+     *                 not in upsert mode (upsert mode is disabled when {@code
+     *                 update_on_existing_pk} is
+     *                 {@code false}).  If set to
+     *                 {@code true}, any record being inserted that is rejected
+     *                 for having primary key values that match those of an
+     *                 existing table record will be ignored with no
+     *                 error generated.  If {@code false}, the rejection of any
+     *                 record for having primary key values matching an
+     *                 existing record will result in an error being
+     *                 reported, as determined by {@code allow_partial_batch} &
+     *                 {@code return_individual_errors}.  If the specified
+     *                 table does not
+     *                 have a primary key or if upsert mode is in effect
+     *                 ({@code update_on_existing_pk} is
+     *                 {@code true}), then this option has no effect.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
-     *                 TRUE}
+     *                 TRUE}: Ignore new records whose primary key values
+     *                 collide with those of existing records
      *                         <li> {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
-     *                 FALSE}
+     *                 FALSE}: Treat as errors any new records whose primary
+     *                 key values collide with those of existing records
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
@@ -821,41 +912,64 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.RawInsertRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *         UPDATE_ON_EXISTING_PK}: Specifies the record collision policy
-     *         for inserting into a table with a <a
-     *         href="../../../../../../concepts/tables/#primary-keys"
-     *         target="_top">primary key</a>.  If set to {@code true}, any
-     *         existing table record with primary key values that match those
-     *         of a record being inserted will be replaced by that new record.
-     *         If set to {@code false}, any existing table record with primary
-     *         key values that match those of a record being inserted will
-     *         remain unchanged and the new record discarded.  If the specified
-     *         table does not have a primary key, then this option has no
-     *         affect.
+     *         for inserting into a table
+     *         with a <a href="../../../../../../concepts/tables/#primary-keys"
+     *         target="_top">primary key</a>. If set to
+     *         {@code true}, any existing table record with primary
+     *         key values that match those of a record being inserted will be
+     *         replaced by that new record (the new
+     *         data will be "upserted"). If set to {@code false},
+     *         any existing table record with primary key values that match
+     *         those of a record being inserted will
+     *         remain unchanged, while the new record will be rejected and the
+     *         error handled as determined by
+     *         {@code ignore_existing_pk}, {@code allow_partial_batch}, &
+     *         {@code return_individual_errors}.  If the specified table does
+     *         not have a primary
+     *         key, then this option has no effect.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
-     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}
+     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}:
+     *         Upsert new records when primary keys match existing records
      *                 <li> {@link
-     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}
+     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}:
+     *         Reject new records when primary keys match existing records
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.RawInsertRecordsRequest.Options#IGNORE_EXISTING_PK
-     *         IGNORE_EXISTING_PK}: Specifies the record collision policy for
+     *         IGNORE_EXISTING_PK}: Specifies the record collision
+     *         error-suppression policy for
      *         inserting into a table with a <a
      *         href="../../../../../../concepts/tables/#primary-keys"
-     *         target="_top">primary key</a>.  If set to {@code true}, any
-     *         record being inserted with primary key values that match those
-     *         of an existing table record will be ignored with no error
-     *         generated.  If the specified table does not have a primary key,
-     *         then this option has no affect.
+     *         target="_top">primary key</a>, only used when
+     *         not in upsert mode (upsert mode is disabled when {@code
+     *         update_on_existing_pk} is
+     *         {@code false}).  If set to
+     *         {@code true}, any record being inserted that is rejected
+     *         for having primary key values that match those of an existing
+     *         table record will be ignored with no
+     *         error generated.  If {@code false}, the rejection of any
+     *         record for having primary key values matching an existing record
+     *         will result in an error being
+     *         reported, as determined by {@code allow_partial_batch} &
+     *         {@code return_individual_errors}.  If the specified table does
+     *         not
+     *         have a primary key or if upsert mode is in effect ({@code
+     *         update_on_existing_pk} is
+     *         {@code true}), then this option has no effect.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
-     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}
+     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}:
+     *         Ignore new records whose primary key values collide with those
+     *         of existing records
      *                 <li> {@link
-     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}
+     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}:
+     *         Treat as errors any new records whose primary key values collide
+     *         with those of existing records
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
@@ -946,25 +1060,33 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
-     *                 policy for inserting into a table with a <a
+     *                 policy for inserting into a table
+     *                 with a <a
      *                 href="../../../../../../concepts/tables/#primary-keys"
-     *                 target="_top">primary key</a>.  If set to {@code true},
+     *                 target="_top">primary key</a>. If set to
+     *                 {@code true}, any existing table record with primary
+     *                 key values that match those of a record being inserted
+     *                 will be replaced by that new record (the new
+     *                 data will be "upserted"). If set to {@code false},
      *                 any existing table record with primary key values that
-     *                 match those of a record being inserted will be replaced
-     *                 by that new record.  If set to {@code false}, any
-     *                 existing table record with primary key values that match
-     *                 those of a record being inserted will remain unchanged
-     *                 and the new record discarded.  If the specified table
-     *                 does not have a primary key, then this option has no
-     *                 affect.
+     *                 match those of a record being inserted will
+     *                 remain unchanged, while the new record will be rejected
+     *                 and the error handled as determined by
+     *                 {@code ignore_existing_pk}, {@code allow_partial_batch},
+     *                 &
+     *                 {@code return_individual_errors}.  If the specified
+     *                 table does not have a primary
+     *                 key, then this option has no effect.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
-     *                 TRUE}
+     *                 TRUE}: Upsert new records when primary keys match
+     *                 existing records
      *                         <li> {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
-     *                 FALSE}
+     *                 FALSE}: Reject new records when primary keys match
+     *                 existing records
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
@@ -972,21 +1094,35 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#IGNORE_EXISTING_PK
      *                 IGNORE_EXISTING_PK}: Specifies the record collision
-     *                 policy for inserting into a table with a <a
+     *                 error-suppression policy for
+     *                 inserting into a table with a <a
      *                 href="../../../../../../concepts/tables/#primary-keys"
-     *                 target="_top">primary key</a>.  If set to {@code true},
-     *                 any record being inserted with primary key values that
-     *                 match those of an existing table record will be ignored
-     *                 with no error generated.  If the specified table does
-     *                 not have a primary key, then this option has no affect.
+     *                 target="_top">primary key</a>, only used when
+     *                 not in upsert mode (upsert mode is disabled when {@code
+     *                 update_on_existing_pk} is
+     *                 {@code false}).  If set to
+     *                 {@code true}, any record being inserted that is rejected
+     *                 for having primary key values that match those of an
+     *                 existing table record will be ignored with no
+     *                 error generated.  If {@code false}, the rejection of any
+     *                 record for having primary key values matching an
+     *                 existing record will result in an error being
+     *                 reported, as determined by {@code allow_partial_batch} &
+     *                 {@code return_individual_errors}.  If the specified
+     *                 table does not
+     *                 have a primary key or if upsert mode is in effect
+     *                 ({@code update_on_existing_pk} is
+     *                 {@code true}), then this option has no effect.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
-     *                 TRUE}
+     *                 TRUE}: Ignore new records whose primary key values
+     *                 collide with those of existing records
      *                         <li> {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
-     *                 FALSE}
+     *                 FALSE}: Treat as errors any new records whose primary
+     *                 key values collide with those of existing records
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE

@@ -20,6 +20,7 @@ final class RecordKey {
     private static final Date MIN_DATE = new Date(Long.MIN_VALUE);
     private static final Pattern IPV4_REGEX = Pattern.compile("\\A(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$");
     private static final Pattern TIME_REGEX = Pattern.compile("\\A(\\d{1,2}):(\\d{2}):(\\d{2})(?:\\.(\\d{3}))?$");
+    private static final Pattern UUID_REGEX = Pattern.compile("\\A([0-9a-fA-F]{8})-?([0-9a-fA-F]{4})-?([0-9a-fA-F]{4})-?([0-9a-fA-F]{4})-?([0-9a-fA-F]{4})([0-9a-fA-F]{8})$"); // Final group of 12 split into two sections 123e4567-e89b-12d3-a456-426614174000
     private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
 
     private final ByteBuffer buffer;
@@ -438,11 +439,44 @@ final class RecordKey {
         for (int i = byte_count; i < ulong_size; ++i ) {
             buffer.put( (byte)0 );
         }
-
-}
-
-
+    }
     
+    public void addUuid(String value) {
+        if (value == null) {
+            buffer.putLong(0);
+            buffer.putLong(0);
+            return;
+        }
+
+        Matcher matcher = UUID_REGEX.matcher(value);
+
+        if (!matcher.matches()) {
+            buffer.putLong(0);
+            buffer.putLong(0);
+            isValid = false;
+            return;
+        }
+
+        long[] parts = new long[6];
+        try {
+            for (int p = 0; p < 6; ++p)
+                parts[p] = Long.parseLong(matcher.group(p + 1), 16);
+        } catch (Exception ex) {
+            buffer.putLong(0);
+            buffer.putLong(0);
+            isValid = false;
+            return;
+        }
+
+        // See: uuid_string_to_int128_t()
+        buffer.putInt((int)parts[5]); // Last 8 hex digits of last group
+        buffer.putShort((short)parts[4]); // First 4 hex digits of last group
+        buffer.putShort((short)parts[3]); // Fourth group, 4 hex digits
+        buffer.putShort((short)parts[2]); // Third group, 4 hex digits
+        buffer.putShort((short)parts[1]); // Second group, 4 hex digits
+        buffer.putInt((int)parts[0]); // First 8 hex digits
+    }
+
     public void computeHashes() {
         MurmurHash3.LongPair murmur = new MurmurHash3.LongPair();
         MurmurHash3.murmurhash3_x64_128(buffer.array(), 0, buffer.capacity(), 10, murmur);

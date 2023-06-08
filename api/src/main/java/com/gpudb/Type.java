@@ -94,6 +94,7 @@ public final class Type implements Serializable {
             CHAR256,
             IPV4,
             ULONG,
+            UUID,
             WKT,
             // Bytes sub-types
             WKB
@@ -259,6 +260,8 @@ public final class Type implements Serializable {
                 columnType = ColumnType.IPV4;
             } else if ( properties.contains( ColumnProperty.ULONG ) ) {
                 columnType = ColumnType.ULONG;
+            } else if ( properties.contains( ColumnProperty.UUID ) ) {
+                columnType = ColumnType.UUID;
             } else if ( properties.contains( ColumnProperty.WKT ) ) {
                 // Decide if it's WKT or WKB based on the base type
                 if ( columnType == ColumnType.STRING ) {
@@ -605,6 +608,7 @@ public final class Type implements Serializable {
             String type = types.get(i);
 
             switch (type) {
+                case ColumnProperty.BOOLEAN:
                 case ColumnProperty.CHAR1:
                 case ColumnProperty.CHAR2:
                 case ColumnProperty.CHAR4:
@@ -617,12 +621,13 @@ public final class Type implements Serializable {
                 case ColumnProperty.DATE:
                 case ColumnProperty.DATETIME:
                 case ColumnProperty.DECIMAL:
-                case ColumnProperty.BOOLEAN:
                 case ColumnProperty.INT8:
                 case ColumnProperty.INT16:
                 case ColumnProperty.IPV4:
                 case ColumnProperty.TIME:
                 case ColumnProperty.TIMESTAMP:
+                case ColumnProperty.ULONG:
+                case ColumnProperty.UUID:
                 case ColumnProperty.WKT:
                     columnProperties.add(type);
                     break;
