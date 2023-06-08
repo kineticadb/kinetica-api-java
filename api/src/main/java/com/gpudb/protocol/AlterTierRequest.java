@@ -64,6 +64,10 @@ public class AlterTierRequest implements IndexedRecord {
      * LOW_WATERMARK}: Threshold of resource usage that once fallen below after
      * crossing the {@code high_watermark}, will cease watermark-based eviction
      * from this tier.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTierRequest.Options#WAIT_TIMEOUT WAIT_TIMEOUT}:
+     * Timeout in seconds for reading from or writing to this resource. Applies
+     * to cold storage tiers only.
      *         <li> {@link com.gpudb.protocol.AlterTierRequest.Options#PERSIST
      * PERSIST}: If {@code true} the system configuration will be written to
      * disk upon successful application of this request. This will commit the
@@ -102,6 +106,12 @@ public class AlterTierRequest implements IndexedRecord {
          * this tier.
          */
         public static final String LOW_WATERMARK = "low_watermark";
+
+        /**
+         * Timeout in seconds for reading from or writing to this resource.
+         * Applies to cold storage tiers only.
+         */
+        public static final String WAIT_TIMEOUT = "wait_timeout";
 
         /**
          * If {@code true} the system configuration will be written to disk
@@ -163,6 +173,11 @@ public class AlterTierRequest implements IndexedRecord {
      *                 LOW_WATERMARK}: Threshold of resource usage that once
      *                 fallen below after crossing the {@code high_watermark},
      *                 will cease watermark-based eviction from this tier.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTierRequest.Options#WAIT_TIMEOUT
+     *                 WAIT_TIMEOUT}: Timeout in seconds for reading from or
+     *                 writing to this resource. Applies to cold storage tiers
+     *                 only.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTierRequest.Options#PERSIST
      *                 PERSIST}: If {@code true} the system configuration will
@@ -231,6 +246,10 @@ public class AlterTierRequest implements IndexedRecord {
      *         below after crossing the {@code high_watermark}, will cease
      *         watermark-based eviction from this tier.
      *                 <li> {@link
+     *         com.gpudb.protocol.AlterTierRequest.Options#WAIT_TIMEOUT
+     *         WAIT_TIMEOUT}: Timeout in seconds for reading from or writing to
+     *         this resource. Applies to cold storage tiers only.
+     *                 <li> {@link
      *         com.gpudb.protocol.AlterTierRequest.Options#PERSIST PERSIST}: If
      *         {@code true} the system configuration will be written to disk
      *         upon successful application of this request. This will commit
@@ -274,6 +293,11 @@ public class AlterTierRequest implements IndexedRecord {
      *                 LOW_WATERMARK}: Threshold of resource usage that once
      *                 fallen below after crossing the {@code high_watermark},
      *                 will cease watermark-based eviction from this tier.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTierRequest.Options#WAIT_TIMEOUT
+     *                 WAIT_TIMEOUT}: Timeout in seconds for reading from or
+     *                 writing to this resource. Applies to cold storage tiers
+     *                 only.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTierRequest.Options#PERSIST
      *                 PERSIST}: If {@code true} the system configuration will

@@ -122,15 +122,31 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#IGNORE_EXISTING_PK
-     * IGNORE_EXISTING_PK}: Can be used to customize behavior when the updated
-     * primary key value already exists as described in {@link
-     * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     * IGNORE_EXISTING_PK}: Specifies the record collision error-suppression
+     * policy for
+     * inserting into or updating a table with a <a
+     * href="../../../../../../concepts/tables/#primary-keys"
+     * target="_top">primary key</a>, only
+     * used when primary key record collisions are rejected ({@code
+     * update_on_existing_pk}
+     * is {@code false}).  If set to
+     * {@code true}, any record insert/update that is rejected
+     * for resulting in a primary key collision with an existing table record
+     * will be ignored with no error
+     * generated.  If {@code false}, the rejection of any
+     * insert/update for resulting in a primary key collision will cause an
+     * error to be reported.  If the
+     * specified table does not have a primary key or if {@code
+     * update_on_existing_pk} is
+     * {@code true}, then this option has no effect.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE
-     * TRUE}
+     * TRUE}: Ignore inserts/updates that result in primary key collisions with
+     * existing records
      *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     * FALSE}
+     * FALSE}: Treat as errors any inserts/updates that result in primary key
+     * collisions with existing records
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
@@ -260,15 +276,31 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * execution.
      *         <li> {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#UPDATE_ON_EXISTING_PK
-     * UPDATE_ON_EXISTING_PK}: Can be used to customize behavior when the
-     * updated primary key value already exists as described in {@link
-     * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     * UPDATE_ON_EXISTING_PK}: Specifies the record collision policy for
+     * inserting into or updating
+     * a table with a <a href="../../../../../../concepts/tables/#primary-keys"
+     * target="_top">primary key</a>. If set to
+     * {@code true}, any existing table record with primary
+     * key values that match those of a record being inserted or updated will
+     * either be:  replaced by that
+     * record being inserted (if an INSERT statement), or updated with the
+     * values being set (if an
+     * UPDATE...SET statement) and the originally-updated record removed. If
+     * set to
+     * {@code false}, any such primary key collision will
+     * result in the insert/update being rejected and the error handled as
+     * determined by
+     * {@code ignore_existing_pk}.  If the specified table does not have a
+     * primary key,
+     * then this option has no effect.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE
-     * TRUE}
+     * TRUE}: Update the collided-into record when inserting or updating a
+     * record causes a primary key collision with an existing record
      *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     * FALSE}
+     * FALSE}: Reject the insert or update when it results in a primary key
+     * collision with an existing record
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
@@ -346,15 +378,32 @@ public class ExecuteSqlRequest implements IndexedRecord {
         public static final String DISTRIBUTED_OPERATIONS = "distributed_operations";
 
         /**
-         * Can be used to customize behavior when the updated primary key value
-         * already exists as described in {@link
-         * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+         * Specifies the record collision error-suppression policy for
+         * inserting into or updating a table with a <a
+         * href="../../../../../../concepts/tables/#primary-keys"
+         * target="_top">primary key</a>, only
+         * used when primary key record collisions are rejected ({@code
+         * update_on_existing_pk}
+         * is {@code false}).  If set to
+         * {@code true}, any record insert/update that is rejected
+         * for resulting in a primary key collision with an existing table
+         * record will be ignored with no error
+         * generated.  If {@code false}, the rejection of any
+         * insert/update for resulting in a primary key collision will cause an
+         * error to be reported.  If the
+         * specified table does not have a primary key or if {@code
+         * update_on_existing_pk} is
+         * {@code true}, then this option has no effect.
          * Supported values:
          * <ul>
          *         <li> {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}: Ignore
+         * inserts/updates that result in primary key collisions with existing
+         * records
          *         <li> {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}: Treat as
+         * errors any inserts/updates that result in primary key collisions
+         * with existing records
          * </ul>
          * The default value is {@link
          * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
@@ -509,15 +558,33 @@ public class ExecuteSqlRequest implements IndexedRecord {
         public static final String TTL = "ttl";
 
         /**
-         * Can be used to customize behavior when the updated primary key value
-         * already exists as described in {@link
-         * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+         * Specifies the record collision policy for inserting into or updating
+         * a table with a <a
+         * href="../../../../../../concepts/tables/#primary-keys"
+         * target="_top">primary key</a>. If set to
+         * {@code true}, any existing table record with primary
+         * key values that match those of a record being inserted or updated
+         * will either be:  replaced by that
+         * record being inserted (if an INSERT statement), or updated with the
+         * values being set (if an
+         * UPDATE...SET statement) and the originally-updated record removed.
+         * If set to
+         * {@code false}, any such primary key collision will
+         * result in the insert/update being rejected and the error handled as
+         * determined by
+         * {@code ignore_existing_pk}.  If the specified table does not have a
+         * primary key,
+         * then this option has no effect.
          * Supported values:
          * <ul>
          *         <li> {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}: Update the
+         * collided-into record when inserting or updating a record causes a
+         * primary key collision with an existing record
          *         <li> {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}: Reject
+         * the insert or update when it results in a primary key collision with
+         * an existing record
          * </ul>
          * The default value is {@link
          * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
@@ -649,17 +716,33 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#IGNORE_EXISTING_PK
-     *                 IGNORE_EXISTING_PK}: Can be used to customize behavior
-     *                 when the updated primary key value already exists as
-     *                 described in {@link
-     *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *                 IGNORE_EXISTING_PK}: Specifies the record collision
+     *                 error-suppression policy for
+     *                 inserting into or updating a table with a <a
+     *                 href="../../../../../../concepts/tables/#primary-keys"
+     *                 target="_top">primary key</a>, only
+     *                 used when primary key record collisions are rejected
+     *                 ({@code update_on_existing_pk}
+     *                 is {@code false}).  If set to
+     *                 {@code true}, any record insert/update that is rejected
+     *                 for resulting in a primary key collision with an
+     *                 existing table record will be ignored with no error
+     *                 generated.  If {@code false}, the rejection of any
+     *                 insert/update for resulting in a primary key collision
+     *                 will cause an error to be reported.  If the
+     *                 specified table does not have a primary key or if {@code
+     *                 update_on_existing_pk} is
+     *                 {@code true}, then this option has no effect.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}:
+     *                 Ignore inserts/updates that result in primary key
+     *                 collisions with existing records
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
+     *                 FALSE}: Treat as errors any inserts/updates that result
+     *                 in primary key collisions with existing records
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
@@ -807,17 +890,35 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 used in query execution.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#UPDATE_ON_EXISTING_PK
-     *                 UPDATE_ON_EXISTING_PK}: Can be used to customize
-     *                 behavior when the updated primary key value already
-     *                 exists as described in {@link
-     *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
+     *                 policy for inserting into or updating
+     *                 a table with a <a
+     *                 href="../../../../../../concepts/tables/#primary-keys"
+     *                 target="_top">primary key</a>. If set to
+     *                 {@code true}, any existing table record with primary
+     *                 key values that match those of a record being inserted
+     *                 or updated will either be:  replaced by that
+     *                 record being inserted (if an INSERT statement), or
+     *                 updated with the values being set (if an
+     *                 UPDATE...SET statement) and the originally-updated
+     *                 record removed. If set to
+     *                 {@code false}, any such primary key collision will
+     *                 result in the insert/update being rejected and the error
+     *                 handled as determined by
+     *                 {@code ignore_existing_pk}.  If the specified table does
+     *                 not have a primary key,
+     *                 then this option has no effect.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}:
+     *                 Update the collided-into record when inserting or
+     *                 updating a record causes a primary key collision with an
+     *                 existing record
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
+     *                 FALSE}: Reject the insert or update when it results in a
+     *                 primary key collision with an existing record
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
@@ -952,17 +1053,33 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#IGNORE_EXISTING_PK
-     *                 IGNORE_EXISTING_PK}: Can be used to customize behavior
-     *                 when the updated primary key value already exists as
-     *                 described in {@link
-     *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *                 IGNORE_EXISTING_PK}: Specifies the record collision
+     *                 error-suppression policy for
+     *                 inserting into or updating a table with a <a
+     *                 href="../../../../../../concepts/tables/#primary-keys"
+     *                 target="_top">primary key</a>, only
+     *                 used when primary key record collisions are rejected
+     *                 ({@code update_on_existing_pk}
+     *                 is {@code false}).  If set to
+     *                 {@code true}, any record insert/update that is rejected
+     *                 for resulting in a primary key collision with an
+     *                 existing table record will be ignored with no error
+     *                 generated.  If {@code false}, the rejection of any
+     *                 insert/update for resulting in a primary key collision
+     *                 will cause an error to be reported.  If the
+     *                 specified table does not have a primary key or if {@code
+     *                 update_on_existing_pk} is
+     *                 {@code true}, then this option has no effect.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}:
+     *                 Ignore inserts/updates that result in primary key
+     *                 collisions with existing records
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
+     *                 FALSE}: Treat as errors any inserts/updates that result
+     *                 in primary key collisions with existing records
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
@@ -1110,17 +1227,35 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 used in query execution.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#UPDATE_ON_EXISTING_PK
-     *                 UPDATE_ON_EXISTING_PK}: Can be used to customize
-     *                 behavior when the updated primary key value already
-     *                 exists as described in {@link
-     *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
+     *                 policy for inserting into or updating
+     *                 a table with a <a
+     *                 href="../../../../../../concepts/tables/#primary-keys"
+     *                 target="_top">primary key</a>. If set to
+     *                 {@code true}, any existing table record with primary
+     *                 key values that match those of a record being inserted
+     *                 or updated will either be:  replaced by that
+     *                 record being inserted (if an INSERT statement), or
+     *                 updated with the values being set (if an
+     *                 UPDATE...SET statement) and the originally-updated
+     *                 record removed. If set to
+     *                 {@code false}, any such primary key collision will
+     *                 result in the insert/update being rejected and the error
+     *                 handled as determined by
+     *                 {@code ignore_existing_pk}.  If the specified table does
+     *                 not have a primary key,
+     *                 then this option has no effect.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}:
+     *                 Update the collided-into record when inserting or
+     *                 updating a record causes a primary key collision with an
+     *                 existing record
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
+     *                 FALSE}: Reject the insert or update when it results in a
+     *                 primary key collision with an existing record
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
@@ -1393,15 +1528,33 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#IGNORE_EXISTING_PK
-     *         IGNORE_EXISTING_PK}: Can be used to customize behavior when the
-     *         updated primary key value already exists as described in {@link
-     *         com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *         IGNORE_EXISTING_PK}: Specifies the record collision
+     *         error-suppression policy for
+     *         inserting into or updating a table with a <a
+     *         href="../../../../../../concepts/tables/#primary-keys"
+     *         target="_top">primary key</a>, only
+     *         used when primary key record collisions are rejected ({@code
+     *         update_on_existing_pk}
+     *         is {@code false}).  If set to
+     *         {@code true}, any record insert/update that is rejected
+     *         for resulting in a primary key collision with an existing table
+     *         record will be ignored with no error
+     *         generated.  If {@code false}, the rejection of any
+     *         insert/update for resulting in a primary key collision will
+     *         cause an error to be reported.  If the
+     *         specified table does not have a primary key or if {@code
+     *         update_on_existing_pk} is
+     *         {@code true}, then this option has no effect.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}: Ignore
+     *         inserts/updates that result in primary key collisions with
+     *         existing records
      *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}: Treat
+     *         as errors any inserts/updates that result in primary key
+     *         collisions with existing records
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
@@ -1534,16 +1687,34 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *         of the intermediate result tables used in query execution.
      *                 <li> {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#UPDATE_ON_EXISTING_PK
-     *         UPDATE_ON_EXISTING_PK}: Can be used to customize behavior when
-     *         the updated primary key value already exists as described in
-     *         {@link
-     *         com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *         UPDATE_ON_EXISTING_PK}: Specifies the record collision policy
+     *         for inserting into or updating
+     *         a table with a <a
+     *         href="../../../../../../concepts/tables/#primary-keys"
+     *         target="_top">primary key</a>. If set to
+     *         {@code true}, any existing table record with primary
+     *         key values that match those of a record being inserted or
+     *         updated will either be:  replaced by that
+     *         record being inserted (if an INSERT statement), or updated with
+     *         the values being set (if an
+     *         UPDATE...SET statement) and the originally-updated record
+     *         removed. If set to
+     *         {@code false}, any such primary key collision will
+     *         result in the insert/update being rejected and the error handled
+     *         as determined by
+     *         {@code ignore_existing_pk}.  If the specified table does not
+     *         have a primary key,
+     *         then this option has no effect.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}: Update
+     *         the collided-into record when inserting or updating a record
+     *         causes a primary key collision with an existing record
      *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}:
+     *         Reject the insert or update when it results in a primary key
+     *         collision with an existing record
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
@@ -1630,17 +1801,33 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#IGNORE_EXISTING_PK
-     *                 IGNORE_EXISTING_PK}: Can be used to customize behavior
-     *                 when the updated primary key value already exists as
-     *                 described in {@link
-     *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *                 IGNORE_EXISTING_PK}: Specifies the record collision
+     *                 error-suppression policy for
+     *                 inserting into or updating a table with a <a
+     *                 href="../../../../../../concepts/tables/#primary-keys"
+     *                 target="_top">primary key</a>, only
+     *                 used when primary key record collisions are rejected
+     *                 ({@code update_on_existing_pk}
+     *                 is {@code false}).  If set to
+     *                 {@code true}, any record insert/update that is rejected
+     *                 for resulting in a primary key collision with an
+     *                 existing table record will be ignored with no error
+     *                 generated.  If {@code false}, the rejection of any
+     *                 insert/update for resulting in a primary key collision
+     *                 will cause an error to be reported.  If the
+     *                 specified table does not have a primary key or if {@code
+     *                 update_on_existing_pk} is
+     *                 {@code true}, then this option has no effect.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}:
+     *                 Ignore inserts/updates that result in primary key
+     *                 collisions with existing records
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
+     *                 FALSE}: Treat as errors any inserts/updates that result
+     *                 in primary key collisions with existing records
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
@@ -1788,17 +1975,35 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 used in query execution.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#UPDATE_ON_EXISTING_PK
-     *                 UPDATE_ON_EXISTING_PK}: Can be used to customize
-     *                 behavior when the updated primary key value already
-     *                 exists as described in {@link
-     *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
+     *                 policy for inserting into or updating
+     *                 a table with a <a
+     *                 href="../../../../../../concepts/tables/#primary-keys"
+     *                 target="_top">primary key</a>. If set to
+     *                 {@code true}, any existing table record with primary
+     *                 key values that match those of a record being inserted
+     *                 or updated will either be:  replaced by that
+     *                 record being inserted (if an INSERT statement), or
+     *                 updated with the values being set (if an
+     *                 UPDATE...SET statement) and the originally-updated
+     *                 record removed. If set to
+     *                 {@code false}, any such primary key collision will
+     *                 result in the insert/update being rejected and the error
+     *                 handled as determined by
+     *                 {@code ignore_existing_pk}.  If the specified table does
+     *                 not have a primary key,
+     *                 then this option has no effect.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}:
+     *                 Update the collided-into record when inserting or
+     *                 updating a record causes a primary key collision with an
+     *                 existing record
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
+     *                 FALSE}: Reject the insert or update when it results in a
+     *                 primary key collision with an existing record
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE

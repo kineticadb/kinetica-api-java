@@ -65,6 +65,22 @@ public class CreateDatasinkRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateDatasinkRequest.Options#S3_REGION S3_REGION}:
      * Name of the Amazon S3 region where the given bucket is located
      *         <li> {@link
+     * com.gpudb.protocol.CreateDatasinkRequest.Options#S3_USE_VIRTUAL_ADDRESSING
+     * S3_USE_VIRTUAL_ADDRESSING}: When true (default), the requests URI should
+     * be specified in virtual-hosted-style format where the bucket name is
+     * part of the domain name in the URL.
+     * <p>
+     * Otherwise set to false to use path-style URI for requests.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasinkRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasinkRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateDatasinkRequest.Options#TRUE TRUE}.
+     *         <li> {@link
      * com.gpudb.protocol.CreateDatasinkRequest.Options#S3_AWS_ROLE_ARN
      * S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which has required S3 permissions
      * that can be assumed for the given S3 IAM user
@@ -230,6 +246,26 @@ public class CreateDatasinkRequest implements IndexedRecord {
         public static final String S3_REGION = "s3_region";
 
         /**
+         * When true (default), the requests URI should be specified in
+         * virtual-hosted-style format where the bucket name is part of the
+         * domain name in the URL.
+         * <p>
+         * Otherwise set to false to use path-style URI for requests.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateDatasinkRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateDatasinkRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateDatasinkRequest.Options#TRUE TRUE}.
+         */
+        public static final String S3_USE_VIRTUAL_ADDRESSING = "s3_use_virtual_addressing";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
          * Amazon IAM Role ARN which has required S3 permissions that can be
          * assumed for the given S3 IAM user
          */
@@ -269,8 +305,6 @@ public class CreateDatasinkRequest implements IndexedRecord {
          * com.gpudb.protocol.CreateDatasinkRequest.Options#FALSE FALSE}.
          */
         public static final String HDFS_USE_KERBEROS = "hdfs_use_kerberos";
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
 
         /**
          * Name of the Azure storage account to use as the data sink, this is
@@ -454,6 +488,26 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateDatasinkRequest.Options#S3_REGION
      *                 S3_REGION}: Name of the Amazon S3 region where the given
      *                 bucket is located
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#S3_USE_VIRTUAL_ADDRESSING
+     *                 S3_USE_VIRTUAL_ADDRESSING}: When true (default), the
+     *                 requests URI should be specified in virtual-hosted-style
+     *                 format where the bucket name is part of the domain name
+     *                 in the URL.
+     *                 Otherwise set to false to use path-style URI for
+     *                 requests.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#TRUE
+     *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasinkRequest.Options#S3_AWS_ROLE_ARN
      *                 S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which has required
@@ -694,6 +748,21 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *         S3_REGION}: Name of the Amazon S3 region where the given bucket
      *         is located
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasinkRequest.Options#S3_USE_VIRTUAL_ADDRESSING
+     *         S3_USE_VIRTUAL_ADDRESSING}: When true (default), the requests
+     *         URI should be specified in virtual-hosted-style format where the
+     *         bucket name is part of the domain name in the URL.
+     *         Otherwise set to false to use path-style URI for requests.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasinkRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasinkRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateDatasinkRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateDatasinkRequest.Options#S3_AWS_ROLE_ARN
      *         S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which has required S3
      *         permissions that can be assumed for the given S3 IAM user
@@ -864,6 +933,26 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateDatasinkRequest.Options#S3_REGION
      *                 S3_REGION}: Name of the Amazon S3 region where the given
      *                 bucket is located
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#S3_USE_VIRTUAL_ADDRESSING
+     *                 S3_USE_VIRTUAL_ADDRESSING}: When true (default), the
+     *                 requests URI should be specified in virtual-hosted-style
+     *                 format where the bucket name is part of the domain name
+     *                 in the URL.
+     *                 Otherwise set to false to use path-style URI for
+     *                 requests.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#TRUE
+     *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasinkRequest.Options#S3_AWS_ROLE_ARN
      *                 S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which has required

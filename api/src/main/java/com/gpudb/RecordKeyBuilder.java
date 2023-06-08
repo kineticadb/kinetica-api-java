@@ -122,6 +122,7 @@ final class RecordKeyBuilder<T> {
                     break;
 
                 case CHAR16:
+                case UUID:
                     size += 16;
                     break;
                 case CHAR32:
@@ -253,6 +254,10 @@ final class RecordKeyBuilder<T> {
             case ULONG:
                 key.addUlong((String)value);
                 break;
+            
+            case UUID:
+                key.addUuid((String)value);
+                break;
         }
     }
 
@@ -370,6 +375,7 @@ final class RecordKeyBuilder<T> {
                 case IPV4:
                 case STRING:
                 case TIME:
+                case UUID:
                     result.append("\"");
                     result.append(((String)value).replace("\"", "\"\""));
                     result.append("\"");

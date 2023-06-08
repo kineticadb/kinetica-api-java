@@ -15,14 +15,13 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of results returned by {@link
- * com.gpudb.GPUdb#appendRecords(AppendRecordsRequest)}.
+ * com.gpudb.GPUdb#adminHaRefresh(AdminHaRefreshRequest)}.
  */
-public class AppendRecordsResponse implements IndexedRecord {
+public class AdminHaRefreshResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("AppendRecordsResponse")
+            .record("AdminHaRefreshResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("tableName").type().stringType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -38,35 +37,18 @@ public class AppendRecordsResponse implements IndexedRecord {
         return schema$;
     }
 
-    private String tableName;
     private Map<String, String> info;
 
 
     /**
-     * Constructs an AppendRecordsResponse object with default parameters.
+     * Constructs an AdminHaRefreshResponse object with default parameters.
      */
-    public AppendRecordsResponse() {
-    }
-    public String getTableName() {
-        return tableName;
+    public AdminHaRefreshResponse() {
     }
 
     /**
      * 
-     * @param tableName
-     * 
-     * @return {@code this} to mimic the builder pattern.
-     * 
-     */
-    public AppendRecordsResponse setTableName(String tableName) {
-        this.tableName = (tableName == null) ? "" : tableName;
-        return this;
-    }
-
-    /**
-     * 
-     * @return Additional information.  The default value is an empty {@link
-     *         Map}.
+     * @return Additional information.
      * 
      */
     public Map<String, String> getInfo() {
@@ -75,13 +57,12 @@ public class AppendRecordsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param info  Additional information.  The default value is an empty
-     *              {@link Map}.
+     * @param info  Additional information.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public AppendRecordsResponse setInfo(Map<String, String> info) {
+    public AdminHaRefreshResponse setInfo(Map<String, String> info) {
         this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
         return this;
     }
@@ -113,9 +94,6 @@ public class AppendRecordsResponse implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.tableName;
-
-            case 1:
                 return this.info;
 
             default:
@@ -138,10 +116,6 @@ public class AppendRecordsResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.tableName = (String)value;
-                break;
-
-            case 1:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -160,10 +134,9 @@ public class AppendRecordsResponse implements IndexedRecord {
             return false;
         }
 
-        AppendRecordsResponse that = (AppendRecordsResponse)obj;
+        AdminHaRefreshResponse that = (AdminHaRefreshResponse)obj;
 
-        return ( this.tableName.equals( that.tableName )
-                 && this.info.equals( that.info ) );
+        return ( this.info.equals( that.info ) );
     }
 
     @Override
@@ -171,10 +144,6 @@ public class AppendRecordsResponse implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "tableName" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.tableName ) );
-        builder.append( ", " );
         builder.append( gd.toString( "info" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.info ) );
@@ -186,7 +155,6 @@ public class AppendRecordsResponse implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.tableName.hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }

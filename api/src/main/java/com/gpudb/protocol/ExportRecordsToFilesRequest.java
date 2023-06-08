@@ -219,6 +219,9 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE TRUE}
      *         <li> {@link
      * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE FALSE}
+     *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#OVERWRITE
+     * OVERWRITE}
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE TRUE}.
@@ -444,11 +447,15 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
          * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE TRUE}
          *         <li> {@link
          * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE FALSE}
+         *         <li> {@link
+         * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#OVERWRITE
+         * OVERWRITE}
          * </ul>
          * The default value is {@link
          * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE TRUE}.
          */
         public static final String SINGLE_FILE = "single_file";
+        public static final String OVERWRITE = "overwrite";
 
         /**
          * Specifies the character to write out to delimit field values and
@@ -687,6 +694,9 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE
      *                 FALSE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#OVERWRITE
+     *                 OVERWRITE}
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
@@ -955,6 +965,9 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE
      *         FALSE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#OVERWRITE
+     *         OVERWRITE}
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
@@ -1167,6 +1180,9 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#FALSE
      *                 FALSE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#OVERWRITE
+     *                 OVERWRITE}
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE

@@ -26,7 +26,6 @@ import org.apache.avro.generic.IndexedRecord;
  * <a href="../../../../../../graph_solver/network_graph_solver/"
  * target="_top">Network Graphs & Solvers</a>
  * for more information on graphs.
- * .
  */
 public class VisualizeIsochroneRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
