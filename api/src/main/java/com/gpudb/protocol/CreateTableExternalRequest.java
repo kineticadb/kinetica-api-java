@@ -495,6 +495,10 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_HEADER_BYTES
+     * AVRO_HEADER_BYTES}: Optional number of bytes to skip when reading an
+     * avro record.
+     *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_NUM_RECORDS
      * AVRO_NUM_RECORDS}: Optional number of avro records, if data includes
      * only records.
@@ -1107,6 +1111,11 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
+
+        /**
+         * Optional number of bytes to skip when reading an avro record.
+         */
+        public static final String AVRO_HEADER_BYTES = "avro_header_bytes";
 
         /**
          * Optional number of avro records, if data includes only records.
@@ -2266,6 +2275,10 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                            The default value is an empty {@link Map}.
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_HEADER_BYTES
+     *                 AVRO_HEADER_BYTES}: Optional number of bytes to skip
+     *                 when reading an avro record.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_NUM_RECORDS
      *                 AVRO_NUM_RECORDS}: Optional number of avro records, if
@@ -3499,6 +3512,10 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * @return Optional parameters.
      *         <ul>
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_HEADER_BYTES
+     *         AVRO_HEADER_BYTES}: Optional number of bytes to skip when
+     *         reading an avro record.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_NUM_RECORDS
      *         AVRO_NUM_RECORDS}: Optional number of avro records, if data
      *         includes only records.
@@ -4137,6 +4154,10 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_HEADER_BYTES
+     *                 AVRO_HEADER_BYTES}: Optional number of bytes to skip
+     *                 when reading an avro record.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_NUM_RECORDS
      *                 AVRO_NUM_RECORDS}: Optional number of avro records, if

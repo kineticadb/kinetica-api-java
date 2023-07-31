@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.*;
 
-/** This class models a an Io operation of a specific
+/** This class models a an I/O operation of a specific
  * {@link OpMode} i.e., UPLOAD or DOWNLOAD. Different instances of this
  * class will be created for different operations and no instance of this
  * class will be shared.
@@ -40,11 +40,6 @@ public class DownloadIoJob {
     /**
      *
      */
-    private final String kifsDirName;
-
-    /**
-     *
-     */
     private final DownloadOptions downloadOptions;
 
     /**
@@ -54,7 +49,7 @@ public class DownloadIoJob {
 
     private final FileDownloadListener callback;
     /**
-     * Fixed threadpool of size 1
+     * Fixed thread pool of size 1
      */
     private final ExecutorService threadPool;
 
@@ -93,7 +88,6 @@ public class DownloadIoJob {
 
         this.db = db;
         this.fileHandlerOptions = fileHandlerOptions;
-        this.kifsDirName = dirName;
         this.downloadFileName = fileName;
         this.downloadLocalFileName = localFileName;
         this.kifsFileInfo = kifsFileInfo;
@@ -175,12 +169,12 @@ public class DownloadIoJob {
     public void start() {
 
         final long sourceSize = kifsFileInfo.getFileSize();
-        final int bytesPerSplit = (int) fileHandlerOptions.getFileSizeToSplit();
+        final long bytesPerSplit = fileHandlerOptions.getFileSizeToSplit();
         final long numSplits = sourceSize / bytesPerSplit;
         final long totalParts = numSplits + 1;
 
-        int partNo = 0;
-        int offset = 0;
+        long partNo = 0;
+        long offset = 0;
 
         while( offset < sourceSize ) {
 

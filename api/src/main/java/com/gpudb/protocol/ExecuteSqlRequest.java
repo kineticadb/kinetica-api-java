@@ -282,22 +282,19 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * target="_top">primary key</a>. If set to
      * {@code true}, any existing table record with primary
      * key values that match those of a record being inserted or updated will
-     * either be:  replaced by that
-     * record being inserted (if an INSERT statement), or updated with the
-     * values being set (if an
-     * UPDATE...SET statement) and the originally-updated record removed. If
-     * set to
-     * {@code false}, any such primary key collision will
-     * result in the insert/update being rejected and the error handled as
-     * determined by
+     * be replaced by that record.
+     * If set to {@code false}, any such primary key
+     * collision will result in the insert/update being rejected and the error
+     * handled as determined by
      * {@code ignore_existing_pk}.  If the specified table does not have a
      * primary key,
      * then this option has no effect.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE
-     * TRUE}: Update the collided-into record when inserting or updating a
-     * record causes a primary key collision with an existing record
+     * TRUE}: Replace the collided-into record with the record inserted or
+     * updated when a new/modified record causes a primary key collision with
+     * an existing record
      *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      * FALSE}: Reject the insert or update when it results in a primary key
      * collision with an existing record
@@ -564,23 +561,20 @@ public class ExecuteSqlRequest implements IndexedRecord {
          * target="_top">primary key</a>. If set to
          * {@code true}, any existing table record with primary
          * key values that match those of a record being inserted or updated
-         * will either be:  replaced by that
-         * record being inserted (if an INSERT statement), or updated with the
-         * values being set (if an
-         * UPDATE...SET statement) and the originally-updated record removed.
-         * If set to
-         * {@code false}, any such primary key collision will
-         * result in the insert/update being rejected and the error handled as
-         * determined by
+         * will be replaced by that record.
+         * If set to {@code false}, any such primary key
+         * collision will result in the insert/update being rejected and the
+         * error handled as determined by
          * {@code ignore_existing_pk}.  If the specified table does not have a
          * primary key,
          * then this option has no effect.
          * Supported values:
          * <ul>
          *         <li> {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}: Update the
-         * collided-into record when inserting or updating a record causes a
-         * primary key collision with an existing record
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}: Replace the
+         * collided-into record with the record inserted or updated when a
+         * new/modified record causes a primary key collision with an existing
+         * record
          *         <li> {@link
          * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}: Reject
          * the insert or update when it results in a primary key collision with
@@ -897,14 +891,10 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 target="_top">primary key</a>. If set to
      *                 {@code true}, any existing table record with primary
      *                 key values that match those of a record being inserted
-     *                 or updated will either be:  replaced by that
-     *                 record being inserted (if an INSERT statement), or
-     *                 updated with the values being set (if an
-     *                 UPDATE...SET statement) and the originally-updated
-     *                 record removed. If set to
-     *                 {@code false}, any such primary key collision will
-     *                 result in the insert/update being rejected and the error
-     *                 handled as determined by
+     *                 or updated will be replaced by that record.
+     *                 If set to {@code false}, any such primary key
+     *                 collision will result in the insert/update being
+     *                 rejected and the error handled as determined by
      *                 {@code ignore_existing_pk}.  If the specified table does
      *                 not have a primary key,
      *                 then this option has no effect.
@@ -912,9 +902,9 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}:
-     *                 Update the collided-into record when inserting or
-     *                 updating a record causes a primary key collision with an
-     *                 existing record
+     *                 Replace the collided-into record with the record
+     *                 inserted or updated when a new/modified record causes a
+     *                 primary key collision with an existing record
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}: Reject the insert or update when it results in a
@@ -1234,14 +1224,10 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 target="_top">primary key</a>. If set to
      *                 {@code true}, any existing table record with primary
      *                 key values that match those of a record being inserted
-     *                 or updated will either be:  replaced by that
-     *                 record being inserted (if an INSERT statement), or
-     *                 updated with the values being set (if an
-     *                 UPDATE...SET statement) and the originally-updated
-     *                 record removed. If set to
-     *                 {@code false}, any such primary key collision will
-     *                 result in the insert/update being rejected and the error
-     *                 handled as determined by
+     *                 or updated will be replaced by that record.
+     *                 If set to {@code false}, any such primary key
+     *                 collision will result in the insert/update being
+     *                 rejected and the error handled as determined by
      *                 {@code ignore_existing_pk}.  If the specified table does
      *                 not have a primary key,
      *                 then this option has no effect.
@@ -1249,9 +1235,9 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}:
-     *                 Update the collided-into record when inserting or
-     *                 updating a record causes a primary key collision with an
-     *                 existing record
+     *                 Replace the collided-into record with the record
+     *                 inserted or updated when a new/modified record causes a
+     *                 primary key collision with an existing record
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}: Reject the insert or update when it results in a
@@ -1694,23 +1680,20 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *         target="_top">primary key</a>. If set to
      *         {@code true}, any existing table record with primary
      *         key values that match those of a record being inserted or
-     *         updated will either be:  replaced by that
-     *         record being inserted (if an INSERT statement), or updated with
-     *         the values being set (if an
-     *         UPDATE...SET statement) and the originally-updated record
-     *         removed. If set to
-     *         {@code false}, any such primary key collision will
-     *         result in the insert/update being rejected and the error handled
-     *         as determined by
+     *         updated will be replaced by that record.
+     *         If set to {@code false}, any such primary key
+     *         collision will result in the insert/update being rejected and
+     *         the error handled as determined by
      *         {@code ignore_existing_pk}.  If the specified table does not
      *         have a primary key,
      *         then this option has no effect.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}: Update
-     *         the collided-into record when inserting or updating a record
-     *         causes a primary key collision with an existing record
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}: Replace
+     *         the collided-into record with the record inserted or updated
+     *         when a new/modified record causes a primary key collision with
+     *         an existing record
      *                 <li> {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}:
      *         Reject the insert or update when it results in a primary key
@@ -1982,14 +1965,10 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 target="_top">primary key</a>. If set to
      *                 {@code true}, any existing table record with primary
      *                 key values that match those of a record being inserted
-     *                 or updated will either be:  replaced by that
-     *                 record being inserted (if an INSERT statement), or
-     *                 updated with the values being set (if an
-     *                 UPDATE...SET statement) and the originally-updated
-     *                 record removed. If set to
-     *                 {@code false}, any such primary key collision will
-     *                 result in the insert/update being rejected and the error
-     *                 handled as determined by
+     *                 or updated will be replaced by that record.
+     *                 If set to {@code false}, any such primary key
+     *                 collision will result in the insert/update being
+     *                 rejected and the error handled as determined by
      *                 {@code ignore_existing_pk}.  If the specified table does
      *                 not have a primary key,
      *                 then this option has no effect.
@@ -1997,9 +1976,9 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}:
-     *                 Update the collided-into record when inserting or
-     *                 updating a record causes a primary key collision with an
-     *                 existing record
+     *                 Replace the collided-into record with the record
+     *                 inserted or updated when a new/modified record causes a
+     *                 primary key collision with an existing record
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}: Reject the insert or update when it results in a

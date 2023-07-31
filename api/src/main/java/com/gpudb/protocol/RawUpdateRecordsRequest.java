@@ -159,13 +159,13 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      * <p>
      * If {@code update_on_existing_pk} is set to
      * {@code true}, "update collisions" will result in the
-     * updated record being removed and the existing record collided into being
-     * updated with the values
-     * specified in {@code newValuesMaps}; "insert collisions" will result in
-     * the collided-into record
-     * being updated with the values in {@code recordsToInsert}/{@code
-     * recordsToInsertStr} (if
-     * given).
+     * existing record collided into being removed and the record updated with
+     * values specified in
+     * {@code newValuesMaps} taking its place; "insert collisions" will result
+     * in the collided-into
+     * record being updated with the values in {@code recordsToInsert}/{@code
+     * recordsToInsertStr}
+     * (if given).
      * <p>
      * If set to {@code false}, the existing collided-into
      * record will remain unchanged, while the update will be rejected and the
@@ -326,13 +326,13 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
          * <p>
          * If {@code update_on_existing_pk} is set to
          * {@code true}, "update collisions" will result in the
-         * updated record being removed and the existing record collided into
-         * being updated with the values
-         * specified in {@code newValuesMaps}; "insert collisions" will result
-         * in the collided-into record
-         * being updated with the values in {@code recordsToInsert}/{@code
-         * recordsToInsertStr} (if
-         * given).
+         * existing record collided into being removed and the record updated
+         * with values specified in
+         * {@code newValuesMaps} taking its place; "insert collisions" will
+         * result in the collided-into
+         * record being updated with the values in {@code
+         * recordsToInsert}/{@code recordsToInsertStr}
+         * (if given).
          * <p>
          * If set to {@code false}, the existing collided-into
          * record will remain unchanged, while the update will be rejected and
@@ -554,13 +554,13 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *                 table.
      *                 If {@code update_on_existing_pk} is set to
      *                 {@code true}, "update collisions" will result in the
-     *                 updated record being removed and the existing record
-     *                 collided into being updated with the values
-     *                 specified in {@code newValuesMaps}; "insert collisions"
-     *                 will result in the collided-into record
-     *                 being updated with the values in {@code
-     *                 recordsToInsert}/{@code recordsToInsertStr} (if
-     *                 given).
+     *                 existing record collided into being removed and the
+     *                 record updated with values specified in
+     *                 {@code newValuesMaps} taking its place; "insert
+     *                 collisions" will result in the collided-into
+     *                 record being updated with the values in {@code
+     *                 recordsToInsert}/{@code recordsToInsertStr}
+     *                 (if given).
      *                 If set to {@code false}, the existing collided-into
      *                 record will remain unchanged, while the update will be
      *                 rejected and the error handled as determined
@@ -799,13 +799,13 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *                 table.
      *                 If {@code update_on_existing_pk} is set to
      *                 {@code true}, "update collisions" will result in the
-     *                 updated record being removed and the existing record
-     *                 collided into being updated with the values
-     *                 specified in {@code newValuesMaps}; "insert collisions"
-     *                 will result in the collided-into record
-     *                 being updated with the values in {@code
-     *                 recordsToInsert}/{@code recordsToInsertStr} (if
-     *                 given).
+     *                 existing record collided into being removed and the
+     *                 record updated with values specified in
+     *                 {@code newValuesMaps} taking its place; "insert
+     *                 collisions" will result in the collided-into
+     *                 record being updated with the values in {@code
+     *                 recordsToInsert}/{@code recordsToInsertStr}
+     *                 (if given).
      *                 If set to {@code false}, the existing collided-into
      *                 record will remain unchanged, while the update will be
      *                 rejected and the error handled as determined
@@ -1190,13 +1190,13 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *         table.
      *         If {@code update_on_existing_pk} is set to
      *         {@code true}, "update collisions" will result in the
-     *         updated record being removed and the existing record collided
-     *         into being updated with the values
-     *         specified in {@code newValuesMaps}; "insert collisions" will
-     *         result in the collided-into record
-     *         being updated with the values in {@code recordsToInsert}/{@code
-     *         recordsToInsertStr} (if
-     *         given).
+     *         existing record collided into being removed and the record
+     *         updated with values specified in
+     *         {@code newValuesMaps} taking its place; "insert collisions" will
+     *         result in the collided-into
+     *         record being updated with the values in {@code
+     *         recordsToInsert}/{@code recordsToInsertStr}
+     *         (if given).
      *         If set to {@code false}, the existing collided-into
      *         record will remain unchanged, while the update will be rejected
      *         and the error handled as determined
@@ -1366,13 +1366,13 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *                 table.
      *                 If {@code update_on_existing_pk} is set to
      *                 {@code true}, "update collisions" will result in the
-     *                 updated record being removed and the existing record
-     *                 collided into being updated with the values
-     *                 specified in {@code newValuesMaps}; "insert collisions"
-     *                 will result in the collided-into record
-     *                 being updated with the values in {@code
-     *                 recordsToInsert}/{@code recordsToInsertStr} (if
-     *                 given).
+     *                 existing record collided into being removed and the
+     *                 record updated with values specified in
+     *                 {@code newValuesMaps} taking its place; "insert
+     *                 collisions" will result in the collided-into
+     *                 record being updated with the values in {@code
+     *                 recordsToInsert}/{@code recordsToInsertStr}
+     *                 (if given).
      *                 If set to {@code false}, the existing collided-into
      *                 record will remain unchanged, while the update will be
      *                 rejected and the error handled as determined
