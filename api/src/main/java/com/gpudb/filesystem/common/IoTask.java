@@ -56,7 +56,7 @@ public class IoTask implements Callable<Result> {
      * This field is actually an identifier for the part number for a
      * multi-part upload/download. It has been named
      */
-    private final int taskNumber;
+    private final long taskNumber;
 
     /**
      * Name of the file to upload/download.
@@ -92,7 +92,7 @@ public class IoTask implements Callable<Result> {
                   String fileName,
                   UploadOptions uploadOptions,
                   DownloadOptions downloadOptions,
-                  int taskNumber,
+                  long taskNumber,
                   ByteBuffer dataBytes) {
         this.db = db;
         this.opMode = opMode;
@@ -190,7 +190,7 @@ public class IoTask implements Callable<Result> {
      * This method calls the actual GPUdb endpoint for uploading a part of the
      * multi-part upload being handled by the current instance of this class
      *
-     * @param options - Ma<String, String> - Options which are passed to the
+     * @param options - Map<String, String> - Options which are passed to the
      *                GPUdb endpoint
      * @param fileName - String - Name of the file to be uploaded/downloaded
      * @param dataBytes - ByteBuffer - The data bytes
@@ -234,7 +234,6 @@ public class IoTask implements Callable<Result> {
      *
      */
     private Result download() throws GPUdbException {
-        // TODO implement here
 
         Result downloadResult = new Result();
 

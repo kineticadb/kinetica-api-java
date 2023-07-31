@@ -431,11 +431,14 @@ public class MatchGraphRequest implements IndexedRecord {
      * quality metric for Louvain modularity optimization solver.
      * Supported values:
      * <ul>
-     *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#GIRWAN
-     * GIRWAN}: Uses the Newman Girwan quality metric for cluster solver
+     *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#GIRVAN
+     * GIRVAN}: Uses the Newman Girvan quality metric for cluster solver
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#SPECTRAL SPECTRAL}: Applies
+     * recursive spectral bisection (RSB) partitioning solver
      * </ul>
      * The default value is {@link
-     * com.gpudb.protocol.MatchGraphRequest.Options#GIRWAN GIRWAN}.
+     * com.gpudb.protocol.MatchGraphRequest.Options#GIRVAN GIRVAN}.
      *         <li> {@link
      * com.gpudb.protocol.MatchGraphRequest.Options#RESTRICTED_TYPE
      * RESTRICTED_TYPE}: For the {@code match_supply_demand} solver only.
@@ -856,18 +859,26 @@ public class MatchGraphRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *         <li> {@link
-         * com.gpudb.protocol.MatchGraphRequest.Options#GIRWAN GIRWAN}: Uses
-         * the Newman Girwan quality metric for cluster solver
+         * com.gpudb.protocol.MatchGraphRequest.Options#GIRVAN GIRVAN}: Uses
+         * the Newman Girvan quality metric for cluster solver
+         *         <li> {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#SPECTRAL SPECTRAL}:
+         * Applies recursive spectral bisection (RSB) partitioning solver
          * </ul>
          * The default value is {@link
-         * com.gpudb.protocol.MatchGraphRequest.Options#GIRWAN GIRWAN}.
+         * com.gpudb.protocol.MatchGraphRequest.Options#GIRVAN GIRVAN}.
          */
         public static final String CLUSTER_QUALITY_METRIC = "cluster_quality_metric";
 
         /**
-         * Uses the Newman Girwan quality metric for cluster solver
+         * Uses the Newman Girvan quality metric for cluster solver
          */
-        public static final String GIRWAN = "girwan";
+        public static final String GIRVAN = "girvan";
+
+        /**
+         * Applies recursive spectral bisection (RSB) partitioning solver
+         */
+        public static final String SPECTRAL = "spectral";
 
         /**
          * For the {@code match_supply_demand} solver only. Optimization is
@@ -1433,13 +1444,17 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#GIRWAN
-     *                 GIRWAN}: Uses the Newman Girwan quality metric for
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#GIRVAN
+     *                 GIRVAN}: Uses the Newman Girvan quality metric for
      *                 cluster solver
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#SPECTRAL
+     *                 SPECTRAL}: Applies recursive spectral bisection (RSB)
+     *                 partitioning solver
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#GIRWAN
-     *                 GIRWAN}.
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#GIRVAN
+     *                 GIRVAN}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#RESTRICTED_TYPE
      *                 RESTRICTED_TYPE}: For the {@code match_supply_demand}
@@ -2112,11 +2127,14 @@ public class MatchGraphRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *                 <li> {@link
-     *         com.gpudb.protocol.MatchGraphRequest.Options#GIRWAN GIRWAN}:
-     *         Uses the Newman Girwan quality metric for cluster solver
+     *         com.gpudb.protocol.MatchGraphRequest.Options#GIRVAN GIRVAN}:
+     *         Uses the Newman Girvan quality metric for cluster solver
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#SPECTRAL SPECTRAL}:
+     *         Applies recursive spectral bisection (RSB) partitioning solver
      *         </ul>
      *         The default value is {@link
-     *         com.gpudb.protocol.MatchGraphRequest.Options#GIRWAN GIRWAN}.
+     *         com.gpudb.protocol.MatchGraphRequest.Options#GIRVAN GIRVAN}.
      *                 <li> {@link
      *         com.gpudb.protocol.MatchGraphRequest.Options#RESTRICTED_TYPE
      *         RESTRICTED_TYPE}: For the {@code match_supply_demand} solver
@@ -2534,13 +2552,17 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#GIRWAN
-     *                 GIRWAN}: Uses the Newman Girwan quality metric for
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#GIRVAN
+     *                 GIRVAN}: Uses the Newman Girvan quality metric for
      *                 cluster solver
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#SPECTRAL
+     *                 SPECTRAL}: Applies recursive spectral bisection (RSB)
+     *                 partitioning solver
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#GIRWAN
-     *                 GIRWAN}.
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#GIRVAN
+     *                 GIRVAN}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#RESTRICTED_TYPE
      *                 RESTRICTED_TYPE}: For the {@code match_supply_demand}

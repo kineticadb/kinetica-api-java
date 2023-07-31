@@ -9201,6 +9201,10 @@ public class GPUdb extends GPUdbBase {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_HEADER_BYTES
+     *                 AVRO_HEADER_BYTES}: Optional number of bytes to skip
+     *                 when reading an avro record.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_NUM_RECORDS
      *                 AVRO_NUM_RECORDS}: Optional number of avro records, if
      *                 data includes only records.
@@ -12574,14 +12578,10 @@ public class GPUdb extends GPUdbBase {
      *                 target="_top">primary key</a>. If set to
      *                 {@code true}, any existing table record with primary
      *                 key values that match those of a record being inserted
-     *                 or updated will either be:  replaced by that
-     *                 record being inserted (if an INSERT statement), or
-     *                 updated with the values being set (if an
-     *                 UPDATE...SET statement) and the originally-updated
-     *                 record removed. If set to
-     *                 {@code false}, any such primary key collision will
-     *                 result in the insert/update being rejected and the error
-     *                 handled as determined by
+     *                 or updated will be replaced by that record.
+     *                 If set to {@code false}, any such primary key
+     *                 collision will result in the insert/update being
+     *                 rejected and the error handled as determined by
      *                 {@code ignore_existing_pk}.  If the specified table does
      *                 not have a primary key,
      *                 then this option has no effect.
@@ -12589,9 +12589,9 @@ public class GPUdb extends GPUdbBase {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}:
-     *                 Update the collided-into record when inserting or
-     *                 updating a record causes a primary key collision with an
-     *                 existing record
+     *                 Replace the collided-into record with the record
+     *                 inserted or updated when a new/modified record causes a
+     *                 primary key collision with an existing record
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}: Reject the insert or update when it results in a
@@ -12855,7 +12855,7 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COMPRESSION_TYPE
      *                 COMPRESSION_TYPE}: File compression type. Different file
      *                 types support different compresion types. text:
-     *                 uncompressed. parquet: uncompressed, snappy, gzip.
+     *                 uncompressed, gzip. parquet: uncompressed, snappy, gzip.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -18079,6 +18079,10 @@ public class GPUdb extends GPUdbBase {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AVRO_HEADER_BYTES
+     *                 AVRO_HEADER_BYTES}: Optional number of bytes to skip
+     *                 when reading an avro record.
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AVRO_NUM_RECORDS
      *                 AVRO_NUM_RECORDS}: Optional number of avro records, if
      *                 data includes only records.
@@ -18945,6 +18949,10 @@ public class GPUdb extends GPUdbBase {
      *                            The default value is an empty {@link Map}.
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AVRO_HEADER_BYTES
+     *                 AVRO_HEADER_BYTES}: Optional number of bytes to skip
+     *                 when reading an avro record.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AVRO_NUM_RECORDS
      *                 AVRO_NUM_RECORDS}: Optional number of avro records, if
@@ -20994,13 +21002,17 @@ public class GPUdb extends GPUdbBase {
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#GIRWAN
-     *                 GIRWAN}: Uses the Newman Girwan quality metric for
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#GIRVAN
+     *                 GIRVAN}: Uses the Newman Girvan quality metric for
      *                 cluster solver
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#SPECTRAL
+     *                 SPECTRAL}: Applies recursive spectral bisection (RSB)
+     *                 partitioning solver
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#GIRWAN
-     *                 GIRWAN}.
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#GIRVAN
+     *                 GIRVAN}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#RESTRICTED_TYPE
      *                 RESTRICTED_TYPE}: For the {@code match_supply_demand}
@@ -24950,13 +24962,13 @@ public class GPUdb extends GPUdbBase {
      *                 table.
      *                 If {@code update_on_existing_pk} is set to
      *                 {@code true}, "update collisions" will result in the
-     *                 updated record being removed and the existing record
-     *                 collided into being updated with the values
-     *                 specified in {@code newValuesMaps}; "insert collisions"
-     *                 will result in the collided-into record
-     *                 being updated with the values in {@code
-     *                 recordsToInsert}/{@code recordsToInsertStr} (if
-     *                 given).
+     *                 existing record collided into being removed and the
+     *                 record updated with values specified in
+     *                 {@code newValuesMaps} taking its place; "insert
+     *                 collisions" will result in the collided-into
+     *                 record being updated with the values in {@code
+     *                 recordsToInsert}/{@code recordsToInsertStr}
+     *                 (if given).
      *                 If set to {@code false}, the existing collided-into
      *                 record will remain unchanged, while the update will be
      *                 rejected and the error handled as determined
@@ -25220,13 +25232,13 @@ public class GPUdb extends GPUdbBase {
      *                 table.
      *                 If {@code update_on_existing_pk} is set to
      *                 {@code true}, "update collisions" will result in the
-     *                 updated record being removed and the existing record
-     *                 collided into being updated with the values
-     *                 specified in {@code newValuesMaps}; "insert collisions"
-     *                 will result in the collided-into record
-     *                 being updated with the values in {@code
-     *                 recordsToInsert}/{@code recordsToInsertStr} (if
-     *                 given).
+     *                 existing record collided into being removed and the
+     *                 record updated with values specified in
+     *                 {@code newValuesMaps} taking its place; "insert
+     *                 collisions" will result in the collided-into
+     *                 record being updated with the values in {@code
+     *                 recordsToInsert}/{@code recordsToInsertStr}
+     *                 (if given).
      *                 If set to {@code false}, the existing collided-into
      *                 record will remain unchanged, while the update will be
      *                 rejected and the error handled as determined

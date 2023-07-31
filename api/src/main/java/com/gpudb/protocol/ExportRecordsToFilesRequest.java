@@ -193,8 +193,8 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COMPRESSION_TYPE
      * COMPRESSION_TYPE}: File compression type. Different file types support
-     * different compresion types. text: uncompressed. parquet: uncompressed,
-     * snappy, gzip.
+     * different compresion types. text: uncompressed, gzip. parquet:
+     * uncompressed, snappy, gzip.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -415,8 +415,8 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
 
         /**
          * File compression type. Different file types support different
-         * compresion types. text: uncompressed. parquet: uncompressed, snappy,
-         * gzip.
+         * compresion types. text: uncompressed, gzip. parquet: uncompressed,
+         * snappy, gzip.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -664,7 +664,7 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COMPRESSION_TYPE
      *                 COMPRESSION_TYPE}: File compression type. Different file
      *                 types support different compresion types. text:
-     *                 uncompressed. parquet: uncompressed, snappy, gzip.
+     *                 uncompressed, gzip. parquet: uncompressed, snappy, gzip.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -934,8 +934,8 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COMPRESSION_TYPE
      *         COMPRESSION_TYPE}: File compression type. Different file types
-     *         support different compresion types. text: uncompressed. parquet:
-     *         uncompressed, snappy, gzip.
+     *         support different compresion types. text: uncompressed, gzip.
+     *         parquet: uncompressed, snappy, gzip.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -1150,7 +1150,7 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COMPRESSION_TYPE
      *                 COMPRESSION_TYPE}: File compression type. Different file
      *                 types support different compresion types. text:
-     *                 uncompressed. parquet: uncompressed, snappy, gzip.
+     *                 uncompressed, gzip. parquet: uncompressed, snappy, gzip.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

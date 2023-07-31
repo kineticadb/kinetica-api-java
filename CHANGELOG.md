@@ -2,6 +2,13 @@
 
 ## Version 7.1
 
+### Version 7.1.9.5 - 2023-07-31
+
+#### Fixed
+-   Support for large file downloads
+-   Upgraded Snappy library from 1.1.8.4 to 1.1.10.1
+
+
 ### Version 7.1.9.4 - 2023-06-08
 
 #### Added
