@@ -1,5 +1,6 @@
 package com.gpudb;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -3535,6 +3536,20 @@ public abstract class GPUdbBase {
 
     /**
      * This method inserts a JSON payload (either a single JSON record or an array) into a Kinetica table
+     * with all default options
+     * @param jsonRecords - A single JSON record or an array of records as JSON
+     * @param tableName - the table to insert the records into
+     *
+     * @return - the JSON response as a Map of String to Object.
+     * @throws GPUdbException - in case of an error raised by the underlying endpoint
+     */
+    public Map<String, Object> insertRecordsFromJson(String jsonRecords,
+                                                     String tableName) throws GPUdbException {
+        return insertRecordsFromJson(jsonRecords, tableName, null, null, null);
+    }
+
+    /**
+     * This method inserts a JSON payload (either a single JSON record or an array) into a Kinetica table
      * @param jsonRecords - A single JSON record or an array of records as JSON
      * @param tableName - the table to insert the records into
      * @param jsonOptions - Indicates whether Snappy compression is to be set on or not
@@ -3557,6 +3572,10 @@ public abstract class GPUdbBase {
 
         if( tableName == null || tableName.isEmpty() ) {
             throw new GPUdbException( "Table name not given, cannot insert" );
+        }
+
+        if( jsonOptions == null ) {
+            jsonOptions = JsonOptions.defaultOptions();
         }
 
         if( createTableOptions == null ) {
@@ -3582,6 +3601,279 @@ public abstract class GPUdbBase {
         return Collections.unmodifiableMap(submitRequest(endpoint, jsonRecords, jsonOptions.isCompressionOn()));
     }
 
+    /**
+     * This class models the response returned by the method {@link #getRecordsJson}
+     * The default constructor is used to create instance whenever there is an error
+     * encountered by the method {@link #getRecordsJson}.
+     * The all argument constructor is used to return the values in case of a successful
+     * execution of the method {@link #getRecordsJson}.
+     */
+    public static final class GetRecordsJsonResponse {
+        private int totalRecords;
+        private boolean hasMoreRecords;
+        private String jsonRecords;
+
+        public GetRecordsJsonResponse() {
+        }
+
+        /**
+         * All argument constructor
+         * 
+         * @param totalRecords - Total number of records returned
+         * @param hasMoreRecords - Whether there are more records available or not
+         * @param jsonRecords - Records as a JSON array string
+         */
+        public GetRecordsJsonResponse(int totalRecords, boolean hasMoreRecords, String jsonRecords) {
+            this.totalRecords = totalRecords;
+            this.hasMoreRecords = hasMoreRecords;
+            this.jsonRecords = jsonRecords;
+        }
+
+        public int getTotalRecords() {
+            return totalRecords;
+        }
+
+        public boolean hasMoreRecords() {
+            return hasMoreRecords;
+        }
+
+        public String getJsonRecords() {
+            return jsonRecords;
+        }
+
+        @Override
+        public String toString() {
+            return "GetRecordsJsonResponse [totalRecords=" + totalRecords + ", hasMoreRecords=" + hasMoreRecords
+                    + ", jsonRecords=" + jsonRecords + "]";
+        }
+    }
+
+
+    /**
+     * This method is used to retrieve records from a Kinetica table in the form of
+     * a JSON array (stringified). The only mandatory parameter is the 'tableName'.
+     * The rest are all optional with suitable defaults wherever applicable.
+     * 
+     * @param tableName - Name of the table
+     * @param columnNames - the columns names to retrieve; a value of null will
+     *        return all columns
+     * @param offset - the offset to start from
+     * @param limit - the maximum number of records
+     * 
+     * @return - an instance of {@link GetRecordsJsonResponse} class
+     * 
+     * @throws GPUdbException
+     */
+    public GetRecordsJsonResponse getRecordsJson(
+            final String tableName,
+            final List<String> columnNames,
+            final long offset,
+            final long limit
+    ) throws GPUdbException {
+        return getRecordsJson(tableName, columnNames, offset, limit, null, null, null);
+    }
+
+
+    /**
+     * This method is used to retrieve records from a Kinetica table in the form of
+     * a JSON array (stringified). The only mandatory parameter is the 'tableName'.
+     * The rest are all optional with suitable defaults wherever applicable.
+     * 
+     * @param tableName - Name of the table
+     * @param columnNames - the columns names to retrieve; a value of null will
+     *        return all columns
+     * @param offset - the offset to start from
+     * @param limit - the maximum number of records
+     * @param orderByColumns - the list of columns to order by
+     * 
+     * @return - an instance of {@link GetRecordsJsonResponse} class
+     * 
+     * @throws GPUdbException
+     */
+    public GetRecordsJsonResponse getRecordsJson(
+            final String tableName,
+            final List<String> columnNames,
+            final long offset,
+            final long limit,
+            final List<String> orderByColumns
+    ) throws GPUdbException {
+        return getRecordsJson(tableName, columnNames, offset, limit, null, orderByColumns, null);
+    }
+
+
+    /**
+     * This method is used to retrieve records from a Kinetica table in the form of
+     * a JSON array (stringified). The only mandatory parameter is the 'tableName'.
+     * The rest are all optional with suitable defaults wherever applicable.
+     * 
+     * @param tableName - Name of the table
+     * @param columnNames - the columns names to retrieve; a value of null will
+     *        return all columns
+     * @param offset - the offset to start from
+     * @param limit - the maximum number of records
+     * @param expression - the filter expression
+     * 
+     * @return - an instance of {@link GetRecordsJsonResponse} class
+     * 
+     * @throws GPUdbException
+     */
+    public GetRecordsJsonResponse getRecordsJson(
+            final String tableName,
+            final List<String> columnNames,
+            final long offset,
+            final long limit,
+            final String expression
+    ) throws GPUdbException {
+        return getRecordsJson(tableName, columnNames, offset, limit, expression, null, null);
+    }
+
+
+    /**
+     * This method is used to retrieve records from a Kinetica table in the form of
+     * a JSON array (stringified). The only mandatory parameter is the 'tableName'.
+     * The rest are all optional with suitable defaults wherever applicable.
+     * 
+     * @param tableName - Name of the table
+     * @param columnNames - the columns names to retrieve; a value of null will
+     *        return all columns
+     * @param offset - the offset to start from
+     * @param limit - the maximum number of records
+     * @param expression - the filter expression
+     * @param orderByColumns - the list of columns to order by
+     * 
+     * @return - an instance of {@link GetRecordsJsonResponse} class
+     * 
+     * @throws GPUdbException
+     */
+    public GetRecordsJsonResponse getRecordsJson(
+            final String tableName,
+            final List<String> columnNames,
+            final long offset,
+            final long limit,
+            final String expression,
+            final List<String> orderByColumns
+    ) throws GPUdbException {
+        return getRecordsJson(tableName, columnNames, offset, limit, expression, orderByColumns, null);
+    }
+
+
+    /**
+     * This method is used to retrieve records from a Kinetica table in the form of
+     * a JSON array (stringified). The only mandatory parameter is the 'tableName'.
+     * The rest are all optional with suitable defaults wherever applicable.
+     * 
+     * @param tableName - Name of the table
+     * @param columnNames - the columns names to retrieve; a value of null will
+     *        return all columns
+     * @param offset - the offset to start from
+     * @param limit - the maximum number of records
+     * @param expression - the filter expression
+     * @param havingClause - the having clause
+     * 
+     * @return - an instance of {@link GetRecordsJsonResponse} class
+     * 
+     * @throws GPUdbException
+     */
+    public GetRecordsJsonResponse getRecordsJson(
+            final String tableName,
+            final List<String> columnNames,
+            final long offset,
+            final long limit,
+            final String expression,
+            final String havingClause
+    ) throws GPUdbException {
+        return getRecordsJson(tableName, columnNames, offset, limit, expression, null, havingClause);
+    }
+
+
+    /**
+     * This method is used to retrieve records from a Kinetica table in the form of
+     * a JSON array (stringified). The only mandatory parameter is the 'tableName'.
+     * The rest are all optional with suitable defaults wherever applicable.
+     * 
+     * @param tableName - Name of the table
+     * @param columnNames - the columns names to retrieve
+     * @param offset - the offset to start from
+     * @param limit - the maximum number of records
+     * @param expression - the filter expression
+     * @param orderByColumns - the list of columns to order by
+     * @param havingClause - the having clause
+     * 
+     * @return - an instance of {@link GetRecordsJsonResponse} class
+     * 
+     * @throws GPUdbException
+     */
+    @SuppressWarnings("unchecked")
+    public GetRecordsJsonResponse getRecordsJson(
+            final String tableName,
+            final List<String> columnNames,
+            final long offset,
+            final long limit,
+            final String expression,
+            final List<String> orderByColumns,
+            final String havingClause
+    ) throws GPUdbException {
+
+        if ( tableName == null || tableName.length() == 0) {
+            throw new GPUdbException( "Table name not given, cannot retrieve records" );
+        }
+
+        Map<String, String> options = new LinkedHashMap<>();
+
+        options.put( "table_name", tableName );
+
+        if( columnNames != null && columnNames.size() > 0) {
+            options.put("column_names", columnNames.stream().collect(Collectors.joining(",")));
+        }
+
+        options.put("offset", String.valueOf(offset < 0 ? 0 : offset));
+        options.put("limit", String.valueOf(limit < 0 ? GPUdb.END_OF_SET : limit));
+
+        if (expression != null && expression.length() > 0 ) {
+            options.put("expression", expression);
+        }
+
+        if (orderByColumns != null && orderByColumns.size() > 0 ) {
+            options.put("order_by", orderByColumns.stream().collect(Collectors.joining(",")));
+        }
+
+        if ( havingClause != null && havingClause.length() > 0 ) {
+            options.put("having", havingClause);
+        }
+
+        String endpoint = UrlUtils.constructEndpointUrl( "/get/records/json", options );
+
+        String json = submitRequest(endpoint, false);
+        TypeReference<HashMap<String,Object>> typeRef
+                = new TypeReference<HashMap<String,Object>>() {};
+        Map<String, Object> response = new HashMap<>();
+        try {
+            response = JSON_MAPPER.readValue(json.getBytes(StandardCharsets.UTF_8), typeRef);
+        } catch (IOException e) {
+            throw new GPUdbException("Error reading JSON response", e);
+        }
+
+        if (response != null && response.size() > 0 ){
+            String status = (String) response.get("status");
+            if( status.equals("OK")) {
+                int totalRecords = (Integer) ((Map<String,Object>)response.get("data")).get("total_number_of_records");
+                boolean hasMoreRecords = (Boolean) ((Map<String,Object>)response.get("data")).get("has_more_records");
+
+                List<Object> recordList = (List<Object>) ((LinkedHashMap<String,Object>)response.get("data")).get("records");
+                String jsonRecords = null;
+                try {
+                    jsonRecords = JSON_MAPPER.writeValueAsString(recordList);
+                } catch (JsonProcessingException e) {
+                    throw new GPUdbException("Could not convert records to JSON", e);
+                }
+                return new GetRecordsJsonResponse(totalRecords, hasMoreRecords, jsonRecords);
+            } else {
+                throw new GPUdbException("Error getting JSON records: " + response.get("message"));
+            }
+        } else {
+            throw new GPUdbException("Empty response from server gettting JSON records");
+        }
+    }
 
     /**
      * Given system properties, extract the head and worker rank URLs.
@@ -5031,6 +5323,149 @@ public abstract class GPUdbBase {
     } // end submitRequest
 
 
+/**
+     * Submits an arbitrary request to GPUdb and saves the response into a
+     * pre-created response object, optionally compressing the request before
+     * sending. The request and response objects must implement the Avro
+     * {@link IndexedRecord} interface. The request will only be compressed if
+     * {@code enableCompression} is {@code true} and the
+     * {@link GPUdb#GPUdb(String, GPUdbBase.Options) GPUdb constructor} was
+     * called with the {@link Options#setUseSnappy(boolean) Snappy compression
+     * flag} set to {@code true}.
+     *
+     * @param endpoint           the GPUdb endpoint to send the request to
+     * @param enableCompression  whether to compress the request
+     *
+     * @return                   the response object (same as {@code response}
+     *                           parameter)
+     *
+     * @throws SubmitException if an error occurs while submitting the request
+     */
+    public String submitRequest( String endpoint,
+                                                      boolean enableCompression ) throws SubmitException, GPUdbException {
+        // Send the request to the database server head node
+        URL url = getURL();
+        URL originalURL = url;
+
+        while (true) {
+            // We need a snapshot of the current state re: HA failover.  When
+            // multiple threads work on this object, we'll need to know how
+            // many times we've switched clusters *before* attempting another
+            // request submission.
+            int currentClusterSwitchCount = getNumClusterSwitches();
+
+            try {
+                return submitRequest(appendPathToURL(url, endpoint), enableCompression);
+            } catch (MalformedURLException ex) {
+                // There's an error in creating the URL
+                throw new GPUdbRuntimeException(ex.getMessage(), ex);
+            } catch (GPUdbExitException ex) {
+                GPUdbLogger.warn(
+                        "Got EXIT exception when trying endpoint " + endpoint
+                                + " at " + url.toString()
+                                + ": " + ex.getMessage() + "; switch URL..."
+                );
+                // Handle our special exit exception
+                try {
+                    url = switchURL( originalURL, currentClusterSwitchCount );
+                    GPUdbLogger.debug_with_info( "Switched to " + url.toString() );
+                } catch (GPUdbHAUnavailableException ha_ex) {
+                    // We've now tried all the HA clusters and circled back
+                    // Get the original cause to propagate to the user
+                    String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
+                    throw new GPUdbException( originalCause + "; " + ha_ex.getMessage(), true );
+                } catch (GPUdbFailoverDisabledException ha_ex) {
+                    // Failover is disabled; return the original cause
+                    String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
+                    throw new GPUdbException( originalCause + "; " + ha_ex.getMessage(), true );
+                }
+            } catch (SubmitException ex) {
+                GPUdbLogger.warn(
+                        "Got submit exception when trying endpoint " + endpoint
+                                + " at " + url.toString()
+                                + ": " + ex.getMessage() + "; switch URL..."
+                );
+                // Some error occurred during the HTTP request
+                try {
+                    url = switchURL( originalURL, currentClusterSwitchCount );
+                    GPUdbLogger.debug_with_info( "Switched to " + url.toString() );
+                } catch (GPUdbHAUnavailableException ha_ex) {
+                    // We've now tried all the HA clusters and circled back
+                    // Get the original cause to propagate to the user
+                    String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
+                    throw new SubmitException(
+                            null,
+                            ex.getRequest(),
+                            ex.getRequestSize(),
+                            originalCause + "; " + ha_ex.getMessage(),
+                            ex.getCause(),
+                            true
+                    );
+                } catch (GPUdbFailoverDisabledException ha_ex) {
+                    // Failover is disabled; return the original cause
+                    String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
+                    throw new SubmitException(
+                            null,
+                            ex.getRequest(),
+                            ex.getRequestSize(),
+                            originalCause + "; " + ha_ex.getMessage(),
+                            ex.getCause(),
+                            true
+                    );
+                }
+            } catch (GPUdbException ex) {
+                // Any other GPUdbException is a valid failure
+                GPUdbLogger.debug_with_info( "Got GPUdbException, so propagating: " + ex.getMessage() );
+                throw ex;
+            } catch (Exception ex) {
+                GPUdbLogger.warn(
+                        "Got Java exception when trying endpoint " + endpoint
+                                + " at " + url.toString()
+                                + ": " + ex.getMessage() + "; switch URL..."
+                );
+                // And other random exceptions probably are also connection errors
+                try {
+                    url = switchURL( originalURL, currentClusterSwitchCount );
+                    GPUdbLogger.debug_with_info( "Switched to " + url.toString() );
+                } catch (GPUdbHAUnavailableException ha_ex) {
+                    // We've now tried all the HA clusters and circled back
+                    // Get the original cause to propagate to the user
+                    String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
+                    throw new GPUdbException( originalCause + "; " + ha_ex.getMessage(), true );
+                } catch (GPUdbFailoverDisabledException ha_ex) {
+                    // Failover is disabled; return the original cause
+                    String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
+                    throw new GPUdbException( originalCause + "; " + ha_ex.getMessage(), true );
+                }
+            }
+        } // end while
+    } // end submitRequest
+
+    /**
+     * Submits an arbitrary request to GPUdb via the specified URL and saves the
+     * response into a pre-created response object, optionally compressing the
+     * request before sending. The request and response objects must implement
+     * the Avro {@link IndexedRecord} interface. The request will only be
+     * compressed if {@code enableCompression} is {@code true} and the
+     * {@link GPUdb#GPUdb(String, GPUdbBase.Options) GPUdb constructor} was
+     * called with the {@link Options#setUseSnappy(boolean) Snappy compression
+     * flag} set to {@code true}.
+     *
+     * @param url                the URL to send the request to
+     * @param enableCompression  whether to compress the request
+     * @return                   the response object (same as {@code response}
+     *                           parameter)
+     *
+     * @throws SubmitException if an error occurs while submitting the request
+     */
+    public String submitRequest( URL url,
+                                                      boolean enableCompression)
+            throws SubmitException, GPUdbExitException, GPUdbException {
+
+        return submitRequestRaw( url, enableCompression );
+    }
+
+
     /**
      * Submits an arbitrary request to GPUdb via the specified URL and saves the
      * response into a pre-created response object, optionally compressing the
@@ -5056,7 +5491,6 @@ public abstract class GPUdbBase {
 
         return submitRequestRaw( url, payload, enableCompression );
     }
-
     /**
      * Submits an arbitrary request to the GPUdb host manager and saves the
      * response into a pre-created response object. The request and response
@@ -5369,6 +5803,29 @@ public abstract class GPUdbBase {
      * called with the {@link Options#setUseSnappy(boolean) Snappy compression
      * flag} set to {@code true}.
      *
+     * @param url                the URL to send the request to
+     * @param enableCompression  whether to compress the request
+     * @return                   the response object (same as {@code response}
+     *                           parameter)
+     *
+     * @throws SubmitException if an error occurs while submitting the request
+     */
+    public String submitRequestRaw( URL url,
+                                                         boolean enableCompression )
+            throws SubmitException, GPUdbExitException, GPUdbException {
+        // Use the set timeout for the GPUdb object for the http connection
+        return submitRequestRaw( url, enableCompression, this.timeout );
+    }
+    /**
+     * Submits an arbitrary request to GPUdb via the specified URL and saves the
+     * response into a pre-created response object, optionally compressing the
+     * request before sending. The request and response objects must implement
+     * the Avro {@link IndexedRecord} interface. The request will only be
+     * compressed if {@code enableCompression} is {@code true} and the
+     * {@link GPUdb#GPUdb(String, GPUdbBase.Options) GPUdb constructor} was
+     * called with the {@link Options#setUseSnappy(boolean) Snappy compression
+     * flag} set to {@code true}.
+     *
      * @param <T>                the type of the response object
      * @param url                the URL to send the request to
      * @param request            the request object
@@ -5613,9 +6070,9 @@ public abstract class GPUdbBase {
      * @throws SubmitException if an error occurs while submitting the request
      */
     public Map<String, Object> submitRequestRaw( URL url,
-                                                         String payload,
-                                                         boolean enableCompression,
-                                                         int timeout)
+                                                String payload,
+                                                boolean enableCompression,
+                                                int timeout)
             throws SubmitException, GPUdbExitException, GPUdbException {
 
         HttpPost              postRequest    = null;
@@ -5666,11 +6123,6 @@ public abstract class GPUdbBase {
 
             // Get the entity and the content of the response
             responseEntity = postResponse.getEntity();
-            String encodingHeader = responseEntity.getContentEncoding();
-
-            // you need to know the encoding to parse correctly
-            Charset encoding = encodingHeader == null ? StandardCharsets.UTF_8 :
-                    Charsets.toCharset(encodingHeader);
 
             // use org.apache.http.util.EntityUtils to read JSON as string
             String json = EntityUtils.toString(responseEntity, StandardCharsets.UTF_8);
@@ -5765,6 +6217,164 @@ public abstract class GPUdbBase {
         }
     }   // end submitRequestRaw
 
+
+    /**
+     * Submits an arbitrary request to GPUdb via the specified URL and saves the
+     * response into a pre-created response object, optionally compressing the
+     * request before sending. The request and response objects must implement
+     * the Avro {@link IndexedRecord} interface. The request will only be
+     * compressed if {@code enableCompression} is {@code true} and the
+     * {@link GPUdb#GPUdb(String, GPUdbBase.Options) GPUdb constructor} was
+     * called with the {@link Options#setUseSnappy(boolean) Snappy compression
+     * flag} set to {@code true}.
+     *
+     * @param url                the URL to send the request to
+     * @param enableCompression  whether to compress the request
+     * @param timeout            a positive integer representing the number of
+     *                           milliseconds to use for connection timeout
+     * @return                   the response object (same as {@code response}
+     *                           parameter)
+     *
+     * @throws SubmitException if an error occurs while submitting the request
+     */
+    public String submitRequestRaw( URL url,
+                                    boolean enableCompression,
+                                    int timeout)
+            throws SubmitException, GPUdbExitException, GPUdbException {
+
+        HttpPost              postRequest    = null;
+        HttpEntity            responseEntity = null;
+        HttpHost              host = null;
+        ClassicHttpResponse postResponse   = null;
+
+        try {
+            GPUdbLogger.trace_with_info( "Sending request to " + url.toString() );
+
+            // Use the given timeout, instead of the member variable one
+            postRequest = initializeHttpPostRequest( url, timeout );
+            host = new HttpHost( url.getProtocol(), url.getHost(), url.getPort() );
+
+            // Execute the request
+            try {
+                postResponse = this.httpClient.executeOpen( host, postRequest, null );
+            } catch ( javax.net.ssl.SSLException ex) {
+                String errorMsg;
+                if( ex.getMessage().toLowerCase().contains("subject alternative names")) {
+                    errorMsg = "Server SSL certificate not found in specified trust store.  Please use the options to " +
+                            "bypass the certificate check or add the server's certificate or CA cert in the server's " +
+                            "certificate path to the trust store and try again.";
+                } else if( ex.getMessage().toLowerCase().contains("unable to find valid certification path")) {
+                    errorMsg = "No trust store was specified, but server requires SSL certificate validation.  " +
+                            "Please use the options to bypass the certificate check or specify a trust store containing " +
+                            "the server's certificate or CA cert in the server's certificate path and try again.";
+                } else {
+                    errorMsg = "Error: " + ex.getMessage();
+                }
+                errorMsg = String.format("Encountered SSL error when trying to connect to server at %s.  %s", url.toString(), errorMsg);
+                GPUdbLogger.error( errorMsg );
+                throw new GPUdbException( errorMsg );
+            } catch (Exception ex) {
+                // Trigger an HA failover at the caller level
+                GPUdbLogger.error( ex, "Throwing exit exception due to ");
+                throw new GPUdbExitException("Error submitting endpoint request: " + ExceptionUtils.getRootCauseMessage(ex));
+            }
+
+            // Get the status code and the messages of the response
+            StatusLine statusLine = new StatusLine(postResponse);
+            int statusCode = statusLine.getStatusCode();
+            String responseMessage = statusLine.getReasonPhrase();
+
+            // Get the entity and the content of the response
+            responseEntity = postResponse.getEntity();
+
+            // use org.apache.http.util.EntityUtils to read JSON as string
+            String json = EntityUtils.toString(responseEntity, StandardCharsets.UTF_8);
+
+            // Ensure that we're not getting any HTML snippet (may be
+            // returned by the HTTPD server)
+            if (
+                (responseEntity.getContentType() != null) &&
+                (responseEntity.getContentType().length() > 0) &&
+                responseEntity.getContentType().startsWith( "text" )
+            ) {
+                String errorMsg;
+                // Handle unauthorized connection specially--better error messaging
+                if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                    GPUdbLogger.debug_with_info( "Got status code: " + statusCode );
+                    errorMsg = ("Unauthorized access: " + responseMessage );
+                    throw new GPUdbUnauthorizedAccessException(errorMsg);
+                } else if ( (statusCode == HttpURLConnection.HTTP_UNAVAILABLE)
+                        || (statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR)
+                        || (statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT)
+                ) {
+                    // Some status codes should trigger an exit exception which will
+                    // in turn trigger a failover on the client side
+                    GPUdbLogger.debug_with_info(
+                            "Throwing EXIT exception from " + url.toString()
+                                    + "; response_code: " + statusCode
+                                    + "; content type " + responseEntity.getContentType()
+                                    + "; response message: " + responseMessage
+                    );
+                    throw new GPUdbExitException(responseMessage);
+                } else {
+                    // All other issues are simply propagated to the user
+                    errorMsg = ("Cannot parse response from server: '" + responseMessage + "'; status code: " + statusCode );
+                }
+                throw new SubmitException( url, null, errorMsg );
+            }
+
+            // Parse response based on error code
+            if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                // Got status 401 -- unauthorized
+                GPUdbLogger.debug_with_info( "Got status code: " + statusCode );
+                String errorMsg = (String.format("Server response status: %d : %s", statusCode, responseMessage));
+                throw new GPUdbUnauthorizedAccessException(errorMsg);
+                // Note: Keeping the original code here in case some unforeseen
+                // problem arises that we haven't thought of yet by changing
+                // which exception is thrown.
+                // throw new SubmitException( url, request, requestSize,
+                //                            responseMessage );
+            }
+
+            return json;
+        } catch (GPUdbExitException ex) {
+            // An HA failover should be triggered
+            throw ex;
+        } catch (SubmitException ex) {
+            GPUdbLogger.debug_with_info( "Got SubmitException: " + ex.getMessage() );
+            // Some sort of submission error
+            throw ex;
+        } catch (GPUdbException ex) {
+            if ( ex.getMessage().contains( DB_EOF_FROM_SERVER_ERROR_MESSAGE ) ) {
+                // The server did not send a response; we need to trigger an HA
+                // failover scenario
+                throw new GPUdbExitException(ex.getMessage());
+            }
+            // Some legitimate error
+            throw ex;
+        } catch (java.net.SocketException ex) {
+            // Any network issue should trigger an HA failover
+            throw new GPUdbExitException(ex.getMessage());
+        } catch (Exception ex) {
+            GPUdbLogger.debug_with_info( "Caught Exception: " + ex.getMessage() );
+            // Some sort of submission error
+            throw new SubmitException(url, null, ex.getMessage(), ex);
+        } finally {
+            // Release all resources held by the responseEntity
+            if ( responseEntity != null ) {
+                EntityUtils.consumeQuietly( responseEntity );
+            }
+
+            // Close the stream
+            if ( postResponse != null ) {
+                try {
+                    postResponse.close();
+                } catch (IOException ex) {
+                    GPUdbLogger.error( ex.getMessage() );
+                }
+            }
+        }
+    }   // end submitRequestRaw
     // Utilities
 
     /**
