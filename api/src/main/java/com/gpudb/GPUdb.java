@@ -4923,6 +4923,20 @@ public class GPUdb extends GPUdbBase {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
+     *                 com.gpudb.protocol.AlterSystemPropertiesRequest.Options#EVICT_TO_COLD
+     *                 EVICT_TO_COLD}: If {@code true} and evict_columns is
+     *                 specified, the given objects will be evicted to cold
+     *                 storage (if such a tier exists).
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterSystemPropertiesRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterSystemPropertiesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                         <li> {@link
      *                 com.gpudb.protocol.AlterSystemPropertiesRequest.Options#PERSIST
      *                 PERSIST}: If {@code true} the system configuration will
      *                 be written to disk upon successful application of this
@@ -9799,12 +9813,13 @@ public class GPUdb extends GPUdbBase {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#ACCURACY
-     *                 ACCURACY}: scans all data to get exactly-typed & sized
-     *                 columns for all data present
+     *                 ACCURACY}: Scans data to get exactly-typed & sized
+     *                 columns for all data scanned.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SPEED
-     *                 SPEED}: picks the widest possible column types so that
-     *                 'all' values will fit with minimum data scanned
+     *                 SPEED}: Scans data and picks the widest possible column
+     *                 types so that 'all' values will fit with minimum data
+     *                 scanned
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SPEED
@@ -18633,12 +18648,13 @@ public class GPUdb extends GPUdbBase {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ACCURACY
-     *                 ACCURACY}: scans all data to get exactly-typed & sized
-     *                 columns for all data present
+     *                 ACCURACY}: Scans data to get exactly-typed & sized
+     *                 columns for all data scanned.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED
-     *                 SPEED}: picks the widest possible column types so that
-     *                 'all' values will fit with minimum data scanned
+     *                 SPEED}: Scans data and picks the widest possible column
+     *                 types so that 'all' values will fit with minimum data
+     *                 scanned
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED
@@ -19471,12 +19487,13 @@ public class GPUdb extends GPUdbBase {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#ACCURACY
-     *                 ACCURACY}: scans all data to get exactly-typed & sized
-     *                 columns for all data present
+     *                 ACCURACY}: Scans data to get exactly-typed & sized
+     *                 columns for all data scanned.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SPEED
-     *                 SPEED}: picks the widest possible column types so that
-     *                 'all' values will fit with minimum data scanned
+     *                 SPEED}: Scans data and picks the widest possible column
+     *                 types so that 'all' values will fit with minimum data
+     *                 scanned
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SPEED

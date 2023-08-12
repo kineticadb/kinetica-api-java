@@ -2,6 +2,17 @@
 
 ## Version 7.1
 
+### Version 7.1.9.6 - 2023-08-11
+
+#### Added
+-   `getRecordsJson()` method & overloads for direct ingest of data as JSON strings
+-   `insertRecordsFromJson()` method overloads
+-   `BulkInserter` constructor overloads
+
+#### Fixed
+-   Error handling for JSON support in `BulkInserter`
+
+
 ### Version 7.1.9.5 - 2023-07-31
 
 #### Fixed

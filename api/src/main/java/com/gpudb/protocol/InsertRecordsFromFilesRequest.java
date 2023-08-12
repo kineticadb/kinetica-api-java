@@ -1009,12 +1009,12 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ACCURACY
-     * ACCURACY}: scans all data to get exactly-typed & sized columns for all
-     * data present
+     * ACCURACY}: Scans data to get exactly-typed & sized columns for all data
+     * scanned.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED SPEED}:
-     * picks the widest possible column types so that 'all' values will fit
-     * with minimum data scanned
+     * Scans data and picks the widest possible column types so that 'all'
+     * values will fit with minimum data scanned
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED SPEED}.
@@ -1799,12 +1799,12 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * <ul>
          *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ACCURACY
-         * ACCURACY}: scans all data to get exactly-typed & sized columns for
-         * all data present
+         * ACCURACY}: Scans data to get exactly-typed & sized columns for all
+         * data scanned.
          *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED
-         * SPEED}: picks the widest possible column types so that 'all' values
-         * will fit with minimum data scanned
+         * SPEED}: Scans data and picks the widest possible column types so
+         * that 'all' values will fit with minimum data scanned
          * </ul>
          * The default value is {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED
@@ -1813,14 +1813,14 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String TYPE_INFERENCE_MODE = "type_inference_mode";
 
         /**
-         * scans all data to get exactly-typed & sized columns for all data
-         * present
+         * Scans data to get exactly-typed & sized columns for all data
+         * scanned.
          */
         public static final String ACCURACY = "accuracy";
 
         /**
-         * picks the widest possible column types so that 'all' values will fit
-         * with minimum data scanned
+         * Scans data and picks the widest possible column types so that 'all'
+         * values will fit with minimum data scanned
          */
         public static final String SPEED = "speed";
 
@@ -2681,12 +2681,13 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ACCURACY
-     *                 ACCURACY}: scans all data to get exactly-typed & sized
-     *                 columns for all data present
+     *                 ACCURACY}: Scans data to get exactly-typed & sized
+     *                 columns for all data scanned.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED
-     *                 SPEED}: picks the widest possible column types so that
-     *                 'all' values will fit with minimum data scanned
+     *                 SPEED}: Scans data and picks the widest possible column
+     *                 types so that 'all' values will fit with minimum data
+     *                 scanned
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED
@@ -3817,12 +3818,12 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ACCURACY
-     *         ACCURACY}: scans all data to get exactly-typed & sized columns
-     *         for all data present
+     *         ACCURACY}: Scans data to get exactly-typed & sized columns for
+     *         all data scanned.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED
-     *         SPEED}: picks the widest possible column types so that 'all'
-     *         values will fit with minimum data scanned
+     *         SPEED}: Scans data and picks the widest possible column types so
+     *         that 'all' values will fit with minimum data scanned
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED
@@ -4425,12 +4426,13 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ACCURACY
-     *                 ACCURACY}: scans all data to get exactly-typed & sized
-     *                 columns for all data present
+     *                 ACCURACY}: Scans data to get exactly-typed & sized
+     *                 columns for all data scanned.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED
-     *                 SPEED}: picks the widest possible column types so that
-     *                 'all' values will fit with minimum data scanned
+     *                 SPEED}: Scans data and picks the widest possible column
+     *                 types so that 'all' values will fit with minimum data
+     *                 scanned
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED

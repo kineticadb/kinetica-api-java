@@ -506,7 +506,15 @@ public class BulkInserter<T> implements AutoCloseable {
                                                                                                     jsonOptions,
                                                                                                     new LinkedHashMap<>(),
                                                                                                     new HashMap<>());
-                    isSuccess = insertRecordsFromJsonResponse.get("status").toString().equalsIgnoreCase("OK");
+
+                    if (!(isSuccess = "OK".equalsIgnoreCase(insertRecordsFromJsonResponse.get("status").toString()))) {
+                        failedRecords = queuedRecords;
+                        exception = new InsertException(String.format(
+                                "Error inserting <%d> JSON objects: %s",
+                                failedRecords.size(),
+                                insertRecordsFromJsonResponse.get("message")
+                        ));
+                    }
                 } catch (GPUdbException e) {
                     failedRecords = queuedRecords;
                     exception = e;
@@ -843,8 +851,44 @@ public class BulkInserter<T> implements AutoCloseable {
      *                   {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
      * @param workers    worker list for multi-head ingest ({@code null} to
      *                   disable multi-head ingest)
-     * @param flushOptions - instance of {@link FlushOptions} class
+     * @param jsonOptions - instance of {@link GPUdbBase.JsonOptions} class
      *
+     * @throws GPUdbException if a configuration error occurs
+     *
+     * @throws IllegalArgumentException if an invalid parameter is specified
+     *
+     * @see com.gpudb.protocol.InsertRecordsRequest.Options
+     * @see FlushOptions
+     * @see GPUdbBase.JsonOptions
+     */
+    public BulkInserter(GPUdb gpudb,
+                        String tableName,
+                        Type type,
+                        int batchSize,
+                        Map<String, String> options,
+                        com.gpudb.WorkerList workers,
+                        GPUdbBase.JsonOptions jsonOptions) throws GPUdbException {
+        this(gpudb, tableName, type, null, batchSize, options, workers, FlushOptions.defaultOptions(), jsonOptions);
+    }
+
+    /**
+     * Creates a {@link BulkInserter} with the specified parameters.
+     *
+     * @param gpudb      the GPUdb instance to insert records into
+     * @param tableName  name of the table to insert records into
+     * @param type       the type of records being inserted
+     * @param batchSize  the number of records to insert into GPUdb at a time
+     *                   (records will queue until this number is reached); for
+     *                   multi-head ingest, this value is per worker
+     * @param options    optional parameters to pass to GPUdb while inserting
+     *                   ({@code null} for no parameters)<br>
+     *                   This is the same set of options as accepted by the
+     *                   {@link GPUdb#insertRecords(String, List, Map)} call.<br>
+     *                   The details can be found at
+     *                   {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
+     * @param workers    worker list for multi-head ingest ({@code null} to
+     *                   disable multi-head ingest)
+     * @param flushOptions - instance of {@link FlushOptions} class
      * @param jsonOptions - instance of {@link GPUdbBase.JsonOptions} class
      *
      * @throws GPUdbException if a configuration error occurs
@@ -957,6 +1001,83 @@ public class BulkInserter<T> implements AutoCloseable {
      *                       disable multi-head ingest)
      * @param flushOptions - instance of timed flush options {@link FlushOptions}
      *
+     * @throws GPUdbException if a configuration error occurs
+     *
+     * @throws IllegalArgumentException if an invalid parameter is specified
+     *
+     * @see com.gpudb.protocol.InsertRecordsRequest.Options
+     * @see FlushOptions
+     * @see GPUdbBase.JsonOptions
+     */
+    public BulkInserter(GPUdb gpudb,
+                        String tableName,
+                        TypeObjectMap<T> typeObjectMap,
+                        int batchSize,
+                        Map<String, String> options,
+                        com.gpudb.WorkerList workers,
+                        FlushOptions flushOptions) throws GPUdbException {
+        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, batchSize, options, workers, flushOptions, GPUdbBase.JsonOptions.defaultOptions());
+    }
+
+    /**
+     * Creates a {@link BulkInserter} with the specified parameters.
+     *
+     * @param gpudb          the GPUdb instance to insert records into
+     * @param tableName      name of the table to insert records into
+     * @param typeObjectMap  type object map for the type of records being
+     *                       inserted
+     * @param batchSize      the number of records to insert into GPUdb at a
+     *                       time (records will queue until this number is
+     *                       reached); for multi-head ingest, this value is per
+     *                       worker
+     * @param options        optional parameters to pass to GPUdb while
+     *                       inserting ({@code null} for no parameters)<br>
+     *                       This is the same set of options as accepted by the
+     *                       {@link GPUdb#insertRecords(String, List, Map)} call.<br>
+     *                       The details can be found at
+     *                       {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
+     * @param workers        worker list for multi-head ingest ({@code null} to
+     *                       disable multi-head ingest)
+     * @param jsonOptions -  instance of {@link GPUdbBase.JsonOptions} class
+     *
+     * @throws GPUdbException if a configuration error occurs
+     *
+     * @throws IllegalArgumentException if an invalid parameter is specified
+     *
+     * @see com.gpudb.protocol.InsertRecordsRequest.Options
+     * @see FlushOptions
+     * @see GPUdbBase.JsonOptions
+     */
+    public BulkInserter(GPUdb gpudb,
+                        String tableName,
+                        TypeObjectMap<T> typeObjectMap,
+                        int batchSize,
+                        Map<String, String> options,
+                        com.gpudb.WorkerList workers,
+                        GPUdbBase.JsonOptions jsonOptions) throws GPUdbException {
+        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, batchSize, options, workers, FlushOptions.defaultOptions(), jsonOptions);
+    }
+
+    /**
+     * Creates a {@link BulkInserter} with the specified parameters.
+     *
+     * @param gpudb          the GPUdb instance to insert records into
+     * @param tableName      name of the table to insert records into
+     * @param typeObjectMap  type object map for the type of records being
+     *                       inserted
+     * @param batchSize      the number of records to insert into GPUdb at a
+     *                       time (records will queue until this number is
+     *                       reached); for multi-head ingest, this value is per
+     *                       worker
+     * @param options        optional parameters to pass to GPUdb while
+     *                       inserting ({@code null} for no parameters)<br>
+     *                       This is the same set of options as accepted by the
+     *                       {@link GPUdb#insertRecords(String, List, Map)} call.<br>
+     *                       The details can be found at
+     *                       {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
+     * @param workers        worker list for multi-head ingest ({@code null} to
+     *                       disable multi-head ingest)
+     * @param flushOptions - instance of timed flush options {@link FlushOptions}
      * @param jsonOptions -  instance of {@link GPUdbBase.JsonOptions} class
      *
      * @throws GPUdbException if a configuration error occurs
@@ -1997,18 +2118,31 @@ public class BulkInserter<T> implements AutoCloseable {
                     }
 
                     // Save any exception encountered by the worker
-                    GPUdbLogger.debug_with_info("Saving worker failure exception ");
+                    GPUdbLogger.debug_with_info(String.format("Saving <%s> ingest worker failure exception with <%d> failed records", workerFailedRecords.getClass(), workerFailedRecords.size()));
                     workerExceptions.add(result.getFailureException());
                 }
 
                 if( result.getInsertJsonResponse() != null ) {
+                    // Something went wrong and the data was not inserted.
+                    if( result.getFailureException() instanceof GPUdbException ) {
+                        GPUdbException exception = (GPUdbException) result.getFailureException();
+                        if( !exception.hadConnectionFailure() ) {
+                            throw new InsertException(getCurrentHeadNodeURL(), result.getFailedRecords(), exception.getMessage());
+                        }
+                        else {
+                            GPUdbLogger.debug_with_info("Setting retry to true");
+                            doRetryInsertion = true;
+                        }
+                    }
+
+
                     List<T> workerFailedRecords = result.getFailedRecords();
                     if (workerFailedRecords != null) {
                         failedRecords.addAll(workerFailedRecords);
                     }
 
                     // Save any exception encountered by the worker
-                    GPUdbLogger.debug_with_info("Saving worker failure exception ");
+                    GPUdbLogger.debug_with_info(String.format("Saving JSON ingest worker failure exception with <%d> failed records", workerFailedRecords.size()));
                     workerExceptions.add(result.getFailureException());
                 }
             }

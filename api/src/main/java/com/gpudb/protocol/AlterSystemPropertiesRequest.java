@@ -455,6 +455,17 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.Options#EVICT_TO_COLD
+     * EVICT_TO_COLD}: If {@code true} and evict_columns is specified, the
+     * given objects will be evicted to cold storage (if such a tier exists).
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.Options#FALSE FALSE}
+     * </ul>
+     *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.Options#PERSIST
      * PERSIST}: If {@code true} the system configuration will be written to
      * disk upon successful application of this request. This will commit the
@@ -475,6 +486,21 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
     public static final class Options {
 
         /**
+         * If {@code true} and evict_columns is specified, the given objects
+         * will be evicted to cold storage (if such a tier exists).
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AlterSystemPropertiesRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AlterSystemPropertiesRequest.Options#FALSE FALSE}
+         * </ul>
+         */
+        public static final String EVICT_TO_COLD = "evict_to_cold";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
          * If {@code true} the system configuration will be written to disk
          * upon successful application of this request. This will commit the
          * changes from this request and any additional in-memory
@@ -490,8 +516,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          * com.gpudb.protocol.AlterSystemPropertiesRequest.Options#TRUE TRUE}.
          */
         public static final String PERSIST = "persist";
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
 
         private Options() {  }
     }
@@ -728,6 +752,20 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            </ul>
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterSystemPropertiesRequest.Options#EVICT_TO_COLD
+     *                 EVICT_TO_COLD}: If {@code true} and evict_columns is
+     *                 specified, the given objects will be evicted to cold
+     *                 storage (if such a tier exists).
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterSystemPropertiesRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterSystemPropertiesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterSystemPropertiesRequest.Options#PERSIST
      *                 PERSIST}: If {@code true} the system configuration will
@@ -1172,6 +1210,20 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * @return Optional parameters.
      *         <ul>
      *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.Options#EVICT_TO_COLD
+     *         EVICT_TO_COLD}: If {@code true} and evict_columns is specified,
+     *         the given objects will be evicted to cold storage (if such a
+     *         tier exists).
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.Options#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.Options#PERSIST
      *         PERSIST}: If {@code true} the system configuration will be
      *         written to disk upon successful application of this request.
@@ -1201,6 +1253,20 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterSystemPropertiesRequest.Options#EVICT_TO_COLD
+     *                 EVICT_TO_COLD}: If {@code true} and evict_columns is
+     *                 specified, the given objects will be evicted to cold
+     *                 storage (if such a tier exists).
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterSystemPropertiesRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterSystemPropertiesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterSystemPropertiesRequest.Options#PERSIST
      *                 PERSIST}: If {@code true} the system configuration will
