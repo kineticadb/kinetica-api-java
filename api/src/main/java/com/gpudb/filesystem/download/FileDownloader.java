@@ -9,6 +9,8 @@ import com.gpudb.filesystem.common.KifsFileInfo;
 import com.gpudb.filesystem.common.OpMode;
 import com.gpudb.filesystem.common.Result;
 import com.gpudb.protocol.DownloadFilesResponse;
+import com.gpudb.protocol.ShowFilesResponse;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -21,6 +23,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 /**
  * This is an internal class and not meant to be used by the end users of the
@@ -53,13 +58,11 @@ public class FileDownloader extends FileOperation {
 
     private String encoding;
 
-    private Map<String, DownloadIoJob> multiPartInfoMap;
-
     /**
      * Constructor
      *  @param db - GPUdb - The GPUdb instance
      * @param fileNames - List<String> - The names of the files on the KIFS to
-     *                  downloaded.
+     *                   be downloaded.
      * @param localDirName - String - The name of the directory on the KIFS.
      * @param downloadOptions - {@link DownloadOptions} - Various options
      * @param callback - {@link FileDownloadListener} - The callback object used
@@ -100,7 +103,39 @@ public class FileDownloader extends FileOperation {
             throw new GPUdbException("Name of local directory to save files cannot be null or empty");
         }
 
-        DownloadFilesResponse dfResp = db.downloadFiles(new ArrayList<>(fullFileList),
+        List<Long> sizes = fullFileList.stream().map(file -> {
+            ShowFilesResponse sfResp;
+            try {
+                sfResp = db.showFiles( Collections.singletonList(file), new HashMap<String, String>());
+                return sfResp.getSizes().get(0);
+            } catch (GPUdbException e) {
+                GPUdbLogger.error(e.getMessage());
+            }
+            return 0L;
+        }).collect(Collectors.toList());
+
+        List<List<String>> batches = createBatches(fullFileList, sizes);
+
+        IntStream.range(0, batches.size()).forEach(batchNum -> {
+            List<String> batch = batches.get( batchNum );
+            try {
+                downloadFullFileBatch(batch);
+            } catch (GPUdbException e) {
+                GPUdbLogger.error(e.getMessage());
+            }
+
+        });
+        
+    }
+
+    /**
+     * 
+     * @param fullFileBatch
+     * @throws GPUdbException
+     */
+    private void downloadFullFileBatch(List<String> fullFileBatch) throws GPUdbException {
+        
+        DownloadFilesResponse dfResp = db.downloadFiles(new ArrayList<>(fullFileBatch),
                 null,
                 null,
                 new HashMap<String, String>());
@@ -116,6 +151,58 @@ public class FileDownloader extends FileOperation {
         if( callback != null ) {
             callback.onFullFileDownload( dfResp.getFileNames() );
         }
+
+    }
+
+    /**
+     * 
+     * @param fullFileList
+     * @param list
+     * @return
+     */
+    private List<List<String>> createBatches(List<String> fullFileList, List<Long> sizes) {
+
+        long sum = 0;
+
+        List<List<String>> batches = new ArrayList<>();
+        List<String> batch = new ArrayList<>();
+
+        for( int i=0, s = fullFileList.size(); i < s; i++  ) {
+            
+            String file = fullFileList.get(i);
+            
+            long size = sizes.get(i);
+            batch.add( file );
+            sum += size;
+   
+            if( sum > fileHandlerOptions.getFileSizeToSplit() ) {
+                // This must go into the next bucket as it overshoots the
+                // partitionSum value
+                batch.remove( file );
+   
+                // Re-adjust the index so that current value is re-read in the
+                // next iteration
+                i--;
+            }
+   
+            if( sum >= fileHandlerOptions.getFileSizeToSplit() ) {
+                batches.add( new ArrayList<>(batch) );
+                batch.clear();
+                sum = 0;
+            }
+        }
+        
+        if( batch.size() > 0) { // We have an incomplete batch left, add it
+            batches.add(batch);
+        }
+
+        // If batches is empty here it means all files together didn't add up to the size threshold
+        // so, we just create a single batch
+        if( batches.size() == 0) {
+            batches.add(fullFileList);
+        }
+        
+        return batches;
     }
 
     /**
@@ -153,37 +240,6 @@ public class FileDownloader extends FileOperation {
     }
 
     /**
-     * This method takes a list of {@link ByteBuffer} objects and saves the
-     * file to the local directory.
-     *
-     * @param fileName - Name of the file to save
-     * @param payloads - A list of {@link ByteBuffer} objects
-     *
-     */
-    private void saveMultiPartFile(String fileName, List<ByteBuffer> payloads) throws GPUdbException {
-
-        String normalizedName = Paths.get( fileName ).normalize().toAbsolutePath().toString();
-
-        if( Files.notExists( Paths.get( normalizedName )) || downloadOptions.isOverwriteExisting() ) {
-
-            try ( FileChannel out = new FileOutputStream( normalizedName, !downloadOptions.isOverwriteExisting() ).getChannel() ) {
-
-                for (ByteBuffer payload: payloads ) {
-                    // Write data from ByteBuffer to file
-                    out.write(payload);
-                }
-
-            } catch (IOException ex) {
-                GPUdbLogger.error( ex.getMessage() );
-                throw new GPUdbException(ex.getMessage());
-            }
-        } else {
-            GPUdbLogger.warn( "File : " + fileName + " exists; Use 'overwriteExisting' to download and overwrite " );
-        }
-
-    }
-
-    /**
      * This method downloads files which are candidates for multi-part downloads as
      * determined from their size.
      * Then it creates a list of {@link DownloadIoJob} instances one for each
@@ -197,12 +253,6 @@ public class FileDownloader extends FileOperation {
      * @throws GPUdbException - An exception indicating what has gone wrong.
      */
     private void downloadMultiPartFiles() throws GPUdbException {
-        // TODO implement here
-        if( multiPartInfoMap == null ) {
-            multiPartInfoMap = new HashMap<>();
-        } else {
-            multiPartInfoMap.clear();
-        }
 
         // For each file in the multi part list create an IoJob instance
         for (String fileName : multiPartList) {
@@ -221,70 +271,16 @@ public class FileDownloader extends FileOperation {
                     downloadOptions,
                     callback);
 
-            // Store the jobId-UploadIoJob pair in a map so that we can use them
-            // later to start and stop the jobs as has been done in the methods
-            // executeJobs and terminateJobs.
-            multiPartInfoMap.put(idJobPair.getKey(), idJobPair.getValue());
-        }
+            // start the job immediately
+            idJobPair.getValue().start();
 
-        executeJobs();
-
-        Map<String, List<Result>> jobResultsMap = terminateJobs();
-
-        //Now the save the file to the local directory.
-
-        for ( Entry<String, List<Result>> result: jobResultsMap.entrySet() ) {
-            List<Result> sortedList = result.getValue();
-
-            // Sort by downloadPartNumber - ascending order
-            // so that we can get the data buffers in correct sequence
-            Collections.sort( sortedList, new Result.SortByDownloadPartNumber() );
-
-            // Traverse the sorted list of Results and add the data for each
-            // segment of the multi-part download to a list.
-            List<ByteBuffer> allData = new ArrayList<>();
-            for ( Result val: sortedList ) {
-                allData.add( val.getDownloadInfo().getData() );
-            }
-
-            saveMultiPartFile( multiPartInfoMap.get( result.getKey() ).getDownloadLocalFileName(), allData );
+            // Wait for it to stop before processing the next file
+            idJobPair.getValue().stop();
 
         }
+
 
     }
-
-    /**
-     * This method traverses the map containing the {@link DownloadIoJob#getJobId()}-
-     * {@link DownloadIoJob} values so that we can call the {@link DownloadIoJob#start()}
-     * method on each of the 'DownloadIoJob' instances created to start the job.
-     */
-    private void executeJobs() {
-        for (Entry<String, DownloadIoJob> entry: multiPartInfoMap.entrySet() ) {
-            entry.getValue().start();
-        }
-    }
-
-    /**
-     * This method traverses the {@link #multiPartInfoMap} instance variable
-     * to call the method {@link DownloadIoJob#stop()} to stop the jobs created
-     * by the method {@link #executeJobs()}.
-     *
-     * @return - A map of jobId [String] to a list of {@link Result} objects so
-     *          that it is possible to process the results of individual jobs
-     */
-    private Map<String, List<Result>> terminateJobs() {
-        Map<String, List<Result>> results = new HashMap<>();
-        for (Entry<String, DownloadIoJob> entry: multiPartInfoMap.entrySet() ) {
-
-            if( !results.containsKey( entry.getKey() ) ) {
-                List<Result> resultList = entry.getValue().stop();
-                results.put( entry.getKey(), resultList );
-            }
-        }
-
-        return results;
-    }
-
 
     /**
      * This is the main upload method which is to be called by the users of

@@ -4,9 +4,9 @@ import com.gpudb.GPUdb;
 import com.gpudb.GPUdbException;
 import com.gpudb.GPUdbLogger;
 import com.gpudb.filesystem.GPUdbFileHandler;
-import com.gpudb.filesystem.common.FileOperation;
 import com.gpudb.filesystem.common.Result;
 import com.gpudb.filesystem.utils.GPUdbFileHandlerUtils;
+import com.gpudb.protocol.DownloadFilesResponse;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -152,4 +152,50 @@ public class FullFileDispatcher {
             return result;
         }
     }
+
+    /**
+     * This class represents a task handling the upload of a bunch of full
+     * file uploads. This class models a single batch of full file uploads
+     * in terms of the names on KIFS and the corresponding payloads as
+     * ByteBuffers. The {@link #call()} method is the one which runs in the
+     * thread and calls the endpoint {@link GPUdb#uploadFiles(List, List, Map)}
+     * to upload the current batch of files to KIFS
+     */
+    public static final class FullFileDownloadTask implements Callable<Result> {
+
+        private final GPUdb db;
+
+        private final List<String> remoteFileNames;
+
+        private final List<ByteBuffer> payloads;
+
+        private final Map<String, String> options;
+
+        /**
+         *
+         * @param db - the {@link GPUdb} object
+         * @param remoteFileNames - Names of the files on KIFS
+         * @param payloads - The payloads for the files as ByteBuffers
+         * @param options - Options passed to 'uploadFiles' ebd point
+         */
+        public FullFileDownloadTask(GPUdb db,
+                                  List<String> remoteFileNames,
+                                  List<ByteBuffer> payloads,
+                                  Map<String, String> options) {
+            this.db = db;
+            this.remoteFileNames = remoteFileNames;
+            this.payloads = payloads;
+            this.options = options;
+        }
+
+        @Override
+        public Result call() throws Exception {
+            DownloadFilesResponse downloadFilesResponse = db.downloadFiles( remoteFileNames, null, null, options );
+
+            Result result = new Result();
+            result.setFullFileNames( remoteFileNames );
+            return result;
+        }
+    }
+
 }

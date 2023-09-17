@@ -8,6 +8,14 @@ import com.gpudb.filesystem.common.*;
 import com.gpudb.filesystem.utils.GPUdbFileHandlerUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -42,10 +50,7 @@ public class DownloadIoJob {
      */
     private final DownloadOptions downloadOptions;
 
-    /**
-     *
-     */
-    private final List<IoTask> listOfTasks;
+    private final List<Result> resultList;
 
     private final FileDownloadListener callback;
     /**
@@ -53,13 +58,10 @@ public class DownloadIoJob {
      */
     private final ExecutorService threadPool;
 
-    /**
-     *
-     */
-    private final CompletionService<Result> jobExecutor;
-
     private final KifsFileInfo kifsFileInfo;
     private final GPUdbFileHandler.Options fileHandlerOptions;
+
+    private String localDirName;
 
     /**
      * Constructor
@@ -88,16 +90,16 @@ public class DownloadIoJob {
 
         this.db = db;
         this.fileHandlerOptions = fileHandlerOptions;
+        this.localDirName = dirName;
         this.downloadFileName = fileName;
         this.downloadLocalFileName = localFileName;
         this.kifsFileInfo = kifsFileInfo;
         this.downloadOptions = downloadOptions;
         this.callback = callback;
 
-        this.listOfTasks = new ArrayList<>();
-
         threadPool = Executors.newSingleThreadExecutor();
-        jobExecutor = new ExecutorCompletionService<>(threadPool);
+
+        this.resultList = new ArrayList<>();
 
         jobId = UUID.randomUUID().toString();
     }
@@ -154,8 +156,27 @@ public class DownloadIoJob {
         return threadPool;
     }
 
-    public CompletionService<Result> getJobExecutor() {
-        return jobExecutor;
+    private CompletableFuture<Result> doDownload(final IoTask task) {
+        return CompletableFuture.supplyAsync(task::call, getThreadPool());
+    }
+
+    private void handleDownloadResult(FileChannel out, final IoTask task, String normalizedName) throws GPUdbException {
+        try {
+            Result taskResult = doDownload(task).get();
+            resultList.add( taskResult );
+            
+            ByteBuffer data = taskResult.getDownloadInfo().getData();
+            out.write(data);
+
+            if( callback != null ) {
+                callback.onPartDownload(taskResult);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            throw new GPUdbException(String.format("Could not complete upload stage - %s : exception : %s",task.getMultiPartUploadInfo().getPartOperation().getValue(), e.getMessage()));
+        } catch (IOException e) {
+            throw new GPUdbException(e.getMessage());
+        }
+
     }
 
     /** This method starts the job to download the multipart file by submitting
@@ -163,10 +184,11 @@ public class DownloadIoJob {
      * getFileSizeToSplit() method of GPUdbFileHandler.Options class.
      * Each segment of the file is submitted as a new {@link IoTask} which is
      * run in an independent thread
+     * @throws GPUdbException
      *
      * @see GPUdbFileHandler#getOptions()
      */
-    public void start() {
+    public void start() throws GPUdbException {
 
         final long sourceSize = kifsFileInfo.getFileSize();
         final long bytesPerSplit = fileHandlerOptions.getFileSizeToSplit();
@@ -176,33 +198,40 @@ public class DownloadIoJob {
         long partNo = 0;
         long offset = 0;
 
-        while( offset < sourceSize ) {
+        String normalizedName = Paths.get( downloadLocalFileName ).normalize().toAbsolutePath().toString();
 
-            MultiPartDownloadInfo downloadInfo = new MultiPartDownloadInfo();
+        try( FileChannel outChannel  = new FileOutputStream( normalizedName, !downloadOptions.isOverwriteExisting() ).getChannel();) {
 
-            downloadInfo.setReadOffset( offset );
-            downloadInfo.setReadLength( bytesPerSplit );
-            downloadInfo.setDownloadPartNumber( partNo );
-            downloadInfo.setTotalParts( totalParts );
+            while( offset < sourceSize ) {
 
-            IoTask newTask = new IoTask( db,
-                    OpMode.DOWNLOAD,
-                    jobId,
-                    downloadFileName,
-                    null,
-                    downloadOptions,
-                    partNo,
-                    null );
+                MultiPartDownloadInfo downloadInfo = new MultiPartDownloadInfo();
 
-            newTask.setMultiPartDownloadInfo( downloadInfo );
+                downloadInfo.setReadOffset( offset );
+                downloadInfo.setReadLength( bytesPerSplit );
+                downloadInfo.setDownloadPartNumber( partNo );
+                downloadInfo.setTotalParts( totalParts );
 
-            jobExecutor.submit( newTask );
+                IoTask newTask = new IoTask( db,
+                        OpMode.DOWNLOAD,
+                        jobId,
+                        downloadFileName,
+                        null,
+                        downloadOptions,
+                        partNo,
+                        null );
 
-            listOfTasks.add( newTask );
+                newTask.setMultiPartDownloadInfo( downloadInfo );
 
-            offset += bytesPerSplit;
-            partNo++;
+                handleDownloadResult(outChannel, newTask, normalizedName);
+
+                offset += bytesPerSplit;
+                partNo++;
+            }
+
+        } catch (IOException e) {
+            throw new GPUdbException(e.getMessage());
         }
+
     }
 
     /**
@@ -220,33 +249,10 @@ public class DownloadIoJob {
      * @return - List<Result> - A list of Result objects.
      */
     public List<Result> stop() {
-        List<Result> results = new ArrayList<>();
-
-        int countTasks = listOfTasks.size();
-
-        while( countTasks-- > 0 ) {
-            try {
-                Result result = jobExecutor.take().get();
-                results.add( result );
-
-                if( callback != null ) {
-                    callback.onPartDownload( result );
-                }
-            } catch (InterruptedException | ExecutionException e) {
-                GPUdbLogger.error( e.getMessage() );
-            }
-        }
-
-        if( callback != null ) {
-            callback.onMultiPartDownloadComplete( results );
-        }
-
         GPUdbFileHandlerUtils.awaitTerminationAfterShutdown( this.threadPool,
                 GPUdbFileHandler.getDefaultThreadPoolTerminationTimeout() );
 
-        return results;
-
-
+        return resultList;
     }
 
 }

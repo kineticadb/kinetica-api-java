@@ -4369,6 +4369,95 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    /**
+     * Alters an existing environment which can be referenced by a <a
+     * href="../../../../../concepts/udf/" target="_top">user-defined
+     * function</a> (UDF).
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AlterEnvironmentResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AlterEnvironmentResponse alterEnvironment(AlterEnvironmentRequest request) throws GPUdbException {
+        AlterEnvironmentResponse actualResponse_ = new AlterEnvironmentResponse();
+        submitRequest("/alter/environment", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Alters an existing environment which can be referenced by a <a
+     * href="../../../../../concepts/udf/" target="_top">user-defined
+     * function</a> (UDF).
+     * 
+     * @param environmentName  Name of the environment to be altered.
+     * @param action  Modification operation to be applied
+     *                Supported values:
+     *                <ul>
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterEnvironmentRequest.Action#INSTALL_PACKAGE
+     *                INSTALL_PACKAGE}: Install a python package
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterEnvironmentRequest.Action#INSTALL_REQUIREMENTS
+     *                INSTALL_REQUIREMENTS}: Install packages from a
+     *                requirements file
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterEnvironmentRequest.Action#UNINSTALL_PACKAGE
+     *                UNINSTALL_PACKAGE}: Uninstall a python package.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterEnvironmentRequest.Action#UNINSTALL_REQUIREMENTS
+     *                UNINSTALL_REQUIREMENTS}: Uninstall packages from a
+     *                requirements file
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterEnvironmentRequest.Action#RESET
+     *                RESET}: Uninstalls all packages in the environment and
+     *                resets it to the original state at time of creation
+     *                </ul>
+     * @param value  The value of the modification, depending on {@code
+     *               action}.  For example, if {@code action} is {@code
+     *               install_package}, this would be the python package name.
+     *               If {@code action} is {@code install_requirements}, this
+     *               would be the path of a requirements file from which to
+     *               install packages.
+     *               If an external data source is specified in {@code
+     *               datasource_name}, this can be the path to a wheel file or
+     *               source archive.
+     *               Alternatively, if installing from a file (wheel or source
+     *               archive), the value may be a reference to a file in <a
+     *               href="../../../../../tools/kifs/" target="_top">KiFS</a>.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterEnvironmentRequest.Options#DATASOURCE_NAME
+     *                 DATASOURCE_NAME}: Name of an existing external data
+     *                 source from which packages specified in {@code value}
+     *                 can be loaded
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AlterEnvironmentResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AlterEnvironmentResponse alterEnvironment(String environmentName, String action, String value, Map<String, String> options) throws GPUdbException {
+        AlterEnvironmentRequest actualRequest_ = new AlterEnvironmentRequest(environmentName, action, value, options);
+        AlterEnvironmentResponse actualResponse_ = new AlterEnvironmentResponse();
+        submitRequest("/alter/environment", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
     public AlterGraphResponse alterGraph(AlterGraphRequest request) throws GPUdbException {
         AlterGraphResponse actualResponse_ = new AlterGraphResponse();
         submitRequest("/alter/graph", request, actualResponse_, false);
@@ -5299,6 +5388,12 @@ public class GPUdb extends GPUdbBase {
      *                REMOVE_TEXT_SEARCH_ATTRIBUTES}: Removes <a
      *                href="../../../../../concepts/full_text_search/"
      *                target="_top">text search</a> attribute from all columns.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#REMOVE_SHARD_KEYS
+     *                REMOVE_SHARD_KEYS}: Removes the shard key property from
+     *                all columns, so that the table will be considered
+     *                randomly sharded.  The data is not moved.  The {@code
+     *                value} is ignored.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_STRATEGY_DEFINITION
      *                SET_STRATEGY_DEFINITION}: Sets the <a
@@ -7150,6 +7245,54 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
+     * Creates a new environment which can be used by <a
+     * href="../../../../../concepts/udf/" target="_top">user-defined
+     * functions</a> (UDF).
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CreateEnvironmentResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public CreateEnvironmentResponse createEnvironment(CreateEnvironmentRequest request) throws GPUdbException {
+        CreateEnvironmentResponse actualResponse_ = new CreateEnvironmentResponse();
+        submitRequest("/create/environment", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Creates a new environment which can be used by <a
+     * href="../../../../../concepts/udf/" target="_top">user-defined
+     * functions</a> (UDF).
+     * 
+     * @param environmentName  Name of the environment to be created.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CreateEnvironmentResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public CreateEnvironmentResponse createEnvironment(String environmentName, Map<String, String> options) throws GPUdbException {
+        CreateEnvironmentRequest actualRequest_ = new CreateEnvironmentRequest(environmentName, options);
+        CreateEnvironmentResponse actualResponse_ = new CreateEnvironmentResponse();
+        submitRequest("/create/environment", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
      * Creates a new graph network using given nodes, edges, weights, and
      * restrictions.
 
@@ -7964,6 +8107,12 @@ public class GPUdb extends GPUdbBase {
      *                 concurrent instances of the proc that will be executed
      *                 per node. 0 allows unlimited concurrency.  The default
      *                 value is '0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProcRequest.Options#SET_ENVIRONMENT
+     *                 SET_ENVIRONMENT}: A python environment to use when
+     *                 executing the proc. Must be an existing environment,
+     *                 else an error will be returned.  The default value is
+     *                 ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -11982,6 +12131,74 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    /**
+     * Drop an existing <a href="../../../../../concepts/udf/"
+     * target="_top">user-defined function</a> (UDF) environment.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  DropEnvironmentResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public DropEnvironmentResponse dropEnvironment(DropEnvironmentRequest request) throws GPUdbException {
+        DropEnvironmentResponse actualResponse_ = new DropEnvironmentResponse();
+        submitRequest("/drop/environment", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Drop an existing <a href="../../../../../concepts/udf/"
+     * target="_top">user-defined function</a> (UDF) environment.
+     * 
+     * @param environmentName  Name of the environment to be dropped. Must be
+     *                         an existing environment.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DropEnvironmentRequest.Options#NO_ERROR_IF_NOT_EXISTS
+     *                 NO_ERROR_IF_NOT_EXISTS}: If {@code true} and if the
+     *                 environment specified in {@code environmentName} does
+     *                 not exist, no error is returned. If {@code false} and if
+     *                 the environment specified in {@code environmentName}
+     *                 does not exist, then an error is returned.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DropEnvironmentRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DropEnvironmentRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.DropEnvironmentRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  DropEnvironmentResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public DropEnvironmentResponse dropEnvironment(String environmentName, Map<String, String> options) throws GPUdbException {
+        DropEnvironmentRequest actualRequest_ = new DropEnvironmentRequest(environmentName, options);
+        DropEnvironmentResponse actualResponse_ = new DropEnvironmentResponse();
+        submitRequest("/drop/environment", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
     public DropModelResponse dropModel(DropModelRequest request) throws GPUdbException {
         DropModelResponse actualResponse_ = new DropModelResponse();
         submitRequest("/drop/model", request, actualResponse_, false);
@@ -12633,6 +12850,12 @@ public class GPUdb extends GPUdbBase {
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#CURRENT_SCHEMA
+     *                 CURRENT_SCHEMA}: Use the supplied value as the <a
+     *                 href="../../../../../concepts/schemas/#default-schema"
+     *                 target="_top">default schema</a> when processing this
+     *                 SQL command.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -12868,9 +13091,10 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is '|'.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COMPRESSION_TYPE
-     *                 COMPRESSION_TYPE}: File compression type. Different file
-     *                 types support different compresion types. text:
-     *                 uncompressed, gzip. parquet: uncompressed, snappy, gzip.
+     *                 COMPRESSION_TYPE}: File compression type. GZip can be
+     *                 applied to text and Parquet files.  Snappy can only be
+     *                 applied to Parquet files, and is the default compression
+     *                 for them.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -12883,9 +13107,6 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#GZIP
      *                 GZIP}
      *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#SNAPPY
-     *                 SNAPPY}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#SINGLE_FILE
      *                 SINGLE_FILE}: Save records to a single file. This option
@@ -22774,6 +22995,81 @@ public class GPUdb extends GPUdbBase {
         ShowDirectoriesRequest actualRequest_ = new ShowDirectoriesRequest(directoryName, options);
         ShowDirectoriesResponse actualResponse_ = new ShowDirectoriesResponse();
         submitRequest("/show/directories", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Shows information about a specified <a
+     * href="../../../../../concepts/udf/" target="_top">user-defined
+     * function</a> (UDF) environment or all environments.
+     * Returns detailed information about existing environments.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowEnvironmentResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ShowEnvironmentResponse showEnvironment(ShowEnvironmentRequest request) throws GPUdbException {
+        ShowEnvironmentResponse actualResponse_ = new ShowEnvironmentResponse();
+        submitRequest("/show/environment", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Shows information about a specified <a
+     * href="../../../../../concepts/udf/" target="_top">user-defined
+     * function</a> (UDF) environment or all environments.
+     * Returns detailed information about existing environments.
+     * 
+     * @param environmentName  Name of the environment on which to retrieve
+     *                         information. The name must refer to a currently
+     *                         existing environment. If '*' or an empty value
+     *                         is specified, information about all environments
+     *                         will be returned.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowEnvironmentRequest.Options#NO_ERROR_IF_NOT_EXISTS
+     *                 NO_ERROR_IF_NOT_EXISTS}: If {@code true} and if the
+     *                 environment specified in {@code environmentName} does
+     *                 not exist, no error is returned. If {@code false} and if
+     *                 the environment specified in {@code environmentName}
+     *                 does not exist, then an error is returned.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowEnvironmentRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowEnvironmentRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowEnvironmentRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowEnvironmentResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ShowEnvironmentResponse showEnvironment(String environmentName, Map<String, String> options) throws GPUdbException {
+        ShowEnvironmentRequest actualRequest_ = new ShowEnvironmentRequest(environmentName, options);
+        ShowEnvironmentResponse actualResponse_ = new ShowEnvironmentResponse();
+        submitRequest("/show/environment", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
