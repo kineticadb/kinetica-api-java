@@ -115,6 +115,11 @@ public class CreateProcRequest implements IndexedRecord {
      * MAX_CONCURRENCY_PER_NODE}: The maximum number of concurrent instances of
      * the proc that will be executed per node. 0 allows unlimited concurrency.
      * The default value is '0'.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProcRequest.Options#SET_ENVIRONMENT
+     * SET_ENVIRONMENT}: A python environment to use when executing the proc.
+     * Must be an existing environment, else an error will be returned.  The
+     * default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -127,6 +132,13 @@ public class CreateProcRequest implements IndexedRecord {
          * value is '0'.
          */
         public static final String MAX_CONCURRENCY_PER_NODE = "max_concurrency_per_node";
+
+        /**
+         * A python environment to use when executing the proc. Must be an
+         * existing environment, else an error will be returned.  The default
+         * value is ''.
+         */
+        public static final String SET_ENVIRONMENT = "set_environment";
 
         private Options() {  }
     }
@@ -224,6 +236,12 @@ public class CreateProcRequest implements IndexedRecord {
      *                 concurrent instances of the proc that will be executed
      *                 per node. 0 allows unlimited concurrency.  The default
      *                 value is '0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProcRequest.Options#SET_ENVIRONMENT
+     *                 SET_ENVIRONMENT}: A python environment to use when
+     *                 executing the proc. Must be an existing environment,
+     *                 else an error will be returned.  The default value is
+     *                 ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -459,6 +477,11 @@ public class CreateProcRequest implements IndexedRecord {
      *         MAX_CONCURRENCY_PER_NODE}: The maximum number of concurrent
      *         instances of the proc that will be executed per node. 0 allows
      *         unlimited concurrency.  The default value is '0'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProcRequest.Options#SET_ENVIRONMENT
+     *         SET_ENVIRONMENT}: A python environment to use when executing the
+     *         proc. Must be an existing environment, else an error will be
+     *         returned.  The default value is ''.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -477,6 +500,12 @@ public class CreateProcRequest implements IndexedRecord {
      *                 concurrent instances of the proc that will be executed
      *                 per node. 0 allows unlimited concurrency.  The default
      *                 value is '0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProcRequest.Options#SET_ENVIRONMENT
+     *                 SET_ENVIRONMENT}: A python environment to use when
+     *                 executing the proc. Must be an existing environment,
+     *                 else an error will be returned.  The default value is
+     *                 ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

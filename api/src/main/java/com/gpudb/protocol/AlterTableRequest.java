@@ -265,6 +265,11 @@ public class AlterTableRequest implements IndexedRecord {
      * href="../../../../../../concepts/full_text_search/" target="_top">text
      * search</a> attribute from all columns.
      *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#REMOVE_SHARD_KEYS
+     * REMOVE_SHARD_KEYS}: Removes the shard key property from all columns, so
+     * that the table will be considered randomly sharded.  The data is not
+     * moved.  The {@code value} is ignored.
+     *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_STRATEGY_DEFINITION
      * SET_STRATEGY_DEFINITION}: Sets the <a
      * href="../../../../../../rm/concepts/#tier-strategies" target="_top">tier
@@ -513,6 +518,13 @@ public class AlterTableRequest implements IndexedRecord {
          * target="_top">text search</a> attribute from all columns.
          */
         public static final String REMOVE_TEXT_SEARCH_ATTRIBUTES = "remove_text_search_attributes";
+
+        /**
+         * Removes the shard key property from all columns, so that the table
+         * will be considered randomly sharded.  The data is not moved.  The
+         * {@code value} is ignored.
+         */
+        public static final String REMOVE_SHARD_KEYS = "remove_shard_keys";
 
         /**
          * Sets the <a href="../../../../../../rm/concepts/#tier-strategies"
@@ -1052,6 +1064,12 @@ public class AlterTableRequest implements IndexedRecord {
      *                href="../../../../../../concepts/full_text_search/"
      *                target="_top">text search</a> attribute from all columns.
      *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#REMOVE_SHARD_KEYS
+     *                REMOVE_SHARD_KEYS}: Removes the shard key property from
+     *                all columns, so that the table will be considered
+     *                randomly sharded.  The data is not moved.  The {@code
+     *                value} is ignored.
+     *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_STRATEGY_DEFINITION
      *                SET_STRATEGY_DEFINITION}: Sets the <a
      *                href="../../../../../../rm/concepts/#tier-strategies"
@@ -1448,6 +1466,11 @@ public class AlterTableRequest implements IndexedRecord {
      *         href="../../../../../../concepts/full_text_search/"
      *         target="_top">text search</a> attribute from all columns.
      *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#REMOVE_SHARD_KEYS
+     *         REMOVE_SHARD_KEYS}: Removes the shard key property from all
+     *         columns, so that the table will be considered randomly sharded.
+     *         The data is not moved.  The {@code value} is ignored.
+     *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_STRATEGY_DEFINITION
      *         SET_STRATEGY_DEFINITION}: Sets the <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
@@ -1676,6 +1699,12 @@ public class AlterTableRequest implements IndexedRecord {
      *                REMOVE_TEXT_SEARCH_ATTRIBUTES}: Removes <a
      *                href="../../../../../../concepts/full_text_search/"
      *                target="_top">text search</a> attribute from all columns.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#REMOVE_SHARD_KEYS
+     *                REMOVE_SHARD_KEYS}: Removes the shard key property from
+     *                all columns, so that the table will be considered
+     *                randomly sharded.  The data is not moved.  The {@code
+     *                value} is ignored.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_STRATEGY_DEFINITION
      *                SET_STRATEGY_DEFINITION}: Sets the <a

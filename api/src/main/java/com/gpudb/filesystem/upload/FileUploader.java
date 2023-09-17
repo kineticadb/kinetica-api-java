@@ -7,12 +7,8 @@ import com.gpudb.filesystem.GPUdbFileHandler;
 import com.gpudb.filesystem.common.FileOperation;
 import com.gpudb.filesystem.common.OpMode;
 import com.gpudb.filesystem.common.Result;
-import com.gpudb.protocol.CreateDirectoryRequest;
-import com.gpudb.protocol.UploadFilesRequest;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
@@ -50,8 +46,6 @@ public class FileUploader extends FileOperation {
     private int rankForLocalDist = 0;
 
     private String encoding;
-
-    private Map<String, UploadIoJob> multiPartInfoMap;
 
     /**
      * Constructor -
@@ -182,12 +176,6 @@ public class FileUploader extends FileOperation {
      */
     private void uploadMultiPartFiles() throws GPUdbException {
 
-        if( multiPartInfoMap == null ) {
-            multiPartInfoMap = new HashMap<>();
-        } else {
-            multiPartInfoMap.clear();
-        }
-
         // For each file in the multi part list create an IoJob instance
         for (int i = 0, multiPartListSize = multiPartList.size(); i < multiPartListSize; i++) {
             String fileName = multiPartList.get(i);
@@ -209,10 +197,6 @@ public class FileUploader extends FileOperation {
             // Wait for it to stop before processing the next file
             idJobPair.getValue().stop();
 
-            // Store the jobId-UploadIoJob pair in a map so that we can use them
-            // later to start and stop the jobs as has been done in the methods
-            // executeJobs and terminateJobs.
-            multiPartInfoMap.put(idJobPair.getKey(), idJobPair.getValue());
         }
 
     }
@@ -262,14 +246,6 @@ public class FileUploader extends FileOperation {
 
     public void setEncoding(String encoding) {
         this.encoding = encoding;
-    }
-
-    public Map<String, UploadIoJob> getMultiPartInfoMap() {
-        return multiPartInfoMap;
-    }
-
-    public void setMultiPartInfoMap(Map<String, UploadIoJob> multiPartInfoMap) {
-        this.multiPartInfoMap = multiPartInfoMap;
     }
 
 }

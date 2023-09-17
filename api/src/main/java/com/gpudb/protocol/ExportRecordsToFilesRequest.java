@@ -192,9 +192,9 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      * is '|'.
      *         <li> {@link
      * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COMPRESSION_TYPE
-     * COMPRESSION_TYPE}: File compression type. Different file types support
-     * different compresion types. text: uncompressed, gzip. parquet:
-     * uncompressed, snappy, gzip.
+     * COMPRESSION_TYPE}: File compression type. GZip can be applied to text
+     * and Parquet files.  Snappy can only be applied to Parquet files, and is
+     * the default compression for them.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -205,8 +205,6 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#GZIP GZIP}
      * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#SNAPPY SNAPPY}.
      *         <li> {@link
      * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#SINGLE_FILE
      * SINGLE_FILE}: Save records to a single file. This option may be ignored
@@ -414,9 +412,9 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
         public static final String KINETICA_HEADER_DELIMITER = "kinetica_header_delimiter";
 
         /**
-         * File compression type. Different file types support different
-         * compresion types. text: uncompressed, gzip. parquet: uncompressed,
-         * snappy, gzip.
+         * File compression type. GZip can be applied to text and Parquet
+         * files.  Snappy can only be applied to Parquet files, and is the
+         * default compression for them.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -428,9 +426,6 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
          *         <li> {@link
          * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#GZIP GZIP}
          * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#SNAPPY
-         * SNAPPY}.
          */
         public static final String COMPRESSION_TYPE = "compression_type";
         public static final String UNCOMPRESSED = "uncompressed";
@@ -662,9 +657,10 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *                 The default value is '|'.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COMPRESSION_TYPE
-     *                 COMPRESSION_TYPE}: File compression type. Different file
-     *                 types support different compresion types. text:
-     *                 uncompressed, gzip. parquet: uncompressed, snappy, gzip.
+     *                 COMPRESSION_TYPE}: File compression type. GZip can be
+     *                 applied to text and Parquet files.  Snappy can only be
+     *                 applied to Parquet files, and is the default compression
+     *                 for them.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -677,9 +673,6 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#GZIP
      *                 GZIP}
      *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#SNAPPY
-     *                 SNAPPY}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#SINGLE_FILE
      *                 SINGLE_FILE}: Save records to a single file. This option
@@ -933,9 +926,9 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *         default value is '|'.
      *                 <li> {@link
      *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COMPRESSION_TYPE
-     *         COMPRESSION_TYPE}: File compression type. Different file types
-     *         support different compresion types. text: uncompressed, gzip.
-     *         parquet: uncompressed, snappy, gzip.
+     *         COMPRESSION_TYPE}: File compression type. GZip can be applied to
+     *         text and Parquet files.  Snappy can only be applied to Parquet
+     *         files, and is the default compression for them.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -948,9 +941,6 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#GZIP
      *         GZIP}
      *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#SNAPPY
-     *         SNAPPY}.
      *                 <li> {@link
      *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#SINGLE_FILE
      *         SINGLE_FILE}: Save records to a single file. This option may be
@@ -1148,9 +1138,10 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *                 The default value is '|'.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COMPRESSION_TYPE
-     *                 COMPRESSION_TYPE}: File compression type. Different file
-     *                 types support different compresion types. text:
-     *                 uncompressed, gzip. parquet: uncompressed, snappy, gzip.
+     *                 COMPRESSION_TYPE}: File compression type. GZip can be
+     *                 applied to text and Parquet files.  Snappy can only be
+     *                 applied to Parquet files, and is the default compression
+     *                 for them.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -1163,9 +1154,6 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#GZIP
      *                 GZIP}
      *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#SNAPPY
-     *                 SNAPPY}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#SINGLE_FILE
      *                 SINGLE_FILE}: Save records to a single file. This option

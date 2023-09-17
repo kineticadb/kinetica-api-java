@@ -317,6 +317,11 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *         <li> {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#CURRENT_SCHEMA
+     * CURRENT_SCHEMA}: Use the supplied value as the <a
+     * href="../../../../../../concepts/schemas/#default-schema"
+     * target="_top">default schema</a> when processing this SQL command.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -602,6 +607,13 @@ public class ExecuteSqlRequest implements IndexedRecord {
          * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
          */
         public static final String VALIDATE_CHANGE_COLUMN = "validate_change_column";
+
+        /**
+         * Use the supplied value as the <a
+         * href="../../../../../../concepts/schemas/#default-schema"
+         * target="_top">default schema</a> when processing this SQL command.
+         */
+        public static final String CURRENT_SCHEMA = "current_schema";
 
         private Options() {  }
     }
@@ -931,6 +943,12 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#CURRENT_SCHEMA
+     *                 CURRENT_SCHEMA}: Use the supplied value as the <a
+     *                 href="../../../../../../concepts/schemas/#default-schema"
+     *                 target="_top">default schema</a> when processing this
+     *                 SQL command.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1264,6 +1282,12 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#CURRENT_SCHEMA
+     *                 CURRENT_SCHEMA}: Use the supplied value as the <a
+     *                 href="../../../../../../concepts/schemas/#default-schema"
+     *                 target="_top">default schema</a> when processing this
+     *                 SQL command.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1717,6 +1741,12 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#CURRENT_SCHEMA
+     *         CURRENT_SCHEMA}: Use the supplied value as the <a
+     *         href="../../../../../../concepts/schemas/#default-schema"
+     *         target="_top">default schema</a> when processing this SQL
+     *         command.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -2005,6 +2035,12 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#CURRENT_SCHEMA
+     *                 CURRENT_SCHEMA}: Use the supplied value as the <a
+     *                 href="../../../../../../concepts/schemas/#default-schema"
+     *                 target="_top">default schema</a> when processing this
+     *                 SQL command.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
