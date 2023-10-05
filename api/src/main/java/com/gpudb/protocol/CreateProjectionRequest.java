@@ -266,6 +266,11 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID VIEW_ID}: ID
      * of view of which this projection is a member.  The default value is ''.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#STRATEGY_DEFINITION
+     * STRATEGY_DEFINITION}: The <a
+     * href="../../../../../../rm/concepts/#tier-strategies" target="_top">tier
+     * strategy</a> for the table and its columns.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -534,6 +539,12 @@ public class CreateProjectionRequest implements IndexedRecord {
          * is ''.
          */
         public static final String VIEW_ID = "view_id";
+
+        /**
+         * The <a href="../../../../../../rm/concepts/#tier-strategies"
+         * target="_top">tier strategy</a> for the table and its columns.
+         */
+        public static final String STRATEGY_DEFINITION = "strategy_definition";
 
         private Options() {  }
     }
@@ -806,6 +817,12 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID
      *                 VIEW_ID}: ID of view of which this projection is a
      *                 member.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#STRATEGY_DEFINITION
+     *                 STRATEGY_DEFINITION}: The <a
+     *                 href="../../../../../../rm/concepts/#tier-strategies"
+     *                 target="_top">tier strategy</a> for the table and its
+     *                 columns.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1111,6 +1128,11 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID
      *         VIEW_ID}: ID of view of which this projection is a member.  The
      *         default value is ''.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#STRATEGY_DEFINITION
+     *         STRATEGY_DEFINITION}: The <a
+     *         href="../../../../../../rm/concepts/#tier-strategies"
+     *         target="_top">tier strategy</a> for the table and its columns.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1349,6 +1371,12 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID
      *                 VIEW_ID}: ID of view of which this projection is a
      *                 member.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#STRATEGY_DEFINITION
+     *                 STRATEGY_DEFINITION}: The <a
+     *                 href="../../../../../../rm/concepts/#tier-strategies"
+     *                 target="_top">tier strategy</a> for the table and its
+     *                 columns.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

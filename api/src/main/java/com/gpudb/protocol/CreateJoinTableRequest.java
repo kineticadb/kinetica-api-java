@@ -95,6 +95,11 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#FALSE FALSE}.
      *         <li> {@link
+     * com.gpudb.protocol.CreateJoinTableRequest.Options#STRATEGY_DEFINITION
+     * STRATEGY_DEFINITION}: The <a
+     * href="../../../../../../rm/concepts/#tier-strategies" target="_top">tier
+     * strategy</a> for the table and its columns.
+     *         <li> {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#TTL TTL}: Sets the <a
      * href="../../../../../../concepts/ttl/" target="_top">TTL</a> of the join
      * table specified in {@code joinTableName}.
@@ -164,6 +169,12 @@ public class CreateJoinTableRequest implements IndexedRecord {
          * com.gpudb.protocol.CreateJoinTableRequest.Options#FALSE FALSE}.
          */
         public static final String OPTIMIZE_LOOKUPS = "optimize_lookups";
+
+        /**
+         * The <a href="../../../../../../rm/concepts/#tier-strategies"
+         * target="_top">tier strategy</a> for the table and its columns.
+         */
+        public static final String STRATEGY_DEFINITION = "strategy_definition";
 
         /**
          * Sets the <a href="../../../../../../concepts/ttl/"
@@ -295,6 +306,12 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#STRATEGY_DEFINITION
+     *                 STRATEGY_DEFINITION}: The <a
+     *                 href="../../../../../../rm/concepts/#tier-strategies"
+     *                 target="_top">tier strategy</a> for the table and its
+     *                 columns.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#TTL
      *                 TTL}: Sets the <a href="../../../../../../concepts/ttl/"
@@ -503,6 +520,11 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#FALSE FALSE}.
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateJoinTableRequest.Options#STRATEGY_DEFINITION
+     *         STRATEGY_DEFINITION}: The <a
+     *         href="../../../../../../rm/concepts/#tier-strategies"
+     *         target="_top">tier strategy</a> for the table and its columns.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#TTL TTL}: Sets
      *         the <a href="../../../../../../concepts/ttl/"
      *         target="_top">TTL</a> of the join table specified in {@code
@@ -581,6 +603,12 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#STRATEGY_DEFINITION
+     *                 STRATEGY_DEFINITION}: The <a
+     *                 href="../../../../../../rm/concepts/#tier-strategies"
+     *                 target="_top">tier strategy</a> for the table and its
+     *                 columns.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#TTL
      *                 TTL}: Sets the <a href="../../../../../../concepts/ttl/"

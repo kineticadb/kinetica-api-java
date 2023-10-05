@@ -654,6 +654,9 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DELIMITED_TEXT
      * DELIMITED_TEXT}: Delimited text file format; e.g., CSV, TSV, PSV, etc.
      *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#GDB GDB}:
+     * Esri/GDB file format
+     *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#JSON JSON}:
      * Json file format
      *         <li> {@link
@@ -722,6 +725,10 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FULL FULL}.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#LAYER LAYER}:
+     * Optional: geo files layer(s) name(s): comma separated.  The default
+     * value is ''.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#LOADING_MODE
      * LOADING_MODE}: Scheme for distributing the extraction and loading of
@@ -1262,6 +1269,9 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * DELIMITED_TEXT}: Delimited text file format; e.g., CSV, TSV, PSV,
          * etc.
          *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#GDB GDB}:
+         * Esri/GDB file format
+         *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#JSON
          * JSON}: Json file format
          *         <li> {@link
@@ -1286,6 +1296,11 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * Delimited text file format; e.g., CSV, TSV, PSV, etc.
          */
         public static final String DELIMITED_TEXT = "delimited_text";
+
+        /**
+         * Esri/GDB file format
+         */
+        public static final String GDB = "gdb";
 
         /**
          * Json file format
@@ -1381,6 +1396,12 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * data.  The inferred type is returned in the response.
          */
         public static final String TYPE_INFERENCE_ONLY = "type_inference_only";
+
+        /**
+         * Optional: geo files layer(s) name(s): comma separated.  The default
+         * value is ''.
+         */
+        public static final String LAYER = "layer";
 
         /**
          * Scheme for distributing the extraction and loading of data from the
@@ -2218,6 +2239,9 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 DELIMITED_TEXT}: Delimited text file format; e.g., CSV,
      *                 TSV, PSV, etc.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#GDB
+     *                 GDB}: Esri/GDB file format
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#JSON
      *                 JSON}: Json file format
      *                         <li> {@link
@@ -2290,6 +2314,10 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FULL
      *                 FULL}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#LAYER
+     *                 LAYER}: Optional: geo files layer(s) name(s): comma
+     *                 separated.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#LOADING_MODE
      *                 LOADING_MODE}: Scheme for distributing the extraction
@@ -3302,6 +3330,9 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         DELIMITED_TEXT}: Delimited text file format; e.g., CSV, TSV,
      *         PSV, etc.
      *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#GDB
+     *         GDB}: Esri/GDB file format
+     *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#JSON
      *         JSON}: Json file format
      *                 <li> {@link
@@ -3373,6 +3404,10 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FULL
      *         FULL}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#LAYER
+     *         LAYER}: Optional: geo files layer(s) name(s): comma separated.
+     *         The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#LOADING_MODE
      *         LOADING_MODE}: Scheme for distributing the extraction and
@@ -3868,6 +3903,9 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 DELIMITED_TEXT}: Delimited text file format; e.g., CSV,
      *                 TSV, PSV, etc.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#GDB
+     *                 GDB}: Esri/GDB file format
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#JSON
      *                 JSON}: Json file format
      *                         <li> {@link
@@ -3940,6 +3978,10 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FULL
      *                 FULL}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#LAYER
+     *                 LAYER}: Optional: geo files layer(s) name(s): comma
+     *                 separated.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#LOADING_MODE
      *                 LOADING_MODE}: Scheme for distributing the extraction

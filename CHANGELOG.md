@@ -2,6 +2,13 @@
 
 ## Version 7.1
 
+### Version 7.1.9.8 - 2023-10-05
+
+#### Fixed
+-   Bug in multi-head ingest HA failover
+-   Bug in head node JSON ingest
+
+
 ### Version 7.1.9.7 - 2023-09-17
 
 #### Fixed

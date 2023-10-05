@@ -81,6 +81,21 @@ public class GPUdbLogger {
     }
 
 
+    /* Get whether debug is enabled.  Useful for avoiding the overhead of
+     * building complex logging lines if debug logging is off.
+     */
+    public static boolean isDebugEnabled() {
+        return LOGGER.isDebugEnabled();
+    }
+
+    /* Get whether trace is enabled.  Useful for avoiding the overhead of
+     * building complex logging lines if trace logging is off.
+     */
+    public static boolean isTraceEnabled() {
+        return LOGGER.isTraceEnabled();
+    }
+
+
     /**
      * Print extra information with the debug message.
      */
