@@ -685,6 +685,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
      * DELIMITED_TEXT}: Delimited text file format; e.g., CSV, TSV, PSV, etc.
      *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#GDB GDB}:
+     * Esri/GDB file format
+     *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#JSON JSON}:
      * Json file format
      *         <li> {@link
@@ -776,6 +779,10 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_SUBSCRIPTION_CANCEL_AFTER
      * KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the subscription lifespan (in
      * minutes). Expired subscription will be cancelled automatically.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LAYER LAYER}:
+     * Optional: geo files layer(s) name(s): comma separated.  The default
+     * value is ''.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LOADING_MODE
      * LOADING_MODE}: Scheme for distributing the extraction and loading of
@@ -1318,6 +1325,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * DELIMITED_TEXT}: Delimited text file format; e.g., CSV, TSV, PSV,
          * etc.
          *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#GDB GDB}:
+         * Esri/GDB file format
+         *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#JSON JSON}:
          * Json file format
          *         <li> {@link
@@ -1342,6 +1352,11 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * Delimited text file format; e.g., CSV, TSV, PSV, etc.
          */
         public static final String DELIMITED_TEXT = "delimited_text";
+
+        /**
+         * Esri/GDB file format
+         */
+        public static final String GDB = "gdb";
 
         /**
          * Json file format
@@ -1467,6 +1482,12 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * will be cancelled automatically.
          */
         public static final String KAFKA_SUBSCRIPTION_CANCEL_AFTER = "kafka_subscription_cancel_after";
+
+        /**
+         * Optional: geo files layer(s) name(s): comma separated.  The default
+         * value is ''.
+         */
+        public static final String LAYER = "layer";
 
         /**
          * Scheme for distributing the extraction and loading of data from the
@@ -2328,6 +2349,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 DELIMITED_TEXT}: Delimited text file format; e.g., CSV,
      *                 TSV, PSV, etc.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#GDB
+     *                 GDB}: Esri/GDB file format
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#JSON
      *                 JSON}: Json file format
      *                         <li> {@link
@@ -2427,6 +2451,10 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the subscription
      *                 lifespan (in minutes). Expired subscription will be
      *                 cancelled automatically.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LAYER
+     *                 LAYER}: Optional: geo files layer(s) name(s): comma
+     *                 separated.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LOADING_MODE
      *                 LOADING_MODE}: Scheme for distributing the extraction
@@ -3476,6 +3504,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         DELIMITED_TEXT}: Delimited text file format; e.g., CSV, TSV,
      *         PSV, etc.
      *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#GDB
+     *         GDB}: Esri/GDB file format
+     *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#JSON
      *         JSON}: Json file format
      *                 <li> {@link
@@ -3572,6 +3603,10 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the subscription lifespan
      *         (in minutes). Expired subscription will be cancelled
      *         automatically.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LAYER
+     *         LAYER}: Optional: geo files layer(s) name(s): comma separated.
+     *         The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LOADING_MODE
      *         LOADING_MODE}: Scheme for distributing the extraction and
@@ -4073,6 +4108,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 DELIMITED_TEXT}: Delimited text file format; e.g., CSV,
      *                 TSV, PSV, etc.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#GDB
+     *                 GDB}: Esri/GDB file format
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#JSON
      *                 JSON}: Json file format
      *                         <li> {@link
@@ -4172,6 +4210,10 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the subscription
      *                 lifespan (in minutes). Expired subscription will be
      *                 cancelled automatically.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LAYER
+     *                 LAYER}: Optional: geo files layer(s) name(s): comma
+     *                 separated.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LOADING_MODE
      *                 LOADING_MODE}: Scheme for distributing the extraction

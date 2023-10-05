@@ -515,9 +515,23 @@ public class BulkInserter<T> implements AutoCloseable {
                                 insertRecordsFromJsonResponse.get("message")
                         ));
                     }
-                } catch (GPUdbException e) {
+                } catch (GPUdbException ex) {
+                    // If some connection issue occurred, we want to force an HA failover
+                    if ( (ex instanceof GPUdbExitException) || ex.hadConnectionFailure() ) {
+                        // We did encounter an HA failover trigger
+                        doFailover = true;
+                    }
+
+                    // Need to pass the records that we couldn't insert and the
+                    // exception we caught for further analysis down the road
                     failedRecords = queuedRecords;
-                    exception = e;
+                    // Note that the unauthorized exception is handled here as well
+                    exception     = ex;
+                } catch (Exception ex) {
+                    // Need to pass the records that we couldn't insert and the
+                    // exception we caught for further analysis down the road
+                    failedRecords = queuedRecords;
+                    exception     = ex;
                 }
             }
 
@@ -2049,15 +2063,13 @@ public class BulkInserter<T> implements AutoCloseable {
             } else {
                 if (result.getInsertResponse() != null) {
                     // Something went wrong and the data was not inserted.
-                    if( result.getFailureException() instanceof GPUdbException ) {
-                        GPUdbException exception = (GPUdbException) result.getFailureException();
-                        if( !exception.hadConnectionFailure() ) {
-                            throw new InsertException(getCurrentHeadNodeURL(), result.getFailedRecords(), exception.getMessage());
-                        }
-                        else {
-                            GPUdbLogger.debug_with_info("Setting retry to true");
-                            doRetryInsertion = true;
-                        }
+                    Exception fe = result.getFailureException();
+                    if(fe instanceof GPUdbExitException || (fe instanceof GPUdbException && ((GPUdbException)fe).hadConnectionFailure())) {
+                        GPUdbLogger.debug_with_info("Setting retry to true");
+                        doRetryInsertion = true;
+                    }
+                    else {
+                        throw new InsertException(getCurrentHeadNodeURL(), result.getFailedRecords(), fe.getMessage());
                     }
 
 
@@ -2337,7 +2349,10 @@ public class BulkInserter<T> implements AutoCloseable {
 
         if( record instanceof String ) {
             // Handle JSON records
-            workerQueue = workerQueues.get(routingTable.get(ThreadLocalRandom.current().nextInt(routingTable.size())) - 1);
+            if (this.useHeadNode)
+                workerQueue = workerQueues.get(0);
+            else
+                workerQueue = workerQueues.get(routingTable.get(ThreadLocalRandom.current().nextInt(routingTable.size())) - 1);
         } else {
             //Handle GenericRecords or RecordObjects
             try {

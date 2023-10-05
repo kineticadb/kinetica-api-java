@@ -189,6 +189,11 @@ public class CreateUnionRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateUnionRequest.Options#STRATEGY_DEFINITION
+     * STRATEGY_DEFINITION}: The <a
+     * href="../../../../../../rm/concepts/#tier-strategies" target="_top">tier
+     * strategy</a> for the table and its columns.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -386,6 +391,12 @@ public class CreateUnionRequest implements IndexedRecord {
          */
         public static final String FORCE_REPLICATED = "force_replicated";
 
+        /**
+         * The <a href="../../../../../../rm/concepts/#tier-strategies"
+         * target="_top">tier strategy</a> for the table and its columns.
+         */
+        public static final String STRATEGY_DEFINITION = "strategy_definition";
+
         private Options() {  }
     }
 
@@ -563,6 +574,12 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#STRATEGY_DEFINITION
+     *                 STRATEGY_DEFINITION}: The <a
+     *                 href="../../../../../../rm/concepts/#tier-strategies"
+     *                 target="_top">tier strategy</a> for the table and its
+     *                 columns.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -805,6 +822,11 @@ public class CreateUnionRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#STRATEGY_DEFINITION
+     *         STRATEGY_DEFINITION}: The <a
+     *         href="../../../../../../rm/concepts/#tier-strategies"
+     *         target="_top">tier strategy</a> for the table and its columns.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -953,6 +975,12 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#STRATEGY_DEFINITION
+     *                 STRATEGY_DEFINITION}: The <a
+     *                 href="../../../../../../rm/concepts/#tier-strategies"
+     *                 target="_top">tier strategy</a> for the table and its
+     *                 columns.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

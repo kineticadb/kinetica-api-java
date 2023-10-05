@@ -215,6 +215,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#VALUE VALUE}.
      *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#STRATEGY_DEFINITION
+     * STRATEGY_DEFINITION}: The <a
+     * href="../../../../../../rm/concepts/#tier-strategies" target="_top">tier
+     * strategy</a> for the table and its columns.
+     *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
      * RESULT_TABLE}: The name of a table used to store the results, in
      * [schema_name.]table_name format, using standard <a
@@ -425,6 +430,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
          * then the second aggregate, etc.
          */
         public static final String VALUE = "value";
+
+        /**
+         * The <a href="../../../../../../rm/concepts/#tier-strategies"
+         * target="_top">tier strategy</a> for the table and its columns.
+         */
+        public static final String STRATEGY_DEFINITION = "strategy_definition";
 
         /**
          * The name of a table used to store the results, in
@@ -678,6 +689,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VALUE
      *                 VALUE}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#STRATEGY_DEFINITION
+     *                 STRATEGY_DEFINITION}: The <a
+     *                 href="../../../../../../rm/concepts/#tier-strategies"
+     *                 target="_top">tier strategy</a> for the table and its
+     *                 columns.
+     *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
      *                 RESULT_TABLE}: The name of a table used to store the
      *                 results, in [schema_name.]table_name format, using
@@ -928,6 +945,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VALUE
      *                 VALUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#STRATEGY_DEFINITION
+     *                 STRATEGY_DEFINITION}: The <a
+     *                 href="../../../../../../rm/concepts/#tier-strategies"
+     *                 target="_top">tier strategy</a> for the table and its
+     *                 columns.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
      *                 RESULT_TABLE}: The name of a table used to store the
@@ -1301,6 +1324,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#VALUE VALUE}.
      *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#STRATEGY_DEFINITION
+     *         STRATEGY_DEFINITION}: The <a
+     *         href="../../../../../../rm/concepts/#tier-strategies"
+     *         target="_top">tier strategy</a> for the table and its columns.
+     *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
      *         RESULT_TABLE}: The name of a table used to store the results, in
      *         [schema_name.]table_name format, using standard <a
@@ -1490,6 +1518,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VALUE
      *                 VALUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#STRATEGY_DEFINITION
+     *                 STRATEGY_DEFINITION}: The <a
+     *                 href="../../../../../../rm/concepts/#tier-strategies"
+     *                 target="_top">tier strategy</a> for the table and its
+     *                 columns.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
      *                 RESULT_TABLE}: The name of a table used to store the

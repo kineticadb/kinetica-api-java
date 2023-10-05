@@ -1445,6 +1445,11 @@ public abstract class GPUdbBase {
             this.payload = payload;
         }
 
+        private SubmitException(URL url, String errorMsg) {
+            super( errorMsg );
+            this.url = url;
+        }
+
         /**
          * Gets the URL that the failed request was submitted to, or
          * {@code null} if multiple failover URLs all failed.
@@ -1836,6 +1841,7 @@ public abstract class GPUdbBase {
     private static final String DB_CONNECTION_RESET_ERROR_MESSAGE   = "Connection reset";
     private static final String DB_CONNECTION_REFUSED_ERROR_MESSAGE = "Connection refused";
     private static final String DB_EXITING_ERROR_MESSAGE            = "Kinetica is exiting";
+    private static final String DB_SHUTTING_DOWN_ERROR_MESSAGE      = "System shutting down";
     private static final String DB_SYSTEM_LIMITED_ERROR_MESSAGE     = "system-limited-fatal";
     private static final String DB_EOF_FROM_SERVER_ERROR_MESSAGE    = "Unexpected end of file from server";
 
@@ -5064,6 +5070,10 @@ public abstract class GPUdbBase {
      * pre-created response object. The request and response objects must
      * implement the Avro {@link IndexedRecord} interface.
      *
+     * NOTE:  This method's primary use is in support of requests other than
+     * {@link #getRecordsJson} and its other variants and
+     * {@link #insertRecordsFromJson} and its other variants.
+     *
      * @param <T>       the type of the response object
      * @param endpoint  the GPUdb endpoint to send the request to
      * @param request   the request object
@@ -5088,6 +5098,10 @@ public abstract class GPUdbBase {
      * {@link GPUdb#GPUdb(String, GPUdbBase.Options) GPUdb constructor} was
      * called with the {@link Options#setUseSnappy(boolean) Snappy compression
      * flag} set to {@code true}.
+     *
+     * NOTE:  This method's primary use is in support of requests other than
+     * {@link #getRecordsJson} and its other variants and
+     * {@link #insertRecordsFromJson} and its other variants.
      *
      * @param <T>                the type of the response object
      * @param endpoint           the GPUdb endpoint to send the request to
@@ -5212,6 +5226,9 @@ public abstract class GPUdbBase {
      * called with the {@link Options#setUseSnappy(boolean) Snappy compression
      * flag} set to {@code true}.
      *
+     * NOTE:  This method's primary use is in support of
+     * {@link #insertRecordsFromJson} and its other variants.
+     *
      * @param endpoint           the GPUdb endpoint to send the request to
      * @param payload            the payload as a JSON String
      * @param enableCompression  whether to compress the request
@@ -5332,6 +5349,9 @@ public abstract class GPUdbBase {
      * {@link GPUdb#GPUdb(String, GPUdbBase.Options) GPUdb constructor} was
      * called with the {@link Options#setUseSnappy(boolean) Snappy compression
      * flag} set to {@code true}.
+     * 
+     * NOTE:  This method's primary use is in support of
+     * {@link #getRecordsJson} and its other variants.
      *
      * @param endpoint           the GPUdb endpoint to send the request to
      * @param enableCompression  whether to compress the request
@@ -5451,6 +5471,9 @@ public abstract class GPUdbBase {
      * called with the {@link Options#setUseSnappy(boolean) Snappy compression
      * flag} set to {@code true}.
      *
+     * NOTE:  This method's primary use is in support of
+     * {@link #getRecordsJson} and its other variants.
+     *
      * @param url                the URL to send the request to
      * @param enableCompression  whether to compress the request
      * @return                   the response object (same as {@code response}
@@ -5475,6 +5498,9 @@ public abstract class GPUdbBase {
      * {@link GPUdb#GPUdb(String, GPUdbBase.Options) GPUdb constructor} was
      * called with the {@link Options#setUseSnappy(boolean) Snappy compression
      * flag} set to {@code true}.
+     *
+     * NOTE:  This method's primary use is in support of
+     * {@link #insertRecordsFromJson} and its other variants.
      *
      * @param url                the URL to send the request to
      * @param payload            the payload as a JSON String
@@ -5684,6 +5710,10 @@ public abstract class GPUdbBase {
      * called with the {@link Options#setUseSnappy(boolean) Snappy compression
      * flag} set to {@code true}.
      *
+     * NOTE:  This method's primary use is in support of requests other than
+     * {@link #getRecordsJson} and its other variants and
+     * {@link #insertRecordsFromJson} and its other variants.
+     *
      * @param <T>                the type of the response object
      * @param url                the URL to send the request to
      * @param request            the request object
@@ -5713,6 +5743,10 @@ public abstract class GPUdbBase {
      * called with the {@link Options#setUseSnappy(boolean) Snappy compression
      * flag} set to {@code true}.  Optionally, the timeout period can be set
      * in milliseconds.
+     *
+     * NOTE:  This method's primary use is in support of requests other than
+     * {@link #getRecordsJson} and its other variants and
+     * {@link #insertRecordsFromJson} and its other variants.
      *
      * @param <T>                the type of the response object
      * @param url                the URL to send the request to
@@ -5746,6 +5780,10 @@ public abstract class GPUdbBase {
      * called with the {@link Options#setUseSnappy(boolean) Snappy compression
      * flag} set to {@code true}.
      *
+     * NOTE:  This method's primary use is in support of requests other than
+     * {@link #getRecordsJson} and its other variants and
+     * {@link #insertRecordsFromJson} and its other variants.
+     *
      * @param <T>                the type of the response object
      * @param url                the URL to send the request to
      * @param request            the request object
@@ -5776,6 +5814,9 @@ public abstract class GPUdbBase {
      * called with the {@link Options#setUseSnappy(boolean) Snappy compression
      * flag} set to {@code true}.
      *
+     * NOTE:  This method's primary use is in support of
+     * {@link #insertRecordsFromJson} and its other variants.
+     *
      * @param url                the URL to send the request to
      * @param payload            the payload as a JSON String
      * @param enableCompression  whether to compress the request
@@ -5803,6 +5844,9 @@ public abstract class GPUdbBase {
      * called with the {@link Options#setUseSnappy(boolean) Snappy compression
      * flag} set to {@code true}.
      *
+     * NOTE:  This method's primary use is in support of
+     * {@link #getRecordsJson} and its other variants.
+     *
      * @param url                the URL to send the request to
      * @param enableCompression  whether to compress the request
      * @return                   the response object (same as {@code response}
@@ -5825,6 +5869,10 @@ public abstract class GPUdbBase {
      * {@link GPUdb#GPUdb(String, GPUdbBase.Options) GPUdb constructor} was
      * called with the {@link Options#setUseSnappy(boolean) Snappy compression
      * flag} set to {@code true}.
+     *
+     * NOTE:  This method's primary use is in support of requests other than
+     * {@link #getRecordsJson} and its other variants and
+     * {@link #insertRecordsFromJson} and its other variants.
      *
      * @param <T>                the type of the response object
      * @param url                the URL to send the request to
@@ -5907,6 +5955,12 @@ public abstract class GPUdbBase {
 
             // Get the entity and the content of the response
             responseEntity = postResponse.getEntity();
+
+            if (GPUdbLogger.isTraceEnabled())
+                GPUdbLogger.trace_with_info(String.format(
+                        "<Status|Message|Type>: <%d|%s|%s>",
+                        statusCode, responseMessage, responseEntity.getContentType()
+                ));
 
             // Ensure that we're not getting any HTML snippet (may be
             // returned by the HTTPD server)
@@ -6059,6 +6113,9 @@ public abstract class GPUdbBase {
      * called with the {@link Options#setUseSnappy(boolean) Snappy compression
      * flag} set to {@code true}.
      *
+     * NOTE:  This method's primary use is in support of
+     * {@link #insertRecordsFromJson} and its other variants.
+     *
      * @param url                the URL to send the request to
      * @param payload            the payload as a JSON String
      * @param enableCompression  whether to compress the request
@@ -6131,53 +6188,59 @@ public abstract class GPUdbBase {
                     = new TypeReference<HashMap<String,Object>>() {};
             Map<String, Object> response = JSON_MAPPER.readValue(json.getBytes(StandardCharsets.UTF_8), typeRef);
 
+            if (GPUdbLogger.isTraceEnabled())
+                GPUdbLogger.trace_with_info(String.format(
+                        "<Status|Message|Type|Response>: <%d|%s|%s|%s>",
+                        statusCode, responseMessage, responseEntity.getContentType(), response
+                ));
+
             // Ensure that we're not getting any HTML snippet (may be
             // returned by the HTTPD server)
             if (
-                (responseEntity.getContentType() != null) &&
-                (responseEntity.getContentType().length() > 0) &&
-                responseEntity.getContentType().startsWith( "text" )
+                    responseEntity.getContentType() != null &&
+                    responseEntity.getContentType().length() > 0 &&
+                    responseEntity.getContentType().startsWith( "text" )
             ) {
-                String errorMsg;
-                // Handle unauthorized connection specially--better error messaging
-                if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                    GPUdbLogger.debug_with_info( "Got status code: " + statusCode );
-                    errorMsg = ("Unauthorized access: " + responseMessage );
-                    throw new GPUdbUnauthorizedAccessException(errorMsg);
-                } else if ( (statusCode == HttpURLConnection.HTTP_UNAVAILABLE)
-                        || (statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR)
-                        || (statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT)
-                ) {
-                    // Some status codes should trigger an exit exception which will
-                    // in turn trigger a failover on the client side
-                    GPUdbLogger.debug_with_info(
-                            "Throwing EXIT exception from " + url.toString()
-                                    + "; response_code: " + statusCode
-                                    + "; content type " + responseEntity.getContentType()
-                                    + "; response message: " + responseMessage
-                    );
-                    throw new GPUdbExitException(responseMessage);
-                } else {
-                    // All other issues are simply propagated to the user
-                    errorMsg = ("Cannot parse response from server: '" + responseMessage + "'; status code: " + statusCode );
-                }
+                String errorMsg = ("Cannot parse response from server: '" + responseMessage + "'; status code: " + statusCode );
                 throw new SubmitException( url, payload, errorMsg );
             }
 
             // Parse response based on error code
             if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                // Got status 401 -- unauthorized
                 GPUdbLogger.debug_with_info( "Got status code: " + statusCode );
                 String errorMsg = (String.format("Server response status: %d : %s", statusCode, responseMessage));
                 throw new GPUdbUnauthorizedAccessException(errorMsg);
-                // Note: Keeping the original code here in case some unforeseen
-                // problem arises that we haven't thought of yet by changing
-                // which exception is thrown.
-                // throw new SubmitException( url, request, requestSize,
-                //                            responseMessage );
+            }
+            
+            if (
+                    statusCode == HttpURLConnection.HTTP_UNAVAILABLE ||
+                    statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR ||
+                    statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT ||
+                    responseMessage.contains( DB_EXITING_ERROR_MESSAGE ) ||
+                    responseMessage.contains( DB_CONNECTION_REFUSED_ERROR_MESSAGE ) ||
+                    responseMessage.contains( DB_CONNECTION_RESET_ERROR_MESSAGE ) ||
+                    responseMessage.contains( DB_SYSTEM_LIMITED_ERROR_MESSAGE ) ||
+                    responseMessage.contains( DB_OFFLINE_ERROR_MESSAGE )
+            ) {
+                // Some status codes should trigger an exit exception which will
+                // in turn trigger a failover on the client side
+                GPUdbLogger.debug_with_info(
+                        "Throwing EXIT exception from " + url.toString()
+                                + "; response_code: " + statusCode
+                                + "; content type " + responseEntity.getContentType()
+                                + "; response message: " + responseMessage
+                );
+                throw new GPUdbExitException(responseMessage);
+            }
+            
+            if (statusCode == HttpURLConnection.HTTP_BAD_REQUEST) {
+                String message = response.get("message").toString();
+                if (message != null && message.contains( DB_SHUTTING_DOWN_ERROR_MESSAGE ))
+                    throw new GPUdbExitException("Kinetica shutting down");
             }
 
             return response;
+
         } catch (GPUdbExitException ex) {
             // An HA failover should be triggered
             throw ex;
@@ -6227,6 +6290,9 @@ public abstract class GPUdbBase {
      * {@link GPUdb#GPUdb(String, GPUdbBase.Options) GPUdb constructor} was
      * called with the {@link Options#setUseSnappy(boolean) Snappy compression
      * flag} set to {@code true}.
+     *
+     * NOTE:  This method's primary use is in support of
+     * {@link #getRecordsJson} and its other variants.
      *
      * @param url                the URL to send the request to
      * @param enableCompression  whether to compress the request
@@ -6290,50 +6356,49 @@ public abstract class GPUdbBase {
             // use org.apache.http.util.EntityUtils to read JSON as string
             String json = EntityUtils.toString(responseEntity, StandardCharsets.UTF_8);
 
+            if (GPUdbLogger.isTraceEnabled())
+                GPUdbLogger.trace_with_info(String.format(
+                        "<Status|Message|Entity>: <%d|%s|%s>",
+                        statusCode, responseMessage, responseEntity
+                ));
+
             // Ensure that we're not getting any HTML snippet (may be
             // returned by the HTTPD server)
             if (
-                (responseEntity.getContentType() != null) &&
-                (responseEntity.getContentType().length() > 0) &&
-                responseEntity.getContentType().startsWith( "text" )
+                    responseEntity.getContentType() != null &&
+                    responseEntity.getContentType().length() > 0 &&
+                    responseEntity.getContentType().startsWith( "text" )
             ) {
-                String errorMsg;
-                // Handle unauthorized connection specially--better error messaging
-                if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                    GPUdbLogger.debug_with_info( "Got status code: " + statusCode );
-                    errorMsg = ("Unauthorized access: " + responseMessage );
-                    throw new GPUdbUnauthorizedAccessException(errorMsg);
-                } else if ( (statusCode == HttpURLConnection.HTTP_UNAVAILABLE)
-                        || (statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR)
-                        || (statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT)
-                ) {
-                    // Some status codes should trigger an exit exception which will
-                    // in turn trigger a failover on the client side
-                    GPUdbLogger.debug_with_info(
-                            "Throwing EXIT exception from " + url.toString()
-                                    + "; response_code: " + statusCode
-                                    + "; content type " + responseEntity.getContentType()
-                                    + "; response message: " + responseMessage
-                    );
-                    throw new GPUdbExitException(responseMessage);
-                } else {
-                    // All other issues are simply propagated to the user
-                    errorMsg = ("Cannot parse response from server: '" + responseMessage + "'; status code: " + statusCode );
-                }
-                throw new SubmitException( url, null, errorMsg );
+                String errorMsg = ("Cannot parse response from server: '" + responseMessage + "'; status code: " + statusCode );
+                throw new SubmitException( url, errorMsg );
             }
 
             // Parse response based on error code
             if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                // Got status 401 -- unauthorized
                 GPUdbLogger.debug_with_info( "Got status code: " + statusCode );
                 String errorMsg = (String.format("Server response status: %d : %s", statusCode, responseMessage));
                 throw new GPUdbUnauthorizedAccessException(errorMsg);
-                // Note: Keeping the original code here in case some unforeseen
-                // problem arises that we haven't thought of yet by changing
-                // which exception is thrown.
-                // throw new SubmitException( url, request, requestSize,
-                //                            responseMessage );
+            }
+            
+            if (
+                    statusCode == HttpURLConnection.HTTP_UNAVAILABLE ||
+                    statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR ||
+                    statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT ||
+                    responseMessage.contains( DB_EXITING_ERROR_MESSAGE ) ||
+                    responseMessage.contains( DB_CONNECTION_REFUSED_ERROR_MESSAGE ) ||
+                    responseMessage.contains( DB_CONNECTION_RESET_ERROR_MESSAGE ) ||
+                    responseMessage.contains( DB_SYSTEM_LIMITED_ERROR_MESSAGE ) ||
+                    responseMessage.contains( DB_OFFLINE_ERROR_MESSAGE )
+            ) {
+                // Some status codes should trigger an exit exception which will
+                // in turn trigger a failover on the client side
+                GPUdbLogger.debug_with_info(
+                        "Throwing EXIT exception from " + url.toString()
+                                + "; response_code: " + statusCode
+                                + "; content type " + responseEntity.getContentType()
+                                + "; response message: " + responseMessage
+                );
+                throw new GPUdbExitException(responseMessage);
             }
 
             return json;

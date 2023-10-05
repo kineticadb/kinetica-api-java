@@ -236,11 +236,9 @@ public class DownloadIoJob {
 
     /**
      * This method is used to stop all the running {@link IoTask} instances
-     * by handling the completed {@link Future} objects returned by the
-     * running {@link CompletionService} instance identified by the {@link #jobExecutor}
-     * instance variable. Each completed {@link Future} object will return a
-     * {@link Result} object which can be examined to get the exact status of
-     * the background job.
+     * by shutting down the thread pool running them after they're completed.
+     * Each completed {@link Future} object will return a {@link Result} object
+     * which can be examined to get the exact status of the background job.
      *
      * @see Result
      * @see CompletionService

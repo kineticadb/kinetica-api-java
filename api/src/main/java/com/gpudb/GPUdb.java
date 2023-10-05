@@ -2160,6 +2160,12 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VALUE
      *                 VALUE}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#STRATEGY_DEFINITION
+     *                 STRATEGY_DEFINITION}: The <a
+     *                 href="../../../../../rm/concepts/#tier-strategies"
+     *                 target="_top">tier strategy</a> for the table and its
+     *                 columns.
+     *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
      *                 RESULT_TABLE}: The name of a table used to store the
      *                 results, in [schema_name.]table_name format, using
@@ -7805,6 +7811,12 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#STRATEGY_DEFINITION
+     *                 STRATEGY_DEFINITION}: The <a
+     *                 href="../../../../../rm/concepts/#tier-strategies"
+     *                 target="_top">tier strategy</a> for the table and its
+     *                 columns.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#TTL
      *                 TTL}: Sets the <a href="../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the join table specified in
@@ -8474,6 +8486,12 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID
      *                 VIEW_ID}: ID of view of which this projection is a
      *                 member.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#STRATEGY_DEFINITION
+     *                 STRATEGY_DEFINITION}: The <a
+     *                 href="../../../../../rm/concepts/#tier-strategies"
+     *                 target="_top">tier strategy</a> for the table and its
+     *                 columns.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -9583,6 +9601,9 @@ public class GPUdb extends GPUdbBase {
      *                 DELIMITED_TEXT}: Delimited text file format; e.g., CSV,
      *                 TSV, PSV, etc.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#GDB
+     *                 GDB}: Esri/GDB file format
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#JSON
      *                 JSON}: Json file format
      *                         <li> {@link
@@ -9686,6 +9707,10 @@ public class GPUdb extends GPUdbBase {
      *                 KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the subscription
      *                 lifespan (in minutes). Expired subscription will be
      *                 cancelled automatically.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#LAYER
+     *                 LAYER}: Optional: geo files layer(s) name(s): comma
+     *                 separated.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#LOADING_MODE
      *                 LOADING_MODE}: Scheme for distributing the extraction
@@ -11001,6 +11026,12 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#STRATEGY_DEFINITION
+     *                 STRATEGY_DEFINITION}: The <a
+     *                 href="../../../../../rm/concepts/#tier-strategies"
+     *                 target="_top">tier strategy</a> for the table and its
+     *                 columns.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -18516,6 +18547,9 @@ public class GPUdb extends GPUdbBase {
      *                 DELIMITED_TEXT}: Delimited text file format; e.g., CSV,
      *                 TSV, PSV, etc.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#GDB
+     *                 GDB}: Esri/GDB file format
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#JSON
      *                 JSON}: Json file format
      *                         <li> {@link
@@ -18615,6 +18649,10 @@ public class GPUdb extends GPUdbBase {
      *                 KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the subscription
      *                 lifespan (in minutes). Expired subscription will be
      *                 cancelled automatically.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LAYER
+     *                 LAYER}: Optional: geo files layer(s) name(s): comma
+     *                 separated.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LOADING_MODE
      *                 LOADING_MODE}: Scheme for distributing the extraction
@@ -19382,6 +19420,9 @@ public class GPUdb extends GPUdbBase {
      *                 DELIMITED_TEXT}: Delimited text file format; e.g., CSV,
      *                 TSV, PSV, etc.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#GDB
+     *                 GDB}: Esri/GDB file format
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#JSON
      *                 JSON}: Json file format
      *                         <li> {@link
@@ -19454,6 +19495,10 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FULL
      *                 FULL}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#LAYER
+     *                 LAYER}: Optional: geo files layer(s) name(s): comma
+     *                 separated.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#LOADING_MODE
      *                 LOADING_MODE}: Scheme for distributing the extraction
