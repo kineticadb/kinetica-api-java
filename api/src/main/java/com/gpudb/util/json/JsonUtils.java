@@ -29,7 +29,10 @@ public class JsonUtils {
     }
 
     public static <T> boolean isListOfStrings( List<T> list) {
-        return list.stream().allMatch( String.class::isInstance );
+    	return
+    			list == null ||
+    			list.isEmpty() ||
+    			list.get(0) instanceof String;
     }
 
     public static boolean isListOfValidJsonStrings( List<String> list) {
@@ -37,7 +40,11 @@ public class JsonUtils {
     }
 
     public static <T> boolean isListOfRecordBase( List<T> list) {
-        return list.stream().allMatch( RecordBase.class::isInstance );
+
+    	return
+    			list == null ||
+    			list.isEmpty() ||
+    			list.get(0) instanceof RecordBase;
     }
 
     /**
