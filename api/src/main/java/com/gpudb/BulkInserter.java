@@ -223,7 +223,7 @@ public class BulkInserter<T> implements AutoCloseable {
             GPUdbLogger.debug(String.format("Timed flush started at : %s", startTime));
             try {
                 if( thisInserter.getTimedFlushOptions().isFlushWhenFull())
-                    thisInserter.flushFullQueues( thisInserter.getRetryCount() );
+                    thisInserter.flushFullQueues( thisInserter.getMaxRetries() );
                 else
                     thisInserter.flush();
                 final LocalDateTime endTime = LocalDateTime.now();
@@ -253,7 +253,6 @@ public class BulkInserter<T> implements AutoCloseable {
 
         public WorkerQueue( GPUdb gpudb, URL url, String tableName,
                             int capacity,
-                            int retryCount,
                             Map<String, String> options,
                             GPUdbBase.JsonOptions jsonOptions,
                             TypeObjectMap<T> typeObjectMap ) {
@@ -267,7 +266,7 @@ public class BulkInserter<T> implements AutoCloseable {
 
             // Allow some extra room when allocating the memory since we may
             // sometimes go over the capacity before we flush
-            queue = new ArrayList<>( (int)Math.round( capacity * 1.25 ) );
+            this.queue = new ArrayList<>( (int)Math.round( capacity * 1.25 ) );
 
         }
 
@@ -275,7 +274,7 @@ public class BulkInserter<T> implements AutoCloseable {
          * Returns the currently queued records and re-initializes the queue
          * for new records.
          */
-        public List<T> flush() {
+        public synchronized List<T> flush() {
             List<T> oldQueue = queue;
             queue = new ArrayList<>(capacity);
 
@@ -286,7 +285,9 @@ public class BulkInserter<T> implements AutoCloseable {
          * Insert the given record into the queue.
          */
         public boolean insert(T record) {
-            queue.add( record );
+        	synchronized (this.queue) { 
+        		this.queue.add( record );
+        	}
             return true;
         }
 
@@ -296,15 +297,7 @@ public class BulkInserter<T> implements AutoCloseable {
          *
          * @return - An instance of {@link WorkerQueueInsertionResult<T>}
          */
-        private WorkerQueueInsertionResult<T> handleRecordObjects() {
-            List<T> queuedRecords = this.queue;
-            this.queue = new ArrayList<>( capacity );
-
-            // If nothing to insert, return a null object for the response
-            if ( queuedRecords.isEmpty() ) {
-                GPUdbLogger.debug_with_info( "0 records in the queue; nothing to insert" );
-                return null;
-            }
+        private WorkerQueueInsertionResult<T> handleRecordObjects(List<T> queuedRecords) {
 
             // First, encode the records to create the request packet
             RawInsertRecordsRequest request;
@@ -472,15 +465,7 @@ public class BulkInserter<T> implements AutoCloseable {
          *
          * @return - an instance of {@link WorkerQueueInsertionResult}
          */
-        private WorkerQueueInsertionResult<T> handleJsonRecords() {
-            List<T> queuedRecords = this.queue;
-            this.queue = new ArrayList<>( capacity );
-
-            // If nothing to insert, return a null object for the response
-            if ( queuedRecords.isEmpty() ) {
-                GPUdbLogger.debug_with_info( "0 records in the queue; nothing to insert" );
-                return null;
-            }
+        private WorkerQueueInsertionResult<T> handleJsonRecords(List<T> queuedRecords) {
 
             // Some flags for necessary follow-up work
             boolean doUpdateWorkers = false;
@@ -564,11 +549,19 @@ public class BulkInserter<T> implements AutoCloseable {
         @Override
         public WorkerQueueInsertionResult<T> call() throws Exception {
             // Get the currently queued records (we shall try inserting them)
-            if(JsonUtils.<T>isListOfRecordBase(this.queue)) {
-                return handleRecordObjects();
+        	List<T> records = flush();
+
+        	// If nothing to insert, return a null object for the response
+            if ( records.isEmpty() ) {
+                GPUdbLogger.debug_with_info( "0 records in the queue; nothing to insert" );
+                return null;
+            }
+
+            if(JsonUtils.<T>isListOfRecordBase(records)) {
+                return handleRecordObjects(records);
             } else {
                 // Handle List of JSON records
-                return handleJsonRecords();
+                return handleJsonRecords(records);
             }
         }  // end call
 
@@ -733,7 +726,7 @@ public class BulkInserter<T> implements AutoCloseable {
     private final boolean useHeadNode;
     private final boolean returnIndividualErrors;
     private boolean simulateErrorMode = false; // Simulate returnIndividualErrors after an error
-    private volatile int retryCount;
+    private volatile int maxRetries;
     private List<Integer> routingTable;
     private long shardVersion;
     private MutableLong shardUpdateTime;
@@ -1189,7 +1182,7 @@ public class BulkInserter<T> implements AutoCloseable {
         this.batchSize = batchSize;
 
         // By default, we will retry insertions once
-        this.retryCount = DEFAULT_INSERTION_RETRY_COUNT;
+        this.maxRetries = DEFAULT_INSERTION_RETRY_COUNT;
 
         if (options != null) {
             this.options = Collections.unmodifiableMap(new HashMap<>(options));
@@ -1228,7 +1221,6 @@ public class BulkInserter<T> implements AutoCloseable {
                                                                   insertURL,
                                                                   this.tableName,
                                                                   batchSize,
-                                                                  retryCount,
                                                                   this.options,
                                                                   this.jsonOptions,
                                                                   this.typeObjectMap ) );
@@ -1247,7 +1239,6 @@ public class BulkInserter<T> implements AutoCloseable {
                 this.workerQueues.add( new WorkerQueue<>( this.gpudb, insertURL,
                                                            this.tableName,
                                                            batchSize,
-                                                           retryCount,
                                                            this.options,
                                                            this.jsonOptions,
                                                            this.typeObjectMap ) );
@@ -1697,7 +1688,6 @@ public class BulkInserter<T> implements AutoCloseable {
                     newWorkerQueues.add( new WorkerQueue<T>( this.gpudb, insertURL,
                                                              this.tableName,
                                                              batchSize,
-                                                             retryCount,
                                                              this.options,
                                                              this.jsonOptions,
                                                              this.typeObjectMap ) );
@@ -1777,10 +1767,43 @@ public class BulkInserter<T> implements AutoCloseable {
      *
      * @return  the number of retries
      *
+     * @see #setMaxRetries(int)
+     */
+    public int getMaxRetries() {
+        return maxRetries;
+    }
+
+    /**
+     * Sets the number of times inserts into GPUdb will be retried in the event
+     * of an error. After this many retries, {@link InsertException} will be
+     * thrown.
+     *
+     * @param value  the number of retries
+     *
+     * @throws IllegalArgumentException if {@code value} is less than zero
+     *
+     * @see #getMaxRetries()
+     */
+    public void setMaxRetries(int value) {
+        if (value < 0) {
+            throw new IllegalArgumentException("Max retries must not be negative.");
+        }
+
+        maxRetries = value;
+    }
+
+    /**
+     * Gets the number of times inserts into GPUdb will be retried in the event
+     * of an error. After this many retries, {@link InsertException} will be
+     * thrown.
+     *
+     * @return  the number of retries
+     *
      * @see #setRetryCount(int)
      */
+    @Deprecated
     public int getRetryCount() {
-        return retryCount;
+        return maxRetries;
     }
 
     /**
@@ -1794,12 +1817,13 @@ public class BulkInserter<T> implements AutoCloseable {
      *
      * @see #getRetryCount()
      */
+    @Deprecated
     public void setRetryCount(int value) {
         if (value < 0) {
             throw new IllegalArgumentException("Retry count must not be negative.");
         }
 
-        retryCount = value;
+        maxRetries = value;
     }
 
     /**
@@ -1868,7 +1892,7 @@ public class BulkInserter<T> implements AutoCloseable {
         // retry based on user configuration.  Note the last parameter
         // lets the called method know that the user is forcing this flush;
         // this is important for recursive calls.
-        this.flush( this.retryCount );
+        this.flush( this.maxRetries );
     }
 
 
@@ -1899,7 +1923,7 @@ public class BulkInserter<T> implements AutoCloseable {
         // configuration.
         List<WorkerQueue<T>> workerQueues = new ArrayList<>();
         workerQueues.add( workerQueue );
-        this.flushQueues( workerQueues, this.retryCount, false );
+        this.flushQueues( workerQueues, this.maxRetries, false );
     }
 
 
@@ -1949,12 +1973,13 @@ public class BulkInserter<T> implements AutoCloseable {
      *
      * @throws InsertException if an error occurs while flushing
      */
-    private void flushQueues( List<WorkerQueue<T>> queues, int retryCount,
-                              boolean forcedFlush )
-        throws InsertException {
-        GPUdbLogger.debug_with_info( "Begin; # queues " + queues.size()
-                                     + "; retryCount: " + retryCount );
-        // Let the user know that we ran out of retries
+    private synchronized void flushQueues( List<WorkerQueue<T>> queues, int retryCount, boolean forcedFlush ) throws InsertException {
+
+    	GPUdbLogger.debug_with_info(String.format(
+        		"Begin flushQueues; <%d> queues, <%d> retries left", queues.size(), retryCount
+        ));
+
+    	// Let the user know that we ran out of retries
         if ( ( retryCount < 0 ) || (queues.size() == 0) ) {
             // Retry count of 0 means try once but do no retry
             GPUdbLogger.debug_with_info( "Returning without further action" );
@@ -2279,20 +2304,18 @@ public class BulkInserter<T> implements AutoCloseable {
         // value of the instance variable retryCount. This block will retry
         // insertion after an HA failover has taken place, so it will start with
         // original retryCount once more into the new cluster.
-        retryCount = this.retryCount;
+        retryCount = this.maxRetries;
         if (doRetryInsertion) {
             // We need to re-attempt inserting the records that did not get
             // ingested.
-            GPUdbLogger.debug_with_info("Retry insertion");
-
-            GPUdbLogger.debug_with_info("retryCount: " + retryCount);
+            GPUdbLogger.debug_with_info("Retry insertion into new cluster");
 
             // Retry insertion of the failed records (recursive call to our
             // private insertion with the retry count decreased to halt
             // the recursion as needed
             this.insert(failedRecords, retryCount);
 
-            GPUdbLogger.debug_with_info("End flushQueues");
+            GPUdbLogger.debug_with_info("Done retrying insertion into new cluster");
         }
     }   // end flushQueues
 
@@ -2403,6 +2426,11 @@ public class BulkInserter<T> implements AutoCloseable {
      * GPUdb; catch {@link InsertException} to get the list of records that were
      * being inserted if needed (for example, to retry).
      *
+     * Note:  This version of {@link #insert(Object)} will result in sequential
+     * batch inserts in a background thread.  Use {@link #insert(List)} to allow
+     * multiple queues to reach their batch size and parallelize all of those
+     * batch inserts at once.
+     *
      * @param record  the record to insert
      *
      * @throws GPUdbException if an error occurs while calculating shard/primary keys
@@ -2434,14 +2462,15 @@ public class BulkInserter<T> implements AutoCloseable {
 
     /**
      * Queues a list of records for insertion into GPUdb. If any queue reaches
-     * the {@link #getBatchSize batch size}, all records in that queue will be
-     * inserted into GPUdb before the method returns. If an error occurs while
-     * inserting the queued records, the records will no longer be in that queue
-     * nor in GPUdb; catch {@link InsertException} to get the list of records
+     * the {@link #getBatchSize batch size}, all queues that have reached the
+     * {@link #getBatchSize batch size} will have their records inserted into
+     * the database before the method returns. If an error occurs while
+     * inserting the records, they will no longer be in that queue or the
+     * database; catch {@link InsertException} to get the list of records
      * that were being inserted (including any from the queue in question and
      * any remaining in the list not yet queued) if needed (for example, to
      * retry). Note that depending on the number of records, multiple calls to
-     * GPUdb may occur.
+     * the database may occur.
      *
      * If no retries are left, then returns false indicating it could not
      * attempt insertion.  Otherwise, returns true upon successful insertion.
@@ -2461,15 +2490,17 @@ public class BulkInserter<T> implements AutoCloseable {
         // Let the user know that we ran out of retries
         if ( retryCount < 0 ) {
             // Retry count of 0 means try once but do no retry
-            GPUdbLogger.debug_with_info( "retryCount: " + retryCount
-                                         + "; returning false" );
+            GPUdbLogger.debug_with_info( "Insert not attempted--out of retries" );
             return false;
         }
 
         for (int i = 0; i < records.size(); ++i) {
             try {
                 // Do not flush after inserting this record (otherwise it
-                // becomes essentially sequential flushing)
+                // becomes essentially sequential flushing).  Parallel flushing
+            	// only occurs within this method by delaying the flush until
+            	// all records have been added, then flushing any/all queues
+            	// that happen to be full at the same time.
                 insert( records.get(i), false );
             } catch (InsertException ex) {
                 List<T> queue = (List<T>)ex.getRecords();
@@ -2496,14 +2527,18 @@ public class BulkInserter<T> implements AutoCloseable {
 
     /**
      * Queues a list of records for insertion into GPUdb. If any queue reaches
-     * the {@link #getBatchSize batch size}, all records in that queue will be
-     * inserted into GPUdb before the method returns. If an error occurs while
-     * inserting the queued records, the records will no longer be in that queue
-     * nor in GPUdb; catch {@link InsertException} to get the list of records
+     * the {@link #getBatchSize batch size}, all queues that have reached the
+     * {@link #getBatchSize batch size} will have their records inserted into
+     * the database before the method returns. If an error occurs while
+     * inserting the records, they will no longer be in that queue or the
+     * database; catch {@link InsertException} to get the list of records
      * that were being inserted (including any from the queue in question and
      * any remaining in the list not yet queued) if needed (for example, to
      * retry). Note that depending on the number of records, multiple calls to
-     * GPUdb may occur.
+     * the database may occur.
+     *
+     * Note:  This version of {@link #insert(List)} will result in parallelizing
+     * the batch inserts in background threads.
      *
      * @param records  the records to insert
      *
@@ -2519,6 +2554,6 @@ public class BulkInserter<T> implements AutoCloseable {
                 }
         }
 
-        this.insert( records, this.retryCount );
+        this.insert( records, this.maxRetries );
     }
 }

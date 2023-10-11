@@ -2,6 +2,12 @@
 
 ## Version 7.1
 
+### Version 7.1.9.9 - 2023-10-10
+
+#### Fixed
+-   Bug in thread-safety during multi-head ingest HA failover
+
+
 ### Version 7.1.9.8 - 2023-10-05
 
 #### Fixed
