@@ -274,7 +274,7 @@ public class BulkInserter<T> implements AutoCloseable {
          * Returns the currently queued records and re-initializes the queue
          * for new records.
          */
-        public synchronized List<T> flush() {
+        public List<T> flush() {
             List<T> oldQueue = queue;
             queue = new ArrayList<>(capacity);
 
@@ -285,9 +285,7 @@ public class BulkInserter<T> implements AutoCloseable {
          * Insert the given record into the queue.
          */
         public boolean insert(T record) {
-        	synchronized (this.queue) { 
-        		this.queue.add( record );
-        	}
+            queue.add( record );
             return true;
         }
 
@@ -297,7 +295,15 @@ public class BulkInserter<T> implements AutoCloseable {
          *
          * @return - An instance of {@link WorkerQueueInsertionResult<T>}
          */
-        private WorkerQueueInsertionResult<T> handleRecordObjects(List<T> queuedRecords) {
+        private WorkerQueueInsertionResult<T> handleRecordObjects() {
+            List<T> queuedRecords = this.queue;
+            this.queue = new ArrayList<>( capacity );
+
+            // If nothing to insert, return a null object for the response
+            if ( queuedRecords.isEmpty() ) {
+                GPUdbLogger.debug_with_info( "0 records in the queue; nothing to insert" );
+                return null;
+            }
 
             // First, encode the records to create the request packet
             RawInsertRecordsRequest request;
@@ -465,7 +471,15 @@ public class BulkInserter<T> implements AutoCloseable {
          *
          * @return - an instance of {@link WorkerQueueInsertionResult}
          */
-        private WorkerQueueInsertionResult<T> handleJsonRecords(List<T> queuedRecords) {
+        private WorkerQueueInsertionResult<T> handleJsonRecords() {
+            List<T> queuedRecords = this.queue;
+            this.queue = new ArrayList<>( capacity );
+
+            // If nothing to insert, return a null object for the response
+            if ( queuedRecords.isEmpty() ) {
+                GPUdbLogger.debug_with_info( "0 records in the queue; nothing to insert" );
+                return null;
+            }
 
             // Some flags for necessary follow-up work
             boolean doUpdateWorkers = false;
@@ -549,19 +563,11 @@ public class BulkInserter<T> implements AutoCloseable {
         @Override
         public WorkerQueueInsertionResult<T> call() throws Exception {
             // Get the currently queued records (we shall try inserting them)
-        	List<T> records = flush();
-
-        	// If nothing to insert, return a null object for the response
-            if ( records.isEmpty() ) {
-                GPUdbLogger.debug_with_info( "0 records in the queue; nothing to insert" );
-                return null;
-            }
-
-            if(JsonUtils.<T>isListOfRecordBase(records)) {
-                return handleRecordObjects(records);
+            if(JsonUtils.<T>isListOfRecordBase(this.queue)) {
+                return handleRecordObjects();
             } else {
                 // Handle List of JSON records
-                return handleJsonRecords(records);
+                return handleJsonRecords();
             }
         }  // end call
 
@@ -1973,13 +1979,13 @@ public class BulkInserter<T> implements AutoCloseable {
      *
      * @throws InsertException if an error occurs while flushing
      */
-    private synchronized void flushQueues( List<WorkerQueue<T>> queues, int retryCount, boolean forcedFlush ) throws InsertException {
+    private void flushQueues( List<WorkerQueue<T>> queues, int retryCount, boolean forcedFlush ) throws InsertException {
 
-    	GPUdbLogger.debug_with_info(String.format(
-        		"Begin flushQueues; <%d> queues, <%d> retries left", queues.size(), retryCount
+        GPUdbLogger.debug_with_info(String.format(
+                "Begin flushQueues; <%d> queues, <%d> retries left", queues.size(), retryCount
         ));
 
-    	// Let the user know that we ran out of retries
+        // Let the user know that we ran out of retries
         if ( ( retryCount < 0 ) || (queues.size() == 0) ) {
             // Retry count of 0 means try once but do no retry
             GPUdbLogger.debug_with_info( "Returning without further action" );
@@ -2361,7 +2367,7 @@ public class BulkInserter<T> implements AutoCloseable {
      * @throws GPUdbException if an error occurs while calculating shard/primary keys
      * @throws InsertException if an error occurs while inserting
      */
-    private void  insert(T record, boolean flushWhenFull) throws InsertException {
+    private void insert(T record, boolean flushWhenFull) throws InsertException {
         RecordKey shardKey = null;
 
         // Don't accept new records if there was an error thrown already with returnIndividualErrors
@@ -2498,9 +2504,9 @@ public class BulkInserter<T> implements AutoCloseable {
             try {
                 // Do not flush after inserting this record (otherwise it
                 // becomes essentially sequential flushing).  Parallel flushing
-            	// only occurs within this method by delaying the flush until
-            	// all records have been added, then flushing any/all queues
-            	// that happen to be full at the same time.
+                // only occurs within this method by delaying the flush until
+                // all records have been added, then flushing any/all queues
+                // that happen to be full at the same time.
                 insert( records.get(i), false );
             } catch (InsertException ex) {
                 List<T> queue = (List<T>)ex.getRecords();

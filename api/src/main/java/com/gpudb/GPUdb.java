@@ -16501,6 +16501,9 @@ public class GPUdb extends GPUdbBase {
      *                    Supported values:
      *                    <ul>
      *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#CONTEXT
+     *                    CONTEXT}: Context
+     *                            <li> {@link
      *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#CREDENTIAL
      *                    CREDENTIAL}: Credential
      *                            <li> {@link
@@ -17067,6 +17070,9 @@ public class GPUdb extends GPUdbBase {
      * @param objectType  The type of object being checked
      *                    Supported values:
      *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#CONTEXT
+     *                    CONTEXT}: Context
      *                            <li> {@link
      *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#CREDENTIAL
      *                    CREDENTIAL}: Credential
@@ -22304,6 +22310,9 @@ public class GPUdb extends GPUdbBase {
      * @param objectType  The type of object being revoked
      *                    Supported values:
      *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionRequest.ObjectType#CONTEXT
+     *                    CONTEXT}: Context
      *                            <li> {@link
      *                    com.gpudb.protocol.RevokePermissionRequest.ObjectType#CREDENTIAL
      *                    CREDENTIAL}: Credential

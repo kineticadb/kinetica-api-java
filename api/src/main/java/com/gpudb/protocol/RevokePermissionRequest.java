@@ -49,6 +49,9 @@ public class RevokePermissionRequest implements IndexedRecord {
      * Supported values:
      * <ul>
      *         <li> {@link
+     * com.gpudb.protocol.RevokePermissionRequest.ObjectType#CONTEXT CONTEXT}:
+     * Context
+     *         <li> {@link
      * com.gpudb.protocol.RevokePermissionRequest.ObjectType#CREDENTIAL
      * CREDENTIAL}: Credential
      *         <li> {@link
@@ -85,6 +88,11 @@ public class RevokePermissionRequest implements IndexedRecord {
      * A set of string constants for the parameter {@code objectType}.
      */
     public static final class ObjectType {
+
+        /**
+         * Context
+         */
+        public static final String CONTEXT = "context";
 
         /**
          * Credential
@@ -285,6 +293,9 @@ public class RevokePermissionRequest implements IndexedRecord {
      *                    Supported values:
      *                    <ul>
      *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionRequest.ObjectType#CONTEXT
+     *                    CONTEXT}: Context
+     *                            <li> {@link
      *                    com.gpudb.protocol.RevokePermissionRequest.ObjectType#CREDENTIAL
      *                    CREDENTIAL}: Credential
      *                            <li> {@link
@@ -424,6 +435,9 @@ public class RevokePermissionRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *                 <li> {@link
+     *         com.gpudb.protocol.RevokePermissionRequest.ObjectType#CONTEXT
+     *         CONTEXT}: Context
+     *                 <li> {@link
      *         com.gpudb.protocol.RevokePermissionRequest.ObjectType#CREDENTIAL
      *         CREDENTIAL}: Credential
      *                 <li> {@link
@@ -468,6 +482,9 @@ public class RevokePermissionRequest implements IndexedRecord {
      * @param objectType  The type of object being revoked
      *                    Supported values:
      *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionRequest.ObjectType#CONTEXT
+     *                    CONTEXT}: Context
      *                            <li> {@link
      *                    com.gpudb.protocol.RevokePermissionRequest.ObjectType#CREDENTIAL
      *                    CREDENTIAL}: Credential
