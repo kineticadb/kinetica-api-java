@@ -2,6 +2,12 @@
 
 ## Version 7.1
 
+### Version 7.1.9.10 - 2023-10-17
+
+#### Fixed
+-   Deadlock in multi-head ingest
+
+
 ### Version 7.1.9.9 - 2023-10-10
 
 #### Fixed

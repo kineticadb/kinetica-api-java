@@ -49,6 +49,9 @@ public class GrantPermissionRequest implements IndexedRecord {
      * Supported values:
      * <ul>
      *         <li> {@link
+     * com.gpudb.protocol.GrantPermissionRequest.ObjectType#CONTEXT CONTEXT}:
+     * Context
+     *         <li> {@link
      * com.gpudb.protocol.GrantPermissionRequest.ObjectType#CREDENTIAL
      * CREDENTIAL}: Credential
      *         <li> {@link
@@ -85,6 +88,11 @@ public class GrantPermissionRequest implements IndexedRecord {
      * A set of string constants for the parameter {@code objectType}.
      */
     public static final class ObjectType {
+
+        /**
+         * Context
+         */
+        public static final String CONTEXT = "context";
 
         /**
          * Credential
@@ -296,6 +304,9 @@ public class GrantPermissionRequest implements IndexedRecord {
      *                    Supported values:
      *                    <ul>
      *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#CONTEXT
+     *                    CONTEXT}: Context
+     *                            <li> {@link
      *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#CREDENTIAL
      *                    CREDENTIAL}: Credential
      *                            <li> {@link
@@ -440,6 +451,9 @@ public class GrantPermissionRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *                 <li> {@link
+     *         com.gpudb.protocol.GrantPermissionRequest.ObjectType#CONTEXT
+     *         CONTEXT}: Context
+     *                 <li> {@link
      *         com.gpudb.protocol.GrantPermissionRequest.ObjectType#CREDENTIAL
      *         CREDENTIAL}: Credential
      *                 <li> {@link
@@ -484,6 +498,9 @@ public class GrantPermissionRequest implements IndexedRecord {
      * @param objectType  The type of object being granted to
      *                    Supported values:
      *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#CONTEXT
+     *                    CONTEXT}: Context
      *                            <li> {@link
      *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#CREDENTIAL
      *                    CREDENTIAL}: Credential
