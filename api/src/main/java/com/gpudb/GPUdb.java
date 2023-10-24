@@ -16698,6 +16698,9 @@ public class GPUdb extends GPUdbBase {
      *                    Supported values:
      *                    <ul>
      *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionDatasourceRequest.Permission#ADMIN
+     *                    ADMIN}: Admin access on the given data source
+     *                            <li> {@link
      *                    com.gpudb.protocol.GrantPermissionDatasourceRequest.Permission#CONNECT
      *                    CONNECT}: Connect access on the given data source
      *                    </ul>
@@ -16817,6 +16820,9 @@ public class GPUdb extends GPUdbBase {
      * @param permission  Permission to grant to the user or role.
      *                    Supported values:
      *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionProcRequest.Permission#PROC_ADMIN
+     *                    PROC_ADMIN}: Admin access to the proc.
      *                            <li> {@link
      *                    com.gpudb.protocol.GrantPermissionProcRequest.Permission#PROC_EXECUTE
      *                    PROC_EXECUTE}: Execute access to the proc.
@@ -22503,6 +22509,9 @@ public class GPUdb extends GPUdbBase {
      *                    Supported values:
      *                    <ul>
      *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionDatasourceRequest.Permission#ADMIN
+     *                    ADMIN}: Admin access on the given data source
+     *                            <li> {@link
      *                    com.gpudb.protocol.RevokePermissionDatasourceRequest.Permission#CONNECT
      *                    CONNECT}: Connect access on the given data source
      *                    </ul>
@@ -22621,6 +22630,9 @@ public class GPUdb extends GPUdbBase {
      * @param permission  Permission to revoke from the user or role.
      *                    Supported values:
      *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionProcRequest.Permission#PROC_ADMIN
+     *                    PROC_ADMIN}: Admin access to the proc.
      *                            <li> {@link
      *                    com.gpudb.protocol.RevokePermissionProcRequest.Permission#PROC_EXECUTE
      *                    PROC_EXECUTE}: Execute access to the proc.

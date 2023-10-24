@@ -49,12 +49,20 @@ public class GrantPermissionDatasourceRequest implements IndexedRecord {
      * Supported values:
      * <ul>
      *         <li> {@link
+     * com.gpudb.protocol.GrantPermissionDatasourceRequest.Permission#ADMIN
+     * ADMIN}: Admin access on the given data source
+     *         <li> {@link
      * com.gpudb.protocol.GrantPermissionDatasourceRequest.Permission#CONNECT
      * CONNECT}: Connect access on the given data source
      * </ul>
      * A set of string constants for the parameter {@code permission}.
      */
     public static final class Permission {
+
+        /**
+         * Admin access on the given data source
+         */
+        public static final String ADMIN = "admin";
 
         /**
          * Connect access on the given data source
@@ -90,6 +98,9 @@ public class GrantPermissionDatasourceRequest implements IndexedRecord {
      * @param permission  Permission to grant to the user or role
      *                    Supported values:
      *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionDatasourceRequest.Permission#ADMIN
+     *                    ADMIN}: Admin access on the given data source
      *                            <li> {@link
      *                    com.gpudb.protocol.GrantPermissionDatasourceRequest.Permission#CONNECT
      *                    CONNECT}: Connect access on the given data source
@@ -138,6 +149,9 @@ public class GrantPermissionDatasourceRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *                 <li> {@link
+     *         com.gpudb.protocol.GrantPermissionDatasourceRequest.Permission#ADMIN
+     *         ADMIN}: Admin access on the given data source
+     *                 <li> {@link
      *         com.gpudb.protocol.GrantPermissionDatasourceRequest.Permission#CONNECT
      *         CONNECT}: Connect access on the given data source
      *         </ul>
@@ -152,6 +166,9 @@ public class GrantPermissionDatasourceRequest implements IndexedRecord {
      * @param permission  Permission to grant to the user or role
      *                    Supported values:
      *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionDatasourceRequest.Permission#ADMIN
+     *                    ADMIN}: Admin access on the given data source
      *                            <li> {@link
      *                    com.gpudb.protocol.GrantPermissionDatasourceRequest.Permission#CONNECT
      *                    CONNECT}: Connect access on the given data source

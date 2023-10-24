@@ -11,7 +11,6 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.DecoderFactory;
-import org.apache.commons.codec.Charsets;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -54,7 +53,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.cert.Certificate;
@@ -2367,8 +2365,9 @@ public abstract class GPUdbBase {
             authorization = null;
         }
 
+
         // Save various options
-        this.useSnappy            = options.getUseSnappy();
+        this.useSnappy            = checkSnappy(options.getUseSnappy());
         this.disableFailover      = options.getDisableFailover();
         this.disableAutoDiscovery = options.getDisableAutoDiscovery();
         this.threadCount          = options.getThreadCount();
@@ -2798,6 +2797,36 @@ public abstract class GPUdbBase {
      */
     public boolean getUseSnappy() {
         return useSnappy;
+    }
+
+    /**
+     * Checks whether Snappy is available on the host system, if requested.
+     * 
+     * @param requestUseSnappy  whether the user (or default config) has
+     *            requested Snappy compression be enabled
+     * @return    whether Snappy compression should be enabled, based on
+     *            request and system availability
+     */
+    private boolean checkSnappy(boolean requestUseSnappy) {
+        if (requestUseSnappy) {
+            try {
+                Snappy.getNativeLibraryVersion();
+                return true;
+            }
+            catch (UnsatisfiedLinkError e) {
+                GPUdbLogger.warn(
+                        "Disabling Snappy compression, as it is unavailable on this system, " +
+                        "potentially due to lack of write permission on the system temp directory.  " +
+                        "To allow Snappy to use the current system temp directory, allow write permissions to it.  " +
+                        "To use a different directory, use the JVM option: -Dorg.xerial.snappy.tempdir=<other/temp/path>  " +
+                        "To disable Snappy in Java and remove this warning message, use options.setUseSnappy(false) in the GPUdb constructor.  " +
+                        "To disable Snappy in JDBC and remove this warning message, use DisableSnappy=1 in the connection string.  " +
+                        "To disable Snappy in KiSQL and remove this warning message, use \"--disableSnappy true\" on the command line.  "
+                );
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -6086,6 +6115,10 @@ public abstract class GPUdbBase {
             GPUdbLogger.debug_with_info( "Caught Exception: " + ex.getMessage() );
             // Some sort of submission error
             throw new SubmitException(url, request, requestSize, ex.getMessage(), ex);
+        } catch (UnsatisfiedLinkError ex) {
+            GPUdbLogger.debug_with_info( "Caught Exception: " + ex.getMessage() );
+            // Snappy /tmp directory issue
+            throw new SubmitException(url, request, requestSize, "Snappy unable to write to directory; possible permissions issue on /tmp", ex);
         } finally {
             // Release all resources held by the responseEntity
             if ( responseEntity != null ) {

@@ -48,12 +48,20 @@ public class RevokePermissionProcRequest implements IndexedRecord {
      * Supported values:
      * <ul>
      *         <li> {@link
+     * com.gpudb.protocol.RevokePermissionProcRequest.Permission#PROC_ADMIN
+     * PROC_ADMIN}: Admin access to the proc.
+     *         <li> {@link
      * com.gpudb.protocol.RevokePermissionProcRequest.Permission#PROC_EXECUTE
      * PROC_EXECUTE}: Execute access to the proc.
      * </ul>
      * A set of string constants for the parameter {@code permission}.
      */
     public static final class Permission {
+
+        /**
+         * Admin access to the proc.
+         */
+        public static final String PROC_ADMIN = "proc_admin";
 
         /**
          * Execute access to the proc.
@@ -88,6 +96,9 @@ public class RevokePermissionProcRequest implements IndexedRecord {
      * @param permission  Permission to revoke from the user or role.
      *                    Supported values:
      *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionProcRequest.Permission#PROC_ADMIN
+     *                    PROC_ADMIN}: Admin access to the proc.
      *                            <li> {@link
      *                    com.gpudb.protocol.RevokePermissionProcRequest.Permission#PROC_EXECUTE
      *                    PROC_EXECUTE}: Execute access to the proc.
@@ -135,6 +146,9 @@ public class RevokePermissionProcRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *                 <li> {@link
+     *         com.gpudb.protocol.RevokePermissionProcRequest.Permission#PROC_ADMIN
+     *         PROC_ADMIN}: Admin access to the proc.
+     *                 <li> {@link
      *         com.gpudb.protocol.RevokePermissionProcRequest.Permission#PROC_EXECUTE
      *         PROC_EXECUTE}: Execute access to the proc.
      *         </ul>
@@ -149,6 +163,9 @@ public class RevokePermissionProcRequest implements IndexedRecord {
      * @param permission  Permission to revoke from the user or role.
      *                    Supported values:
      *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionProcRequest.Permission#PROC_ADMIN
+     *                    PROC_ADMIN}: Admin access to the proc.
      *                            <li> {@link
      *                    com.gpudb.protocol.RevokePermissionProcRequest.Permission#PROC_EXECUTE
      *                    PROC_EXECUTE}: Execute access to the proc.

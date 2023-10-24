@@ -2,6 +2,12 @@
 
 ## Version 7.1
 
+### Version 7.1.9.11 - 2023-10-24
+
+#### Changed
+-   Auto-disabled Snappy compression, if not available on the host system
+
+
 ### Version 7.1.9.10 - 2023-10-17
 
 #### Fixed
