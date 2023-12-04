@@ -1854,7 +1854,6 @@ public abstract class GPUdbBase {
 
     private static final String SYSTEM_PROPERTIES_RESPONSE_ENABLE_HTTPD    = "conf.enable_httpd_proxy";
     private static final String SYSTEM_PROPERTIES_RESPONSE_NUM_HOSTS       = "conf.number_of_hosts";
-    private static final String SYSTEM_PROPERTIES_RESPONSE_USE_HTTPS       = "conf.use_https";
     private static final String SYSTEM_PROPERTIES_RESPONSE_HEAD_NODE_URLS  = "conf.ha_ring_head_nodes_full";
     private static final String SYSTEM_PROPERTIES_RESPONSE_SERVER_URLS     = "conf.worker_http_server_urls";
     private static final String SYSTEM_PROPERTIES_RESPONSE_TRUE            = "TRUE";
@@ -3925,12 +3924,9 @@ public abstract class GPUdbBase {
                                    Pattern hostnameRegex )
         throws GPUdbHostnameRegexFailureException, GPUdbException {
 
-        // Get the protocol being used
-        String propertyVal = systemProperties.get( SYSTEM_PROPERTIES_RESPONSE_USE_HTTPS );
-
         List<URL> rankURLs = new ArrayList<>();
 
-        propertyVal = systemProperties.get( SYSTEM_PROPERTIES_RESPONSE_SERVER_URLS );
+        String propertyVal = systemProperties.get( SYSTEM_PROPERTIES_RESPONSE_SERVER_URLS );
         if ( (propertyVal != null) && !propertyVal.isEmpty() ){
             GPUdbLogger.debug_with_info(
                     String.format(

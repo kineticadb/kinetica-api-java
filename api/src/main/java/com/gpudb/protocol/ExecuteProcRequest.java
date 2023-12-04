@@ -97,6 +97,27 @@ public class ExecuteProcRequest implements IndexedRecord {
      * com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}. If the number of
      * lines output exceeds the maximum, earlier lines are discarded.  The
      * default value is '100'.
+     *         <li> {@link
+     * com.gpudb.protocol.ExecuteProcRequest.Options#EXECUTE_AT_STARTUP
+     * EXECUTE_AT_STARTUP}: If {@code true}, an instance of the proc will run
+     * when the database is started instead of running immediately. The {@code
+     * runId} can be retrieved using {@link
+     * com.gpudb.GPUdb#showProc(ShowProcRequest)} and used in {@link
+     * com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.ExecuteProcRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.ExecuteProcRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ExecuteProcRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.ExecuteProcRequest.Options#EXECUTE_AT_STARTUP_AS
+     * EXECUTE_AT_STARTUP_AS}: Sets the alternate user name to execute this
+     * proc instance as when {@code execute_at_startup} is {@code true}.  The
+     * default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -147,6 +168,33 @@ public class ExecuteProcRequest implements IndexedRecord {
          * discarded.  The default value is '100'.
          */
         public static final String MAX_OUTPUT_LINES = "max_output_lines";
+
+        /**
+         * If {@code true}, an instance of the proc will run when the database
+         * is started instead of running immediately. The {@code runId} can be
+         * retrieved using {@link com.gpudb.GPUdb#showProc(ShowProcRequest)}
+         * and used in {@link
+         * com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ExecuteProcRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ExecuteProcRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ExecuteProcRequest.Options#FALSE FALSE}.
+         */
+        public static final String EXECUTE_AT_STARTUP = "execute_at_startup";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
+         * Sets the alternate user name to execute this proc instance as when
+         * {@code execute_at_startup} is {@code true}.  The default value is
+         * ''.
+         */
+        public static final String EXECUTE_AT_STARTUP_AS = "execute_at_startup_as";
 
         private Options() {  }
     }
@@ -279,6 +327,31 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                 If the number of lines output exceeds the maximum,
      *                 earlier lines are discarded.  The default value is
      *                 '100'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#EXECUTE_AT_STARTUP
+     *                 EXECUTE_AT_STARTUP}: If {@code true}, an instance of the
+     *                 proc will run when the database is started instead of
+     *                 running immediately. The {@code runId} can be retrieved
+     *                 using {@link com.gpudb.GPUdb#showProc(ShowProcRequest)}
+     *                 and used in {@link
+     *                 com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#EXECUTE_AT_STARTUP_AS
+     *                 EXECUTE_AT_STARTUP_AS}: Sets the alternate user name to
+     *                 execute this proc instance as when {@code
+     *                 execute_at_startup} is {@code true}.  The default value
+     *                 is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -558,6 +631,27 @@ public class ExecuteProcRequest implements IndexedRecord {
      *         com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}. If the
      *         number of lines output exceeds the maximum, earlier lines are
      *         discarded.  The default value is '100'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteProcRequest.Options#EXECUTE_AT_STARTUP
+     *         EXECUTE_AT_STARTUP}: If {@code true}, an instance of the proc
+     *         will run when the database is started instead of running
+     *         immediately. The {@code runId} can be retrieved using {@link
+     *         com.gpudb.GPUdb#showProc(ShowProcRequest)} and used in {@link
+     *         com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteProcRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteProcRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ExecuteProcRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteProcRequest.Options#EXECUTE_AT_STARTUP_AS
+     *         EXECUTE_AT_STARTUP_AS}: Sets the alternate user name to execute
+     *         this proc instance as when {@code execute_at_startup} is {@code
+     *         true}.  The default value is ''.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -613,6 +707,31 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                 If the number of lines output exceeds the maximum,
      *                 earlier lines are discarded.  The default value is
      *                 '100'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#EXECUTE_AT_STARTUP
+     *                 EXECUTE_AT_STARTUP}: If {@code true}, an instance of the
+     *                 proc will run when the database is started instead of
+     *                 running immediately. The {@code runId} can be retrieved
+     *                 using {@link com.gpudb.GPUdb#showProc(ShowProcRequest)}
+     *                 and used in {@link
+     *                 com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#EXECUTE_AT_STARTUP_AS
+     *                 EXECUTE_AT_STARTUP_AS}: Sets the alternate user name to
+     *                 execute this proc instance as when {@code
+     *                 execute_at_startup} is {@code true}.  The default value
+     *                 is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

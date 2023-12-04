@@ -2,6 +2,16 @@
 
 ## Version 7.1
 
+### Version 7.1.9.12 - 2023-12-03
+
+#### Added
+-   `GPUdbSqlIterator` class for easily looping over the records of a SQL result
+    set.
+-   Upgraded Avro library from 1.11.1 to 1.11.3
+-   Upgraded Snappy library from 1.1.10.1 to 1.1.10.4
+-   Upgraded JSON library from 20230227 to 20231013
+
+
 ### Version 7.1.9.11 - 2023-10-24
 
 #### Changed

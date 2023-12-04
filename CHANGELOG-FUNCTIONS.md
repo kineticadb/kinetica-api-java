@@ -28,6 +28,8 @@
     -  ``/delete/files``
 -   Added ``/admin/ha/refresh``
 -   Added ``evict_to_cold`` option to ``/alter/system/properties``
+-   Added options ``execute_at_startup`` and ``execute_at_startup_as``  to ``/execute/proc`` endpoint to facilitate running procs (UDFs) on startup
+-   Added option ``clear_execute_at_startup`` to ``/kill/proc`` endpoint to remove a startup proc (UDF) instance
 
 #### Added
 -   Added new endpoints to support UDF python environment management:

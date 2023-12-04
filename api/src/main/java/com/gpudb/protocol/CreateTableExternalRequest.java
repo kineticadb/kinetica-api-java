@@ -722,6 +722,10 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateTableExternalRequest.Options#DELIMITED_TEXT
      * DELIMITED_TEXT}.
      *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#GDAL_CONFIGURATION_OPTIONS
+     * GDAL_CONFIGURATION_OPTIONS}: Comma separated list of gdal conf options,
+     * for the specific requets: key=value.  The default value is ''.
+     *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#IGNORE_EXISTING_PK
      * IGNORE_EXISTING_PK}: Specifies the record collision error-suppression
      * policy for
@@ -1463,6 +1467,12 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * ShapeFile file format
          */
         public static final String SHAPEFILE = "shapefile";
+
+        /**
+         * Comma separated list of gdal conf options, for the specific requets:
+         * key=value.  The default value is ''.
+         */
+        public static final String GDAL_CONFIGURATION_OPTIONS = "gdal_configuration_options";
 
         /**
          * Specifies the record collision error-suppression policy for
@@ -2531,6 +2541,11 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#DELIMITED_TEXT
      *                 DELIMITED_TEXT}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#GDAL_CONFIGURATION_OPTIONS
+     *                 GDAL_CONFIGURATION_OPTIONS}: Comma separated list of
+     *                 gdal conf options, for the specific requets: key=value.
+     *                 The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#IGNORE_EXISTING_PK
      *                 IGNORE_EXISTING_PK}: Specifies the record collision
@@ -3767,6 +3782,11 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#DELIMITED_TEXT
      *         DELIMITED_TEXT}.
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#GDAL_CONFIGURATION_OPTIONS
+     *         GDAL_CONFIGURATION_OPTIONS}: Comma separated list of gdal conf
+     *         options, for the specific requets: key=value.  The default value
+     *         is ''.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#IGNORE_EXISTING_PK
      *         IGNORE_EXISTING_PK}: Specifies the record collision
      *         error-suppression policy for
@@ -4425,6 +4445,11 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#DELIMITED_TEXT
      *                 DELIMITED_TEXT}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#GDAL_CONFIGURATION_OPTIONS
+     *                 GDAL_CONFIGURATION_OPTIONS}: Comma separated list of
+     *                 gdal conf options, for the specific requets: key=value.
+     *                 The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#IGNORE_EXISTING_PK
      *                 IGNORE_EXISTING_PK}: Specifies the record collision
