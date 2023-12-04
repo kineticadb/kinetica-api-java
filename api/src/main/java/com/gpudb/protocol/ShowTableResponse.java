@@ -169,6 +169,11 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String RECORD_BYTES = "record_bytes";
 
         /**
+         * The total size in bytes of all data stored in the table.
+         */
+        public static final String TOTAL_BYTES = "total_bytes";
+
+        /**
          * [DEPRECATED--use schema_name instead]  This will now contain the
          * name of the schema for the table.  There can only be one schema for
          * a table.

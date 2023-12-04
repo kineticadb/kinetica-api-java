@@ -215,6 +215,18 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TPS_PER_TOM
      * TPS_PER_TOM}: Sets the tps_per_tom value of the conf.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_PROVIDER
+     * AI_API_PROVIDER}: AI API provider type
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_URL
+     * AI_API_URL}: AI API URL
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_KEY
+     * AI_API_KEY}: AI API key
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_CONNECTION_TIMEOUT
+     * AI_API_CONNECTION_TIMEOUT}: AI API connection timeout in seconds
      * </ul>
      * A set of string constants for the parameter {@code propertyUpdatesMap}.
      */
@@ -446,6 +458,26 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          * Sets the tps_per_tom value of the conf.
          */
         public static final String TPS_PER_TOM = "tps_per_tom";
+
+        /**
+         * AI API provider type
+         */
+        public static final String AI_API_PROVIDER = "ai_api_provider";
+
+        /**
+         * AI API URL
+         */
+        public static final String AI_API_URL = "ai_api_url";
+
+        /**
+         * AI API key
+         */
+        public static final String AI_API_KEY = "ai_api_key";
+
+        /**
+         * AI API connection timeout in seconds
+         */
+        public static final String AI_API_CONNECTION_TIMEOUT = "ai_api_connection_timeout";
 
         private PropertyUpdatesMap() {  }
     }
@@ -749,6 +781,19 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TPS_PER_TOM
      *                            TPS_PER_TOM}: Sets the tps_per_tom value of
      *                            the conf.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_PROVIDER
+     *                            AI_API_PROVIDER}: AI API provider type
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_URL
+     *                            AI_API_URL}: AI API URL
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_KEY
+     *                            AI_API_KEY}: AI API key
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_CONNECTION_TIMEOUT
+     *                            AI_API_CONNECTION_TIMEOUT}: AI API connection
+     *                            timeout in seconds
      *                            </ul>
      * @param options  Optional parameters.
      *                 <ul>
@@ -974,6 +1019,18 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TPS_PER_TOM
      *         TPS_PER_TOM}: Sets the tps_per_tom value of the conf.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_PROVIDER
+     *         AI_API_PROVIDER}: AI API provider type
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_URL
+     *         AI_API_URL}: AI API URL
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_KEY
+     *         AI_API_KEY}: AI API key
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_CONNECTION_TIMEOUT
+     *         AI_API_CONNECTION_TIMEOUT}: AI API connection timeout in seconds
      *         </ul>
      * 
      */
@@ -1195,6 +1252,19 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TPS_PER_TOM
      *                            TPS_PER_TOM}: Sets the tps_per_tom value of
      *                            the conf.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_PROVIDER
+     *                            AI_API_PROVIDER}: AI API provider type
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_URL
+     *                            AI_API_URL}: AI API URL
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_KEY
+     *                            AI_API_KEY}: AI API key
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_CONNECTION_TIMEOUT
+     *                            AI_API_CONNECTION_TIMEOUT}: AI API connection
+     *                            timeout in seconds
      *                            </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

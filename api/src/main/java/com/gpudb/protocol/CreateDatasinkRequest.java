@@ -93,6 +93,12 @@ public class CreateDatasinkRequest implements IndexedRecord {
      * S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption key to encrypt or
      * decrypt data
      *         <li> {@link
+     * com.gpudb.protocol.CreateDatasinkRequest.Options#S3_ENCRYPTION_TYPE
+     * S3_ENCRYPTION_TYPE}: Server side encryption type
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasinkRequest.Options#S3_KMS_KEY_ID
+     * S3_KMS_KEY_ID}: KMS key
+     *         <li> {@link
      * com.gpudb.protocol.CreateDatasinkRequest.Options#HDFS_KERBEROS_KEYTAB
      * HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for the given HDFS
      * user.  This may be a KIFS file.
@@ -280,6 +286,16 @@ public class CreateDatasinkRequest implements IndexedRecord {
          * Customer encryption key to encrypt or decrypt data
          */
         public static final String S3_ENCRYPTION_CUSTOMER_KEY = "s3_encryption_customer_key";
+
+        /**
+         * Server side encryption type
+         */
+        public static final String S3_ENCRYPTION_TYPE = "s3_encryption_type";
+
+        /**
+         * KMS key
+         */
+        public static final String S3_KMS_KEY_ID = "s3_kms_key_id";
 
         /**
          * Kerberos keytab file location for the given HDFS user.  This may be
@@ -521,6 +537,12 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateDatasinkRequest.Options#S3_ENCRYPTION_CUSTOMER_KEY
      *                 S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption key to
      *                 encrypt or decrypt data
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#S3_ENCRYPTION_TYPE
+     *                 S3_ENCRYPTION_TYPE}: Server side encryption type
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#S3_KMS_KEY_ID
+     *                 S3_KMS_KEY_ID}: KMS key
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasinkRequest.Options#HDFS_KERBEROS_KEYTAB
      *                 HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for
@@ -775,6 +797,12 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *         S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption key to encrypt
      *         or decrypt data
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasinkRequest.Options#S3_ENCRYPTION_TYPE
+     *         S3_ENCRYPTION_TYPE}: Server side encryption type
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasinkRequest.Options#S3_KMS_KEY_ID
+     *         S3_KMS_KEY_ID}: KMS key
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateDatasinkRequest.Options#HDFS_KERBEROS_KEYTAB
      *         HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for the
      *         given HDFS user.  This may be a KIFS file.
@@ -966,6 +994,12 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateDatasinkRequest.Options#S3_ENCRYPTION_CUSTOMER_KEY
      *                 S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption key to
      *                 encrypt or decrypt data
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#S3_ENCRYPTION_TYPE
+     *                 S3_ENCRYPTION_TYPE}: Server side encryption type
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#S3_KMS_KEY_ID
+     *                 S3_KMS_KEY_ID}: KMS key
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasinkRequest.Options#HDFS_KERBEROS_KEYTAB
      *                 HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for

@@ -5014,6 +5014,19 @@ public class GPUdb extends GPUdbBase {
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TPS_PER_TOM
      *                            TPS_PER_TOM}: Sets the tps_per_tom value of
      *                            the conf.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_PROVIDER
+     *                            AI_API_PROVIDER}: AI API provider type
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_URL
+     *                            AI_API_URL}: AI API URL
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_KEY
+     *                            AI_API_KEY}: AI API key
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_CONNECTION_TIMEOUT
+     *                            AI_API_CONNECTION_TIMEOUT}: AI API connection
+     *                            timeout in seconds
      *                            </ul>
      * @param options  Optional parameters.
      *                 <ul>
@@ -6729,6 +6742,12 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.CreateDatasinkRequest.Options#S3_ENCRYPTION_CUSTOMER_KEY
      *                 S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption key to
      *                 encrypt or decrypt data
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#S3_ENCRYPTION_TYPE
+     *                 S3_ENCRYPTION_TYPE}: Server side encryption type
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#S3_KMS_KEY_ID
+     *                 S3_KMS_KEY_ID}: KMS key
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasinkRequest.Options#HDFS_KERBEROS_KEYTAB
      *                 HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for
@@ -9617,6 +9636,11 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#DELIMITED_TEXT
      *                 DELIMITED_TEXT}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#GDAL_CONFIGURATION_OPTIONS
+     *                 GDAL_CONFIGURATION_OPTIONS}: Comma separated list of
+     *                 gdal conf options, for the specific requets: key=value.
+     *                 The default value is ''.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#IGNORE_EXISTING_PK
      *                 IGNORE_EXISTING_PK}: Specifies the record collision
      *                 error-suppression policy for
@@ -12495,6 +12519,30 @@ public class GPUdb extends GPUdbBase {
      *                 GPUdb#showProcStatus(String, Map)}. If the number of
      *                 lines output exceeds the maximum, earlier lines are
      *                 discarded.  The default value is '100'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#EXECUTE_AT_STARTUP
+     *                 EXECUTE_AT_STARTUP}: If {@code true}, an instance of the
+     *                 proc will run when the database is started instead of
+     *                 running immediately. The {@code runId} can be retrieved
+     *                 using {@link GPUdb#showProc(String, Map)} and used in
+     *                 {@link GPUdb#showProcStatus(String, Map)}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#EXECUTE_AT_STARTUP_AS
+     *                 EXECUTE_AT_STARTUP_AS}: Sets the alternate user name to
+     *                 execute this proc instance as when {@code
+     *                 execute_at_startup} is {@code true}.  The default value
+     *                 is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -18575,6 +18623,11 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
      *                 DELIMITED_TEXT}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#GDAL_CONFIGURATION_OPTIONS
+     *                 GDAL_CONFIGURATION_OPTIONS}: Comma separated list of
+     *                 gdal conf options, for the specific requets: key=value.
+     *                 The default value is ''.
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#IGNORE_EXISTING_PK
      *                 IGNORE_EXISTING_PK}: Specifies the record collision
      *                 error-suppression policy for
@@ -19447,6 +19500,11 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DELIMITED_TEXT
      *                 DELIMITED_TEXT}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#GDAL_CONFIGURATION_OPTIONS
+     *                 GDAL_CONFIGURATION_OPTIONS}: Comma separated list of
+     *                 gdal conf options, for the specific requets: key=value.
+     *                 The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#IGNORE_EXISTING_PK
      *                 IGNORE_EXISTING_PK}: Specifies the record collision
@@ -20719,6 +20777,24 @@ public class GPUdb extends GPUdbBase {
      *                 instance(s) where a matching run tag was provided to
      *                 {@link GPUdb#executeProc(String, Map, Map, List, Map,
      *                 List, Map)}.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.KillProcRequest.Options#CLEAR_EXECUTE_AT_STARTUP
+     *                 CLEAR_EXECUTE_AT_STARTUP}: If {@code true}, kill and
+     *                 remove the instance of the proc matching the auto-start
+     *                 run ID that was created to run when the database is
+     *                 started. The auto-start run ID was returned from {@link
+     *                 GPUdb#executeProc(String, Map, Map, List, Map, List,
+     *                 Map)} and can be retrieved using {@link
+     *                 GPUdb#showProc(String, Map)}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.KillProcRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.KillProcRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.KillProcRequest.Options#FALSE FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -23100,7 +23176,7 @@ public class GPUdb extends GPUdbBase {
      *                         information. The name must refer to a currently
      *                         existing environment. If '*' or an empty value
      *                         is specified, information about all environments
-     *                         will be returned.
+     *                         will be returned.  The default value is ''.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -24213,6 +24289,23 @@ public class GPUdb extends GPUdbBase {
      *                 GET_SIZES}: If {@code true} then the number of records
      *                 in each table, along with a cumulative count, will be
      *                 returned; blank, otherwise.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#GET_CACHED_SIZES
+     *                 GET_CACHED_SIZES}: If {@code true} then the number of
+     *                 records in each table, along with a cumulative count,
+     *                 will be returned; blank, otherwise. This version will
+     *                 return the sizes cached at rank 0, which may be stale if
+     *                 there is a multihead insert occuring.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

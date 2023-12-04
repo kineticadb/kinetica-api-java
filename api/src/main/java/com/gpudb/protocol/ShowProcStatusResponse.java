@@ -73,6 +73,9 @@ public class ShowProcStatusResponse implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.ShowProcStatusResponse.OverallStatuses#ERROR ERROR}:
      * The proc instance failed with an error.
+     *         <li> {@link
+     * com.gpudb.protocol.ShowProcStatusResponse.OverallStatuses#NONE NONE}:
+     * The proc instance does not have a status, i.e. it has not yet ran.
      * </ul>
      * A set of string constants for the parameter {@code overallStatuses}.
      */
@@ -97,6 +100,11 @@ public class ShowProcStatusResponse implements IndexedRecord {
          * The proc instance failed with an error.
          */
         public static final String ERROR = "error";
+
+        /**
+         * The proc instance does not have a status, i.e. it has not yet ran.
+         */
+        public static final String NONE = "none";
 
         private OverallStatuses() {  }
     }
@@ -130,6 +138,11 @@ public class ShowProcStatusResponse implements IndexedRecord {
          * The proc instance failed with an error.
          */
         public static final String ERROR = "error";
+
+        /**
+         * The proc instance does not have a status, i.e. it has not yet ran.
+         */
+        public static final String NONE = "none";
 
         private Statuses() {  }
     }
@@ -374,6 +387,10 @@ public class ShowProcStatusResponse implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.ShowProcStatusResponse.OverallStatuses#ERROR
      *         ERROR}: The proc instance failed with an error.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowProcStatusResponse.OverallStatuses#NONE
+     *         NONE}: The proc instance does not have a status, i.e. it has not
+     *         yet ran.
      *         </ul>
      * 
      */
@@ -406,6 +423,10 @@ public class ShowProcStatusResponse implements IndexedRecord {
      *                                 <li> {@link
      *                         com.gpudb.protocol.ShowProcStatusResponse.OverallStatuses#ERROR
      *                         ERROR}: The proc instance failed with an error.
+     *                                 <li> {@link
+     *                         com.gpudb.protocol.ShowProcStatusResponse.OverallStatuses#NONE
+     *                         NONE}: The proc instance does not have a status,
+     *                         i.e. it has not yet ran.
      *                         </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

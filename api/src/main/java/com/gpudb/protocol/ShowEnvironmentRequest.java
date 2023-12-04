@@ -110,7 +110,7 @@ public class ShowEnvironmentRequest implements IndexedRecord {
      *                         information. The name must refer to a currently
      *                         existing environment. If '*' or an empty value
      *                         is specified, information about all environments
-     *                         will be returned.
+     *                         will be returned.  The default value is ''.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -146,7 +146,7 @@ public class ShowEnvironmentRequest implements IndexedRecord {
      * @return Name of the environment on which to retrieve information. The
      *         name must refer to a currently existing environment. If '*' or
      *         an empty value is specified, information about all environments
-     *         will be returned.
+     *         will be returned.  The default value is ''.
      * 
      */
     public String getEnvironmentName() {
@@ -159,7 +159,7 @@ public class ShowEnvironmentRequest implements IndexedRecord {
      *                         information. The name must refer to a currently
      *                         existing environment. If '*' or an empty value
      *                         is specified, information about all environments
-     *                         will be returned.
+     *                         will be returned.  The default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

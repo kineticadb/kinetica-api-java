@@ -50,6 +50,22 @@ public class KillProcRequest implements IndexedRecord {
      * not specified, kill the proc instance(s) where a matching run tag was
      * provided to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.
      * The default value is ''.
+     *         <li> {@link
+     * com.gpudb.protocol.KillProcRequest.Options#CLEAR_EXECUTE_AT_STARTUP
+     * CLEAR_EXECUTE_AT_STARTUP}: If {@code true}, kill and remove the instance
+     * of the proc matching the auto-start run ID that was created to run when
+     * the database is started. The auto-start run ID was returned from {@link
+     * com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} and can be retrieved
+     * using {@link com.gpudb.GPUdb#showProc(ShowProcRequest)}.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.KillProcRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.KillProcRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.KillProcRequest.Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -66,6 +82,26 @@ public class KillProcRequest implements IndexedRecord {
          * is ''.
          */
         public static final String RUN_TAG = "run_tag";
+
+        /**
+         * If {@code true}, kill and remove the instance of the proc matching
+         * the auto-start run ID that was created to run when the database is
+         * started. The auto-start run ID was returned from {@link
+         * com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} and can be
+         * retrieved using {@link com.gpudb.GPUdb#showProc(ShowProcRequest)}.
+         * Supported values:
+         * <ul>
+         *         <li> {@link com.gpudb.protocol.KillProcRequest.Options#TRUE
+         * TRUE}
+         *         <li> {@link com.gpudb.protocol.KillProcRequest.Options#FALSE
+         * FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.KillProcRequest.Options#FALSE FALSE}.
+         */
+        public static final String CLEAR_EXECUTE_AT_STARTUP = "clear_execute_at_startup";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
 
         private Options() {  }
     }
@@ -102,6 +138,24 @@ public class KillProcRequest implements IndexedRecord {
      *                 instance(s) where a matching run tag was provided to
      *                 {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.
      *                 The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.KillProcRequest.Options#CLEAR_EXECUTE_AT_STARTUP
+     *                 CLEAR_EXECUTE_AT_STARTUP}: If {@code true}, kill and
+     *                 remove the instance of the proc matching the auto-start
+     *                 run ID that was created to run when the database is
+     *                 started. The auto-start run ID was returned from {@link
+     *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} and can
+     *                 be retrieved using {@link
+     *                 com.gpudb.GPUdb#showProc(ShowProcRequest)}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.KillProcRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.KillProcRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.KillProcRequest.Options#FALSE FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -152,6 +206,24 @@ public class KillProcRequest implements IndexedRecord {
      *         a matching run tag was provided to {@link
      *         com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.  The default
      *         value is ''.
+     *                 <li> {@link
+     *         com.gpudb.protocol.KillProcRequest.Options#CLEAR_EXECUTE_AT_STARTUP
+     *         CLEAR_EXECUTE_AT_STARTUP}: If {@code true}, kill and remove the
+     *         instance of the proc matching the auto-start run ID that was
+     *         created to run when the database is started. The auto-start run
+     *         ID was returned from {@link
+     *         com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} and can be
+     *         retrieved using {@link
+     *         com.gpudb.GPUdb#showProc(ShowProcRequest)}.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.KillProcRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.KillProcRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.KillProcRequest.Options#FALSE FALSE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -174,6 +246,24 @@ public class KillProcRequest implements IndexedRecord {
      *                 instance(s) where a matching run tag was provided to
      *                 {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.
      *                 The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.KillProcRequest.Options#CLEAR_EXECUTE_AT_STARTUP
+     *                 CLEAR_EXECUTE_AT_STARTUP}: If {@code true}, kill and
+     *                 remove the instance of the proc matching the auto-start
+     *                 run ID that was created to run when the database is
+     *                 started. The auto-start run ID was returned from {@link
+     *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} and can
+     *                 be retrieved using {@link
+     *                 com.gpudb.GPUdb#showProc(ShowProcRequest)}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.KillProcRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.KillProcRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.KillProcRequest.Options#FALSE FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

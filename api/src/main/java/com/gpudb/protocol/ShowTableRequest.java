@@ -94,6 +94,21 @@ public class ShowTableRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}.
      *         <li> {@link
+     * com.gpudb.protocol.ShowTableRequest.Options#GET_CACHED_SIZES
+     * GET_CACHED_SIZES}: If {@code true} then the number of records in each
+     * table, along with a cumulative count, will be returned; blank,
+     * otherwise. This version will return the sizes cached at rank 0, which
+     * may be stale if there is a multihead insert occuring.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.ShowTableRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.ShowTableRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}.
+     *         <li> {@link
      * com.gpudb.protocol.ShowTableRequest.Options#SHOW_CHILDREN
      * SHOW_CHILDREN}: If {@code tableName} is a schema, then {@code true} will
      * return information about the tables and views in the schema, and {@code
@@ -174,6 +189,23 @@ public class ShowTableRequest implements IndexedRecord {
          * com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}.
          */
         public static final String GET_SIZES = "get_sizes";
+
+        /**
+         * If {@code true} then the number of records in each table, along with
+         * a cumulative count, will be returned; blank, otherwise. This version
+         * will return the sizes cached at rank 0, which may be stale if there
+         * is a multihead insert occuring.
+         * Supported values:
+         * <ul>
+         *         <li> {@link com.gpudb.protocol.ShowTableRequest.Options#TRUE
+         * TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}.
+         */
+        public static final String GET_CACHED_SIZES = "get_cached_sizes";
 
         /**
          * If {@code tableName} is a schema, then {@code true} will return
@@ -269,6 +301,23 @@ public class ShowTableRequest implements IndexedRecord {
      *                 GET_SIZES}: If {@code true} then the number of records
      *                 in each table, along with a cumulative count, will be
      *                 returned; blank, otherwise.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#GET_CACHED_SIZES
+     *                 GET_CACHED_SIZES}: If {@code true} then the number of
+     *                 records in each table, along with a cumulative count,
+     *                 will be returned; blank, otherwise. This version will
+     *                 return the sizes cached at rank 0, which may be stale if
+     *                 there is a multihead insert occuring.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -397,6 +446,22 @@ public class ShowTableRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}.
      *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableRequest.Options#GET_CACHED_SIZES
+     *         GET_CACHED_SIZES}: If {@code true} then the number of records in
+     *         each table, along with a cumulative count, will be returned;
+     *         blank, otherwise. This version will return the sizes cached at
+     *         rank 0, which may be stale if there is a multihead insert
+     *         occuring.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.ShowTableRequest.Options#SHOW_CHILDREN
      *         SHOW_CHILDREN}: If {@code tableName} is a schema, then {@code
      *         true} will return information about the tables and views in the
@@ -470,6 +535,23 @@ public class ShowTableRequest implements IndexedRecord {
      *                 GET_SIZES}: If {@code true} then the number of records
      *                 in each table, along with a cumulative count, will be
      *                 returned; blank, otherwise.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#GET_CACHED_SIZES
+     *                 GET_CACHED_SIZES}: If {@code true} then the number of
+     *                 records in each table, along with a cumulative count,
+     *                 will be returned; blank, otherwise. This version will
+     *                 return the sizes cached at rank 0, which may be stale if
+     *                 there is a multihead insert occuring.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
