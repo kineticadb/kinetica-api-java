@@ -2,6 +2,14 @@
 
 ## Version 7.0
 
+### Version 7.0.20.10 - 2023-12-06
+
+#### Changed
+-   Upgraded Avro library from 1.11.1 to 1.11.3
+-   Upgraded Snappy library from 1.1.1.3 to 1.1.10.4
+-   Upgraded Logback library from 1.2.10 to 1.2.13
+
+
 ### Version 7.0.20.9 - 2022-11-30
 
 #### Added
