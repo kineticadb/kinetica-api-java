@@ -2,11 +2,19 @@
 
 ## Version 7.1
 
+### Version 7.1.9.13 - 2023-12-07
+
+#### Changed
+-   Upgraded Logback library from 1.2.10 to 1.2.13
+
+
 ### Version 7.1.9.12 - 2023-12-03
 
 #### Added
 -   `GPUdbSqlIterator` class for easily looping over the records of a SQL result
     set.
+
+#### Changed
 -   Upgraded Avro library from 1.11.1 to 1.11.3
 -   Upgraded Snappy library from 1.1.10.1 to 1.1.10.4
 -   Upgraded JSON library from 20230227 to 20231013
@@ -481,6 +489,50 @@
 
 ## Version 7.0
 
+### Version 7.0.20.10 - 2023-12-06
+
+#### Changed
+-   Upgraded Avro library from 1.11.1 to 1.11.3
+-   Upgraded Snappy library from 1.1.1.3 to 1.1.10.4
+-   Upgraded Logback library from 1.2.10 to 1.2.13
+
+
+### Version 7.0.20.9 - 2022-11-30
+
+#### Added
+-   Improved reporting of permissions errors during `BulkInserter` insert
+
+
+### Version 7.0.20.8 - 2022-09-08
+
+#### Changed
+-   Updated Avro version to 1.11.1
+
+
+### Version 7.0.20.7 - 2022-07-28
+
+#### Changed
+-   Improved error reporting of environment-related issues during inserts
+
+#### Fixed
+-   Logger initialization issue
+
+
+
+### Version 7.0.20.6 - 2022-07-25
+
+#### Fixed
+-   Issue with thread over-accumulation when inserting data
+
+
+### Version 7.0.20.5 - 2022-06-08
+
+#### Security
+-   Updated the following dependency package version to eliminate known
+    security risks and other issues:
+    -  org.apache.avro     1.10.1  -> 1.11.0
+
+
 ### Version 7.0.20.4 - 2021-02-02
 
 #### Added
@@ -584,7 +636,6 @@
 
 ### Version 7.0.18.0 - 2020-07-28
 
-
 #### Note
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
 
@@ -628,10 +679,19 @@
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
 
 
-### Version 7.0.13.0 - TBD
+
+### Version 7.0.14.0 - 2020-03-25
 
 #### Note
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
+
+### Version 7.0.13.0 - 2020-03-10
+
+#### Note
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
 
 
 ### Version 7.0.12.1 - 2020-03-04
