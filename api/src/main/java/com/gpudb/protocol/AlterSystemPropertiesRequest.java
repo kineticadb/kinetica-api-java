@@ -140,6 +140,9 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * MAX_GET_RECORDS_SIZE}: The maximum number of records the database will
      * serve for a given data retrieval call.  The default value is '20000'.
      *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MAX_GRBC_BATCH_SIZE
+     * MAX_GRBC_BATCH_SIZE}: <DEVELOPER>
+     *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_AUDIT
      * ENABLE_AUDIT}: Enable or disable auditing.
      *         <li> {@link
@@ -348,6 +351,11 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          * data retrieval call.  The default value is '20000'.
          */
         public static final String MAX_GET_RECORDS_SIZE = "max_get_records_size";
+
+        /**
+         * <DEVELOPER>
+         */
+        public static final String MAX_GRBC_BATCH_SIZE = "max_grbc_batch_size";
 
         /**
          * Enable or disable auditing.
@@ -690,6 +698,9 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            data retrieval call.  The default value is
      *                            '20000'.
      *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MAX_GRBC_BATCH_SIZE
+     *                            MAX_GRBC_BATCH_SIZE}: <DEVELOPER>
+     *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_AUDIT
      *                            ENABLE_AUDIT}: Enable or disable auditing.
      *                                    <li> {@link
@@ -941,6 +952,9 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         database will serve for a given data retrieval call.  The
      *         default value is '20000'.
      *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MAX_GRBC_BATCH_SIZE
+     *         MAX_GRBC_BATCH_SIZE}: <DEVELOPER>
+     *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_AUDIT
      *         ENABLE_AUDIT}: Enable or disable auditing.
      *                 <li> {@link
@@ -1160,6 +1174,9 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            records the database will serve for a given
      *                            data retrieval call.  The default value is
      *                            '20000'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MAX_GRBC_BATCH_SIZE
+     *                            MAX_GRBC_BATCH_SIZE}: <DEVELOPER>
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_AUDIT
      *                            ENABLE_AUDIT}: Enable or disable auditing.

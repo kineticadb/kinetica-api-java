@@ -2,6 +2,12 @@
 
 ## Version 7.1
 
+### Version 7.1.9.14 - 2023-12-21
+
+#### Changed
+-   Aligned read timeouts in cloud & non-cloud environments
+
+
 ### Version 7.1.9.13 - 2023-12-07
 
 #### Changed

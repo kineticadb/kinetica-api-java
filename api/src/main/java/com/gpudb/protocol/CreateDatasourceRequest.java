@@ -218,6 +218,14 @@ public class CreateDatasourceRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#SCHEMA_REGISTRY_LOCATION
+     * SCHEMA_REGISTRY_LOCATION}: Location of Confluent Schema registry in
+     * '[storage_path[:storage_port]]' format.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#SCHEMA_REGISTRY_CREDENTIAL
+     * SCHEMA_REGISTRY_CREDENTIAL}: Confluent Schema registry Credential object
+     * name.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -441,6 +449,17 @@ public class CreateDatasourceRequest implements IndexedRecord {
          */
         public static final String USE_HTTPS = "use_https";
 
+        /**
+         * Location of Confluent Schema registry in
+         * '[storage_path[:storage_port]]' format.
+         */
+        public static final String SCHEMA_REGISTRY_LOCATION = "schema_registry_location";
+
+        /**
+         * Confluent Schema registry Credential object name.
+         */
+        public static final String SCHEMA_REGISTRY_CREDENTIAL = "schema_registry_credential";
+
         private Options() {  }
     }
 
@@ -471,7 +490,8 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                  'storage_provider_type://[storage_path[:storage_port]]'
      *                  format.
      *                  Supported storage provider types are
-     *                  'azure','gcs','hdfs','jdbc','kafka' and 's3'.
+     *                  'azure','gcs','hdfs','jdbc','kafka', 'confluent' and
+     *                  's3'.
      * @param userName  Name of the remote system user; may be an empty string
      * @param password  Password for the remote system user; may be an empty
      *                  string
@@ -680,6 +700,14 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
      *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#SCHEMA_REGISTRY_LOCATION
+     *                 SCHEMA_REGISTRY_LOCATION}: Location of Confluent Schema
+     *                 registry in '[storage_path[:storage_port]]' format.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#SCHEMA_REGISTRY_CREDENTIAL
+     *                 SCHEMA_REGISTRY_CREDENTIAL}: Confluent Schema registry
+     *                 Credential object name.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -718,7 +746,7 @@ public class CreateDatasourceRequest implements IndexedRecord {
      * @return Location of the remote storage in
      *         'storage_provider_type://[storage_path[:storage_port]]' format.
      *         Supported storage provider types are
-     *         'azure','gcs','hdfs','jdbc','kafka' and 's3'.
+     *         'azure','gcs','hdfs','jdbc','kafka', 'confluent' and 's3'.
      * 
      */
     public String getLocation() {
@@ -731,7 +759,8 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                  'storage_provider_type://[storage_path[:storage_port]]'
      *                  format.
      *                  Supported storage provider types are
-     *                  'azure','gcs','hdfs','jdbc','kafka' and 's3'.
+     *                  'azure','gcs','hdfs','jdbc','kafka', 'confluent' and
+     *                  's3'.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -964,6 +993,14 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#SCHEMA_REGISTRY_LOCATION
+     *         SCHEMA_REGISTRY_LOCATION}: Location of Confluent Schema registry
+     *         in '[storage_path[:storage_port]]' format.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#SCHEMA_REGISTRY_CREDENTIAL
+     *         SCHEMA_REGISTRY_CREDENTIAL}: Confluent Schema registry
+     *         Credential object name.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1179,6 +1216,14 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
      *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#SCHEMA_REGISTRY_LOCATION
+     *                 SCHEMA_REGISTRY_LOCATION}: Location of Confluent Schema
+     *                 registry in '[storage_path[:storage_port]]' format.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#SCHEMA_REGISTRY_CREDENTIAL
+     *                 SCHEMA_REGISTRY_CREDENTIAL}: Confluent Schema registry
+     *                 Credential object name.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
