@@ -78,6 +78,8 @@ public class CreateCredentialRequest implements IndexedRecord {
      * JDBC}
      *         <li> {@link
      * com.gpudb.protocol.CreateCredentialRequest.Type#KAFKA KAFKA}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateCredentialRequest.Type#CONFLUENT CONFLUENT}
      * </ul>
      * A set of string constants for the parameter {@code type}.
      */
@@ -94,6 +96,7 @@ public class CreateCredentialRequest implements IndexedRecord {
         public static final String HDFS = "hdfs";
         public static final String JDBC = "jdbc";
         public static final String KAFKA = "kafka";
+        public static final String CONFLUENT = "confluent";
 
         private Type() {  }
     }
@@ -161,6 +164,9 @@ public class CreateCredentialRequest implements IndexedRecord {
      *                      <li> {@link
      *              com.gpudb.protocol.CreateCredentialRequest.Type#KAFKA
      *              KAFKA}
+     *                      <li> {@link
+     *              com.gpudb.protocol.CreateCredentialRequest.Type#CONFLUENT
+     *              CONFLUENT}
      *              </ul>
      * @param identity  User of the credential to be created.
      * @param secret  Password of the credential to be created.
@@ -239,6 +245,9 @@ public class CreateCredentialRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateCredentialRequest.Type#JDBC JDBC}
      *                 <li> {@link
      *         com.gpudb.protocol.CreateCredentialRequest.Type#KAFKA KAFKA}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateCredentialRequest.Type#CONFLUENT
+     *         CONFLUENT}
      *         </ul>
      * 
      */
@@ -285,6 +294,9 @@ public class CreateCredentialRequest implements IndexedRecord {
      *                      <li> {@link
      *              com.gpudb.protocol.CreateCredentialRequest.Type#KAFKA
      *              KAFKA}
+     *                      <li> {@link
+     *              com.gpudb.protocol.CreateCredentialRequest.Type#CONFLUENT
+     *              CONFLUENT}
      *              </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

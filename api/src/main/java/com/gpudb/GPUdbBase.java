@@ -30,6 +30,7 @@ import org.apache.hc.client5.http.ssl.TrustAllStrategy;
 import org.apache.hc.core5.http.*;
 import org.apache.hc.core5.http.config.Registry;
 import org.apache.hc.core5.http.config.RegistryBuilder;
+import org.apache.hc.core5.http.io.SocketConfig;
 import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
@@ -194,7 +195,7 @@ public abstract class GPUdbBase {
     // a connection from the HTTP connection pool. Right now it is
     // set to 3 minutes which is the default as per the Apache
     // HttpClient RequestConfig.Builder javadocs.
-    private static final int DEFAULT_CONNECTION_REQUEST_TIMEOUT = 3; // Minutes
+    private static final int DEFAULT_CONNECTION_REQUEST_TIMEOUT = 5; // Minutes
 
     // JSON parser
     private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
@@ -2553,20 +2554,38 @@ public abstract class GPUdbBase {
         connectionManager.setMaxTotal( options.getMaxTotalConnections() );
         connectionManager.setDefaultMaxPerRoute( options.getMaxConnectionsPerHost() );
 
+        // SO timeout here controls read timeouts within cloud cluster
+        //   environments, and must be set explicitly
+        connectionManager.setDefaultSocketConfig(SocketConfig.custom()
+            .setSoTimeout(Timeout.ofMilliseconds(options.getTimeout()))
+            .build());
+        
+        GPUdbLogger.debug("Setting SO timeout to <" + options.getTimeout() + "> ms");
+
+        // Socket timeout here controls read timeouts within non-cloud cluster
+        //   environments, and must be set explicitly
+        final int connectionTtlMinutes = 1;
         connectionManager.setDefaultConnectionConfig(ConnectionConfig.custom()
             .setConnectTimeout(Timeout.ofMilliseconds(options.getServerConnectionTimeout()))
             .setSocketTimeout(Timeout.ofMilliseconds(options.getTimeout()))
             .setValidateAfterInactivity( TimeValue.ofMilliseconds( options.getConnectionInactivityValidationTimeout() ))
-            .setTimeToLive(TimeValue.ofMinutes(1))
+            .setTimeToLive(TimeValue.ofMinutes(connectionTtlMinutes))
             .build());
+        
+        GPUdbLogger.debug("Setting connect timeout to <" + options.getServerConnectionTimeout() + "> ms");
+        GPUdbLogger.debug("Setting socket timeout to <" + options.getTimeout() + "> ms");
+        GPUdbLogger.debug("Setting inactivity validation timeout to <" + options.getConnectionInactivityValidationTimeout() + "> ms");
+        GPUdbLogger.debug("Setting time-to-live to <" + (connectionTtlMinutes * 60000) + "> ms");
 
-        // ToDo - check the config n the next line - commented for now
-//        connectionManager.setDefaultSocketConfig(SocketConfig.custom().setSoTimeout(Timeout.ofMilliseconds(options.getServerConnectionTimeout())).build());
-
-        // Set the timeout defaults
+        // Response timeout here generally trumps both the socket timeouts above
+        //   environments, and must be set explicitly
         RequestConfig requestConfig = RequestConfig.custom()
-                .setConnectionRequestTimeout( Timeout.ofMinutes( DEFAULT_CONNECTION_REQUEST_TIMEOUT ) )
-                .build();
+            .setConnectionRequestTimeout( Timeout.ofMinutes( DEFAULT_CONNECTION_REQUEST_TIMEOUT ) )
+            .setResponseTimeout(Timeout.ofMilliseconds(options.getTimeout()))
+            .build();
+        
+        GPUdbLogger.debug("Setting connection request timeout to <" + (DEFAULT_CONNECTION_REQUEST_TIMEOUT * 60000) + "> ms");
+        GPUdbLogger.debug("Setting response timeout to <" + options.getTimeout() + "> ms");
 
         // Build the http client.
         this.httpClient = HttpClients.custom()
@@ -3328,10 +3347,11 @@ public abstract class GPUdbBase {
         // Set the timeout explicitly if it is different from the default value
         if ( timeout != this.timeout ) {
             RequestConfig requestConfigWithCustomTimeout = RequestConfig.custom()
-                .setConnectTimeout( Timeout.ofMilliseconds(timeout ))
-                .setConnectionRequestTimeout( Timeout.ofMilliseconds(timeout ))
+                .setConnectionRequestTimeout(Timeout.ofMinutes( DEFAULT_CONNECTION_REQUEST_TIMEOUT ))
+                .setResponseTimeout(Timeout.ofMilliseconds(timeout))
                 .build();
             connection.setConfig( requestConfigWithCustomTimeout );
+            GPUdbLogger.debug("Setting response timeout to <" + timeout + "> ms");
         }
 
         // Set the user defined headers
@@ -3384,6 +3404,10 @@ public abstract class GPUdbBase {
         }
         connection.setConnectTimeout( timeout );
         connection.setReadTimeout( timeout );
+
+        // Only log when overriding
+        if (timeout != this.timeout)
+            GPUdbLogger.debug("Setting HTTP connect & read timeouts to <" + timeout + "> ms");
 
         // Set the request type
         connection.setRequestMethod("POST");
@@ -5955,6 +5979,9 @@ public abstract class GPUdbBase {
 
             // Execute the request
             try {
+                if (GPUdbLogger.isTraceEnabled())
+                    GPUdbLogger.trace("Executing <" + request.toString() + ">");
+
                 postResponse = this.httpClient.executeOpen( host, postRequest, null );
             } catch ( javax.net.ssl.SSLException ex) {
                 String errorMsg = null;
@@ -5970,6 +5997,7 @@ public abstract class GPUdbBase {
             } catch (Exception ex) {
                 // Trigger an HA failover at the caller level
                 GPUdbLogger.error( ex, "Throwing exit exception due to ");
+//                ex.printStackTrace();
                 throw new GPUdbExitException("Error submitting endpoint request: " + ExceptionUtils.getRootCauseMessage(ex));
             }
 

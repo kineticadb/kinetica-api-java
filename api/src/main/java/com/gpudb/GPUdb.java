@@ -4923,6 +4923,9 @@ public class GPUdb extends GPUdbBase {
      *                            data retrieval call.  The default value is
      *                            '20000'.
      *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MAX_GRBC_BATCH_SIZE
+     *                            MAX_GRBC_BATCH_SIZE}: <DEVELOPER>
+     *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_AUDIT
      *                            ENABLE_AUDIT}: Enable or disable auditing.
      *                                    <li> {@link
@@ -6628,6 +6631,9 @@ public class GPUdb extends GPUdbBase {
      *                      <li> {@link
      *              com.gpudb.protocol.CreateCredentialRequest.Type#KAFKA
      *              KAFKA}
+     *                      <li> {@link
+     *              com.gpudb.protocol.CreateCredentialRequest.Type#CONFLUENT
+     *              CONFLUENT}
      *              </ul>
      * @param identity  User of the credential to be created.
      * @param secret  Password of the credential to be created.
@@ -6945,7 +6951,8 @@ public class GPUdb extends GPUdbBase {
      *                  'storage_provider_type://[storage_path[:storage_port]]'
      *                  format.
      *                  Supported storage provider types are
-     *                  'azure','gcs','hdfs','jdbc','kafka' and 's3'.
+     *                  'azure','gcs','hdfs','jdbc','kafka', 'confluent' and
+     *                  's3'.
      * @param userName  Name of the remote system user; may be an empty string
      * @param password  Password for the remote system user; may be an empty
      *                  string
@@ -7154,6 +7161,14 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
      *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#SCHEMA_REGISTRY_LOCATION
+     *                 SCHEMA_REGISTRY_LOCATION}: Location of Confluent Schema
+     *                 registry in '[storage_path[:storage_port]]' format.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#SCHEMA_REGISTRY_CREDENTIAL
+     *                 SCHEMA_REGISTRY_CREDENTIAL}: Confluent Schema registry
+     *                 Credential object name.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -9834,6 +9849,15 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#MANUAL
      *                 MANUAL}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_ID
+     *                 SCHEMA_REGISTRY_SCHEMA_ID}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_NAME
+     *                 SCHEMA_REGISTRY_SCHEMA_NAME}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_VERSION
+     *                 SCHEMA_REGISTRY_SCHEMA_VERSION}
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SHARD_KEYS
      *                 SHARD_KEYS}: Optional: comma separated list of column
@@ -18796,6 +18820,15 @@ public class GPUdb extends GPUdbBase {
      *                 names, to set as primary keys, when not specified in the
      *                 type.  The default value is ''.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SCHEMA_REGISTRY_SCHEMA_ID
+     *                 SCHEMA_REGISTRY_SCHEMA_ID}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SCHEMA_REGISTRY_SCHEMA_NAME
+     *                 SCHEMA_REGISTRY_SCHEMA_NAME}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SCHEMA_REGISTRY_SCHEMA_VERSION
+     *                 SCHEMA_REGISTRY_SCHEMA_VERSION}
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SHARD_KEYS
      *                 SHARD_KEYS}: Optional: comma separated list of column
      *                 names, to set as primary keys, when not specified in the
@@ -19646,6 +19679,15 @@ public class GPUdb extends GPUdbBase {
      *                 PRIMARY_KEYS}: Optional: comma separated list of column
      *                 names, to set as primary keys, when not specified in the
      *                 type.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SCHEMA_REGISTRY_SCHEMA_ID
+     *                 SCHEMA_REGISTRY_SCHEMA_ID}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SCHEMA_REGISTRY_SCHEMA_NAME
+     *                 SCHEMA_REGISTRY_SCHEMA_NAME}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SCHEMA_REGISTRY_SCHEMA_VERSION
+     *                 SCHEMA_REGISTRY_SCHEMA_VERSION}
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SHARD_KEYS
      *                 SHARD_KEYS}: Optional: comma separated list of column

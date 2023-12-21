@@ -903,6 +903,15 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#MANUAL MANUAL}.
      *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_ID
+     * SCHEMA_REGISTRY_SCHEMA_ID}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_NAME
+     * SCHEMA_REGISTRY_SCHEMA_NAME}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_VERSION
+     * SCHEMA_REGISTRY_SCHEMA_VERSION}
+     *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#SHARD_KEYS
      * SHARD_KEYS}: Optional: comma separated list of column names, to set as
      * primary keys, when not specified in the type.  The default value is ''.
@@ -1763,6 +1772,9 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * com.gpudb.GPUdb#alterTable(AlterTableRequest)} on this table.
          */
         public static final String ON_START = "on_start";
+        public static final String SCHEMA_REGISTRY_SCHEMA_ID = "schema_registry_schema_id";
+        public static final String SCHEMA_REGISTRY_SCHEMA_NAME = "schema_registry_schema_name";
+        public static final String SCHEMA_REGISTRY_SCHEMA_VERSION = "schema_registry_schema_version";
 
         /**
          * Optional: comma separated list of column names, to set as primary
@@ -2740,6 +2752,15 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#MANUAL
      *                 MANUAL}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_ID
+     *                 SCHEMA_REGISTRY_SCHEMA_ID}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_NAME
+     *                 SCHEMA_REGISTRY_SCHEMA_NAME}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_VERSION
+     *                 SCHEMA_REGISTRY_SCHEMA_VERSION}
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SHARD_KEYS
      *                 SHARD_KEYS}: Optional: comma separated list of column
@@ -3974,6 +3995,15 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#MANUAL
      *         MANUAL}.
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_ID
+     *         SCHEMA_REGISTRY_SCHEMA_ID}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_NAME
+     *         SCHEMA_REGISTRY_SCHEMA_NAME}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_VERSION
+     *         SCHEMA_REGISTRY_SCHEMA_VERSION}
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#SHARD_KEYS
      *         SHARD_KEYS}: Optional: comma separated list of column names, to
      *         set as primary keys, when not specified in the type.  The
@@ -4644,6 +4674,15 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#MANUAL
      *                 MANUAL}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_ID
+     *                 SCHEMA_REGISTRY_SCHEMA_ID}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_NAME
+     *                 SCHEMA_REGISTRY_SCHEMA_NAME}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_VERSION
+     *                 SCHEMA_REGISTRY_SCHEMA_VERSION}
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SHARD_KEYS
      *                 SHARD_KEYS}: Optional: comma separated list of column

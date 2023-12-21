@@ -807,6 +807,15 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * PRIMARY_KEYS}: Optional: comma separated list of column names, to set as
      * primary keys, when not specified in the type.  The default value is ''.
      *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SCHEMA_REGISTRY_SCHEMA_ID
+     * SCHEMA_REGISTRY_SCHEMA_ID}
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SCHEMA_REGISTRY_SCHEMA_NAME
+     * SCHEMA_REGISTRY_SCHEMA_NAME}
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SCHEMA_REGISTRY_SCHEMA_VERSION
+     * SCHEMA_REGISTRY_SCHEMA_VERSION}
+     *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SHARD_KEYS
      * SHARD_KEYS}: Optional: comma separated list of column names, to set as
      * primary keys, when not specified in the type.  The default value is ''.
@@ -1548,6 +1557,9 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * keys, when not specified in the type.  The default value is ''.
          */
         public static final String PRIMARY_KEYS = "primary_keys";
+        public static final String SCHEMA_REGISTRY_SCHEMA_ID = "schema_registry_schema_id";
+        public static final String SCHEMA_REGISTRY_SCHEMA_NAME = "schema_registry_schema_name";
+        public static final String SCHEMA_REGISTRY_SCHEMA_VERSION = "schema_registry_schema_version";
 
         /**
          * Optional: comma separated list of column names, to set as primary
@@ -2410,6 +2422,15 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 PRIMARY_KEYS}: Optional: comma separated list of column
      *                 names, to set as primary keys, when not specified in the
      *                 type.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SCHEMA_REGISTRY_SCHEMA_ID
+     *                 SCHEMA_REGISTRY_SCHEMA_ID}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SCHEMA_REGISTRY_SCHEMA_NAME
+     *                 SCHEMA_REGISTRY_SCHEMA_NAME}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SCHEMA_REGISTRY_SCHEMA_VERSION
+     *                 SCHEMA_REGISTRY_SCHEMA_VERSION}
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SHARD_KEYS
      *                 SHARD_KEYS}: Optional: comma separated list of column
@@ -3504,6 +3525,15 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         to set as primary keys, when not specified in the type.  The
      *         default value is ''.
      *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SCHEMA_REGISTRY_SCHEMA_ID
+     *         SCHEMA_REGISTRY_SCHEMA_ID}
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SCHEMA_REGISTRY_SCHEMA_NAME
+     *         SCHEMA_REGISTRY_SCHEMA_NAME}
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SCHEMA_REGISTRY_SCHEMA_VERSION
+     *         SCHEMA_REGISTRY_SCHEMA_VERSION}
+     *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SHARD_KEYS
      *         SHARD_KEYS}: Optional: comma separated list of column names, to
      *         set as primary keys, when not specified in the type.  The
@@ -4084,6 +4114,15 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 PRIMARY_KEYS}: Optional: comma separated list of column
      *                 names, to set as primary keys, when not specified in the
      *                 type.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SCHEMA_REGISTRY_SCHEMA_ID
+     *                 SCHEMA_REGISTRY_SCHEMA_ID}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SCHEMA_REGISTRY_SCHEMA_NAME
+     *                 SCHEMA_REGISTRY_SCHEMA_NAME}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SCHEMA_REGISTRY_SCHEMA_VERSION
+     *                 SCHEMA_REGISTRY_SCHEMA_VERSION}
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SHARD_KEYS
      *                 SHARD_KEYS}: Optional: comma separated list of column

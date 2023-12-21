@@ -113,6 +113,16 @@ public class VisualizeImageRequest implements IndexedRecord {
 
         public static final String SYMBOLCODE = "symbolcode";
 
+        public static final String DASH = "dash";
+
+        public static final String PIPE = "pipe";
+
+        public static final String PLUS = "plus";
+
+        public static final String HOLLOWSQUAREWITHPLUS = "hollowsquarewithplus";
+
+        public static final String DOT = "dot";
+
         public static final String SYMBOLROTATIONS = "symbolrotations";
 
         public static final String SHAPELINEWIDTHS = "shapelinewidths";
