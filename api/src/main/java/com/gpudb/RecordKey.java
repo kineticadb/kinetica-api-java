@@ -13,6 +13,9 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Helper class for building shard keys
+ */
 final class RecordKey {
     private static final Pattern DATE_REGEX = Pattern.compile("\\A(\\d{4})-(\\d{2})-(\\d{2})$");
     private static final Pattern DATETIME_REGEX = Pattern.compile("\\A(\\d{4})-(\\d{2})-(\\d{2}) (\\d{1,2}):(\\d{2}):(\\d{2})(?:\\.(\\d{3}))?$");

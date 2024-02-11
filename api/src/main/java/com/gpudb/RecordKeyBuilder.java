@@ -138,8 +138,13 @@ final class RecordKeyBuilder<T> {
                     size += 256;
                     break;
 
+                // The following are not allowed as shard keys
+                case ARRAY:
+                case JSON:
+                case VECTOR:
+                case WKB:
+                case WKT:
                 default:
-                    // WKT, WKB, and bytes are not allowed for sharding
                     throw new IllegalArgumentException(
                             "Cannot use column <" + column.getName() + "> as a key; " +
                             "type/property <" + column.getType() + ">"
@@ -258,7 +263,19 @@ final class RecordKeyBuilder<T> {
             case UUID:
                 key.addUuid((String)value);
                 break;
-        }
+
+            // The following are not allowed as shard keys
+            case ARRAY:
+            case JSON:
+            case VECTOR:
+            case WKB:
+            case WKT:
+            default:
+                throw new IllegalArgumentException(
+                        "Cannot use column <" + column + "> as a key; " +
+                        "type/property <" + columnTypes.get(column) + ">"
+                );
+            }
     }
 
     public RecordKey build(T object) throws GPUdbException {
@@ -360,6 +377,7 @@ final class RecordKeyBuilder<T> {
             result.append(" = ");
 
             switch (columnTypes.get(i)) {
+                case ARRAY:
                 case CHAR1:
                 case CHAR2:
                 case CHAR4:
@@ -373,9 +391,11 @@ final class RecordKeyBuilder<T> {
                 case DATETIME:
                 case DECIMAL:
                 case IPV4:
+                case JSON:
                 case STRING:
                 case TIME:
                 case UUID:
+                case VECTOR:
                     result.append("\"");
                     result.append(((String)value).replace("\"", "\"\""));
                     result.append("\"");

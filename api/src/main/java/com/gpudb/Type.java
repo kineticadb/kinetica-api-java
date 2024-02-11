@@ -79,6 +79,7 @@ public final class Type implements Serializable {
             // Long sub-types
             TIMESTAMP,
             // String sub-types
+            ARRAY,
             DATE,
             DATETIME,
             TIME,
@@ -93,10 +94,12 @@ public final class Type implements Serializable {
             CHAR128,
             CHAR256,
             IPV4,
+            JSON,
             ULONG,
             UUID,
             WKT,
             // Bytes sub-types
+            VECTOR,
             WKB
         }
 
@@ -258,6 +261,8 @@ public final class Type implements Serializable {
                 columnType = ColumnType.CHAR256;
             } else if ( properties.contains( ColumnProperty.IPV4 ) ) {
                 columnType = ColumnType.IPV4;
+            } else if ( properties.contains( ColumnProperty.JSON ) ) {
+                columnType = ColumnType.JSON;
             } else if ( properties.contains( ColumnProperty.ULONG ) ) {
                 columnType = ColumnType.ULONG;
             } else if ( properties.contains( ColumnProperty.UUID ) ) {
@@ -268,6 +273,18 @@ public final class Type implements Serializable {
                     columnType = ColumnType.WKT;
                 } else if ( columnType == ColumnType.BYTES ) {
                     columnType = ColumnType.WKB;
+                }
+            } else {
+                // Need to look through the properties list for startsWith Array or Vector
+                for (String prop : properties)
+                {
+                    if (prop.startsWith(ColumnProperty.ARRAY)) {
+                        columnType = ColumnType.ARRAY;
+                        break;
+                    } else if (prop.startsWith(ColumnProperty.VECTOR)) {
+                        columnType = ColumnType.VECTOR;
+                        break;
+                    }
                 }
             }
 
@@ -332,6 +349,60 @@ public final class Type implements Serializable {
         }
 
         /**
+         * Determine if the column is an Array type
+         *
+         * @return True if the column is an Array
+         */
+        public boolean isArray()
+        {
+            for (String prop: getProperties())
+                if (prop.startsWith(ColumnProperty.ARRAY))
+                    return true;
+
+            return false;
+        }
+
+        /**
+         * Get the sub-type of the array
+         *
+         * @return The ColumnBaseType of the array sub-type.  Returns null if column is not an Array
+         */
+        public ColumnType getArrayType() throws GPUdbException
+        {
+            for (String prop: getProperties())
+            {
+                if (prop.startsWith(ColumnProperty.ARRAY))
+                {
+                    int open_index = prop.indexOf("(");
+                    int close_index = prop.lastIndexOf(")");
+                    if ((open_index >=0 ) && (close_index > open_index))
+                    {
+                        int comma_index = prop.indexOf(",", open_index);
+                        if ((comma_index > open_index) && (comma_index < close_index))
+                            close_index = comma_index;
+                        String sub_type = prop.substring(open_index + 1, close_index).toLowerCase();
+                        if (sub_type.startsWith("int"))
+                            return ColumnType.INTEGER;
+                        else if (sub_type.startsWith("bool"))
+                            return ColumnType.BOOLEAN;
+                        else if (sub_type.equals("long"))
+                            return ColumnType.LONG;
+                        else if (sub_type.equals("float"))
+                            return ColumnType.FLOAT;
+                        else if (sub_type.equals("double"))
+                            return ColumnType.DOUBLE;
+                        else if (sub_type.equals("string"))
+                            return ColumnType.STRING;
+
+                        throw new GPUdbException("Unknown array type: " + sub_type);
+                    }
+                }
+            }
+
+            return null; //throw new GPUdbException("No array type found");
+        }
+
+        /**
          * Gets the list of properties that apply to the column.
          *
          * @return  the list of properties that apply to the column
@@ -340,6 +411,43 @@ public final class Type implements Serializable {
          */
         public List<String> getProperties() {
             return properties;
+        }
+
+        /**
+         * Determine if the column is a Vector type
+         *
+         * @return True if the column is a Vector type
+         */
+        public boolean isVector()
+        {
+            for (String prop: getProperties())
+                if (prop.startsWith(ColumnProperty.VECTOR))
+                    return true;
+
+            return false;
+        }
+
+        /**
+         * Get vector datatype dimensions, -1 if not a vector
+         *
+         * @return Size of the vector, -1 if not a vector
+         */
+        public int getVectorDimensions()
+        {
+            int dims = -1;
+            for (String prop: getProperties())
+            {
+                if (prop.startsWith(ColumnProperty.VECTOR))
+                {
+                    int open_index = prop.indexOf("(");
+                    int close_index = prop.lastIndexOf(")");
+                    if ((open_index >=0 ) && (close_index > open_index))
+                        dims = Integer.parseInt(prop.substring(open_index + 1, close_index));
+                    break;
+                }
+            }
+
+            return dims;
         }
 
         /**
@@ -624,6 +732,7 @@ public final class Type implements Serializable {
                 case ColumnProperty.INT8:
                 case ColumnProperty.INT16:
                 case ColumnProperty.IPV4:
+                case ColumnProperty.JSON:
                 case ColumnProperty.TIME:
                 case ColumnProperty.TIMESTAMP:
                 case ColumnProperty.ULONG:
@@ -636,6 +745,12 @@ public final class Type implements Serializable {
                     // WKT types could be returned as 'geometry' by the server
                     columnProperties.add( ColumnProperty.WKT );
                     break;
+
+                default:
+                    if (type.startsWith(ColumnProperty.ARRAY))
+                        columnProperties.add(type);
+                    else if (type.startsWith(ColumnProperty.VECTOR))
+                        columnProperties.add(type);
             }
 
             columns.add(new Type.Column(name, columnType, columnProperties));
@@ -1042,6 +1157,23 @@ public final class Type implements Serializable {
     public int getColumnIndex(String name) {
         Integer result = columnMap.get(name);
         return result == null ? -1 : result;
+    }
+
+    /**
+     * Internal helper for getColumnIndex() for the specified name which will throw if name not present.
+     *
+     * @param name  the column name
+     * @return      the index of the column with the specified name
+     *
+     * @throws IllegalArgumentException if column name does not exist
+     */
+    int getColumnIndexOrThrow(String name) throws IllegalArgumentException {
+        Integer result = columnMap.get(name);
+
+        if (result == null)
+            throw new IllegalArgumentException("Field '" + name + "'' does not exist.");
+
+        return result;
     }
 
     /**

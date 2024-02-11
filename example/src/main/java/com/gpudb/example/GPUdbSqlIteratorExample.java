@@ -45,7 +45,7 @@ public class GPUdbSqlIteratorExample {
         }
     }
 
-    private static void explicitCloseCallUsage(GPUdb gpudb, String sql) {
+    private static void explicitCloseCallUsage(GPUdb gpudb, String sql) throws GPUdbException {
         System.out.println("explicitCloseCallUsage ...");
         GPUdbSqlIterator<GenericRecord> iterator = new GPUdbSqlIterator<>(gpudb, sql);
 

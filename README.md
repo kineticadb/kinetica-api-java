@@ -4,9 +4,9 @@
 <h5 align="center" style="margin:0px">
 	<a href="https://www.kinetica.com/">Website</a>
 	|
-	<a href="https://docs.kinetica.com/7.1/">Docs</a>
+	<a href="https://docs.kinetica.com/7.2/">Docs</a>
 	|
-	<a href="https://docs.kinetica.com/7.1/api/java/">API Docs</a>
+	<a href="https://docs.kinetica.com/7.2/api/java/">API Docs</a>
 	|
 	<a href="https://join.slack.com/t/kinetica-community/shared_invite/zt-1bt9x3mvr-uMKrXlSDXfy3oU~sKi84qg">Community Slack</a>   
 </h5>
@@ -44,11 +44,11 @@ install the JAR in the local repository:
 ```
 
 
-The documentation can be found at https://docs.kinetica.com/7.1/.
+The documentation can be found at https://docs.kinetica.com/7.2/.
 The Java specific documentation can be found at:
 
-* https://docs.kinetica.com/7.1/guides/java_guide/
-* https://docs.kinetica.com/7.1/api/java/
+* https://docs.kinetica.com/7.2/guides/java_guide/
+* https://docs.kinetica.com/7.2/api/java/
 
 
 For changes to the client-side API, please refer to

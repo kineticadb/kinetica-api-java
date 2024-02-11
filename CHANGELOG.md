@@ -1,5 +1,17 @@
 # GPUdb Java API Changelog
 
+## Version 7.2
+
+### Version 7.2.0.0 - 2024-02-11
+
+#### Added
+-   Support for Array, JSON and Vector data
+-   `query()` & `execute()` methods for more easily running SQL statements
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
 ## Version 7.1
 
 ### Version 7.1.9.14 - 2023-12-21

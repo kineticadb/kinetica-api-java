@@ -1,10 +1,10 @@
 package com.gpudb;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gpudb.protocol.*;
+import com.gpudb.util.json.JsonUtils;
 import com.gpudb.util.ssl.X509TrustManagerBypass;
 import com.gpudb.util.url.UrlUtils;
 import org.apache.avro.Schema;
@@ -1874,7 +1874,7 @@ public abstract class GPUdbBase {
     protected static final String SslErrorMessageFormat = "<%s>.  To fix, either:\n" +
             "* Specify a trust store containing the server's certificate or a CA cert in the server's certificate path\n" +
             "* Skip the certificate check using the bypassSslCertCheck option\n" +
-            "  Examples:  https://docs.kinetica.com/7.1/api/concepts/#https-without-certificate-validation";
+            "  Examples:  https://docs.kinetica.com/7.2/api/concepts/#https-without-certificate-validation";
 
     // Internal classes
     // ----------------
@@ -2915,8 +2915,6 @@ public abstract class GPUdbBase {
         return timeout;
     }
 
-
-
     /**
      * Gets a copy of the list of ClusterAddressInfo objects that contain
      * information about the Kinetica ring of clusters that this GPUdb
@@ -2976,7 +2974,6 @@ public abstract class GPUdbBase {
         this.httpHeaders.put(header, value);
     }
 
-
     /**
      * Removes the given HTTP header from the map of additional HTTP headers to
      * send to GPUdb with each request. The user is not allowed
@@ -3013,8 +3010,6 @@ public abstract class GPUdbBase {
         return;
     }
 
-
-
     /**
      * Sets the current high availability synchronicity override mode.
      * Until it is changed, all subsequent endpoint calls made to the
@@ -3030,7 +3025,6 @@ public abstract class GPUdbBase {
         this.haSyncMode = syncMode;
     }
 
-
     /**
      * @deprecated  As of version 7.1.0.0, this method will no longer be
      * functional.  This method will be a no-op, not changing host manager
@@ -3043,12 +3037,8 @@ public abstract class GPUdbBase {
         return this;
     }
 
-
-
-
     // Helper Functions
     // ----------------
-
 
     /**
      * Gets the number of times the client has switched to a different
@@ -3918,12 +3908,7 @@ public abstract class GPUdbBase {
                 boolean hasMoreRecords = (Boolean) ((Map<String,Object>)response.get("data")).get("has_more_records");
 
                 List<Object> recordList = (List<Object>) ((LinkedHashMap<String,Object>)response.get("data")).get("records");
-                String jsonRecords = null;
-                try {
-                    jsonRecords = JSON_MAPPER.writeValueAsString(recordList);
-                } catch (JsonProcessingException e) {
-                    throw new GPUdbException("Could not convert records to JSON", e);
-                }
+                String jsonRecords = JsonUtils.toJsonString(recordList);
                 return new GetRecordsJsonResponse(totalRecords, hasMoreRecords, jsonRecords);
             } else {
                 throw new GPUdbException("Error getting JSON records: " + response.get("message"));
@@ -3931,6 +3916,135 @@ public abstract class GPUdbBase {
         } else {
             throw new GPUdbException("Empty response from server gettting JSON records");
         }
+    }
+
+    /**
+     * This method is used to send a SQL query to Kinetica and read the records in the returned
+     * GPUdbSqlIterator object.  See {@link execute} to execute a SQL statement without reading
+     * the resulting data.
+     * 
+     * @param sql - The SQL query to execute
+     * 
+     * @return - an instance of {@link GPUdbSqlIterator} class
+     * 
+     * @throws GPUdbException
+     */
+    public <T extends Record> GPUdbSqlIterator<T> query(String sql) throws GPUdbException
+    {
+        return query(sql, null, null);
+    }
+
+    /**
+     * This method is used to send a SQL query to Kinetica and read the records in the returned
+     * GPUdbSqlIterator object.  See {@link execute} to execute a SQL statement without reading
+     * the resulting data.
+     * 
+     * @param sql        - The SQL query to execute
+     * @param parameters - Query parameters for the SQL query.  Can be null or a String, String[] or List<String>.
+     * 
+     * @return - an instance of {@link GPUdbSqlIterator} class
+     * 
+     * @throws GPUdbException
+     */
+    public <T extends Record> GPUdbSqlIterator<T> query(String sql, Object parameters) throws GPUdbException
+    {
+        return query(sql, parameters, null);
+    }
+
+    /**
+     * This method is used to send a SQL query to Kinetica and read the records in the returned
+     * GPUdbSqlIterator object.  See {@link execute} to execute a SQL statement without reading
+     * the resulting data.
+     * 
+     * @param sql        - The SQL query to execute
+     * @param parameters - Query parameters for the SQL query.  Can be null or a String, String[] or List<String>.
+     * @param sqlOptions - Optional parameters for the executeSql call.  Can be null.
+     * 
+     * @return - an instance of {@link GPUdbSqlIterator} class
+     * 
+     * @throws GPUdbException
+     */
+    public <T extends Record> GPUdbSqlIterator<T> query(String sql, Object parameters, Map<String, String> sqlOptions) throws GPUdbException
+    {
+        if (!(this instanceof GPUdb))
+            throw new GPUdbException("Only supported on GPUdb objects");
+
+        if (sqlOptions == null)
+            sqlOptions = new HashMap<String, String>();
+
+        if (parameters instanceof String)
+            sqlOptions.put(com.gpudb.protocol.ExecuteSqlRequest.Options.QUERY_PARAMETERS,
+                (String)parameters);
+        else if (parameters != null)
+            sqlOptions.put(com.gpudb.protocol.ExecuteSqlRequest.Options.QUERY_PARAMETERS,
+                JsonUtils.toJsonString(parameters));
+
+        return new GPUdbSqlIterator<T>((GPUdb)this, sql, sqlOptions);
+    }
+
+    /**
+     * This method is used to execute a SQL statement (e.g., DML, DDL).  It returns the number of
+     * rows affected by the statement.
+     * See {@link query} to execute a SQL query to read the resulting data records.
+     * 
+     * @param sql - The SQL query to execute
+     * 
+     * @return - number of rows affected by the execution of statement
+     * 
+     * @throws GPUdbException
+     */
+    public long execute(String sql) throws GPUdbException
+    {
+        return execute(sql, "", null);
+    }
+
+    /**
+     * This method is used to execute a SQL statement (e.g., DML, DDL).  It returns the number of
+     * rows affected by the statement.
+     * See {@link query} to execute a SQL query to read the resulting data records.
+     * 
+     * @param sql        - The SQL query to execute
+     * @param parameters - Query parameters for the SQL query.  Can be null or a String, String[] or List<String>.
+     * 
+     * @return - number of rows affected by the execution of statement
+     * 
+     * @throws GPUdbException
+     */
+    public long execute(String sql, Object parameters) throws GPUdbException
+    {
+        return execute(sql, parameters, null);
+    }
+
+    /**
+     * This method is used to execute a SQL statement (e.g., DML, DDL).  It returns the number of
+     * rows affected by the statement.
+     * See {@link query} to execute a SQL query to read the resulting data records.
+     * 
+     * @param sql        - The SQL query to execute
+     * @param parameters - Query parameters for the SQL query.  Can be null or a String, String[] or List<String>.
+     * @param sqlOptions - Optional parameters for the executeSql call.  Can be null.
+     * 
+     * @return - number of rows affected by the execution of statement
+     * 
+     * @throws GPUdbException
+     */
+    public long execute(String sql, Object parameters, Map<String, String> sqlOptions) throws GPUdbException
+    {
+        if (!(this instanceof GPUdb))
+            throw new GPUdbException("Only supported on GPUdb objects");
+
+        if (sqlOptions == null)
+            sqlOptions = new HashMap<String, String>();
+
+        if (parameters instanceof String)
+            sqlOptions.put(com.gpudb.protocol.ExecuteSqlRequest.Options.QUERY_PARAMETERS,
+                (String)parameters);
+        else if (parameters != null)
+            sqlOptions.put(com.gpudb.protocol.ExecuteSqlRequest.Options.QUERY_PARAMETERS,
+                JsonUtils.toJsonString(parameters));
+
+        ExecuteSqlResponse response = ((GPUdb)this).executeSql(sql, 0, 1, "", null, sqlOptions);
+        return response.getCountAffected();
     }
 
     /**

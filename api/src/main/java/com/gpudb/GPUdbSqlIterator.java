@@ -25,6 +25,7 @@ import com.gpudb.protocol.ExecuteSqlResponse;
  */
 
 public class GPUdbSqlIterator<T extends Record> implements Iterable<T>, AutoCloseable {
+    private static final int DEFAULT_BATCH_SIZE = 10000;
 
     private GPUdb db;
     private String sql;
@@ -44,8 +45,8 @@ public class GPUdbSqlIterator<T extends Record> implements Iterable<T>, AutoClos
      * @param db  - a {@link GPUdb} instance
      * @param sql - the SQL statement to execute
      */
-    public GPUdbSqlIterator(GPUdb db, String sql) {
-        this(db, sql, 10000, new HashMap<>());
+    public GPUdbSqlIterator(GPUdb db, String sql) throws GPUdbException {
+        this(db, sql, DEFAULT_BATCH_SIZE, new HashMap<>());
     }
 
     /**
@@ -55,8 +56,21 @@ public class GPUdbSqlIterator<T extends Record> implements Iterable<T>, AutoClos
      * @param sql       - the SQL statement to execute
      * @param batchSize - the number of records to fetch
      */
-    public GPUdbSqlIterator(GPUdb db, String sql, int batchSize) {
+    public GPUdbSqlIterator(GPUdb db, String sql, int batchSize) throws GPUdbException {
         this(db, sql, batchSize, new HashMap<>());
+    }
+
+    /**
+     * Constructor for {@link GPUdbSqlIterator}
+     * 
+     * @param db         - a {@link GPUdb} instance
+     * @param sql        - the SQL statement to execute
+     * @param sqlOptions - the SQL options to be passed in
+     * 
+     * @see GPUdb#executeSql(String, long, long, String, List, Map)
+     */
+    public GPUdbSqlIterator(GPUdb db, String sql, Map<String, String> sqlOptions) throws GPUdbException {
+        this(db, sql, DEFAULT_BATCH_SIZE, sqlOptions);
     }
 
     /**
@@ -69,7 +83,7 @@ public class GPUdbSqlIterator<T extends Record> implements Iterable<T>, AutoClos
      * 
      * @see GPUdb#executeSql(String, long, long, String, List, Map)
      */
-    public GPUdbSqlIterator(GPUdb db, String sql, int batchSize, Map<String, String> sqlOptions) {
+    public GPUdbSqlIterator(GPUdb db, String sql, int batchSize, Map<String, String> sqlOptions) throws GPUdbException {
         this.db = db;
         this.sql = sql;
         this.batchSize = batchSize;
@@ -84,7 +98,12 @@ public class GPUdbSqlIterator<T extends Record> implements Iterable<T>, AutoClos
         this.sqlOptions = sqlOptions;
     }
 
-    private void checkAndFetchRecords() {
+    public long size()
+    {
+        return totalCount;
+    }
+
+    private void checkAndFetchRecords() throws GPUdbException {
         if (records.size() > 0 && recordPosition < records.size()) {
             return;
         }
@@ -97,25 +116,20 @@ public class GPUdbSqlIterator<T extends Record> implements Iterable<T>, AutoClos
         offset += batchSize;
     }
 
-    private void executeSql() {
-        try {
-            ExecuteSqlResponse response = db.executeSql(sql, offset, batchSize, "", null, sqlOptions);
-            records = (List<T>) response.getData();
-            totalCount = response.getTotalNumberOfRecords();
+    private void executeSql() throws GPUdbException {
+        ExecuteSqlResponse response = db.executeSql(sql, offset, batchSize, "", null, sqlOptions);
+        records = (List<T>) response.getData();
+        totalCount = response.getTotalNumberOfRecords();
 
-            if (totalCount == 0)
-                return;
+        if (totalCount == 0)
+            return;
 
-            pagingTableName = response.getPagingTable();
-            pagingTableNames.add(pagingTableName);
+        pagingTableName = response.getPagingTable();
+        pagingTableNames.add(pagingTableName);
 
-            String resultTableList = response.getInfo().get("result_table_list");
-            if (resultTableList != null) {
-                pagingTableNames.addAll(Arrays.asList(resultTableList.split(",")));
-            }
-
-        } catch (GPUdbException e) {
-            GPUdbLogger.debug(String.format("Error in executing query : %s", e.getMessage()));
+        String resultTableList = response.getInfo().get("result_table_list");
+        if (resultTableList != null) {
+            pagingTableNames.addAll(Arrays.asList(resultTableList.split(",")));
         }
     }
 
@@ -146,11 +160,13 @@ public class GPUdbSqlIterator<T extends Record> implements Iterable<T>, AutoClos
 
         @Override
         public T next() {
-            checkAndFetchRecords();
-            T record = (T) records.get(recordPosition++);
-            return record;
+            try {
+                checkAndFetchRecords();
+                T record = (T) records.get(recordPosition++);
+                return record;
+            } catch (GPUdbException ex) {
+                throw new RuntimeException(ex);
+            }
         }
-
     }
-
 }

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.gpudb</groupId>
     <artifactId>gpudb-api</artifactId>
-    <version>7.1.9.14</version>
+    <version>7.2.0.0</version>
     <packaging>jar</packaging>
     <name>Kinetica Java API</name>
     <repositories>
@@ -44,9 +44,9 @@
             <version>1.21</version>
         </dependency>
         <dependency>
-          <groupId>org.apache.commons</groupId>
-          <artifactId>commons-lang3</artifactId>
-          <version>3.12.0</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
         </dependency>
         <dependency>
             <groupId>org.xerial.snappy</groupId>
@@ -91,7 +91,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <gpudb-api.version>7.1.9.14</gpudb-api.version>
+        <gpudb-api.version>7.2.0.0</gpudb-api.version>
         <target.build.dir>target</target.build.dir> <!-- override on cmd-line -->
     </properties>
     <profiles>

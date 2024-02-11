@@ -1,5 +1,8 @@
 package com.gpudb.util.json;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gpudb.GPUdbException;
 import com.gpudb.GPUdbLogger;
 import com.gpudb.RecordBase;
 import org.json.JSONArray;
@@ -50,7 +53,7 @@ public class JsonUtils {
     /**
      * Converts a List<String> to a JSON array where each element is a valid JSON String
      * @param list - the parameterized input list
-     * @return - a JSON array as a String
+     * @return     - a JSON array as a String
      */
     public static String toJsonArray(List<String> list) {
         if( !isListOfStrings( list )) {
@@ -60,4 +63,18 @@ public class JsonUtils {
         return String.format("[%s]", String.join(",", list));
     }
 
+    /**
+     * Wrapper for ObjectMapper().writeValueAsString that throws GPUdbException
+     * @param value
+     * @return
+     * @throws GPUdbException
+     */
+    public static String toJsonString(Object value) throws GPUdbException
+    {
+        try {
+            return new ObjectMapper().writeValueAsString(value);
+        } catch (JsonProcessingException e) {
+            throw new GPUdbException("Error converting to JSON: " + value.toString(), e);
+        }
+    }
 }
