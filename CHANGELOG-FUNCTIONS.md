@@ -2,11 +2,11 @@
 
 
 ## Version 7.2
--   Added ``/export/query/metrics``
 
-## Version 7.2.0.0 -- TBD
+### Version 7.2.0.0 -- 2024-02-11
 
 #### Added
+-   Added ``/export/query/metrics``
 -   Added the following endpoints to support write ahead logging
     -  ``/alter/wal``
     -  ``/show/wal``
