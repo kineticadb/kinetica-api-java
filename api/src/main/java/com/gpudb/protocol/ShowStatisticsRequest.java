@@ -39,6 +39,34 @@ public class ShowStatisticsRequest implements IndexedRecord {
         return schema$;
     }
 
+    /**
+     * A set of string constants for the {@link ShowStatisticsRequest}
+     * parameter {@link #getOptions() options}.
+     * <p>
+     * Optional parameters.
+     */
+    public static final class Options {
+        /**
+         * If {@link Options#TRUE TRUE} and if the table names specified in
+         * {@link #getTableNames() tableNames} does not exist, no error is
+         * returned. If {@link Options#FALSE FALSE} and if the table names
+         * specified in {@link #getTableNames() tableNames} does not exist,
+         * then an error is returned.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String NO_ERROR_IF_NOT_EXISTS = "no_error_if_not_exists";
+
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        private Options() {  }
+    }
+
     private List<String> tableNames;
     private Map<String, String> options;
 
@@ -58,8 +86,24 @@ public class ShowStatisticsRequest implements IndexedRecord {
      *                    href="../../../../../../concepts/tables/#table-name-resolution"
      *                    target="_top">name resolution rules</a>.  All
      *                    provided tables must exist, or an error is returned.
-     * @param options  Optional parameters. The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                     <li>{@link Options#NO_ERROR_IF_NOT_EXISTS
+     *                         NO_ERROR_IF_NOT_EXISTS}: If {@link Options#TRUE
+     *                         TRUE} and if the table names specified in {@code
+     *                         tableNames} does not exist, no error is
+     *                         returned. If {@link Options#FALSE FALSE} and if
+     *                         the table names specified in {@code tableNames}
+     *                         does not exist, then an error is returned.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      */
     public ShowStatisticsRequest(List<String> tableNames, Map<String, String> options) {
         this.tableNames = (tableNames == null) ? new ArrayList<String>() : tableNames;
@@ -96,7 +140,22 @@ public class ShowStatisticsRequest implements IndexedRecord {
     }
 
     /**
-     * Optional parameters. The default value is an empty {@link Map}.
+     * Optional parameters.
+     * <ul>
+     *     <li>{@link Options#NO_ERROR_IF_NOT_EXISTS NO_ERROR_IF_NOT_EXISTS}:
+     *         If {@link Options#TRUE TRUE} and if the table names specified in
+     *         {@link #getTableNames() tableNames} does not exist, no error is
+     *         returned. If {@link Options#FALSE FALSE} and if the table names
+     *         specified in {@link #getTableNames() tableNames} does not exist,
+     *         then an error is returned.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
+     * </ul>
+     * The default value is an empty {@link Map}.
      *
      * @return The current value of {@code options}.
      */
@@ -105,7 +164,22 @@ public class ShowStatisticsRequest implements IndexedRecord {
     }
 
     /**
-     * Optional parameters. The default value is an empty {@link Map}.
+     * Optional parameters.
+     * <ul>
+     *     <li>{@link Options#NO_ERROR_IF_NOT_EXISTS NO_ERROR_IF_NOT_EXISTS}:
+     *         If {@link Options#TRUE TRUE} and if the table names specified in
+     *         {@link #getTableNames() tableNames} does not exist, no error is
+     *         returned. If {@link Options#FALSE FALSE} and if the table names
+     *         specified in {@link #getTableNames() tableNames} does not exist,
+     *         then an error is returned.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
+     * </ul>
+     * The default value is an empty {@link Map}.
      *
      * @param options  The new value for {@code options}.
      *

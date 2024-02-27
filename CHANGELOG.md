@@ -2,6 +2,12 @@
 
 ## Version 7.2
 
+### Version 7.2.0.1 - 2024-02-27
+
+#### Changed
+-   Upgraded Apache HTTPClient5 library from 5.3 to 5.3.1
+
+
 ### Version 7.2.0.0 - 2024-02-11
 
 #### Added

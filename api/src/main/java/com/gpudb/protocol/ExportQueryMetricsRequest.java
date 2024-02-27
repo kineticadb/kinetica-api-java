@@ -46,21 +46,46 @@ public class ExportQueryMetricsRequest implements IndexedRecord {
      */
     public static final class Options {
         /**
-         * Export query metrics for the currently running job
+         * Filter for multi query export
          */
-        public static final String JOB_ID = "job_id";
+        public static final String EXPRESSION = "expression";
+
+        /**
+         * Path to export target specified as a filename or existing directory.
+         */
+        public static final String FILEPATH = "filepath";
 
         /**
          * Specifies which format to export the metrics.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#JSON JSON}
+         *     <li>{@link Options#JSON JSON}: Generic json output
+         *     <li>{@link Options#JSON_TRACE_EVENT JSON_TRACE_EVENT}:
+         *         Chromium/Perfetto trace event format
          * </ul>
          * The default value is {@link Options#JSON JSON}.
          */
         public static final String FORMAT = "format";
 
+        /**
+         * Generic json output
+         */
         public static final String JSON = "json";
+
+        /**
+         * Chromium/Perfetto trace event format
+         */
+        public static final String JSON_TRACE_EVENT = "json_trace_event";
+
+        /**
+         * Export query metrics for the currently running job
+         */
+        public static final String JOB_ID = "job_id";
+
+        /**
+         * Record limit per file for multi query export
+         */
+        public static final String LIMIT = "limit";
 
         private Options() {  }
     }
@@ -80,15 +105,26 @@ public class ExportQueryMetricsRequest implements IndexedRecord {
      *
      * @param options  Optional parameters.
      *                 <ul>
-     *                     <li>{@link Options#JOB_ID JOB_ID}: Export query
-     *                         metrics for the currently running job
+     *                     <li>{@link Options#EXPRESSION EXPRESSION}: Filter
+     *                         for multi query export
+     *                     <li>{@link Options#FILEPATH FILEPATH}: Path to
+     *                         export target specified as a filename or
+     *                         existing directory.
      *                     <li>{@link Options#FORMAT FORMAT}: Specifies which
      *                         format to export the metrics.
      *                         Supported values:
      *                         <ul>
-     *                             <li>{@link Options#JSON JSON}
+     *                             <li>{@link Options#JSON JSON}: Generic json
+     *                                 output
+     *                             <li>{@link Options#JSON_TRACE_EVENT
+     *                                 JSON_TRACE_EVENT}: Chromium/Perfetto
+     *                                 trace event format
      *                         </ul>
      *                         The default value is {@link Options#JSON JSON}.
+     *                     <li>{@link Options#JOB_ID JOB_ID}: Export query
+     *                         metrics for the currently running job
+     *                     <li>{@link Options#LIMIT LIMIT}: Record limit per
+     *                         file for multi query export
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -99,15 +135,23 @@ public class ExportQueryMetricsRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#JOB_ID JOB_ID}: Export query metrics for the
-     *         currently running job
+     *     <li>{@link Options#EXPRESSION EXPRESSION}: Filter for multi query
+     *         export
+     *     <li>{@link Options#FILEPATH FILEPATH}: Path to export target
+     *         specified as a filename or existing directory.
      *     <li>{@link Options#FORMAT FORMAT}: Specifies which format to export
      *         the metrics.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#JSON JSON}
+     *             <li>{@link Options#JSON JSON}: Generic json output
+     *             <li>{@link Options#JSON_TRACE_EVENT JSON_TRACE_EVENT}:
+     *                 Chromium/Perfetto trace event format
      *         </ul>
      *         The default value is {@link Options#JSON JSON}.
+     *     <li>{@link Options#JOB_ID JOB_ID}: Export query metrics for the
+     *         currently running job
+     *     <li>{@link Options#LIMIT LIMIT}: Record limit per file for multi
+     *         query export
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -120,15 +164,23 @@ public class ExportQueryMetricsRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#JOB_ID JOB_ID}: Export query metrics for the
-     *         currently running job
+     *     <li>{@link Options#EXPRESSION EXPRESSION}: Filter for multi query
+     *         export
+     *     <li>{@link Options#FILEPATH FILEPATH}: Path to export target
+     *         specified as a filename or existing directory.
      *     <li>{@link Options#FORMAT FORMAT}: Specifies which format to export
      *         the metrics.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#JSON JSON}
+     *             <li>{@link Options#JSON JSON}: Generic json output
+     *             <li>{@link Options#JSON_TRACE_EVENT JSON_TRACE_EVENT}:
+     *                 Chromium/Perfetto trace event format
      *         </ul>
      *         The default value is {@link Options#JSON JSON}.
+     *     <li>{@link Options#JOB_ID JOB_ID}: Export query metrics for the
+     *         currently running job
+     *     <li>{@link Options#LIMIT LIMIT}: Record limit per file for multi
+     *         query export
      * </ul>
      * The default value is an empty {@link Map}.
      *

@@ -5801,6 +5801,9 @@ public class GPUdb extends GPUdbBase {
      *                                 com.gpudb.protocol.AlterTableRequest.Options#GEOSPATIAL
      *                                 GEOSPATIAL}: Create or delete a
      *                                 geospatial index
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.AlterTableRequest.Options#CAGRA
+     *                                 CAGRA}: Create or delete a CAGRA index
      *                         </ul>
      *                         The default value is {@link
      *                         com.gpudb.protocol.AlterTableRequest.Options#COLUMN
@@ -13484,9 +13487,12 @@ public class GPUdb extends GPUdbBase {
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link
-     *                         com.gpudb.protocol.ExportQueryMetricsRequest.Options#JOB_ID
-     *                         JOB_ID}: Export query metrics for the currently
-     *                         running job
+     *                         com.gpudb.protocol.ExportQueryMetricsRequest.Options#EXPRESSION
+     *                         EXPRESSION}: Filter for multi query export
+     *                     <li>{@link
+     *                         com.gpudb.protocol.ExportQueryMetricsRequest.Options#FILEPATH
+     *                         FILEPATH}: Path to export target specified as a
+     *                         filename or existing directory.
      *                     <li>{@link
      *                         com.gpudb.protocol.ExportQueryMetricsRequest.Options#FORMAT
      *                         FORMAT}: Specifies which format to export the
@@ -13495,11 +13501,23 @@ public class GPUdb extends GPUdbBase {
      *                         <ul>
      *                             <li>{@link
      *                                 com.gpudb.protocol.ExportQueryMetricsRequest.Options#JSON
-     *                                 JSON}
+     *                                 JSON}: Generic json output
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.ExportQueryMetricsRequest.Options#JSON_TRACE_EVENT
+     *                                 JSON_TRACE_EVENT}: Chromium/Perfetto
+     *                                 trace event format
      *                         </ul>
      *                         The default value is {@link
      *                         com.gpudb.protocol.ExportQueryMetricsRequest.Options#JSON
      *                         JSON}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.ExportQueryMetricsRequest.Options#JOB_ID
+     *                         JOB_ID}: Export query metrics for the currently
+     *                         running job
+     *                     <li>{@link
+     *                         com.gpudb.protocol.ExportQueryMetricsRequest.Options#LIMIT
+     *                         LIMIT}: Record limit per file for multi query
+     *                         export
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      *
@@ -24595,8 +24613,33 @@ public class GPUdb extends GPUdbBase {
      *                    href="../../../../../concepts/tables/#table-name-resolution"
      *                    target="_top">name resolution rules</a>.  All
      *                    provided tables must exist, or an error is returned.
-     * @param options  Optional parameters. The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                     <li>{@link
+     *                         com.gpudb.protocol.ShowStatisticsRequest.Options#NO_ERROR_IF_NOT_EXISTS
+     *                         NO_ERROR_IF_NOT_EXISTS}: If {@link
+     *                         com.gpudb.protocol.ShowStatisticsRequest.Options#TRUE
+     *                         TRUE} and if the table names specified in {@code
+     *                         tableNames} does not exist, no error is
+     *                         returned. If {@link
+     *                         com.gpudb.protocol.ShowStatisticsRequest.Options#FALSE
+     *                         FALSE} and if the table names specified in
+     *                         {@code tableNames} does not exist, then an error
+     *                         is returned.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.ShowStatisticsRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.ShowStatisticsRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.ShowStatisticsRequest.Options#FALSE
+     *                         FALSE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      *
      * @return {@link ShowStatisticsResponse Response} object containing the
      *         results of the operation.

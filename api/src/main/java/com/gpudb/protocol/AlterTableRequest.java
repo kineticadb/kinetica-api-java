@@ -492,6 +492,7 @@ public class AlterTableRequest implements IndexedRecord {
          *         target="_top">chunk skip index</a>.
          *     <li>{@link Options#GEOSPATIAL GEOSPATIAL}: Create or delete a
          *         geospatial index
+         *     <li>{@link Options#CAGRA CAGRA}: Create or delete a CAGRA index
          * </ul>
          * The default value is {@link Options#COLUMN COLUMN}.
          */
@@ -515,6 +516,11 @@ public class AlterTableRequest implements IndexedRecord {
          * Create or delete a geospatial index
          */
         public static final String GEOSPATIAL = "geospatial";
+
+        /**
+         * Create or delete a CAGRA index
+         */
+        public static final String CAGRA = "cagra";
 
         private Options() {  }
     }
@@ -873,6 +879,8 @@ public class AlterTableRequest implements IndexedRecord {
      *                                 target="_top">chunk skip index</a>.
      *                             <li>{@link Options#GEOSPATIAL GEOSPATIAL}:
      *                                 Create or delete a geospatial index
+     *                             <li>{@link Options#CAGRA CAGRA}: Create or
+     *                                 delete a CAGRA index
      *                         </ul>
      *                         The default value is {@link Options#COLUMN
      *                         COLUMN}.
@@ -1424,6 +1432,8 @@ public class AlterTableRequest implements IndexedRecord {
      *                 target="_top">chunk skip index</a>.
      *             <li>{@link Options#GEOSPATIAL GEOSPATIAL}: Create or delete
      *                 a geospatial index
+     *             <li>{@link Options#CAGRA CAGRA}: Create or delete a CAGRA
+     *                 index
      *         </ul>
      *         The default value is {@link Options#COLUMN COLUMN}.
      * </ul>
@@ -1518,6 +1528,8 @@ public class AlterTableRequest implements IndexedRecord {
      *                 target="_top">chunk skip index</a>.
      *             <li>{@link Options#GEOSPATIAL GEOSPATIAL}: Create or delete
      *                 a geospatial index
+     *             <li>{@link Options#CAGRA CAGRA}: Create or delete a CAGRA
+     *                 index
      *         </ul>
      *         The default value is {@link Options#COLUMN COLUMN}.
      * </ul>
