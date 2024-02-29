@@ -1720,6 +1720,23 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_ORPHANED_TABLES_ONLY
+     *                 VERIFY_ORPHANED_TABLES_ONLY}: If {@code true}, only the
+     *                 presence of orphaned table directories will be checked,
+     *                 all persistence checks will be skipped
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -4425,6 +4442,11 @@ public class GPUdb extends GPUdbBase {
      *                com.gpudb.protocol.AlterEnvironmentRequest.Action#RESET
      *                RESET}: Uninstalls all packages in the environment and
      *                resets it to the original state at time of creation
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterEnvironmentRequest.Action#REBUILD
+     *                REBUILD}: Recreates the environment and re-installs all
+     *                packages, upgrades the packages if necessary based on
+     *                dependencies
      *                </ul>
      * @param value  The value of the modification, depending on {@code
      *               action}.  For example, if {@code action} is {@code
@@ -21087,6 +21109,9 @@ public class GPUdb extends GPUdbBase {
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_CLUSTERS
      *                     MATCH_CLUSTERS}: Matches the graph nodes with a
      *                     cluster index using Louvain clustering algorithm
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_PATTERN
+     *                     MATCH_PATTERN}: Matches a pattern in the graph
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -21543,6 +21568,22 @@ public class GPUdb extends GPUdbBase {
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FORCE_UNDIRECTED
+     *                 FORCE_UNDIRECTED}: For the {@code match_pattern} solver
+     *                 only. Pattern matching will be using both pattern and
+     *                 graph as undirected if set to true.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -22276,6 +22317,12 @@ public class GPUdb extends GPUdbBase {
      *                 request to. Default is to send to the server, amongst
      *                 those containing the corresponding graph, that has the
      *                 most computational bandwidth.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#OUTPUT_CHARN_LENGTH
+     *                 OUTPUT_CHARN_LENGTH}: When specified (>0 and <=256),
+     *                 limits the number of char length on the output tables
+     *                 for string based nodes. The default length is 64.  The
+     *                 default value is '64'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -23940,8 +23987,26 @@ public class GPUdb extends GPUdbBase {
      * @param names  A list of names of users and/or roles about which security
      *               information is requested. If none are provided,
      *               information about all users and roles will be returned.
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowSecurityRequest.Options#SHOW_CURRENT_USER
+     *                 SHOW_CURRENT_USER}: If {@code true}, returns only
+     *                 security information for the current user.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowSecurityRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowSecurityRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowSecurityRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return Response object containing the results of the operation.
      * 

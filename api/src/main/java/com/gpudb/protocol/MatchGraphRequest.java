@@ -109,6 +109,9 @@ public class MatchGraphRequest implements IndexedRecord {
      * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_CLUSTERS
      * MATCH_CLUSTERS}: Matches the graph nodes with a cluster index using
      * Louvain clustering algorithm
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_PATTERN
+     * MATCH_PATTERN}: Matches a pattern in the graph
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -178,6 +181,11 @@ public class MatchGraphRequest implements IndexedRecord {
          * clustering algorithm
          */
         public static final String MATCH_CLUSTERS = "match_clusters";
+
+        /**
+         * Matches a pattern in the graph
+         */
+        public static final String MATCH_PATTERN = "match_pattern";
 
         private SolveMethod() {  }
     }
@@ -534,6 +542,20 @@ public class MatchGraphRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#FORCE_UNDIRECTED
+     * FORCE_UNDIRECTED}: For the {@code match_pattern} solver only. Pattern
+     * matching will be using both pattern and graph as undirected if set to
+     * true.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -1019,6 +1041,21 @@ public class MatchGraphRequest implements IndexedRecord {
          */
         public static final String PAIRED_SIMILARITY = "paired_similarity";
 
+        /**
+         * For the {@code match_pattern} solver only. Pattern matching will be
+         * using both pattern and graph as undirected if set to true.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}.
+         */
+        public static final String FORCE_UNDIRECTED = "force_undirected";
+
         private Options() {  }
     }
 
@@ -1119,6 +1156,9 @@ public class MatchGraphRequest implements IndexedRecord {
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_CLUSTERS
      *                     MATCH_CLUSTERS}: Matches the graph nodes with a
      *                     cluster index using Louvain clustering algorithm
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_PATTERN
+     *                     MATCH_PATTERN}: Matches a pattern in the graph
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -1572,6 +1612,22 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FORCE_UNDIRECTED
+     *                 FORCE_UNDIRECTED}: For the {@code match_pattern} solver
+     *                 only. Pattern matching will be using both pattern and
+     *                 graph as undirected if set to true.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1709,6 +1765,9 @@ public class MatchGraphRequest implements IndexedRecord {
      *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_CLUSTERS
      *         MATCH_CLUSTERS}: Matches the graph nodes with a cluster index
      *         using Louvain clustering algorithm
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_PATTERN
+     *         MATCH_PATTERN}: Matches a pattern in the graph
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -1779,6 +1838,9 @@ public class MatchGraphRequest implements IndexedRecord {
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_CLUSTERS
      *                     MATCH_CLUSTERS}: Matches the graph nodes with a
      *                     cluster index using Louvain clustering algorithm
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_PATTERN
+     *                     MATCH_PATTERN}: Matches a pattern in the graph
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -2240,6 +2302,20 @@ public class MatchGraphRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#FORCE_UNDIRECTED
+     *         FORCE_UNDIRECTED}: For the {@code match_pattern} solver only.
+     *         Pattern matching will be using both pattern and graph as
+     *         undirected if set to true.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -2680,6 +2756,22 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FORCE_UNDIRECTED
+     *                 FORCE_UNDIRECTED}: For the {@code match_pattern} solver
+     *                 only. Pattern matching will be using both pattern and
+     *                 graph as undirected if set to true.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

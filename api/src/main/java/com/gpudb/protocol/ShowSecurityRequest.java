@@ -44,6 +44,49 @@ public class ShowSecurityRequest implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * Optional parameters.
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.ShowSecurityRequest.Options#SHOW_CURRENT_USER
+     * SHOW_CURRENT_USER}: If {@code true}, returns only security information
+     * for the current user.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.ShowSecurityRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.ShowSecurityRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ShowSecurityRequest.Options#FALSE FALSE}.
+     * </ul>
+     * The default value is an empty {@link Map}.
+     * A set of string constants for the parameter {@code options}.
+     */
+    public static final class Options {
+
+        /**
+         * If {@code true}, returns only security information for the current
+         * user.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ShowSecurityRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ShowSecurityRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ShowSecurityRequest.Options#FALSE FALSE}.
+         */
+        public static final String SHOW_CURRENT_USER = "show_current_user";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        private Options() {  }
+    }
+
     private List<String> names;
     private Map<String, String> options;
 
@@ -62,8 +105,26 @@ public class ShowSecurityRequest implements IndexedRecord {
      * @param names  A list of names of users and/or roles about which security
      *               information is requested. If none are provided,
      *               information about all users and roles will be returned.
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowSecurityRequest.Options#SHOW_CURRENT_USER
+     *                 SHOW_CURRENT_USER}: If {@code true}, returns only
+     *                 security information for the current user.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowSecurityRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowSecurityRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowSecurityRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public ShowSecurityRequest(List<String> names, Map<String, String> options) {
@@ -98,7 +159,23 @@ public class ShowSecurityRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.  The default value is an empty {@link Map}.
+     * @return Optional parameters.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowSecurityRequest.Options#SHOW_CURRENT_USER
+     *         SHOW_CURRENT_USER}: If {@code true}, returns only security
+     *         information for the current user.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowSecurityRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowSecurityRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ShowSecurityRequest.Options#FALSE FALSE}.
+     *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -107,8 +184,26 @@ public class ShowSecurityRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowSecurityRequest.Options#SHOW_CURRENT_USER
+     *                 SHOW_CURRENT_USER}: If {@code true}, returns only
+     *                 security information for the current user.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowSecurityRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowSecurityRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowSecurityRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

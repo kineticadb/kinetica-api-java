@@ -26,6 +26,7 @@ public class AdminVerifyDbResponse implements IndexedRecord {
             .fields()
                 .name("verifiedOk").type().booleanType().noDefault()
                 .name("errorList").type().array().items().stringType().noDefault()
+                .name("orphanedTablesTotalSize").type().longType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -43,6 +44,7 @@ public class AdminVerifyDbResponse implements IndexedRecord {
 
     private boolean verifiedOk;
     private List<String> errorList;
+    private long orphanedTablesTotalSize;
     private Map<String, String> info;
 
 
@@ -101,6 +103,36 @@ public class AdminVerifyDbResponse implements IndexedRecord {
 
     /**
      * 
+     * @return If {@code verify_persist} is {@code true}, {@code
+     *         verify_orphaned_tables_only} is {@code true} or {@code
+     *         delete_orphaned_tables} is {@code true}, this is the sum in
+     *         bytes of all orphaned tables found.  Otherwise, -1.
+     * 
+     */
+    public long getOrphanedTablesTotalSize() {
+        return orphanedTablesTotalSize;
+    }
+
+    /**
+     * 
+     * @param orphanedTablesTotalSize  If {@code verify_persist} is {@code
+     *                                 true}, {@code
+     *                                 verify_orphaned_tables_only} is {@code
+     *                                 true} or {@code delete_orphaned_tables}
+     *                                 is {@code true}, this is the sum in
+     *                                 bytes of all orphaned tables found.
+     *                                 Otherwise, -1.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AdminVerifyDbResponse setOrphanedTablesTotalSize(long orphanedTablesTotalSize) {
+        this.orphanedTablesTotalSize = orphanedTablesTotalSize;
+        return this;
+    }
+
+    /**
+     * 
      * @return Additional information.
      * 
      */
@@ -153,6 +185,9 @@ public class AdminVerifyDbResponse implements IndexedRecord {
                 return this.errorList;
 
             case 2:
+                return this.orphanedTablesTotalSize;
+
+            case 3:
                 return this.info;
 
             default:
@@ -183,6 +218,10 @@ public class AdminVerifyDbResponse implements IndexedRecord {
                 break;
 
             case 2:
+                this.orphanedTablesTotalSize = (Long)value;
+                break;
+
+            case 3:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -205,6 +244,7 @@ public class AdminVerifyDbResponse implements IndexedRecord {
 
         return ( ( this.verifiedOk == that.verifiedOk )
                  && this.errorList.equals( that.errorList )
+                 && ( this.orphanedTablesTotalSize == that.orphanedTablesTotalSize )
                  && this.info.equals( that.info ) );
     }
 
@@ -221,6 +261,10 @@ public class AdminVerifyDbResponse implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.errorList ) );
         builder.append( ", " );
+        builder.append( gd.toString( "orphanedTablesTotalSize" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.orphanedTablesTotalSize ) );
+        builder.append( ", " );
         builder.append( gd.toString( "info" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.info ) );
@@ -234,6 +278,7 @@ public class AdminVerifyDbResponse implements IndexedRecord {
         int hashCode = 1;
         hashCode = (31 * hashCode) + ((Boolean)this.verifiedOk).hashCode();
         hashCode = (31 * hashCode) + this.errorList.hashCode();
+        hashCode = (31 * hashCode) + ((Long)this.orphanedTablesTotalSize).hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }

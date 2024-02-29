@@ -132,6 +132,11 @@ public class QueryGraphRequest implements IndexedRecord {
      * Indicates which graph server(s) to send the request to. Default is to
      * send to the server, amongst those containing the corresponding graph,
      * that has the most computational bandwidth.
+     *         <li> {@link
+     * com.gpudb.protocol.QueryGraphRequest.Options#OUTPUT_CHARN_LENGTH
+     * OUTPUT_CHARN_LENGTH}: When specified (>0 and <=256), limits the number
+     * of char length on the output tables for string based nodes. The default
+     * length is 64.  The default value is '64'.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -203,6 +208,13 @@ public class QueryGraphRequest implements IndexedRecord {
          * graph, that has the most computational bandwidth.
          */
         public static final String SERVER_ID = "server_id";
+
+        /**
+         * When specified (>0 and <=256), limits the number of char length on
+         * the output tables for string based nodes. The default length is 64.
+         * The default value is '64'.
+         */
+        public static final String OUTPUT_CHARN_LENGTH = "output_charn_length";
 
         private Options() {  }
     }
@@ -352,6 +364,12 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 request to. Default is to send to the server, amongst
      *                 those containing the corresponding graph, that has the
      *                 most computational bandwidth.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#OUTPUT_CHARN_LENGTH
+     *                 OUTPUT_CHARN_LENGTH}: When specified (>0 and <=256),
+     *                 limits the number of char length on the output tables
+     *                 for string based nodes. The default length is 64.  The
+     *                 default value is '64'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -626,6 +644,11 @@ public class QueryGraphRequest implements IndexedRecord {
      *         to. Default is to send to the server, amongst those containing
      *         the corresponding graph, that has the most computational
      *         bandwidth.
+     *                 <li> {@link
+     *         com.gpudb.protocol.QueryGraphRequest.Options#OUTPUT_CHARN_LENGTH
+     *         OUTPUT_CHARN_LENGTH}: When specified (>0 and <=256), limits the
+     *         number of char length on the output tables for string based
+     *         nodes. The default length is 64.  The default value is '64'.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -702,6 +725,12 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 request to. Default is to send to the server, amongst
      *                 those containing the corresponding graph, that has the
      *                 most computational bandwidth.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#OUTPUT_CHARN_LENGTH
+     *                 OUTPUT_CHARN_LENGTH}: When specified (>0 and <=256),
+     *                 limits the number of char length on the output tables
+     *                 for string based nodes. The default length is 64.  The
+     *                 default value is '64'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

@@ -65,6 +65,10 @@ public class AlterEnvironmentRequest implements IndexedRecord {
      * com.gpudb.protocol.AlterEnvironmentRequest.Action#RESET RESET}:
      * Uninstalls all packages in the environment and resets it to the original
      * state at time of creation
+     *         <li> {@link
+     * com.gpudb.protocol.AlterEnvironmentRequest.Action#REBUILD REBUILD}:
+     * Recreates the environment and re-installs all packages, upgrades the
+     * packages if necessary based on dependencies
      * </ul>
      * A set of string constants for the parameter {@code action}.
      */
@@ -95,6 +99,12 @@ public class AlterEnvironmentRequest implements IndexedRecord {
          * original state at time of creation
          */
         public static final String RESET = "reset";
+
+        /**
+         * Recreates the environment and re-installs all packages, upgrades the
+         * packages if necessary based on dependencies
+         */
+        public static final String REBUILD = "rebuild";
 
         private Action() {  }
     }
@@ -164,6 +174,11 @@ public class AlterEnvironmentRequest implements IndexedRecord {
      *                com.gpudb.protocol.AlterEnvironmentRequest.Action#RESET
      *                RESET}: Uninstalls all packages in the environment and
      *                resets it to the original state at time of creation
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterEnvironmentRequest.Action#REBUILD
+     *                REBUILD}: Recreates the environment and re-installs all
+     *                packages, upgrades the packages if necessary based on
+     *                dependencies
      *                </ul>
      * @param value  The value of the modification, depending on {@code
      *               action}.  For example, if {@code action} is {@code
@@ -239,6 +254,11 @@ public class AlterEnvironmentRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterEnvironmentRequest.Action#RESET RESET}:
      *         Uninstalls all packages in the environment and resets it to the
      *         original state at time of creation
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterEnvironmentRequest.Action#REBUILD
+     *         REBUILD}: Recreates the environment and re-installs all
+     *         packages, upgrades the packages if necessary based on
+     *         dependencies
      *         </ul>
      * 
      */
@@ -269,6 +289,11 @@ public class AlterEnvironmentRequest implements IndexedRecord {
      *                com.gpudb.protocol.AlterEnvironmentRequest.Action#RESET
      *                RESET}: Uninstalls all packages in the environment and
      *                resets it to the original state at time of creation
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterEnvironmentRequest.Action#REBUILD
+     *                REBUILD}: Recreates the environment and re-installs all
+     *                packages, upgrades the packages if necessary based on
+     *                dependencies
      *                </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

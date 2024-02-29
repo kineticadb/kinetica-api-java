@@ -130,6 +130,20 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_ORPHANED_TABLES_ONLY
+     * VERIFY_ORPHANED_TABLES_ONLY}: If {@code true}, only the presence of
+     * orphaned table directories will be checked, all persistence checks will
+     * be skipped
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -232,6 +246,21 @@ public class AdminVerifyDbRequest implements IndexedRecord {
          * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}.
          */
         public static final String DELETE_ORPHANED_TABLES = "delete_orphaned_tables";
+
+        /**
+         * If {@code true}, only the presence of orphaned table directories
+         * will be checked, all persistence checks will be skipped
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}.
+         */
+        public static final String VERIFY_ORPHANED_TABLES_ONLY = "verify_orphaned_tables_only";
 
         private Options() {  }
     }
@@ -358,6 +387,23 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_ORPHANED_TABLES_ONLY
+     *                 VERIFY_ORPHANED_TABLES_ONLY}: If {@code true}, only the
+     *                 presence of orphaned table directories will be checked,
+     *                 all persistence checks will be skipped
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -447,6 +493,20 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *         {@code options} to {@code true}. It is recommended to run this
      *         while the database is offline OR set {@code concurrent_safe} in
      *         {@code options} to {@code true}
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_ORPHANED_TABLES_ONLY
+     *         VERIFY_ORPHANED_TABLES_ONLY}: If {@code true}, only the presence
+     *         of orphaned table directories will be checked, all persistence
+     *         checks will be skipped
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -563,6 +623,23 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *                 is recommended to run this while the database is offline
      *                 OR set {@code concurrent_safe} in {@code options} to
      *                 {@code true}
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_ORPHANED_TABLES_ONLY
+     *                 VERIFY_ORPHANED_TABLES_ONLY}: If {@code true}, only the
+     *                 presence of orphaned table directories will be checked,
+     *                 all persistence checks will be skipped
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
