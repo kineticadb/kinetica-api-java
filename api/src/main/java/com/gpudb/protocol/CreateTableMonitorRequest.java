@@ -101,7 +101,7 @@ public class CreateTableMonitorRequest implements IndexedRecord {
         public static final String DELETE = "delete";
 
         /**
-         * ID to to use for this monitor instead of a randomly generated one
+         * ID to use for this monitor instead of a randomly generated one
          */
         public static final String MONITOR_ID = "monitor_id";
 
@@ -221,9 +221,9 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#INSERT
      *                         INSERT}.
-     *                     <li>{@link Options#MONITOR_ID MONITOR_ID}: ID to to
-     *                         use for this monitor instead of a randomly
-     *                         generated one
+     *                     <li>{@link Options#MONITOR_ID MONITOR_ID}: ID to use
+     *                         for this monitor instead of a randomly generated
+     *                         one
      *                     <li>{@link Options#DATASINK_NAME DATASINK_NAME}:
      *                         Name of an existing <a
      *                         href="../../../../../../concepts/data_sinks/"
@@ -324,7 +324,7 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *                 forwarded to the subscribers.
      *         </ul>
      *         The default value is {@link Options#INSERT INSERT}.
-     *     <li>{@link Options#MONITOR_ID MONITOR_ID}: ID to to use for this
+     *     <li>{@link Options#MONITOR_ID MONITOR_ID}: ID to use for this
      *         monitor instead of a randomly generated one
      *     <li>{@link Options#DATASINK_NAME DATASINK_NAME}: Name of an existing
      *         <a href="../../../../../../concepts/data_sinks/"
@@ -389,7 +389,7 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *                 forwarded to the subscribers.
      *         </ul>
      *         The default value is {@link Options#INSERT INSERT}.
-     *     <li>{@link Options#MONITOR_ID MONITOR_ID}: ID to to use for this
+     *     <li>{@link Options#MONITOR_ID MONITOR_ID}: ID to use for this
      *         monitor instead of a randomly generated one
      *     <li>{@link Options#DATASINK_NAME DATASINK_NAME}: Name of an existing
      *         <a href="../../../../../../concepts/data_sinks/"

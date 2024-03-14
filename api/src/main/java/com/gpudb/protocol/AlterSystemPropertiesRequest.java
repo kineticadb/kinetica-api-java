@@ -144,7 +144,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
 
         /**
          * Invoke the communicator test and report timing results. Value string
-         * is is a semicolon separated list of [key]=[value] expressions.
+         * is a semicolon separated list of [key]=[value] expressions.
          * Expressions are: num_transactions=[num] where num is the number of
          * request reply transactions to invoke per test; message_size=[bytes]
          * where bytes is the size in bytes of the messages to send;
@@ -491,10 +491,9 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    PropertyUpdatesMap#COMMUNICATOR_TEST
      *                                    COMMUNICATOR_TEST}: Invoke the
      *                                    communicator test and report timing
-     *                                    results. Value string is is a
-     *                                    semicolon separated list of
-     *                                    [key]=[value] expressions.
-     *                                    Expressions are:
+     *                                    results. Value string is a semicolon
+     *                                    separated list of [key]=[value]
+     *                                    expressions.  Expressions are:
      *                                    num_transactions=[num] where num is
      *                                    the number of request reply
      *                                    transactions to invoke per test;
@@ -771,7 +770,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         for all tables.
      *     <li>{@link PropertyUpdatesMap#COMMUNICATOR_TEST COMMUNICATOR_TEST}:
      *         Invoke the communicator test and report timing results. Value
-     *         string is is a semicolon separated list of [key]=[value]
+     *         string is a semicolon separated list of [key]=[value]
      *         expressions.  Expressions are: num_transactions=[num] where num
      *         is the number of request reply transactions to invoke per test;
      *         message_size=[bytes] where bytes is the size in bytes of the
@@ -943,7 +942,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         for all tables.
      *     <li>{@link PropertyUpdatesMap#COMMUNICATOR_TEST COMMUNICATOR_TEST}:
      *         Invoke the communicator test and report timing results. Value
-     *         string is is a semicolon separated list of [key]=[value]
+     *         string is a semicolon separated list of [key]=[value]
      *         expressions.  Expressions are: num_transactions=[num] where num
      *         is the number of request reply transactions to invoke per test;
      *         message_size=[bytes] where bytes is the size in bytes of the

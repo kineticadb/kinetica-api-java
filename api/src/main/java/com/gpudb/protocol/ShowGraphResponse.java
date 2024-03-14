@@ -79,7 +79,7 @@ public class ShowGraphResponse implements IndexedRecord {
     }
 
     /**
-     * Indicates a success. This call will fails of the graph specified in the
+     * Indicates a success. This call will fail if the graph specified in the
      * request does not exist.
      *
      * @return The current value of {@code result}.
@@ -89,7 +89,7 @@ public class ShowGraphResponse implements IndexedRecord {
     }
 
     /**
-     * Indicates a success. This call will fails of the graph specified in the
+     * Indicates a success. This call will fail if the graph specified in the
      * request does not exist.
      *
      * @param result  The new value for {@code result}.
@@ -186,7 +186,7 @@ public class ShowGraphResponse implements IndexedRecord {
     }
 
     /**
-     * Owner the graph(s) and associated solution table(s).
+     * Owner of the graph(s) and associated solution table(s).
      *
      * @return The current value of {@code graphOwnerUserNames}.
      */
@@ -195,7 +195,7 @@ public class ShowGraphResponse implements IndexedRecord {
     }
 
     /**
-     * Owner the graph(s) and associated solution table(s).
+     * Owner of the graph(s) and associated solution table(s).
      *
      * @param graphOwnerUserNames  The new value for {@code
      *                             graphOwnerUserNames}.
@@ -208,7 +208,7 @@ public class ShowGraphResponse implements IndexedRecord {
     }
 
     /**
-     * Owner resource groups(s) of the graph(s).
+     * Owner of the resource groups(s) of the graph(s).
      *
      * @return The current value of {@code graphOwnerResourceGroups}.
      */
@@ -217,7 +217,7 @@ public class ShowGraphResponse implements IndexedRecord {
     }
 
     /**
-     * Owner resource groups(s) of the graph(s).
+     * Owner of the resource groups(s) of the graph(s).
      *
      * @param graphOwnerResourceGroups  The new value for {@code
      *                                  graphOwnerResourceGroups}.
@@ -364,8 +364,7 @@ public class ShowGraphResponse implements IndexedRecord {
     }
 
     /**
-     * Indicated if the graph data data is distributed across all available
-     * servers.
+     * Indicates if the graph data is distributed across all available servers.
      *
      * @return The current value of {@code isPartitioned}.
      */
@@ -374,8 +373,7 @@ public class ShowGraphResponse implements IndexedRecord {
     }
 
     /**
-     * Indicated if the graph data data is distributed across all available
-     * servers.
+     * Indicates if the graph data is distributed across all available servers.
      *
      * @param isPartitioned  The new value for {@code isPartitioned}.
      *

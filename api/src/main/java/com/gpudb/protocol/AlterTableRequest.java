@@ -27,11 +27,17 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * External tables cannot be modified except for their refresh method.
  * <p>
- * Create or delete an <a
+ * Create or delete a <a
  * href="../../../../../../concepts/indexes/#column-index"
- * target="_top">index</a> on a particular column. This can speed up certain
- * operations when using expressions containing equality or relational
- * operators on indexed columns. This only applies to tables.
+ * target="_top">column</a>, <a
+ * href="../../../../../../concepts/indexes/#chunk-skip-index"
+ * target="_top">chunk skip</a>, <a
+ * href="../../../../../../concepts/indexes/#geospatial-index"
+ * target="_top">geospatial</a>, or <a
+ * href="../../../../../../concepts/indexes/#cagra-index"
+ * target="_top">CAGRA</a> index. This can speed up certain operations when
+ * using expressions containing equality or relational operators on indexed
+ * columns. This only applies to tables.
  * <p>
  * Create or delete a <a href="../../../../../../concepts/tables/#foreign-key"
  * target="_top">foreign key</a> on a particular column.
@@ -92,25 +98,38 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String ALLOW_HOMOGENEOUS_TABLES = "allow_homogeneous_tables";
 
         /**
-         * Creates either a <a
-         * href="../../../../../../concepts/indexes/#column-index"
-         * target="_top">column (attribute) index</a> or <a
+         * Creates a <a href="../../../../../../concepts/indexes/#column-index"
+         * target="_top">column (attribute) index</a>, <a
          * href="../../../../../../concepts/indexes/#chunk-skip-index"
-         * target="_top">chunk skip index</a>, depending on the specified
-         * {@link Options#INDEX_TYPE INDEX_TYPE}, on the column name specified
-         * in {@link #getValue() value}. If this column already has the
-         * specified index, an error will be returned.
+         * target="_top">chunk skip index</a>, <a
+         * href="../../../../../../concepts/indexes/#geospatial-index"
+         * target="_top">geospatial index</a>, or <a
+         * href="../../../../../../concepts/indexes/#cagra-index"
+         * target="_top">CAGRA index</a> (depending on the specified {@link
+         * Options#INDEX_TYPE INDEX_TYPE}), on the column name specified in
+         * {@link #getValue() value}. If this column already has the specified
+         * index, an error will be returned.
          */
         public static final String CREATE_INDEX = "create_index";
 
         /**
-         * Deletes either a <a
-         * href="../../../../../../concepts/indexes/#column-index"
-         * target="_top">column (attribute) index</a> or <a
+         * Refreshes an index identified by {@link Options#INDEX_TYPE
+         * INDEX_TYPE}, on the column name specified in {@link #getValue()
+         * value}. Currently applicable only to CAGRA indices.
+         */
+        public static final String REFRESH_INDEX = "refresh_index";
+
+        /**
+         * Deletes a <a href="../../../../../../concepts/indexes/#column-index"
+         * target="_top">column (attribute) index</a>, <a
          * href="../../../../../../concepts/indexes/#chunk-skip-index"
-         * target="_top">chunk skip index</a>, depending on the specified
-         * {@link Options#INDEX_TYPE INDEX_TYPE}, on the column name specified
-         * in {@link #getValue() value}. If this column does not have the
+         * target="_top">chunk skip index</a>, <a
+         * href="../../../../../../concepts/indexes/#geospatial-index"
+         * target="_top">geospatial index</a>, or <a
+         * href="../../../../../../concepts/indexes/#cagra-index"
+         * target="_top">CAGRA index</a> (depending on the specified {@link
+         * Options#INDEX_TYPE INDEX_TYPE}), on the column name specified in
+         * {@link #getValue() value}. If this column does not have the
          * specified index, an error will be returned.
          */
         public static final String DELETE_INDEX = "delete_index";
@@ -155,14 +174,14 @@ public class AlterTableRequest implements IndexedRecord {
 
         /**
          * Adds the comment specified in {@link #getValue() value} to the table
-         * specified in {@link #getTableName() tableName}.  Use {@link
+         * specified in {@link #getTableName() tableName}. Use {@link
          * Options#COLUMN_NAME COLUMN_NAME} to set the comment for a column.
          */
         public static final String ADD_COMMENT = "add_comment";
 
         /**
          * Adds the column specified in {@link #getValue() value} to the table
-         * specified in {@link #getTableName() tableName}.  Use {@link
+         * specified in {@link #getTableName() tableName}. Use {@link
          * Options#COLUMN_TYPE COLUMN_TYPE} and {@link
          * Options#COLUMN_PROPERTIES COLUMN_PROPERTIES} in {@link #getOptions()
          * options} to set the column's type and properties, respectively.
@@ -171,7 +190,7 @@ public class AlterTableRequest implements IndexedRecord {
 
         /**
          * Changes type and properties of the column specified in {@link
-         * #getValue() value}.  Use {@link Options#COLUMN_TYPE COLUMN_TYPE} and
+         * #getValue() value}. Use {@link Options#COLUMN_TYPE COLUMN_TYPE} and
          * {@link Options#COLUMN_PROPERTIES COLUMN_PROPERTIES} in {@link
          * #getOptions() options} to set the column's type and properties,
          * respectively. Note that primary key and/or shard key columns cannot
@@ -335,19 +354,19 @@ public class AlterTableRequest implements IndexedRecord {
 
         /**
          * Permanently unsubscribe a data source that is loading continuously
-         * as a stream. The data source can be kafka / S3 / Azure.
+         * as a stream. The data source can be Kafka / S3 / Azure.
          */
         public static final String CANCEL_DATASOURCE_SUBSCRIPTION = "cancel_datasource_subscription";
 
         /**
          * Temporarily unsubscribe a data source that is loading continuously
-         * as a stream. The data source can be kafka / S3 / Azure.
+         * as a stream. The data source can be Kafka / S3 / Azure.
          */
         public static final String PAUSE_DATASOURCE_SUBSCRIPTION = "pause_datasource_subscription";
 
         /**
          * Resubscribe to a paused data source subscription. The data source
-         * can be kafka / S3 / Azure.
+         * can be Kafka / S3 / Azure.
          */
         public static final String RESUME_DATASOURCE_SUBSCRIPTION = "resume_datasource_subscription";
 
@@ -480,8 +499,10 @@ public class AlterTableRequest implements IndexedRecord {
 
         /**
          * Type of index to create, when {@link #getAction() action} is {@link
-         * Action#CREATE_INDEX CREATE_INDEX}, or to delete, when {@link
-         * #getAction() action} is {@link Action#DELETE_INDEX DELETE_INDEX}.
+         * Action#CREATE_INDEX CREATE_INDEX}; to refresh, when {@link
+         * #getAction() action} is {@link Action#REFRESH_INDEX REFRESH_INDEX};
+         * or to delete, when {@link #getAction() action} is {@link
+         * Action#DELETE_INDEX DELETE_INDEX}.
          * Supported values:
          * <ul>
          *     <li>{@link Options#COLUMN COLUMN}: Create or delete a <a
@@ -490,9 +511,14 @@ public class AlterTableRequest implements IndexedRecord {
          *     <li>{@link Options#CHUNK_SKIP CHUNK_SKIP}: Create or delete a <a
          *         href="../../../../../../concepts/indexes/#chunk-skip-index"
          *         target="_top">chunk skip index</a>.
-         *     <li>{@link Options#GEOSPATIAL GEOSPATIAL}: Create or delete a
-         *         geospatial index
-         *     <li>{@link Options#CAGRA CAGRA}: Create or delete a CAGRA index
+         *     <li>{@link Options#GEOSPATIAL GEOSPATIAL}: Create or delete a <a
+         *         href="../../../../../../concepts/indexes/#geospatial-index"
+         *         target="_top">geospatial index</a>
+         *     <li>{@link Options#CAGRA CAGRA}: Create or delete a <a
+         *         href="../../../../../../concepts/indexes/#cagra-index"
+         *         target="_top">CAGRA index</a> on a <a
+         *         href="../../../../../../vector_search/#vector-type"
+         *         target="_top">vector column</a>
          * </ul>
          * The default value is {@link Options#COLUMN COLUMN}.
          */
@@ -513,14 +539,26 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String CHUNK_SKIP = "chunk_skip";
 
         /**
-         * Create or delete a geospatial index
+         * Create or delete a <a
+         * href="../../../../../../concepts/indexes/#geospatial-index"
+         * target="_top">geospatial index</a>
          */
         public static final String GEOSPATIAL = "geospatial";
 
         /**
-         * Create or delete a CAGRA index
+         * Create or delete a <a
+         * href="../../../../../../concepts/indexes/#cagra-index"
+         * target="_top">CAGRA index</a> on a <a
+         * href="../../../../../../vector_search/#vector-type"
+         * target="_top">vector column</a>
          */
         public static final String CAGRA = "cagra";
+
+        /**
+         * Options to use when creating an index, in the format "key: value [,
+         * key: value [, ...]]". Valid options vary by index type.
+         */
+        public static final String INDEX_OPTIONS = "index_options";
 
         private Options() {  }
     }
@@ -546,7 +584,7 @@ public class AlterTableRequest implements IndexedRecord {
      * @param tableName  Table on which the operation will be performed, in
      *                   [schema_name.]table_name format, using standard <a
      *                   href="../../../../../../concepts/tables/#table-name-resolution"
-     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   target="_top">name resolution rules</a>. Must be an
      *                   existing table or view.
      * @param action  Modification operation to be applied.
      *                Supported values:
@@ -555,25 +593,38 @@ public class AlterTableRequest implements IndexedRecord {
      *                        ALLOW_HOMOGENEOUS_TABLES}: No longer supported;
      *                        action will be ignored.
      *                    <li>{@link Action#CREATE_INDEX CREATE_INDEX}: Creates
-     *                        either a <a
+     *                        a <a
      *                        href="../../../../../../concepts/indexes/#column-index"
-     *                        target="_top">column (attribute) index</a> or <a
+     *                        target="_top">column (attribute) index</a>, <a
      *                        href="../../../../../../concepts/indexes/#chunk-skip-index"
-     *                        target="_top">chunk skip index</a>, depending on
-     *                        the specified {@link Options#INDEX_TYPE
-     *                        INDEX_TYPE}, on the column name specified in
-     *                        {@code value}. If this column already has the
-     *                        specified index, an error will be returned.
+     *                        target="_top">chunk skip index</a>, <a
+     *                        href="../../../../../../concepts/indexes/#geospatial-index"
+     *                        target="_top">geospatial index</a>, or <a
+     *                        href="../../../../../../concepts/indexes/#cagra-index"
+     *                        target="_top">CAGRA index</a> (depending on the
+     *                        specified {@link Options#INDEX_TYPE INDEX_TYPE}),
+     *                        on the column name specified in {@code value}. If
+     *                        this column already has the specified index, an
+     *                        error will be returned.
+     *                    <li>{@link Action#REFRESH_INDEX REFRESH_INDEX}:
+     *                        Refreshes an index identified by {@link
+     *                        Options#INDEX_TYPE INDEX_TYPE}, on the column
+     *                        name specified in {@code value}. Currently
+     *                        applicable only to CAGRA indices.
      *                    <li>{@link Action#DELETE_INDEX DELETE_INDEX}: Deletes
-     *                        either a <a
+     *                        a <a
      *                        href="../../../../../../concepts/indexes/#column-index"
-     *                        target="_top">column (attribute) index</a> or <a
+     *                        target="_top">column (attribute) index</a>, <a
      *                        href="../../../../../../concepts/indexes/#chunk-skip-index"
-     *                        target="_top">chunk skip index</a>, depending on
-     *                        the specified {@link Options#INDEX_TYPE
-     *                        INDEX_TYPE}, on the column name specified in
-     *                        {@code value}. If this column does not have the
-     *                        specified index, an error will be returned.
+     *                        target="_top">chunk skip index</a>, <a
+     *                        href="../../../../../../concepts/indexes/#geospatial-index"
+     *                        target="_top">geospatial index</a>, or <a
+     *                        href="../../../../../../concepts/indexes/#cagra-index"
+     *                        target="_top">CAGRA index</a> (depending on the
+     *                        specified {@link Options#INDEX_TYPE INDEX_TYPE}),
+     *                        on the column name specified in {@code value}. If
+     *                        this column does not have the specified index, an
+     *                        error will be returned.
      *                    <li>{@link Action#MOVE_TO_COLLECTION
      *                        MOVE_TO_COLLECTION}: [DEPRECATED--please use
      *                        {@link Action#MOVE_TO_SCHEMA MOVE_TO_SCHEMA} and
@@ -586,10 +637,10 @@ public class AlterTableRequest implements IndexedRecord {
      *                        automatically created.
      *                    <li>{@link Action#MOVE_TO_SCHEMA MOVE_TO_SCHEMA}:
      *                        Moves a table or view into a schema named {@code
-     *                        value}.  If the schema provided is nonexistent,
-     *                        an error will be thrown. If {@code value} is
-     *                        empty, then the table or view will be placed in
-     *                        the user's default schema.
+     *                        value}. If the schema provided is nonexistent, an
+     *                        error will be thrown. If {@code value} is empty,
+     *                        then the table or view will be placed in the
+     *                        user's default schema.
      *                    <li>{@link Action#PROTECTED PROTECTED}: No longer
      *                        used.  Previously set whether the given {@code
      *                        tableName} should be protected or not. The {@code
@@ -605,19 +656,19 @@ public class AlterTableRequest implements IndexedRecord {
      *                        table or view specified in {@code tableName}.
      *                    <li>{@link Action#ADD_COMMENT ADD_COMMENT}: Adds the
      *                        comment specified in {@code value} to the table
-     *                        specified in {@code tableName}.  Use {@link
+     *                        specified in {@code tableName}. Use {@link
      *                        Options#COLUMN_NAME COLUMN_NAME} to set the
      *                        comment for a column.
      *                    <li>{@link Action#ADD_COLUMN ADD_COLUMN}: Adds the
      *                        column specified in {@code value} to the table
-     *                        specified in {@code tableName}.  Use {@link
+     *                        specified in {@code tableName}. Use {@link
      *                        Options#COLUMN_TYPE COLUMN_TYPE} and {@link
      *                        Options#COLUMN_PROPERTIES COLUMN_PROPERTIES} in
      *                        {@code options} to set the column's type and
      *                        properties, respectively.
      *                    <li>{@link Action#CHANGE_COLUMN CHANGE_COLUMN}:
      *                        Changes type and properties of the column
-     *                        specified in {@code value}.  Use {@link
+     *                        specified in {@code value}. Use {@link
      *                        Options#COLUMN_TYPE COLUMN_TYPE} and {@link
      *                        Options#COLUMN_PROPERTIES COLUMN_PROPERTIES} in
      *                        {@code options} to set the column's type and
@@ -753,28 +804,28 @@ public class AlterTableRequest implements IndexedRecord {
      *                        CANCEL_DATASOURCE_SUBSCRIPTION}: Permanently
      *                        unsubscribe a data source that is loading
      *                        continuously as a stream. The data source can be
-     *                        kafka / S3 / Azure.
+     *                        Kafka / S3 / Azure.
      *                    <li>{@link Action#PAUSE_DATASOURCE_SUBSCRIPTION
      *                        PAUSE_DATASOURCE_SUBSCRIPTION}: Temporarily
      *                        unsubscribe a data source that is loading
      *                        continuously as a stream. The data source can be
-     *                        kafka / S3 / Azure.
+     *                        Kafka / S3 / Azure.
      *                    <li>{@link Action#RESUME_DATASOURCE_SUBSCRIPTION
      *                        RESUME_DATASOURCE_SUBSCRIPTION}: Resubscribe to a
      *                        paused data source subscription. The data source
-     *                        can be kafka / S3 / Azure.
+     *                        can be Kafka / S3 / Azure.
      *                    <li>{@link Action#CHANGE_OWNER CHANGE_OWNER}: Change
      *                        the owner resource group of the table.
      *                </ul>
      * @param value  The value of the modification, depending on {@code
-     *               action}.  For example, if {@code action} is {@link
+     *               action}. For example, if {@code action} is {@link
      *               Action#ADD_COLUMN ADD_COLUMN}, this would be the column
      *               name; while the column's definition would be covered by
      *               the {@link Options#COLUMN_TYPE COLUMN_TYPE}, {@link
      *               Options#COLUMN_PROPERTIES COLUMN_PROPERTIES}, {@link
      *               Options#COLUMN_DEFAULT_VALUE COLUMN_DEFAULT_VALUE}, and
      *               {@link Options#ADD_COLUMN_EXPRESSION
-     *               ADD_COLUMN_EXPRESSION} in {@code options}.  If {@code
+     *               ADD_COLUMN_EXPRESSION} in {@code options}. If {@code
      *               action} is {@link Action#TTL TTL}, it would be the number
      *               of minutes for the new TTL. If {@code action} is {@link
      *               Action#REFRESH REFRESH}, this field would be blank.
@@ -863,8 +914,10 @@ public class AlterTableRequest implements IndexedRecord {
      *                         tier strategy in its entirety.
      *                     <li>{@link Options#INDEX_TYPE INDEX_TYPE}: Type of
      *                         index to create, when {@code action} is {@link
-     *                         Action#CREATE_INDEX CREATE_INDEX}, or to delete,
+     *                         Action#CREATE_INDEX CREATE_INDEX}; to refresh,
      *                         when {@code action} is {@link
+     *                         Action#REFRESH_INDEX REFRESH_INDEX}; or to
+     *                         delete, when {@code action} is {@link
      *                         Action#DELETE_INDEX DELETE_INDEX}.
      *                         Supported values:
      *                         <ul>
@@ -878,12 +931,22 @@ public class AlterTableRequest implements IndexedRecord {
      *                                 href="../../../../../../concepts/indexes/#chunk-skip-index"
      *                                 target="_top">chunk skip index</a>.
      *                             <li>{@link Options#GEOSPATIAL GEOSPATIAL}:
-     *                                 Create or delete a geospatial index
+     *                                 Create or delete a <a
+     *                                 href="../../../../../../concepts/indexes/#geospatial-index"
+     *                                 target="_top">geospatial index</a>
      *                             <li>{@link Options#CAGRA CAGRA}: Create or
-     *                                 delete a CAGRA index
+     *                                 delete a <a
+     *                                 href="../../../../../../concepts/indexes/#cagra-index"
+     *                                 target="_top">CAGRA index</a> on a <a
+     *                                 href="../../../../../../vector_search/#vector-type"
+     *                                 target="_top">vector column</a>
      *                         </ul>
      *                         The default value is {@link Options#COLUMN
      *                         COLUMN}.
+     *                     <li>{@link Options#INDEX_OPTIONS INDEX_OPTIONS}:
+     *                         Options to use when creating an index, in the
+     *                         format "key: value [, key: value [, ...]]".
+     *                         Valid options vary by index type.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -898,7 +961,7 @@ public class AlterTableRequest implements IndexedRecord {
      * Table on which the operation will be performed, in
      * [schema_name.]table_name format, using standard <a
      * href="../../../../../../concepts/tables/#table-name-resolution"
-     * target="_top">name resolution rules</a>.  Must be an existing table or
+     * target="_top">name resolution rules</a>. Must be an existing table or
      * view.
      *
      * @return The current value of {@code tableName}.
@@ -911,7 +974,7 @@ public class AlterTableRequest implements IndexedRecord {
      * Table on which the operation will be performed, in
      * [schema_name.]table_name format, using standard <a
      * href="../../../../../../concepts/tables/#table-name-resolution"
-     * target="_top">name resolution rules</a>.  Must be an existing table or
+     * target="_top">name resolution rules</a>. Must be an existing table or
      * view.
      *
      * @param tableName  The new value for {@code tableName}.
@@ -930,22 +993,34 @@ public class AlterTableRequest implements IndexedRecord {
      *     <li>{@link Action#ALLOW_HOMOGENEOUS_TABLES
      *         ALLOW_HOMOGENEOUS_TABLES}: No longer supported; action will be
      *         ignored.
-     *     <li>{@link Action#CREATE_INDEX CREATE_INDEX}: Creates either a <a
+     *     <li>{@link Action#CREATE_INDEX CREATE_INDEX}: Creates a <a
      *         href="../../../../../../concepts/indexes/#column-index"
-     *         target="_top">column (attribute) index</a> or <a
+     *         target="_top">column (attribute) index</a>, <a
      *         href="../../../../../../concepts/indexes/#chunk-skip-index"
-     *         target="_top">chunk skip index</a>, depending on the specified
-     *         {@link Options#INDEX_TYPE INDEX_TYPE}, on the column name
-     *         specified in {@link #getValue() value}. If this column already
-     *         has the specified index, an error will be returned.
-     *     <li>{@link Action#DELETE_INDEX DELETE_INDEX}: Deletes either a <a
+     *         target="_top">chunk skip index</a>, <a
+     *         href="../../../../../../concepts/indexes/#geospatial-index"
+     *         target="_top">geospatial index</a>, or <a
+     *         href="../../../../../../concepts/indexes/#cagra-index"
+     *         target="_top">CAGRA index</a> (depending on the specified {@link
+     *         Options#INDEX_TYPE INDEX_TYPE}), on the column name specified in
+     *         {@link #getValue() value}. If this column already has the
+     *         specified index, an error will be returned.
+     *     <li>{@link Action#REFRESH_INDEX REFRESH_INDEX}: Refreshes an index
+     *         identified by {@link Options#INDEX_TYPE INDEX_TYPE}, on the
+     *         column name specified in {@link #getValue() value}. Currently
+     *         applicable only to CAGRA indices.
+     *     <li>{@link Action#DELETE_INDEX DELETE_INDEX}: Deletes a <a
      *         href="../../../../../../concepts/indexes/#column-index"
-     *         target="_top">column (attribute) index</a> or <a
+     *         target="_top">column (attribute) index</a>, <a
      *         href="../../../../../../concepts/indexes/#chunk-skip-index"
-     *         target="_top">chunk skip index</a>, depending on the specified
-     *         {@link Options#INDEX_TYPE INDEX_TYPE}, on the column name
-     *         specified in {@link #getValue() value}. If this column does not
-     *         have the specified index, an error will be returned.
+     *         target="_top">chunk skip index</a>, <a
+     *         href="../../../../../../concepts/indexes/#geospatial-index"
+     *         target="_top">geospatial index</a>, or <a
+     *         href="../../../../../../concepts/indexes/#cagra-index"
+     *         target="_top">CAGRA index</a> (depending on the specified {@link
+     *         Options#INDEX_TYPE INDEX_TYPE}), on the column name specified in
+     *         {@link #getValue() value}. If this column does not have the
+     *         specified index, an error will be returned.
      *     <li>{@link Action#MOVE_TO_COLLECTION MOVE_TO_COLLECTION}:
      *         [DEPRECATED--please use {@link Action#MOVE_TO_SCHEMA
      *         MOVE_TO_SCHEMA} and use {@link
@@ -955,7 +1030,7 @@ public class AlterTableRequest implements IndexedRecord {
      *         If the schema provided is non-existent, it will be automatically
      *         created.
      *     <li>{@link Action#MOVE_TO_SCHEMA MOVE_TO_SCHEMA}: Moves a table or
-     *         view into a schema named {@link #getValue() value}.  If the
+     *         view into a schema named {@link #getValue() value}. If the
      *         schema provided is nonexistent, an error will be thrown. If
      *         {@link #getValue() value} is empty, then the table or view will
      *         be placed in the user's default schema.
@@ -974,12 +1049,12 @@ public class AlterTableRequest implements IndexedRecord {
      *         specified in {@link #getTableName() tableName}.
      *     <li>{@link Action#ADD_COMMENT ADD_COMMENT}: Adds the comment
      *         specified in {@link #getValue() value} to the table specified in
-     *         {@link #getTableName() tableName}.  Use {@link
+     *         {@link #getTableName() tableName}. Use {@link
      *         Options#COLUMN_NAME COLUMN_NAME} to set the comment for a
      *         column.
      *     <li>{@link Action#ADD_COLUMN ADD_COLUMN}: Adds the column specified
      *         in {@link #getValue() value} to the table specified in {@link
-     *         #getTableName() tableName}.  Use {@link Options#COLUMN_TYPE
+     *         #getTableName() tableName}. Use {@link Options#COLUMN_TYPE
      *         COLUMN_TYPE} and {@link Options#COLUMN_PROPERTIES
      *         COLUMN_PROPERTIES} in {@link #getOptions() options} to set the
      *         column's type and properties, respectively.
@@ -1096,14 +1171,14 @@ public class AlterTableRequest implements IndexedRecord {
      *     <li>{@link Action#CANCEL_DATASOURCE_SUBSCRIPTION
      *         CANCEL_DATASOURCE_SUBSCRIPTION}: Permanently unsubscribe a data
      *         source that is loading continuously as a stream. The data source
-     *         can be kafka / S3 / Azure.
+     *         can be Kafka / S3 / Azure.
      *     <li>{@link Action#PAUSE_DATASOURCE_SUBSCRIPTION
      *         PAUSE_DATASOURCE_SUBSCRIPTION}: Temporarily unsubscribe a data
      *         source that is loading continuously as a stream. The data source
-     *         can be kafka / S3 / Azure.
+     *         can be Kafka / S3 / Azure.
      *     <li>{@link Action#RESUME_DATASOURCE_SUBSCRIPTION
      *         RESUME_DATASOURCE_SUBSCRIPTION}: Resubscribe to a paused data
-     *         source subscription. The data source can be kafka / S3 / Azure.
+     *         source subscription. The data source can be Kafka / S3 / Azure.
      *     <li>{@link Action#CHANGE_OWNER CHANGE_OWNER}: Change the owner
      *         resource group of the table.
      * </ul>
@@ -1121,22 +1196,34 @@ public class AlterTableRequest implements IndexedRecord {
      *     <li>{@link Action#ALLOW_HOMOGENEOUS_TABLES
      *         ALLOW_HOMOGENEOUS_TABLES}: No longer supported; action will be
      *         ignored.
-     *     <li>{@link Action#CREATE_INDEX CREATE_INDEX}: Creates either a <a
+     *     <li>{@link Action#CREATE_INDEX CREATE_INDEX}: Creates a <a
      *         href="../../../../../../concepts/indexes/#column-index"
-     *         target="_top">column (attribute) index</a> or <a
+     *         target="_top">column (attribute) index</a>, <a
      *         href="../../../../../../concepts/indexes/#chunk-skip-index"
-     *         target="_top">chunk skip index</a>, depending on the specified
-     *         {@link Options#INDEX_TYPE INDEX_TYPE}, on the column name
-     *         specified in {@link #getValue() value}. If this column already
-     *         has the specified index, an error will be returned.
-     *     <li>{@link Action#DELETE_INDEX DELETE_INDEX}: Deletes either a <a
+     *         target="_top">chunk skip index</a>, <a
+     *         href="../../../../../../concepts/indexes/#geospatial-index"
+     *         target="_top">geospatial index</a>, or <a
+     *         href="../../../../../../concepts/indexes/#cagra-index"
+     *         target="_top">CAGRA index</a> (depending on the specified {@link
+     *         Options#INDEX_TYPE INDEX_TYPE}), on the column name specified in
+     *         {@link #getValue() value}. If this column already has the
+     *         specified index, an error will be returned.
+     *     <li>{@link Action#REFRESH_INDEX REFRESH_INDEX}: Refreshes an index
+     *         identified by {@link Options#INDEX_TYPE INDEX_TYPE}, on the
+     *         column name specified in {@link #getValue() value}. Currently
+     *         applicable only to CAGRA indices.
+     *     <li>{@link Action#DELETE_INDEX DELETE_INDEX}: Deletes a <a
      *         href="../../../../../../concepts/indexes/#column-index"
-     *         target="_top">column (attribute) index</a> or <a
+     *         target="_top">column (attribute) index</a>, <a
      *         href="../../../../../../concepts/indexes/#chunk-skip-index"
-     *         target="_top">chunk skip index</a>, depending on the specified
-     *         {@link Options#INDEX_TYPE INDEX_TYPE}, on the column name
-     *         specified in {@link #getValue() value}. If this column does not
-     *         have the specified index, an error will be returned.
+     *         target="_top">chunk skip index</a>, <a
+     *         href="../../../../../../concepts/indexes/#geospatial-index"
+     *         target="_top">geospatial index</a>, or <a
+     *         href="../../../../../../concepts/indexes/#cagra-index"
+     *         target="_top">CAGRA index</a> (depending on the specified {@link
+     *         Options#INDEX_TYPE INDEX_TYPE}), on the column name specified in
+     *         {@link #getValue() value}. If this column does not have the
+     *         specified index, an error will be returned.
      *     <li>{@link Action#MOVE_TO_COLLECTION MOVE_TO_COLLECTION}:
      *         [DEPRECATED--please use {@link Action#MOVE_TO_SCHEMA
      *         MOVE_TO_SCHEMA} and use {@link
@@ -1146,7 +1233,7 @@ public class AlterTableRequest implements IndexedRecord {
      *         If the schema provided is non-existent, it will be automatically
      *         created.
      *     <li>{@link Action#MOVE_TO_SCHEMA MOVE_TO_SCHEMA}: Moves a table or
-     *         view into a schema named {@link #getValue() value}.  If the
+     *         view into a schema named {@link #getValue() value}. If the
      *         schema provided is nonexistent, an error will be thrown. If
      *         {@link #getValue() value} is empty, then the table or view will
      *         be placed in the user's default schema.
@@ -1165,12 +1252,12 @@ public class AlterTableRequest implements IndexedRecord {
      *         specified in {@link #getTableName() tableName}.
      *     <li>{@link Action#ADD_COMMENT ADD_COMMENT}: Adds the comment
      *         specified in {@link #getValue() value} to the table specified in
-     *         {@link #getTableName() tableName}.  Use {@link
+     *         {@link #getTableName() tableName}. Use {@link
      *         Options#COLUMN_NAME COLUMN_NAME} to set the comment for a
      *         column.
      *     <li>{@link Action#ADD_COLUMN ADD_COLUMN}: Adds the column specified
      *         in {@link #getValue() value} to the table specified in {@link
-     *         #getTableName() tableName}.  Use {@link Options#COLUMN_TYPE
+     *         #getTableName() tableName}. Use {@link Options#COLUMN_TYPE
      *         COLUMN_TYPE} and {@link Options#COLUMN_PROPERTIES
      *         COLUMN_PROPERTIES} in {@link #getOptions() options} to set the
      *         column's type and properties, respectively.
@@ -1287,14 +1374,14 @@ public class AlterTableRequest implements IndexedRecord {
      *     <li>{@link Action#CANCEL_DATASOURCE_SUBSCRIPTION
      *         CANCEL_DATASOURCE_SUBSCRIPTION}: Permanently unsubscribe a data
      *         source that is loading continuously as a stream. The data source
-     *         can be kafka / S3 / Azure.
+     *         can be Kafka / S3 / Azure.
      *     <li>{@link Action#PAUSE_DATASOURCE_SUBSCRIPTION
      *         PAUSE_DATASOURCE_SUBSCRIPTION}: Temporarily unsubscribe a data
      *         source that is loading continuously as a stream. The data source
-     *         can be kafka / S3 / Azure.
+     *         can be Kafka / S3 / Azure.
      *     <li>{@link Action#RESUME_DATASOURCE_SUBSCRIPTION
      *         RESUME_DATASOURCE_SUBSCRIPTION}: Resubscribe to a paused data
-     *         source subscription. The data source can be kafka / S3 / Azure.
+     *         source subscription. The data source can be Kafka / S3 / Azure.
      *     <li>{@link Action#CHANGE_OWNER CHANGE_OWNER}: Change the owner
      *         resource group of the table.
      * </ul>
@@ -1316,7 +1403,7 @@ public class AlterTableRequest implements IndexedRecord {
      * COLUMN_TYPE}, {@link Options#COLUMN_PROPERTIES COLUMN_PROPERTIES},
      * {@link Options#COLUMN_DEFAULT_VALUE COLUMN_DEFAULT_VALUE}, and {@link
      * Options#ADD_COLUMN_EXPRESSION ADD_COLUMN_EXPRESSION} in {@link
-     * #getOptions() options}.  If {@link #getAction() action} is {@link
+     * #getOptions() options}. If {@link #getAction() action} is {@link
      * Action#TTL TTL}, it would be the number of minutes for the new TTL. If
      * {@link #getAction() action} is {@link Action#REFRESH REFRESH}, this
      * field would be blank.
@@ -1335,7 +1422,7 @@ public class AlterTableRequest implements IndexedRecord {
      * COLUMN_TYPE}, {@link Options#COLUMN_PROPERTIES COLUMN_PROPERTIES},
      * {@link Options#COLUMN_DEFAULT_VALUE COLUMN_DEFAULT_VALUE}, and {@link
      * Options#ADD_COLUMN_EXPRESSION ADD_COLUMN_EXPRESSION} in {@link
-     * #getOptions() options}.  If {@link #getAction() action} is {@link
+     * #getOptions() options}. If {@link #getAction() action} is {@link
      * Action#TTL TTL}, it would be the number of minutes for the new TTL. If
      * {@link #getAction() action} is {@link Action#REFRESH REFRESH}, this
      * field would be blank.
@@ -1419,8 +1506,10 @@ public class AlterTableRequest implements IndexedRecord {
      *         replacing the existing tier strategy in its entirety.
      *     <li>{@link Options#INDEX_TYPE INDEX_TYPE}: Type of index to create,
      *         when {@link #getAction() action} is {@link Action#CREATE_INDEX
-     *         CREATE_INDEX}, or to delete, when {@link #getAction() action} is
-     *         {@link Action#DELETE_INDEX DELETE_INDEX}.
+     *         CREATE_INDEX}; to refresh, when {@link #getAction() action} is
+     *         {@link Action#REFRESH_INDEX REFRESH_INDEX}; or to delete, when
+     *         {@link #getAction() action} is {@link Action#DELETE_INDEX
+     *         DELETE_INDEX}.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#COLUMN COLUMN}: Create or delete a <a
@@ -1431,11 +1520,19 @@ public class AlterTableRequest implements IndexedRecord {
      *                 href="../../../../../../concepts/indexes/#chunk-skip-index"
      *                 target="_top">chunk skip index</a>.
      *             <li>{@link Options#GEOSPATIAL GEOSPATIAL}: Create or delete
-     *                 a geospatial index
-     *             <li>{@link Options#CAGRA CAGRA}: Create or delete a CAGRA
-     *                 index
+     *                 a <a
+     *                 href="../../../../../../concepts/indexes/#geospatial-index"
+     *                 target="_top">geospatial index</a>
+     *             <li>{@link Options#CAGRA CAGRA}: Create or delete a <a
+     *                 href="../../../../../../concepts/indexes/#cagra-index"
+     *                 target="_top">CAGRA index</a> on a <a
+     *                 href="../../../../../../vector_search/#vector-type"
+     *                 target="_top">vector column</a>
      *         </ul>
      *         The default value is {@link Options#COLUMN COLUMN}.
+     *     <li>{@link Options#INDEX_OPTIONS INDEX_OPTIONS}: Options to use when
+     *         creating an index, in the format "key: value [, key: value [,
+     *         ...]]". Valid options vary by index type.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -1515,8 +1612,10 @@ public class AlterTableRequest implements IndexedRecord {
      *         replacing the existing tier strategy in its entirety.
      *     <li>{@link Options#INDEX_TYPE INDEX_TYPE}: Type of index to create,
      *         when {@link #getAction() action} is {@link Action#CREATE_INDEX
-     *         CREATE_INDEX}, or to delete, when {@link #getAction() action} is
-     *         {@link Action#DELETE_INDEX DELETE_INDEX}.
+     *         CREATE_INDEX}; to refresh, when {@link #getAction() action} is
+     *         {@link Action#REFRESH_INDEX REFRESH_INDEX}; or to delete, when
+     *         {@link #getAction() action} is {@link Action#DELETE_INDEX
+     *         DELETE_INDEX}.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#COLUMN COLUMN}: Create or delete a <a
@@ -1527,11 +1626,19 @@ public class AlterTableRequest implements IndexedRecord {
      *                 href="../../../../../../concepts/indexes/#chunk-skip-index"
      *                 target="_top">chunk skip index</a>.
      *             <li>{@link Options#GEOSPATIAL GEOSPATIAL}: Create or delete
-     *                 a geospatial index
-     *             <li>{@link Options#CAGRA CAGRA}: Create or delete a CAGRA
-     *                 index
+     *                 a <a
+     *                 href="../../../../../../concepts/indexes/#geospatial-index"
+     *                 target="_top">geospatial index</a>
+     *             <li>{@link Options#CAGRA CAGRA}: Create or delete a <a
+     *                 href="../../../../../../concepts/indexes/#cagra-index"
+     *                 target="_top">CAGRA index</a> on a <a
+     *                 href="../../../../../../vector_search/#vector-type"
+     *                 target="_top">vector column</a>
      *         </ul>
      *         The default value is {@link Options#COLUMN COLUMN}.
+     *     <li>{@link Options#INDEX_OPTIONS INDEX_OPTIONS}: Options to use when
+     *         creating an index, in the format "key: value [, key: value [,
+     *         ...]]". Valid options vary by index type.
      * </ul>
      * The default value is an empty {@link Map}.
      *

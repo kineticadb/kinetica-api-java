@@ -258,6 +258,11 @@ public class CreateDatasourceRequest implements IndexedRecord {
          */
         public static final String SCHEMA_REGISTRY_CREDENTIAL = "schema_registry_credential";
 
+        /**
+         * Confluent Schema registry port (optional).
+         */
+        public static final String SCHEMA_REGISTRY_PORT = "schema_registry_port";
+
         private Options() {  }
     }
 
@@ -439,6 +444,9 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                     <li>{@link Options#SCHEMA_REGISTRY_CREDENTIAL
      *                         SCHEMA_REGISTRY_CREDENTIAL}: Confluent Schema
      *                         registry Credential object name.
+     *                     <li>{@link Options#SCHEMA_REGISTRY_PORT
+     *                         SCHEMA_REGISTRY_PORT}: Confluent Schema registry
+     *                         port (optional).
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -663,6 +671,8 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *     <li>{@link Options#SCHEMA_REGISTRY_CREDENTIAL
      *         SCHEMA_REGISTRY_CREDENTIAL}: Confluent Schema registry
      *         Credential object name.
+     *     <li>{@link Options#SCHEMA_REGISTRY_PORT SCHEMA_REGISTRY_PORT}:
+     *         Confluent Schema registry port (optional).
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -793,6 +803,8 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *     <li>{@link Options#SCHEMA_REGISTRY_CREDENTIAL
      *         SCHEMA_REGISTRY_CREDENTIAL}: Confluent Schema registry
      *         Credential object name.
+     *     <li>{@link Options#SCHEMA_REGISTRY_PORT SCHEMA_REGISTRY_PORT}:
+     *         Confluent Schema registry port (optional).
      * </ul>
      * The default value is an empty {@link Map}.
      *

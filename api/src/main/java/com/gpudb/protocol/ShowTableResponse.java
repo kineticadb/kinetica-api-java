@@ -278,10 +278,14 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String IS_AUTOMATIC_PARTITION = "is_automatic_partition";
 
         /**
-         * Semicolon-separated list of columns that have <a
+         * Semicolon-separated list of indexes. For <a
          * href="../../../../../../concepts/indexes/#column-index"
-         * target="_top">indexes</a>. Not present for schemas. The default
-         * value is ''.
+         * target="_top">column (attribute) indexes</a>, only the indexed
+         * column name will be listed. For other index types, the index type
+         * will be listed with the colon-delimited indexed column(s) and the
+         * comma-delimited index option(s) using the form:
+         * &lt;index_type&gt;@&lt;column_list&gt;@&lt;column_options&gt;.  Not
+         * present for schemas. The default value is ''.
          */
         public static final String ATTRIBUTE_INDEXES = "attribute_indexes";
 
@@ -292,7 +296,7 @@ public class ShowTableResponse implements IndexedRecord {
 
         /**
          * JSON-encoded string representing a map of column name to information
-         * including memory usage if if the {@link
+         * including memory usage if the {@link
          * com.gpudb.protocol.ShowTableRequest.Options#GET_COLUMN_INFO
          * GET_COLUMN_INFO} option is {@link
          * com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}. The default
@@ -489,7 +493,7 @@ public class ShowTableResponse implements IndexedRecord {
      * then this array is populated with the names of all tables and views in
      * the given schema; if {@link
      * com.gpudb.protocol.ShowTableRequest.Options#SHOW_CHILDREN SHOW_CHILDREN}
-     * is {@link com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE} then
+     * is {@link com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}, then
      * this array will only include the schema name itself. If {@link
      * com.gpudb.protocol.ShowTableRequest#getTableName() tableName} is an
      * empty string, then the array contains the names of all tables in the
@@ -512,7 +516,7 @@ public class ShowTableResponse implements IndexedRecord {
      * then this array is populated with the names of all tables and views in
      * the given schema; if {@link
      * com.gpudb.protocol.ShowTableRequest.Options#SHOW_CHILDREN SHOW_CHILDREN}
-     * is {@link com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE} then
+     * is {@link com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}, then
      * this array will only include the schema name itself. If {@link
      * com.gpudb.protocol.ShowTableRequest#getTableName() tableName} is an
      * empty string, then the array contains the names of all tables in the
@@ -778,15 +782,19 @@ public class ShowTableResponse implements IndexedRecord {
      *         LIST VALUES which don't fall into existing partitions. The
      *         default value is ''.
      *     <li>{@link AdditionalInfo#ATTRIBUTE_INDEXES ATTRIBUTE_INDEXES}:
-     *         Semicolon-separated list of columns that have <a
+     *         Semicolon-separated list of indexes. For <a
      *         href="../../../../../../concepts/indexes/#column-index"
-     *         target="_top">indexes</a>. Not present for schemas. The default
-     *         value is ''.
+     *         target="_top">column (attribute) indexes</a>, only the indexed
+     *         column name will be listed. For other index types, the index
+     *         type will be listed with the colon-delimited indexed column(s)
+     *         and the comma-delimited index option(s) using the form:
+     *         &lt;index_type&gt;@&lt;column_list&gt;@&lt;column_options&gt;.
+     *         Not present for schemas. The default value is ''.
      *     <li>{@link AdditionalInfo#COMPRESSED_COLUMNS COMPRESSED_COLUMNS}: No
      *         longer supported. The default value is ''.
      *     <li>{@link AdditionalInfo#COLUMN_INFO COLUMN_INFO}: JSON-encoded
      *         string representing a map of column name to information
-     *         including memory usage if if the {@link
+     *         including memory usage if the {@link
      *         com.gpudb.protocol.ShowTableRequest.Options#GET_COLUMN_INFO
      *         GET_COLUMN_INFO} option is {@link
      *         com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}. The
@@ -964,15 +972,19 @@ public class ShowTableResponse implements IndexedRecord {
      *         LIST VALUES which don't fall into existing partitions. The
      *         default value is ''.
      *     <li>{@link AdditionalInfo#ATTRIBUTE_INDEXES ATTRIBUTE_INDEXES}:
-     *         Semicolon-separated list of columns that have <a
+     *         Semicolon-separated list of indexes. For <a
      *         href="../../../../../../concepts/indexes/#column-index"
-     *         target="_top">indexes</a>. Not present for schemas. The default
-     *         value is ''.
+     *         target="_top">column (attribute) indexes</a>, only the indexed
+     *         column name will be listed. For other index types, the index
+     *         type will be listed with the colon-delimited indexed column(s)
+     *         and the comma-delimited index option(s) using the form:
+     *         &lt;index_type&gt;@&lt;column_list&gt;@&lt;column_options&gt;.
+     *         Not present for schemas. The default value is ''.
      *     <li>{@link AdditionalInfo#COMPRESSED_COLUMNS COMPRESSED_COLUMNS}: No
      *         longer supported. The default value is ''.
      *     <li>{@link AdditionalInfo#COLUMN_INFO COLUMN_INFO}: JSON-encoded
      *         string representing a map of column name to information
-     *         including memory usage if if the {@link
+     *         including memory usage if the {@link
      *         com.gpudb.protocol.ShowTableRequest.Options#GET_COLUMN_INFO
      *         GET_COLUMN_INFO} option is {@link
      *         com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}. The

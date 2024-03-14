@@ -5010,10 +5010,9 @@ public class GPUdb extends GPUdbBase {
      *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#COMMUNICATOR_TEST
      *                                    COMMUNICATOR_TEST}: Invoke the
      *                                    communicator test and report timing
-     *                                    results. Value string is is a
-     *                                    semicolon separated list of
-     *                                    [key]=[value] expressions.
-     *                                    Expressions are:
+     *                                    results. Value string is a semicolon
+     *                                    separated list of [key]=[value]
+     *                                    expressions.  Expressions are:
      *                                    num_transactions=[num] where num is
      *                                    the number of request reply
      *                                    transactions to invoke per test;
@@ -5274,11 +5273,17 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * External tables cannot be modified except for their refresh method.
      * <p>
-     * Create or delete an <a
+     * Create or delete a <a
      * href="../../../../../concepts/indexes/#column-index"
-     * target="_top">index</a> on a particular column. This can speed up
-     * certain operations when using expressions containing equality or
-     * relational operators on indexed columns. This only applies to tables.
+     * target="_top">column</a>, <a
+     * href="../../../../../concepts/indexes/#chunk-skip-index"
+     * target="_top">chunk skip</a>, <a
+     * href="../../../../../concepts/indexes/#geospatial-index"
+     * target="_top">geospatial</a>, or <a
+     * href="../../../../../concepts/indexes/#cagra-index"
+     * target="_top">CAGRA</a> index. This can speed up certain operations when
+     * using expressions containing equality or relational operators on indexed
+     * columns. This only applies to tables.
      * <p>
      * Create or delete a <a href="../../../../../concepts/tables/#foreign-key"
      * target="_top">foreign key</a> on a particular column.
@@ -5333,11 +5338,17 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * External tables cannot be modified except for their refresh method.
      * <p>
-     * Create or delete an <a
+     * Create or delete a <a
      * href="../../../../../concepts/indexes/#column-index"
-     * target="_top">index</a> on a particular column. This can speed up
-     * certain operations when using expressions containing equality or
-     * relational operators on indexed columns. This only applies to tables.
+     * target="_top">column</a>, <a
+     * href="../../../../../concepts/indexes/#chunk-skip-index"
+     * target="_top">chunk skip</a>, <a
+     * href="../../../../../concepts/indexes/#geospatial-index"
+     * target="_top">geospatial</a>, or <a
+     * href="../../../../../concepts/indexes/#cagra-index"
+     * target="_top">CAGRA</a> index. This can speed up certain operations when
+     * using expressions containing equality or relational operators on indexed
+     * columns. This only applies to tables.
      * <p>
      * Create or delete a <a href="../../../../../concepts/tables/#foreign-key"
      * target="_top">foreign key</a> on a particular column.
@@ -5369,7 +5380,7 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Table on which the operation will be performed, in
      *                   [schema_name.]table_name format, using standard <a
      *                   href="../../../../../concepts/tables/#table-name-resolution"
-     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   target="_top">name resolution rules</a>. Must be an
      *                   existing table or view.
      * @param action  Modification operation to be applied.
      *                Supported values:
@@ -5380,26 +5391,42 @@ public class GPUdb extends GPUdbBase {
      *                        action will be ignored.
      *                    <li>{@link
      *                        com.gpudb.protocol.AlterTableRequest.Action#CREATE_INDEX
-     *                        CREATE_INDEX}: Creates either a <a
+     *                        CREATE_INDEX}: Creates a <a
      *                        href="../../../../../concepts/indexes/#column-index"
-     *                        target="_top">column (attribute) index</a> or <a
+     *                        target="_top">column (attribute) index</a>, <a
      *                        href="../../../../../concepts/indexes/#chunk-skip-index"
-     *                        target="_top">chunk skip index</a>, depending on
-     *                        the specified {@link
+     *                        target="_top">chunk skip index</a>, <a
+     *                        href="../../../../../concepts/indexes/#geospatial-index"
+     *                        target="_top">geospatial index</a>, or <a
+     *                        href="../../../../../concepts/indexes/#cagra-index"
+     *                        target="_top">CAGRA index</a> (depending on the
+     *                        specified {@link
      *                        com.gpudb.protocol.AlterTableRequest.Options#INDEX_TYPE
-     *                        INDEX_TYPE}, on the column name specified in
+     *                        INDEX_TYPE}), on the column name specified in
      *                        {@code value}. If this column already has the
      *                        specified index, an error will be returned.
      *                    <li>{@link
-     *                        com.gpudb.protocol.AlterTableRequest.Action#DELETE_INDEX
-     *                        DELETE_INDEX}: Deletes either a <a
-     *                        href="../../../../../concepts/indexes/#column-index"
-     *                        target="_top">column (attribute) index</a> or <a
-     *                        href="../../../../../concepts/indexes/#chunk-skip-index"
-     *                        target="_top">chunk skip index</a>, depending on
-     *                        the specified {@link
+     *                        com.gpudb.protocol.AlterTableRequest.Action#REFRESH_INDEX
+     *                        REFRESH_INDEX}: Refreshes an index identified by
+     *                        {@link
      *                        com.gpudb.protocol.AlterTableRequest.Options#INDEX_TYPE
      *                        INDEX_TYPE}, on the column name specified in
+     *                        {@code value}. Currently applicable only to CAGRA
+     *                        indices.
+     *                    <li>{@link
+     *                        com.gpudb.protocol.AlterTableRequest.Action#DELETE_INDEX
+     *                        DELETE_INDEX}: Deletes a <a
+     *                        href="../../../../../concepts/indexes/#column-index"
+     *                        target="_top">column (attribute) index</a>, <a
+     *                        href="../../../../../concepts/indexes/#chunk-skip-index"
+     *                        target="_top">chunk skip index</a>, <a
+     *                        href="../../../../../concepts/indexes/#geospatial-index"
+     *                        target="_top">geospatial index</a>, or <a
+     *                        href="../../../../../concepts/indexes/#cagra-index"
+     *                        target="_top">CAGRA index</a> (depending on the
+     *                        specified {@link
+     *                        com.gpudb.protocol.AlterTableRequest.Options#INDEX_TYPE
+     *                        INDEX_TYPE}), on the column name specified in
      *                        {@code value}. If this column does not have the
      *                        specified index, an error will be returned.
      *                    <li>{@link
@@ -5416,7 +5443,7 @@ public class GPUdb extends GPUdbBase {
      *                    <li>{@link
      *                        com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_SCHEMA
      *                        MOVE_TO_SCHEMA}: Moves a table or view into a
-     *                        schema named {@code value}.  If the schema
+     *                        schema named {@code value}. If the schema
      *                        provided is nonexistent, an error will be thrown.
      *                        If {@code value} is empty, then the table or view
      *                        will be placed in the user's default schema.
@@ -5443,14 +5470,14 @@ public class GPUdb extends GPUdbBase {
      *                        com.gpudb.protocol.AlterTableRequest.Action#ADD_COMMENT
      *                        ADD_COMMENT}: Adds the comment specified in
      *                        {@code value} to the table specified in {@code
-     *                        tableName}.  Use {@link
+     *                        tableName}. Use {@link
      *                        com.gpudb.protocol.AlterTableRequest.Options#COLUMN_NAME
      *                        COLUMN_NAME} to set the comment for a column.
      *                    <li>{@link
      *                        com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN
      *                        ADD_COLUMN}: Adds the column specified in {@code
      *                        value} to the table specified in {@code
-     *                        tableName}.  Use {@link
+     *                        tableName}. Use {@link
      *                        com.gpudb.protocol.AlterTableRequest.Options#COLUMN_TYPE
      *                        COLUMN_TYPE} and {@link
      *                        com.gpudb.protocol.AlterTableRequest.Options#COLUMN_PROPERTIES
@@ -5459,8 +5486,7 @@ public class GPUdb extends GPUdbBase {
      *                    <li>{@link
      *                        com.gpudb.protocol.AlterTableRequest.Action#CHANGE_COLUMN
      *                        CHANGE_COLUMN}: Changes type and properties of
-     *                        the column specified in {@code value}.  Use
-     *                        {@link
+     *                        the column specified in {@code value}. Use {@link
      *                        com.gpudb.protocol.AlterTableRequest.Options#COLUMN_TYPE
      *                        COLUMN_TYPE} and {@link
      *                        com.gpudb.protocol.AlterTableRequest.Options#COLUMN_PROPERTIES
@@ -5620,25 +5646,25 @@ public class GPUdb extends GPUdbBase {
      *                        CANCEL_DATASOURCE_SUBSCRIPTION}: Permanently
      *                        unsubscribe a data source that is loading
      *                        continuously as a stream. The data source can be
-     *                        kafka / S3 / Azure.
+     *                        Kafka / S3 / Azure.
      *                    <li>{@link
      *                        com.gpudb.protocol.AlterTableRequest.Action#PAUSE_DATASOURCE_SUBSCRIPTION
      *                        PAUSE_DATASOURCE_SUBSCRIPTION}: Temporarily
      *                        unsubscribe a data source that is loading
      *                        continuously as a stream. The data source can be
-     *                        kafka / S3 / Azure.
+     *                        Kafka / S3 / Azure.
      *                    <li>{@link
      *                        com.gpudb.protocol.AlterTableRequest.Action#RESUME_DATASOURCE_SUBSCRIPTION
      *                        RESUME_DATASOURCE_SUBSCRIPTION}: Resubscribe to a
      *                        paused data source subscription. The data source
-     *                        can be kafka / S3 / Azure.
+     *                        can be Kafka / S3 / Azure.
      *                    <li>{@link
      *                        com.gpudb.protocol.AlterTableRequest.Action#CHANGE_OWNER
      *                        CHANGE_OWNER}: Change the owner resource group of
      *                        the table.
      *                </ul>
      * @param value  The value of the modification, depending on {@code
-     *               action}.  For example, if {@code action} is {@link
+     *               action}. For example, if {@code action} is {@link
      *               com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN
      *               ADD_COLUMN}, this would be the column name; while the
      *               column's definition would be covered by the {@link
@@ -5649,7 +5675,7 @@ public class GPUdb extends GPUdbBase {
      *               com.gpudb.protocol.AlterTableRequest.Options#COLUMN_DEFAULT_VALUE
      *               COLUMN_DEFAULT_VALUE}, and {@link
      *               com.gpudb.protocol.AlterTableRequest.Options#ADD_COLUMN_EXPRESSION
-     *               ADD_COLUMN_EXPRESSION} in {@code options}.  If {@code
+     *               ADD_COLUMN_EXPRESSION} in {@code options}. If {@code
      *               action} is {@link
      *               com.gpudb.protocol.AlterTableRequest.Action#TTL TTL}, it
      *               would be the number of minutes for the new TTL. If {@code
@@ -5780,8 +5806,11 @@ public class GPUdb extends GPUdbBase {
      *                         INDEX_TYPE}: Type of index to create, when
      *                         {@code action} is {@link
      *                         com.gpudb.protocol.AlterTableRequest.Action#CREATE_INDEX
-     *                         CREATE_INDEX}, or to delete, when {@code action}
+     *                         CREATE_INDEX}; to refresh, when {@code action}
      *                         is {@link
+     *                         com.gpudb.protocol.AlterTableRequest.Action#REFRESH_INDEX
+     *                         REFRESH_INDEX}; or to delete, when {@code
+     *                         action} is {@link
      *                         com.gpudb.protocol.AlterTableRequest.Action#DELETE_INDEX
      *                         DELETE_INDEX}.
      *                         Supported values:
@@ -5799,15 +5828,25 @@ public class GPUdb extends GPUdbBase {
      *                                 target="_top">chunk skip index</a>.
      *                             <li>{@link
      *                                 com.gpudb.protocol.AlterTableRequest.Options#GEOSPATIAL
-     *                                 GEOSPATIAL}: Create or delete a
-     *                                 geospatial index
+     *                                 GEOSPATIAL}: Create or delete a <a
+     *                                 href="../../../../../concepts/indexes/#geospatial-index"
+     *                                 target="_top">geospatial index</a>
      *                             <li>{@link
      *                                 com.gpudb.protocol.AlterTableRequest.Options#CAGRA
-     *                                 CAGRA}: Create or delete a CAGRA index
+     *                                 CAGRA}: Create or delete a <a
+     *                                 href="../../../../../concepts/indexes/#cagra-index"
+     *                                 target="_top">CAGRA index</a> on a <a
+     *                                 href="../../../../../vector_search/#vector-type"
+     *                                 target="_top">vector column</a>
      *                         </ul>
      *                         The default value is {@link
      *                         com.gpudb.protocol.AlterTableRequest.Options#COLUMN
      *                         COLUMN}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.AlterTableRequest.Options#INDEX_OPTIONS
+     *                         INDEX_OPTIONS}: Options to use when creating an
+     *                         index, in the format "key: value [, key: value
+     *                         [, ...]]". Valid options vary by index type.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      *
@@ -7476,6 +7515,10 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.CreateDatasourceRequest.Options#SCHEMA_REGISTRY_CREDENTIAL
      *                         SCHEMA_REGISTRY_CREDENTIAL}: Confluent Schema
      *                         registry Credential object name.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateDatasourceRequest.Options#SCHEMA_REGISTRY_PORT
+     *                         SCHEMA_REGISTRY_PORT}: Confluent Schema registry
+     *                         port (optional).
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      *
@@ -10641,8 +10684,8 @@ public class GPUdb extends GPUdbBase {
      *                         INSERT}.
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateTableMonitorRequest.Options#MONITOR_ID
-     *                         MONITOR_ID}: ID to to use for this monitor
-     *                         instead of a randomly generated one
+     *                         MONITOR_ID}: ID to use for this monitor instead
+     *                         of a randomly generated one
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateTableMonitorRequest.Options#DATASINK_NAME
      *                         DATASINK_NAME}: Name of an existing <a
@@ -13838,7 +13881,7 @@ public class GPUdb extends GPUdbBase {
     }
 
     /**
-     * Exports records from source table to  specified target table in an
+     * Exports records from source table to the specified target table in an
      * external database
      *
      * @param request  {@link ExportRecordsToTableRequest Request} object
@@ -13856,7 +13899,7 @@ public class GPUdb extends GPUdbBase {
     }
 
     /**
-     * Exports records from source table to  specified target table in an
+     * Exports records from source table to the specified target table in an
      * external database
      *
      * @param tableName  Name of the table from which the data will be exported
@@ -13865,18 +13908,69 @@ public class GPUdb extends GPUdbBase {
      *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param remoteQuery  Parameterized insert query to export gpudb table
-     *                     data into remote database
+     *                     data into remote database. The default value is ''.
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link
      *                         com.gpudb.protocol.ExportRecordsToTableRequest.Options#BATCH_SIZE
      *                         BATCH_SIZE}: Batch size, which determines how
-     *                         many rows to export per round trip.
+     *                         many rows to export per round trip. The default
+     *                         value is '200000'.
      *                     <li>{@link
      *                         com.gpudb.protocol.ExportRecordsToTableRequest.Options#DATASINK_NAME
      *                         DATASINK_NAME}: Name of an existing external
      *                         data sink to which table name specified in
      *                         {@code tableName} will be exported
+     *                     <li>{@link
+     *                         com.gpudb.protocol.ExportRecordsToTableRequest.Options#JDBC_SESSION_INIT_STATEMENT
+     *                         JDBC_SESSION_INIT_STATEMENT}: Executes the
+     *                         statement per each jdbc session before doing
+     *                         actual load. The default value is ''.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.ExportRecordsToTableRequest.Options#JDBC_CONNECTION_INIT_STATEMENT
+     *                         JDBC_CONNECTION_INIT_STATEMENT}: Executes the
+     *                         statement once before doing actual load. The
+     *                         default value is ''.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.ExportRecordsToTableRequest.Options#REMOTE_TABLE
+     *                         REMOTE_TABLE}: Name of the target table to which
+     *                         source table is exported. When this option is
+     *                         specified remote_query cannot be specified. The
+     *                         default value is ''.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.ExportRecordsToTableRequest.Options#USE_ST_GEOMFROM_CASTS
+     *                         USE_ST_GEOMFROM_CASTS}: Wraps parametrized
+     *                         variables with st_geomfromtext or st_geomfromwkb
+     *                         based on source column type.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.ExportRecordsToTableRequest.Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.ExportRecordsToTableRequest.Options#USE_INDEXED_PARAMETERS
+     *                         USE_INDEXED_PARAMETERS}: Uses $n style syntax
+     *                         when generating insert query for remote_table
+     *                         option.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.ExportRecordsToTableRequest.Options#TRUE
+     *                         TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      *
@@ -21043,8 +21137,7 @@ public class GPUdb extends GPUdbBase {
      *                                 this value (default is 0). If both
      *                                 minimum and maximum are provided,
      *                                 minimum must be less than or equal to
-     *                                 max. Value needs to be within [0, 200].
-     *                                 If the min is outside the accepted
+     *                                 max.  If the min is outside the accepted
      *                                 ranges for strings columns and 'x' and
      *                                 'y' columns for point/shape/track, then
      *                                 those parameters will not be set;
@@ -21065,14 +21158,12 @@ public class GPUdb extends GPUdbBase {
      *                                 possible values for these columns in
      *                                 such cases are 180.0 and 90.0.  For
      *                                 string columns, the maximum length of
-     *                                 the randomly generated strings is set to
-     *                                 this value (default is 200). If both
+     *                                 the randomly generated strings. If both
      *                                 minimum and maximum are provided, *max*
      *                                 must be greater than or equal to *min*.
-     *                                 Value needs to be within [0, 200].  If
-     *                                 the *max* is outside the accepted ranges
-     *                                 for strings columns and 'x' and 'y'
-     *                                 columns for point/shape/track, then
+     *                                 If the *max* is outside the accepted
+     *                                 ranges for strings columns and 'x' and
+     *                                 'y' columns for point/shape/track, then
      *                                 those parameters will not be set;
      *                                 however, an error will not be thrown in
      *                                 such a case. It is the responsibility of
@@ -21148,8 +21239,7 @@ public class GPUdb extends GPUdbBase {
      *                                 this value (default is 0). If both
      *                                 minimum and maximum are provided,
      *                                 minimum must be less than or equal to
-     *                                 max. Value needs to be within [0, 200].
-     *                                 If the min is outside the accepted
+     *                                 max.  If the min is outside the accepted
      *                                 ranges for strings columns and 'x' and
      *                                 'y' columns for point/shape/track, then
      *                                 those parameters will not be set;
@@ -21170,14 +21260,12 @@ public class GPUdb extends GPUdbBase {
      *                                 possible values for these columns in
      *                                 such cases are 180.0 and 90.0.  For
      *                                 string columns, the maximum length of
-     *                                 the randomly generated strings is set to
-     *                                 this value (default is 200). If both
+     *                                 the randomly generated strings. If both
      *                                 minimum and maximum are provided, *max*
      *                                 must be greater than or equal to *min*.
-     *                                 Value needs to be within [0, 200].  If
-     *                                 the *max* is outside the accepted ranges
-     *                                 for strings columns and 'x' and 'y'
-     *                                 columns for point/shape/track, then
+     *                                 If the *max* is outside the accepted
+     *                                 ranges for strings columns and 'x' and
+     *                                 'y' columns for point/shape/track, then
      *                                 those parameters will not be set;
      *                                 however, an error will not be thrown in
      *                                 such a case. It is the responsibility of

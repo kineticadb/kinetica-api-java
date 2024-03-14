@@ -47,8 +47,8 @@ install the JAR in the local repository:
 The documentation can be found at https://docs.kinetica.com/7.2/.
 The Java specific documentation can be found at:
 
-* https://docs.kinetica.com/7.2/guides/java_guide/
-* https://docs.kinetica.com/7.2/api/java/
+* **Complete API**:  https://docs.kinetica.com/7.2/api/java/
+* **Tutorial**:  https://docs.kinetica.com/7.2/guides/java_guide/
 
 
 For changes to the client-side API, please refer to
