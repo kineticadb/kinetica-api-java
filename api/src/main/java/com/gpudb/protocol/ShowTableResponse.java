@@ -316,9 +316,13 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String IS_AUTOMATIC_PARTITION = "is_automatic_partition";
 
         /**
-         * Semicolon-separated list of columns that have <a
-         * href="../../../../../../concepts/indexes/#column-index"
-         * target="_top">indexes</a>. Not present for schemas.  The default
+         * Semicolon-separated list of indexes.
+         * For <a href="../../../../../../concepts/indexes/#column-index"
+         * target="_top">column (attribute) indexes</a>, only the indexed
+         * column name will be listed.
+         * For other index types, the index type will be listed with the
+         * colon-delimited indexed column(s) using the form:
+         * <index_type>@<column_list>.  Not present for schemas.  The default
          * value is ''.
          */
         public static final String ATTRIBUTE_INDEXES = "attribute_indexes";
@@ -330,7 +334,7 @@ public class ShowTableResponse implements IndexedRecord {
 
         /**
          * JSON-encoded string representing a map of column name to information
-         * including memory usage if if the {@code get_column_info} option is
+         * including memory usage if the {@code get_column_info} option is
          * {@code true}.  The default value is ''.
          */
         public static final String COLUMN_INFO = "column_info";
@@ -506,12 +510,14 @@ public class ShowTableResponse implements IndexedRecord {
     /**
      * 
      * @return If {@code tableName} is a table or view, then the single element
-     *         of the array is {@code tableName}. If {@code tableName} is a
-     *         schema and {@code show_children} is set to {@code true}, then
-     *         this array is populated with the names of all tables and views
-     *         in the given schema; if {@code show_children} is {@code false}
-     *         then this array will only include the schema name itself. If
-     *         {@code tableName} is an empty string, then the array contains
+     *         of the array is {@code tableName}.
+     *         If {@code tableName} is a schema and {@code show_children} is
+     *         set to {@code true},
+     *         then this array is populated with the names of all tables and
+     *         views in the given schema;
+     *         if {@code show_children} is {@code false},
+     *         then this array will only include the schema name itself.
+     *         If {@code tableName} is an empty string, then the array contains
      *         the names of all tables in the user's default schema.
      * 
      */
@@ -522,15 +528,17 @@ public class ShowTableResponse implements IndexedRecord {
     /**
      * 
      * @param tableNames  If {@code tableName} is a table or view, then the
-     *                    single element of the array is {@code tableName}. If
-     *                    {@code tableName} is a schema and {@code
-     *                    show_children} is set to {@code true}, then this
-     *                    array is populated with the names of all tables and
-     *                    views in the given schema; if {@code show_children}
-     *                    is {@code false} then this array will only include
-     *                    the schema name itself. If {@code tableName} is an
-     *                    empty string, then the array contains the names of
-     *                    all tables in the user's default schema.
+     *                    single element of the array is {@code tableName}.
+     *                    If {@code tableName} is a schema and {@code
+     *                    show_children} is set to {@code true},
+     *                    then this array is populated with the names of all
+     *                    tables and views in the given schema;
+     *                    if {@code show_children} is {@code false},
+     *                    then this array will only include the schema name
+     *                    itself.
+     *                    If {@code tableName} is an empty string, then the
+     *                    array contains the names of all tables in the user's
+     *                    default schema.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

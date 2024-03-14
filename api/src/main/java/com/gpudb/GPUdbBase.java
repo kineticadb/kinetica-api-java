@@ -172,8 +172,12 @@ public abstract class GPUdbBase {
 
     // The timeout (in milliseconds) used for checking the status of a node; we
     // use a small timeout so that it does not take a long time to figure out
-    // that a rank is down.  Using 1.5 seconds.
-    private static final int DEFAULT_INTERNAL_ENDPOINT_CALL_TIMEOUT = 1500;
+    // that a rank is down.  Using 20 seconds.
+    // Increased this value from an earlier 1.5 seconds to 20 seconds since
+    // there were a lot of spurious 'read timeout' related exceptions being 
+    // thrown though there were no such condition and the Kinetica cluster 
+    // looked healthy.
+    private static final int DEFAULT_INTERNAL_ENDPOINT_CALL_TIMEOUT = 20000;
 
     // The timeout interval (in milliseconds) used when trying to establish a
     // connection to the database at GPUdb initialization time.  The default
@@ -6644,7 +6648,7 @@ public abstract class GPUdbBase {
     public boolean isKineticaRunning(URL url) {
 
         // Use a super short timeout (0.5 second)
-        String pingResponse = ping( url, 500 );
+        String pingResponse = ping( url, DEFAULT_INTERNAL_ENDPOINT_CALL_TIMEOUT );
         GPUdbLogger.debug_with_info( "HTTP server @ " + url.toString() + " responded with: '" + pingResponse + "'" );
         if ( pingResponse.equals("Kinetica is running!") ) {
             // Kinetica IS running!

@@ -21,11 +21,11 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * Update an existing graph network using given nodes, edges, weights,
  * restrictions, and options.
- * <p>
+
  * IMPORTANT: It's highly recommended that you review the
  * <a href="../../../../../../graph_solver/network_graph_solver/"
  * target="_top">Network Graphs & Solvers</a>
- * concepts documentation and
+ * concepts documentation, and
  * <a href="../../../../../../guides/graph_rest_guide/" target="_top">Graph
  * REST Tutorial</a>
  * before using this endpoint.

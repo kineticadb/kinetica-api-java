@@ -82,8 +82,8 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateTableMonitorRequest.Options#INSERT INSERT}.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableMonitorRequest.Options#MONITOR_ID
-     * MONITOR_ID}: ID to to use for this monitor instead of a randomly
-     * generated one
+     * MONITOR_ID}: ID to use for this monitor instead of a randomly generated
+     * one
      *         <li> {@link
      * com.gpudb.protocol.CreateTableMonitorRequest.Options#DATASINK_NAME
      * DATASINK_NAME}: Name of an existing <a
@@ -178,7 +178,7 @@ public class CreateTableMonitorRequest implements IndexedRecord {
         public static final String DELETE = "delete";
 
         /**
-         * ID to to use for this monitor instead of a randomly generated one
+         * ID to use for this monitor instead of a randomly generated one
          */
         public static final String MONITOR_ID = "monitor_id";
 
@@ -306,7 +306,7 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *                 INSERT}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#MONITOR_ID
-     *                 MONITOR_ID}: ID to to use for this monitor instead of a
+     *                 MONITOR_ID}: ID to use for this monitor instead of a
      *                 randomly generated one
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#DATASINK_NAME
@@ -424,7 +424,7 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *         INSERT}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableMonitorRequest.Options#MONITOR_ID
-     *         MONITOR_ID}: ID to to use for this monitor instead of a randomly
+     *         MONITOR_ID}: ID to use for this monitor instead of a randomly
      *         generated one
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableMonitorRequest.Options#DATASINK_NAME
@@ -514,7 +514,7 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *                 INSERT}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#MONITOR_ID
-     *                 MONITOR_ID}: ID to to use for this monitor instead of a
+     *                 MONITOR_ID}: ID to use for this monitor instead of a
      *                 randomly generated one
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#DATASINK_NAME

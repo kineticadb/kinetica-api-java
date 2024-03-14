@@ -226,6 +226,9 @@ public class CreateDatasourceRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateDatasourceRequest.Options#SCHEMA_REGISTRY_CREDENTIAL
      * SCHEMA_REGISTRY_CREDENTIAL}: Confluent Schema registry Credential object
      * name.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#SCHEMA_REGISTRY_PORT
+     * SCHEMA_REGISTRY_PORT}: Confluent Schema registry port (optional).
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -459,6 +462,11 @@ public class CreateDatasourceRequest implements IndexedRecord {
          * Confluent Schema registry Credential object name.
          */
         public static final String SCHEMA_REGISTRY_CREDENTIAL = "schema_registry_credential";
+
+        /**
+         * Confluent Schema registry port (optional).
+         */
+        public static final String SCHEMA_REGISTRY_PORT = "schema_registry_port";
 
         private Options() {  }
     }
@@ -708,6 +716,10 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#SCHEMA_REGISTRY_CREDENTIAL
      *                 SCHEMA_REGISTRY_CREDENTIAL}: Confluent Schema registry
      *                 Credential object name.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#SCHEMA_REGISTRY_PORT
+     *                 SCHEMA_REGISTRY_PORT}: Confluent Schema registry port
+     *                 (optional).
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1001,6 +1013,10 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateDatasourceRequest.Options#SCHEMA_REGISTRY_CREDENTIAL
      *         SCHEMA_REGISTRY_CREDENTIAL}: Confluent Schema registry
      *         Credential object name.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#SCHEMA_REGISTRY_PORT
+     *         SCHEMA_REGISTRY_PORT}: Confluent Schema registry port
+     *         (optional).
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1224,6 +1240,10 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#SCHEMA_REGISTRY_CREDENTIAL
      *                 SCHEMA_REGISTRY_CREDENTIAL}: Confluent Schema registry
      *                 Credential object name.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#SCHEMA_REGISTRY_PORT
+     *                 SCHEMA_REGISTRY_PORT}: Confluent Schema registry port
+     *                 (optional).
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

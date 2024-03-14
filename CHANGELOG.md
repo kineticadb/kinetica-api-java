@@ -2,6 +2,17 @@
 
 ## Version 7.1
 
+### Version 7.1.9.16 - 2024-03-13
+
+#### Changed
+-   Increased connection timeout from ~1 to 20 seconds to account for
+    connections over high-traffic and public networks
+-   Upgraded Snappy library from 1.1.10.4 to 1.1.10.5
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
 ### Version 7.1.9.15 - 2024-02-29
 
 #### Changed

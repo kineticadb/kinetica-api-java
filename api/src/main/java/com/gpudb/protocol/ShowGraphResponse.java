@@ -84,7 +84,7 @@ public class ShowGraphResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Indicates a success. This call will fails of the graph specified
+     * @return Indicates a success. This call will fail if the graph specified
      *         in the request does not exist.
      * 
      */
@@ -94,7 +94,7 @@ public class ShowGraphResponse implements IndexedRecord {
 
     /**
      * 
-     * @param result  Indicates a success. This call will fails of the graph
+     * @param result  Indicates a success. This call will fail if the graph
      *                specified in the request does not exist.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -193,7 +193,7 @@ public class ShowGraphResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Owner the graph(s) and associated solution table(s).
+     * @return Owner of the graph(s) and associated solution table(s).
      * 
      */
     public List<String> getGraphOwnerUserNames() {
@@ -202,8 +202,8 @@ public class ShowGraphResponse implements IndexedRecord {
 
     /**
      * 
-     * @param graphOwnerUserNames  Owner the graph(s) and associated solution
-     *                             table(s).
+     * @param graphOwnerUserNames  Owner of the graph(s) and associated
+     *                             solution table(s).
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -215,7 +215,7 @@ public class ShowGraphResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Owner resource groups(s) of the graph(s).
+     * @return Owner of the resource groups(s) of the graph(s).
      * 
      */
     public List<String> getGraphOwnerResourceGroups() {
@@ -224,7 +224,7 @@ public class ShowGraphResponse implements IndexedRecord {
 
     /**
      * 
-     * @param graphOwnerResourceGroups  Owner resource groups(s) of the
+     * @param graphOwnerResourceGroups  Owner of the resource groups(s) of the
      *                                  graph(s).
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -373,8 +373,8 @@ public class ShowGraphResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Indicated if the graph data data is distributed across all
-     *         available servers.
+     * @return Indicated if the graph data is distributed across all available
+     *         servers.
      * 
      */
     public List<Boolean> getIsPartitioned() {
@@ -383,8 +383,8 @@ public class ShowGraphResponse implements IndexedRecord {
 
     /**
      * 
-     * @param isPartitioned  Indicated if the graph data data is distributed
-     *                       across all available servers.
+     * @param isPartitioned  Indicated if the graph data is distributed across
+     *                       all available servers.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

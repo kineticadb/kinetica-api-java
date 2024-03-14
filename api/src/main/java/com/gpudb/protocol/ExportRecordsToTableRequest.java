@@ -17,8 +17,8 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#exportRecordsToTable(ExportRecordsToTableRequest)}.
  * <p>
- * Exports records from source table to  specified target table in an external
- * database
+ * Exports records from source table to the specified target table in an
+ * external database
  */
 public class ExportRecordsToTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -49,7 +49,7 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.ExportRecordsToTableRequest.Options#BATCH_SIZE
      * BATCH_SIZE}: Batch size, which determines how many rows to export per
-     * round trip.
+     * round trip.  The default value is '200000'.
      *         <li> {@link
      * com.gpudb.protocol.ExportRecordsToTableRequest.Options#DATASINK_NAME
      * DATASINK_NAME}: Name of an existing external data sink to which table
@@ -101,6 +101,7 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
 
         /**
          * Batch size, which determines how many rows to export per round trip.
+         * The default value is '200000'.
          */
         public static final String BATCH_SIZE = "batch_size";
 
@@ -196,7 +197,8 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#BATCH_SIZE
      *                 BATCH_SIZE}: Batch size, which determines how many rows
-     *                 to export per round trip.
+     *                 to export per round trip.  The default value is
+     *                 '200000'.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#DATASINK_NAME
      *                 DATASINK_NAME}: Name of an existing external data sink
@@ -321,7 +323,7 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.ExportRecordsToTableRequest.Options#BATCH_SIZE
      *         BATCH_SIZE}: Batch size, which determines how many rows to
-     *         export per round trip.
+     *         export per round trip.  The default value is '200000'.
      *                 <li> {@link
      *         com.gpudb.protocol.ExportRecordsToTableRequest.Options#DATASINK_NAME
      *         DATASINK_NAME}: Name of an existing external data sink to which
@@ -386,7 +388,8 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#BATCH_SIZE
      *                 BATCH_SIZE}: Batch size, which determines how many rows
-     *                 to export per round trip.
+     *                 to export per round trip.  The default value is
+     *                 '200000'.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToTableRequest.Options#DATASINK_NAME
      *                 DATASINK_NAME}: Name of an existing external data sink
