@@ -246,6 +246,7 @@ public class BulkInserter<T> implements AutoCloseable {
         // This is the same as the batchSize in BulkInserter class
         private final int capacity;
         private List<T> queue;
+        private final Object queueLock = new Object();
         private final TypeObjectMap<T> typeObjectMap;
         private final Map<String, String> options;
 
@@ -275,18 +276,20 @@ public class BulkInserter<T> implements AutoCloseable {
          * for new records.
          */
         public List<T> flush() {
-            List<T> oldQueue = queue;
-            queue = new ArrayList<>(capacity);
-
-            return oldQueue;
+            synchronized (queueLock) {
+                List<T> oldQueue = queue;
+                queue = new ArrayList<>(capacity);
+                return oldQueue;
+            }
         }
 
         /**
          * Insert the given record into the queue.
          */
-        public boolean insert(T record) {
-            queue.add( record );
-            return true;
+        public void insert(T record) {
+            synchronized (queueLock) {
+                queue.add(record);
+            }
         }
 
         /**
@@ -296,9 +299,12 @@ public class BulkInserter<T> implements AutoCloseable {
          * @return - An instance of {@link WorkerQueueInsertionResult<T>}
          */
         private WorkerQueueInsertionResult<T> handleRecordObjects() {
-            List<T> queuedRecords = this.queue;
-            this.queue = new ArrayList<>( capacity );
 
+            List<T> queuedRecords;
+            synchronized (queueLock) {
+                queuedRecords = this.queue;
+                this.queue = new ArrayList<>( capacity );
+            }
             // If nothing to insert, return a null object for the response
             if ( queuedRecords.isEmpty() ) {
                 GPUdbLogger.debug_with_info( "0 records in the queue; nothing to insert" );
@@ -472,8 +478,11 @@ public class BulkInserter<T> implements AutoCloseable {
          * @return - an instance of {@link WorkerQueueInsertionResult}
          */
         private WorkerQueueInsertionResult<T> handleJsonRecords() {
-            List<T> queuedRecords = this.queue;
-            this.queue = new ArrayList<>( capacity );
+            List<T> queuedRecords;
+            synchronized (queueLock) {
+                queuedRecords = this.queue;
+                this.queue = new ArrayList<>(capacity);
+            }
 
             // If nothing to insert, return a null object for the response
             if ( queuedRecords.isEmpty() ) {
@@ -1142,6 +1151,10 @@ public class BulkInserter<T> implements AutoCloseable {
 
         // Initialize the thread pool for workers based on the resources
         // available on the system
+        // N threads = N CPU * U CPU * (1 + W/C)
+        // In this formula, NCPU is the number of cores, available through Runtime.getRuntime().availableProcessors()
+        // U CPU is the target CPU use (between 0 and 1).
+        // W/C is the ratio of wait time to compute time.
         workerExecutorService = Executors.newFixedThreadPool( Runtime
                 .getRuntime()
                 .availableProcessors() );

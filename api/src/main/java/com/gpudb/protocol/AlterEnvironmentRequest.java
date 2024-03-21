@@ -51,7 +51,8 @@ public class AlterEnvironmentRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.AlterEnvironmentRequest.Action#INSTALL_PACKAGE
-     * INSTALL_PACKAGE}: Install a python package
+     * INSTALL_PACKAGE}: Install a python package from PyPI, an external data
+     * source or KiFS
      *         <li> {@link
      * com.gpudb.protocol.AlterEnvironmentRequest.Action#INSTALL_REQUIREMENTS
      * INSTALL_REQUIREMENTS}: Install packages from a requirements file
@@ -75,7 +76,7 @@ public class AlterEnvironmentRequest implements IndexedRecord {
     public static final class Action {
 
         /**
-         * Install a python package
+         * Install a python package from PyPI, an external data source or KiFS
          */
         public static final String INSTALL_PACKAGE = "install_package";
 
@@ -158,7 +159,8 @@ public class AlterEnvironmentRequest implements IndexedRecord {
      *                <ul>
      *                        <li> {@link
      *                com.gpudb.protocol.AlterEnvironmentRequest.Action#INSTALL_PACKAGE
-     *                INSTALL_PACKAGE}: Install a python package
+     *                INSTALL_PACKAGE}: Install a python package from PyPI, an
+     *                external data source or KiFS
      *                        <li> {@link
      *                com.gpudb.protocol.AlterEnvironmentRequest.Action#INSTALL_REQUIREMENTS
      *                INSTALL_REQUIREMENTS}: Install packages from a
@@ -239,7 +241,8 @@ public class AlterEnvironmentRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.AlterEnvironmentRequest.Action#INSTALL_PACKAGE
-     *         INSTALL_PACKAGE}: Install a python package
+     *         INSTALL_PACKAGE}: Install a python package from PyPI, an
+     *         external data source or KiFS
      *                 <li> {@link
      *         com.gpudb.protocol.AlterEnvironmentRequest.Action#INSTALL_REQUIREMENTS
      *         INSTALL_REQUIREMENTS}: Install packages from a requirements file
@@ -273,7 +276,8 @@ public class AlterEnvironmentRequest implements IndexedRecord {
      *                <ul>
      *                        <li> {@link
      *                com.gpudb.protocol.AlterEnvironmentRequest.Action#INSTALL_PACKAGE
-     *                INSTALL_PACKAGE}: Install a python package
+     *                INSTALL_PACKAGE}: Install a python package from PyPI, an
+     *                external data source or KiFS
      *                        <li> {@link
      *                com.gpudb.protocol.AlterEnvironmentRequest.Action#INSTALL_REQUIREMENTS
      *                INSTALL_REQUIREMENTS}: Install packages from a

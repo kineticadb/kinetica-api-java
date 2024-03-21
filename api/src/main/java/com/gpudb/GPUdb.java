@@ -4426,7 +4426,8 @@ public class GPUdb extends GPUdbBase {
      *                <ul>
      *                        <li> {@link
      *                com.gpudb.protocol.AlterEnvironmentRequest.Action#INSTALL_PACKAGE
-     *                INSTALL_PACKAGE}: Install a python package
+     *                INSTALL_PACKAGE}: Install a python package from PyPI, an
+     *                external data source or KiFS
      *                        <li> {@link
      *                com.gpudb.protocol.AlterEnvironmentRequest.Action#INSTALL_REQUIREMENTS
      *                INSTALL_REQUIREMENTS}: Install packages from a

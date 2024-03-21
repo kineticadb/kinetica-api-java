@@ -2,6 +2,12 @@
 
 ## Version 7.1
 
+### Version 7.1.9.17 - 2024-03-20
+
+#### Fixed
+-   Concurrency issue with the use of `BulkInserter.insert(List)`
+
+
 ### Version 7.1.9.16 - 2024-03-13
 
 #### Changed
