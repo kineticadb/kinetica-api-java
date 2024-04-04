@@ -7,6 +7,7 @@ import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.math.BigInteger;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -301,8 +302,8 @@ public abstract class RecordBase implements Record {
 
      /**
      * For string columns with array property, return a native Java array of the appropriate type:
-     * int[], long[], float[], double[], or String[].  For binary columns with vector property,
-     * return float[].
+     * Boolean[], Integer[], Long[], Float[], Double[], BigInteger[], or String[].
+     * For binary columns with vector property, return float[].
      *
      * @param name   The name of the column.
      *
@@ -318,7 +319,7 @@ public abstract class RecordBase implements Record {
 
     /**
      * For string columns with array property, return a native Java array of the appropriate type:
-     * boolean[], int[], long[], float[], double[], or String[].
+     * Boolean[], Integer[], Long[], Float[], Double[], BigInteger[], or String[].
      * For binary columns with vector property, return float[].
      *
      * @param index  The index of the column.
@@ -338,15 +339,17 @@ public abstract class RecordBase implements Record {
         switch (array_type)
         {
         case BOOLEAN:
-            return om.readValue(getString(index), boolean[].class);
+            return om.readValue(getString(index), Boolean[].class);
         case INTEGER:
-            return om.readValue(getString(index), int[].class);
+            return om.readValue(getString(index), Integer[].class);
         case LONG:
-            return om.readValue(getString(index), long[].class);
+            return om.readValue(getString(index), Long[].class);
+        case ULONG:
+            return om.readValue(getString(index), BigInteger[].class);
         case FLOAT:
-            return om.readValue(getString(index), float[].class);
+            return om.readValue(getString(index), Float[].class);
         case DOUBLE:
-            return om.readValue(getString(index), double[].class);
+            return om.readValue(getString(index), Double[].class);
         case STRING:
             return om.readValue(getString(index), String[].class);
         default:

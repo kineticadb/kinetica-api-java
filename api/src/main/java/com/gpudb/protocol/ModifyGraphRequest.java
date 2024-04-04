@@ -193,6 +193,13 @@ public class ModifyGraphRequest implements IndexedRecord {
          */
         public static final String USE_RTREE = "use_rtree";
 
+        /**
+         * If provided the label string will be split according to this
+         * delimiter and each sub-string will be applied as a separate label
+         * onto the specified edge. The default value is ''.
+         */
+        public static final String LABEL_DELIMITER = "label_delimiter";
+
         private Options() {  }
     }
 
@@ -434,6 +441,11 @@ public class ModifyGraphRequest implements IndexedRecord {
      *                             <li>{@link Options#FALSE FALSE}
      *                         </ul>
      *                         The default value is {@link Options#TRUE TRUE}.
+     *                     <li>{@link Options#LABEL_DELIMITER LABEL_DELIMITER}:
+     *                         If provided the label string will be split
+     *                         according to this delimiter and each sub-string
+     *                         will be applied as a separate label onto the
+     *                         specified edge. The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -787,6 +799,10 @@ public class ModifyGraphRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
+     *     <li>{@link Options#LABEL_DELIMITER LABEL_DELIMITER}: If provided the
+     *         label string will be split according to this delimiter and each
+     *         sub-string will be applied as a separate label onto the
+     *         specified edge. The default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -902,6 +918,10 @@ public class ModifyGraphRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
+     *     <li>{@link Options#LABEL_DELIMITER LABEL_DELIMITER}: If provided the
+     *         label string will be split according to this delimiter and each
+     *         sub-string will be applied as a separate label onto the
+     *         specified edge. The default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      *

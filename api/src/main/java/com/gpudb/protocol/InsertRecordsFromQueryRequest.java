@@ -486,6 +486,18 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
         public static final String REMOTE_QUERY_PARTITION_COLUMN = "remote_query_partition_column";
 
         /**
+         * If set to {@link Options#TRUE TRUE}, truncate string values that are
+         * longer than the column's type size.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String TRUNCATE_STRINGS = "truncate_strings";
+
+        /**
          * Specifies the record collision policy for inserting into a table
          * with a <a href="../../../../../../concepts/tables/#primary-keys"
          * target="_top">primary key</a>. If set to {@link Options#TRUE TRUE},
@@ -920,6 +932,17 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                         REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
      *                         remote_query_filter_column. The default value is
      *                         ''.
+     *                     <li>{@link Options#TRUNCATE_STRINGS
+     *                         TRUNCATE_STRINGS}: If set to {@link Options#TRUE
+     *                         TRUE}, truncate string values that are longer
+     *                         than the column's type size.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                     <li>{@link Options#UPDATE_ON_EXISTING_PK
      *                         UPDATE_ON_EXISTING_PK}: Specifies the record
      *                         collision policy for inserting into a table with
@@ -1439,6 +1462,15 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *     <li>{@link Options#REMOTE_QUERY_PARTITION_COLUMN
      *         REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
      *         remote_query_filter_column. The default value is ''.
+     *     <li>{@link Options#TRUNCATE_STRINGS TRUNCATE_STRINGS}: If set to
+     *         {@link Options#TRUE TRUE}, truncate string values that are
+     *         longer than the column's type size.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK}:
      *         Specifies the record collision policy for inserting into a table
      *         with a <a href="../../../../../../concepts/tables/#primary-keys"
@@ -1598,6 +1630,15 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *     <li>{@link Options#REMOTE_QUERY_PARTITION_COLUMN
      *         REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
      *         remote_query_filter_column. The default value is ''.
+     *     <li>{@link Options#TRUNCATE_STRINGS TRUNCATE_STRINGS}: If set to
+     *         {@link Options#TRUE TRUE}, truncate string values that are
+     *         longer than the column's type size.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK}:
      *         Specifies the record collision policy for inserting into a table
      *         with a <a href="../../../../../../concepts/tables/#primary-keys"

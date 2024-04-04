@@ -59,6 +59,17 @@ public class AdminShowJobsRequest implements IndexedRecord {
         public static final String TRUE = "true";
         public static final String FALSE = "false";
 
+        /**
+         * If {@link Options#TRUE TRUE}, then information is also returned from
+         * worker ranks. By default only status from the head rank is returned.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         */
+        public static final String SHOW_WORKER_INFO = "show_worker_info";
+
         private Options() {  }
     }
 
@@ -88,6 +99,16 @@ public class AdminShowJobsRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#SHOW_WORKER_INFO
+     *                         SHOW_WORKER_INFO}: If {@link Options#TRUE TRUE},
+     *                         then information is also returned from worker
+     *                         ranks. By default only status from the head rank
+     *                         is returned.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -108,6 +129,15 @@ public class AdminShowJobsRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#SHOW_WORKER_INFO SHOW_WORKER_INFO}: If {@link
+     *         Options#TRUE TRUE}, then information is also returned from
+     *         worker ranks. By default only status from the head rank is
+     *         returned.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -130,6 +160,15 @@ public class AdminShowJobsRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#SHOW_WORKER_INFO SHOW_WORKER_INFO}: If {@link
+     *         Options#TRUE TRUE}, then information is also returned from
+     *         worker ranks. By default only status from the head rank is
+     *         returned.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
      * </ul>
      * The default value is an empty {@link Map}.
      *

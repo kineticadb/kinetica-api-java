@@ -2,6 +2,30 @@
 
 ## Version 7.2
 
+### Version 7.2.0.4 - 2024-04-04
+
+#### Changed
+-   Lowered default server connection timeout to 5 seconds
+-   Made server connection timeout (user-specified or default) govern connection
+    timeouts in all cases of initially connecting to a server
+-   Deprecated `isKineticaRunning()` in favor of `isSystemRunning()`
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
+### Version 7.2.0.3 - 2024-03-20
+
+#### Added
+-   Support for unsigned long types and null values in arrays
+
+#### Fixed
+-   Concurrency issue with the use of `BulkInserter.insert(List)`
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
 ### Version 7.2.0.2 - 2024-03-13
 
 #### Changed
@@ -29,7 +53,26 @@
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
 
 
+
 ## Version 7.1
+
+### Version 7.1.9.18 - 2024-04-04
+
+#### Changed
+-   Lowered default server connection timeout to 5 seconds
+-   Made server connection timeout (user-specified or default) govern connection
+    timeouts in all cases of initially connecting to a server
+-   Deprecated `isKineticaRunning()` in favor of `isSystemRunning()`
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
+### Version 7.1.9.17 - 2024-03-20
+
+#### Fixed
+-   Concurrency issue with the use of `BulkInserter.insert(List)`
+
 
 ### Version 7.1.9.16 - 2024-03-13
 
@@ -370,7 +413,6 @@
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
 
 
-
 ### Version 7.1.4.0 - 2021-07-29
 
 #### Added
@@ -382,7 +424,6 @@
 
 #### Notes
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
-
 
 
 ### Version 7.1.3.0 - 2021-03-05
@@ -397,7 +438,6 @@
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
 
 
-
 ### Version 7.1.2.3 - 2021-02-03
 
 #### Added
@@ -408,7 +448,6 @@
 
 #### Changed
 -   Added support for multi-head key lookup for replicated tables.
-
 
 
 ### Version 7.1.2.2 - 2021-01-29
@@ -429,7 +468,6 @@
     more details.
 
 
-
 ### Version 7.1.2.1 - 2021-01-26
 
 #### Fixed
@@ -446,19 +484,16 @@
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
 
 
-
 ### Version 7.1.1.0 - 2020-10-28
 
 #### Notes
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
 
 
-
 ### Version 7.1.0.1 - 2020-09-29
 
 #### Added
 -   Another `ping()` method that takes in a timeout as a second parameter.
-
 
 #### Changed
 -   `GPUdb` constructor behavior such that if the server at the user given IP
@@ -525,17 +560,14 @@
     -   `getHARingSize()`
     -   `getPrimaryHostName()`
 
-
 #### Changed
 -   `BulkInserter` default retry count to 1 (from 0).
-
 
 #### Deprecated
 -   `GPUdb.setHostManagerPort(int)` method.  The user must set the host manager
     at `GPUdb` initialization; changing the host manager port will not be
     permitted post-initialization.  The method is now a no-op (until removed
     in 7.2 or a later version).
-
 
 
 
@@ -570,7 +602,6 @@
 -   Logger initialization issue
 
 
-
 ### Version 7.0.20.6 - 2022-07-25
 
 #### Fixed
@@ -592,10 +623,8 @@
     version (the one the API is connected to).
 -   Method `GPUdb.getServerVersion()`.
 
-
 #### Changed
 -   Added support for multi-head key lookup for replicated tables.
-
 
 
 ### Version 7.0.20.3 - 2021-01-29
@@ -622,7 +651,6 @@
 -   An issue with `BulkInserter` flush when retryCount > 0
 
 
-
 ### Version 7.0.20.1 - 2020-12-23
 
 #### Performance Enhancements
@@ -646,7 +674,6 @@
 
 #### Changed
 -   Added support for multi-head key lookup for replicated tables.
-
 
 
 ### Version 7.0.19.2 - 2021-01-26
@@ -713,7 +740,6 @@
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
 
 
-
 ### Version 7.0.15.1 - 2020-05-02
 
 #### Fixed
@@ -731,12 +757,10 @@
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
 
 
-
 ### Version 7.0.14.0 - 2020-03-25
 
 #### Note
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
-
 
 
 ### Version 7.0.13.0 - 2020-03-10
@@ -745,14 +769,12 @@
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
 
 
-
 ### Version 7.0.12.1 - 2020-03-04
 
 #### Added
 -   Options for configuring the maximum allowed number of connections:
     -   `GPUdb.Options.maxTotalConnections` (across all hosts; default 40)
     -   `GPUdb.Options.maxConnectionsPerHost` (for any given host; default 40)
-
 
 #### Fixed
 -   Improved connection throughput over SSL.
@@ -781,15 +803,18 @@
 #### Fixed
 -   Multi-head insertion high-availability failover issue when retryCount > 0
 
+
 ### Version 7.0.8.1 - 2019-10-21
 
 #### Fixed
 -   Multi-head I/O high-availability failover thread-safety issues
 
+
 ### Version 7.0.7.2 - 2019-10-03
 
 #### Fixed
 -   Multi-head I/O high-availability failover issue when a worker rank dies.
+
 
 ### Version 7.0.7.1 - 2019-09-11
 
@@ -845,7 +870,6 @@
     This is more efficient than checking for strings in the column's property
     list or checking for Java class equivalency.
 
-
 #### Changed
 -   Error message format when endpoint submission fails altogether (whether
     no connection can be made or if the database returns some error).
@@ -862,6 +886,7 @@
     (optional for both date and datetime, but required for time) must have hours
     and minutes, but can optionally have seconds, fraction of a second (up to six
     digits) and some form of a timezone identifier.
+
 
 ### Version 7.0.4.0 - 2019-06-26
 
@@ -915,7 +940,55 @@
 -   Added support for cluster reconfiguration to the multi-head I/O operations
 
 
+
 ## Version 6.2
+
+### Version 6.2.4.0 - 2019-09-05
+
+#### Added
+-   An option to `GPUdb.Options` for bypassing SSL certificate verification
+    for HTTPS connections.  Obtained by and set by `Options.getBypassSslCertCheck()`
+    and `Options.setBypassSslCertCheck(boolean)` methods.
+
+
+### Version 6.2.3.0 - 2019-08-01
+
+#### Added
+-   Support for overriding the high availability synchronicity mode for
+    endpoints; set the mode (enum `HASynchronicityMode`) with the setter
+    method `setHASyncMode()`:
+    - `DEFAULT`
+    - `SYNCHRONOUS`
+    - `ASYNCRHONOUS`
+-   Enumerations, `Type.Column.ColumnType` and `Type.Column.ColumnBaseType`,
+    to indicate a column's type.  Use getters `Type.Column.getColumnType()`
+    and `Type.Column.getColumnBaseType()` to obtain the appropriate enumeration.
+    This is more efficient than checking for strings in the column's property
+    list or checking for Java class equivalency.
+
+
+### Version 6.2.2.0 - 2019-07-20
+
+#### Added
+-   A `putDateTime` method to `GenericRecord` that parses string values
+    with a variety of different date, time, and datetime formats
+    and converts them to the appropriate Kinetica format for the column's type.
+    Of the accepteble formats, the date component can be any of YMD, MDY, or
+    DMY pattern with '-', '.', or '/' as the separator.  And, the time component
+    (optional for both date and datetime, but required for time) must have hours
+    and minutes, but can optionally have seconds, fraction of a second (up to six
+    digits) and some form of a timezone identifier.
+
+
+### Version 6.2.1.1 - 2019-03-30
+-   Added avro shading to the package
+-   Added missing types for `Type.fromDynamicSchema()`:
+    --  `datetime`
+    --  `geometry` (mapped to `wkt`)
+-   Added method `hasProperty(String)` to `Type.Column`; provides a convenient
+    functionality to check if a given column property applies to the given
+    column.
+
 
 ### Version 6.2.0 - 2018-09-26
 
@@ -932,9 +1005,11 @@
     -   `GetRecordsByColumnResponse`
 
 
+
 ## Version 6.1.0 - 2017-10-05
 
 -   Improved request submission logic to be faster and use less memory
+
 
 
 ## Version 6.0.0 - 2017-01-24
@@ -942,9 +1017,11 @@
 -   Version release
 
 
+
 ## Version 5.4.0 - 2016-11-29
 
 -   Version release
+
 
 
 ## Version 5.2.0 - 2016-10-12
@@ -956,9 +1033,11 @@
 -   Added nullable column support
 
 
+
 ## Version 5.1.0 - 2016-05-06
 
 -   Updated documentation generation
+
 
 
 ## Version 4.2.0 - 2016-04-11

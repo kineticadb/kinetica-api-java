@@ -393,6 +393,8 @@ public final class Type implements Serializable {
                             return ColumnType.DOUBLE;
                         else if (sub_type.equals("string"))
                             return ColumnType.STRING;
+                        else if (sub_type.equals("ulong"))
+                            return ColumnType.ULONG;
 
                         throw new GPUdbException("Unknown array type: " + sub_type);
                     }

@@ -392,7 +392,7 @@ public class RecordRetriever<T> {
 
             // We did switch to a different cluster; now check the health
             // of the cluster, starting with the head node
-            if ( !this.gpudb.isKineticaRunning( currURL ) ) {
+            if ( !this.gpudb.isSystemRunning( currURL ) ) {
                 continue; // try the next cluster because this head node is down
             }
 
@@ -413,7 +413,7 @@ public class RecordRetriever<T> {
 
                 // Check the health of all the worker ranks
                 for ( URL workerRank : workerRanks) {
-                    if ( !this.gpudb.isKineticaRunning( workerRank ) ) {
+                    if ( !this.gpudb.isSystemRunning( workerRank ) ) {
                         isClusterHealthy = false;
                     }
                 }
@@ -454,7 +454,7 @@ public class RecordRetriever<T> {
      * Updates the shard mapping based on the latest cluster configuration.
      * Optionally, also reconstructs the worker queues based on the new sharding.
      *
-     * @param doReconstructWorkerQueues  Boolean flag indicating if the worker
+     * @param doReconstructWorkerURLs  Boolean flag indicating if the worker
      *                                   queues ought to be re-built.
      *
      * @return  a boolean indicating whether the shard mapping was updated.

@@ -1386,6 +1386,22 @@ public class GPUdb extends GPUdbBase {
      *                         The default value is {@link
      *                         com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.AdminShowJobsRequest.Options#SHOW_WORKER_INFO
+     *                         SHOW_WORKER_INFO}: If {@link
+     *                         com.gpudb.protocol.AdminShowJobsRequest.Options#TRUE
+     *                         TRUE}, then information is also returned from
+     *                         worker ranks. By default only status from the
+     *                         head rank is returned.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.AdminShowJobsRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      *
@@ -4510,7 +4526,8 @@ public class GPUdb extends GPUdbBase {
      *                <ul>
      *                    <li>{@link
      *                        com.gpudb.protocol.AlterEnvironmentRequest.Action#INSTALL_PACKAGE
-     *                        INSTALL_PACKAGE}: Install a python package
+     *                        INSTALL_PACKAGE}: Install a python package from
+     *                        PyPI, an external data source or KiFS
      *                    <li>{@link
      *                        com.gpudb.protocol.AlterEnvironmentRequest.Action#INSTALL_REQUIREMENTS
      *                        INSTALL_REQUIREMENTS}: Install packages from a
@@ -4907,17 +4924,6 @@ public class GPUdb extends GPUdbBase {
      *                            to be updated. Error if empty.
      *                            <ul>
      *                                <li>{@link
-     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SM_OMP_THREADS
-     *                                    SM_OMP_THREADS}: Set the number of
-     *                                    OpenMP threads that will be used to
-     *                                    service filter & aggregation requests
-     *                                    to the specified integer value.
-     *                                <li>{@link
-     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KERNEL_OMP_THREADS
-     *                                    KERNEL_OMP_THREADS}: Set the number
-     *                                    of kernel OpenMP threads to the
-     *                                    specified integer value.
-     *                                <li>{@link
      *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CONCURRENT_KERNEL_EXECUTION
      *                                    CONCURRENT_KERNEL_EXECUTION}: Enables
      *                                    concurrent kernel execution if the
@@ -4995,8 +5001,10 @@ public class GPUdb extends GPUdbBase {
      *                                    to any tables to the persistent
      *                                    store.  These changes include updates
      *                                    to the vector store, object store,
-     *                                    and text search store, Value string
-     *                                    is ignored
+     *                                    and text search store.  Value string
+     *                                    can be 'true', 'false' or
+     *                                    'text_search' to flush the text
+     *                                    search store only.
      *                                <li>{@link
      *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CLEAR_CACHE
      *                                    CLEAR_CACHE}: Clears cached results.
@@ -20988,6 +20996,24 @@ public class GPUdb extends GPUdbBase {
      *                         remote_query_filter_column. The default value is
      *                         ''.
      *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUNCATE_STRINGS
+     *                         TRUNCATE_STRINGS}: If set to {@link
+     *                         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE
+     *                         TRUE}, truncate string values that are longer
+     *                         than the column's type size.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#UPDATE_ON_EXISTING_PK
      *                         UPDATE_ON_EXISTING_PK}: Specifies the record
      *                         collision policy for inserting into a table with
@@ -22863,6 +22889,13 @@ public class GPUdb extends GPUdbBase {
      *                         The default value is {@link
      *                         com.gpudb.protocol.ModifyGraphRequest.Options#TRUE
      *                         TRUE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.ModifyGraphRequest.Options#LABEL_DELIMITER
+     *                         LABEL_DELIMITER}: If provided the label string
+     *                         will be split according to this delimiter and
+     *                         each sub-string will be applied as a separate
+     *                         label onto the specified edge. The default value
+     *                         is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      *

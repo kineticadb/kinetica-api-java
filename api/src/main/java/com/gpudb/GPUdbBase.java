@@ -151,12 +151,16 @@ import java.util.stream.Stream;
 
 public abstract class GPUdbBase {
 
-    // The amount of time for checking if a given IP/hostname is good (10 seconds)
-    private static final int DEFAULT_SERVER_CONNECTION_TIMEOUT = 10000;
+    // The amount of time for checking if a given IP/hostname is good (5 seconds)
+    private static final int DEFAULT_SERVER_CONNECTION_TIMEOUT = 5000;
 
     // The amount of time of inactivity after which the connection would be
     // validated: 100ms
     private static final int DEFAULT_CONNECTION_INACTIVITY_VALIDATION_TIMEOUT = 100;
+
+    // The amount of time of inactivity after which the idle connections would be
+    // evicted: 100s
+    private static final int DEFAULT_EVICT_IDLE_CONNECTIONS_AFTER = 100;
 
     // The default port for host manager URLs
     private static final int DEFAULT_HOST_MANAGER_PORT = 9300;
@@ -169,15 +173,6 @@ public abstract class GPUdbBase {
     // a bad host manager port.  We don't want to go into an infinite
     // loop
     private static final int HOST_MANAGER_SUBMIT_REQUEST_RETRY_COUNT = 3;
-
-    // The timeout (in milliseconds) used for checking the status of a node; we
-    // use a small timeout so that it does not take a long time to figure out
-    // that a rank is down.   Using 20 seconds.
-    // Increased this value from an earlier 1.5 seconds to 20 seconds since
-    // there were a lot of spurious 'read timeout' related exceptions being 
-    // thrown though there were no such condition and the Kinetica cluster 
-    // looked healthy.
-    private static final int DEFAULT_INTERNAL_ENDPOINT_CALL_TIMEOUT = 20000;
 
     // The timeout interval (in milliseconds) used when trying to establish a
     // connection to the database at GPUdb initialization time.  The default
@@ -2596,7 +2591,7 @@ public abstract class GPUdbBase {
             .setConnectionManager( connectionManager )
             .setDefaultRequestConfig( requestConfig )
             .evictExpiredConnections()
-            .evictIdleConnections(TimeValue.ofSeconds(DEFAULT_CONNECTION_INACTIVITY_VALIDATION_TIMEOUT))
+            .evictIdleConnections(TimeValue.ofSeconds(DEFAULT_EVICT_IDLE_CONNECTIONS_AFTER))
             .setRetryStrategy(new HttpRequestRetryStrategy() {
                 @Override
                 public boolean retryRequest(HttpRequest httpRequest, IOException e, int executionCount, HttpContext httpContext) {
@@ -3466,8 +3461,7 @@ public abstract class GPUdbBase {
                     appendPathToURL( url, ENDPOINT_SHOW_SYSTEM_STATUS ),
                     new ShowSystemStatusRequest(),
                     new ShowSystemStatusResponse(),
-                    false,
-                    DEFAULT_INTERNAL_ENDPOINT_CALL_TIMEOUT
+                    false
             );
         } catch (MalformedURLException ex) {
             throw new GPUdbException( "Error forming URL: " + url + " -- " + ex.getMessage(), ex );
@@ -3538,10 +3532,10 @@ public abstract class GPUdbBase {
      *
      * @param url - The URL to check for
      *
-     * @throws GPUdbException - Could be {@link GPUdbException}, {@link GPUdbExitException} or {@link GPUdbUnauthorizedAccessException}
+     * @throws GPUdbException - Throws only {@link GPUdbUnauthorizedAccessException}, logs other exceptions as warnings
      */
-    private boolean isSystemRunning( URL url ) throws GPUdbException {
-        boolean isSystemRunning = false;
+    boolean isSystemRunning( URL url ) throws GPUdbException {
+        boolean systemRunning = false;
         try {
             JsonNode systemStatusInfo = getSystemStatusInformation( url );
 
@@ -3550,7 +3544,7 @@ public abstract class GPUdbBase {
 
             if ( ( systemStatus != null)
                 && SHOW_SYSTEM_STATUS_RESPONSE_RUNNING.equals( systemStatus.textValue() ) ) {
-                isSystemRunning = true;
+                systemRunning = true;
                 GPUdbLogger.debug_with_info(String.format("System running at URL %s", url));
             } else {
                 GPUdbLogger.warn(String.format("System not confirmed running at URL %s", url));
@@ -3566,7 +3560,7 @@ public abstract class GPUdbBase {
                     url.toString(), ex
             ));
         }
-        return isSystemRunning;
+        return systemRunning;
     }
 
     /**
@@ -3924,7 +3918,7 @@ public abstract class GPUdbBase {
 
     /**
      * This method is used to send a SQL query to Kinetica and read the records in the returned
-     * GPUdbSqlIterator object.  See {@link execute} to execute a SQL statement without reading
+     * GPUdbSqlIterator object.  See {@link #query(String, Object, Map)} } to execute a SQL statement without reading
      * the resulting data.
      * 
      * @param sql - The SQL query to execute
@@ -3940,7 +3934,7 @@ public abstract class GPUdbBase {
 
     /**
      * This method is used to send a SQL query to Kinetica and read the records in the returned
-     * GPUdbSqlIterator object.  See {@link execute} to execute a SQL statement without reading
+     * GPUdbSqlIterator object.  See {@link #query(String, Object, Map)} to execute a SQL statement without reading
      * the resulting data.
      * 
      * @param sql        - The SQL query to execute
@@ -3957,7 +3951,7 @@ public abstract class GPUdbBase {
 
     /**
      * This method is used to send a SQL query to Kinetica and read the records in the returned
-     * GPUdbSqlIterator object.  See {@link execute} to execute a SQL statement without reading
+     * GPUdbSqlIterator object.  See {@link #execute(String)} to execute a SQL statement without reading
      * the resulting data.
      * 
      * @param sql        - The SQL query to execute
@@ -3989,7 +3983,7 @@ public abstract class GPUdbBase {
     /**
      * This method is used to execute a SQL statement (e.g., DML, DDL).  It returns the number of
      * rows affected by the statement.
-     * See {@link query} to execute a SQL query to read the resulting data records.
+     * See {@link #query(String, Object, Map)}} to execute a SQL query to read the resulting data records.
      * 
      * @param sql - The SQL query to execute
      * 
@@ -4005,7 +3999,7 @@ public abstract class GPUdbBase {
     /**
      * This method is used to execute a SQL statement (e.g., DML, DDL).  It returns the number of
      * rows affected by the statement.
-     * See {@link query} to execute a SQL query to read the resulting data records.
+     * See {@link #query(String, Object, Map)} to execute a SQL query to read the resulting data records.
      * 
      * @param sql        - The SQL query to execute
      * @param parameters - Query parameters for the SQL query.  Can be null or a String, String[] or List<String>.
@@ -4022,7 +4016,7 @@ public abstract class GPUdbBase {
     /**
      * This method is used to execute a SQL statement (e.g., DML, DDL).  It returns the number of
      * rows affected by the statement.
-     * See {@link query} to execute a SQL query to read the resulting data records.
+     * See {@link #query(String, Object, Map)} to execute a SQL query to read the resulting data records.
      * 
      * @param sql        - The SQL query to execute
      * @param parameters - Query parameters for the SQL query.  Can be null or a String, String[] or List<String>.
@@ -4705,7 +4699,7 @@ public abstract class GPUdbBase {
                     // reprocess the user-given URLs with auto-discovery
                     // disabled, so that the user can issue database commands,
                     // but where multi-head operations will not be available.
-                    if ( !isKineticaRunning( clusterInfo.getActiveHeadNodeUrl() ) ) {
+                    if ( !isSystemRunning( clusterInfo.getActiveHeadNodeUrl() ) ) {
 
                         GPUdbLogger.warn(String.format(
                                 "Disabling auto-discovery & multi-head operations--cluster reachable with user-given URL <%s> but not with server-known URL <%s>",
@@ -6759,10 +6753,11 @@ public abstract class GPUdbBase {
      *
      * @return true if Kinetica is running, false otherwise.
      */
+    @Deprecated
     public boolean isKineticaRunning(URL url) {
 
         // Use a super short timeout (0.5 second)
-        String pingResponse = ping( url, DEFAULT_INTERNAL_ENDPOINT_CALL_TIMEOUT );
+        String pingResponse = ping( url, DEFAULT_SERVER_CONNECTION_TIMEOUT );
         GPUdbLogger.debug_with_info( "HTTP server @ " + url.toString() + " responded with: '" + pingResponse + "'" );
         if ( pingResponse.equals("Kinetica is running!") ) {
             // Kinetica IS running!

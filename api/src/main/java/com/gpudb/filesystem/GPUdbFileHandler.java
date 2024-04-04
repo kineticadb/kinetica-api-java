@@ -888,7 +888,7 @@ public class GPUdbFileHandler {
      * This method checks whether a KIFS path exists or not.
      *
      * @param dirName - the full KIFS paths
-     * @return - true if if the directory exists and false otherwise
+     * @return - true if the directory exists and false otherwise
      *          Also returns false if the GPUdb instance is null.
      */
     public boolean kifsDirectoryExists( String dirName ) {
@@ -917,7 +917,7 @@ public class GPUdbFileHandler {
      * This method checks whether a KIFS file exists or not.
      *
      * @param fileName - the full KIFS path to a file
-     * @return - true if if the file exists and false otherwise
+     * @return - true if the file exists and false otherwise
      */
     public boolean kifsFileExists( String fileName ) {
 

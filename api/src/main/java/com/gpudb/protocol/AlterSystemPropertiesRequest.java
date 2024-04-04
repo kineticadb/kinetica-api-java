@@ -54,18 +54,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      */
     public static final class PropertyUpdatesMap {
         /**
-         * Set the number of OpenMP threads that will be used to service filter
-         * & aggregation requests to the specified integer value.
-         */
-        public static final String SM_OMP_THREADS = "sm_omp_threads";
-
-        /**
-         * Set the number of kernel OpenMP threads to the specified integer
-         * value.
-         */
-        public static final String KERNEL_OMP_THREADS = "kernel_omp_threads";
-
-        /**
          * Enables concurrent kernel execution if the value is {@link
          * PropertyUpdatesMap#TRUE TRUE} and disables it if the value is {@link
          * PropertyUpdatesMap#FALSE FALSE}.
@@ -130,7 +118,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         /**
          * Flushes any changes to any tables to the persistent store.  These
          * changes include updates to the vector store, object store, and text
-         * search store, Value string is ignored
+         * search store.  Value string can be 'true', 'false' or 'text_search'
+         * to flush the text search store only.
          */
         public static final String FLUSH_TO_DISK = "flush_to_disk";
 
@@ -393,17 +382,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            to be updated. Error if empty.
      *                            <ul>
      *                                <li>{@link
-     *                                    PropertyUpdatesMap#SM_OMP_THREADS
-     *                                    SM_OMP_THREADS}: Set the number of
-     *                                    OpenMP threads that will be used to
-     *                                    service filter & aggregation requests
-     *                                    to the specified integer value.
-     *                                <li>{@link
-     *                                    PropertyUpdatesMap#KERNEL_OMP_THREADS
-     *                                    KERNEL_OMP_THREADS}: Set the number
-     *                                    of kernel OpenMP threads to the
-     *                                    specified integer value.
-     *                                <li>{@link
      *                                    PropertyUpdatesMap#CONCURRENT_KERNEL_EXECUTION
      *                                    CONCURRENT_KERNEL_EXECUTION}: Enables
      *                                    concurrent kernel execution if the
@@ -477,8 +455,10 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    to any tables to the persistent
      *                                    store.  These changes include updates
      *                                    to the vector store, object store,
-     *                                    and text search store, Value string
-     *                                    is ignored
+     *                                    and text search store.  Value string
+     *                                    can be 'true', 'false' or
+     *                                    'text_search' to flush the text
+     *                                    search store only.
      *                                <li>{@link PropertyUpdatesMap#CLEAR_CACHE
      *                                    CLEAR_CACHE}: Clears cached results.
      *                                    Useful to allow repeated timing of
@@ -715,12 +695,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * Map containing the properties of the system to be updated. Error if
      * empty.
      * <ul>
-     *     <li>{@link PropertyUpdatesMap#SM_OMP_THREADS SM_OMP_THREADS}: Set
-     *         the number of OpenMP threads that will be used to service filter
-     *         & aggregation requests to the specified integer value.
-     *     <li>{@link PropertyUpdatesMap#KERNEL_OMP_THREADS
-     *         KERNEL_OMP_THREADS}: Set the number of kernel OpenMP threads to
-     *         the specified integer value.
      *     <li>{@link PropertyUpdatesMap#CONCURRENT_KERNEL_EXECUTION
      *         CONCURRENT_KERNEL_EXECUTION}: Enables concurrent kernel
      *         execution if the value is {@link PropertyUpdatesMap#TRUE TRUE}
@@ -762,7 +736,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#FLUSH_TO_DISK FLUSH_TO_DISK}: Flushes
      *         any changes to any tables to the persistent store.  These
      *         changes include updates to the vector store, object store, and
-     *         text search store, Value string is ignored
+     *         text search store.  Value string can be 'true', 'false' or
+     *         'text_search' to flush the text search store only.
      *     <li>{@link PropertyUpdatesMap#CLEAR_CACHE CLEAR_CACHE}: Clears
      *         cached results.  Useful to allow repeated timing of endpoints.
      *         Value string is the name of the table for which to clear the
@@ -887,12 +862,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * Map containing the properties of the system to be updated. Error if
      * empty.
      * <ul>
-     *     <li>{@link PropertyUpdatesMap#SM_OMP_THREADS SM_OMP_THREADS}: Set
-     *         the number of OpenMP threads that will be used to service filter
-     *         & aggregation requests to the specified integer value.
-     *     <li>{@link PropertyUpdatesMap#KERNEL_OMP_THREADS
-     *         KERNEL_OMP_THREADS}: Set the number of kernel OpenMP threads to
-     *         the specified integer value.
      *     <li>{@link PropertyUpdatesMap#CONCURRENT_KERNEL_EXECUTION
      *         CONCURRENT_KERNEL_EXECUTION}: Enables concurrent kernel
      *         execution if the value is {@link PropertyUpdatesMap#TRUE TRUE}
@@ -934,7 +903,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#FLUSH_TO_DISK FLUSH_TO_DISK}: Flushes
      *         any changes to any tables to the persistent store.  These
      *         changes include updates to the vector store, object store, and
-     *         text search store, Value string is ignored
+     *         text search store.  Value string can be 'true', 'false' or
+     *         'text_search' to flush the text search store only.
      *     <li>{@link PropertyUpdatesMap#CLEAR_CACHE CLEAR_CACHE}: Clears
      *         cached results.  Useful to allow repeated timing of endpoints.
      *         Value string is the name of the table for which to clear the
