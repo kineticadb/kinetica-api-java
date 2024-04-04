@@ -2,6 +2,18 @@
 
 ## Version 7.1
 
+### Version 7.1.9.18 - 2024-04-04
+
+#### Changed
+-   Lowered default server connection timeout to 5 seconds
+-   Made server connection timeout (user-specified or default) govern connection
+    timeouts in all cases of initially connecting to a server
+-   Deprecated `isKineticaRunning()` in favor of `isSystemRunning()`
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
 ### Version 7.1.9.17 - 2024-03-20
 
 #### Fixed

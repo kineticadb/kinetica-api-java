@@ -57,6 +57,18 @@ public class AdminShowJobsRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowJobsRequest.Options#SHOW_WORKER_INFO
+     * SHOW_WORKER_INFO}: If {@code true}, then information is also returned
+     * from worker ranks. By default only status from the head rank is
+     * returned.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.AdminShowJobsRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE FALSE}
+     * </ul>
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -80,6 +92,19 @@ public class AdminShowJobsRequest implements IndexedRecord {
         public static final String SHOW_ASYNC_JOBS = "show_async_jobs";
         public static final String TRUE = "true";
         public static final String FALSE = "false";
+
+        /**
+         * If {@code true}, then information is also returned from worker
+         * ranks. By default only status from the head rank is returned.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AdminShowJobsRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE FALSE}
+         * </ul>
+         */
+        public static final String SHOW_WORKER_INFO = "show_worker_info";
 
         private Options() {  }
     }
@@ -117,6 +142,20 @@ public class AdminShowJobsRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminShowJobsRequest.Options#SHOW_WORKER_INFO
+     *                 SHOW_WORKER_INFO}: If {@code true}, then information is
+     *                 also returned from worker ranks. By default only status
+     *                 from the head rank is returned.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminShowJobsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -143,6 +182,18 @@ public class AdminShowJobsRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowJobsRequest.Options#SHOW_WORKER_INFO
+     *         SHOW_WORKER_INFO}: If {@code true}, then information is also
+     *         returned from worker ranks. By default only status from the head
+     *         rank is returned.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowJobsRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE FALSE}
+     *         </ul>
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -173,6 +224,20 @@ public class AdminShowJobsRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminShowJobsRequest.Options#SHOW_WORKER_INFO
+     *                 SHOW_WORKER_INFO}: If {@code true}, then information is
+     *                 also returned from worker ranks. By default only status
+     *                 from the head rank is returned.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminShowJobsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

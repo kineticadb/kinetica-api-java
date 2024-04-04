@@ -627,6 +627,19 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      * REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
      * remote_query_filter_column.  The default value is ''.
      *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUNCATE_STRINGS
+     * TRUNCATE_STRINGS}: If set to {@code true}, truncate string values that
+     * are longer than the column's type size.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE FALSE}.
+     *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#UPDATE_ON_EXISTING_PK
      * UPDATE_ON_EXISTING_PK}: Specifies the record collision policy for
      * inserting into a table
@@ -913,6 +926,23 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
          * Alias name for remote_query_filter_column.  The default value is ''.
          */
         public static final String REMOTE_QUERY_PARTITION_COLUMN = "remote_query_partition_column";
+
+        /**
+         * If set to {@code true}, truncate string values that are longer than
+         * the column's type size.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+         * FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+         * FALSE}.
+         */
+        public static final String TRUNCATE_STRINGS = "truncate_strings";
 
         /**
          * Specifies the record collision policy for inserting into a table
@@ -1377,6 +1407,23 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
      *                 REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
      *                 remote_query_filter_column.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUNCATE_STRINGS
+     *                 TRUNCATE_STRINGS}: If set to {@code true}, truncate
+     *                 string values that are longer than the column's type
+     *                 size.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
@@ -2090,6 +2137,22 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
      *         remote_query_filter_column.  The default value is ''.
      *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUNCATE_STRINGS
+     *         TRUNCATE_STRINGS}: If set to {@code true}, truncate string
+     *         values that are longer than the column's type size.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *         FALSE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#UPDATE_ON_EXISTING_PK
      *         UPDATE_ON_EXISTING_PK}: Specifies the record collision policy
      *         for inserting into a table
@@ -2323,6 +2386,23 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
      *                 REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
      *                 remote_query_filter_column.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUNCATE_STRINGS
+     *                 TRUNCATE_STRINGS}: If set to {@code true}, truncate
+     *                 string values that are longer than the column's type
+     *                 size.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision

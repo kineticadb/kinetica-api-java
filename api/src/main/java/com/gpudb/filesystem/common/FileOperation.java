@@ -353,8 +353,8 @@ public class FileOperation {
      *
      * @param startingDirName - Directory to start searching from
      * @param fileNames - Wildcard pattern to search for
-     * @return - Pair of lists; the first element is the list of local file names
-     * and and the second a list of remote file names
+     * @return - Pair of lists; the first element is the list of local file
+     * names and the second a list of remote file names
      */
     protected Pair<List<String>, List<String>> traverseLocalDirectories(String startingDirName,
                                                                         List<String> fileNames) throws IOException {

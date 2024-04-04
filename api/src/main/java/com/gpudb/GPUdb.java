@@ -1382,6 +1382,20 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminShowJobsRequest.Options#SHOW_WORKER_INFO
+     *                 SHOW_WORKER_INFO}: If {@code true}, then information is
+     *                 also returned from worker ranks. By default only status
+     *                 from the head rank is returned.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminShowJobsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -20411,6 +20425,23 @@ public class GPUdb extends GPUdbBase {
      *                 REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
      *                 remote_query_filter_column.  The default value is ''.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUNCATE_STRINGS
+     *                 TRUNCATE_STRINGS}: If set to {@code true}, truncate
+     *                 string values that are longer than the column's type
+     *                 size.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
      *                 policy for inserting into a table
@@ -22110,6 +22141,12 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ModifyGraphRequest.Options#TRUE
      *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#LABEL_DELIMITER
+     *                 LABEL_DELIMITER}: If provided the label string will be
+     *                 split according to this delimiter and each sub-string
+     *                 will be applied as a separate label onto the specified
+     *                 edge.  The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

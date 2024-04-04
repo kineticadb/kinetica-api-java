@@ -1519,7 +1519,7 @@ public class BulkInserter<T> implements AutoCloseable {
 
             // We did switch to a different cluster; now check the health
             // of the cluster, starting with the head node
-            if ( !this.gpudb.isKineticaRunning( currURL ) ) {
+            if ( !this.gpudb.isSystemRunning( currURL ) ) {
                 continue; // try the next cluster because this head node is down
             }
 
@@ -1537,7 +1537,7 @@ public class BulkInserter<T> implements AutoCloseable {
 
                 // Check the health of all the worker ranks
                 for ( URL workerRank : workerRanks) {
-                    if ( !this.gpudb.isKineticaRunning( workerRank ) ) {
+                    if ( !this.gpudb.isSystemRunning( workerRank ) ) {
                         isClusterHealthy = false;
                     }
                 }

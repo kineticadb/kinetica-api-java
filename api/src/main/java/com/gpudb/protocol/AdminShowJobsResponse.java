@@ -55,6 +55,9 @@ public class AdminShowJobsResponse implements IndexedRecord {
      * com.gpudb.protocol.AdminShowJobsResponse.Info#JOB_TAG JOB_TAG}: The job
      * tag specified by the user or if unspecified by user, an internally
      * generated unique identifier for the job across clusters.
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowJobsResponse.Info#WORKER_INFO WORKER_INFO}:
+     * Worker job information as json
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code info}.
@@ -66,6 +69,11 @@ public class AdminShowJobsResponse implements IndexedRecord {
          * internally generated unique identifier for the job across clusters.
          */
         public static final String JOB_TAG = "job_tag";
+
+        /**
+         * Worker job information as json
+         */
+        public static final String WORKER_INFO = "worker_info";
 
         private Info() {  }
     }
@@ -216,6 +224,9 @@ public class AdminShowJobsResponse implements IndexedRecord {
      *         The job tag specified by the user or if unspecified by user, an
      *         internally generated unique identifier for the job across
      *         clusters.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowJobsResponse.Info#WORKER_INFO
+     *         WORKER_INFO}: Worker job information as json
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -233,6 +244,9 @@ public class AdminShowJobsResponse implements IndexedRecord {
      *              JOB_TAG}: The job tag specified by the user or if
      *              unspecified by user, an internally generated unique
      *              identifier for the job across clusters.
+     *                      <li> {@link
+     *              com.gpudb.protocol.AdminShowJobsResponse.Info#WORKER_INFO
+     *              WORKER_INFO}: Worker job information as json
      *              </ul>
      *              The default value is an empty {@link Map}.
      * 
