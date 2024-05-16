@@ -5067,6 +5067,15 @@ public class GPUdb extends GPUdbBase {
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_CONNECTION_TIMEOUT
      *                            AI_API_CONNECTION_TIMEOUT}: AI API connection
      *                            timeout in seconds
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT
+     *                            POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT}: Idle
+     *                            connection timeout in seconds
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#POSTGRES_PROXY_KEEP_ALIVE
+     *                            POSTGRES_PROXY_KEEP_ALIVE}: Enable  postgres
+     *                            proxy keep alive.  The default value is
+     *                            'false'.
      *                            </ul>
      * @param options  Optional parameters.
      *                 <ul>
@@ -7675,6 +7684,23 @@ public class GPUdb extends GPUdbBase {
      *                 split according to this delimiter and each sub-string
      *                 will be applied as a separate label onto the specified
      *                 edge.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#ALLOW_MULTIPLE_EDGES
+     *                 ALLOW_MULTIPLE_EDGES}: Multigraph choice; allowing
+     *                 multiple edges with the same node pairs if set to true,
+     *                 otherwise, new edges with existing same node pairs will
+     *                 not be inserted.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#TRUE
+     *                 TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -21052,7 +21078,7 @@ public class GPUdb extends GPUdbBase {
      * <a href="../../../../../guides/graph_rest_guide/" target="_top">Graph
      * REST Tutorial</a>,
      * and/or some
-     * <a href="../../../../../guide-tags/graph-match/"
+     * <a href="../../../../../guide-tags/graph---match/"
      * target="_top">/match/graph examples</a>
      * before using this endpoint.
      * 
@@ -21087,7 +21113,7 @@ public class GPUdb extends GPUdbBase {
      * <a href="../../../../../guides/graph_rest_guide/" target="_top">Graph
      * REST Tutorial</a>,
      * and/or some
-     * <a href="../../../../../guide-tags/graph-match/"
+     * <a href="../../../../../guide-tags/graph---match/"
      * target="_top">/match/graph examples</a>
      * before using this endpoint.
      * 
@@ -22147,6 +22173,23 @@ public class GPUdb extends GPUdbBase {
      *                 split according to this delimiter and each sub-string
      *                 will be applied as a separate label onto the specified
      *                 edge.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#ALLOW_MULTIPLE_EDGES
+     *                 ALLOW_MULTIPLE_EDGES}: Multigraph choice; allowing
+     *                 multiple edges with the same node pairs if set to true,
+     *                 otherwise, new edges with existing same node pairs will
+     *                 not be inserted.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#TRUE
+     *                 TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -22199,7 +22242,7 @@ public class GPUdb extends GPUdbBase {
      * <a href="../../../../../guides/graph_rest_guide/" target="_top">Graph
      * REST Tutorial</a>,
      * and/or some
-     * <a href="../../../../../guide-tags/graph-query"
+     * <a href="../../../../../guide-tags/graph---query"
      * target="_top">/match/graph examples</a>
      * before using this endpoint.
      * 
@@ -22254,7 +22297,7 @@ public class GPUdb extends GPUdbBase {
      * <a href="../../../../../guides/graph_rest_guide/" target="_top">Graph
      * REST Tutorial</a>,
      * and/or some
-     * <a href="../../../../../guide-tags/graph-query"
+     * <a href="../../../../../guide-tags/graph---query"
      * target="_top">/match/graph examples</a>
      * before using this endpoint.
      * 
@@ -22387,6 +22430,24 @@ public class GPUdb extends GPUdbBase {
      *                 limits the number of char length on the output tables
      *                 for string based nodes. The default length is 64.  The
      *                 default value is '64'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#FIND_COMMON_LABELS
+     *                 FIND_COMMON_LABELS}: If set to true, for many-to-many
+     *                 queries or multi-level traversals, it lists the common
+     *                 labels between the source and target nodes and edge
+     *                 labels in each path. Otherwise (zero rings), it'll list
+     *                 all labels of the node(s) queried.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -24909,7 +24970,7 @@ public class GPUdb extends GPUdbBase {
      * <a href="../../../../../guides/graph_rest_guide/" target="_top">Graph
      * REST Tutorial</a>,
      * and/or some
-     * <a href="../../../../../guide-tags/graph-solve"
+     * <a href="../../../../../guide-tags/graph---solve"
      * target="_top">/solve/graph examples</a>
      * before using this endpoint.
      * 
@@ -24944,7 +25005,7 @@ public class GPUdb extends GPUdbBase {
      * <a href="../../../../../guides/graph_rest_guide/" target="_top">Graph
      * REST Tutorial</a>,
      * and/or some
-     * <a href="../../../../../guide-tags/graph-solve"
+     * <a href="../../../../../guide-tags/graph---solve"
      * target="_top">/solve/graph examples</a>
      * before using this endpoint.
      * 

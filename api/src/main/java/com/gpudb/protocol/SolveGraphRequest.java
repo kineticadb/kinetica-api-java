@@ -31,7 +31,7 @@ import org.apache.avro.generic.IndexedRecord;
  * <a href="../../../../../../guides/graph_rest_guide/" target="_top">Graph
  * REST Tutorial</a>,
  * and/or some
- * <a href="../../../../../../guide-tags/graph-solve"
+ * <a href="../../../../../../guide-tags/graph---solve"
  * target="_top">/solve/graph examples</a>
  * before using this endpoint.
  */

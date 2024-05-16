@@ -193,6 +193,20 @@ public class ModifyGraphRequest implements IndexedRecord {
      * LABEL_DELIMITER}: If provided the label string will be split according
      * to this delimiter and each sub-string will be applied as a separate
      * label onto the specified edge.  The default value is ''.
+     *         <li> {@link
+     * com.gpudb.protocol.ModifyGraphRequest.Options#ALLOW_MULTIPLE_EDGES
+     * ALLOW_MULTIPLE_EDGES}: Multigraph choice; allowing multiple edges with
+     * the same node pairs if set to true, otherwise, new edges with existing
+     * same node pairs will not be inserted.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.ModifyGraphRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -357,6 +371,22 @@ public class ModifyGraphRequest implements IndexedRecord {
          * onto the specified edge.  The default value is ''.
          */
         public static final String LABEL_DELIMITER = "label_delimiter";
+
+        /**
+         * Multigraph choice; allowing multiple edges with the same node pairs
+         * if set to true, otherwise, new edges with existing same node pairs
+         * will not be inserted.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ModifyGraphRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}.
+         */
+        public static final String ALLOW_MULTIPLE_EDGES = "allow_multiple_edges";
 
         private Options() {  }
     }
@@ -634,6 +664,23 @@ public class ModifyGraphRequest implements IndexedRecord {
      *                 split according to this delimiter and each sub-string
      *                 will be applied as a separate label onto the specified
      *                 edge.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#ALLOW_MULTIPLE_EDGES
+     *                 ALLOW_MULTIPLE_EDGES}: Multigraph choice; allowing
+     *                 multiple edges with the same node pairs if set to true,
+     *                 otherwise, new edges with existing same node pairs will
+     *                 not be inserted.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#TRUE
+     *                 TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1045,6 +1092,20 @@ public class ModifyGraphRequest implements IndexedRecord {
      *         according to this delimiter and each sub-string will be applied
      *         as a separate label onto the specified edge.  The default value
      *         is ''.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ModifyGraphRequest.Options#ALLOW_MULTIPLE_EDGES
+     *         ALLOW_MULTIPLE_EDGES}: Multigraph choice; allowing multiple
+     *         edges with the same node pairs if set to true, otherwise, new
+     *         edges with existing same node pairs will not be inserted.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ModifyGraphRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1220,6 +1281,23 @@ public class ModifyGraphRequest implements IndexedRecord {
      *                 split according to this delimiter and each sub-string
      *                 will be applied as a separate label onto the specified
      *                 edge.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#ALLOW_MULTIPLE_EDGES
+     *                 ALLOW_MULTIPLE_EDGES}: Multigraph choice; allowing
+     *                 multiple edges with the same node pairs if set to true,
+     *                 otherwise, new edges with existing same node pairs will
+     *                 not be inserted.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#TRUE
+     *                 TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

@@ -230,6 +230,14 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_CONNECTION_TIMEOUT
      * AI_API_CONNECTION_TIMEOUT}: AI API connection timeout in seconds
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT
+     * POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT}: Idle connection timeout in
+     * seconds
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#POSTGRES_PROXY_KEEP_ALIVE
+     * POSTGRES_PROXY_KEEP_ALIVE}: Enable  postgres proxy keep alive.  The
+     * default value is 'false'.
      * </ul>
      * A set of string constants for the parameter {@code propertyUpdatesMap}.
      */
@@ -486,6 +494,16 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          * AI API connection timeout in seconds
          */
         public static final String AI_API_CONNECTION_TIMEOUT = "ai_api_connection_timeout";
+
+        /**
+         * Idle connection timeout in seconds
+         */
+        public static final String POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT = "postgres_proxy_idle_connection_timeout";
+
+        /**
+         * Enable  postgres proxy keep alive.  The default value is 'false'.
+         */
+        public static final String POSTGRES_PROXY_KEEP_ALIVE = "postgres_proxy_keep_alive";
 
         private PropertyUpdatesMap() {  }
     }
@@ -805,6 +823,15 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_CONNECTION_TIMEOUT
      *                            AI_API_CONNECTION_TIMEOUT}: AI API connection
      *                            timeout in seconds
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT
+     *                            POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT}: Idle
+     *                            connection timeout in seconds
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#POSTGRES_PROXY_KEEP_ALIVE
+     *                            POSTGRES_PROXY_KEEP_ALIVE}: Enable  postgres
+     *                            proxy keep alive.  The default value is
+     *                            'false'.
      *                            </ul>
      * @param options  Optional parameters.
      *                 <ul>
@@ -1045,6 +1072,14 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_CONNECTION_TIMEOUT
      *         AI_API_CONNECTION_TIMEOUT}: AI API connection timeout in seconds
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT
+     *         POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT}: Idle connection timeout
+     *         in seconds
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#POSTGRES_PROXY_KEEP_ALIVE
+     *         POSTGRES_PROXY_KEEP_ALIVE}: Enable  postgres proxy keep alive.
+     *         The default value is 'false'.
      *         </ul>
      * 
      */
@@ -1282,6 +1317,15 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_CONNECTION_TIMEOUT
      *                            AI_API_CONNECTION_TIMEOUT}: AI API connection
      *                            timeout in seconds
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT
+     *                            POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT}: Idle
+     *                            connection timeout in seconds
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#POSTGRES_PROXY_KEEP_ALIVE
+     *                            POSTGRES_PROXY_KEEP_ALIVE}: Enable  postgres
+     *                            proxy keep alive.  The default value is
+     *                            'false'.
      *                            </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

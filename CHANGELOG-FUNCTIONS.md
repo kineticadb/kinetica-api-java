@@ -3,6 +3,14 @@
 
 ## Version 7.1
 
+### Version 7.1.10.0
+
+#### Changed Endpoints
+-   Added option ``allow_multiple_edges`` to ``/create/graph`` endpoint to allow a graph to have multiple edges between pairs of nodes; otherwise, duplicate edges are ignored
+-   Added option ``allow_multiple_edges`` to ``/modify/graph`` endpoint to allow a graph to have multiple edges between pairs of nodes; otherwise, duplicate edges are ignored
+-   Added option ``find_common_labels`` to ``/query/graph`` endpoint to list common labels between source & target nodes
+
+
 ### Version 7.1.9.0
 -   Added value 'gdb' to file_type option in external files endpoints (insert_records_from_files, create_table_external)
 
