@@ -224,6 +224,10 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE TRUE}.
      *         <li> {@link
+     * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#SINGLE_FILE_MAX_SIZE
+     * SINGLE_FILE_MAX_SIZE}: Max file size (in MB) to allow saving to a single
+     * file. May be overridden by target limitations.  The default value is ''.
+     *         <li> {@link
      * com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TEXT_DELIMITER
      * TEXT_DELIMITER}: Specifies the character to write out to delimit field
      * values and
@@ -451,6 +455,12 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
          */
         public static final String SINGLE_FILE = "single_file";
         public static final String OVERWRITE = "overwrite";
+
+        /**
+         * Max file size (in MB) to allow saving to a single file. May be
+         * overridden by target limitations.  The default value is ''.
+         */
+        public static final String SINGLE_FILE_MAX_SIZE = "single_file_max_size";
 
         /**
          * Specifies the character to write out to delimit field values and
@@ -694,6 +704,11 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
      *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#SINGLE_FILE_MAX_SIZE
+     *                 SINGLE_FILE_MAX_SIZE}: Max file size (in MB) to allow
+     *                 saving to a single file. May be overridden by target
+     *                 limitations.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TEXT_DELIMITER
      *                 TEXT_DELIMITER}: Specifies the character to write out to
@@ -963,6 +978,11 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
      *         TRUE}.
      *                 <li> {@link
+     *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#SINGLE_FILE_MAX_SIZE
+     *         SINGLE_FILE_MAX_SIZE}: Max file size (in MB) to allow saving to
+     *         a single file. May be overridden by target limitations.  The
+     *         default value is ''.
+     *                 <li> {@link
      *         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TEXT_DELIMITER
      *         TEXT_DELIMITER}: Specifies the character to write out to delimit
      *         field values and
@@ -1175,6 +1195,11 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
      *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#SINGLE_FILE_MAX_SIZE
+     *                 SINGLE_FILE_MAX_SIZE}: Max file size (in MB) to allow
+     *                 saving to a single file. May be overridden by target
+     *                 limitations.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TEXT_DELIMITER
      *                 TEXT_DELIMITER}: Specifies the character to write out to

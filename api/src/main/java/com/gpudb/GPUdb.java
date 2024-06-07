@@ -5041,7 +5041,7 @@ public class GPUdb extends GPUdbBase {
      *                            EGRESS_SINGLE_FILE_MAX_SIZE}: Max file size
      *                            (in MB) to allow saving to a single file. May
      *                            be overridden by target limitations.  The
-     *                            default value is '100'.
+     *                            default value is '10000'.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MAX_CONCURRENT_KERNELS
      *                            MAX_CONCURRENT_KERNELS}: Sets the
@@ -13319,6 +13319,11 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
      *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#SINGLE_FILE_MAX_SIZE
+     *                 SINGLE_FILE_MAX_SIZE}: Max file size (in MB) to allow
+     *                 saving to a single file. May be overridden by target
+     *                 limitations.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TEXT_DELIMITER
      *                 TEXT_DELIMITER}: Specifies the character to write out to

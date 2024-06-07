@@ -283,8 +283,8 @@ public class FileDownloader extends FileOperation {
     }
 
     /**
-     * This is the main upload method which is to be called by the users of
-     * this class. Internally depending whether there are files to be uploaded
+     * This is the main download method which is to be called by the users of
+     * this class. Internally depending whether there are files to be downloaded
      * one shot or in parts it will call the methods
      * {@link #downloadFullFiles()} ()} and {@link #downloadMultiPartFiles()} ()}
      */

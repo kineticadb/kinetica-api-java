@@ -167,7 +167,7 @@ public class UploadIoJob {
                 callback.onPartUpload( taskResult );
             }
         } catch (InterruptedException | ExecutionException e) {
-            throw new GPUdbException(String.format("Could not complete upload stage - %s : exception : %s",task.getMultiPartUploadInfo().getPartOperation().getValue(), e.getMessage()));
+            throw new GPUdbException(String.format("Could not complete upload stage - %s : %s",task.getMultiPartUploadInfo().getPartOperation().getValue(), e.getMessage()));
         }
 
     }

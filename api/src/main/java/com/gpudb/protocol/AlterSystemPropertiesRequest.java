@@ -207,7 +207,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EGRESS_SINGLE_FILE_MAX_SIZE
      * EGRESS_SINGLE_FILE_MAX_SIZE}: Max file size (in MB) to allow saving to a
      * single file. May be overridden by target limitations.  The default value
-     * is '100'.
+     * is '10000'.
      *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MAX_CONCURRENT_KERNELS
      * MAX_CONCURRENT_KERNELS}: Sets the max_concurrent_kernels value of the
@@ -456,7 +456,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
 
         /**
          * Max file size (in MB) to allow saving to a single file. May be
-         * overridden by target limitations.  The default value is '100'.
+         * overridden by target limitations.  The default value is '10000'.
          */
         public static final String EGRESS_SINGLE_FILE_MAX_SIZE = "egress_single_file_max_size";
 
@@ -797,7 +797,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            EGRESS_SINGLE_FILE_MAX_SIZE}: Max file size
      *                            (in MB) to allow saving to a single file. May
      *                            be overridden by target limitations.  The
-     *                            default value is '100'.
+     *                            default value is '10000'.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MAX_CONCURRENT_KERNELS
      *                            MAX_CONCURRENT_KERNELS}: Sets the
@@ -1049,7 +1049,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EGRESS_SINGLE_FILE_MAX_SIZE
      *         EGRESS_SINGLE_FILE_MAX_SIZE}: Max file size (in MB) to allow
      *         saving to a single file. May be overridden by target
-     *         limitations.  The default value is '100'.
+     *         limitations.  The default value is '10000'.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MAX_CONCURRENT_KERNELS
      *         MAX_CONCURRENT_KERNELS}: Sets the max_concurrent_kernels value
@@ -1291,7 +1291,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            EGRESS_SINGLE_FILE_MAX_SIZE}: Max file size
      *                            (in MB) to allow saving to a single file. May
      *                            be overridden by target limitations.  The
-     *                            default value is '100'.
+     *                            default value is '10000'.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MAX_CONCURRENT_KERNELS
      *                            MAX_CONCURRENT_KERNELS}: Sets the
