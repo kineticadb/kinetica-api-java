@@ -5166,9 +5166,9 @@ public class GPUdb extends GPUdbBase {
      *                                    file size (in MB) to allow saving to
      *                                    a single file. May be overridden by
      *                                    target limitations. The default value
-     *                                    is '100'. The minimum allowed value
+     *                                    is '10000'. The minimum allowed value
      *                                    is '1'. The maximum allowed value is
-     *                                    '200'.
+     *                                    '200000'.
      *                                <li>{@link
      *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MAX_CONCURRENT_KERNELS
      *                                    MAX_CONCURRENT_KERNELS}: Sets the
@@ -5214,6 +5214,15 @@ public class GPUdb extends GPUdbBase {
      *                                    TELM_PERSIST_QUERY_METRICS}: Enable
      *                                    or disable persisting of query
      *                                    metrics.
+     *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT
+     *                                    POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT}:
+     *                                    Idle connection timeout in seconds
+     *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#POSTGRES_PROXY_KEEP_ALIVE
+     *                                    POSTGRES_PROXY_KEEP_ALIVE}: Enable
+     *                                    postgres proxy keep alive. The
+     *                                    default value is 'false'.
      *                            </ul>
      * @param options  Optional parameters.
      *                 <ul>
@@ -5463,9 +5472,8 @@ public class GPUdb extends GPUdbBase {
      *                        been either 'true' or 'false'.
      *                    <li>{@link
      *                        com.gpudb.protocol.AlterTableRequest.Action#RENAME_TABLE
-     *                        RENAME_TABLE}: Renames a table or view within its
-     *                        current schema to {@code value}. Has the same
-     *                        naming restrictions as <a
+     *                        RENAME_TABLE}: Renames a table or view to {@code
+     *                        value}. Has the same naming restrictions as <a
      *                        href="../../../../../concepts/tables/"
      *                        target="_top">tables</a>.
      *                    <li>{@link
@@ -7947,6 +7955,24 @@ public class GPUdb extends GPUdbBase {
      *                         each sub-string will be applied as a separate
      *                         label onto the specified edge. The default value
      *                         is ''.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateGraphRequest.Options#ALLOW_MULTIPLE_EDGES
+     *                         ALLOW_MULTIPLE_EDGES}: Multigraph choice;
+     *                         allowing multiple edges with the same node pairs
+     *                         if set to true, otherwise, new edges with
+     *                         existing same node pairs will not be inserted.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateGraphRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.CreateGraphRequest.Options#TRUE
+     *                         TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      *
@@ -8206,6 +8232,11 @@ public class GPUdb extends GPUdbBase {
      *                         CHUNK_SIZE}: Maximum number of records per
      *                         joined-chunk for this table. Defaults to the
      *                         gpudb.conf file chunk size
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateJoinTableRequest.Options#ENABLE_VIRTUAL_CHUNKING
+     *                         ENABLE_VIRTUAL_CHUNKING}: Collect chunks with
+     *                         accumulated size less than chunk_size into a
+     *                         single chunk. The default value is 'false'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      *
@@ -13835,6 +13866,11 @@ public class GPUdb extends GPUdbBase {
      *                         The default value is {@link
      *                         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TRUE
      *                         TRUE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#SINGLE_FILE_MAX_SIZE
+     *                         SINGLE_FILE_MAX_SIZE}: Max file size (in MB) to
+     *                         allow saving to a single file. May be overridden
+     *                         by target limitations. The default value is ''.
      *                     <li>{@link
      *                         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#TEXT_DELIMITER
      *                         TEXT_DELIMITER}: Specifies the character to
@@ -21657,8 +21693,8 @@ public class GPUdb extends GPUdbBase {
      * target="_top">Network Graphs & Solvers</a> concepts documentation, the
      * <a href="../../../../../guides/graph_rest_guide/" target="_top">Graph
      * REST Tutorial</a>, and/or some <a
-     * href="../../../../../guide-tags/graph-match/" target="_top">/match/graph
-     * examples</a> before using this endpoint.
+     * href="../../../../../guide-tags/graph---match/"
+     * target="_top">/match/graph examples</a> before using this endpoint.
      *
      * @param request  {@link MatchGraphRequest Request} object containing the
      *                 parameters for the operation.
@@ -21684,8 +21720,8 @@ public class GPUdb extends GPUdbBase {
      * target="_top">Network Graphs & Solvers</a> concepts documentation, the
      * <a href="../../../../../guides/graph_rest_guide/" target="_top">Graph
      * REST Tutorial</a>, and/or some <a
-     * href="../../../../../guide-tags/graph-match/" target="_top">/match/graph
-     * examples</a> before using this endpoint.
+     * href="../../../../../guide-tags/graph---match/"
+     * target="_top">/match/graph examples</a> before using this endpoint.
      *
      * @param graphName  Name of the underlying geospatial graph resource to
      *                   match to using {@code samplePoints}.
@@ -21780,6 +21816,10 @@ public class GPUdb extends GPUdbBase {
      *                             com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_PATTERN
      *                             MATCH_PATTERN}: Matches a pattern in the
      *                             graph
+     *                         <li>{@link
+     *                             com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_EMBEDDING
+     *                             MATCH_EMBEDDING}: Creates vector node
+     *                             embeddings
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -22338,7 +22378,9 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.MatchGraphRequest.Options#FORCE_UNDIRECTED
      *                         FORCE_UNDIRECTED}: For the {@link
      *                         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_PATTERN
-     *                         MATCH_PATTERN} solver only. Pattern matching
+     *                         MATCH_PATTERN} and {@link
+     *                         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_EMBEDDING
+     *                         MATCH_EMBEDDING} solvers only. Pattern matching
      *                         will be using both pattern and graph as
      *                         undirected if set to true.
      *                         Supported values:
@@ -22353,6 +22395,13 @@ public class GPUdb extends GPUdbBase {
      *                         The default value is {@link
      *                         com.gpudb.protocol.MatchGraphRequest.Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.MatchGraphRequest.Options#MAX_VECTOR_DIMENSION
+     *                         MAX_VECTOR_DIMENSION}: For the {@link
+     *                         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_EMBEDDING
+     *                         MATCH_EMBEDDING} solver only. Limits the number
+     *                         of dimensions in node vector embeddings. The
+     *                         default value is '1000'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      *
@@ -22896,6 +22945,24 @@ public class GPUdb extends GPUdbBase {
      *                         each sub-string will be applied as a separate
      *                         label onto the specified edge. The default value
      *                         is ''.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.ModifyGraphRequest.Options#ALLOW_MULTIPLE_EDGES
+     *                         ALLOW_MULTIPLE_EDGES}: Multigraph choice;
+     *                         allowing multiple edges with the same node pairs
+     *                         if set to true, otherwise, new edges with
+     *                         existing same node pairs will not be inserted.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.ModifyGraphRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.ModifyGraphRequest.Options#TRUE
+     *                         TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      *
@@ -22935,8 +23002,8 @@ public class GPUdb extends GPUdbBase {
      * target="_top">Network Graphs & Solvers</a> concepts documentation, the
      * <a href="../../../../../guides/graph_rest_guide/" target="_top">Graph
      * REST Tutorial</a>, and/or some <a
-     * href="../../../../../guide-tags/graph-query" target="_top">/match/graph
-     * examples</a> before using this endpoint.
+     * href="../../../../../guide-tags/graph---query"
+     * target="_top">/match/graph examples</a> before using this endpoint.
      *
      * @param request  {@link QueryGraphRequest Request} object containing the
      *                 parameters for the operation.
@@ -22975,8 +23042,8 @@ public class GPUdb extends GPUdbBase {
      * target="_top">Network Graphs & Solvers</a> concepts documentation, the
      * <a href="../../../../../guides/graph_rest_guide/" target="_top">Graph
      * REST Tutorial</a>, and/or some <a
-     * href="../../../../../guide-tags/graph-query" target="_top">/match/graph
-     * examples</a> before using this endpoint.
+     * href="../../../../../guide-tags/graph---query"
+     * target="_top">/match/graph examples</a> before using this endpoint.
      *
      * @param graphName  Name of the graph resource to query.
      * @param queries  Nodes or edges to be queried specified using <a
@@ -23121,6 +23188,26 @@ public class GPUdb extends GPUdbBase {
      *                         &lt;=256), limits the number of char length on
      *                         the output tables for string based nodes. The
      *                         default length is 64. The default value is '64'.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.QueryGraphRequest.Options#FIND_COMMON_LABELS
+     *                         FIND_COMMON_LABELS}: If set to true, for
+     *                         many-to-many queries or multi-level traversals,
+     *                         it lists the common labels between the source
+     *                         and target nodes and edge labels in each path.
+     *                         Otherwise (zero rings), it'll list all labels of
+     *                         the node(s) queried.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.QueryGraphRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.QueryGraphRequest.Options#FALSE
+     *                         FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      *
@@ -25518,8 +25605,8 @@ public class GPUdb extends GPUdbBase {
      * target="_top">Network Graphs & Solvers</a> concepts documentation, the
      * <a href="../../../../../guides/graph_rest_guide/" target="_top">Graph
      * REST Tutorial</a>, and/or some <a
-     * href="../../../../../guide-tags/graph-solve" target="_top">/solve/graph
-     * examples</a> before using this endpoint.
+     * href="../../../../../guide-tags/graph---solve"
+     * target="_top">/solve/graph examples</a> before using this endpoint.
      *
      * @param request  {@link SolveGraphRequest Request} object containing the
      *                 parameters for the operation.
@@ -25545,8 +25632,8 @@ public class GPUdb extends GPUdbBase {
      * target="_top">Network Graphs & Solvers</a> concepts documentation, the
      * <a href="../../../../../guides/graph_rest_guide/" target="_top">Graph
      * REST Tutorial</a>, and/or some <a
-     * href="../../../../../guide-tags/graph-solve" target="_top">/solve/graph
-     * examples</a> before using this endpoint.
+     * href="../../../../../guide-tags/graph---solve"
+     * target="_top">/solve/graph examples</a> before using this endpoint.
      *
      * @param graphName  Name of the graph resource to solve.
      * @param weightsOnEdges  Additional weights to apply to the edges of an

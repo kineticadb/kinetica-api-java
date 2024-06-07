@@ -38,8 +38,9 @@ import org.apache.avro.generic.IndexedRecord;
  * href="../../../../../../graph_solver/network_graph_solver/"
  * target="_top">Network Graphs & Solvers</a> concepts documentation, the <a
  * href="../../../../../../guides/graph_rest_guide/" target="_top">Graph REST
- * Tutorial</a>, and/or some <a href="../../../../../../guide-tags/graph-query"
- * target="_top">/match/graph examples</a> before using this endpoint.
+ * Tutorial</a>, and/or some <a
+ * href="../../../../../../guide-tags/graph---query" target="_top">/match/graph
+ * examples</a> before using this endpoint.
  */
 public class QueryGraphRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -136,6 +137,20 @@ public class QueryGraphRequest implements IndexedRecord {
          * length is 64. The default value is '64'.
          */
         public static final String OUTPUT_CHARN_LENGTH = "output_charn_length";
+
+        /**
+         * If set to true, for many-to-many queries or multi-level traversals,
+         * it lists the common labels between the source and target nodes and
+         * edge labels in each path. Otherwise (zero rings), it'll list all
+         * labels of the node(s) queried.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String FIND_COMMON_LABELS = "find_common_labels";
 
         private Options() {  }
     }
@@ -276,6 +291,20 @@ public class QueryGraphRequest implements IndexedRecord {
      *                         &lt;=256), limits the number of char length on
      *                         the output tables for string based nodes. The
      *                         default length is 64. The default value is '64'.
+     *                     <li>{@link Options#FIND_COMMON_LABELS
+     *                         FIND_COMMON_LABELS}: If set to true, for
+     *                         many-to-many queries or multi-level traversals,
+     *                         it lists the common labels between the source
+     *                         and target nodes and edge labels in each path.
+     *                         Otherwise (zero rings), it'll list all labels of
+     *                         the node(s) queried.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -523,6 +552,17 @@ public class QueryGraphRequest implements IndexedRecord {
      *         specified (&gt;0 and &lt;=256), limits the number of char length
      *         on the output tables for string based nodes. The default length
      *         is 64. The default value is '64'.
+     *     <li>{@link Options#FIND_COMMON_LABELS FIND_COMMON_LABELS}: If set to
+     *         true, for many-to-many queries or multi-level traversals, it
+     *         lists the common labels between the source and target nodes and
+     *         edge labels in each path. Otherwise (zero rings), it'll list all
+     *         labels of the node(s) queried.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -580,6 +620,17 @@ public class QueryGraphRequest implements IndexedRecord {
      *         specified (&gt;0 and &lt;=256), limits the number of char length
      *         on the output tables for string based nodes. The default length
      *         is 64. The default value is '64'.
+     *     <li>{@link Options#FIND_COMMON_LABELS FIND_COMMON_LABELS}: If set to
+     *         true, for many-to-many queries or multi-level traversals, it
+     *         lists the common labels between the source and target nodes and
+     *         edge labels in each path. Otherwise (zero rings), it'll list all
+     *         labels of the node(s) queried.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      *

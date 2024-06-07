@@ -231,6 +231,12 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
         public static final String OVERWRITE = "overwrite";
 
         /**
+         * Max file size (in MB) to allow saving to a single file. May be
+         * overridden by target limitations. The default value is ''.
+         */
+        public static final String SINGLE_FILE_MAX_SIZE = "single_file_max_size";
+
+        /**
          * Specifies the character to write out to delimit field values and
          * field names in the header (if present).
          * <p>
@@ -430,6 +436,10 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *                             <li>{@link Options#OVERWRITE OVERWRITE}
      *                         </ul>
      *                         The default value is {@link Options#TRUE TRUE}.
+     *                     <li>{@link Options#SINGLE_FILE_MAX_SIZE
+     *                         SINGLE_FILE_MAX_SIZE}: Max file size (in MB) to
+     *                         allow saving to a single file. May be overridden
+     *                         by target limitations. The default value is ''.
      *                     <li>{@link Options#TEXT_DELIMITER TEXT_DELIMITER}:
      *                         Specifies the character to write out to delimit
      *                         field values and field names in the header (if
@@ -625,6 +635,9 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *             <li>{@link Options#OVERWRITE OVERWRITE}
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
+     *     <li>{@link Options#SINGLE_FILE_MAX_SIZE SINGLE_FILE_MAX_SIZE}: Max
+     *         file size (in MB) to allow saving to a single file. May be
+     *         overridden by target limitations. The default value is ''.
      *     <li>{@link Options#TEXT_DELIMITER TEXT_DELIMITER}: Specifies the
      *         character to write out to delimit field values and field names
      *         in the header (if present).  For {@link Options#DELIMITED_TEXT
@@ -764,6 +777,9 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *             <li>{@link Options#OVERWRITE OVERWRITE}
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
+     *     <li>{@link Options#SINGLE_FILE_MAX_SIZE SINGLE_FILE_MAX_SIZE}: Max
+     *         file size (in MB) to allow saving to a single file. May be
+     *         overridden by target limitations. The default value is ''.
      *     <li>{@link Options#TEXT_DELIMITER TEXT_DELIMITER}: Specifies the
      *         character to write out to delimit field values and field names
      *         in the header (if present).  For {@link Options#DELIMITED_TEXT

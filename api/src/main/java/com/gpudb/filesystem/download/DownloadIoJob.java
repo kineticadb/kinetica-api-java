@@ -8,13 +8,10 @@ import com.gpudb.filesystem.common.*;
 import com.gpudb.filesystem.utils.GPUdbFileHandlerUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -167,12 +164,13 @@ public class DownloadIoJob {
             
             ByteBuffer data = taskResult.getDownloadInfo().getData();
             out.write(data);
+            taskResult.getDownloadInfo().setData(null);
 
             if( callback != null ) {
                 callback.onPartDownload(taskResult);
             }
         } catch (InterruptedException | ExecutionException e) {
-            throw new GPUdbException(String.format("Could not complete upload stage - %s : exception : %s",task.getMultiPartUploadInfo().getPartOperation().getValue(), e.getMessage()));
+            throw new GPUdbException(String.format("Could not complete download part #%s : %s",task.getMultiPartDownloadInfo().getDownloadPartNumber(), e.getMessage()));
         } catch (IOException e) {
             throw new GPUdbException(e.getMessage());
         }
@@ -229,6 +227,7 @@ public class DownloadIoJob {
             }
 
         } catch (IOException e) {
+            GPUdbLogger.error( e.getMessage() );
             throw new GPUdbException(e.getMessage());
         }
 

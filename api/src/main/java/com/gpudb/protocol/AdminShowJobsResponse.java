@@ -29,6 +29,7 @@ public class AdminShowJobsResponse implements IndexedRecord {
                 .name("timeReceived").type().array().items().longType().noDefault()
                 .name("authId").type().array().items().stringType().noDefault()
                 .name("sourceIp").type().array().items().stringType().noDefault()
+                .name("queryText").type().array().items().stringType().noDefault()
                 .name("userData").type().array().items().stringType().noDefault()
                 .name("flags").type().array().items().stringType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
@@ -71,6 +72,7 @@ public class AdminShowJobsResponse implements IndexedRecord {
     private List<Long> timeReceived;
     private List<String> authId;
     private List<String> sourceIp;
+    private List<String> queryText;
     private List<String> userData;
     private List<String> flags;
     private Map<String, String> info;
@@ -180,6 +182,23 @@ public class AdminShowJobsResponse implements IndexedRecord {
      */
     public AdminShowJobsResponse setSourceIp(List<String> sourceIp) {
         this.sourceIp = (sourceIp == null) ? new ArrayList<String>() : sourceIp;
+        return this;
+    }
+
+    /**
+     * @return The current value of {@code queryText}.
+     */
+    public List<String> getQueryText() {
+        return queryText;
+    }
+
+    /**
+     * @param queryText  The new value for {@code queryText}.
+     *
+     * @return {@code this} to mimic the builder pattern.
+     */
+    public AdminShowJobsResponse setQueryText(List<String> queryText) {
+        this.queryText = (queryText == null) ? new ArrayList<String>() : queryText;
         return this;
     }
 
@@ -297,12 +316,15 @@ public class AdminShowJobsResponse implements IndexedRecord {
                 return this.sourceIp;
 
             case 6:
-                return this.userData;
+                return this.queryText;
 
             case 7:
-                return this.flags;
+                return this.userData;
 
             case 8:
+                return this.flags;
+
+            case 9:
                 return this.info;
 
             default:
@@ -348,14 +370,18 @@ public class AdminShowJobsResponse implements IndexedRecord {
                 break;
 
             case 6:
-                this.userData = (List<String>)value;
+                this.queryText = (List<String>)value;
                 break;
 
             case 7:
-                this.flags = (List<String>)value;
+                this.userData = (List<String>)value;
                 break;
 
             case 8:
+                this.flags = (List<String>)value;
+                break;
+
+            case 9:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -382,6 +408,7 @@ public class AdminShowJobsResponse implements IndexedRecord {
                  && this.timeReceived.equals( that.timeReceived )
                  && this.authId.equals( that.authId )
                  && this.sourceIp.equals( that.sourceIp )
+                 && this.queryText.equals( that.queryText )
                  && this.userData.equals( that.userData )
                  && this.flags.equals( that.flags )
                  && this.info.equals( that.info ) );
@@ -416,6 +443,10 @@ public class AdminShowJobsResponse implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.sourceIp ) );
         builder.append( ", " );
+        builder.append( gd.toString( "queryText" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.queryText ) );
+        builder.append( ", " );
         builder.append( gd.toString( "userData" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.userData ) );
@@ -441,6 +472,7 @@ public class AdminShowJobsResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.timeReceived.hashCode();
         hashCode = (31 * hashCode) + this.authId.hashCode();
         hashCode = (31 * hashCode) + this.sourceIp.hashCode();
+        hashCode = (31 * hashCode) + this.queryText.hashCode();
         hashCode = (31 * hashCode) + this.userData.hashCode();
         hashCode = (31 * hashCode) + this.flags.hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();

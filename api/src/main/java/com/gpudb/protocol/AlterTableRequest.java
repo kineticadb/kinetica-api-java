@@ -159,9 +159,9 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String PROTECTED = "protected";
 
         /**
-         * Renames a table or view within its current schema to {@link
-         * #getValue() value}. Has the same naming restrictions as <a
-         * href="../../../../../../concepts/tables/" target="_top">tables</a>.
+         * Renames a table or view to {@link #getValue() value}. Has the same
+         * naming restrictions as <a href="../../../../../../concepts/tables/"
+         * target="_top">tables</a>.
          */
         public static final String RENAME_TABLE = "rename_table";
 
@@ -646,9 +646,9 @@ public class AlterTableRequest implements IndexedRecord {
      *                        tableName} should be protected or not. The {@code
      *                        value} would have been either 'true' or 'false'.
      *                    <li>{@link Action#RENAME_TABLE RENAME_TABLE}: Renames
-     *                        a table or view within its current schema to
-     *                        {@code value}. Has the same naming restrictions
-     *                        as <a href="../../../../../../concepts/tables/"
+     *                        a table or view to {@code value}. Has the same
+     *                        naming restrictions as <a
+     *                        href="../../../../../../concepts/tables/"
      *                        target="_top">tables</a>.
      *                    <li>{@link Action#TTL TTL}: Sets the <a
      *                        href="../../../../../../concepts/ttl/"
@@ -1039,9 +1039,8 @@ public class AlterTableRequest implements IndexedRecord {
      *         be protected or not. The {@link #getValue() value} would have
      *         been either 'true' or 'false'.
      *     <li>{@link Action#RENAME_TABLE RENAME_TABLE}: Renames a table or
-     *         view within its current schema to {@link #getValue() value}. Has
-     *         the same naming restrictions as <a
-     *         href="../../../../../../concepts/tables/"
+     *         view to {@link #getValue() value}. Has the same naming
+     *         restrictions as <a href="../../../../../../concepts/tables/"
      *         target="_top">tables</a>.
      *     <li>{@link Action#TTL TTL}: Sets the <a
      *         href="../../../../../../concepts/ttl/"
@@ -1242,9 +1241,8 @@ public class AlterTableRequest implements IndexedRecord {
      *         be protected or not. The {@link #getValue() value} would have
      *         been either 'true' or 'false'.
      *     <li>{@link Action#RENAME_TABLE RENAME_TABLE}: Renames a table or
-     *         view within its current schema to {@link #getValue() value}. Has
-     *         the same naming restrictions as <a
-     *         href="../../../../../../concepts/tables/"
+     *         view to {@link #getValue() value}. Has the same naming
+     *         restrictions as <a href="../../../../../../concepts/tables/"
      *         target="_top">tables</a>.
      *     <li>{@link Action#TTL TTL}: Sets the <a
      *         href="../../../../../../concepts/ttl/"

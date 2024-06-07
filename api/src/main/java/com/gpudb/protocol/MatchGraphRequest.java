@@ -26,8 +26,8 @@ import org.apache.avro.generic.IndexedRecord;
  * target="_top">Network Graphs & Solvers</a> concepts documentation, the <a
  * href="../../../../../../guides/graph_rest_guide/" target="_top">Graph REST
  * Tutorial</a>, and/or some <a
- * href="../../../../../../guide-tags/graph-match/" target="_top">/match/graph
- * examples</a> before using this endpoint.
+ * href="../../../../../../guide-tags/graph---match/"
+ * target="_top">/match/graph examples</a> before using this endpoint.
  */
 public class MatchGraphRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -128,6 +128,11 @@ public class MatchGraphRequest implements IndexedRecord {
          * Matches a pattern in the graph
          */
         public static final String MATCH_PATTERN = "match_pattern";
+
+        /**
+         * Creates vector node embeddings
+         */
+        public static final String MATCH_EMBEDDING = "match_embedding";
 
         private SolveMethod() {  }
     }
@@ -609,9 +614,10 @@ public class MatchGraphRequest implements IndexedRecord {
         public static final String PAIRED_SIMILARITY = "paired_similarity";
 
         /**
-         * For the {@link SolveMethod#MATCH_PATTERN MATCH_PATTERN} solver only.
-         * Pattern matching will be using both pattern and graph as undirected
-         * if set to true.
+         * For the {@link SolveMethod#MATCH_PATTERN MATCH_PATTERN} and {@link
+         * SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solvers only. Pattern
+         * matching will be using both pattern and graph as undirected if set
+         * to true.
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}
@@ -620,6 +626,13 @@ public class MatchGraphRequest implements IndexedRecord {
          * The default value is {@link Options#FALSE FALSE}.
          */
         public static final String FORCE_UNDIRECTED = "force_undirected";
+
+        /**
+         * For the {@link SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solver
+         * only. Limits the number of dimensions in node vector embeddings. The
+         * default value is '1000'.
+         */
+        public static final String MAX_VECTOR_DIMENSION = "max_vector_dimension";
 
         private Options() {  }
     }
@@ -720,6 +733,9 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         <li>{@link SolveMethod#MATCH_PATTERN
      *                             MATCH_PATTERN}: Matches a pattern in the
      *                             graph
+     *                         <li>{@link SolveMethod#MATCH_EMBEDDING
+     *                             MATCH_EMBEDDING}: Creates vector node
+     *                             embeddings
      *                     </ul>
      *                     The default value is {@link SolveMethod#MARKOV_CHAIN
      *                     MARKOV_CHAIN}.
@@ -1161,9 +1177,11 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#FORCE_UNDIRECTED
      *                         FORCE_UNDIRECTED}: For the {@link
-     *                         SolveMethod#MATCH_PATTERN MATCH_PATTERN} solver
-     *                         only. Pattern matching will be using both
-     *                         pattern and graph as undirected if set to true.
+     *                         SolveMethod#MATCH_PATTERN MATCH_PATTERN} and
+     *                         {@link SolveMethod#MATCH_EMBEDDING
+     *                         MATCH_EMBEDDING} solvers only. Pattern matching
+     *                         will be using both pattern and graph as
+     *                         undirected if set to true.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
@@ -1171,6 +1189,12 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#MAX_VECTOR_DIMENSION
+     *                         MAX_VECTOR_DIMENSION}: For the {@link
+     *                         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING}
+     *                         solver only. Limits the number of dimensions in
+     *                         node vector embeddings. The default value is
+     *                         '1000'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -1289,6 +1313,8 @@ public class MatchGraphRequest implements IndexedRecord {
      *         algorithm
      *     <li>{@link SolveMethod#MATCH_PATTERN MATCH_PATTERN}: Matches a
      *         pattern in the graph
+     *     <li>{@link SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING}: Creates
+     *         vector node embeddings
      * </ul>
      * The default value is {@link SolveMethod#MARKOV_CHAIN MARKOV_CHAIN}.
      *
@@ -1345,6 +1371,8 @@ public class MatchGraphRequest implements IndexedRecord {
      *         algorithm
      *     <li>{@link SolveMethod#MATCH_PATTERN MATCH_PATTERN}: Matches a
      *         pattern in the graph
+     *     <li>{@link SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING}: Creates
+     *         vector node embeddings
      * </ul>
      * The default value is {@link SolveMethod#MARKOV_CHAIN MARKOV_CHAIN}.
      *
@@ -1721,7 +1749,8 @@ public class MatchGraphRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#FORCE_UNDIRECTED FORCE_UNDIRECTED}: For the
-     *         {@link SolveMethod#MATCH_PATTERN MATCH_PATTERN} solver only.
+     *         {@link SolveMethod#MATCH_PATTERN MATCH_PATTERN} and {@link
+     *         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solvers only.
      *         Pattern matching will be using both pattern and graph as
      *         undirected if set to true.
      *         Supported values:
@@ -1730,6 +1759,10 @@ public class MatchGraphRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#MAX_VECTOR_DIMENSION MAX_VECTOR_DIMENSION}: For
+     *         the {@link SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solver
+     *         only. Limits the number of dimensions in node vector embeddings.
+     *         The default value is '1000'.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -2058,7 +2091,8 @@ public class MatchGraphRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#FORCE_UNDIRECTED FORCE_UNDIRECTED}: For the
-     *         {@link SolveMethod#MATCH_PATTERN MATCH_PATTERN} solver only.
+     *         {@link SolveMethod#MATCH_PATTERN MATCH_PATTERN} and {@link
+     *         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solvers only.
      *         Pattern matching will be using both pattern and graph as
      *         undirected if set to true.
      *         Supported values:
@@ -2067,6 +2101,10 @@ public class MatchGraphRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#MAX_VECTOR_DIMENSION MAX_VECTOR_DIMENSION}: For
+     *         the {@link SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solver
+     *         only. Limits the number of dimensions in node vector embeddings.
+     *         The default value is '1000'.
      * </ul>
      * The default value is an empty {@link Map}.
      *

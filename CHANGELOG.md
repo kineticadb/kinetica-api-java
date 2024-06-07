@@ -2,6 +2,15 @@
 
 ## Version 7.2
 
+### Version 7.2.0.5 - 2024-06-07
+
+#### Fixed
+-   Out-of-memory error when downloading large files
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
 ### Version 7.2.0.4 - 2024-04-04
 
 #### Changed
@@ -55,6 +64,18 @@
 
 
 ## Version 7.1
+
+### Version 7.1.10.1 - 2024-06-07
+
+#### Fixed
+-   Out-of-memory error when downloading large files
+
+
+### Version 7.1.10.0 - 2024-05-16
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
 
 ### Version 7.1.9.18 - 2024-04-04
 

@@ -266,8 +266,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
 
         /**
          * Max file size (in MB) to allow saving to a single file. May be
-         * overridden by target limitations. The default value is '100'. The
-         * minimum allowed value is '1'. The maximum allowed value is '200'.
+         * overridden by target limitations. The default value is '10000'. The
+         * minimum allowed value is '1'. The maximum allowed value is '200000'.
          */
         public static final String EGRESS_SINGLE_FILE_MAX_SIZE = "egress_single_file_max_size";
 
@@ -319,6 +319,16 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          * Enable or disable persisting of query metrics.
          */
         public static final String TELM_PERSIST_QUERY_METRICS = "telm_persist_query_metrics";
+
+        /**
+         * Idle connection timeout in seconds
+         */
+        public static final String POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT = "postgres_proxy_idle_connection_timeout";
+
+        /**
+         * Enable  postgres proxy keep alive. The default value is 'false'.
+         */
+        public static final String POSTGRES_PROXY_KEEP_ALIVE = "postgres_proxy_keep_alive";
 
         private PropertyUpdatesMap() {  }
     }
@@ -615,9 +625,9 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    file size (in MB) to allow saving to
      *                                    a single file. May be overridden by
      *                                    target limitations. The default value
-     *                                    is '100'. The minimum allowed value
+     *                                    is '10000'. The minimum allowed value
      *                                    is '1'. The maximum allowed value is
-     *                                    '200'.
+     *                                    '200000'.
      *                                <li>{@link
      *                                    PropertyUpdatesMap#MAX_CONCURRENT_KERNELS
      *                                    MAX_CONCURRENT_KERNELS}: Sets the
@@ -659,6 +669,15 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    TELM_PERSIST_QUERY_METRICS}: Enable
      *                                    or disable persisting of query
      *                                    metrics.
+     *                                <li>{@link
+     *                                    PropertyUpdatesMap#POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT
+     *                                    POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT}:
+     *                                    Idle connection timeout in seconds
+     *                                <li>{@link
+     *                                    PropertyUpdatesMap#POSTGRES_PROXY_KEEP_ALIVE
+     *                                    POSTGRES_PROXY_KEEP_ALIVE}: Enable
+     *                                    postgres proxy keep alive. The
+     *                                    default value is 'false'.
      *                            </ul>
      * @param options  Optional parameters.
      *                 <ul>
@@ -825,8 +844,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#EGRESS_SINGLE_FILE_MAX_SIZE
      *         EGRESS_SINGLE_FILE_MAX_SIZE}: Max file size (in MB) to allow
      *         saving to a single file. May be overridden by target
-     *         limitations. The default value is '100'. The minimum allowed
-     *         value is '1'. The maximum allowed value is '200'.
+     *         limitations. The default value is '10000'. The minimum allowed
+     *         value is '1'. The maximum allowed value is '200000'.
      *     <li>{@link PropertyUpdatesMap#MAX_CONCURRENT_KERNELS
      *         MAX_CONCURRENT_KERNELS}: Sets the max_concurrent_kernels value
      *         of the conf. The minimum allowed value is '0'. The maximum
@@ -850,6 +869,12 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#TELM_PERSIST_QUERY_METRICS
      *         TELM_PERSIST_QUERY_METRICS}: Enable or disable persisting of
      *         query metrics.
+     *     <li>{@link PropertyUpdatesMap#POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT
+     *         POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT}: Idle connection timeout
+     *         in seconds
+     *     <li>{@link PropertyUpdatesMap#POSTGRES_PROXY_KEEP_ALIVE
+     *         POSTGRES_PROXY_KEEP_ALIVE}: Enable  postgres proxy keep alive.
+     *         The default value is 'false'.
      * </ul>
      *
      * @return The current value of {@code propertyUpdatesMap}.
@@ -992,8 +1017,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#EGRESS_SINGLE_FILE_MAX_SIZE
      *         EGRESS_SINGLE_FILE_MAX_SIZE}: Max file size (in MB) to allow
      *         saving to a single file. May be overridden by target
-     *         limitations. The default value is '100'. The minimum allowed
-     *         value is '1'. The maximum allowed value is '200'.
+     *         limitations. The default value is '10000'. The minimum allowed
+     *         value is '1'. The maximum allowed value is '200000'.
      *     <li>{@link PropertyUpdatesMap#MAX_CONCURRENT_KERNELS
      *         MAX_CONCURRENT_KERNELS}: Sets the max_concurrent_kernels value
      *         of the conf. The minimum allowed value is '0'. The maximum
@@ -1017,6 +1042,12 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#TELM_PERSIST_QUERY_METRICS
      *         TELM_PERSIST_QUERY_METRICS}: Enable or disable persisting of
      *         query metrics.
+     *     <li>{@link PropertyUpdatesMap#POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT
+     *         POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT}: Idle connection timeout
+     *         in seconds
+     *     <li>{@link PropertyUpdatesMap#POSTGRES_PROXY_KEEP_ALIVE
+     *         POSTGRES_PROXY_KEEP_ALIVE}: Enable  postgres proxy keep alive.
+     *         The default value is 'false'.
      * </ul>
      *
      * @param propertyUpdatesMap  The new value for {@code propertyUpdatesMap}.

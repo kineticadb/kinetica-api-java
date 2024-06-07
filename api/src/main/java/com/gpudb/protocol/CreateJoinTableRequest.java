@@ -134,6 +134,12 @@ public class CreateJoinTableRequest implements IndexedRecord {
          */
         public static final String CHUNK_SIZE = "chunk_size";
 
+        /**
+         * Collect chunks with accumulated size less than chunk_size into a
+         * single chunk. The default value is 'false'.
+         */
+        public static final String ENABLE_VIRTUAL_CHUNKING = "enable_virtual_chunking";
+
         private Options() {  }
     }
 
@@ -249,6 +255,10 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                         number of records per joined-chunk for this
      *                         table. Defaults to the gpudb.conf file chunk
      *                         size
+     *                     <li>{@link Options#ENABLE_VIRTUAL_CHUNKING
+     *                         ENABLE_VIRTUAL_CHUNKING}: Collect chunks with
+     *                         accumulated size less than chunk_size into a
+     *                         single chunk. The default value is 'false'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -435,6 +445,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *     <li>{@link Options#CHUNK_SIZE CHUNK_SIZE}: Maximum number of records
      *         per joined-chunk for this table. Defaults to the gpudb.conf file
      *         chunk size
+     *     <li>{@link Options#ENABLE_VIRTUAL_CHUNKING ENABLE_VIRTUAL_CHUNKING}:
+     *         Collect chunks with accumulated size less than chunk_size into a
+     *         single chunk. The default value is 'false'.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -495,6 +508,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *     <li>{@link Options#CHUNK_SIZE CHUNK_SIZE}: Maximum number of records
      *         per joined-chunk for this table. Defaults to the gpudb.conf file
      *         chunk size
+     *     <li>{@link Options#ENABLE_VIRTUAL_CHUNKING ENABLE_VIRTUAL_CHUNKING}:
+     *         Collect chunks with accumulated size less than chunk_size into a
+     *         single chunk. The default value is 'false'.
      * </ul>
      * The default value is an empty {@link Map}.
      *

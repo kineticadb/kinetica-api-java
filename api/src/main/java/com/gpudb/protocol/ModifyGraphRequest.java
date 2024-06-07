@@ -200,6 +200,19 @@ public class ModifyGraphRequest implements IndexedRecord {
          */
         public static final String LABEL_DELIMITER = "label_delimiter";
 
+        /**
+         * Multigraph choice; allowing multiple edges with the same node pairs
+         * if set to true, otherwise, new edges with existing same node pairs
+         * will not be inserted.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#TRUE TRUE}.
+         */
+        public static final String ALLOW_MULTIPLE_EDGES = "allow_multiple_edges";
+
         private Options() {  }
     }
 
@@ -446,6 +459,17 @@ public class ModifyGraphRequest implements IndexedRecord {
      *                         according to this delimiter and each sub-string
      *                         will be applied as a separate label onto the
      *                         specified edge. The default value is ''.
+     *                     <li>{@link Options#ALLOW_MULTIPLE_EDGES
+     *                         ALLOW_MULTIPLE_EDGES}: Multigraph choice;
+     *                         allowing multiple edges with the same node pairs
+     *                         if set to true, otherwise, new edges with
+     *                         existing same node pairs will not be inserted.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#TRUE TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -803,6 +827,16 @@ public class ModifyGraphRequest implements IndexedRecord {
      *         label string will be split according to this delimiter and each
      *         sub-string will be applied as a separate label onto the
      *         specified edge. The default value is ''.
+     *     <li>{@link Options#ALLOW_MULTIPLE_EDGES ALLOW_MULTIPLE_EDGES}:
+     *         Multigraph choice; allowing multiple edges with the same node
+     *         pairs if set to true, otherwise, new edges with existing same
+     *         node pairs will not be inserted.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -922,6 +956,16 @@ public class ModifyGraphRequest implements IndexedRecord {
      *         label string will be split according to this delimiter and each
      *         sub-string will be applied as a separate label onto the
      *         specified edge. The default value is ''.
+     *     <li>{@link Options#ALLOW_MULTIPLE_EDGES ALLOW_MULTIPLE_EDGES}:
+     *         Multigraph choice; allowing multiple edges with the same node
+     *         pairs if set to true, otherwise, new edges with existing same
+     *         node pairs will not be inserted.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      * </ul>
      * The default value is an empty {@link Map}.
      *
