@@ -25,9 +25,9 @@ import org.apache.avro.generic.IndexedRecord;
  * database.  The source data can
  * be located either in <a href="../../../../../../tools/kifs/"
  * target="_top">KiFS</a>; on the cluster, accessible to the database; or
- * remotely, accessible via a
- * pre-defined external <a href="../../../../../../concepts/data_sources/"
- * target="_top">data source</a>.
+ * remotely, accessible via a pre-defined external <a
+ * href="../../../../../../concepts/data_sources/" target="_top">data
+ * source</a>.
  * <p>
  * The external table can have its structure defined explicitly, via {@code
  * createTableOptions},
@@ -69,8 +69,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#TYPE_ID
      * TYPE_ID}: ID of a currently registered <a
-     * href="../../../../../../concepts/types/" target="_top">type</a>.  The
-     * default value is ''.
+     * href="../../../../../../concepts/types/" target="_top">type</a>.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#NO_ERROR_IF_EXISTS
      * NO_ERROR_IF_EXISTS}: If {@code true},
@@ -183,14 +182,16 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * <a href="../../../../../../concepts/tables/#partitioning-by-interval"
      * target="_top">interval partitioning</a>,
      * <a href="../../../../../../concepts/tables/#partitioning-by-list"
-     * target="_top">list partitioning</a>, or
+     * target="_top">list partitioning</a>,
      * <a href="../../../../../../concepts/tables/#partitioning-by-hash"
-     * target="_top">hash partitioning</a> for example formats.
+     * target="_top">hash partitioning</a>, or
+     * <a href="../../../../../../concepts/tables/#partitioning-by-series"
+     * target="_top">series partitioning</a> for example formats.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#IS_AUTOMATIC_PARTITION
      * IS_AUTOMATIC_PARTITION}: If {@code true},
      * a new partition will be created for values which don't fall into an
-     * existing partition.  Currently
+     * existing partition.  Currently,
      * only supported for <a
      * href="../../../../../../concepts/tables/#partitioning-by-list"
      * target="_top">list partitions</a>.
@@ -252,7 +253,6 @@ public class CreateTableExternalRequest implements IndexedRecord {
         /**
          * ID of a currently registered <a
          * href="../../../../../../concepts/types/" target="_top">type</a>.
-         * The default value is ''.
          */
         public static final String TYPE_ID = "type_id";
 
@@ -416,16 +416,18 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * href="../../../../../../concepts/tables/#partitioning-by-interval"
          * target="_top">interval partitioning</a>,
          * <a href="../../../../../../concepts/tables/#partitioning-by-list"
-         * target="_top">list partitioning</a>, or
+         * target="_top">list partitioning</a>,
          * <a href="../../../../../../concepts/tables/#partitioning-by-hash"
-         * target="_top">hash partitioning</a> for example formats.
+         * target="_top">hash partitioning</a>, or
+         * <a href="../../../../../../concepts/tables/#partitioning-by-series"
+         * target="_top">series partitioning</a> for example formats.
          */
         public static final String PARTITION_DEFINITIONS = "partition_definitions";
 
         /**
          * If {@code true},
          * a new partition will be created for values which don't fall into an
-         * existing partition.  Currently
+         * existing partition.  Currently,
          * only supported for <a
          * href="../../../../../../concepts/tables/#partitioning-by-list"
          * target="_top">list partitions</a>.
@@ -495,63 +497,44 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *         <li> {@link
-     * com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_HEADER_BYTES
-     * AVRO_HEADER_BYTES}: Optional number of bytes to skip when reading an
-     * avro record.
-     *         <li> {@link
-     * com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_NUM_RECORDS
-     * AVRO_NUM_RECORDS}: Optional number of avro records, if data includes
-     * only records.
-     *         <li> {@link
-     * com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_SCHEMA
-     * AVRO_SCHEMA}: Optional string representing avro schema, for insert
-     * records in avro format, that does not include is schema.
-     *         <li> {@link
-     * com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_SCHEMALESS
-     * AVRO_SCHEMALESS}: When user provides 'avro_schema', avro data is assumed
-     * to be schemaless, unless specified. Default is 'true' when given
-     * avro_schema. Igonred when avro_schema is not given.
-     * Supported values:
-     * <ul>
-     *         <li> {@link
-     * com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE TRUE}
-     *         <li> {@link
-     * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}
-     * </ul>
-     *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#BAD_RECORD_TABLE_NAME
-     * BAD_RECORD_TABLE_NAME}: Optional name of a table to which records that
-     * were rejected are written.  The bad-record-table has the following
-     * columns: line_number (long), line_rejected (string), error_message
-     * (string).
+     * BAD_RECORD_TABLE_NAME}: Name of a table to which records that were
+     * rejected are written.
+     * The bad-record-table has the following columns: line_number (long),
+     * line_rejected (string),
+     * error_message (string).  When {@code error_handling} is
+     * {@code abort}, bad records table is not populated.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#BAD_RECORD_TABLE_LIMIT
      * BAD_RECORD_TABLE_LIMIT}: A positive integer indicating the maximum
-     * number of records that can be  written to the bad-record-table.
-     * Default value is 10000
+     * number of records that can be
+     * written to the bad-record-table.  The default value is '10000'.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
-     * BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions: A positive integer
-     * indicating the maximum number of records that can be written to the
-     * bad-record-table per file/payload. Default value will be
-     * 'bad_record_table_limit' and total size of the table per rank is limited
-     * to 'bad_record_table_limit'
+     * BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions, a positive integer
+     * indicating the maximum number
+     * of records that can be written to the bad-record-table per file/payload.
+     * Default value will be
+     * {@code bad_record_table_limit} and total size of the table per rank is
+     * limited to
+     * {@code bad_record_table_limit}.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#BATCH_SIZE
-     * BATCH_SIZE}: Internal tuning parameter--number of records per batch when
-     * inserting data.
+     * BATCH_SIZE}: Number of records to insert per batch when inserting data.
+     * The default value is '50000'.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#COLUMN_FORMATS
      * COLUMN_FORMATS}: For each target column specified, applies the
-     * column-property-bound format to the source data
-     * loaded into that column.  Each column format will contain a mapping of
-     * one or more of its column
-     * properties to an appropriate format for each property.  Currently
-     * supported column properties
-     * include date, time, & datetime. The parameter value must be formatted as
-     * a JSON string of maps of
-     * column names to maps of column properties to their corresponding column
-     * formats, e.g.,
+     * column-property-bound
+     * format to the source data loaded into that column.  Each column format
+     * will contain a mapping of one
+     * or more of its column properties to an appropriate format for each
+     * property.  Currently supported
+     * column properties include date, time, & datetime. The parameter value
+     * must be formatted as a JSON
+     * string of maps of column names to maps of column properties to their
+     * corresponding column formats,
+     * e.g.,
      * '{ "order_date" : { "date" : "%Y.%m.%d" }, "order_time" : { "time" :
      * "%H:%M:%S" } }'.
      * <p>
@@ -597,15 +580,15 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * skip.  Mutually exclusive with {@code columns_to_load}.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#COMPRESSION_TYPE
-     * COMPRESSION_TYPE}: Optional: compression type
+     * COMPRESSION_TYPE}: Source data compression type
      * Supported values:
      * <ul>
      *         <li> {@link
-     * com.gpudb.protocol.CreateTableExternalRequest.Options#NONE NONE}:
-     * Uncompressed
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#NONE NONE}: No
+     * compression.
      *         <li> {@link
-     * com.gpudb.protocol.CreateTableExternalRequest.Options#AUTO AUTO}:
-     * Default. Auto detect compression type
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#AUTO AUTO}: Auto
+     * detect compression type
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#GZIP GZIP}: gzip
      * file compression.
@@ -724,7 +707,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#GDAL_CONFIGURATION_OPTIONS
      * GDAL_CONFIGURATION_OPTIONS}: Comma separated list of gdal conf options,
-     * for the specific requets: key=value.  The default value is ''.
+     * for the specific requets: key=value
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#IGNORE_EXISTING_PK
      * IGNORE_EXISTING_PK}: Specifies the record collision error-suppression
@@ -784,14 +767,18 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#JDBC_FETCH_SIZE
      * JDBC_FETCH_SIZE}: The JDBC fetch size, which determines how many rows to
-     * fetch per round trip.
+     * fetch per round trip.  The default value is '50000'.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_CONSUMERS_PER_RANK
+     * KAFKA_CONSUMERS_PER_RANK}: Number of Kafka consumer threads per rank
+     * (valid range 1-6).  The default value is '1'.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_GROUP_ID
-     * KAFKA_GROUP_ID}: The group id to be used consuming data from a kakfa
-     * topic (valid only for kafka datasource subscriptions).
+     * KAFKA_GROUP_ID}: The group id to be used when consuming data from a
+     * Kafka topic (valid only for Kafka datasource subscriptions).
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_OFFSET_RESET_POLICY
-     * KAFKA_OFFSET_RESET_POLICY}: Policy to determine whether the data
+     * KAFKA_OFFSET_RESET_POLICY}: Policy to determine whether the Kafka data
      * consumption starts either at earliest offset or latest offset.
      * Supported values:
      * <ul>
@@ -804,13 +791,30 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateTableExternalRequest.Options#EARLIEST
      * EARLIEST}.
      *         <li> {@link
-     * com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_SUBSCRIPTION_CANCEL_AFTER
-     * KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the subscription lifespan (in
-     * minutes). Expired subscription will be cancelled automatically.
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_OPTIMISTIC_INGEST
+     * KAFKA_OPTIMISTIC_INGEST}: Enable optimistic ingestion where Kafka topic
+     * offsets and table data are committed independently to achieve
+     * parallelism.
+     * Supported values:
+     * <ul>
      *         <li> {@link
-     * com.gpudb.protocol.CreateTableExternalRequest.Options#LAYER LAYER}:
-     * Optional: geo files layer(s) name(s): comma separated.  The default
-     * value is ''.
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_SUBSCRIPTION_CANCEL_AFTER
+     * KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the Kafka subscription lifespan
+     * (in minutes). Expired subscription will be cancelled automatically.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_TYPE_INFERENCE_FETCH_TIMEOUT
+     * KAFKA_TYPE_INFERENCE_FETCH_TIMEOUT}: Maximum time to collect Kafka
+     * messages before type inferencing on the set of them.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#LAYER LAYER}: Geo
+     * files layer(s) name(s): comma separated.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#LOADING_MODE
      * LOADING_MODE}: Scheme for distributing the extraction and loading of
@@ -862,27 +866,31 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateTableExternalRequest.Options#HEAD HEAD}.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#LOCAL_TIME_OFFSET
-     * LOCAL_TIME_OFFSET}: For Avro local timestamp columns
+     * LOCAL_TIME_OFFSET}: Apply an offset to Avro local timestamp columns.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#MAX_RECORDS_TO_LOAD
      * MAX_RECORDS_TO_LOAD}: Limit the number of records to load in this
-     * request: If this number is larger than a batch_size, then the number of
-     * records loaded will be limited to the next whole number of batch_size
-     * (per working thread).  The default value is ''.
+     * request: if this number
+     * is larger than {@code batch_size}, then the number of records loaded
+     * will be
+     * limited to the next whole number of {@code batch_size} (per working
+     * thread).
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#NUM_TASKS_PER_RANK
-     * NUM_TASKS_PER_RANK}: Optional: number of tasks for reading file per
-     * rank. Default will be external_file_reader_num_tasks
+     * NUM_TASKS_PER_RANK}: Number of tasks for reading file per rank. Default
+     * will be system configuration parameter, external_file_reader_num_tasks.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#POLL_INTERVAL
-     * POLL_INTERVAL}: If {@code true}, the number of seconds between attempts
-     * to load external files into the table.  If zero, polling will be
-     * continuous as long as data is found.  If no data is found, the interval
-     * will steadily increase to a maximum of 60 seconds.
+     * POLL_INTERVAL}: If {@code true}, the number of
+     * seconds between attempts to load external files into the table.  If
+     * zero, polling will be continuous
+     * as long as data is found.  If no data is found, the interval will
+     * steadily increase to a maximum of
+     * 60 seconds.  The default value is '0'.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#PRIMARY_KEYS
-     * PRIMARY_KEYS}: Optional: comma separated list of column names, to set as
-     * primary keys, when not specified in the type.  The default value is ''.
+     * PRIMARY_KEYS}: Comma separated list of column names to set as primary
+     * keys, when not specified in the type.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#REFRESH_METHOD
      * REFRESH_METHOD}: Method by which the table can be refreshed from its
@@ -903,18 +911,13 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#MANUAL MANUAL}.
      *         <li> {@link
-     * com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_ID
-     * SCHEMA_REGISTRY_SCHEMA_ID}
-     *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_NAME
-     * SCHEMA_REGISTRY_SCHEMA_NAME}
-     *         <li> {@link
-     * com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_VERSION
-     * SCHEMA_REGISTRY_SCHEMA_VERSION}
+     * SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro schema in the schema
+     * registry to use when reading Avro records.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#SHARD_KEYS
-     * SHARD_KEYS}: Optional: comma separated list of column names, to set as
-     * primary keys, when not specified in the type.  The default value is ''.
+     * SHARD_KEYS}: Comma separated list of column names to set as shard keys,
+     * when not specified in the type.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#SKIP_LINES
      * SKIP_LINES}: Skip number of lines from begining of file.
@@ -933,16 +936,17 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#TABLE_INSERT_MODE
-     * TABLE_INSERT_MODE}: Optional: table_insert_mode. When inserting records
-     * from multiple files: if table_per_file then insert from each file into a
-     * new table. Currently supported only for shapefiles.
+     * TABLE_INSERT_MODE}: Insertion scheme to use when inserting records from
+     * multiple shapefiles.
      * Supported values:
      * <ul>
      *         <li> {@link
-     * com.gpudb.protocol.CreateTableExternalRequest.Options#SINGLE SINGLE}
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#SINGLE SINGLE}:
+     * Insert all records into a single table.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#TABLE_PER_FILE
-     * TABLE_PER_FILE}
+     * TABLE_PER_FILE}: Insert records from each file into a new table
+     * corresponding to that file.
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#SINGLE SINGLE}.
@@ -1032,13 +1036,16 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_SEARCH_COLUMNS
      * TEXT_SEARCH_COLUMNS}: Add 'text_search' property to internally
-     * inferenced string columns. Comma seperated list of column names or '*'
-     * for all columns. To add text_search property only to string columns of
-     * minimum size, set also the option 'text_search_min_column_length'
+     * inferenced string columns.
+     * Comma seperated list of column names or '*' for all columns. To add
+     * 'text_search' property only to
+     * string columns greater than or equal to a minimum size, also set the
+     * {@code text_search_min_column_length}
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
-     * TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used only when
-     * 'text_search_columns' has a value.
+     * TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set the minimum column size for strings
+     * to apply the 'text_search' property to. Used only when {@code
+     * text_search_columns} has a value.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#TRUNCATE_STRINGS
      * TRUNCATE_STRINGS}: If set to {@code true}, truncate string values that
@@ -1067,7 +1074,8 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#TYPE_INFERENCE_MODE
-     * TYPE_INFERENCE_MODE}: optimize type inference for:
+     * TYPE_INFERENCE_MODE}: Optimize type inferencing for either speed or
+     * accuracy.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -1086,18 +1094,17 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * REMOTE_QUERY}: Remote SQL query from which data will be sourced
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_FILTER_COLUMN
-     * REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used for splitting the
-     * query into multiple sub-queries using the data distribution of given
-     * column.  The default value is ''.
+     * REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used for splitting
+     * {@code remote_query} into multiple sub-queries using the data
+     * distribution of given column
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_INCREASING_COLUMN
      * REMOTE_QUERY_INCREASING_COLUMN}: Column on subscribed remote query
-     * result that will increase for new records (e.g., TIMESTAMP).  The
-     * default value is ''.
+     * result that will increase for new records (e.g., TIMESTAMP).
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
-     * REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
-     * remote_query_filter_column.  The default value is ''.
+     * REMOTE_QUERY_PARTITION_COLUMN}: Alias name for {@code
+     * remote_query_filter_column}.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#UPDATE_ON_EXISTING_PK
      * UPDATE_ON_EXISTING_PK}: Specifies the record collision policy for
@@ -1107,7 +1114,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * {@code true}, any existing table record with primary
      * key values that match those of a record being inserted will be replaced
      * by that new record (the new
-     * data will be "upserted"). If set to {@code false},
+     * data will be 'upserted'). If set to {@code false},
      * any existing table record with primary key values that match those of a
      * record being inserted will
      * remain unchanged, while the new record will be rejected and the error
@@ -1133,84 +1140,48 @@ public class CreateTableExternalRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * Optional number of bytes to skip when reading an avro record.
-         */
-        public static final String AVRO_HEADER_BYTES = "avro_header_bytes";
-
-        /**
-         * Optional number of avro records, if data includes only records.
-         */
-        public static final String AVRO_NUM_RECORDS = "avro_num_records";
-
-        /**
-         * Optional string representing avro schema, for insert records in avro
-         * format, that does not include is schema.
-         */
-        public static final String AVRO_SCHEMA = "avro_schema";
-
-        /**
-         * When user provides 'avro_schema', avro data is assumed to be
-         * schemaless, unless specified. Default is 'true' when given
-         * avro_schema. Igonred when avro_schema is not given.
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE TRUE}
-         *         <li> {@link
-         * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}
-         * </ul>
-         */
-        public static final String AVRO_SCHEMALESS = "avro_schemaless";
-
-        /**
-         * Upsert new records when primary keys match existing records
-         */
-        public static final String TRUE = "true";
-
-        /**
-         * Reject new records when primary keys match existing records
-         */
-        public static final String FALSE = "false";
-
-        /**
-         * Optional name of a table to which records that were rejected are
-         * written.  The bad-record-table has the following columns:
-         * line_number (long), line_rejected (string), error_message (string).
+         * Name of a table to which records that were rejected are written.
+         * The bad-record-table has the following columns: line_number (long),
+         * line_rejected (string),
+         * error_message (string).  When {@code error_handling} is
+         * {@code abort}, bad records table is not populated.
          */
         public static final String BAD_RECORD_TABLE_NAME = "bad_record_table_name";
 
         /**
          * A positive integer indicating the maximum number of records that can
-         * be  written to the bad-record-table.   Default value is 10000
+         * be
+         * written to the bad-record-table.  The default value is '10000'.
          */
         public static final String BAD_RECORD_TABLE_LIMIT = "bad_record_table_limit";
 
         /**
-         * For subscriptions: A positive integer indicating the maximum number
+         * For subscriptions, a positive integer indicating the maximum number
          * of records that can be written to the bad-record-table per
-         * file/payload. Default value will be 'bad_record_table_limit' and
-         * total size of the table per rank is limited to
-         * 'bad_record_table_limit'
+         * file/payload. Default value will be
+         * {@code bad_record_table_limit} and total size of the table per rank
+         * is limited to
+         * {@code bad_record_table_limit}.
          */
         public static final String BAD_RECORD_TABLE_LIMIT_PER_INPUT = "bad_record_table_limit_per_input";
 
         /**
-         * Internal tuning parameter--number of records per batch when
-         * inserting data.
+         * Number of records to insert per batch when inserting data.  The
+         * default value is '50000'.
          */
         public static final String BATCH_SIZE = "batch_size";
 
         /**
          * For each target column specified, applies the column-property-bound
-         * format to the source data
-         * loaded into that column.  Each column format will contain a mapping
-         * of one or more of its column
-         * properties to an appropriate format for each property.  Currently
-         * supported column properties
-         * include date, time, & datetime. The parameter value must be
-         * formatted as a JSON string of maps of
-         * column names to maps of column properties to their corresponding
-         * column formats, e.g.,
+         * format to the source data loaded into that column.  Each column
+         * format will contain a mapping of one
+         * or more of its column properties to an appropriate format for each
+         * property.  Currently supported
+         * column properties include date, time, & datetime. The parameter
+         * value must be formatted as a JSON
+         * string of maps of column names to maps of column properties to their
+         * corresponding column formats,
+         * e.g.,
          * '{ "order_date" : { "date" : "%Y.%m.%d" }, "order_time" : { "time" :
          * "%H:%M:%S" } }'.
          * <p>
@@ -1260,15 +1231,15 @@ public class CreateTableExternalRequest implements IndexedRecord {
         public static final String COLUMNS_TO_SKIP = "columns_to_skip";
 
         /**
-         * Optional: compression type
+         * Source data compression type
          * Supported values:
          * <ul>
          *         <li> {@link
-         * com.gpudb.protocol.CreateTableExternalRequest.Options#NONE NONE}:
-         * Uncompressed
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#NONE NONE}: No
+         * compression.
          *         <li> {@link
          * com.gpudb.protocol.CreateTableExternalRequest.Options#AUTO AUTO}:
-         * Default. Auto detect compression type
+         * Auto detect compression type
          *         <li> {@link
          * com.gpudb.protocol.CreateTableExternalRequest.Options#GZIP GZIP}:
          * gzip file compression.
@@ -1282,12 +1253,12 @@ public class CreateTableExternalRequest implements IndexedRecord {
         public static final String COMPRESSION_TYPE = "compression_type";
 
         /**
-         * Uncompressed
+         * No compression.
          */
         public static final String NONE = "none";
 
         /**
-         * Default. Auto detect compression type
+         * Auto detect compression type
          */
         public static final String AUTO = "auto";
 
@@ -1479,7 +1450,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
 
         /**
          * Comma separated list of gdal conf options, for the specific requets:
-         * key=value.  The default value is ''.
+         * key=value
          */
         public static final String GDAL_CONFIGURATION_OPTIONS = "gdal_configuration_options";
 
@@ -1517,6 +1488,16 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}.
          */
         public static final String IGNORE_EXISTING_PK = "ignore_existing_pk";
+
+        /**
+         * Upsert new records when primary keys match existing records
+         */
+        public static final String TRUE = "true";
+
+        /**
+         * Reject new records when primary keys match existing records
+         */
+        public static final String FALSE = "false";
 
         /**
          * Whether to do a full load, dry run, or perform a type inference on
@@ -1562,19 +1543,25 @@ public class CreateTableExternalRequest implements IndexedRecord {
 
         /**
          * The JDBC fetch size, which determines how many rows to fetch per
-         * round trip.
+         * round trip.  The default value is '50000'.
          */
         public static final String JDBC_FETCH_SIZE = "jdbc_fetch_size";
 
         /**
-         * The group id to be used consuming data from a kakfa topic (valid
-         * only for kafka datasource subscriptions).
+         * Number of Kafka consumer threads per rank (valid range 1-6).  The
+         * default value is '1'.
+         */
+        public static final String KAFKA_CONSUMERS_PER_RANK = "kafka_consumers_per_rank";
+
+        /**
+         * The group id to be used when consuming data from a Kafka topic
+         * (valid only for Kafka datasource subscriptions).
          */
         public static final String KAFKA_GROUP_ID = "kafka_group_id";
 
         /**
-         * Policy to determine whether the data consumption starts either at
-         * earliest offset or latest offset.
+         * Policy to determine whether the Kafka data consumption starts either
+         * at earliest offset or latest offset.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -1592,14 +1579,34 @@ public class CreateTableExternalRequest implements IndexedRecord {
         public static final String LATEST = "latest";
 
         /**
-         * Sets the subscription lifespan (in minutes). Expired subscription
-         * will be cancelled automatically.
+         * Enable optimistic ingestion where Kafka topic offsets and table data
+         * are committed independently to achieve parallelism.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}.
+         */
+        public static final String KAFKA_OPTIMISTIC_INGEST = "kafka_optimistic_ingest";
+
+        /**
+         * Sets the Kafka subscription lifespan (in minutes). Expired
+         * subscription will be cancelled automatically.
          */
         public static final String KAFKA_SUBSCRIPTION_CANCEL_AFTER = "kafka_subscription_cancel_after";
 
         /**
-         * Optional: geo files layer(s) name(s): comma separated.  The default
-         * value is ''.
+         * Maximum time to collect Kafka messages before type inferencing on
+         * the set of them.
+         */
+        public static final String KAFKA_TYPE_INFERENCE_FETCH_TIMEOUT = "kafka_type_inference_fetch_timeout";
+
+        /**
+         * Geo files layer(s) name(s): comma separated.
          */
         public static final String LAYER = "layer";
 
@@ -1706,35 +1713,38 @@ public class CreateTableExternalRequest implements IndexedRecord {
         public static final String DISTRIBUTED_LOCAL = "distributed_local";
 
         /**
-         * For Avro local timestamp columns
+         * Apply an offset to Avro local timestamp columns.
          */
         public static final String LOCAL_TIME_OFFSET = "local_time_offset";
 
         /**
-         * Limit the number of records to load in this request: If this number
-         * is larger than a batch_size, then the number of records loaded will
-         * be limited to the next whole number of batch_size (per working
-         * thread).  The default value is ''.
+         * Limit the number of records to load in this request: if this number
+         * is larger than {@code batch_size}, then the number of records loaded
+         * will be
+         * limited to the next whole number of {@code batch_size} (per working
+         * thread).
          */
         public static final String MAX_RECORDS_TO_LOAD = "max_records_to_load";
 
         /**
-         * Optional: number of tasks for reading file per rank. Default will be
-         * external_file_reader_num_tasks
+         * Number of tasks for reading file per rank. Default will be system
+         * configuration parameter, external_file_reader_num_tasks.
          */
         public static final String NUM_TASKS_PER_RANK = "num_tasks_per_rank";
 
         /**
-         * If {@code true}, the number of seconds between attempts to load
-         * external files into the table.  If zero, polling will be continuous
+         * If {@code true}, the number of
+         * seconds between attempts to load external files into the table.  If
+         * zero, polling will be continuous
          * as long as data is found.  If no data is found, the interval will
-         * steadily increase to a maximum of 60 seconds.
+         * steadily increase to a maximum of
+         * 60 seconds.  The default value is '0'.
          */
         public static final String POLL_INTERVAL = "poll_interval";
 
         /**
-         * Optional: comma separated list of column names, to set as primary
-         * keys, when not specified in the type.  The default value is ''.
+         * Comma separated list of column names to set as primary keys, when
+         * not specified in the type.
          */
         public static final String PRIMARY_KEYS = "primary_keys";
 
@@ -1772,13 +1782,16 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * com.gpudb.GPUdb#alterTable(AlterTableRequest)} on this table.
          */
         public static final String ON_START = "on_start";
-        public static final String SCHEMA_REGISTRY_SCHEMA_ID = "schema_registry_schema_id";
-        public static final String SCHEMA_REGISTRY_SCHEMA_NAME = "schema_registry_schema_name";
-        public static final String SCHEMA_REGISTRY_SCHEMA_VERSION = "schema_registry_schema_version";
 
         /**
-         * Optional: comma separated list of column names, to set as primary
-         * keys, when not specified in the type.  The default value is ''.
+         * Name of the Avro schema in the schema registry to use when reading
+         * Avro records.
+         */
+        public static final String SCHEMA_REGISTRY_SCHEMA_NAME = "schema_registry_schema_name";
+
+        /**
+         * Comma separated list of column names to set as shard keys, when not
+         * specified in the type.
          */
         public static final String SHARD_KEYS = "shard_keys";
 
@@ -1803,23 +1816,33 @@ public class CreateTableExternalRequest implements IndexedRecord {
         public static final String SUBSCRIBE = "subscribe";
 
         /**
-         * Optional: table_insert_mode. When inserting records from multiple
-         * files: if table_per_file then insert from each file into a new
-         * table. Currently supported only for shapefiles.
+         * Insertion scheme to use when inserting records from multiple
+         * shapefiles.
          * Supported values:
          * <ul>
          *         <li> {@link
-         * com.gpudb.protocol.CreateTableExternalRequest.Options#SINGLE SINGLE}
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#SINGLE
+         * SINGLE}: Insert all records into a single table.
          *         <li> {@link
          * com.gpudb.protocol.CreateTableExternalRequest.Options#TABLE_PER_FILE
-         * TABLE_PER_FILE}
+         * TABLE_PER_FILE}: Insert records from each file into a new table
+         * corresponding to that file.
          * </ul>
          * The default value is {@link
          * com.gpudb.protocol.CreateTableExternalRequest.Options#SINGLE
          * SINGLE}.
          */
         public static final String TABLE_INSERT_MODE = "table_insert_mode";
+
+        /**
+         * Insert all records into a single table.
+         */
         public static final String SINGLE = "single";
+
+        /**
+         * Insert records from each file into a new table corresponding to that
+         * file.
+         */
         public static final String TABLE_PER_FILE = "table_per_file";
 
         /**
@@ -1917,14 +1940,15 @@ public class CreateTableExternalRequest implements IndexedRecord {
         /**
          * Add 'text_search' property to internally inferenced string columns.
          * Comma seperated list of column names or '*' for all columns. To add
-         * text_search property only to string columns of minimum size, set
-         * also the option 'text_search_min_column_length'
+         * 'text_search' property only to
+         * string columns greater than or equal to a minimum size, also set the
+         * {@code text_search_min_column_length}
          */
         public static final String TEXT_SEARCH_COLUMNS = "text_search_columns";
 
         /**
-         * Set minimum column size. Used only when 'text_search_columns' has a
-         * value.
+         * Set the minimum column size for strings to apply the 'text_search'
+         * property to. Used only when {@code text_search_columns} has a value.
          */
         public static final String TEXT_SEARCH_MIN_COLUMN_LENGTH = "text_search_min_column_length";
 
@@ -1959,7 +1983,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
         public static final String TRUNCATE_TABLE = "truncate_table";
 
         /**
-         * optimize type inference for:
+         * Optimize type inferencing for either speed or accuracy.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -1994,20 +2018,19 @@ public class CreateTableExternalRequest implements IndexedRecord {
         public static final String REMOTE_QUERY = "remote_query";
 
         /**
-         * Name of column to be used for splitting the query into multiple
-         * sub-queries using the data distribution of given column.  The
-         * default value is ''.
+         * Name of column to be used for splitting {@code remote_query} into
+         * multiple sub-queries using the data distribution of given column
          */
         public static final String REMOTE_QUERY_FILTER_COLUMN = "remote_query_filter_column";
 
         /**
          * Column on subscribed remote query result that will increase for new
-         * records (e.g., TIMESTAMP).  The default value is ''.
+         * records (e.g., TIMESTAMP).
          */
         public static final String REMOTE_QUERY_INCREASING_COLUMN = "remote_query_increasing_column";
 
         /**
-         * Alias name for remote_query_filter_column.  The default value is ''.
+         * Alias name for {@code remote_query_filter_column}.
          */
         public static final String REMOTE_QUERY_PARTITION_COLUMN = "remote_query_partition_column";
 
@@ -2018,7 +2041,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * {@code true}, any existing table record with primary
          * key values that match those of a record being inserted will be
          * replaced by that new record (the new
-         * data will be "upserted"). If set to {@code false},
+         * data will be 'upserted'). If set to {@code false},
          * any existing table record with primary key values that match those
          * of a record being inserted will
          * remain unchanged, while the new record will be rejected and the
@@ -2086,8 +2109,8 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                   paths must resolve to accessible files at that data
      *                   source location. Prefix matching is supported.
      *                   If the data source is hdfs, prefixes must be aligned
-     *                   with directories, i.e. partial file names will not
-     *                   match.
+     *                   with directories, i.e. partial file names will
+     *                   not match.
      *                   If no data source is specified, the files are assumed
      *                   to be local to the database and must all be
      *                   accessible to the gpudb user, residing on the path (or
@@ -2115,8 +2138,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#TYPE_ID
      *                            TYPE_ID}: ID of a currently registered <a
      *                            href="../../../../../../concepts/types/"
-     *                            target="_top">type</a>.  The default value is
-     *                            ''.
+     *                            target="_top">type</a>.
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#NO_ERROR_IF_EXISTS
      *                            NO_ERROR_IF_EXISTS}: If {@code true},
@@ -2243,17 +2265,20 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                            target="_top">interval partitioning</a>,
      *                            <a
      *                            href="../../../../../../concepts/tables/#partitioning-by-list"
-     *                            target="_top">list partitioning</a>, or
+     *                            target="_top">list partitioning</a>,
      *                            <a
      *                            href="../../../../../../concepts/tables/#partitioning-by-hash"
-     *                            target="_top">hash partitioning</a> for
+     *                            target="_top">hash partitioning</a>, or
+     *                            <a
+     *                            href="../../../../../../concepts/tables/#partitioning-by-series"
+     *                            target="_top">series partitioning</a> for
      *                            example formats.
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#IS_AUTOMATIC_PARTITION
      *                            IS_AUTOMATIC_PARTITION}: If {@code true},
      *                            a new partition will be created for values
      *                            which don't fall into an existing partition.
-     *                            Currently
+     *                            Currently,
      *                            only supported for <a
      *                            href="../../../../../../concepts/tables/#partitioning-by-list"
      *                            target="_top">list partitions</a>.
@@ -2319,69 +2344,45 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_HEADER_BYTES
-     *                 AVRO_HEADER_BYTES}: Optional number of bytes to skip
-     *                 when reading an avro record.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_NUM_RECORDS
-     *                 AVRO_NUM_RECORDS}: Optional number of avro records, if
-     *                 data includes only records.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_SCHEMA
-     *                 AVRO_SCHEMA}: Optional string representing avro schema,
-     *                 for insert records in avro format, that does not include
-     *                 is schema.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_SCHEMALESS
-     *                 AVRO_SCHEMALESS}: When user provides 'avro_schema', avro
-     *                 data is assumed to be schemaless, unless specified.
-     *                 Default is 'true' when given avro_schema. Igonred when
-     *                 avro_schema is not given.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE
-     *                 TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#BAD_RECORD_TABLE_NAME
-     *                 BAD_RECORD_TABLE_NAME}: Optional name of a table to
-     *                 which records that were rejected are written.  The
-     *                 bad-record-table has the following columns: line_number
-     *                 (long), line_rejected (string), error_message (string).
+     *                 BAD_RECORD_TABLE_NAME}: Name of a table to which records
+     *                 that were rejected are written.
+     *                 The bad-record-table has the following columns:
+     *                 line_number (long), line_rejected (string),
+     *                 error_message (string).  When {@code error_handling} is
+     *                 {@code abort}, bad records table is not populated.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#BAD_RECORD_TABLE_LIMIT
      *                 BAD_RECORD_TABLE_LIMIT}: A positive integer indicating
-     *                 the maximum number of records that can be  written to
-     *                 the bad-record-table.   Default value is 10000
+     *                 the maximum number of records that can be
+     *                 written to the bad-record-table.  The default value is
+     *                 '10000'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
-     *                 BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions: A
-     *                 positive integer indicating the maximum number of
-     *                 records that can be written to the bad-record-table per
-     *                 file/payload. Default value will be
-     *                 'bad_record_table_limit' and total size of the table per
-     *                 rank is limited to 'bad_record_table_limit'
+     *                 BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions, a
+     *                 positive integer indicating the maximum number
+     *                 of records that can be written to the bad-record-table
+     *                 per file/payload. Default value will be
+     *                 {@code bad_record_table_limit} and total size of the
+     *                 table per rank is limited to
+     *                 {@code bad_record_table_limit}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#BATCH_SIZE
-     *                 BATCH_SIZE}: Internal tuning parameter--number of
-     *                 records per batch when inserting data.
+     *                 BATCH_SIZE}: Number of records to insert per batch when
+     *                 inserting data.  The default value is '50000'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#COLUMN_FORMATS
      *                 COLUMN_FORMATS}: For each target column specified,
-     *                 applies the column-property-bound format to the source
-     *                 data
-     *                 loaded into that column.  Each column format will
-     *                 contain a mapping of one or more of its column
-     *                 properties to an appropriate format for each property.
-     *                 Currently supported column properties
-     *                 include date, time, & datetime. The parameter value must
-     *                 be formatted as a JSON string of maps of
-     *                 column names to maps of column properties to their
-     *                 corresponding column formats, e.g.,
+     *                 applies the column-property-bound
+     *                 format to the source data loaded into that column.  Each
+     *                 column format will contain a mapping of one
+     *                 or more of its column properties to an appropriate
+     *                 format for each property.  Currently supported
+     *                 column properties include date, time, & datetime. The
+     *                 parameter value must be formatted as a JSON
+     *                 string of maps of column names to maps of column
+     *                 properties to their corresponding column formats,
+     *                 e.g.,
      *                 '{ "order_date" : { "date" : "%Y.%m.%d" }, "order_time"
      *                 : { "time" : "%H:%M:%S" } }'.
      *                 See {@code default_column_formats} for valid format
@@ -2424,15 +2425,15 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 skip.  Mutually exclusive with {@code columns_to_load}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#COMPRESSION_TYPE
-     *                 COMPRESSION_TYPE}: Optional: compression type
+     *                 COMPRESSION_TYPE}: Source data compression type
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#NONE
-     *                 NONE}: Uncompressed
+     *                 NONE}: No compression.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AUTO
-     *                 AUTO}: Default. Auto detect compression type
+     *                 AUTO}: Auto detect compression type
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#GZIP
      *                 GZIP}: gzip file compression.
@@ -2556,8 +2557,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#GDAL_CONFIGURATION_OPTIONS
      *                 GDAL_CONFIGURATION_OPTIONS}: Comma separated list of
-     *                 gdal conf options, for the specific requets: key=value.
-     *                 The default value is ''.
+     *                 gdal conf options, for the specific requets: key=value
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#IGNORE_EXISTING_PK
      *                 IGNORE_EXISTING_PK}: Specifies the record collision
@@ -2621,17 +2621,23 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#JDBC_FETCH_SIZE
      *                 JDBC_FETCH_SIZE}: The JDBC fetch size, which determines
-     *                 how many rows to fetch per round trip.
+     *                 how many rows to fetch per round trip.  The default
+     *                 value is '50000'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_CONSUMERS_PER_RANK
+     *                 KAFKA_CONSUMERS_PER_RANK}: Number of Kafka consumer
+     *                 threads per rank (valid range 1-6).  The default value
+     *                 is '1'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_GROUP_ID
-     *                 KAFKA_GROUP_ID}: The group id to be used consuming data
-     *                 from a kakfa topic (valid only for kafka datasource
+     *                 KAFKA_GROUP_ID}: The group id to be used when consuming
+     *                 data from a Kafka topic (valid only for Kafka datasource
      *                 subscriptions).
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_OFFSET_RESET_POLICY
      *                 KAFKA_OFFSET_RESET_POLICY}: Policy to determine whether
-     *                 the data consumption starts either at earliest offset or
-     *                 latest offset.
+     *                 the Kafka data consumption starts either at earliest
+     *                 offset or latest offset.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -2645,14 +2651,35 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#EARLIEST
      *                 EARLIEST}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_OPTIMISTIC_INGEST
+     *                 KAFKA_OPTIMISTIC_INGEST}: Enable optimistic ingestion
+     *                 where Kafka topic offsets and table data are committed
+     *                 independently to achieve parallelism.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_SUBSCRIPTION_CANCEL_AFTER
-     *                 KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the subscription
-     *                 lifespan (in minutes). Expired subscription will be
-     *                 cancelled automatically.
+     *                 KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the Kafka
+     *                 subscription lifespan (in minutes). Expired subscription
+     *                 will be cancelled automatically.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_TYPE_INFERENCE_FETCH_TIMEOUT
+     *                 KAFKA_TYPE_INFERENCE_FETCH_TIMEOUT}: Maximum time to
+     *                 collect Kafka messages before type inferencing on the
+     *                 set of them.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#LAYER
-     *                 LAYER}: Optional: geo files layer(s) name(s): comma
-     *                 separated.  The default value is ''.
+     *                 LAYER}: Geo files layer(s) name(s): comma separated.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#LOADING_MODE
      *                 LOADING_MODE}: Scheme for distributing the extraction
@@ -2705,31 +2732,33 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 HEAD}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#LOCAL_TIME_OFFSET
-     *                 LOCAL_TIME_OFFSET}: For Avro local timestamp columns
+     *                 LOCAL_TIME_OFFSET}: Apply an offset to Avro local
+     *                 timestamp columns.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#MAX_RECORDS_TO_LOAD
      *                 MAX_RECORDS_TO_LOAD}: Limit the number of records to
-     *                 load in this request: If this number is larger than a
-     *                 batch_size, then the number of records loaded will be
-     *                 limited to the next whole number of batch_size (per
-     *                 working thread).  The default value is ''.
+     *                 load in this request: if this number
+     *                 is larger than {@code batch_size}, then the number of
+     *                 records loaded will be
+     *                 limited to the next whole number of {@code batch_size}
+     *                 (per working thread).
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#NUM_TASKS_PER_RANK
-     *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
-     *                 reading file per rank. Default will be
-     *                 external_file_reader_num_tasks
+     *                 NUM_TASKS_PER_RANK}: Number of tasks for reading file
+     *                 per rank. Default will be system configuration
+     *                 parameter, external_file_reader_num_tasks.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#POLL_INTERVAL
-     *                 POLL_INTERVAL}: If {@code true}, the number of seconds
-     *                 between attempts to load external files into the table.
-     *                 If zero, polling will be continuous as long as data is
-     *                 found.  If no data is found, the interval will steadily
-     *                 increase to a maximum of 60 seconds.
+     *                 POLL_INTERVAL}: If {@code true}, the number of
+     *                 seconds between attempts to load external files into the
+     *                 table.  If zero, polling will be continuous
+     *                 as long as data is found.  If no data is found, the
+     *                 interval will steadily increase to a maximum of
+     *                 60 seconds.  The default value is '0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#PRIMARY_KEYS
-     *                 PRIMARY_KEYS}: Optional: comma separated list of column
-     *                 names, to set as primary keys, when not specified in the
-     *                 type.  The default value is ''.
+     *                 PRIMARY_KEYS}: Comma separated list of column names to
+     *                 set as primary keys, when not specified in the type.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REFRESH_METHOD
      *                 REFRESH_METHOD}: Method by which the table can be
@@ -2753,19 +2782,13 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#MANUAL
      *                 MANUAL}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_ID
-     *                 SCHEMA_REGISTRY_SCHEMA_ID}
-     *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_NAME
-     *                 SCHEMA_REGISTRY_SCHEMA_NAME}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_VERSION
-     *                 SCHEMA_REGISTRY_SCHEMA_VERSION}
+     *                 SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro schema in
+     *                 the schema registry to use when reading Avro records.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SHARD_KEYS
-     *                 SHARD_KEYS}: Optional: comma separated list of column
-     *                 names, to set as primary keys, when not specified in the
-     *                 type.  The default value is ''.
+     *                 SHARD_KEYS}: Comma separated list of column names to set
+     *                 as shard keys, when not specified in the type.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SKIP_LINES
      *                 SKIP_LINES}: Skip number of lines from begining of file.
@@ -2787,18 +2810,17 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TABLE_INSERT_MODE
-     *                 TABLE_INSERT_MODE}: Optional: table_insert_mode. When
-     *                 inserting records from multiple files: if table_per_file
-     *                 then insert from each file into a new table. Currently
-     *                 supported only for shapefiles.
+     *                 TABLE_INSERT_MODE}: Insertion scheme to use when
+     *                 inserting records from multiple shapefiles.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SINGLE
-     *                 SINGLE}
+     *                 SINGLE}: Insert all records into a single table.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TABLE_PER_FILE
-     *                 TABLE_PER_FILE}
+     *                 TABLE_PER_FILE}: Insert records from each file into a
+     *                 new table corresponding to that file.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SINGLE
@@ -2888,15 +2910,17 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_SEARCH_COLUMNS
      *                 TEXT_SEARCH_COLUMNS}: Add 'text_search' property to
-     *                 internally inferenced string columns. Comma seperated
-     *                 list of column names or '*' for all columns. To add
-     *                 text_search property only to string columns of minimum
-     *                 size, set also the option
-     *                 'text_search_min_column_length'
+     *                 internally inferenced string columns.
+     *                 Comma seperated list of column names or '*' for all
+     *                 columns. To add 'text_search' property only to
+     *                 string columns greater than or equal to a minimum size,
+     *                 also set the
+     *                 {@code text_search_min_column_length}
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
-     *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
-     *                 Used only when 'text_search_columns' has a value.
+     *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set the minimum column
+     *                 size for strings to apply the 'text_search' property to.
+     *                 Used only when {@code text_search_columns} has a value.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUNCATE_STRINGS
      *                 TRUNCATE_STRINGS}: If set to {@code true}, truncate
@@ -2933,7 +2957,8 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TYPE_INFERENCE_MODE
-     *                 TYPE_INFERENCE_MODE}: optimize type inference for:
+     *                 TYPE_INFERENCE_MODE}: Optimize type inferencing for
+     *                 either speed or accuracy.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -2956,18 +2981,17 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_FILTER_COLUMN
      *                 REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used
-     *                 for splitting the query into multiple sub-queries using
-     *                 the data distribution of given column.  The default
-     *                 value is ''.
+     *                 for splitting {@code remote_query} into multiple
+     *                 sub-queries using the data distribution of given column
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_INCREASING_COLUMN
      *                 REMOTE_QUERY_INCREASING_COLUMN}: Column on subscribed
      *                 remote query result that will increase for new records
-     *                 (e.g., TIMESTAMP).  The default value is ''.
+     *                 (e.g., TIMESTAMP).
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
-     *                 REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
-     *                 remote_query_filter_column.  The default value is ''.
+     *                 REMOTE_QUERY_PARTITION_COLUMN}: Alias name for {@code
+     *                 remote_query_filter_column}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
@@ -2978,7 +3002,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 {@code true}, any existing table record with primary
      *                 key values that match those of a record being inserted
      *                 will be replaced by that new record (the new
-     *                 data will be "upserted"). If set to {@code false},
+     *                 data will be 'upserted'). If set to {@code false},
      *                 any existing table record with primary key values that
      *                 match those of a record being inserted will
      *                 remain unchanged, while the new record will be rejected
@@ -3063,7 +3087,8 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         paths must resolve to accessible files at that data source
      *         location. Prefix matching is supported.
      *         If the data source is hdfs, prefixes must be aligned with
-     *         directories, i.e. partial file names will not match.
+     *         directories, i.e. partial file names will
+     *         not match.
      *         If no data source is specified, the files are assumed to be
      *         local to the database and must all be
      *         accessible to the gpudb user, residing on the path (or relative
@@ -3100,8 +3125,8 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                   paths must resolve to accessible files at that data
      *                   source location. Prefix matching is supported.
      *                   If the data source is hdfs, prefixes must be aligned
-     *                   with directories, i.e. partial file names will not
-     *                   match.
+     *                   with directories, i.e. partial file names will
+     *                   not match.
      *                   If no data source is specified, the files are assumed
      *                   to be local to the database and must all be
      *                   accessible to the gpudb user, residing on the path (or
@@ -3160,7 +3185,6 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#TYPE_ID
      *         TYPE_ID}: ID of a currently registered <a
      *         href="../../../../../../concepts/types/" target="_top">type</a>.
-     *         The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#NO_ERROR_IF_EXISTS
      *         NO_ERROR_IF_EXISTS}: If {@code true},
@@ -3279,15 +3303,18 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         target="_top">interval partitioning</a>,
      *         <a
      *         href="../../../../../../concepts/tables/#partitioning-by-list"
-     *         target="_top">list partitioning</a>, or
+     *         target="_top">list partitioning</a>,
      *         <a
      *         href="../../../../../../concepts/tables/#partitioning-by-hash"
-     *         target="_top">hash partitioning</a> for example formats.
+     *         target="_top">hash partitioning</a>, or
+     *         <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-series"
+     *         target="_top">series partitioning</a> for example formats.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#IS_AUTOMATIC_PARTITION
      *         IS_AUTOMATIC_PARTITION}: If {@code true},
      *         a new partition will be created for values which don't fall into
-     *         an existing partition.  Currently
+     *         an existing partition.  Currently,
      *         only supported for <a
      *         href="../../../../../../concepts/tables/#partitioning-by-list"
      *         target="_top">list partitions</a>.
@@ -3362,8 +3389,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#TYPE_ID
      *                            TYPE_ID}: ID of a currently registered <a
      *                            href="../../../../../../concepts/types/"
-     *                            target="_top">type</a>.  The default value is
-     *                            ''.
+     *                            target="_top">type</a>.
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#NO_ERROR_IF_EXISTS
      *                            NO_ERROR_IF_EXISTS}: If {@code true},
@@ -3490,17 +3516,20 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                            target="_top">interval partitioning</a>,
      *                            <a
      *                            href="../../../../../../concepts/tables/#partitioning-by-list"
-     *                            target="_top">list partitioning</a>, or
+     *                            target="_top">list partitioning</a>,
      *                            <a
      *                            href="../../../../../../concepts/tables/#partitioning-by-hash"
-     *                            target="_top">hash partitioning</a> for
+     *                            target="_top">hash partitioning</a>, or
+     *                            <a
+     *                            href="../../../../../../concepts/tables/#partitioning-by-series"
+     *                            target="_top">series partitioning</a> for
      *                            example formats.
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#IS_AUTOMATIC_PARTITION
      *                            IS_AUTOMATIC_PARTITION}: If {@code true},
      *                            a new partition will be created for values
      *                            which don't fall into an existing partition.
-     *                            Currently
+     *                            Currently,
      *                            only supported for <a
      *                            href="../../../../../../concepts/tables/#partitioning-by-list"
      *                            target="_top">list partitions</a>.
@@ -3577,64 +3606,44 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * @return Optional parameters.
      *         <ul>
      *                 <li> {@link
-     *         com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_HEADER_BYTES
-     *         AVRO_HEADER_BYTES}: Optional number of bytes to skip when
-     *         reading an avro record.
-     *                 <li> {@link
-     *         com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_NUM_RECORDS
-     *         AVRO_NUM_RECORDS}: Optional number of avro records, if data
-     *         includes only records.
-     *                 <li> {@link
-     *         com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_SCHEMA
-     *         AVRO_SCHEMA}: Optional string representing avro schema, for
-     *         insert records in avro format, that does not include is schema.
-     *                 <li> {@link
-     *         com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_SCHEMALESS
-     *         AVRO_SCHEMALESS}: When user provides 'avro_schema', avro data is
-     *         assumed to be schemaless, unless specified. Default is 'true'
-     *         when given avro_schema. Igonred when avro_schema is not given.
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE TRUE}
-     *                 <li> {@link
-     *         com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
-     *         FALSE}
-     *         </ul>
-     *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#BAD_RECORD_TABLE_NAME
-     *         BAD_RECORD_TABLE_NAME}: Optional name of a table to which
-     *         records that were rejected are written.  The bad-record-table
-     *         has the following columns: line_number (long), line_rejected
-     *         (string), error_message (string).
+     *         BAD_RECORD_TABLE_NAME}: Name of a table to which records that
+     *         were rejected are written.
+     *         The bad-record-table has the following columns: line_number
+     *         (long), line_rejected (string),
+     *         error_message (string).  When {@code error_handling} is
+     *         {@code abort}, bad records table is not populated.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#BAD_RECORD_TABLE_LIMIT
      *         BAD_RECORD_TABLE_LIMIT}: A positive integer indicating the
-     *         maximum number of records that can be  written to the
-     *         bad-record-table.   Default value is 10000
+     *         maximum number of records that can be
+     *         written to the bad-record-table.  The default value is '10000'.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
-     *         BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions: A positive
-     *         integer indicating the maximum number of records that can be
-     *         written to the bad-record-table per file/payload. Default value
-     *         will be 'bad_record_table_limit' and total size of the table per
-     *         rank is limited to 'bad_record_table_limit'
+     *         BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions, a positive
+     *         integer indicating the maximum number
+     *         of records that can be written to the bad-record-table per
+     *         file/payload. Default value will be
+     *         {@code bad_record_table_limit} and total size of the table per
+     *         rank is limited to
+     *         {@code bad_record_table_limit}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#BATCH_SIZE
-     *         BATCH_SIZE}: Internal tuning parameter--number of records per
-     *         batch when inserting data.
+     *         BATCH_SIZE}: Number of records to insert per batch when
+     *         inserting data.  The default value is '50000'.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#COLUMN_FORMATS
      *         COLUMN_FORMATS}: For each target column specified, applies the
-     *         column-property-bound format to the source data
-     *         loaded into that column.  Each column format will contain a
-     *         mapping of one or more of its column
-     *         properties to an appropriate format for each property.
-     *         Currently supported column properties
-     *         include date, time, & datetime. The parameter value must be
-     *         formatted as a JSON string of maps of
-     *         column names to maps of column properties to their corresponding
-     *         column formats, e.g.,
+     *         column-property-bound
+     *         format to the source data loaded into that column.  Each column
+     *         format will contain a mapping of one
+     *         or more of its column properties to an appropriate format for
+     *         each property.  Currently supported
+     *         column properties include date, time, & datetime. The parameter
+     *         value must be formatted as a JSON
+     *         string of maps of column names to maps of column properties to
+     *         their corresponding column formats,
+     *         e.g.,
      *         '{ "order_date" : { "date" : "%Y.%m.%d" }, "order_time" : {
      *         "time" : "%H:%M:%S" } }'.
      *         See {@code default_column_formats} for valid format syntax.
@@ -3676,15 +3685,15 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         skip.  Mutually exclusive with {@code columns_to_load}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#COMPRESSION_TYPE
-     *         COMPRESSION_TYPE}: Optional: compression type
+     *         COMPRESSION_TYPE}: Source data compression type
      *         Supported values:
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#NONE
-     *         NONE}: Uncompressed
+     *         NONE}: No compression.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#AUTO
-     *         AUTO}: Default. Auto detect compression type
+     *         AUTO}: Auto detect compression type
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#GZIP
      *         GZIP}: gzip file compression.
@@ -3805,8 +3814,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#GDAL_CONFIGURATION_OPTIONS
      *         GDAL_CONFIGURATION_OPTIONS}: Comma separated list of gdal conf
-     *         options, for the specific requets: key=value.  The default value
-     *         is ''.
+     *         options, for the specific requets: key=value
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#IGNORE_EXISTING_PK
      *         IGNORE_EXISTING_PK}: Specifies the record collision
@@ -3869,15 +3877,21 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#JDBC_FETCH_SIZE
      *         JDBC_FETCH_SIZE}: The JDBC fetch size, which determines how many
-     *         rows to fetch per round trip.
+     *         rows to fetch per round trip.  The default value is '50000'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_CONSUMERS_PER_RANK
+     *         KAFKA_CONSUMERS_PER_RANK}: Number of Kafka consumer threads per
+     *         rank (valid range 1-6).  The default value is '1'.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_GROUP_ID
-     *         KAFKA_GROUP_ID}: The group id to be used consuming data from a
-     *         kakfa topic (valid only for kafka datasource subscriptions).
+     *         KAFKA_GROUP_ID}: The group id to be used when consuming data
+     *         from a Kafka topic (valid only for Kafka datasource
+     *         subscriptions).
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_OFFSET_RESET_POLICY
-     *         KAFKA_OFFSET_RESET_POLICY}: Policy to determine whether the data
-     *         consumption starts either at earliest offset or latest offset.
+     *         KAFKA_OFFSET_RESET_POLICY}: Policy to determine whether the
+     *         Kafka data consumption starts either at earliest offset or
+     *         latest offset.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -3891,14 +3905,33 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#EARLIEST
      *         EARLIEST}.
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_OPTIMISTIC_INGEST
+     *         KAFKA_OPTIMISTIC_INGEST}: Enable optimistic ingestion where
+     *         Kafka topic offsets and table data are committed independently
+     *         to achieve parallelism.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *         FALSE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_SUBSCRIPTION_CANCEL_AFTER
-     *         KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the subscription lifespan
-     *         (in minutes). Expired subscription will be cancelled
+     *         KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the Kafka subscription
+     *         lifespan (in minutes). Expired subscription will be cancelled
      *         automatically.
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_TYPE_INFERENCE_FETCH_TIMEOUT
+     *         KAFKA_TYPE_INFERENCE_FETCH_TIMEOUT}: Maximum time to collect
+     *         Kafka messages before type inferencing on the set of them.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#LAYER
-     *         LAYER}: Optional: geo files layer(s) name(s): comma separated.
-     *         The default value is ''.
+     *         LAYER}: Geo files layer(s) name(s): comma separated.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#LOADING_MODE
      *         LOADING_MODE}: Scheme for distributing the extraction and
@@ -3950,30 +3983,33 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         HEAD}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#LOCAL_TIME_OFFSET
-     *         LOCAL_TIME_OFFSET}: For Avro local timestamp columns
+     *         LOCAL_TIME_OFFSET}: Apply an offset to Avro local timestamp
+     *         columns.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#MAX_RECORDS_TO_LOAD
      *         MAX_RECORDS_TO_LOAD}: Limit the number of records to load in
-     *         this request: If this number is larger than a batch_size, then
-     *         the number of records loaded will be limited to the next whole
-     *         number of batch_size (per working thread).  The default value is
-     *         ''.
+     *         this request: if this number
+     *         is larger than {@code batch_size}, then the number of records
+     *         loaded will be
+     *         limited to the next whole number of {@code batch_size} (per
+     *         working thread).
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#NUM_TASKS_PER_RANK
-     *         NUM_TASKS_PER_RANK}: Optional: number of tasks for reading file
-     *         per rank. Default will be external_file_reader_num_tasks
+     *         NUM_TASKS_PER_RANK}: Number of tasks for reading file per rank.
+     *         Default will be system configuration parameter,
+     *         external_file_reader_num_tasks.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#POLL_INTERVAL
-     *         POLL_INTERVAL}: If {@code true}, the number of seconds between
-     *         attempts to load external files into the table.  If zero,
-     *         polling will be continuous as long as data is found.  If no data
-     *         is found, the interval will steadily increase to a maximum of 60
-     *         seconds.
+     *         POLL_INTERVAL}: If {@code true}, the number of
+     *         seconds between attempts to load external files into the table.
+     *         If zero, polling will be continuous
+     *         as long as data is found.  If no data is found, the interval
+     *         will steadily increase to a maximum of
+     *         60 seconds.  The default value is '0'.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#PRIMARY_KEYS
-     *         PRIMARY_KEYS}: Optional: comma separated list of column names,
-     *         to set as primary keys, when not specified in the type.  The
-     *         default value is ''.
+     *         PRIMARY_KEYS}: Comma separated list of column names to set as
+     *         primary keys, when not specified in the type.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#REFRESH_METHOD
      *         REFRESH_METHOD}: Method by which the table can be refreshed from
@@ -3995,19 +4031,13 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#MANUAL
      *         MANUAL}.
      *                 <li> {@link
-     *         com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_ID
-     *         SCHEMA_REGISTRY_SCHEMA_ID}
-     *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_NAME
-     *         SCHEMA_REGISTRY_SCHEMA_NAME}
-     *                 <li> {@link
-     *         com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_VERSION
-     *         SCHEMA_REGISTRY_SCHEMA_VERSION}
+     *         SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro schema in the
+     *         schema registry to use when reading Avro records.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#SHARD_KEYS
-     *         SHARD_KEYS}: Optional: comma separated list of column names, to
-     *         set as primary keys, when not specified in the type.  The
-     *         default value is ''.
+     *         SHARD_KEYS}: Comma separated list of column names to set as
+     *         shard keys, when not specified in the type.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#SKIP_LINES
      *         SKIP_LINES}: Skip number of lines from begining of file.
@@ -4028,18 +4058,17 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#TABLE_INSERT_MODE
-     *         TABLE_INSERT_MODE}: Optional: table_insert_mode. When inserting
-     *         records from multiple files: if table_per_file then insert from
-     *         each file into a new table. Currently supported only for
-     *         shapefiles.
+     *         TABLE_INSERT_MODE}: Insertion scheme to use when inserting
+     *         records from multiple shapefiles.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#SINGLE
-     *         SINGLE}
+     *         SINGLE}: Insert all records into a single table.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#TABLE_PER_FILE
-     *         TABLE_PER_FILE}
+     *         TABLE_PER_FILE}: Insert records from each file into a new table
+     *         corresponding to that file.
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#SINGLE
@@ -4125,14 +4154,17 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_SEARCH_COLUMNS
      *         TEXT_SEARCH_COLUMNS}: Add 'text_search' property to internally
-     *         inferenced string columns. Comma seperated list of column names
-     *         or '*' for all columns. To add text_search property only to
-     *         string columns of minimum size, set also the option
-     *         'text_search_min_column_length'
+     *         inferenced string columns.
+     *         Comma seperated list of column names or '*' for all columns. To
+     *         add 'text_search' property only to
+     *         string columns greater than or equal to a minimum size, also set
+     *         the
+     *         {@code text_search_min_column_length}
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
-     *         TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used
-     *         only when 'text_search_columns' has a value.
+     *         TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set the minimum column size for
+     *         strings to apply the 'text_search' property to. Used only when
+     *         {@code text_search_columns} has a value.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#TRUNCATE_STRINGS
      *         TRUNCATE_STRINGS}: If set to {@code true}, truncate string
@@ -4165,7 +4197,8 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#TYPE_INFERENCE_MODE
-     *         TYPE_INFERENCE_MODE}: optimize type inference for:
+     *         TYPE_INFERENCE_MODE}: Optimize type inferencing for either speed
+     *         or accuracy.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -4186,17 +4219,17 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_FILTER_COLUMN
      *         REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used for
-     *         splitting the query into multiple sub-queries using the data
-     *         distribution of given column.  The default value is ''.
+     *         splitting {@code remote_query} into multiple sub-queries using
+     *         the data distribution of given column
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_INCREASING_COLUMN
      *         REMOTE_QUERY_INCREASING_COLUMN}: Column on subscribed remote
      *         query result that will increase for new records (e.g.,
-     *         TIMESTAMP).  The default value is ''.
+     *         TIMESTAMP).
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
-     *         REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
-     *         remote_query_filter_column.  The default value is ''.
+     *         REMOTE_QUERY_PARTITION_COLUMN}: Alias name for {@code
+     *         remote_query_filter_column}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#UPDATE_ON_EXISTING_PK
      *         UPDATE_ON_EXISTING_PK}: Specifies the record collision policy
@@ -4206,7 +4239,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         {@code true}, any existing table record with primary
      *         key values that match those of a record being inserted will be
      *         replaced by that new record (the new
-     *         data will be "upserted"). If set to {@code false},
+     *         data will be 'upserted'). If set to {@code false},
      *         any existing table record with primary key values that match
      *         those of a record being inserted will
      *         remain unchanged, while the new record will be rejected and the
@@ -4241,69 +4274,45 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_HEADER_BYTES
-     *                 AVRO_HEADER_BYTES}: Optional number of bytes to skip
-     *                 when reading an avro record.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_NUM_RECORDS
-     *                 AVRO_NUM_RECORDS}: Optional number of avro records, if
-     *                 data includes only records.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_SCHEMA
-     *                 AVRO_SCHEMA}: Optional string representing avro schema,
-     *                 for insert records in avro format, that does not include
-     *                 is schema.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_SCHEMALESS
-     *                 AVRO_SCHEMALESS}: When user provides 'avro_schema', avro
-     *                 data is assumed to be schemaless, unless specified.
-     *                 Default is 'true' when given avro_schema. Igonred when
-     *                 avro_schema is not given.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE
-     *                 TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#BAD_RECORD_TABLE_NAME
-     *                 BAD_RECORD_TABLE_NAME}: Optional name of a table to
-     *                 which records that were rejected are written.  The
-     *                 bad-record-table has the following columns: line_number
-     *                 (long), line_rejected (string), error_message (string).
+     *                 BAD_RECORD_TABLE_NAME}: Name of a table to which records
+     *                 that were rejected are written.
+     *                 The bad-record-table has the following columns:
+     *                 line_number (long), line_rejected (string),
+     *                 error_message (string).  When {@code error_handling} is
+     *                 {@code abort}, bad records table is not populated.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#BAD_RECORD_TABLE_LIMIT
      *                 BAD_RECORD_TABLE_LIMIT}: A positive integer indicating
-     *                 the maximum number of records that can be  written to
-     *                 the bad-record-table.   Default value is 10000
+     *                 the maximum number of records that can be
+     *                 written to the bad-record-table.  The default value is
+     *                 '10000'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
-     *                 BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions: A
-     *                 positive integer indicating the maximum number of
-     *                 records that can be written to the bad-record-table per
-     *                 file/payload. Default value will be
-     *                 'bad_record_table_limit' and total size of the table per
-     *                 rank is limited to 'bad_record_table_limit'
+     *                 BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions, a
+     *                 positive integer indicating the maximum number
+     *                 of records that can be written to the bad-record-table
+     *                 per file/payload. Default value will be
+     *                 {@code bad_record_table_limit} and total size of the
+     *                 table per rank is limited to
+     *                 {@code bad_record_table_limit}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#BATCH_SIZE
-     *                 BATCH_SIZE}: Internal tuning parameter--number of
-     *                 records per batch when inserting data.
+     *                 BATCH_SIZE}: Number of records to insert per batch when
+     *                 inserting data.  The default value is '50000'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#COLUMN_FORMATS
      *                 COLUMN_FORMATS}: For each target column specified,
-     *                 applies the column-property-bound format to the source
-     *                 data
-     *                 loaded into that column.  Each column format will
-     *                 contain a mapping of one or more of its column
-     *                 properties to an appropriate format for each property.
-     *                 Currently supported column properties
-     *                 include date, time, & datetime. The parameter value must
-     *                 be formatted as a JSON string of maps of
-     *                 column names to maps of column properties to their
-     *                 corresponding column formats, e.g.,
+     *                 applies the column-property-bound
+     *                 format to the source data loaded into that column.  Each
+     *                 column format will contain a mapping of one
+     *                 or more of its column properties to an appropriate
+     *                 format for each property.  Currently supported
+     *                 column properties include date, time, & datetime. The
+     *                 parameter value must be formatted as a JSON
+     *                 string of maps of column names to maps of column
+     *                 properties to their corresponding column formats,
+     *                 e.g.,
      *                 '{ "order_date" : { "date" : "%Y.%m.%d" }, "order_time"
      *                 : { "time" : "%H:%M:%S" } }'.
      *                 See {@code default_column_formats} for valid format
@@ -4346,15 +4355,15 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 skip.  Mutually exclusive with {@code columns_to_load}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#COMPRESSION_TYPE
-     *                 COMPRESSION_TYPE}: Optional: compression type
+     *                 COMPRESSION_TYPE}: Source data compression type
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#NONE
-     *                 NONE}: Uncompressed
+     *                 NONE}: No compression.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#AUTO
-     *                 AUTO}: Default. Auto detect compression type
+     *                 AUTO}: Auto detect compression type
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#GZIP
      *                 GZIP}: gzip file compression.
@@ -4478,8 +4487,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#GDAL_CONFIGURATION_OPTIONS
      *                 GDAL_CONFIGURATION_OPTIONS}: Comma separated list of
-     *                 gdal conf options, for the specific requets: key=value.
-     *                 The default value is ''.
+     *                 gdal conf options, for the specific requets: key=value
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#IGNORE_EXISTING_PK
      *                 IGNORE_EXISTING_PK}: Specifies the record collision
@@ -4543,17 +4551,23 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#JDBC_FETCH_SIZE
      *                 JDBC_FETCH_SIZE}: The JDBC fetch size, which determines
-     *                 how many rows to fetch per round trip.
+     *                 how many rows to fetch per round trip.  The default
+     *                 value is '50000'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_CONSUMERS_PER_RANK
+     *                 KAFKA_CONSUMERS_PER_RANK}: Number of Kafka consumer
+     *                 threads per rank (valid range 1-6).  The default value
+     *                 is '1'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_GROUP_ID
-     *                 KAFKA_GROUP_ID}: The group id to be used consuming data
-     *                 from a kakfa topic (valid only for kafka datasource
+     *                 KAFKA_GROUP_ID}: The group id to be used when consuming
+     *                 data from a Kafka topic (valid only for Kafka datasource
      *                 subscriptions).
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_OFFSET_RESET_POLICY
      *                 KAFKA_OFFSET_RESET_POLICY}: Policy to determine whether
-     *                 the data consumption starts either at earliest offset or
-     *                 latest offset.
+     *                 the Kafka data consumption starts either at earliest
+     *                 offset or latest offset.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -4567,14 +4581,35 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#EARLIEST
      *                 EARLIEST}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_OPTIMISTIC_INGEST
+     *                 KAFKA_OPTIMISTIC_INGEST}: Enable optimistic ingestion
+     *                 where Kafka topic offsets and table data are committed
+     *                 independently to achieve parallelism.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_SUBSCRIPTION_CANCEL_AFTER
-     *                 KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the subscription
-     *                 lifespan (in minutes). Expired subscription will be
-     *                 cancelled automatically.
+     *                 KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the Kafka
+     *                 subscription lifespan (in minutes). Expired subscription
+     *                 will be cancelled automatically.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_TYPE_INFERENCE_FETCH_TIMEOUT
+     *                 KAFKA_TYPE_INFERENCE_FETCH_TIMEOUT}: Maximum time to
+     *                 collect Kafka messages before type inferencing on the
+     *                 set of them.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#LAYER
-     *                 LAYER}: Optional: geo files layer(s) name(s): comma
-     *                 separated.  The default value is ''.
+     *                 LAYER}: Geo files layer(s) name(s): comma separated.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#LOADING_MODE
      *                 LOADING_MODE}: Scheme for distributing the extraction
@@ -4627,31 +4662,33 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 HEAD}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#LOCAL_TIME_OFFSET
-     *                 LOCAL_TIME_OFFSET}: For Avro local timestamp columns
+     *                 LOCAL_TIME_OFFSET}: Apply an offset to Avro local
+     *                 timestamp columns.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#MAX_RECORDS_TO_LOAD
      *                 MAX_RECORDS_TO_LOAD}: Limit the number of records to
-     *                 load in this request: If this number is larger than a
-     *                 batch_size, then the number of records loaded will be
-     *                 limited to the next whole number of batch_size (per
-     *                 working thread).  The default value is ''.
+     *                 load in this request: if this number
+     *                 is larger than {@code batch_size}, then the number of
+     *                 records loaded will be
+     *                 limited to the next whole number of {@code batch_size}
+     *                 (per working thread).
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#NUM_TASKS_PER_RANK
-     *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
-     *                 reading file per rank. Default will be
-     *                 external_file_reader_num_tasks
+     *                 NUM_TASKS_PER_RANK}: Number of tasks for reading file
+     *                 per rank. Default will be system configuration
+     *                 parameter, external_file_reader_num_tasks.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#POLL_INTERVAL
-     *                 POLL_INTERVAL}: If {@code true}, the number of seconds
-     *                 between attempts to load external files into the table.
-     *                 If zero, polling will be continuous as long as data is
-     *                 found.  If no data is found, the interval will steadily
-     *                 increase to a maximum of 60 seconds.
+     *                 POLL_INTERVAL}: If {@code true}, the number of
+     *                 seconds between attempts to load external files into the
+     *                 table.  If zero, polling will be continuous
+     *                 as long as data is found.  If no data is found, the
+     *                 interval will steadily increase to a maximum of
+     *                 60 seconds.  The default value is '0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#PRIMARY_KEYS
-     *                 PRIMARY_KEYS}: Optional: comma separated list of column
-     *                 names, to set as primary keys, when not specified in the
-     *                 type.  The default value is ''.
+     *                 PRIMARY_KEYS}: Comma separated list of column names to
+     *                 set as primary keys, when not specified in the type.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REFRESH_METHOD
      *                 REFRESH_METHOD}: Method by which the table can be
@@ -4675,19 +4712,13 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#MANUAL
      *                 MANUAL}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_ID
-     *                 SCHEMA_REGISTRY_SCHEMA_ID}
-     *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_NAME
-     *                 SCHEMA_REGISTRY_SCHEMA_NAME}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_VERSION
-     *                 SCHEMA_REGISTRY_SCHEMA_VERSION}
+     *                 SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro schema in
+     *                 the schema registry to use when reading Avro records.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SHARD_KEYS
-     *                 SHARD_KEYS}: Optional: comma separated list of column
-     *                 names, to set as primary keys, when not specified in the
-     *                 type.  The default value is ''.
+     *                 SHARD_KEYS}: Comma separated list of column names to set
+     *                 as shard keys, when not specified in the type.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SKIP_LINES
      *                 SKIP_LINES}: Skip number of lines from begining of file.
@@ -4709,18 +4740,17 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TABLE_INSERT_MODE
-     *                 TABLE_INSERT_MODE}: Optional: table_insert_mode. When
-     *                 inserting records from multiple files: if table_per_file
-     *                 then insert from each file into a new table. Currently
-     *                 supported only for shapefiles.
+     *                 TABLE_INSERT_MODE}: Insertion scheme to use when
+     *                 inserting records from multiple shapefiles.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SINGLE
-     *                 SINGLE}
+     *                 SINGLE}: Insert all records into a single table.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TABLE_PER_FILE
-     *                 TABLE_PER_FILE}
+     *                 TABLE_PER_FILE}: Insert records from each file into a
+     *                 new table corresponding to that file.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SINGLE
@@ -4810,15 +4840,17 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_SEARCH_COLUMNS
      *                 TEXT_SEARCH_COLUMNS}: Add 'text_search' property to
-     *                 internally inferenced string columns. Comma seperated
-     *                 list of column names or '*' for all columns. To add
-     *                 text_search property only to string columns of minimum
-     *                 size, set also the option
-     *                 'text_search_min_column_length'
+     *                 internally inferenced string columns.
+     *                 Comma seperated list of column names or '*' for all
+     *                 columns. To add 'text_search' property only to
+     *                 string columns greater than or equal to a minimum size,
+     *                 also set the
+     *                 {@code text_search_min_column_length}
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
-     *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
-     *                 Used only when 'text_search_columns' has a value.
+     *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set the minimum column
+     *                 size for strings to apply the 'text_search' property to.
+     *                 Used only when {@code text_search_columns} has a value.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUNCATE_STRINGS
      *                 TRUNCATE_STRINGS}: If set to {@code true}, truncate
@@ -4855,7 +4887,8 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TYPE_INFERENCE_MODE
-     *                 TYPE_INFERENCE_MODE}: optimize type inference for:
+     *                 TYPE_INFERENCE_MODE}: Optimize type inferencing for
+     *                 either speed or accuracy.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -4878,18 +4911,17 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_FILTER_COLUMN
      *                 REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used
-     *                 for splitting the query into multiple sub-queries using
-     *                 the data distribution of given column.  The default
-     *                 value is ''.
+     *                 for splitting {@code remote_query} into multiple
+     *                 sub-queries using the data distribution of given column
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_INCREASING_COLUMN
      *                 REMOTE_QUERY_INCREASING_COLUMN}: Column on subscribed
      *                 remote query result that will increase for new records
-     *                 (e.g., TIMESTAMP).  The default value is ''.
+     *                 (e.g., TIMESTAMP).
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#REMOTE_QUERY_PARTITION_COLUMN
-     *                 REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
-     *                 remote_query_filter_column.  The default value is ''.
+     *                 REMOTE_QUERY_PARTITION_COLUMN}: Alias name for {@code
+     *                 remote_query_filter_column}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
@@ -4900,7 +4932,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 {@code true}, any existing table record with primary
      *                 key values that match those of a record being inserted
      *                 will be replaced by that new record (the new
-     *                 data will be "upserted"). If set to {@code false},
+     *                 data will be 'upserted'). If set to {@code false},
      *                 any existing table record with primary key values that
      *                 match those of a record being inserted will
      *                 remain unchanged, while the new record will be rejected

@@ -2,6 +2,12 @@
 
 ## Version 7.1
 
+### Version 7.1.10.2 - 2024-07-15
+
+#### Changed
+-   Several security-related dependency updates
+
+
 ### Version 7.1.10.1 - 2024-06-07
 
 #### Fixed
