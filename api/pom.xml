@@ -5,28 +5,30 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.gpudb</groupId>
     <artifactId>gpudb-api</artifactId>
-    <version>7.1.10.2</version>
+    <version>7.1.10.3</version>
     <packaging>jar</packaging>
     <name>Kinetica Java API</name>
-    <repositories>
-        <repository>
-            <id>releases</id>
-            <name>Releases</name>
-            <url>https://nexus.kinetica.com/repository/releases</url>
-        </repository>
-    </repositories>
-    <distributionManagement>
-        <repository>
-            <id>releases</id>
-            <name>Releases</name>
-            <url>https://nexus.kinetica.com/repository/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>Snapshots</name>
-            <url>https://nexus.kinetica.com/repository/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
+    <description>Java-based client API for connecting to and managing a Kinetica database</description>
+    <url>https://github.com/kineticadb/kinetica-api-java</url>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/license/mit</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Kyle Sutton</name>
+            <email>ksutton@kinetica.com</email>
+            <organization>Kinetica DB Inc.</organization>
+            <organizationUrl>https://www.kinetica.com/</organizationUrl>
+        </developer>
+    </developers>
+    <scm>
+        <connection>scm:git:https://github.com/kineticadb/kinetica-api-java.git</connection>
+        <developerConnection>scm:git:https://github.com/kineticadb/kinetica-api-java.git</developerConnection>
+        <url>https://github.com/kineticadb/kinetica-api-java</url>
+    </scm>
     <dependencies>
         <dependency>
             <groupId>org.apache.avro</groupId>
@@ -106,7 +108,6 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <gpudb-api.version>7.1.10.2</gpudb-api.version>
         <target.build.dir>target</target.build.dir> <!-- override on cmd-line -->
     </properties>
     <profiles>
@@ -140,27 +141,17 @@
             </properties>
         </profile>
     </profiles>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>clojars.org</id>
-            <url>http://clojars.org/repo</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>sonatype-releases</id>
-            <url>http://oss.sonatype.org/content/repositories/releases</url>
-        </pluginRepository>
-    </pluginRepositories>
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.12.1</version>
+                <version>3.13.0</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>3.6.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -221,8 +212,21 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.4.0</version>
+                <version>3.8.0</version>
                 <configuration>
                     <additionalOptions>
                         <additionalOption>${javadoc.opts}</additionalOption>
@@ -236,6 +240,29 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.5.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                </configuration>
             </plugin>
         </plugins>
         <resources>
