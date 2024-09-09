@@ -75,7 +75,8 @@ public class CreateDatasourceRequest implements IndexedRecord {
         public static final String WAIT_TIMEOUT = "wait_timeout";
 
         /**
-         * Name of the Credential object to be used in data source
+         * Name of the <a href="../../../../../../concepts/credentials"
+         * target="_top">credential</a> object to be used in data source
          */
         public static final String CREDENTIAL = "credential";
 
@@ -90,15 +91,28 @@ public class CreateDatasourceRequest implements IndexedRecord {
         public static final String S3_REGION = "s3_region";
 
         /**
-         * When true (default), the requests URI should be specified in
-         * virtual-hosted-style format where the bucket name is part of the
-         * domain name in the URL.
-         * <p>
-         * Otherwise set to false to use path-style URI for requests.
+         * Set to false for testing purposes or when necessary to bypass TLS
+         * errors (e.g.&nbsp;self-signed certificates). This value is true by
+         * default.
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}
          *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#TRUE TRUE}.
+         */
+        public static final String S3_VERIFY_SSL = "s3_verify_ssl";
+
+        /**
+         * Whether to use virtual addressing when referencing the Amazon S3
+         * source.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}: The requests URI should be
+         *         specified in virtual-hosted-style format where the bucket
+         *         name is part of the domain name in the URL.
+         *     <li>{@link Options#FALSE FALSE}: Use path-style URI for
+         *         requests.
          * </ul>
          * The default value is {@link Options#TRUE TRUE}.
          */
@@ -165,7 +179,7 @@ public class CreateDatasourceRequest implements IndexedRecord {
         public static final String AZURE_SAS_TOKEN = "azure_sas_token";
 
         /**
-         * Oauth token to access given storage container
+         * OAuth token to access given storage container
          */
         public static final String AZURE_OAUTH_TOKEN = "azure_oauth_token";
 
@@ -248,18 +262,20 @@ public class CreateDatasourceRequest implements IndexedRecord {
         public static final String USE_HTTPS = "use_https";
 
         /**
-         * Location of Confluent Schema registry in
+         * Location of Confluent Schema Registry in
          * '[storage_path[:storage_port]]' format.
          */
         public static final String SCHEMA_REGISTRY_LOCATION = "schema_registry_location";
 
         /**
-         * Confluent Schema registry Credential object name.
+         * Confluent Schema Registry <a
+         * href="../../../../../../concepts/credentials"
+         * target="_top">credential</a> object name.
          */
         public static final String SCHEMA_REGISTRY_CREDENTIAL = "schema_registry_credential";
 
         /**
-         * Confluent Schema registry port (optional).
+         * Confluent Schema Registry port (optional).
          */
         public static final String SCHEMA_REGISTRY_PORT = "schema_registry_port";
 
@@ -315,24 +331,39 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                         Timeout in seconds for reading from this storage
      *                         provider
      *                     <li>{@link Options#CREDENTIAL CREDENTIAL}: Name of
-     *                         the Credential object to be used in data source
+     *                         the <a
+     *                         href="../../../../../../concepts/credentials"
+     *                         target="_top">credential</a> object to be used
+     *                         in data source
      *                     <li>{@link Options#S3_BUCKET_NAME S3_BUCKET_NAME}:
      *                         Name of the Amazon S3 bucket to use as the data
      *                         source
      *                     <li>{@link Options#S3_REGION S3_REGION}: Name of the
      *                         Amazon S3 region where the given bucket is
      *                         located
-     *                     <li>{@link Options#S3_USE_VIRTUAL_ADDRESSING
-     *                         S3_USE_VIRTUAL_ADDRESSING}: When true (default),
-     *                         the requests URI should be specified in
-     *                         virtual-hosted-style format where the bucket
-     *                         name is part of the domain name in the URL.
-     *                         Otherwise set to false to use path-style URI for
-     *                         requests.
+     *                     <li>{@link Options#S3_VERIFY_SSL S3_VERIFY_SSL}: Set
+     *                         to false for testing purposes or when necessary
+     *                         to bypass TLS errors (e.g. self-signed
+     *                         certificates). This value is true by default.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
      *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#TRUE TRUE}.
+     *                     <li>{@link Options#S3_USE_VIRTUAL_ADDRESSING
+     *                         S3_USE_VIRTUAL_ADDRESSING}: Whether to use
+     *                         virtual addressing when referencing the Amazon
+     *                         S3 source.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}: The requests
+     *                                 URI should be specified in
+     *                                 virtual-hosted-style format where the
+     *                                 bucket name is part of the domain name
+     *                                 in the URL.
+     *                             <li>{@link Options#FALSE FALSE}: Use
+     *                                 path-style URI for requests.
      *                         </ul>
      *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}:
@@ -375,7 +406,7 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                         Shared access signature token for Azure storage
      *                         account to use as the data source
      *                     <li>{@link Options#AZURE_OAUTH_TOKEN
-     *                         AZURE_OAUTH_TOKEN}: Oauth token to access given
+     *                         AZURE_OAUTH_TOKEN}: OAuth token to access given
      *                         storage container
      *                     <li>{@link Options#GCS_BUCKET_NAME GCS_BUCKET_NAME}:
      *                         Name of the Google Cloud Storage bucket to use
@@ -439,13 +470,15 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#SCHEMA_REGISTRY_LOCATION
      *                         SCHEMA_REGISTRY_LOCATION}: Location of Confluent
-     *                         Schema registry in
+     *                         Schema Registry in
      *                         '[storage_path[:storage_port]]' format.
      *                     <li>{@link Options#SCHEMA_REGISTRY_CREDENTIAL
      *                         SCHEMA_REGISTRY_CREDENTIAL}: Confluent Schema
-     *                         registry Credential object name.
+     *                         Registry <a
+     *                         href="../../../../../../concepts/credentials"
+     *                         target="_top">credential</a> object name.
      *                     <li>{@link Options#SCHEMA_REGISTRY_PORT
-     *                         SCHEMA_REGISTRY_PORT}: Confluent Schema registry
+     *                         SCHEMA_REGISTRY_PORT}: Confluent Schema Registry
      *                         port (optional).
      *                 </ul>
      *                 The default value is an empty {@link Map}.
@@ -565,21 +598,32 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         in seconds for connecting to this storage provider
      *     <li>{@link Options#WAIT_TIMEOUT WAIT_TIMEOUT}: Timeout in seconds
      *         for reading from this storage provider
-     *     <li>{@link Options#CREDENTIAL CREDENTIAL}: Name of the Credential
-     *         object to be used in data source
+     *     <li>{@link Options#CREDENTIAL CREDENTIAL}: Name of the <a
+     *         href="../../../../../../concepts/credentials"
+     *         target="_top">credential</a> object to be used in data source
      *     <li>{@link Options#S3_BUCKET_NAME S3_BUCKET_NAME}: Name of the
      *         Amazon S3 bucket to use as the data source
      *     <li>{@link Options#S3_REGION S3_REGION}: Name of the Amazon S3
      *         region where the given bucket is located
-     *     <li>{@link Options#S3_USE_VIRTUAL_ADDRESSING
-     *         S3_USE_VIRTUAL_ADDRESSING}: When true (default), the requests
-     *         URI should be specified in virtual-hosted-style format where the
-     *         bucket name is part of the domain name in the URL.   Otherwise
-     *         set to false to use path-style URI for requests.
+     *     <li>{@link Options#S3_VERIFY_SSL S3_VERIFY_SSL}: Set to false for
+     *         testing purposes or when necessary to bypass TLS errors (e.g.
+     *         self-signed certificates). This value is true by default.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
      *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
+     *     <li>{@link Options#S3_USE_VIRTUAL_ADDRESSING
+     *         S3_USE_VIRTUAL_ADDRESSING}: Whether to use virtual addressing
+     *         when referencing the Amazon S3 source.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}: The requests URI should be
+     *                 specified in virtual-hosted-style format where the
+     *                 bucket name is part of the domain name in the URL.
+     *             <li>{@link Options#FALSE FALSE}: Use path-style URI for
+     *                 requests.
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}: Amazon IAM Role
@@ -615,7 +659,7 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *     <li>{@link Options#AZURE_SAS_TOKEN AZURE_SAS_TOKEN}: Shared access
      *         signature token for Azure storage account to use as the data
      *         source
-     *     <li>{@link Options#AZURE_OAUTH_TOKEN AZURE_OAUTH_TOKEN}: Oauth token
+     *     <li>{@link Options#AZURE_OAUTH_TOKEN AZURE_OAUTH_TOKEN}: OAuth token
      *         to access given storage container
      *     <li>{@link Options#GCS_BUCKET_NAME GCS_BUCKET_NAME}: Name of the
      *         Google Cloud Storage bucket to use as the data source
@@ -666,13 +710,14 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#SCHEMA_REGISTRY_LOCATION
-     *         SCHEMA_REGISTRY_LOCATION}: Location of Confluent Schema registry
+     *         SCHEMA_REGISTRY_LOCATION}: Location of Confluent Schema Registry
      *         in '[storage_path[:storage_port]]' format.
      *     <li>{@link Options#SCHEMA_REGISTRY_CREDENTIAL
-     *         SCHEMA_REGISTRY_CREDENTIAL}: Confluent Schema registry
-     *         Credential object name.
+     *         SCHEMA_REGISTRY_CREDENTIAL}: Confluent Schema Registry <a
+     *         href="../../../../../../concepts/credentials"
+     *         target="_top">credential</a> object name.
      *     <li>{@link Options#SCHEMA_REGISTRY_PORT SCHEMA_REGISTRY_PORT}:
-     *         Confluent Schema registry port (optional).
+     *         Confluent Schema Registry port (optional).
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -697,21 +742,32 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         in seconds for connecting to this storage provider
      *     <li>{@link Options#WAIT_TIMEOUT WAIT_TIMEOUT}: Timeout in seconds
      *         for reading from this storage provider
-     *     <li>{@link Options#CREDENTIAL CREDENTIAL}: Name of the Credential
-     *         object to be used in data source
+     *     <li>{@link Options#CREDENTIAL CREDENTIAL}: Name of the <a
+     *         href="../../../../../../concepts/credentials"
+     *         target="_top">credential</a> object to be used in data source
      *     <li>{@link Options#S3_BUCKET_NAME S3_BUCKET_NAME}: Name of the
      *         Amazon S3 bucket to use as the data source
      *     <li>{@link Options#S3_REGION S3_REGION}: Name of the Amazon S3
      *         region where the given bucket is located
-     *     <li>{@link Options#S3_USE_VIRTUAL_ADDRESSING
-     *         S3_USE_VIRTUAL_ADDRESSING}: When true (default), the requests
-     *         URI should be specified in virtual-hosted-style format where the
-     *         bucket name is part of the domain name in the URL.   Otherwise
-     *         set to false to use path-style URI for requests.
+     *     <li>{@link Options#S3_VERIFY_SSL S3_VERIFY_SSL}: Set to false for
+     *         testing purposes or when necessary to bypass TLS errors (e.g.
+     *         self-signed certificates). This value is true by default.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
      *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
+     *     <li>{@link Options#S3_USE_VIRTUAL_ADDRESSING
+     *         S3_USE_VIRTUAL_ADDRESSING}: Whether to use virtual addressing
+     *         when referencing the Amazon S3 source.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}: The requests URI should be
+     *                 specified in virtual-hosted-style format where the
+     *                 bucket name is part of the domain name in the URL.
+     *             <li>{@link Options#FALSE FALSE}: Use path-style URI for
+     *                 requests.
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}: Amazon IAM Role
@@ -747,7 +803,7 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *     <li>{@link Options#AZURE_SAS_TOKEN AZURE_SAS_TOKEN}: Shared access
      *         signature token for Azure storage account to use as the data
      *         source
-     *     <li>{@link Options#AZURE_OAUTH_TOKEN AZURE_OAUTH_TOKEN}: Oauth token
+     *     <li>{@link Options#AZURE_OAUTH_TOKEN AZURE_OAUTH_TOKEN}: OAuth token
      *         to access given storage container
      *     <li>{@link Options#GCS_BUCKET_NAME GCS_BUCKET_NAME}: Name of the
      *         Google Cloud Storage bucket to use as the data source
@@ -798,13 +854,14 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#SCHEMA_REGISTRY_LOCATION
-     *         SCHEMA_REGISTRY_LOCATION}: Location of Confluent Schema registry
+     *         SCHEMA_REGISTRY_LOCATION}: Location of Confluent Schema Registry
      *         in '[storage_path[:storage_port]]' format.
      *     <li>{@link Options#SCHEMA_REGISTRY_CREDENTIAL
-     *         SCHEMA_REGISTRY_CREDENTIAL}: Confluent Schema registry
-     *         Credential object name.
+     *         SCHEMA_REGISTRY_CREDENTIAL}: Confluent Schema Registry <a
+     *         href="../../../../../../concepts/credentials"
+     *         target="_top">credential</a> object name.
      *     <li>{@link Options#SCHEMA_REGISTRY_PORT SCHEMA_REGISTRY_PORT}:
-     *         Confluent Schema registry port (optional).
+     *         Confluent Schema Registry port (optional).
      * </ul>
      * The default value is an empty {@link Map}.
      *

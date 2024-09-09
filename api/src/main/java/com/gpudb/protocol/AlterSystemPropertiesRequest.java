@@ -316,6 +316,11 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String AI_API_CONNECTION_TIMEOUT = "ai_api_connection_timeout";
 
         /**
+         * AI API model name
+         */
+        public static final String AI_API_EMBEDDINGS_MODEL = "ai_api_embeddings_model";
+
+        /**
          * Enable or disable persisting of query metrics.
          */
         public static final String TELM_PERSIST_QUERY_METRICS = "telm_persist_query_metrics";
@@ -665,6 +670,10 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    AI_API_CONNECTION_TIMEOUT}: AI API
      *                                    connection timeout in seconds
      *                                <li>{@link
+     *                                    PropertyUpdatesMap#AI_API_EMBEDDINGS_MODEL
+     *                                    AI_API_EMBEDDINGS_MODEL}: AI API
+     *                                    model name
+     *                                <li>{@link
      *                                    PropertyUpdatesMap#TELM_PERSIST_QUERY_METRICS
      *                                    TELM_PERSIST_QUERY_METRICS}: Enable
      *                                    or disable persisting of query
@@ -866,6 +875,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#AI_API_KEY AI_API_KEY}: AI API key
      *     <li>{@link PropertyUpdatesMap#AI_API_CONNECTION_TIMEOUT
      *         AI_API_CONNECTION_TIMEOUT}: AI API connection timeout in seconds
+     *     <li>{@link PropertyUpdatesMap#AI_API_EMBEDDINGS_MODEL
+     *         AI_API_EMBEDDINGS_MODEL}: AI API model name
      *     <li>{@link PropertyUpdatesMap#TELM_PERSIST_QUERY_METRICS
      *         TELM_PERSIST_QUERY_METRICS}: Enable or disable persisting of
      *         query metrics.
@@ -1039,6 +1050,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#AI_API_KEY AI_API_KEY}: AI API key
      *     <li>{@link PropertyUpdatesMap#AI_API_CONNECTION_TIMEOUT
      *         AI_API_CONNECTION_TIMEOUT}: AI API connection timeout in seconds
+     *     <li>{@link PropertyUpdatesMap#AI_API_EMBEDDINGS_MODEL
+     *         AI_API_EMBEDDINGS_MODEL}: AI API model name
      *     <li>{@link PropertyUpdatesMap#TELM_PERSIST_QUERY_METRICS
      *         TELM_PERSIST_QUERY_METRICS}: Enable or disable persisting of
      *         query metrics.

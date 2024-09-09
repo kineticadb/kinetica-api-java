@@ -55,13 +55,15 @@ public class CreateCredentialRequest implements IndexedRecord {
         public static final String AZURE_OAUTH = "azure_oauth";
         public static final String AZURE_SAS = "azure_sas";
         public static final String AZURE_STORAGE_KEY = "azure_storage_key";
+        public static final String CONFLUENT = "confluent";
         public static final String DOCKER = "docker";
         public static final String GCS_SERVICE_ACCOUNT_ID = "gcs_service_account_id";
         public static final String GCS_SERVICE_ACCOUNT_KEYS = "gcs_service_account_keys";
         public static final String HDFS = "hdfs";
         public static final String JDBC = "jdbc";
         public static final String KAFKA = "kafka";
-        public static final String CONFLUENT = "confluent";
+        public static final String NVIDIA_API_KEY = "nvidia_api_key";
+        public static final String OPENAI_API_KEY = "openai_api_key";
 
         private Type() {  }
     }
@@ -100,6 +102,7 @@ public class CreateCredentialRequest implements IndexedRecord {
      *                  <li>{@link Type#AZURE_OAUTH AZURE_OAUTH}
      *                  <li>{@link Type#AZURE_SAS AZURE_SAS}
      *                  <li>{@link Type#AZURE_STORAGE_KEY AZURE_STORAGE_KEY}
+     *                  <li>{@link Type#CONFLUENT CONFLUENT}
      *                  <li>{@link Type#DOCKER DOCKER}
      *                  <li>{@link Type#GCS_SERVICE_ACCOUNT_ID
      *                      GCS_SERVICE_ACCOUNT_ID}
@@ -108,7 +111,8 @@ public class CreateCredentialRequest implements IndexedRecord {
      *                  <li>{@link Type#HDFS HDFS}
      *                  <li>{@link Type#JDBC JDBC}
      *                  <li>{@link Type#KAFKA KAFKA}
-     *                  <li>{@link Type#CONFLUENT CONFLUENT}
+     *                  <li>{@link Type#NVIDIA_API_KEY NVIDIA_API_KEY}
+     *                  <li>{@link Type#OPENAI_API_KEY OPENAI_API_KEY}
      *              </ul>
      * @param identity  User of the credential to be created.
      * @param secret  Password of the credential to be created.
@@ -158,13 +162,15 @@ public class CreateCredentialRequest implements IndexedRecord {
      *     <li>{@link Type#AZURE_OAUTH AZURE_OAUTH}
      *     <li>{@link Type#AZURE_SAS AZURE_SAS}
      *     <li>{@link Type#AZURE_STORAGE_KEY AZURE_STORAGE_KEY}
+     *     <li>{@link Type#CONFLUENT CONFLUENT}
      *     <li>{@link Type#DOCKER DOCKER}
      *     <li>{@link Type#GCS_SERVICE_ACCOUNT_ID GCS_SERVICE_ACCOUNT_ID}
      *     <li>{@link Type#GCS_SERVICE_ACCOUNT_KEYS GCS_SERVICE_ACCOUNT_KEYS}
      *     <li>{@link Type#HDFS HDFS}
      *     <li>{@link Type#JDBC JDBC}
      *     <li>{@link Type#KAFKA KAFKA}
-     *     <li>{@link Type#CONFLUENT CONFLUENT}
+     *     <li>{@link Type#NVIDIA_API_KEY NVIDIA_API_KEY}
+     *     <li>{@link Type#OPENAI_API_KEY OPENAI_API_KEY}
      * </ul>
      *
      * @return The current value of {@code type}.
@@ -183,13 +189,15 @@ public class CreateCredentialRequest implements IndexedRecord {
      *     <li>{@link Type#AZURE_OAUTH AZURE_OAUTH}
      *     <li>{@link Type#AZURE_SAS AZURE_SAS}
      *     <li>{@link Type#AZURE_STORAGE_KEY AZURE_STORAGE_KEY}
+     *     <li>{@link Type#CONFLUENT CONFLUENT}
      *     <li>{@link Type#DOCKER DOCKER}
      *     <li>{@link Type#GCS_SERVICE_ACCOUNT_ID GCS_SERVICE_ACCOUNT_ID}
      *     <li>{@link Type#GCS_SERVICE_ACCOUNT_KEYS GCS_SERVICE_ACCOUNT_KEYS}
      *     <li>{@link Type#HDFS HDFS}
      *     <li>{@link Type#JDBC JDBC}
      *     <li>{@link Type#KAFKA KAFKA}
-     *     <li>{@link Type#CONFLUENT CONFLUENT}
+     *     <li>{@link Type#NVIDIA_API_KEY NVIDIA_API_KEY}
+     *     <li>{@link Type#OPENAI_API_KEY OPENAI_API_KEY}
      * </ul>
      *
      * @param type  The new value for {@code type}.

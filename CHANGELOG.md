@@ -2,6 +2,18 @@
 
 ## Version 7.2
 
+### Version 7.2.1.0 - 2024-09-08
+
+#### Added
+-   OAuth2 authentication support
+
+#### Changed
+-   Publishing to Maven Central Repository
+
+#### Fixed
+-   Snappy error for `fullshaded` JDBC JAR
+
+
 ### Version 7.2.0.5 - 2024-06-07
 
 #### Fixed
@@ -64,6 +76,24 @@
 
 
 ## Version 7.1
+
+### Version 7.1.10.4 - 2024-09-08
+
+#### Fixed
+-   Snappy error for `fullshaded` JDBC JAR
+
+
+### Version 7.1.10.3 - 2024-08-05
+
+#### Changed
+-   Publishing to Maven Central Repository
+
+
+### Version 7.1.10.2 - 2024-07-15
+
+#### Changed
+-   Several security-related dependency updates
+
 
 ### Version 7.1.10.1 - 2024-06-07
 

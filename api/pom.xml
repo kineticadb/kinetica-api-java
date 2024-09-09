@@ -5,48 +5,65 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.gpudb</groupId>
     <artifactId>gpudb-api</artifactId>
-    <version>7.2.0.5</version>
+    <version>7.2.1.0</version>
     <packaging>jar</packaging>
     <name>Kinetica Java API</name>
-    <repositories>
-        <repository>
-            <id>releases</id>
-            <name>Releases</name>
-            <url>https://nexus.kinetica.com/repository/releases</url>
-        </repository>
-    </repositories>
-    <distributionManagement>
-        <repository>
-            <id>releases</id>
-            <name>Releases</name>
-            <url>https://nexus.kinetica.com/repository/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>Snapshots</name>
-            <url>https://nexus.kinetica.com/repository/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
+    <description>Java-based client API for connecting to and managing a Kinetica database</description>
+    <url>https://github.com/kineticadb/kinetica-api-java</url>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/license/mit</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Kyle Sutton</name>
+            <email>ksutton@kinetica.com</email>
+            <organization>Kinetica DB Inc.</organization>
+            <organizationUrl>https://www.kinetica.com/</organizationUrl>
+        </developer>
+    </developers>
+    <scm>
+        <connection>scm:git:https://github.com/kineticadb/kinetica-api-java.git</connection>
+        <developerConnection>scm:git:https://github.com/kineticadb/kinetica-api-java.git</developerConnection>
+        <url>https://github.com/kineticadb/kinetica-api-java</url>
+    </scm>
     <dependencies>
         <dependency>
             <groupId>org.apache.avro</groupId>
             <artifactId>avro</artifactId>
             <version>1.11.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId> <!--Security update for avro -->
+            <artifactId>jackson-core</artifactId>
+            <version>2.17.1</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>  <!-- update avro version for security -->
-            <version>2.14.1</version>
+            <artifactId>jackson-databind</artifactId>  <!--Security update for avro -->
+            <version>2.17.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.26.0</version>
+            <version>1.26.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.12.0</version>
+            <version>3.14.0</version>
         </dependency>
         <dependency>
             <groupId>org.xerial.snappy</groupId>
@@ -56,23 +73,23 @@
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.15</version>
+            <version>1.17.0</version>
         </dependency>
         <dependency>
             <groupId>org.threeten</groupId>
             <artifactId>threetenbp</artifactId>
-            <version>1.6.1</version>
+            <version>1.6.9</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.35</version>
+            <version>2.0.13</version>
         </dependency>
         <!-- Default slf4j logger implementation is logback configured for stdout. -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.13</version>
+            <version>1.3.14</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents.client5/httpclient5 -->
         <dependency>
@@ -84,14 +101,13 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20231013</version>
+            <version>20240303</version>
         </dependency>
     </dependencies>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <gpudb-api.version>7.2.0.5</gpudb-api.version>
         <target.build.dir>target</target.build.dir> <!-- override on cmd-line -->
     </properties>
     <profiles>
@@ -125,27 +141,17 @@
             </properties>
         </profile>
     </profiles>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>clojars.org</id>
-            <url>http://clojars.org/repo</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>sonatype-releases</id>
-            <url>http://oss.sonatype.org/content/repositories/releases</url>
-        </pluginRepository>
-    </pluginRepositories>
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
+                <version>3.13.0</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>3.6.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -153,6 +159,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
                             <filters>
                                 <filter>
                                     <excludes>
@@ -164,6 +171,7 @@
                                 <filter>
                                     <artifact>*:*</artifact>
                                     <excludes>
+                                        <exclude>module-info.class</exclude> <!-- Silence warning from avro: "Discovered module-info.class. Shading will break its strong encapsulation" -->
                                         <exclude>META-INF/*.SF</exclude>
                                         <exclude>META-INF/*.DSA</exclude>
                                         <exclude>META-INF/*.RSA</exclude>
@@ -204,8 +212,21 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.4.0</version>
+                <version>3.8.0</version>
                 <configuration>
                     <additionalOptions>
                         <additionalOption>${javadoc.opts}</additionalOption>
@@ -219,6 +240,29 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.5.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                </configuration>
             </plugin>
         </plugins>
         <resources>

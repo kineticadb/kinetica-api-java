@@ -27,6 +27,7 @@ public class ShowModelResponse implements IndexedRecord {
                 .name("containerList").type().array().items().stringType().noDefault()
                 .name("runFunctionList").type().array().items().stringType().noDefault()
                 .name("deployments").type().array().items().stringType().noDefault()
+                .name("options").type().array().items().map().values().stringType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -48,6 +49,7 @@ public class ShowModelResponse implements IndexedRecord {
     private List<String> containerList;
     private List<String> runFunctionList;
     private List<String> deployments;
+    private List<Map<String, String>> options;
     private Map<String, String> info;
 
     public ShowModelResponse() {
@@ -125,6 +127,15 @@ public class ShowModelResponse implements IndexedRecord {
         return this;
     }
 
+    public List<Map<String, String>> getOptions() {
+        return options;
+    }
+
+    public ShowModelResponse setOptions(List<Map<String, String>> options) {
+        this.options = (options == null) ? new ArrayList<Map<String, String>>() : options;
+        return this;
+    }
+
     public Map<String, String> getInfo() {
         return info;
     }
@@ -167,6 +178,9 @@ public class ShowModelResponse implements IndexedRecord {
                 return this.deployments;
 
             case 8:
+                return this.options;
+
+            case 9:
                 return this.info;
 
             default:
@@ -211,6 +225,10 @@ public class ShowModelResponse implements IndexedRecord {
                 break;
 
             case 8:
+                this.options = (List<Map<String, String>>)value;
+                break;
+
+            case 9:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -239,6 +257,7 @@ public class ShowModelResponse implements IndexedRecord {
                  && this.containerList.equals( that.containerList )
                  && this.runFunctionList.equals( that.runFunctionList )
                  && this.deployments.equals( that.deployments )
+                 && this.options.equals( that.options )
                  && this.info.equals( that.info ) );
     }
 
@@ -279,6 +298,10 @@ public class ShowModelResponse implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.deployments ) );
         builder.append( ", " );
+        builder.append( gd.toString( "options" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.options ) );
+        builder.append( ", " );
         builder.append( gd.toString( "info" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.info ) );
@@ -298,6 +321,7 @@ public class ShowModelResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.containerList.hashCode();
         hashCode = (31 * hashCode) + this.runFunctionList.hashCode();
         hashCode = (31 * hashCode) + this.deployments.hashCode();
+        hashCode = (31 * hashCode) + this.options.hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }

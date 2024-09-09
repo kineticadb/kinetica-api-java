@@ -18,7 +18,7 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link com.gpudb.GPUdb#queryGraph(QueryGraphRequest)
  * GPUdb.queryGraph}.
  * <p>
- * Employs a topological query on a network graph generated a-priori by {@link
+ * Employs a topological query on a graph generated a-priori by {@link
  * com.gpudb.GPUdb#createGraph(CreateGraphRequest) GPUdb.createGraph} and
  * returns a list of adjacent edge(s) or node(s), also known as an adjacency
  * list, depending on what's been provided to the endpoint; providing edges
@@ -36,7 +36,7 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * IMPORTANT: It's highly recommended that you review the <a
  * href="../../../../../../graph_solver/network_graph_solver/"
- * target="_top">Network Graphs & Solvers</a> concepts documentation, the <a
+ * target="_top">Graphs & Solvers</a> concepts documentation, the <a
  * href="../../../../../../guides/graph_rest_guide/" target="_top">Graph REST
  * Tutorial</a>, and/or some <a
  * href="../../../../../../guide-tags/graph---query" target="_top">/match/graph

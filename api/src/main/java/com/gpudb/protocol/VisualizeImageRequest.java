@@ -107,8 +107,18 @@ public class VisualizeImageRequest implements IndexedRecord {
     }
 
     public static final class Options {
+        public static final String ALPHA_BLENDING = "alpha_blending";
+        public static final String ANTIALIASING = "antialiasing";
+        public static final String FEATHER = "feather";
+        public static final String ORDER_CLASSES = "order_classes";
+        public static final String ORDER_LAYERS = "order_layers";
+        public static final String POINTCOLOR_ATTR = "pointcolor_attr";
+        public static final String SHAPE_RENDERER = "shape_renderer";
+        public static final String SHAPEFILLCOLOR_ATTR = "shapefillcolor_attr";
         public static final String TRACK_ID_COLUMN_NAME = "track_id_column_name";
         public static final String TRACK_ORDER_COLUMN_NAME = "track_order_column_name";
+        public static final String TRACK_SIMPLIFICATION_THRESHOLD = "track_simplification_threshold";
+        public static final String USE_POINT_RENDERER = "use_point_renderer";
 
         private Options() {  }
     }

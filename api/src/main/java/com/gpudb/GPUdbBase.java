@@ -211,6 +211,7 @@ public abstract class GPUdbBase {
         private String  primaryUrl = "";
         private String  username;
         private String  password;
+        private String  oauthToken;
         private Pattern hostnameRegex        = null;
         private boolean useSnappy            = true;
         private boolean bypassSslCertCheck   = false;
@@ -248,6 +249,7 @@ public abstract class GPUdbBase {
             this.primaryUrl           = other.primaryUrl;
             this.username             = other.username;
             this.password             = other.password;
+            this.oauthToken           = other.oauthToken;
             this.hostnameRegex        = other.hostnameRegex;
             this.useSnappy            = other.useSnappy;
             this.bypassSslCertCheck   = other.bypassSslCertCheck;
@@ -280,6 +282,7 @@ public abstract class GPUdbBase {
 
             s.append("username: ").append(this.username).append(", ");
             s.append("password: ").append(this.password == null ? "null" : "********").append(", ");
+            s.append("oauthToken: ").append(this.oauthToken == null ? "null" : "********").append(", ");
             s.append("trustStoreFilePath: ").append(this.trustStoreFilePath).append(", ");
             s.append("trustStorePassword: ").append(this.trustStorePassword == null ? "null" : "********").append(", ");
             s.append("bypassSslCertCheck: ").append(this.bypassSslCertCheck).append(", ");
@@ -312,7 +315,7 @@ public abstract class GPUdbBase {
          * @see #setPrimaryUrl(String)
          */
         public String getPrimaryUrl() {
-            return primaryUrl;
+            return this.primaryUrl;
         }
 
         /**
@@ -323,7 +326,7 @@ public abstract class GPUdbBase {
          * @see #setUsername(String)
          */
         public String getUsername() {
-            return username;
+            return this.username;
         }
 
         /**
@@ -334,7 +337,18 @@ public abstract class GPUdbBase {
          * @see #setPassword(String)
          */
         public String getPassword() {
-            return password;
+            return this.password;
+        }
+
+        /**
+         * Gets the OAuth access token to be used for authentication to GPUdb.
+         *
+         * @return  the OAuth access token
+         *
+         * @see #setOauthToken(String)
+         */
+        public String getOauthToken() {
+            return this.oauthToken;
         }
 
         /**
@@ -359,7 +373,7 @@ public abstract class GPUdbBase {
          * @see #setUseSnappy(boolean)
          */
         public boolean getUseSnappy() {
-            return useSnappy;
+            return this.useSnappy;
         }
 
         /**
@@ -379,7 +393,7 @@ public abstract class GPUdbBase {
          * @return - a String - SSL trustStore file path
          */
         public String getTrustStoreFilePath() {
-            return trustStoreFilePath;
+            return this.trustStoreFilePath;
         }
 
         /**
@@ -387,7 +401,7 @@ public abstract class GPUdbBase {
          * @return - a String - trustStore file password
          */
         public String getTrustStorePassword() {
-            return trustStorePassword;
+            return this.trustStorePassword;
         }
 
         /**
@@ -438,7 +452,7 @@ public abstract class GPUdbBase {
          * @see #setExecutor(ExecutorService)
          */
         public int getThreadCount() {
-            return threadCount;
+            return this.threadCount;
         }
 
         /**
@@ -453,7 +467,7 @@ public abstract class GPUdbBase {
          * @see #setThreadCount(int)
          */
         public ExecutorService getExecutor() {
-            return executor;
+            return this.executor;
         }
 
         /**
@@ -466,7 +480,7 @@ public abstract class GPUdbBase {
          * @see #setHttpHeaders(Map)
          */
         public Map<String, String> getHttpHeaders() {
-            return httpHeaders;
+            return this.httpHeaders;
         }
 
         /**
@@ -478,7 +492,7 @@ public abstract class GPUdbBase {
          * @see #setHostManagerPort(int)
          */
         public int getHostManagerPort() {
-            return hmPort;
+            return this.hmPort;
         }
 
         /**
@@ -492,7 +506,7 @@ public abstract class GPUdbBase {
          * @see #setConnectionInactivityValidationTimeout(int)
          */
         public int getConnectionInactivityValidationTimeout() {
-            return connectionInactivityValidationTimeout;
+            return this.connectionInactivityValidationTimeout;
         }
 
         /**
@@ -508,7 +522,7 @@ public abstract class GPUdbBase {
          * @see #getServerConnectionTimeout()
          */
         public int getTimeout() {
-            return timeout;
+            return this.timeout;
         }
 
         /**
@@ -524,7 +538,7 @@ public abstract class GPUdbBase {
          * @see #setServerConnectionTimeout(int)
          */
         public int getServerConnectionTimeout() {
-            return serverConnectionTimeout;
+            return this.serverConnectionTimeout;
         }
 
         /**
@@ -536,7 +550,7 @@ public abstract class GPUdbBase {
          * @see #setMaxTotalConnections(int)
          */
         public int getMaxTotalConnections() {
-            return maxTotalConnections;
+            return this.maxTotalConnections;
         }
 
         /**
@@ -548,7 +562,7 @@ public abstract class GPUdbBase {
          * @see #setMaxConnectionsPerHost(int)
          */
         public int getMaxConnectionsPerHost() {
-            return maxConnectionsPerHost;
+            return this.maxConnectionsPerHost;
         }
 
         /**
@@ -562,7 +576,7 @@ public abstract class GPUdbBase {
          *
          * @see #setClusterReconnectCount(int)
          */
-        public int getClusterReconnectCount() {
+        public static int getClusterReconnectCount() {
             return 0;
         }
 
@@ -602,7 +616,7 @@ public abstract class GPUdbBase {
          *
          * @see #setIntraClusterFailoverTimeout( long )
          */
-        public long getIntraClusterFailoverTimeout() {
+        public static long getIntraClusterFailoverTimeout() {
             return 0;
         }
 
@@ -627,7 +641,7 @@ public abstract class GPUdbBase {
          * @see #getPrimaryUrl()
          */
         public Options setPrimaryUrl(String value) {
-            primaryUrl = value;
+            this.primaryUrl = value;
             return this;
         }
 
@@ -646,7 +660,7 @@ public abstract class GPUdbBase {
          * @see #setPassword(String)
          */
         public Options setUsername(String value) {
-            username = value;
+            this.username = value;
             return this;
         }
 
@@ -665,7 +679,25 @@ public abstract class GPUdbBase {
          * @see #setUsername(String)
          */
         public Options setPassword(String value) {
-            password = value;
+            this.password = value;
+            return this;
+        }
+
+
+        /**
+         * Sets the OAuth2 access token to be used for authentication to GPUdb.
+         * This token will be sent with every GPUdb request made via the API and
+         * may be used for authorization decisions by the server if it is so
+         * configured.  If set, OAuth2 authentication will be attempted; if not,
+         * basic username/password authentication will be attempted.
+         *
+         * @param value  the OAuth access token to be used for authentication
+         * @return       the current {@link Options} instance
+         *
+         * @see #getOauthToken()
+         */
+        public Options setOauthToken(String value) {
+            this.oauthToken = value;
             return this;
         }
 
@@ -737,7 +769,7 @@ public abstract class GPUdbBase {
          * @see #getUseSnappy()
          */
         public Options setUseSnappy(boolean value) {
-            useSnappy = value;
+            this.useSnappy = value;
             return this;
         }
 
@@ -875,7 +907,7 @@ public abstract class GPUdbBase {
                 throw new IllegalArgumentException("Thread count must be greater than zero.");
             }
 
-            threadCount = value;
+            this.threadCount = value;
             return this;
         }
 
@@ -896,7 +928,7 @@ public abstract class GPUdbBase {
          * @see #setThreadCount(int)
          */
         public Options setExecutor(ExecutorService value) {
-            executor = value;
+            this.executor = value;
             return this;
         }
 
@@ -912,8 +944,8 @@ public abstract class GPUdbBase {
          * @see #getHttpHeaders()
          */
         public Options setHttpHeaders(Map<String, String> value) {
-            httpHeaders.clear();
-            httpHeaders.putAll(value);
+            this.httpHeaders.clear();
+            this.httpHeaders.putAll(value);
             return this;
         }
 
@@ -930,7 +962,7 @@ public abstract class GPUdbBase {
          * @see #setHttpHeaders(Map)
          */
         public Options addHttpHeader(String header, String value) {
-            httpHeaders.put(header, value);
+            this.httpHeaders.put(header, value);
             return this;
         }
 
@@ -953,7 +985,7 @@ public abstract class GPUdbBase {
                     + "given " + value);
             }
 
-            hmPort = value;
+            this.hmPort = value;
             return this;
         }
 
@@ -974,7 +1006,7 @@ public abstract class GPUdbBase {
                 throw new IllegalArgumentException("Timeout must be greater than or equal to zero.");
             }
 
-            timeout = value;
+            this.timeout = value;
             return this;
         }
 
@@ -997,7 +1029,7 @@ public abstract class GPUdbBase {
                     + "must be greater than or equal to zero.");
             }
 
-            serverConnectionTimeout = value;
+            this.serverConnectionTimeout = value;
             return this;
         }
 
@@ -1018,7 +1050,7 @@ public abstract class GPUdbBase {
          * @see #getServerConnectionTimeout()
          */
         public Options setConnectionInactivityValidationTimeout(int value) {
-            connectionInactivityValidationTimeout = value;
+            this.connectionInactivityValidationTimeout = value;
             return this;
         }
 
@@ -1036,7 +1068,7 @@ public abstract class GPUdbBase {
                 throw new IllegalArgumentException("maxTotalConnections must be greater than zero.");
             }
 
-            maxTotalConnections = value;
+            this.maxTotalConnections = value;
             return this;
         }
 
@@ -1055,7 +1087,7 @@ public abstract class GPUdbBase {
                 throw new IllegalArgumentException("maxConnectionsPerHost must be greater than zero.");
             }
 
-            maxConnectionsPerHost = value;
+            this.maxConnectionsPerHost = value;
             return this;
         }
 
@@ -1209,26 +1241,26 @@ public abstract class GPUdbBase {
          *
          * @return true if this version is newer than the given version.
          */
-        public boolean isNewerThan( int major, int minor,
-                                    int revision, int abiVersion ) {
-            if ( this.major > major ) {
+        public boolean isNewerThan( int otherMajor, int otherMinor,
+                                    int otherRevision, int otherAbiVersion ) {
+            if ( this.major > otherMajor ) {
                 // Example: _7_.2.1.0 is newer than _5_.0.0.0
                 return true;
             }
-            if ( (this.major == major) && (this.minor > minor) ) {
+            if ( (this.major == otherMajor) && (this.minor > otherMinor) ) {
                 // Example: 6._2_.0.0 is newer than 6._1_.1.0, but
                 // 7._2_.0.0 is NOT newer than 8._1_.0.0
                 return true;
             }
-            if ( (this.major == major) && (this.minor == minor)
-                && (this.revision > revision) ) {
+            if ( (this.major == otherMajor) && (this.minor == otherMinor)
+                && (this.revision > otherRevision) ) {
                 // Example: 6.2._2_.0 is newer than 6.2._1_.0, but
                 // 7.7._3_.0 is NOT newer than 9.9._0_.0
                 return true;
             }
-            if ( (this.major == major) && (this.minor == minor)
-                && (this.revision == revision)
-                && (this.abiVersion > abiVersion) ) {
+            if ( (this.major == otherMajor) && (this.minor == otherMinor)
+                && (this.revision == otherRevision)
+                && (this.abiVersion > otherAbiVersion) ) {
                 // Example: 6.2.1._3_ is newer than 6.2.1._1_, but
                 // 7.7.3._1_ is NOT newer than 9.9.0._0_
                 return true;
@@ -1244,26 +1276,26 @@ public abstract class GPUdbBase {
          *
          * @return true if this version is older than the given version.
          */
-        public boolean isOlderThan( int major, int minor,
-                                    int revision, int abiVersion ) {
-            if ( this.major < major ) {
+        public boolean isOlderThan( int otherMajor, int otherMinor,
+                                    int otherRevision, int otherAbiVersion ) {
+            if ( this.major < otherMajor ) {
                 // Example: _6_.2.1.0 is older than _7_.0.0.0
                 return true;
             }
-            if ( (this.major == major) && (this.minor < minor) ) {
+            if ( (this.major == otherMajor) && (this.minor < otherMinor) ) {
                 // Example: 6._1_.1.0 is older than 6._2_.0.0, but
                 // 8._1_.0.0 is NOT older than 7._2_.0.0
                 return true;
             }
-            if ( (this.major == major) && (this.minor == minor)
-                && (this.revision < revision) ) {
+            if ( (this.major == otherMajor) && (this.minor == otherMinor)
+                && (this.revision < otherRevision) ) {
                 // Example: 6.2._1_.0 is older than 6.2._2_.0, but
                 // 9.9._0_.0 is NOT older than 7.7._3_.0
                 return true;
             }
-            if ( (this.major == major) && (this.minor == minor)
-                && (this.revision == revision)
-                && (this.abiVersion < abiVersion) ) {
+            if ( (this.major == otherMajor) && (this.minor == otherMinor)
+                && (this.revision == otherRevision)
+                && (this.abiVersion < otherAbiVersion) ) {
                 // Example: 6.2.1._1_ is older than 6.2.1._3_, but
                 // 9.9.0._0_ is NOT older than 7.7.3._1_
                 return true;
@@ -1279,12 +1311,12 @@ public abstract class GPUdbBase {
          *
          * @return true if this version is the same as the given version.
          */
-        public boolean isEqualTo( int major, int minor,
-                                  int revision, int abiVersion ) {
-            return ( (this.major == major)
-                && (this.minor == minor)
-                && (this.revision == revision)
-                && (this.abiVersion == abiVersion) );
+        public boolean isEqualTo( int otherMajor, int otherMinor,
+                                  int otherRevision, int otherAbiVersion ) {
+            return ( (this.major == otherMajor)
+                && (this.minor == otherMinor)
+                && (this.revision == otherRevision)
+                && (this.abiVersion == otherAbiVersion) );
         }
 
         @Override
@@ -1316,6 +1348,11 @@ public abstract class GPUdbBase {
                     "." +
                     this.abiVersion;
         }
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(this.major, this.minor, this.revision, this.abiVersion);
+		}
 
     }  // end class GPUdbVersion
 
@@ -1403,47 +1440,47 @@ public abstract class GPUdbBase {
         private transient String payload;
         private int requestSize;
 
-        private SubmitException(URL url, IndexedRecord request, int requestSize, String message) {
+        SubmitException(URL url, IndexedRecord request, int requestSize, String message) {
             super(message);
             this.url = url;
             this.request = request;
             this.requestSize = requestSize;
         }
 
-        private SubmitException(URL url, IndexedRecord request, int requestSize, String message, Throwable cause) {
+        SubmitException(URL url, IndexedRecord request, int requestSize, String message, Throwable cause) {
             super(message, cause);
             this.url = url;
             this.request = request;
             this.requestSize = requestSize;
         }
 
-        private SubmitException(URL url, String payload, String message, Throwable cause) {
+        SubmitException(URL url, String payload, String message, Throwable cause) {
             super(message, cause);
             this.url = url;
             this.payload = payload;
         }
 
-        private SubmitException(URL url, IndexedRecord request, int requestSize, String message, boolean connectionFailure) {
+        SubmitException(URL url, IndexedRecord request, int requestSize, String message, boolean connectionFailure) {
             super(message, connectionFailure);
             this.url = url;
             this.request = request;
             this.requestSize = requestSize;
         }
 
-        private SubmitException(URL url, IndexedRecord request, int requestSize, String message, Throwable cause, boolean connectionFailure) {
+        SubmitException(URL url, IndexedRecord request, int requestSize, String message, Throwable cause, boolean connectionFailure) {
             super(message, cause, connectionFailure);
             this.url = url;
             this.request = request;
             this.requestSize = requestSize;
         }
 
-        private SubmitException(URL url, String payload, String errorMsg) {
+        SubmitException(URL url, String payload, String errorMsg) {
             super( errorMsg );
             this.url = url;
             this.payload = payload;
         }
 
-        private SubmitException(URL url, String errorMsg) {
+        SubmitException(URL url, String errorMsg) {
             super( errorMsg );
             this.url = url;
         }
@@ -1455,7 +1492,7 @@ public abstract class GPUdbBase {
          * @return  the URL
          */
         public URL getURL() {
-            return url;
+            return this.url;
         }
 
         /**
@@ -1464,7 +1501,7 @@ public abstract class GPUdbBase {
          * @return  the request
          */
         public IndexedRecord getRequest() {
-            return request;
+            return this.request;
         }
 
         /**
@@ -1474,7 +1511,7 @@ public abstract class GPUdbBase {
          * @return  the size of the encoded request
          */
         public int getRequestSize() {
-            return requestSize;
+            return this.requestSize;
         }
     }   // end class SubmitException
 
@@ -1513,11 +1550,11 @@ public abstract class GPUdbBase {
         }
 
         public boolean isValidateJson() {
-            return validateJson;
+            return this.validateJson;
         }
 
         public boolean isCompressionOn() {
-            return compressionOn;
+            return this.compressionOn;
         }
 
         @Override
@@ -1536,8 +1573,8 @@ public abstract class GPUdbBase {
         @Override
         public String toString() {
             return "JsonOptions{" +
-                    "validateJson=" + validateJson +
-                    ", compressionOn=" + compressionOn +
+                    "validateJson=" + this.validateJson +
+                    ", compressionOn=" + this.compressionOn +
                     '}';
         }
     }
@@ -1719,35 +1756,35 @@ public abstract class GPUdbBase {
         }
 
         public int getByteCount() {
-            return byteCount;
+            return this.byteCount;
         }
 
         @Override
         public void close() throws IOException {
-            outputStream.close();
+            this.outputStream.close();
         }
 
         @Override
         public void flush() throws IOException {
-            outputStream.flush();
+            this.outputStream.flush();
         }
 
         @Override
         public void write(byte[] b) throws IOException {
-            outputStream.write(b);
-            byteCount += b.length;
+            this.outputStream.write(b);
+            this.byteCount += b.length;
         }
 
         @Override
         public void write(byte[] b, int off, int len) throws IOException {
-            outputStream.write(b, off, len);
-            byteCount += len;
+            this.outputStream.write(b, off, len);
+            this.byteCount += len;
         }
 
         @Override
         public void write(int b) throws IOException {
-            outputStream.write(b);
-            byteCount++;
+            this.outputStream.write(b);
+            this.byteCount++;
         }
     } // end class CountingOutputStream
 
@@ -1757,8 +1794,7 @@ public abstract class GPUdbBase {
      * @return  the version number
      */
     public static String getApiVersion() {
-        try {
-            InputStream stream = GPUdbBase.class.getResourceAsStream("/gpudb-api-build.properties");
+        try (InputStream stream = GPUdbBase.class.getResourceAsStream("/gpudb-api-build.properties")) {
 
             if (stream != null) {
                 Properties properties = new Properties();
@@ -1897,7 +1933,7 @@ public abstract class GPUdbBase {
                                       List<URL> workerRankUrls,
                                       Set<String> hostNames,
                                       URL hostManagerUrl,
-                                      boolean isPrimaryCluster) throws GPUdbException {
+                                      boolean isPrimaryCluster) {
             this.activeHeadNodeUrl = activeHeadNodeUrl;
             this.workerRankUrls    = workerRankUrls;
             this.hostNames         = hostNames;
@@ -1917,7 +1953,7 @@ public abstract class GPUdbBase {
                         Set<String> hostNames,
                         URL hostManagerUrl,
                         boolean isPrimaryCluster,
-                        boolean isIntraClusterFailoverEnabled ) throws GPUdbException {
+                        boolean isIntraClusterFailoverEnabled ) {
             this(activeHeadNodeUrl, workerRankUrls, hostNames, hostManagerUrl, isPrimaryCluster);
         }
 
@@ -2032,7 +2068,7 @@ public abstract class GPUdbBase {
          * @deprecated
          * Get whether intra-cluster failover is enabled
          */
-        public boolean getIsIntraClusterFailoverEnabled() {
+        public static boolean getIsIntraClusterFailoverEnabled() {
             return false;
         }
 
@@ -2047,7 +2083,7 @@ public abstract class GPUdbBase {
          * @deprecated
          * Get whether intra-cluster failover is enabled
          */
-        public boolean isIntraClusterFailoverEnabled() {
+        public static boolean isIntraClusterFailoverEnabled() {
             return false;
         }
 
@@ -2268,7 +2304,7 @@ public abstract class GPUdbBase {
     // ------------
 
     protected GPUdbBase(String url, Options options) throws GPUdbException {
-        urlLock = new Object();
+        this.urlLock = new Object();
 
         // Initialize the logger before anything else.  This MUST be done
         // before any logging happens!
@@ -2300,7 +2336,7 @@ public abstract class GPUdbBase {
     }
 
     protected GPUdbBase(URL url, Options options) throws GPUdbException {
-        urlLock = new Object();
+        this.urlLock = new Object();
 
         // Initialize the logger before anything else.  This MUST be done
         // before any logging happens!
@@ -2318,7 +2354,7 @@ public abstract class GPUdbBase {
     }
 
     protected GPUdbBase(List<URL> urls, Options options) throws GPUdbException {
-        urlLock = new Object();
+        this.urlLock = new Object();
 
         // Initialize the logger before anything else.  This MUST be done
         // before any logging happens!
@@ -2339,55 +2375,45 @@ public abstract class GPUdbBase {
      * constructor of the {@link GPUdbBase} class.
      *
      * @param urls - List of URLs passes by the user.
-     * @param options - An instance of the {@link GPUdbBase.Options} class.
+     * @param optionList - An instance of the {@link GPUdbBase.Options} class.
      * @throws GPUdbException - thrown in a number of cases like:
      *                          1. Error raised by the method in processing the URLs
      *                          2. Error raised in case of any SSL related handling like mismatched certificate etc.
      */
-    private void init(List<URL> urls, Options options) throws GPUdbException {
+    private void init(List<URL> urls, Options optionList) throws GPUdbException {
         // Save the options object
-        this.options  = options;
+        this.options  = optionList;
 
         // Save some parameters passed in via the options object
-        this.username      = options.getUsername();
-        this.password      = options.getPassword();
-        this.hostnameRegex = options.getHostnameRegex();
+        this.username      = this.options.getUsername();
+        this.password      = this.options.getPassword();
+        this.hostnameRegex = this.options.getHostnameRegex();
 
-        if ((username != null && !username.isEmpty()) || (password != null && !password.isEmpty())) {
-            authorization =
-                    "Basic "
-                    + Base64.encodeBase64String( ((username != null ? username : "")
-                        + ":"
-                        + (password != null ? password : "")).getBytes() )
-                    .replace("\n", "");
-        } else {
-            authorization = null;
-        }
-
+        this.authorization = createAuthorizationHeader();
 
         // Save various options
-        this.useSnappy            = checkSnappy(options.getUseSnappy());
-        this.disableFailover      = options.getDisableFailover();
-        this.disableAutoDiscovery = options.getDisableAutoDiscovery();
-        this.threadCount          = options.getThreadCount();
-        this.executor             = options.getExecutor();
-        this.timeout              = options.getTimeout();
-        this.hostManagerPort      = options.getHostManagerPort();
-        this.haFailoverOrder      = options.getHAFailoverOrder();
-        this.initialConnectionAttemptTimeoutNS = options.getInitialConnectionAttemptTimeout();
+        this.useSnappy            = checkSnappy(this.options.getUseSnappy());
+        this.disableFailover      = this.options.getDisableFailover();
+        this.disableAutoDiscovery = this.options.getDisableAutoDiscovery();
+        this.threadCount          = this.options.getThreadCount();
+        this.executor             = this.options.getExecutor();
+        this.timeout              = this.options.getTimeout();
+        this.hostManagerPort      = this.options.getHostManagerPort();
+        this.haFailoverOrder      = this.options.getHAFailoverOrder();
+        this.initialConnectionAttemptTimeoutNS = this.options.getInitialConnectionAttemptTimeout();
 
         GPUdbLogger.debug_with_info( "URLs: " + urls.toString());
-        GPUdbLogger.debug_with_info( "Options: " + options.toString());
+        GPUdbLogger.debug_with_info( "Options: " + this.options.toString());
 
         // Convert the initial connection attempt timeout from milliseconds
         // to nanoseconds
         this.initialConnectionAttemptTimeoutNS = this.initialConnectionAttemptTimeoutNS * 1000000L;
 
-        this.trustStoreFilePath = options.getTrustStoreFilePath() == null ? System.getProperty("javax.net.ssl.trustStore") : options.getTrustStoreFilePath();
-        this.trustStorePassword = options.getTrustStorePassword() == null ? System.getProperty("javax.net.ssl.trustStorePassword") : options.getTrustStorePassword();
+        this.trustStoreFilePath = this.options.getTrustStoreFilePath() == null ? System.getProperty("javax.net.ssl.trustStore") : this.options.getTrustStoreFilePath();
+        this.trustStorePassword = this.options.getTrustStorePassword() == null ? System.getProperty("javax.net.ssl.trustStorePassword") : this.options.getTrustStorePassword();
 
         // Handle SSL certificate verification bypass for HTTPS connections
-        this.bypassSslCertCheck = options.getBypassSslCertCheck();
+        this.bypassSslCertCheck = this.options.getBypassSslCertCheck();
 
         if ( this.bypassSslCertCheck ) {
             GPUdbLogger.debug_with_info("Bypassing SSL certificate check for HTTPS connections");
@@ -2400,21 +2426,21 @@ public abstract class GPUdbBase {
                 // to reduce distractions anyway
             }
         } else {
-            GPUdbLogger.debug_with_info(String.format("Using %s trust store for HTTPS connections: ", trustStoreFilePath));
+            GPUdbLogger.debug_with_info(String.format("Using %s trust store for HTTPS connections: ", this.trustStoreFilePath));
         }
 
         // The headers must be set before any call can be made
-        httpHeaders = new HashMap<>();
+        this.httpHeaders = new HashMap<>();
 
-        for (Map.Entry<String, String> entry : options.getHttpHeaders().entrySet()) {
+        for (Map.Entry<String, String> entry : this.options.getHttpHeaders().entrySet()) {
             if (entry.getKey() != null && entry.getValue() != null) {
-                httpHeaders.put(entry.getKey(), entry.getValue());
+                this.httpHeaders.put(entry.getKey(), entry.getValue());
             }
         }
 
         // Initialize the caches for table types
-        knownTypeObjectMaps = new ConcurrentHashMap<>(16, 0.75f, 1);
-        knownTypes = new ConcurrentHashMap<>(16, 0.75f, 1);
+        this.knownTypeObjectMaps = new ConcurrentHashMap<>(16, 0.75f, 1);
+        this.knownTypes = new ConcurrentHashMap<>(16, 0.75f, 1);
 
         // Set the default sync mode
         this.haSyncMode = HASynchronicityMode.DEFAULT;
@@ -2453,24 +2479,22 @@ public abstract class GPUdbBase {
         // If 'trustStoreFilePath' and 'trustStorePassword' are both set, use
         // that to create the 'secureSocketFactory' variable unless 'bypassSslCertCheck` is
         // set to 'true'.
-        if( (trustStoreFilePath != null && !trustStoreFilePath.isEmpty())
-            && (trustStorePassword != null && !trustStorePassword.isEmpty()) && !options.getBypassSslCertCheck()) {
+        if( (this.trustStoreFilePath != null && !this.trustStoreFilePath.isEmpty())
+            && (this.trustStorePassword != null && !this.trustStorePassword.isEmpty()) && !this.bypassSslCertCheck) {
             SSLConnectionSocketFactory connectionSocketFactory;
 
             TrustStrategy acceptingTrustStrategy = (chain, authType) -> {
-                String truststoreFile = trustStoreFilePath;
-                String truststorePassword = trustStorePassword;
-                KeyStore truststore;
+                KeyStore trustStore;
                 try {
-                    truststore = KeyStore.getInstance(KeyStore.getDefaultType());
+                	trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
                 } catch (KeyStoreException e) {
                     String errorMessage = String.format(SslErrorMessageFormat, e.getMessage());
                     GPUdbLogger.error( errorMessage );
                     return false;
                 }
-                try (FileInputStream truststoreInputStream = new FileInputStream(truststoreFile)) {
+                try (FileInputStream truststoreInputStream = new FileInputStream(this.trustStoreFilePath)) {
                     try {
-                        truststore.load(truststoreInputStream, truststorePassword.toCharArray());
+                    	trustStore.load(truststoreInputStream, this.trustStorePassword.toCharArray());
                     } catch (IOException | NoSuchAlgorithmException | CertificateException e) {
                         String errorMessage = String.format(SslErrorMessageFormat, e.getMessage());
                         GPUdbLogger.error( errorMessage );
@@ -2484,16 +2508,16 @@ public abstract class GPUdbBase {
                 Certificate certificate;
                 // Enumerate the certificates in the truststore
                 try {
-                    ArrayList<String> trustStoreAliasList = Collections.list(truststore.aliases());
+                    ArrayList<String> trustStoreAliasList = Collections.list(trustStore.aliases());
                     int trustStoreAliasListSize = trustStoreAliasList.size();
-                    if( trustStoreAliasList.size() <= 0 ) {
-                        GPUdbLogger.error(String.format("User supplied truststore %s contains no certificates", truststoreFile));
+                    if( trustStoreAliasListSize <= 0 ) {
+                        GPUdbLogger.error(String.format("User supplied truststore %s contains no certificates", this.trustStoreFilePath));
                         return false;
                     }
                     for (int i = 0; i < trustStoreAliasListSize; i++) {
                         String alias = trustStoreAliasList.get(i);
                         try {
-                            certificate = truststore.getCertificate(alias);
+                            certificate = trustStore.getCertificate(alias);
                             if (chain[0].equals(certificate))
                                 return true;
                         } catch (KeyStoreException e) {
@@ -2514,8 +2538,8 @@ public abstract class GPUdbBase {
             try {
                 SSLContext sslContext = SSLContexts.custom()
                     .loadTrustMaterial(
-                        new File(trustStoreFilePath),
-                        trustStorePassword.toCharArray(),
+                        new File(this.trustStoreFilePath),
+                        this.trustStorePassword.toCharArray(),
                         acceptingTrustStrategy
                     ).build();
 
@@ -2550,41 +2574,41 @@ public abstract class GPUdbBase {
                 null,
                 null);
 
-        connectionManager.setMaxTotal( options.getMaxTotalConnections() );
-        connectionManager.setDefaultMaxPerRoute( options.getMaxConnectionsPerHost() );
+        connectionManager.setMaxTotal( this.options.getMaxTotalConnections() );
+        connectionManager.setDefaultMaxPerRoute( this.options.getMaxConnectionsPerHost() );
 
         // SO timeout here controls read timeouts within cloud cluster
         //   environments, and must be set explicitly
         connectionManager.setDefaultSocketConfig(SocketConfig.custom()
-            .setSoTimeout(Timeout.ofMilliseconds(options.getTimeout()))
+            .setSoTimeout(Timeout.ofMilliseconds(this.options.getTimeout()))
             .build());
         
-        GPUdbLogger.debug("Setting SO timeout to <" + options.getTimeout() + "> ms");
+        GPUdbLogger.debug("Setting SO timeout to <" + this.options.getTimeout() + "> ms");
 
         // Socket timeout here controls read timeouts within non-cloud cluster
         //   environments, and must be set explicitly
         final int connectionTtlMinutes = 1;
         connectionManager.setDefaultConnectionConfig(ConnectionConfig.custom()
-            .setConnectTimeout(Timeout.ofMilliseconds(options.getServerConnectionTimeout()))
-            .setSocketTimeout(Timeout.ofMilliseconds(options.getTimeout()))
-            .setValidateAfterInactivity( TimeValue.ofMilliseconds( options.getConnectionInactivityValidationTimeout() ))
+            .setConnectTimeout(Timeout.ofMilliseconds(this.options.getServerConnectionTimeout()))
+            .setSocketTimeout(Timeout.ofMilliseconds(this.options.getTimeout()))
+            .setValidateAfterInactivity( TimeValue.ofMilliseconds( this.options.getConnectionInactivityValidationTimeout() ))
             .setTimeToLive(TimeValue.ofMinutes(connectionTtlMinutes))
             .build());
         
-        GPUdbLogger.debug("Setting connect timeout to <" + options.getServerConnectionTimeout() + "> ms");
-        GPUdbLogger.debug("Setting socket timeout to <" + options.getTimeout() + "> ms");
-        GPUdbLogger.debug("Setting inactivity validation timeout to <" + options.getConnectionInactivityValidationTimeout() + "> ms");
+        GPUdbLogger.debug("Setting connect timeout to <" + this.options.getServerConnectionTimeout() + "> ms");
+        GPUdbLogger.debug("Setting socket timeout to <" + this.options.getTimeout() + "> ms");
+        GPUdbLogger.debug("Setting inactivity validation timeout to <" + this.options.getConnectionInactivityValidationTimeout() + "> ms");
         GPUdbLogger.debug("Setting time-to-live to <" + (connectionTtlMinutes * 60000) + "> ms");
 
         // Response timeout here generally trumps both the socket timeouts above
         //   environments, and must be set explicitly
         RequestConfig requestConfig = RequestConfig.custom()
             .setConnectionRequestTimeout( Timeout.ofMinutes( DEFAULT_CONNECTION_REQUEST_TIMEOUT ) )
-            .setResponseTimeout(Timeout.ofMilliseconds(options.getTimeout()))
+            .setResponseTimeout(Timeout.ofMilliseconds(this.options.getTimeout()))
             .build();
         
         GPUdbLogger.debug("Setting connection request timeout to <" + (DEFAULT_CONNECTION_REQUEST_TIMEOUT * 60000) + "> ms");
-        GPUdbLogger.debug("Setting response timeout to <" + options.getTimeout() + "> ms");
+        GPUdbLogger.debug("Setting response timeout to <" + this.options.getTimeout() + "> ms");
 
         // Build the http client.
         this.httpClient = HttpClients.custom()
@@ -2637,7 +2661,42 @@ public abstract class GPUdbBase {
     protected void finalize() throws Throwable {
         // Release the resources-- the HTTP client
 
-        httpClient.close(CloseMode.GRACEFUL);
+        this.httpClient.close(CloseMode.GRACEFUL);
+    }
+
+
+    /**
+     *  Choose and return the authentication mode based on the presence of
+     *  options in this connection's options map.
+     *  
+     *  Authentication scheme:
+     *  
+     *  1. Choose OAuth2 authentication if oauthToken option is set
+     *  2. Choose basic authentication if username/password options is set
+     *  3. Choose no authentication
+     */
+    protected String createAuthorizationHeader() {
+
+        if( this.options.getOauthToken() != null && !this.options.getOauthToken().isEmpty()) {
+            return "Bearer " + this.options.getOauthToken();
+        }
+
+        if(
+            ((this.options.getUsername() != null) && !this.options.getUsername().isEmpty()) ||
+            ((this.options.getPassword() != null) && !this.options.getPassword().isEmpty())
+        ) {
+            return "Basic " +
+                    Base64.encodeBase64String
+                    (
+                            (
+                                    (this.username != null ? this.username : "") +
+                                    ":" +
+                                    (this.password != null ? this.password : "")
+                            ).getBytes()
+                    ).replace("\n", "");
+        }
+
+        return null;
     }
 
 
@@ -2685,11 +2744,11 @@ public abstract class GPUdbBase {
     public URL getURL() {
         if ( getHARingSize() == 1 ) {
             return this.hostAddresses.get( 0 ).getActiveHeadNodeUrl();
-        } else {
-            synchronized (urlLock) {
-                int currClusterIndex = getCurrentClusterIndex();
-                return this.hostAddresses.get( currClusterIndex ).getActiveHeadNodeUrl();
-            }
+        }
+
+        synchronized (this.urlLock) {
+            int currClusterIndex = getCurrentClusterIndex();
+            return this.hostAddresses.get( currClusterIndex ).getActiveHeadNodeUrl();
         }
     }
 
@@ -2718,11 +2777,11 @@ public abstract class GPUdbBase {
     public URL getHmURL() {
         if ( getHARingSize() == 1 ) {
             return this.hostAddresses.get( 0 ).getHostManagerUrl();
-        } else {
-            synchronized (urlLock) {
-                int currClusterIndex = getCurrentClusterIndex();
-                return this.hostAddresses.get( currClusterIndex ).getHostManagerUrl();
-            }
+        }
+
+        synchronized (this.urlLock) {
+            int currClusterIndex = getCurrentClusterIndex();
+            return this.hostAddresses.get( currClusterIndex ).getHostManagerUrl();
         }
     }
 
@@ -2785,7 +2844,7 @@ public abstract class GPUdbBase {
      * @see Options#setUsername(String)
      */
     public String getUsername() {
-        return username;
+        return this.username;
     }
 
     /**
@@ -2798,7 +2857,7 @@ public abstract class GPUdbBase {
      * @see Options#setPassword(String)
      */
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     /**
@@ -2813,7 +2872,7 @@ public abstract class GPUdbBase {
      * @see Options#setUseSnappy(boolean)
      */
     public boolean getUseSnappy() {
-        return useSnappy;
+        return this.useSnappy;
     }
 
     /**
@@ -2824,13 +2883,13 @@ public abstract class GPUdbBase {
      * @return    whether Snappy compression should be enabled, based on
      *            request and system availability
      */
-    private boolean checkSnappy(boolean requestUseSnappy) {
+    private static boolean checkSnappy(boolean requestUseSnappy) {
         if (requestUseSnappy) {
             try {
                 Snappy.getNativeLibraryVersion();
                 return true;
             }
-            catch (UnsatisfiedLinkError e) {
+            catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
                 GPUdbLogger.warn(
                         "Disabling Snappy compression, as it is unavailable on this system, " +
                         "potentially due to lack of write permission on the system temp directory.  " +
@@ -2852,7 +2911,7 @@ public abstract class GPUdbBase {
      * @return  true if auto-discovery is enabled; false otherwise
      */
     public boolean isAutoDiscoveryEnabled() {
-        return !disableAutoDiscovery;
+        return !this.disableAutoDiscovery;
     }
 
     /**
@@ -2866,7 +2925,7 @@ public abstract class GPUdbBase {
      * @see Options#setThreadCount(int)
      */
     public int getThreadCount() {
-        return threadCount;
+        return this.threadCount;
     }
 
     /**
@@ -2881,7 +2940,7 @@ public abstract class GPUdbBase {
      * @see Options#setExecutor(ExecutorService)
      */
     public ExecutorService getExecutor() {
-        return executor;
+        return this.executor;
     }
 
     /**
@@ -2896,7 +2955,7 @@ public abstract class GPUdbBase {
      * @see Options#setHttpHeaders(Map)
      */
     public Map<String, String> getHttpHeaders() {
-        return httpHeaders;
+        return this.httpHeaders;
     }
 
     /**
@@ -2911,7 +2970,7 @@ public abstract class GPUdbBase {
      * @see Options#setTimeout(int)
      */
     public int getTimeout() {
-        return timeout;
+        return this.timeout;
     }
 
     /**
@@ -3032,7 +3091,7 @@ public abstract class GPUdbBase {
      * @param value  the host manager port number
      * @return       the current {@link GPUdbBase} instance
      */
-    @Deprecated public GPUdbBase setHostManagerPort(int value) throws IllegalArgumentException, GPUdbException {
+    @Deprecated public GPUdbBase setHostManagerPort(int value) throws IllegalArgumentException {
         return this;
     }
 
@@ -3052,7 +3111,7 @@ public abstract class GPUdbBase {
      * cluster amongst the high availability ring.
      */
     protected void incrementNumClusterSwitches() {
-        synchronized ( urlLock ) {
+        synchronized ( this.urlLock ) {
             ++this.numClusterSwitches;
         }
     }
@@ -3062,7 +3121,7 @@ public abstract class GPUdbBase {
      * Return the pointer to the current URL index in a thread-safe manner.
      */
     private int getCurrClusterIndexPointer() {
-        synchronized ( urlLock ) {
+        synchronized ( this.urlLock ) {
             return this.currentClusterIndexPointer;
         }
     }
@@ -3071,7 +3130,7 @@ public abstract class GPUdbBase {
      * Set the pointer to the current URL index in a thread-safe manner.
      */
     private void setCurrClusterIndexPointer(int newIndex) {
-        synchronized ( urlLock ) {
+        synchronized ( this.urlLock ) {
             this.currentClusterIndexPointer = newIndex;
         }
     }
@@ -3128,12 +3187,7 @@ public abstract class GPUdbBase {
      * 
      * @return    the next cluster head rank {@link URL} to try
      */
-    protected URL switchURL(URL oldURL, int oldNumClusterSwitches)
-        throws
-                GPUdbFailoverDisabledException,
-                GPUdbHAUnavailableException,
-                GPUdbUnauthorizedAccessException
-    {
+    protected URL switchURL(URL oldURL, int oldNumClusterSwitches) throws GPUdbFailoverDisabledException, GPUdbHAUnavailableException {
         GPUdbLogger.debug_with_info(String.format(
                 "Attempting to switch URLs, from: %s; originally failing URL: %s",
                 getURL().toString(), oldURL.toString()));
@@ -3143,7 +3197,7 @@ public abstract class GPUdbBase {
             throw new GPUdbFailoverDisabledException( "Failover is disabled!" );
         }
 
-        synchronized (urlLock) {
+        synchronized (this.urlLock) {
             // If there is only one URL, then we can't switch URLs
             if ( getHARingSize() == 1 ) {
                 GPUdbLogger.debug_with_info( "Only one cluster in ring--no fail-over cluster available");
@@ -3224,13 +3278,9 @@ public abstract class GPUdbBase {
      * 
      * @return    the next host manager {@link URL} to try
      */
-    private URL switchHmURL(URL oldURL, int oldNumClusterSwitches)
-        throws
-                GPUdbFailoverDisabledException,
-                GPUdbHAUnavailableException,
-                GPUdbUnauthorizedAccessException
-    {
-        GPUdbLogger.debug_with_info(String.format(
+    private URL switchHmURL(URL oldURL, int oldNumClusterSwitches) throws GPUdbFailoverDisabledException, GPUdbHAUnavailableException {
+
+    	GPUdbLogger.debug_with_info(String.format(
                 "Attempting to switch Host Manager URLs, from: %s; originally failing URL: %s",
                 getHmURL().toString(), oldURL.toString()));
 
@@ -3239,7 +3289,7 @@ public abstract class GPUdbBase {
             throw new GPUdbFailoverDisabledException( "Failover is disabled!" );
         }
 
-        synchronized (urlLock) {
+        synchronized (this.urlLock) {
             // If there is only one URL, then we can't switch URLs
             if ( getHARingSize() == 1 ) {
                 GPUdbLogger.debug_with_info( "Only one cluster in ring--no fail-over cluster available");
@@ -3321,26 +3371,26 @@ public abstract class GPUdbBase {
      *  (including authorization header), connection type, time out etc.
      *
      * @param url  the URL to which the connection needs to be made
-     * @param timeout a positive integer representing the number of
-     *                milliseconds to use for connection timeout
+     * @param responseTimeout a positive integer representing the number of
+     *                milliseconds to use for response timeout
      * @return     the initialized HttpPost connection object
      */
-    protected HttpPost initializeHttpPostRequest( URL url, int timeout ) throws Exception {
+    protected HttpPost initializeHttpPostRequest( URL url, int responseTimeout ) throws Exception {
         // Verify that a sensible timeout is given
-        if ( timeout < 0 ) {
-            throw new GPUdbException( "Positive timeout value required, given " + timeout );
+        if ( responseTimeout < 0 ) {
+            throw new GPUdbException( "Positive timeout value required, given " + responseTimeout );
         }
 
         HttpPost connection = new HttpPost( url.toURI() );
 
         // Set the timeout explicitly if it is different from the default value
-        if ( timeout != this.timeout ) {
+        if ( responseTimeout != this.timeout ) {
             RequestConfig requestConfigWithCustomTimeout = RequestConfig.custom()
                 .setConnectionRequestTimeout(Timeout.ofMinutes( DEFAULT_CONNECTION_REQUEST_TIMEOUT ))
-                .setResponseTimeout(Timeout.ofMilliseconds(timeout))
+                .setResponseTimeout(Timeout.ofMilliseconds(responseTimeout))
                 .build();
             connection.setConfig( requestConfigWithCustomTimeout );
-            GPUdbLogger.debug("Setting response timeout to <" + timeout + "> ms");
+            GPUdbLogger.debug("Setting response timeout to <" + responseTimeout + "> ms");
         }
 
         // Set the user defined headers
@@ -3354,8 +3404,8 @@ public abstract class GPUdbBase {
         }
 
         // Set the authorization header
-        if (authorization != null) {
-            connection.addHeader( HEADER_AUTHORIZATION, authorization );
+        if (this.authorization != null) {
+            connection.addHeader( HEADER_AUTHORIZATION, this.authorization );
         }
 
         return connection;
@@ -3378,25 +3428,25 @@ public abstract class GPUdbBase {
      *  (including authorization header), connection type, time out etc.
      *
      * @param url  the URL to which the connection needs to be made
-     * @param timeout a positive integer representing the number of
-     *                milliseconds to use for connection timeout
+     * @param connectionTimeout a positive integer representing the number of
+     *                milliseconds to use for connection & read timeouts
      * @return     the initialized HTTP connection object
      */
-    protected HttpURLConnection initializeHttpConnection( URL url, int timeout )
+    protected HttpURLConnection initializeHttpConnection( URL url, int connectionTimeout )
         throws Exception {
 
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 
         // Set the timeout
-        if ( timeout < 0 ) {
-            throw new GPUdbException( "Positive timeout value required, given " + timeout );
+        if ( connectionTimeout < 0 ) {
+            throw new GPUdbException( "Positive timeout value required, given " + connectionTimeout );
         }
-        connection.setConnectTimeout( timeout );
-        connection.setReadTimeout( timeout );
+        connection.setConnectTimeout( connectionTimeout );
+        connection.setReadTimeout( connectionTimeout );
 
         // Only log when overriding
-        if (timeout != this.timeout)
-            GPUdbLogger.debug("Setting HTTP connect & read timeouts to <" + timeout + "> ms");
+        if (connectionTimeout != this.timeout)
+            GPUdbLogger.debug("Setting HTTP connect & read timeouts to <" + connectionTimeout + "> ms");
 
         // Set the request type
         connection.setRequestMethod("POST");
@@ -3413,8 +3463,8 @@ public abstract class GPUdbBase {
         }
 
         // Set the authorization header
-        if (authorization != null) {
-            connection.setRequestProperty (HEADER_AUTHORIZATION, authorization);
+        if (this.authorization != null) {
+            connection.setRequestProperty (HEADER_AUTHORIZATION, this.authorization);
         }
 
         return connection;
@@ -3471,15 +3521,15 @@ public abstract class GPUdbBase {
         String systemStatusStr = statusResponse.getStatusMap().get( SHOW_SYSTEM_STATUS_RESPONSE_SYSTEM );
         GPUdbLogger.debug_with_info( "Got system status " + systemStatusStr + " for URL: " + url);
         JsonNode systemStatus;
-        if ( systemStatusStr == null ) {
+
+        if ( systemStatusStr == null )
             throw new GPUdbException(String.format("No entry for <%s> in %s for URL: %s",
                     SHOW_SYSTEM_STATUS_RESPONSE_SYSTEM, ENDPOINT_SHOW_SYSTEM_STATUS, url));
-        } else {
-            try {
-                systemStatus = GPUdbBase.JSON_MAPPER.readTree( systemStatusStr );
-            } catch ( IOException ex ) {
-                throw new GPUdbException( "Could not parse system status " + systemStatusStr + " for URL: " + url, ex );
-            }
+
+        try {
+            systemStatus = GPUdbBase.JSON_MAPPER.readTree( systemStatusStr );
+        } catch ( IOException ex ) {
+            throw new GPUdbException( "Could not parse system status " + systemStatusStr + " for URL: " + url, ex );
         }
 
         return systemStatus;
@@ -3505,25 +3555,24 @@ public abstract class GPUdbBase {
         }
 
         // Get the property map from the response and return it
-        if ( response != null ) {
-            GPUdbLogger.debug_with_info( "Got system properties for URL: " + url);
-            Map<String, String> systemProperties = response.getPropertyMap();
-
-            // Is HTTPD being used (helps in figuring out the host manager URL
-            String is_httpd_enabled_str = systemProperties.get( SYSTEM_PROPERTIES_RESPONSE_ENABLE_HTTPD );
-
-            // Figure out if we're using HTTPD
-            if ( (is_httpd_enabled_str != null)
-                && (is_httpd_enabled_str.compareToIgnoreCase( SYSTEM_PROPERTIES_RESPONSE_TRUE ) == 0 ) ) {
-                GPUdbLogger.debug_with_info( "Setting use httpd to true for URL: " + url);
-                this.useHttpd = true;
-            }
-
-            // Return the property map
-            return systemProperties;
-        } else {
+        if ( response == null )
             throw new GPUdbException( "Could not get system properties for URL: " + url);
+
+        GPUdbLogger.debug_with_info( "Got system properties for URL: " + url);
+        Map<String, String> systemProperties = response.getPropertyMap();
+
+        // Is HTTPD being used (helps in figuring out the host manager URL
+        String isHttpEnabled = systemProperties.get( SYSTEM_PROPERTIES_RESPONSE_ENABLE_HTTPD );
+
+        // Figure out if we're using HTTPD
+        if ( (isHttpEnabled != null)
+            && (isHttpEnabled.compareToIgnoreCase( SYSTEM_PROPERTIES_RESPONSE_TRUE ) == 0 ) ) {
+            GPUdbLogger.debug_with_info( "Setting use httpd to true for URL: " + url);
+            this.useHttpd = true;
         }
+
+        // Return the property map
+        return systemProperties;
     }   // end getSystemProperties
 
 
@@ -3601,7 +3650,7 @@ public abstract class GPUdbBase {
      * @param jsonOptions - Indicates whether Snappy compression is to be set on or not
      * @param createTableOptions - an instance of the class
      *        {@link com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions InsertRecordsJsonRequest.CreateTableOptions}
-     * @param options - an instance of the class
+     * @param insertRecordsOptions - an instance of the class
      *        {@link com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options InsertRecordsJsonRequest.Options}
      *
      * @return - the JSON response as a Map of String to Object.
@@ -3611,8 +3660,13 @@ public abstract class GPUdbBase {
                                                      String tableName,
                                                      JsonOptions jsonOptions,
                                                      Map<String, String> createTableOptions,
-                                                     Map<String, String> options) throws GPUdbException {
-        if( jsonRecords == null || jsonRecords.isEmpty() ) {
+                                                     Map<String, String> insertRecordsOptions) throws GPUdbException {
+
+    	JsonOptions jOpts = jsonOptions == null ? JsonOptions.defaultOptions() : jsonOptions;
+    	Map<String, String> ctOpts = createTableOptions == null ? new LinkedHashMap<>() : createTableOptions;
+    	Map<String, String> irOpts = insertRecordsOptions == null ? new LinkedHashMap<>() : new LinkedHashMap<>(insertRecordsOptions);
+
+    	if( jsonRecords == null || jsonRecords.isEmpty() ) {
             throw new GPUdbException( "No records to insert" );
         }
 
@@ -3620,22 +3674,10 @@ public abstract class GPUdbBase {
             throw new GPUdbException( "Table name not given, cannot insert" );
         }
 
-        if( jsonOptions == null ) {
-            jsonOptions = JsonOptions.defaultOptions();
-        }
-
-        if( createTableOptions == null ) {
-            createTableOptions = new LinkedHashMap<>();
-        }
-
-        if( options == null ) {
-            options = new LinkedHashMap<>();
-        }
-
         //Overwrite the value in the map with the `tableName` parameter value
-        options.put( "table_name", tableName );
+        irOpts.put( "table_name", tableName );
 
-        Map<String, String> combinedOptions = Stream.of(createTableOptions, options)
+        Map<String, String> combinedOptions = Stream.of(ctOpts, irOpts)
                 .flatMap(map -> map.entrySet().stream())
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
@@ -3644,7 +3686,7 @@ public abstract class GPUdbBase {
 
         String endpoint = UrlUtils.constructEndpointUrl( "/insert/records/json", combinedOptions );
 
-        return Collections.unmodifiableMap(submitRequest(endpoint, jsonRecords, jsonOptions.isCompressionOn()));
+        return Collections.unmodifiableMap(submitRequest(endpoint, jsonRecords, jOpts.isCompressionOn()));
     }
 
     /**
@@ -3676,21 +3718,21 @@ public abstract class GPUdbBase {
         }
 
         public int getTotalRecords() {
-            return totalRecords;
+            return this.totalRecords;
         }
 
         public boolean hasMoreRecords() {
-            return hasMoreRecords;
+            return this.hasMoreRecords;
         }
 
         public String getJsonRecords() {
-            return jsonRecords;
+            return this.jsonRecords;
         }
 
         @Override
         public String toString() {
-            return "GetRecordsJsonResponse [totalRecords=" + totalRecords + ", hasMoreRecords=" + hasMoreRecords
-                    + ", jsonRecords=" + jsonRecords + "]";
+            return "GetRecordsJsonResponse [totalRecords=" + this.totalRecords + ", hasMoreRecords=" + this.hasMoreRecords
+                    + ", jsonRecords=" + this.jsonRecords + "]";
         }
     }
 
@@ -3864,30 +3906,30 @@ public abstract class GPUdbBase {
             throw new GPUdbException( "Table name not given, cannot retrieve records" );
         }
 
-        Map<String, String> options = new LinkedHashMap<>();
+        Map<String, String> grjOpts = new LinkedHashMap<>();
 
-        options.put( "table_name", tableName );
+        grjOpts.put( "table_name", tableName );
 
         if( columnNames != null && columnNames.size() > 0) {
-            options.put("column_names", columnNames.stream().collect(Collectors.joining(",")));
+            grjOpts.put("column_names", columnNames.stream().collect(Collectors.joining(",")));
         }
 
-        options.put("offset", String.valueOf(offset < 0 ? 0 : offset));
-        options.put("limit", String.valueOf(limit < 0 ? GPUdb.END_OF_SET : limit));
+        grjOpts.put("offset", String.valueOf(offset < 0 ? 0 : offset));
+        grjOpts.put("limit", String.valueOf(limit < 0 ? GPUdbBase.END_OF_SET : limit));
 
         if (expression != null && expression.length() > 0 ) {
-            options.put("expression", expression);
+            grjOpts.put("expression", expression);
         }
 
         if (orderByColumns != null && orderByColumns.size() > 0 ) {
-            options.put("order_by", orderByColumns.stream().collect(Collectors.joining(",")));
+            grjOpts.put("order_by", orderByColumns.stream().collect(Collectors.joining(",")));
         }
 
         if ( havingClause != null && havingClause.length() > 0 ) {
-            options.put("having", havingClause);
+            grjOpts.put("having", havingClause);
         }
 
-        String endpoint = UrlUtils.constructEndpointUrl( "/get/records/json", options );
+        String endpoint = UrlUtils.constructEndpointUrl( "/get/records/json", grjOpts );
 
         String json = submitRequest(endpoint, false);
         TypeReference<HashMap<String,Object>> typeRef
@@ -3899,21 +3941,20 @@ public abstract class GPUdbBase {
             throw new GPUdbException("Error reading JSON response", e);
         }
 
-        if (response != null && response.size() > 0 ){
-            String status = (String) response.get("status");
-            if( status.equals("OK")) {
-                int totalRecords = (Integer) ((Map<String,Object>)response.get("data")).get("total_number_of_records");
-                boolean hasMoreRecords = (Boolean) ((Map<String,Object>)response.get("data")).get("has_more_records");
 
-                List<Object> recordList = (List<Object>) ((LinkedHashMap<String,Object>)response.get("data")).get("records");
-                String jsonRecords = JsonUtils.toJsonString(recordList);
-                return new GetRecordsJsonResponse(totalRecords, hasMoreRecords, jsonRecords);
-            } else {
-                throw new GPUdbException("Error getting JSON records: " + response.get("message"));
-            }
-        } else {
+        if (response == null || response.size() == 0 )
             throw new GPUdbException("Empty response from server gettting JSON records");
-        }
+
+        if( !"OK".equals(response.get("status")))
+            throw new GPUdbException("Error getting JSON records: " + response.get("message"));
+
+        int totalRecords = (Integer) ((Map<String,Object>)response.get("data")).get("total_number_of_records");
+        boolean hasMoreRecords = (Boolean) ((Map<String,Object>)response.get("data")).get("has_more_records");
+
+        List<Object> recordList = (List<Object>) ((LinkedHashMap<String,Object>)response.get("data")).get("records");
+        String jsonRecords = JsonUtils.toJsonString(recordList);
+
+        return new GetRecordsJsonResponse(totalRecords, hasMoreRecords, jsonRecords);
     }
 
     /**
@@ -3964,20 +4005,19 @@ public abstract class GPUdbBase {
      */
     public <T extends Record> GPUdbSqlIterator<T> query(String sql, Object parameters, Map<String, String> sqlOptions) throws GPUdbException
     {
-        if (!(this instanceof GPUdb))
+    	Map<String, String> sqlOpts = sqlOptions == null ? new HashMap<>() : new HashMap<>(sqlOptions);
+
+    	if (!(this instanceof GPUdb))
             throw new GPUdbException("Only supported on GPUdb objects");
 
-        if (sqlOptions == null)
-            sqlOptions = new HashMap<String, String>();
-
         if (parameters instanceof String)
-            sqlOptions.put(com.gpudb.protocol.ExecuteSqlRequest.Options.QUERY_PARAMETERS,
+        	sqlOpts.put(com.gpudb.protocol.ExecuteSqlRequest.Options.QUERY_PARAMETERS,
                 (String)parameters);
         else if (parameters != null)
-            sqlOptions.put(com.gpudb.protocol.ExecuteSqlRequest.Options.QUERY_PARAMETERS,
+        	sqlOpts.put(com.gpudb.protocol.ExecuteSqlRequest.Options.QUERY_PARAMETERS,
                 JsonUtils.toJsonString(parameters));
 
-        return new GPUdbSqlIterator<T>((GPUdb)this, sql, sqlOptions);
+        return new GPUdbSqlIterator<>((GPUdb)this, sql, sqlOpts);
     }
 
     /**
@@ -4028,20 +4068,19 @@ public abstract class GPUdbBase {
      */
     public long execute(String sql, Object parameters, Map<String, String> sqlOptions) throws GPUdbException
     {
+    	Map<String, String> sqlOpts = sqlOptions == null ? new HashMap<>() : new HashMap<>(sqlOptions);
+
         if (!(this instanceof GPUdb))
             throw new GPUdbException("Only supported on GPUdb objects");
 
-        if (sqlOptions == null)
-            sqlOptions = new HashMap<String, String>();
-
         if (parameters instanceof String)
-            sqlOptions.put(com.gpudb.protocol.ExecuteSqlRequest.Options.QUERY_PARAMETERS,
+        	sqlOpts.put(com.gpudb.protocol.ExecuteSqlRequest.Options.QUERY_PARAMETERS,
                 (String)parameters);
         else if (parameters != null)
-            sqlOptions.put(com.gpudb.protocol.ExecuteSqlRequest.Options.QUERY_PARAMETERS,
+        	sqlOpts.put(com.gpudb.protocol.ExecuteSqlRequest.Options.QUERY_PARAMETERS,
                 JsonUtils.toJsonString(parameters));
 
-        ExecuteSqlResponse response = ((GPUdb)this).executeSql(sql, 0, 1, "", null, sqlOptions);
+        ExecuteSqlResponse response = ((GPUdb)this).executeSql(sql, 0, 1, "", null, sqlOpts);
         return response.getCountAffected();
     }
 
@@ -4056,7 +4095,7 @@ public abstract class GPUdbBase {
      *
      * @return a list of URLs, where the first entry is the rank-0 URL.
      */
-    private List<URL> getRankURLs( Map<String, String> systemProperties,
+    private static List<URL> getRankURLs( Map<String, String> systemProperties,
                                    Pattern hostnameRegex )
         throws GPUdbHostnameRegexFailureException, GPUdbException {
 
@@ -4160,7 +4199,7 @@ public abstract class GPUdbBase {
      * @return a list of hostnames or IP addresses along with the protocol.
      *         These are not full URLs.
      */
-    private Set<String> getHostNamesFromSystemProperties( Map<String, String> systemProperties,
+    private static Set<String> getHostNamesFromSystemProperties( Map<String, String> systemProperties,
                                                           Pattern hostnameRegex )
         throws GPUdbHostnameRegexFailureException, GPUdbException {
 
@@ -4291,7 +4330,7 @@ public abstract class GPUdbBase {
         }
 
         // Get hostnames for all the nodes/machines in the cluster
-        Set<String> clusterHostnames = getHostNamesFromSystemProperties( systemProperties, hostnameRegex );
+        Set<String> clusterHostnames = getHostNamesFromSystemProperties( systemProperties, this.hostnameRegex );
 
         // Create the host manager URL
         URL hostManagerUrl;
@@ -4791,7 +4830,7 @@ public abstract class GPUdbBase {
                         .getHost();
 
                     // Also save it in the options
-                    this.options.setPrimaryUrl( primaryUrlHostname );
+                    this.options.setPrimaryUrl( this.primaryUrlHostname );
                     GPUdbLogger.debug_with_info(String.format(
                             "Updated primary host name %s -> %s for multi-cluster connection",
                             originalPrimaryUrlHostname, this.primaryUrlHostname
@@ -4890,7 +4929,7 @@ public abstract class GPUdbBase {
      *
      * @return {@link GPUdbBase.GPUdbVersion} object or null.
      */
-    private GPUdbVersion parseServerVersion( Map<String, String> systemProperties )
+    private static GPUdbVersion parseServerVersion( Map<String, String> systemProperties )
         throws GPUdbException {
         // Get the server version in a string format
         String serverVersionStr = systemProperties.get( DATABASE_SERVER_VERSION_KEY );
@@ -4976,7 +5015,7 @@ public abstract class GPUdbBase {
     @SuppressWarnings("rawtypes")
     public void addKnownType(String typeId, Object typeDescriptor) {
         if (typeDescriptor == null)
-            knownTypes.remove(typeId);
+            this.knownTypes.remove(typeId);
         else
             if (
                 typeDescriptor instanceof Schema ||
@@ -4984,7 +5023,7 @@ public abstract class GPUdbBase {
                 typeDescriptor instanceof TypeObjectMap ||
                 typeDescriptor instanceof Class && IndexedRecord.class.isAssignableFrom((Class)typeDescriptor)
             )
-                knownTypes.put(typeId, typeDescriptor);
+                this.knownTypes.put(typeId, typeDescriptor);
             else
                 throw new IllegalArgumentException("Type descriptor must be a Schema, Type, TypeObjectMap, or Class implementing IndexedRecord.");
     }
@@ -5052,9 +5091,9 @@ public abstract class GPUdbBase {
             }
 
             if (typeDescriptor == null) {
-                knownTypes.remove(typeId);
+                this.knownTypes.remove(typeId);
             } else {
-                knownTypes.put(typeId, typeDescriptor);
+                this.knownTypes.put(typeId, typeDescriptor);
             }
         } else {
             throw new IllegalArgumentException("Type descriptor must be a Schema, Type, TypeObjectMap, or Class implementing IndexedRecord.");
@@ -5097,9 +5136,9 @@ public abstract class GPUdbBase {
      */
     public <T> void addKnownTypeObjectMap(Class<T> objectClass, TypeObjectMap<T> typeObjectMap) {
         if (typeObjectMap == null) {
-            knownTypeObjectMaps.remove(objectClass);
+            this.knownTypeObjectMaps.remove(objectClass);
         } else {
-            knownTypeObjectMaps.put(objectClass, typeObjectMap);
+            this.knownTypeObjectMaps.put(objectClass, typeObjectMap);
         }
     }
 
@@ -5108,11 +5147,11 @@ public abstract class GPUdbBase {
     // ----------------
 
     protected <T> List<T> decode(Object typeDescriptor, List<ByteBuffer> data) throws GPUdbException {
-        return Avro.decode(typeDescriptor, data, threadCount, executor);
+        return Avro.decode(typeDescriptor, data, this.threadCount, this.executor);
     }
 
     protected <T> List<T> decode(String typeId, List<ByteBuffer> data) throws GPUdbException {
-        return Avro.decode(getTypeDescriptor(typeId), data, threadCount, executor);
+        return Avro.decode(getTypeDescriptor(typeId), data, this.threadCount, this.executor);
     }
 
     protected <T> List<T> decode(List<String> typeIds, List<ByteBuffer> data) throws GPUdbException {
@@ -5126,13 +5165,13 @@ public abstract class GPUdbBase {
                 String typeId = typeIds.get(i);
 
                 if (!typeId.equals(lastTypeId)) {
-                    result.addAll(Avro.<T>decode(getTypeDescriptor(lastTypeId), data, start, i - start, threadCount, executor));
+                    result.addAll(Avro.<T>decode(getTypeDescriptor(lastTypeId), data, start, i - start, this.threadCount, this.executor));
                     lastTypeId = typeId;
                     start = i;
                 }
             }
 
-            result.addAll(Avro.<T>decode(getTypeDescriptor(lastTypeId), data, start, data.size() - start, threadCount, executor));
+            result.addAll(Avro.<T>decode(getTypeDescriptor(lastTypeId), data, start, data.size() - start, this.threadCount, this.executor));
         }
 
         return result;
@@ -5142,7 +5181,7 @@ public abstract class GPUdbBase {
         List<List<T>> result = new ArrayList<>(data.size());
 
         for (List<ByteBuffer> datum : data) {
-            result.add(Avro.<T>decode(typeDescriptor, datum, threadCount, executor));
+            result.add(Avro.<T>decode(typeDescriptor, datum, this.threadCount, this.executor));
         }
 
         return result;
@@ -5152,7 +5191,7 @@ public abstract class GPUdbBase {
         List<List<T>> result = new ArrayList<>(data.size());
 
         for (int i = 0; i < data.size(); i++) {
-            result.add(Avro.<T>decode(getTypeDescriptor(typeIds.get(i)), data.get(i), threadCount, executor));
+            result.add(Avro.<T>decode(getTypeDescriptor(typeIds.get(i)), data.get(i), this.threadCount, this.executor));
         }
 
         return result;
@@ -5167,18 +5206,17 @@ public abstract class GPUdbBase {
         T object = data.get(0);
 
         if (object instanceof IndexedRecord) {
-            return Avro.encode((List<? extends IndexedRecord>)data, threadCount, executor).getLeft();
-        } else {
-            return Avro.encode((TypeObjectMap<T>)getTypeObjectMap(object.getClass()), data, threadCount, executor).getLeft();
+            return Avro.encode((List<? extends IndexedRecord>)data, this.threadCount, this.executor).getLeft();
         }
+        return Avro.encode((TypeObjectMap<T>)getTypeObjectMap(object.getClass()), data, this.threadCount, this.executor).getLeft();
     }
 
     protected <T> List<ByteBuffer> encode(TypeObjectMap<T> typeObjectMap, List<T> data) throws GPUdbException {
-        return Avro.encode(typeObjectMap, data == null ? new ArrayList<>() : data, threadCount, executor).getLeft();
+        return Avro.encode(typeObjectMap, data == null ? new ArrayList<>() : data, this.threadCount, this.executor).getLeft();
     }
 
     protected Object getTypeDescriptor(String typeId) throws GPUdbException {
-        Object typeDescriptor = knownTypes.get(typeId);
+        Object typeDescriptor = this.knownTypes.get(typeId);
 
         if (typeDescriptor != null) {
             return typeDescriptor;
@@ -5191,13 +5229,13 @@ public abstract class GPUdbBase {
         }
 
         typeDescriptor = new Type(response.getLabels().get(0), response.getTypeSchemas().get(0), response.getProperties().get(0));
-        knownTypes.putIfAbsent(typeId, typeDescriptor);
+        this.knownTypes.putIfAbsent(typeId, typeDescriptor);
         return typeDescriptor;
     }
 
     @SuppressWarnings("unchecked")
     protected <T> TypeObjectMap<T> getTypeObjectMap(Class<T> objectClass) throws GPUdbException {
-        TypeObjectMap<T> typeObjectMap = (TypeObjectMap<T>)knownTypeObjectMaps.get(objectClass);
+        TypeObjectMap<T> typeObjectMap = (TypeObjectMap<T>)this.knownTypeObjectMaps.get(objectClass);
 
         if (typeObjectMap == null) {
             throw new GPUdbException("No known type object map for class " + objectClass.getName() + ".");
@@ -5206,7 +5244,7 @@ public abstract class GPUdbBase {
         return typeObjectMap;
     }
 
-    protected void setTypeDescriptorIfMissing(String typeId, String label, String typeSchema, Map<String, List<String>> properties) throws GPUdbException {
+    protected void setTypeDescriptorIfMissing(String typeId, String label, String typeSchema, Map<String, List<String>> properties) {
         // If the table is a collection, it does not have a proper type so
         // ignore it
 
@@ -5216,8 +5254,8 @@ public abstract class GPUdbBase {
 
         // Check first to avoid creating a Type object unnecessarily
 
-        if (!knownTypes.containsKey(typeId)) {
-            knownTypes.putIfAbsent(typeId, new Type(label, typeSchema, properties));
+        if (!this.knownTypes.containsKey(typeId)) {
+            this.knownTypes.putIfAbsent(typeId, new Type(label, typeSchema, properties));
         }
     }
 
@@ -5522,8 +5560,7 @@ public abstract class GPUdbBase {
      *
      * @throws SubmitException if an error occurs while submitting the request
      */
-    public String submitRequest( String endpoint,
-                                                      boolean enableCompression ) throws SubmitException, GPUdbException {
+    public String submitRequest( String endpoint, boolean enableCompression ) throws SubmitException, GPUdbException {
         // Send the request to the database server head node
         URL url = getURL();
         URL originalURL = url;
@@ -5642,8 +5679,7 @@ public abstract class GPUdbBase {
      *
      * @throws SubmitException if an error occurs while submitting the request
      */
-    public String submitRequest( URL url,
-                                                      boolean enableCompression)
+    public String submitRequest( URL url, boolean enableCompression)
             throws SubmitException, GPUdbExitException, GPUdbException {
 
         return submitRequestRaw( url, enableCompression );
@@ -5671,9 +5707,7 @@ public abstract class GPUdbBase {
      *
      * @throws SubmitException if an error occurs while submitting the request
      */
-    public Map<String, Object> submitRequest( URL url,
-                                                      String payload,
-                                                      boolean enableCompression)
+    public Map<String, Object> submitRequest( URL url, String payload, boolean enableCompression)
             throws SubmitException, GPUdbExitException, GPUdbException {
 
         return submitRequestRaw( url, payload, enableCompression );
@@ -5728,7 +5762,7 @@ public abstract class GPUdbBase {
         URL hmUrl = getHmURL();
         URL originalURL = hmUrl;
 
-        GPUdbException original_exception = null;
+        GPUdbException originalException = null;
 
         for (int i = 0; i < HOST_MANAGER_SUBMIT_REQUEST_RETRY_COUNT; ++i) {
             // We need a snapshot of the current state re: HA failover.  When
@@ -5741,16 +5775,16 @@ public abstract class GPUdbBase {
                 return submitRequest(appendPathToURL(hmUrl, endpoint), request, response, enableCompression);
             } catch (MalformedURLException ex) {
                 // Save the original exception for later use
-                if (original_exception == null) {
-                    original_exception = new GPUdbException( ex.getMessage() );
+                if (originalException == null) {
+                    originalException = new GPUdbException( ex.getMessage() );
                 }
 
                 // There's an error in creating the URL
                 throw new GPUdbRuntimeException(ex.getMessage(), ex);
             } catch (GPUdbExitException ex) {
                 // Save the original exception for later use
-                if (original_exception == null) {
-                    original_exception = ex;
+                if (originalException == null) {
+                    originalException = ex;
                 }
 
                 // Upon failure, try to use other clusters
@@ -5769,8 +5803,8 @@ public abstract class GPUdbBase {
                 }
             } catch (SubmitException ex) {
                 // Save the original exception for later use
-                if (original_exception == null) {
-                    original_exception = ex;
+                if (originalException == null) {
+                    originalException = ex;
                 }
 
                 // Upon failure, try to use other clusters
@@ -5803,8 +5837,8 @@ public abstract class GPUdbBase {
                 }
             } catch (GPUdbException ex) {
                 // Save the original exception for later use
-                if (original_exception == null) {
-                    original_exception = ex;
+                if (originalException == null) {
+                    originalException = ex;
                 }
 
                 // the host manager can still be going even if the database is down
@@ -5829,8 +5863,8 @@ public abstract class GPUdbBase {
                 }
             } catch (Exception ex) {
                 // Save the original exception for later use
-                if (original_exception == null) {
-                    original_exception = new GPUdbException( ex.getMessage() );
+                if (originalException == null) {
+                    originalException = new GPUdbException( ex.getMessage() );
                 }
 
                 // And other random exceptions probably are also connection errors
@@ -5851,13 +5885,18 @@ public abstract class GPUdbBase {
         } // end for
 
         // If we reach here, then something went wrong
-        GPUdbLogger.debug_with_info(
+        final String exceededRetryCountError = 
                 "Failed to submit host manager endpoint; "
                 + "exceeded retry count " + HOST_MANAGER_SUBMIT_REQUEST_RETRY_COUNT
-                + "; original exception: '" + original_exception.getMessage()
-                + "'; please check if the host manager port is wrong: " + hmUrl.toString()
-        );
-        throw original_exception;
+                + "; original exception: '" + (originalException == null ? "" : originalException.getMessage())
+                + "'; please check if the host manager port is wrong: " + hmUrl.toString();
+
+        GPUdbLogger.debug_with_info(exceededRetryCountError);
+
+        if (originalException != null)
+            throw originalException;
+
+        throw new GPUdbException(exceededRetryCountError);
     } // end submitRequestToHM
 
 
@@ -5914,8 +5953,8 @@ public abstract class GPUdbBase {
      * @param request            the request object
      * @param response           the response object
      * @param enableCompression  whether to compress the request
-     * @param timeout            a positive integer representing the number of
-     *                           milliseconds to use for connection timeout
+     * @param responseTimeout    a positive integer representing the number of
+     *                           milliseconds to use for response timeout
      * @return                   the response object (same as {@code response}
      *                           parameter)
      *
@@ -5925,10 +5964,10 @@ public abstract class GPUdbBase {
                                                       IndexedRecord request,
                                                       T response,
                                                       boolean enableCompression,
-                                                      int timeout)
+                                                      int responseTimeout)
         throws SubmitException, GPUdbExitException, GPUdbException {
 
-        return submitRequestRaw( url, request, response, enableCompression, timeout );
+        return submitRequestRaw( url, request, response, enableCompression, responseTimeout );
     }
 
     /**
@@ -6040,8 +6079,8 @@ public abstract class GPUdbBase {
      * @param request            the request object
      * @param response           the response object
      * @param enableCompression  whether to compress the request
-     * @param timeout            a positive integer representing the number of
-     *                           milliseconds to use for connection timeout
+     * @param responseTimeout    a positive integer representing the number of
+     *                           milliseconds to use for response timeout
      * @return                   the response object (same as {@code response}
      *                           parameter)
      *
@@ -6051,7 +6090,7 @@ public abstract class GPUdbBase {
                                                          IndexedRecord request,
                                                          T response,
                                                          boolean enableCompression,
-                                                         int timeout)
+                                                         int responseTimeout)
         throws SubmitException, GPUdbExitException, GPUdbException {
 
         int requestSize = -1;
@@ -6065,11 +6104,11 @@ public abstract class GPUdbBase {
             GPUdbLogger.trace_with_info( "Sending request to " + url.toString() );
 
             // Use the given timeout, instead of the member variable one
-            postRequest = initializeHttpPostRequest( url, timeout );
+            postRequest = initializeHttpPostRequest( url, responseTimeout );
             host = new HttpHost( url.getProtocol(), url.getHost(), url.getPort() );
 
             HttpEntity requestPacket;
-            if (enableCompression && useSnappy) {
+            if (enableCompression && this.useSnappy) {
                 // Use snappy to compress the original request body
                 byte[] encodedRequest = Snappy.compress(Avro.encode(request).array());
                 requestSize = encodedRequest.length;
@@ -6288,8 +6327,8 @@ public abstract class GPUdbBase {
      * @param url                the URL to send the request to
      * @param payload            the payload as a JSON String
      * @param enableCompression  whether to compress the request
-     * @param timeout            a positive integer representing the number of
-     *                           milliseconds to use for connection timeout
+     * @param responseTimeout    a positive integer representing the number of
+     *                           milliseconds to use for response timeout
      * @return                   the response object (same as {@code response}
      *                           parameter)
      *
@@ -6298,7 +6337,7 @@ public abstract class GPUdbBase {
     public Map<String, Object> submitRequestRaw( URL url,
                                                 String payload,
                                                 boolean enableCompression,
-                                                int timeout)
+                                                int responseTimeout)
             throws SubmitException, GPUdbExitException, GPUdbException {
 
         HttpPost              postRequest    = null;
@@ -6311,7 +6350,7 @@ public abstract class GPUdbBase {
             GPUdbLogger.trace_with_info( "Sending request to " + url.toString() );
 
             // Use the given timeout, instead of the member variable one
-            postRequest = initializeHttpPostRequest( url, timeout );
+            postRequest = initializeHttpPostRequest( url, responseTimeout );
             host = new HttpHost( url.getProtocol(), url.getHost(), url.getPort() );
 
             // Save the payload into the http post object as a JSON payload
@@ -6465,7 +6504,7 @@ public abstract class GPUdbBase {
      *
      * @param url                the URL to send the request to
      * @param enableCompression  whether to compress the request
-     * @param timeout            a positive integer representing the number of
+     * @param responseTimeout    a positive integer representing the number of
      *                           milliseconds to use for connection timeout
      * @return                   the response object (same as {@code response}
      *                           parameter)
@@ -6474,7 +6513,7 @@ public abstract class GPUdbBase {
      */
     public String submitRequestRaw( URL url,
                                     boolean enableCompression,
-                                    int timeout)
+                                    int responseTimeout)
             throws SubmitException, GPUdbExitException, GPUdbException {
 
         HttpPost              postRequest    = null;
@@ -6486,7 +6525,7 @@ public abstract class GPUdbBase {
             GPUdbLogger.trace_with_info( "Sending request to " + url.toString() );
 
             // Use the given timeout, instead of the member variable one
-            postRequest = initializeHttpPostRequest( url, timeout );
+            postRequest = initializeHttpPostRequest( url, responseTimeout );
             host = new HttpHost( url.getProtocol(), url.getHost(), url.getPort() );
 
             // Execute the request
@@ -6694,18 +6733,18 @@ public abstract class GPUdbBase {
      * returns an empty string.
      *
      * @param url  the URL to which the connection needs to be made
-     * @param timeout a positive integer representing the number of
-     *                milliseconds to use for connection timeout
+     * @param connectionTimeout a positive integer representing the number of
+     *                milliseconds to use for connection & read timeouts
      *
      * @return the ping response, or an empty string if it fails.
      */
-    public String ping(URL url, int timeout) {
+    public String ping(URL url, int connectionTimeout) {
         GPUdbLogger.debug_with_info( "Pinging URL: " + url.toString() );
 
         HttpURLConnection connection = null;
 
         try {
-            connection = initializeHttpConnection( url, timeout );
+            connection = initializeHttpConnection( url, connectionTimeout );
 
             // Ping is a get, unlike all endpoints which are post
             connection.setRequestMethod("GET");

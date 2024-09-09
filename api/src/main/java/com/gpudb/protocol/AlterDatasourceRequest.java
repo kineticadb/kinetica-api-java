@@ -93,7 +93,8 @@ public class AlterDatasourceRequest implements IndexedRecord {
         public static final String WAIT_TIMEOUT = "wait_timeout";
 
         /**
-         * Name of the Credential object to be used in data source
+         * Name of the <a href="../../../../../../concepts/credentials"
+         * target="_top">credential</a> object to be used in data source
          */
         public static final String CREDENTIAL = "credential";
 
@@ -168,7 +169,7 @@ public class AlterDatasourceRequest implements IndexedRecord {
         public static final String AZURE_SAS_TOKEN = "azure_sas_token";
 
         /**
-         * Oauth token to access given storage container
+         * OAuth token to access given storage container
          */
         public static final String AZURE_OAUTH_TOKEN = "azure_oauth_token";
 
@@ -189,7 +190,7 @@ public class AlterDatasourceRequest implements IndexedRecord {
         public static final String GCS_SERVICE_ACCOUNT_KEYS = "gcs_service_account_keys";
 
         /**
-         * The publicly-accessible full path URL to the kafka broker, e.g.,
+         * The publicly-accessible full path URL to the Kafka broker, e.g.,
          * 'http://172.123.45.67:9300'.
          */
         public static final String KAFKA_URL = "kafka_url";
@@ -322,8 +323,10 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                      provider
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#CREDENTIAL
-     *                                      CREDENTIAL}: Name of the Credential
-     *                                      object to be used in data source
+     *                                      CREDENTIAL}: Name of the <a
+     *                                      href="../../../../../../concepts/credentials"
+     *                                      target="_top">credential</a> object
+     *                                      to be used in data source
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#S3_BUCKET_NAME
      *                                      S3_BUCKET_NAME}: Name of the Amazon
@@ -397,7 +400,7 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                      account to use as the data source
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#AZURE_OAUTH_TOKEN
-     *                                      AZURE_OAUTH_TOKEN}: Oauth token to
+     *                                      AZURE_OAUTH_TOKEN}: OAuth token to
      *                                      access given storage container
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#GCS_BUCKET_NAME
@@ -417,7 +420,7 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#KAFKA_URL
      *                                      KAFKA_URL}: The publicly-accessible
-     *                                      full path URL to the kafka broker,
+     *                                      full path URL to the Kafka broker,
      *                                      e.g., 'http://172.123.45.67:9300'.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#KAFKA_TOPIC_NAME
@@ -553,7 +556,8 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *     <li>{@link DatasourceUpdatesMap#WAIT_TIMEOUT WAIT_TIMEOUT}: Timeout
      *         in seconds for reading from this storage provider
      *     <li>{@link DatasourceUpdatesMap#CREDENTIAL CREDENTIAL}: Name of the
-     *         Credential object to be used in data source
+     *         <a href="../../../../../../concepts/credentials"
+     *         target="_top">credential</a> object to be used in data source
      *     <li>{@link DatasourceUpdatesMap#S3_BUCKET_NAME S3_BUCKET_NAME}: Name
      *         of the Amazon S3 bucket to use as the data source
      *     <li>{@link DatasourceUpdatesMap#S3_REGION S3_REGION}: Name of the
@@ -594,7 +598,7 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         Shared access signature token for Azure storage account to use
      *         as the data source
      *     <li>{@link DatasourceUpdatesMap#AZURE_OAUTH_TOKEN
-     *         AZURE_OAUTH_TOKEN}: Oauth token to access given storage
+     *         AZURE_OAUTH_TOKEN}: OAuth token to access given storage
      *         container
      *     <li>{@link DatasourceUpdatesMap#GCS_BUCKET_NAME GCS_BUCKET_NAME}:
      *         Name of the Google Cloud Storage bucket to use as the data
@@ -605,7 +609,7 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud service account keys to
      *         use for authenticating the data source
      *     <li>{@link DatasourceUpdatesMap#KAFKA_URL KAFKA_URL}: The
-     *         publicly-accessible full path URL to the kafka broker, e.g.,
+     *         publicly-accessible full path URL to the Kafka broker, e.g.,
      *         'http://172.123.45.67:9300'.
      *     <li>{@link DatasourceUpdatesMap#KAFKA_TOPIC_NAME KAFKA_TOPIC_NAME}:
      *         Name of the Kafka topic to use as the data source
@@ -682,7 +686,8 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *     <li>{@link DatasourceUpdatesMap#WAIT_TIMEOUT WAIT_TIMEOUT}: Timeout
      *         in seconds for reading from this storage provider
      *     <li>{@link DatasourceUpdatesMap#CREDENTIAL CREDENTIAL}: Name of the
-     *         Credential object to be used in data source
+     *         <a href="../../../../../../concepts/credentials"
+     *         target="_top">credential</a> object to be used in data source
      *     <li>{@link DatasourceUpdatesMap#S3_BUCKET_NAME S3_BUCKET_NAME}: Name
      *         of the Amazon S3 bucket to use as the data source
      *     <li>{@link DatasourceUpdatesMap#S3_REGION S3_REGION}: Name of the
@@ -723,7 +728,7 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         Shared access signature token for Azure storage account to use
      *         as the data source
      *     <li>{@link DatasourceUpdatesMap#AZURE_OAUTH_TOKEN
-     *         AZURE_OAUTH_TOKEN}: Oauth token to access given storage
+     *         AZURE_OAUTH_TOKEN}: OAuth token to access given storage
      *         container
      *     <li>{@link DatasourceUpdatesMap#GCS_BUCKET_NAME GCS_BUCKET_NAME}:
      *         Name of the Google Cloud Storage bucket to use as the data
@@ -734,7 +739,7 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud service account keys to
      *         use for authenticating the data source
      *     <li>{@link DatasourceUpdatesMap#KAFKA_URL KAFKA_URL}: The
-     *         publicly-accessible full path URL to the kafka broker, e.g.,
+     *         publicly-accessible full path URL to the Kafka broker, e.g.,
      *         'http://172.123.45.67:9300'.
      *     <li>{@link DatasourceUpdatesMap#KAFKA_TOPIC_NAME KAFKA_TOPIC_NAME}:
      *         Name of the Kafka topic to use as the data source

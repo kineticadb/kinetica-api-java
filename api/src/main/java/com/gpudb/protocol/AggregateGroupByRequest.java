@@ -245,6 +245,13 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String VALUE = "value";
 
         /**
+         * Comma-separated list of the columns to be sorted by as well as the
+         * sort direction, e.g., 'timestamp asc, x desc'. The default value is
+         * ''.
+         */
+        public static final String ORDER_BY = "order_by";
+
+        /**
          * The <a href="../../../../../../rm/concepts/#tier-strategies"
          * target="_top">tier strategy</a> for the table and its columns.
          */
@@ -378,6 +385,15 @@ public class AggregateGroupByRequest implements IndexedRecord {
          */
         public static final String CUBE = "cube";
 
+        /**
+         * Comma-separated list of the columns to be sharded on;
+         * e.g.&nbsp;'column1, column2'.  The columns specified must be present
+         * in {@link #getColumnNames() columnNames}.  If any alias is given for
+         * any column name, the alias must be used, rather than the original
+         * column name. The default value is ''.
+         */
+        public static final String SHARD_KEY = "shard_key";
+
         private Options() {  }
     }
 
@@ -502,6 +518,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#VALUE
      *                         VALUE}.
+     *                     <li>{@link Options#ORDER_BY ORDER_BY}:
+     *                         Comma-separated list of the columns to be sorted
+     *                         by as well as the sort direction, e.g.,
+     *                         'timestamp asc, x desc'. The default value is
+     *                         ''.
      *                     <li>{@link Options#STRATEGY_DEFINITION
      *                         STRATEGY_DEFINITION}: The <a
      *                         href="../../../../../../rm/concepts/#tier-strategies"
@@ -610,6 +631,14 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         used to specify the multilevel aggregates.
      *                     <li>{@link Options#CUBE CUBE}: This option is used
      *                         to specify the multidimensional aggregates.
+     *                     <li>{@link Options#SHARD_KEY SHARD_KEY}:
+     *                         Comma-separated list of the columns to be
+     *                         sharded on; e.g. 'column1, column2'.  The
+     *                         columns specified must be present in {@code
+     *                         columnNames}.  If any alias is given for any
+     *                         column name, the alias must be used, rather than
+     *                         the original column name. The default value is
+     *                         ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -735,6 +764,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#VALUE
      *                         VALUE}.
+     *                     <li>{@link Options#ORDER_BY ORDER_BY}:
+     *                         Comma-separated list of the columns to be sorted
+     *                         by as well as the sort direction, e.g.,
+     *                         'timestamp asc, x desc'. The default value is
+     *                         ''.
      *                     <li>{@link Options#STRATEGY_DEFINITION
      *                         STRATEGY_DEFINITION}: The <a
      *                         href="../../../../../../rm/concepts/#tier-strategies"
@@ -843,6 +877,14 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         used to specify the multilevel aggregates.
      *                     <li>{@link Options#CUBE CUBE}: This option is used
      *                         to specify the multidimensional aggregates.
+     *                     <li>{@link Options#SHARD_KEY SHARD_KEY}:
+     *                         Comma-separated list of the columns to be
+     *                         sharded on; e.g. 'column1, column2'.  The
+     *                         columns specified must be present in {@code
+     *                         columnNames}.  If any alias is given for any
+     *                         column name, the alias must be used, rather than
+     *                         the original column name. The default value is
+     *                         ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -1068,6 +1110,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 aggregate, then the second aggregate, etc.
      *         </ul>
      *         The default value is {@link Options#VALUE VALUE}.
+     *     <li>{@link Options#ORDER_BY ORDER_BY}: Comma-separated list of the
+     *         columns to be sorted by as well as the sort direction, e.g.,
+     *         'timestamp asc, x desc'. The default value is ''.
      *     <li>{@link Options#STRATEGY_DEFINITION STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
@@ -1153,6 +1198,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         the multilevel aggregates.
      *     <li>{@link Options#CUBE CUBE}: This option is used to specify the
      *         multidimensional aggregates.
+     *     <li>{@link Options#SHARD_KEY SHARD_KEY}: Comma-separated list of the
+     *         columns to be sharded on; e.g. 'column1, column2'.  The columns
+     *         specified must be present in {@link #getColumnNames()
+     *         columnNames}.  If any alias is given for any column name, the
+     *         alias must be used, rather than the original column name. The
+     *         default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -1220,6 +1271,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 aggregate, then the second aggregate, etc.
      *         </ul>
      *         The default value is {@link Options#VALUE VALUE}.
+     *     <li>{@link Options#ORDER_BY ORDER_BY}: Comma-separated list of the
+     *         columns to be sorted by as well as the sort direction, e.g.,
+     *         'timestamp asc, x desc'. The default value is ''.
      *     <li>{@link Options#STRATEGY_DEFINITION STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
@@ -1305,6 +1359,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         the multilevel aggregates.
      *     <li>{@link Options#CUBE CUBE}: This option is used to specify the
      *         multidimensional aggregates.
+     *     <li>{@link Options#SHARD_KEY SHARD_KEY}: Comma-separated list of the
+     *         columns to be sharded on; e.g. 'column1, column2'.  The columns
+     *         specified must be present in {@link #getColumnNames()
+     *         columnNames}.  If any alias is given for any column name, the
+     *         alias must be used, rather than the original column name. The
+     *         default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      *

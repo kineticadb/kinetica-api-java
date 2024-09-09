@@ -545,6 +545,19 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String SHAPEFILE = "shapefile";
 
         /**
+         * Specifies how to handle nested columns.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}: Break up nested columns to
+         *         multiple columns
+         *     <li>{@link Options#FALSE FALSE}: Treat nested columns as json
+         *         columns instead of flattening
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String FLATTEN_COLUMNS = "flatten_columns";
+
+        /**
          * Comma separated list of gdal conf options, for the specific requets:
          * key=value. The default value is ''.
          */
@@ -1403,6 +1416,18 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link
      *                         Options#DELIMITED_TEXT DELIMITED_TEXT}.
+     *                     <li>{@link Options#FLATTEN_COLUMNS FLATTEN_COLUMNS}:
+     *                         Specifies how to handle nested columns.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}: Break up
+     *                                 nested columns to multiple columns
+     *                             <li>{@link Options#FALSE FALSE}: Treat
+     *                                 nested columns as json columns instead
+     *                                 of flattening
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                     <li>{@link Options#GDAL_CONFIGURATION_OPTIONS
      *                         GDAL_CONFIGURATION_OPTIONS}: Comma separated
      *                         list of gdal conf options, for the specific
@@ -2267,6 +2292,16 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#DELIMITED_TEXT
      *         DELIMITED_TEXT}.
+     *     <li>{@link Options#FLATTEN_COLUMNS FLATTEN_COLUMNS}: Specifies how
+     *         to handle nested columns.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}: Break up nested columns to
+     *                 multiple columns
+     *             <li>{@link Options#FALSE FALSE}: Treat nested columns as
+     *                 json columns instead of flattening
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#GDAL_CONFIGURATION_OPTIONS
      *         GDAL_CONFIGURATION_OPTIONS}: Comma separated list of gdal conf
      *         options, for the specific requets: key=value. The default value
@@ -2665,6 +2700,16 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#DELIMITED_TEXT
      *         DELIMITED_TEXT}.
+     *     <li>{@link Options#FLATTEN_COLUMNS FLATTEN_COLUMNS}: Specifies how
+     *         to handle nested columns.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}: Break up nested columns to
+     *                 multiple columns
+     *             <li>{@link Options#FALSE FALSE}: Treat nested columns as
+     *                 json columns instead of flattening
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#GDAL_CONFIGURATION_OPTIONS
      *         GDAL_CONFIGURATION_OPTIONS}: Comma separated list of gdal conf
      *         options, for the specific requets: key=value. The default value

@@ -435,6 +435,12 @@ public class ShowTableResponse implements IndexedRecord {
          */
         public static final String DATASOURCE_SUBSCRIPTIONS = "datasource_subscriptions";
 
+        /**
+         * Comma-separated list of null modifying column names. The default
+         * value is ''.
+         */
+        public static final String NULL_MODIFYING_COLUMNS = "null_modifying_columns";
+
         private AdditionalInfo() {  }
     }
 
@@ -866,6 +872,9 @@ public class ShowTableResponse implements IndexedRecord {
      *         DATASOURCE_SUBSCRIPTIONS}: Semicolon-separated list of
      *         datasource names the table has subscribed to. The default value
      *         is ''.
+     *     <li>{@link AdditionalInfo#NULL_MODIFYING_COLUMNS
+     *         NULL_MODIFYING_COLUMNS}: Comma-separated list of null modifying
+     *         column names. The default value is ''.
      * </ul>
      *
      * @return The current value of {@code additionalInfo}.
@@ -1056,6 +1065,9 @@ public class ShowTableResponse implements IndexedRecord {
      *         DATASOURCE_SUBSCRIPTIONS}: Semicolon-separated list of
      *         datasource names the table has subscribed to. The default value
      *         is ''.
+     *     <li>{@link AdditionalInfo#NULL_MODIFYING_COLUMNS
+     *         NULL_MODIFYING_COLUMNS}: Comma-separated list of null modifying
+     *         column names. The default value is ''.
      * </ul>
      *
      * @param additionalInfo  The new value for {@code additionalInfo}.

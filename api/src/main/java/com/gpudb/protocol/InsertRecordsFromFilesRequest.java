@@ -72,21 +72,22 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * A set of string constants for the {@link InsertRecordsFromFilesRequest}
      * parameter {@link #getCreateTableOptions() createTableOptions}.
      * <p>
-     * Options used when creating the target table.
+     * Options from {@link com.gpudb.GPUdb#createTable(CreateTableRequest)
+     * GPUdb.createTable}, allowing the structure of the table to be defined
+     * independently of the data source, when creating the target table
      */
     public static final class CreateTableOptions {
         /**
          * ID of a currently registered <a
-         * href="../../../../../../concepts/types/" target="_top">type</a>. The
-         * default value is ''.
+         * href="../../../../../../concepts/types/" target="_top">type</a>.
          */
         public static final String TYPE_ID = "type_id";
 
         /**
          * If {@link CreateTableOptions#TRUE TRUE}, prevents an error from
          * occurring if the table already exists and is of the given type.  If
-         * a table with the same ID but a different type exists, it is still an
-         * error.
+         * a table with the same name but a different type exists, it is still
+         * an error.
          * Supported values:
          * <ul>
          *     <li>{@link CreateTableOptions#TRUE TRUE}
@@ -103,7 +104,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * Affects the <a
          * href="../../../../../../concepts/tables/#distribution"
          * target="_top">distribution scheme</a> for the table's data.  If
-         * {@link CreateTableOptions#TRUE TRUE} and the given type has no
+         * {@link CreateTableOptions#TRUE TRUE} and the given table has no
          * explicit <a href="../../../../../../concepts/tables/#shard-key"
          * target="_top">shard key</a> defined, the table will be <a
          * href="../../../../../../concepts/tables/#replication"
@@ -227,7 +228,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         /**
          * If {@link CreateTableOptions#TRUE TRUE}, a new partition will be
          * created for values which don't fall into an existing partition.
-         * Currently only supported for <a
+         * Currently, only supported for <a
          * href="../../../../../../concepts/tables/#partitioning-by-list"
          * target="_top">list partitions</a>.
          * Supported values:
@@ -297,69 +298,33 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      */
     public static final class Options {
         /**
-         * Optional number of bytes to skip when reading an avro record.
-         */
-        public static final String AVRO_HEADER_BYTES = "avro_header_bytes";
-
-        /**
-         * Optional number of avro records, if data includes only records.
-         */
-        public static final String AVRO_NUM_RECORDS = "avro_num_records";
-
-        /**
-         * Optional string representing avro schema, if data includes only
-         * records.
-         */
-        public static final String AVRO_SCHEMA = "avro_schema";
-
-        /**
-         * When user provides 'avro_schema', avro data is assumed to be
-         * schemaless, unless specified. Default is 'true' when given
-         * avro_schema. Igonred when avro_schema is not given.
-         * Supported values:
-         * <ul>
-         *     <li>{@link Options#TRUE TRUE}
-         *     <li>{@link Options#FALSE FALSE}
-         * </ul>
-         */
-        public static final String AVRO_SCHEMALESS = "avro_schemaless";
-
-        /**
-         * Upsert new records when primary keys match existing records
-         */
-        public static final String TRUE = "true";
-
-        /**
-         * Reject new records when primary keys match existing records
-         */
-        public static final String FALSE = "false";
-
-        /**
-         * Optional name of a table to which records that were rejected are
-         * written.  The bad-record-table has the following columns:
-         * line_number (long), line_rejected (string), error_message (string).
-         * When error handling is Abort, bad records table is not populated.
+         * Name of a table to which records that were rejected are written. The
+         * bad-record-table has the following columns: line_number (long),
+         * line_rejected (string), error_message (string).  When {@link
+         * Options#ERROR_HANDLING ERROR_HANDLING} is {@link Options#ABORT
+         * ABORT}, bad records table is not populated.
          */
         public static final String BAD_RECORD_TABLE_NAME = "bad_record_table_name";
 
         /**
          * A positive integer indicating the maximum number of records that can
-         * be  written to the bad-record-table.   Default value is 10000
+         * be written to the bad-record-table. The default value is '10000'.
          */
         public static final String BAD_RECORD_TABLE_LIMIT = "bad_record_table_limit";
 
         /**
-         * For subscriptions: A positive integer indicating the maximum number
+         * For subscriptions, a positive integer indicating the maximum number
          * of records that can be written to the bad-record-table per
-         * file/payload. Default value will be 'bad_record_table_limit' and
-         * total size of the table per rank is limited to
-         * 'bad_record_table_limit'
+         * file/payload. Default value will be {@link
+         * Options#BAD_RECORD_TABLE_LIMIT BAD_RECORD_TABLE_LIMIT} and total
+         * size of the table per rank is limited to {@link
+         * Options#BAD_RECORD_TABLE_LIMIT BAD_RECORD_TABLE_LIMIT}.
          */
         public static final String BAD_RECORD_TABLE_LIMIT_PER_INPUT = "bad_record_table_limit_per_input";
 
         /**
-         * Internal tuning parameter--number of records per batch when
-         * inserting data.
+         * Number of records to insert per batch when inserting data. The
+         * default value is '50000'.
          */
         public static final String BATCH_SIZE = "batch_size";
 
@@ -417,12 +382,11 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String COLUMNS_TO_SKIP = "columns_to_skip";
 
         /**
-         * Optional: compression type.
+         * Source data compression type.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#NONE NONE}: Uncompressed file
-         *     <li>{@link Options#AUTO AUTO}: Default. Auto detect compression
-         *         type
+         *     <li>{@link Options#NONE NONE}: No compression.
+         *     <li>{@link Options#AUTO AUTO}: Auto detect compression type
          *     <li>{@link Options#GZIP GZIP}: gzip file compression.
          *     <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
          * </ul>
@@ -431,12 +395,12 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String COMPRESSION_TYPE = "compression_type";
 
         /**
-         * Uncompressed file
+         * No compression.
          */
         public static final String NONE = "none";
 
         /**
-         * Default. Auto detect compression type
+         * Auto detect compression type
          */
         public static final String AUTO = "auto";
 
@@ -569,8 +533,31 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String SHAPEFILE = "shapefile";
 
         /**
+         * Specifies how to handle nested columns.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}: Break up nested columns to
+         *         multiple columns
+         *     <li>{@link Options#FALSE FALSE}: Treat nested columns as json
+         *         columns instead of flattening
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String FLATTEN_COLUMNS = "flatten_columns";
+
+        /**
+         * Upsert new records when primary keys match existing records
+         */
+        public static final String TRUE = "true";
+
+        /**
+         * Reject new records when primary keys match existing records
+         */
+        public static final String FALSE = "false";
+
+        /**
          * Comma separated list of gdal conf options, for the specific requets:
-         * key=value. The default value is ''.
+         * key=value
          */
         public static final String GDAL_CONFIGURATION_OPTIONS = "gdal_configuration_options";
 
@@ -642,14 +629,20 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String TYPE_INFERENCE_ONLY = "type_inference_only";
 
         /**
-         * The group id to be used consuming data from a kakfa topic (valid
-         * only for kafka datasource subscriptions).
+         * Number of Kafka consumer threads per rank (valid range 1-6). The
+         * default value is '1'.
+         */
+        public static final String KAFKA_CONSUMERS_PER_RANK = "kafka_consumers_per_rank";
+
+        /**
+         * The group id to be used when consuming data from a Kafka topic
+         * (valid only for Kafka datasource subscriptions).
          */
         public static final String KAFKA_GROUP_ID = "kafka_group_id";
 
         /**
-         * Policy to determine whether the data consumption starts either at
-         * earliest offset or latest offset.
+         * Policy to determine whether the Kafka data consumption starts either
+         * at earliest offset or latest offset.
          * Supported values:
          * <ul>
          *     <li>{@link Options#EARLIEST EARLIEST}
@@ -663,14 +656,31 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String LATEST = "latest";
 
         /**
-         * Sets the subscription lifespan (in minutes). Expired subscription
-         * will be cancelled automatically.
+         * Enable optimistic ingestion where Kafka topic offsets and table data
+         * are committed independently to achieve parallelism.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String KAFKA_OPTIMISTIC_INGEST = "kafka_optimistic_ingest";
+
+        /**
+         * Sets the Kafka subscription lifespan (in minutes). Expired
+         * subscription will be cancelled automatically.
          */
         public static final String KAFKA_SUBSCRIPTION_CANCEL_AFTER = "kafka_subscription_cancel_after";
 
         /**
-         * Optional: geo files layer(s) name(s): comma separated. The default
-         * value is ''.
+         * Maximum time to collect Kafka messages before type inferencing on
+         * the set of them.
+         */
+        public static final String KAFKA_TYPE_INFERENCE_FETCH_TIMEOUT = "kafka_type_inference_fetch_timeout";
+
+        /**
+         * Geo files layer(s) name(s): comma separated.
          */
         public static final String LAYER = "layer";
 
@@ -750,21 +760,21 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String DISTRIBUTED_LOCAL = "distributed_local";
 
         /**
-         * For Avro local timestamp columns
+         * Apply an offset to Avro local timestamp columns.
          */
         public static final String LOCAL_TIME_OFFSET = "local_time_offset";
 
         /**
-         * Limit the number of records to load in this request: If this number
-         * is larger than a batch_size, then the number of records loaded will
-         * be limited to the next whole number of batch_size (per working
-         * thread). The default value is ''.
+         * Limit the number of records to load in this request: if this number
+         * is larger than {@link Options#BATCH_SIZE BATCH_SIZE}, then the
+         * number of records loaded will be limited to the next whole number of
+         * {@link Options#BATCH_SIZE BATCH_SIZE} (per working thread).
          */
         public static final String MAX_RECORDS_TO_LOAD = "max_records_to_load";
 
         /**
-         * Optional: number of tasks for reading file per rank. Default will be
-         * external_file_reader_num_tasks
+         * Number of tasks for reading file per rank. Default will be system
+         * configuration parameter, external_file_reader_num_tasks.
          */
         public static final String NUM_TASKS_PER_RANK = "num_tasks_per_rank";
 
@@ -772,23 +782,26 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * If {@link Options#TRUE TRUE}, the number of seconds between attempts
          * to load external files into the table.  If zero, polling will be
          * continuous as long as data is found.  If no data is found, the
-         * interval will steadily increase to a maximum of 60 seconds.
+         * interval will steadily increase to a maximum of 60 seconds. The
+         * default value is '0'.
          */
         public static final String POLL_INTERVAL = "poll_interval";
 
         /**
-         * Optional: comma separated list of column names, to set as primary
-         * keys, when not specified in the type. The default value is ''.
+         * Comma separated list of column names to set as primary keys, when
+         * not specified in the type.
          */
         public static final String PRIMARY_KEYS = "primary_keys";
 
-        public static final String SCHEMA_REGISTRY_SCHEMA_ID = "schema_registry_schema_id";
+        /**
+         * Name of the Avro schema in the schema registry to use when reading
+         * Avro records.
+         */
         public static final String SCHEMA_REGISTRY_SCHEMA_NAME = "schema_registry_schema_name";
-        public static final String SCHEMA_REGISTRY_SCHEMA_VERSION = "schema_registry_schema_version";
 
         /**
-         * Optional: comma separated list of column names, to set as primary
-         * keys, when not specified in the type. The default value is ''.
+         * Comma separated list of column names to set as shard keys, when not
+         * specified in the type.
          */
         public static final String SHARD_KEYS = "shard_keys";
 
@@ -810,19 +823,29 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String SUBSCRIBE = "subscribe";
 
         /**
-         * Optional: table_insert_mode. When inserting records from multiple
-         * files: if table_per_file then insert from each file into a new
-         * table. Currently supported only for shapefiles.
+         * Insertion scheme to use when inserting records from multiple
+         * shapefiles.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#SINGLE SINGLE}
-         *     <li>{@link Options#TABLE_PER_FILE TABLE_PER_FILE}
+         *     <li>{@link Options#SINGLE SINGLE}: Insert all records into a
+         *         single table.
+         *     <li>{@link Options#TABLE_PER_FILE TABLE_PER_FILE}: Insert
+         *         records from each file into a new table corresponding to
+         *         that file.
          * </ul>
          * The default value is {@link Options#SINGLE SINGLE}.
          */
         public static final String TABLE_INSERT_MODE = "table_insert_mode";
 
+        /**
+         * Insert all records into a single table.
+         */
         public static final String SINGLE = "single";
+
+        /**
+         * Insert records from each file into a new table corresponding to that
+         * file.
+         */
         public static final String TABLE_PER_FILE = "table_per_file";
 
         /**
@@ -915,14 +938,16 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         /**
          * Add 'text_search' property to internally inferenced string columns.
          * Comma seperated list of column names or '*' for all columns. To add
-         * text_search property only to string columns of minimum size, set
-         * also the option 'text_search_min_column_length'
+         * 'text_search' property only to string columns greater than or equal
+         * to a minimum size, also set the {@link
+         * Options#TEXT_SEARCH_MIN_COLUMN_LENGTH TEXT_SEARCH_MIN_COLUMN_LENGTH}
          */
         public static final String TEXT_SEARCH_COLUMNS = "text_search_columns";
 
         /**
-         * Set minimum column size. Used only when 'text_search_columns' has a
-         * value.
+         * Set the minimum column size for strings to apply the 'text_search'
+         * property to. Used only when {@link Options#TEXT_SEARCH_COLUMNS
+         * TEXT_SEARCH_COLUMNS} has a value.
          */
         public static final String TEXT_SEARCH_MIN_COLUMN_LENGTH = "text_search_min_column_length";
 
@@ -951,7 +976,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String TRUNCATE_TABLE = "truncate_table";
 
         /**
-         * optimize type inference for:
+         * Optimize type inferencing for either speed or accuracy.
          * Supported values:
          * <ul>
          *     <li>{@link Options#ACCURACY ACCURACY}: Scans data to get
@@ -982,7 +1007,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * target="_top">primary key</a>. If set to {@link Options#TRUE TRUE},
          * any existing table record with primary key values that match those
          * of a record being inserted will be replaced by that new record (the
-         * new data will be "upserted"). If set to {@link Options#FALSE FALSE},
+         * new data will be 'upserted'). If set to {@link Options#FALSE FALSE},
          * any existing table record with primary key values that match those
          * of a record being inserted will remain unchanged, while the new
          * record will be rejected and the error handled as determined by
@@ -1065,14 +1090,17 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                   will be defaulted to a pipe character (|).
      * @param modifyColumns  Not implemented yet. The default value is an empty
      *                       {@link Map}.
-     * @param createTableOptions  Options used when creating the target table.
+     * @param createTableOptions  Options from {@link
+     *                            com.gpudb.GPUdb#createTable(CreateTableRequest)
+     *                            GPUdb.createTable}, allowing the structure of
+     *                            the table to be defined independently of the
+     *                            data source, when creating the target table.
      *                            <ul>
      *                                <li>{@link CreateTableOptions#TYPE_ID
      *                                    TYPE_ID}: ID of a currently
      *                                    registered <a
      *                                    href="../../../../../../concepts/types/"
-     *                                    target="_top">type</a>. The default
-     *                                    value is ''.
+     *                                    target="_top">type</a>.
      *                                <li>{@link
      *                                    CreateTableOptions#NO_ERROR_IF_EXISTS
      *                                    NO_ERROR_IF_EXISTS}: If {@link
@@ -1080,8 +1108,8 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                                    prevents an error from occurring if
      *                                    the table already exists and is of
      *                                    the given type.  If a table with the
-     *                                    same ID but a different type exists,
-     *                                    it is still an error.
+     *                                    same name but a different type
+     *                                    exists, it is still an error.
      *                                    Supported values:
      *                                    <ul>
      *                                        <li>{@link
@@ -1099,7 +1127,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                                    target="_top">distribution scheme</a>
      *                                    for the table's data.  If {@link
      *                                    CreateTableOptions#TRUE TRUE} and the
-     *                                    given type has no explicit <a
+     *                                    given table has no explicit <a
      *                                    href="../../../../../../concepts/tables/#shard-key"
      *                                    target="_top">shard key</a> defined,
      *                                    the table will be <a
@@ -1115,7 +1143,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                                    or <a
      *                                    href="../../../../../../concepts/tables/#random-sharding"
      *                                    target="_top">randomly sharded</a>,
-     *                                    if no shard key is specified.  Note
+     *                                    if no shard key is specified. Note
      *                                    that a type containing a shard key
      *                                    cannot be used to create a replicated
      *                                    table.
@@ -1222,7 +1250,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                                    CreateTableOptions#TRUE TRUE}, a new
      *                                    partition will be created for values
      *                                    which don't fall into an existing
-     *                                    partition.  Currently only supported
+     *                                    partition.  Currently, only supported
      *                                    for <a
      *                                    href="../../../../../../concepts/tables/#partitioning-by-list"
      *                                    target="_top">list partitions</a>.
@@ -1289,48 +1317,34 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                            The default value is an empty {@link Map}.
      * @param options  Optional parameters.
      *                 <ul>
-     *                     <li>{@link Options#AVRO_HEADER_BYTES
-     *                         AVRO_HEADER_BYTES}: Optional number of bytes to
-     *                         skip when reading an avro record.
-     *                     <li>{@link Options#AVRO_NUM_RECORDS
-     *                         AVRO_NUM_RECORDS}: Optional number of avro
-     *                         records, if data includes only records.
-     *                     <li>{@link Options#AVRO_SCHEMA AVRO_SCHEMA}:
-     *                         Optional string representing avro schema, if
-     *                         data includes only records.
-     *                     <li>{@link Options#AVRO_SCHEMALESS AVRO_SCHEMALESS}:
-     *                         When user provides 'avro_schema', avro data is
-     *                         assumed to be schemaless, unless specified.
-     *                         Default is 'true' when given avro_schema.
-     *                         Igonred when avro_schema is not given.
-     *                         Supported values:
-     *                         <ul>
-     *                             <li>{@link Options#TRUE TRUE}
-     *                             <li>{@link Options#FALSE FALSE}
-     *                         </ul>
      *                     <li>{@link Options#BAD_RECORD_TABLE_NAME
-     *                         BAD_RECORD_TABLE_NAME}: Optional name of a table
-     *                         to which records that were rejected are written.
-     *                         The bad-record-table has the following columns:
+     *                         BAD_RECORD_TABLE_NAME}: Name of a table to which
+     *                         records that were rejected are written. The
+     *                         bad-record-table has the following columns:
      *                         line_number (long), line_rejected (string),
-     *                         error_message (string). When error handling is
-     *                         Abort, bad records table is not populated.
+     *                         error_message (string).  When {@link
+     *                         Options#ERROR_HANDLING ERROR_HANDLING} is {@link
+     *                         Options#ABORT ABORT}, bad records table is not
+     *                         populated.
      *                     <li>{@link Options#BAD_RECORD_TABLE_LIMIT
      *                         BAD_RECORD_TABLE_LIMIT}: A positive integer
      *                         indicating the maximum number of records that
-     *                         can be  written to the bad-record-table.
-     *                         Default value is 10000
+     *                         can be written to the bad-record-table. The
+     *                         default value is '10000'.
      *                     <li>{@link Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
      *                         BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For
-     *                         subscriptions: A positive integer indicating the
+     *                         subscriptions, a positive integer indicating the
      *                         maximum number of records that can be written to
      *                         the bad-record-table per file/payload. Default
-     *                         value will be 'bad_record_table_limit' and total
-     *                         size of the table per rank is limited to
-     *                         'bad_record_table_limit'
-     *                     <li>{@link Options#BATCH_SIZE BATCH_SIZE}: Internal
-     *                         tuning parameter--number of records per batch
-     *                         when inserting data.
+     *                         value will be {@link
+     *                         Options#BAD_RECORD_TABLE_LIMIT
+     *                         BAD_RECORD_TABLE_LIMIT} and total size of the
+     *                         table per rank is limited to {@link
+     *                         Options#BAD_RECORD_TABLE_LIMIT
+     *                         BAD_RECORD_TABLE_LIMIT}.
+     *                     <li>{@link Options#BATCH_SIZE BATCH_SIZE}: Number of
+     *                         records to insert per batch when inserting data.
+     *                         The default value is '50000'.
      *                     <li>{@link Options#COLUMN_FORMATS COLUMN_FORMATS}:
      *                         For each target column specified, applies the
      *                         column-property-bound format to the source data
@@ -1383,13 +1397,13 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                         with {@link Options#COLUMNS_TO_LOAD
      *                         COLUMNS_TO_LOAD}.
      *                     <li>{@link Options#COMPRESSION_TYPE
-     *                         COMPRESSION_TYPE}: Optional: compression type.
+     *                         COMPRESSION_TYPE}: Source data compression type.
      *                         Supported values:
      *                         <ul>
-     *                             <li>{@link Options#NONE NONE}: Uncompressed
-     *                                 file
-     *                             <li>{@link Options#AUTO AUTO}: Default. Auto
-     *                                 detect compression type
+     *                             <li>{@link Options#NONE NONE}: No
+     *                                 compression.
+     *                             <li>{@link Options#AUTO AUTO}: Auto detect
+     *                                 compression type
      *                             <li>{@link Options#GZIP GZIP}: gzip file
      *                                 compression.
      *                             <li>{@link Options#BZIP2 BZIP2}: bzip2 file
@@ -1477,10 +1491,22 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link
      *                         Options#DELIMITED_TEXT DELIMITED_TEXT}.
+     *                     <li>{@link Options#FLATTEN_COLUMNS FLATTEN_COLUMNS}:
+     *                         Specifies how to handle nested columns.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}: Break up
+     *                                 nested columns to multiple columns
+     *                             <li>{@link Options#FALSE FALSE}: Treat
+     *                                 nested columns as json columns instead
+     *                                 of flattening
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                     <li>{@link Options#GDAL_CONFIGURATION_OPTIONS
      *                         GDAL_CONFIGURATION_OPTIONS}: Comma separated
      *                         list of gdal conf options, for the specific
-     *                         requets: key=value. The default value is ''.
+     *                         requets: key=value
      *                     <li>{@link Options#IGNORE_EXISTING_PK
      *                         IGNORE_EXISTING_PK}: Specifies the record
      *                         collision error-suppression policy for inserting
@@ -1537,14 +1563,18 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                                 is returned in the response.
      *                         </ul>
      *                         The default value is {@link Options#FULL FULL}.
+     *                     <li>{@link Options#KAFKA_CONSUMERS_PER_RANK
+     *                         KAFKA_CONSUMERS_PER_RANK}: Number of Kafka
+     *                         consumer threads per rank (valid range 1-6). The
+     *                         default value is '1'.
      *                     <li>{@link Options#KAFKA_GROUP_ID KAFKA_GROUP_ID}:
-     *                         The group id to be used consuming data from a
-     *                         kakfa topic (valid only for kafka datasource
+     *                         The group id to be used when consuming data from
+     *                         a Kafka topic (valid only for Kafka datasource
      *                         subscriptions).
      *                     <li>{@link Options#KAFKA_OFFSET_RESET_POLICY
      *                         KAFKA_OFFSET_RESET_POLICY}: Policy to determine
-     *                         whether the data consumption starts either at
-     *                         earliest offset or latest offset.
+     *                         whether the Kafka data consumption starts either
+     *                         at earliest offset or latest offset.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#EARLIEST EARLIEST}
@@ -1552,13 +1582,29 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#EARLIEST
      *                         EARLIEST}.
+     *                     <li>{@link Options#KAFKA_OPTIMISTIC_INGEST
+     *                         KAFKA_OPTIMISTIC_INGEST}: Enable optimistic
+     *                         ingestion where Kafka topic offsets and table
+     *                         data are committed independently to achieve
+     *                         parallelism.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                     <li>{@link Options#KAFKA_SUBSCRIPTION_CANCEL_AFTER
-     *                         KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the
+     *                         KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the Kafka
      *                         subscription lifespan (in minutes). Expired
      *                         subscription will be cancelled automatically.
-     *                     <li>{@link Options#LAYER LAYER}: Optional: geo files
-     *                         layer(s) name(s): comma separated. The default
-     *                         value is ''.
+     *                     <li>{@link
+     *                         Options#KAFKA_TYPE_INFERENCE_FETCH_TIMEOUT
+     *                         KAFKA_TYPE_INFERENCE_FETCH_TIMEOUT}: Maximum
+     *                         time to collect Kafka messages before type
+     *                         inferencing on the set of them.
+     *                     <li>{@link Options#LAYER LAYER}: Geo files layer(s)
+     *                         name(s): comma separated.
      *                     <li>{@link Options#LOADING_MODE LOADING_MODE}:
      *                         Scheme for distributing the extraction and
      *                         loading of data from the source data file(s).
@@ -1608,40 +1654,38 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#HEAD HEAD}.
      *                     <li>{@link Options#LOCAL_TIME_OFFSET
-     *                         LOCAL_TIME_OFFSET}: For Avro local timestamp
-     *                         columns
+     *                         LOCAL_TIME_OFFSET}: Apply an offset to Avro
+     *                         local timestamp columns.
      *                     <li>{@link Options#MAX_RECORDS_TO_LOAD
      *                         MAX_RECORDS_TO_LOAD}: Limit the number of
-     *                         records to load in this request: If this number
-     *                         is larger than a batch_size, then the number of
-     *                         records loaded will be limited to the next whole
-     *                         number of batch_size (per working thread). The
-     *                         default value is ''.
+     *                         records to load in this request: if this number
+     *                         is larger than {@link Options#BATCH_SIZE
+     *                         BATCH_SIZE}, then the number of records loaded
+     *                         will be limited to the next whole number of
+     *                         {@link Options#BATCH_SIZE BATCH_SIZE} (per
+     *                         working thread).
      *                     <li>{@link Options#NUM_TASKS_PER_RANK
-     *                         NUM_TASKS_PER_RANK}: Optional: number of tasks
-     *                         for reading file per rank. Default will be
-     *                         external_file_reader_num_tasks
+     *                         NUM_TASKS_PER_RANK}: Number of tasks for reading
+     *                         file per rank. Default will be system
+     *                         configuration parameter,
+     *                         external_file_reader_num_tasks.
      *                     <li>{@link Options#POLL_INTERVAL POLL_INTERVAL}: If
      *                         {@link Options#TRUE TRUE}, the number of seconds
      *                         between attempts to load external files into the
      *                         table.  If zero, polling will be continuous as
      *                         long as data is found.  If no data is found, the
      *                         interval will steadily increase to a maximum of
-     *                         60 seconds.
-     *                     <li>{@link Options#PRIMARY_KEYS PRIMARY_KEYS}:
-     *                         Optional: comma separated list of column names,
-     *                         to set as primary keys, when not specified in
-     *                         the type. The default value is ''.
-     *                     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_ID
-     *                         SCHEMA_REGISTRY_SCHEMA_ID}
+     *                         60 seconds. The default value is '0'.
+     *                     <li>{@link Options#PRIMARY_KEYS PRIMARY_KEYS}: Comma
+     *                         separated list of column names to set as primary
+     *                         keys, when not specified in the type.
      *                     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_NAME
-     *                         SCHEMA_REGISTRY_SCHEMA_NAME}
-     *                     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_VERSION
-     *                         SCHEMA_REGISTRY_SCHEMA_VERSION}
-     *                     <li>{@link Options#SHARD_KEYS SHARD_KEYS}: Optional:
-     *                         comma separated list of column names, to set as
-     *                         primary keys, when not specified in the type.
-     *                         The default value is ''.
+     *                         SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro
+     *                         schema in the schema registry to use when
+     *                         reading Avro records.
+     *                     <li>{@link Options#SHARD_KEYS SHARD_KEYS}: Comma
+     *                         separated list of column names to set as shard
+     *                         keys, when not specified in the type.
      *                     <li>{@link Options#SKIP_LINES SKIP_LINES}: Skip
      *                         number of lines from begining of file.
      *                     <li>{@link Options#SUBSCRIBE SUBSCRIBE}:
@@ -1655,16 +1699,16 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
      *                     <li>{@link Options#TABLE_INSERT_MODE
-     *                         TABLE_INSERT_MODE}: Optional: table_insert_mode.
-     *                         When inserting records from multiple files: if
-     *                         table_per_file then insert from each file into a
-     *                         new table. Currently supported only for
-     *                         shapefiles.
+     *                         TABLE_INSERT_MODE}: Insertion scheme to use when
+     *                         inserting records from multiple shapefiles.
      *                         Supported values:
      *                         <ul>
-     *                             <li>{@link Options#SINGLE SINGLE}
+     *                             <li>{@link Options#SINGLE SINGLE}: Insert
+     *                                 all records into a single table.
      *                             <li>{@link Options#TABLE_PER_FILE
-     *                                 TABLE_PER_FILE}
+     *                                 TABLE_PER_FILE}: Insert records from
+     *                                 each file into a new table corresponding
+     *                                 to that file.
      *                         </ul>
      *                         The default value is {@link Options#SINGLE
      *                         SINGLE}.
@@ -1746,13 +1790,17 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                         TEXT_SEARCH_COLUMNS}: Add 'text_search' property
      *                         to internally inferenced string columns. Comma
      *                         seperated list of column names or '*' for all
-     *                         columns. To add text_search property only to
-     *                         string columns of minimum size, set also the
-     *                         option 'text_search_min_column_length'
+     *                         columns. To add 'text_search' property only to
+     *                         string columns greater than or equal to a
+     *                         minimum size, also set the {@link
+     *                         Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     *                         TEXT_SEARCH_MIN_COLUMN_LENGTH}
      *                     <li>{@link Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
-     *                         TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum
-     *                         column size. Used only when
-     *                         'text_search_columns' has a value.
+     *                         TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set the minimum
+     *                         column size for strings to apply the
+     *                         'text_search' property to. Used only when {@link
+     *                         Options#TEXT_SEARCH_COLUMNS TEXT_SEARCH_COLUMNS}
+     *                         has a value.
      *                     <li>{@link Options#TRUNCATE_STRINGS
      *                         TRUNCATE_STRINGS}: If set to {@link Options#TRUE
      *                         TRUE}, truncate string values that are longer
@@ -1776,8 +1824,8 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
      *                     <li>{@link Options#TYPE_INFERENCE_MODE
-     *                         TYPE_INFERENCE_MODE}: optimize type inference
-     *                         for:
+     *                         TYPE_INFERENCE_MODE}: Optimize type inferencing
+     *                         for either speed or accuracy.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#ACCURACY ACCURACY}: Scans
@@ -1799,7 +1847,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                         Options#TRUE TRUE}, any existing table record
      *                         with primary key values that match those of a
      *                         record being inserted will be replaced by that
-     *                         new record (the new data will be "upserted"). If
+     *                         new record (the new data will be 'upserted'). If
      *                         set to {@link Options#FALSE FALSE}, any existing
      *                         table record with primary key values that match
      *                         those of a record being inserted will remain
@@ -1963,15 +2011,17 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
     }
 
     /**
-     * Options used when creating the target table.
+     * Options from {@link com.gpudb.GPUdb#createTable(CreateTableRequest)
+     * GPUdb.createTable}, allowing the structure of the table to be defined
+     * independently of the data source, when creating the target table.
      * <ul>
      *     <li>{@link CreateTableOptions#TYPE_ID TYPE_ID}: ID of a currently
      *         registered <a href="../../../../../../concepts/types/"
-     *         target="_top">type</a>. The default value is ''.
+     *         target="_top">type</a>.
      *     <li>{@link CreateTableOptions#NO_ERROR_IF_EXISTS
      *         NO_ERROR_IF_EXISTS}: If {@link CreateTableOptions#TRUE TRUE},
      *         prevents an error from occurring if the table already exists and
-     *         is of the given type.  If a table with the same ID but a
+     *         is of the given type.  If a table with the same name but a
      *         different type exists, it is still an error.
      *         Supported values:
      *         <ul>
@@ -1982,7 +2032,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *     <li>{@link CreateTableOptions#IS_REPLICATED IS_REPLICATED}: Affects
      *         the <a href="../../../../../../concepts/tables/#distribution"
      *         target="_top">distribution scheme</a> for the table's data.  If
-     *         {@link CreateTableOptions#TRUE TRUE} and the given type has no
+     *         {@link CreateTableOptions#TRUE TRUE} and the given table has no
      *         explicit <a href="../../../../../../concepts/tables/#shard-key"
      *         target="_top">shard key</a> defined, the table will be <a
      *         href="../../../../../../concepts/tables/#replication"
@@ -1993,7 +2043,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         in the given {@link CreateTableOptions#TYPE_ID TYPE_ID}, or <a
      *         href="../../../../../../concepts/tables/#random-sharding"
      *         target="_top">randomly sharded</a>, if no shard key is
-     *         specified.  Note that a type containing a shard key cannot be
+     *         specified. Note that a type containing a shard key cannot be
      *         used to create a replicated table.
      *         Supported values:
      *         <ul>
@@ -2054,7 +2104,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *     <li>{@link CreateTableOptions#IS_AUTOMATIC_PARTITION
      *         IS_AUTOMATIC_PARTITION}: If {@link CreateTableOptions#TRUE
      *         TRUE}, a new partition will be created for values which don't
-     *         fall into an existing partition.  Currently only supported for
+     *         fall into an existing partition.  Currently, only supported for
      *         <a
      *         href="../../../../../../concepts/tables/#partitioning-by-list"
      *         target="_top">list partitions</a>.
@@ -2103,15 +2153,17 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
     }
 
     /**
-     * Options used when creating the target table.
+     * Options from {@link com.gpudb.GPUdb#createTable(CreateTableRequest)
+     * GPUdb.createTable}, allowing the structure of the table to be defined
+     * independently of the data source, when creating the target table.
      * <ul>
      *     <li>{@link CreateTableOptions#TYPE_ID TYPE_ID}: ID of a currently
      *         registered <a href="../../../../../../concepts/types/"
-     *         target="_top">type</a>. The default value is ''.
+     *         target="_top">type</a>.
      *     <li>{@link CreateTableOptions#NO_ERROR_IF_EXISTS
      *         NO_ERROR_IF_EXISTS}: If {@link CreateTableOptions#TRUE TRUE},
      *         prevents an error from occurring if the table already exists and
-     *         is of the given type.  If a table with the same ID but a
+     *         is of the given type.  If a table with the same name but a
      *         different type exists, it is still an error.
      *         Supported values:
      *         <ul>
@@ -2122,7 +2174,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *     <li>{@link CreateTableOptions#IS_REPLICATED IS_REPLICATED}: Affects
      *         the <a href="../../../../../../concepts/tables/#distribution"
      *         target="_top">distribution scheme</a> for the table's data.  If
-     *         {@link CreateTableOptions#TRUE TRUE} and the given type has no
+     *         {@link CreateTableOptions#TRUE TRUE} and the given table has no
      *         explicit <a href="../../../../../../concepts/tables/#shard-key"
      *         target="_top">shard key</a> defined, the table will be <a
      *         href="../../../../../../concepts/tables/#replication"
@@ -2133,7 +2185,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         in the given {@link CreateTableOptions#TYPE_ID TYPE_ID}, or <a
      *         href="../../../../../../concepts/tables/#random-sharding"
      *         target="_top">randomly sharded</a>, if no shard key is
-     *         specified.  Note that a type containing a shard key cannot be
+     *         specified. Note that a type containing a shard key cannot be
      *         used to create a replicated table.
      *         Supported values:
      *         <ul>
@@ -2194,7 +2246,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *     <li>{@link CreateTableOptions#IS_AUTOMATIC_PARTITION
      *         IS_AUTOMATIC_PARTITION}: If {@link CreateTableOptions#TRUE
      *         TRUE}, a new partition will be created for values which don't
-     *         fall into an existing partition.  Currently only supported for
+     *         fall into an existing partition.  Currently, only supported for
      *         <a
      *         href="../../../../../../concepts/tables/#partitioning-by-list"
      *         target="_top">list partitions</a>.
@@ -2248,39 +2300,27 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#AVRO_HEADER_BYTES AVRO_HEADER_BYTES}: Optional
-     *         number of bytes to skip when reading an avro record.
-     *     <li>{@link Options#AVRO_NUM_RECORDS AVRO_NUM_RECORDS}: Optional
-     *         number of avro records, if data includes only records.
-     *     <li>{@link Options#AVRO_SCHEMA AVRO_SCHEMA}: Optional string
-     *         representing avro schema, if data includes only records.
-     *     <li>{@link Options#AVRO_SCHEMALESS AVRO_SCHEMALESS}: When user
-     *         provides 'avro_schema', avro data is assumed to be schemaless,
-     *         unless specified. Default is 'true' when given avro_schema.
-     *         Igonred when avro_schema is not given.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
-     *         </ul>
      *     <li>{@link Options#BAD_RECORD_TABLE_NAME BAD_RECORD_TABLE_NAME}:
-     *         Optional name of a table to which records that were rejected are
-     *         written.  The bad-record-table has the following columns:
-     *         line_number (long), line_rejected (string), error_message
-     *         (string). When error handling is Abort, bad records table is not
-     *         populated.
+     *         Name of a table to which records that were rejected are written.
+     *         The bad-record-table has the following columns: line_number
+     *         (long), line_rejected (string), error_message (string).  When
+     *         {@link Options#ERROR_HANDLING ERROR_HANDLING} is {@link
+     *         Options#ABORT ABORT}, bad records table is not populated.
      *     <li>{@link Options#BAD_RECORD_TABLE_LIMIT BAD_RECORD_TABLE_LIMIT}: A
      *         positive integer indicating the maximum number of records that
-     *         can be  written to the bad-record-table.   Default value is
-     *         10000
+     *         can be written to the bad-record-table. The default value is
+     *         '10000'.
      *     <li>{@link Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
-     *         BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions: A positive
+     *         BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions, a positive
      *         integer indicating the maximum number of records that can be
      *         written to the bad-record-table per file/payload. Default value
-     *         will be 'bad_record_table_limit' and total size of the table per
-     *         rank is limited to 'bad_record_table_limit'
-     *     <li>{@link Options#BATCH_SIZE BATCH_SIZE}: Internal tuning
-     *         parameter--number of records per batch when inserting data.
+     *         will be {@link Options#BAD_RECORD_TABLE_LIMIT
+     *         BAD_RECORD_TABLE_LIMIT} and total size of the table per rank is
+     *         limited to {@link Options#BAD_RECORD_TABLE_LIMIT
+     *         BAD_RECORD_TABLE_LIMIT}.
+     *     <li>{@link Options#BATCH_SIZE BATCH_SIZE}: Number of records to
+     *         insert per batch when inserting data. The default value is
+     *         '50000'.
      *     <li>{@link Options#COLUMN_FORMATS COLUMN_FORMATS}: For each target
      *         column specified, applies the column-property-bound format to
      *         the source data loaded into that column.  Each column format
@@ -2319,13 +2359,12 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         comma-delimited list of columns from the source data to skip.
      *         Mutually exclusive with {@link Options#COLUMNS_TO_LOAD
      *         COLUMNS_TO_LOAD}.
-     *     <li>{@link Options#COMPRESSION_TYPE COMPRESSION_TYPE}: Optional:
+     *     <li>{@link Options#COMPRESSION_TYPE COMPRESSION_TYPE}: Source data
      *         compression type.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#NONE NONE}: Uncompressed file
-     *             <li>{@link Options#AUTO AUTO}: Default. Auto detect
-     *                 compression type
+     *             <li>{@link Options#NONE NONE}: No compression.
+     *             <li>{@link Options#AUTO AUTO}: Auto detect compression type
      *             <li>{@link Options#GZIP GZIP}: gzip file compression.
      *             <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
      *         </ul>
@@ -2389,10 +2428,19 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#DELIMITED_TEXT
      *         DELIMITED_TEXT}.
+     *     <li>{@link Options#FLATTEN_COLUMNS FLATTEN_COLUMNS}: Specifies how
+     *         to handle nested columns.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}: Break up nested columns to
+     *                 multiple columns
+     *             <li>{@link Options#FALSE FALSE}: Treat nested columns as
+     *                 json columns instead of flattening
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#GDAL_CONFIGURATION_OPTIONS
      *         GDAL_CONFIGURATION_OPTIONS}: Comma separated list of gdal conf
-     *         options, for the specific requets: key=value. The default value
-     *         is ''.
+     *         options, for the specific requets: key=value
      *     <li>{@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}: Specifies
      *         the record collision error-suppression policy for inserting into
      *         a table with a <a
@@ -2438,24 +2486,40 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 the response.
      *         </ul>
      *         The default value is {@link Options#FULL FULL}.
+     *     <li>{@link Options#KAFKA_CONSUMERS_PER_RANK
+     *         KAFKA_CONSUMERS_PER_RANK}: Number of Kafka consumer threads per
+     *         rank (valid range 1-6). The default value is '1'.
      *     <li>{@link Options#KAFKA_GROUP_ID KAFKA_GROUP_ID}: The group id to
-     *         be used consuming data from a kakfa topic (valid only for kafka
-     *         datasource subscriptions).
+     *         be used when consuming data from a Kafka topic (valid only for
+     *         Kafka datasource subscriptions).
      *     <li>{@link Options#KAFKA_OFFSET_RESET_POLICY
-     *         KAFKA_OFFSET_RESET_POLICY}: Policy to determine whether the data
-     *         consumption starts either at earliest offset or latest offset.
+     *         KAFKA_OFFSET_RESET_POLICY}: Policy to determine whether the
+     *         Kafka data consumption starts either at earliest offset or
+     *         latest offset.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#EARLIEST EARLIEST}
      *             <li>{@link Options#LATEST LATEST}
      *         </ul>
      *         The default value is {@link Options#EARLIEST EARLIEST}.
+     *     <li>{@link Options#KAFKA_OPTIMISTIC_INGEST KAFKA_OPTIMISTIC_INGEST}:
+     *         Enable optimistic ingestion where Kafka topic offsets and table
+     *         data are committed independently to achieve parallelism.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#KAFKA_SUBSCRIPTION_CANCEL_AFTER
-     *         KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the subscription lifespan
-     *         (in minutes). Expired subscription will be cancelled
+     *         KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the Kafka subscription
+     *         lifespan (in minutes). Expired subscription will be cancelled
      *         automatically.
-     *     <li>{@link Options#LAYER LAYER}: Optional: geo files layer(s)
-     *         name(s): comma separated. The default value is ''.
+     *     <li>{@link Options#KAFKA_TYPE_INFERENCE_FETCH_TIMEOUT
+     *         KAFKA_TYPE_INFERENCE_FETCH_TIMEOUT}: Maximum time to collect
+     *         Kafka messages before type inferencing on the set of them.
+     *     <li>{@link Options#LAYER LAYER}: Geo files layer(s) name(s): comma
+     *         separated.
      *     <li>{@link Options#LOADING_MODE LOADING_MODE}: Scheme for
      *         distributing the extraction and loading of data from the source
      *         data file(s). This option applies only when loading files that
@@ -2490,33 +2554,32 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 strictly accessible to the head node will be loaded.
      *         </ul>
      *         The default value is {@link Options#HEAD HEAD}.
-     *     <li>{@link Options#LOCAL_TIME_OFFSET LOCAL_TIME_OFFSET}: For Avro
-     *         local timestamp columns
+     *     <li>{@link Options#LOCAL_TIME_OFFSET LOCAL_TIME_OFFSET}: Apply an
+     *         offset to Avro local timestamp columns.
      *     <li>{@link Options#MAX_RECORDS_TO_LOAD MAX_RECORDS_TO_LOAD}: Limit
-     *         the number of records to load in this request: If this number is
-     *         larger than a batch_size, then the number of records loaded will
-     *         be limited to the next whole number of batch_size (per working
-     *         thread). The default value is ''.
-     *     <li>{@link Options#NUM_TASKS_PER_RANK NUM_TASKS_PER_RANK}: Optional:
-     *         number of tasks for reading file per rank. Default will be
-     *         external_file_reader_num_tasks
+     *         the number of records to load in this request: if this number is
+     *         larger than {@link Options#BATCH_SIZE BATCH_SIZE}, then the
+     *         number of records loaded will be limited to the next whole
+     *         number of {@link Options#BATCH_SIZE BATCH_SIZE} (per working
+     *         thread).
+     *     <li>{@link Options#NUM_TASKS_PER_RANK NUM_TASKS_PER_RANK}: Number of
+     *         tasks for reading file per rank. Default will be system
+     *         configuration parameter, external_file_reader_num_tasks.
      *     <li>{@link Options#POLL_INTERVAL POLL_INTERVAL}: If {@link
      *         Options#TRUE TRUE}, the number of seconds between attempts to
      *         load external files into the table.  If zero, polling will be
      *         continuous as long as data is found.  If no data is found, the
-     *         interval will steadily increase to a maximum of 60 seconds.
-     *     <li>{@link Options#PRIMARY_KEYS PRIMARY_KEYS}: Optional: comma
-     *         separated list of column names, to set as primary keys, when not
-     *         specified in the type. The default value is ''.
-     *     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_ID
-     *         SCHEMA_REGISTRY_SCHEMA_ID}
+     *         interval will steadily increase to a maximum of 60 seconds. The
+     *         default value is '0'.
+     *     <li>{@link Options#PRIMARY_KEYS PRIMARY_KEYS}: Comma separated list
+     *         of column names to set as primary keys, when not specified in
+     *         the type.
      *     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_NAME
-     *         SCHEMA_REGISTRY_SCHEMA_NAME}
-     *     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_VERSION
-     *         SCHEMA_REGISTRY_SCHEMA_VERSION}
-     *     <li>{@link Options#SHARD_KEYS SHARD_KEYS}: Optional: comma separated
-     *         list of column names, to set as primary keys, when not specified
-     *         in the type. The default value is ''.
+     *         SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro schema in the
+     *         schema registry to use when reading Avro records.
+     *     <li>{@link Options#SHARD_KEYS SHARD_KEYS}: Comma separated list of
+     *         column names to set as shard keys, when not specified in the
+     *         type.
      *     <li>{@link Options#SKIP_LINES SKIP_LINES}: Skip number of lines from
      *         begining of file.
      *     <li>{@link Options#SUBSCRIBE SUBSCRIBE}: Continuously poll the data
@@ -2527,14 +2590,15 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#TABLE_INSERT_MODE TABLE_INSERT_MODE}: Optional:
-     *         table_insert_mode. When inserting records from multiple files:
-     *         if table_per_file then insert from each file into a new table.
-     *         Currently supported only for shapefiles.
+     *     <li>{@link Options#TABLE_INSERT_MODE TABLE_INSERT_MODE}: Insertion
+     *         scheme to use when inserting records from multiple shapefiles.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#SINGLE SINGLE}
-     *             <li>{@link Options#TABLE_PER_FILE TABLE_PER_FILE}
+     *             <li>{@link Options#SINGLE SINGLE}: Insert all records into a
+     *                 single table.
+     *             <li>{@link Options#TABLE_PER_FILE TABLE_PER_FILE}: Insert
+     *                 records from each file into a new table corresponding to
+     *                 that file.
      *         </ul>
      *         The default value is {@link Options#SINGLE SINGLE}.
      *     <li>{@link Options#TEXT_COMMENT_STRING TEXT_COMMENT_STRING}:
@@ -2597,11 +2661,15 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *     <li>{@link Options#TEXT_SEARCH_COLUMNS TEXT_SEARCH_COLUMNS}: Add
      *         'text_search' property to internally inferenced string columns.
      *         Comma seperated list of column names or '*' for all columns. To
-     *         add text_search property only to string columns of minimum size,
-     *         set also the option 'text_search_min_column_length'
+     *         add 'text_search' property only to string columns greater than
+     *         or equal to a minimum size, also set the {@link
+     *         Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     *         TEXT_SEARCH_MIN_COLUMN_LENGTH}
      *     <li>{@link Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
-     *         TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used
-     *         only when 'text_search_columns' has a value.
+     *         TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set the minimum column size for
+     *         strings to apply the 'text_search' property to. Used only when
+     *         {@link Options#TEXT_SEARCH_COLUMNS TEXT_SEARCH_COLUMNS} has a
+     *         value.
      *     <li>{@link Options#TRUNCATE_STRINGS TRUNCATE_STRINGS}: If set to
      *         {@link Options#TRUE TRUE}, truncate string values that are
      *         longer than the column's type size.
@@ -2621,7 +2689,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#TYPE_INFERENCE_MODE TYPE_INFERENCE_MODE}:
-     *         optimize type inference for:
+     *         Optimize type inferencing for either speed or accuracy.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#ACCURACY ACCURACY}: Scans data to get
@@ -2637,7 +2705,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         target="_top">primary key</a>. If set to {@link Options#TRUE
      *         TRUE}, any existing table record with primary key values that
      *         match those of a record being inserted will be replaced by that
-     *         new record (the new data will be "upserted"). If set to {@link
+     *         new record (the new data will be 'upserted'). If set to {@link
      *         Options#FALSE FALSE}, any existing table record with primary key
      *         values that match those of a record being inserted will remain
      *         unchanged, while the new record will be rejected and the error
@@ -2665,39 +2733,27 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#AVRO_HEADER_BYTES AVRO_HEADER_BYTES}: Optional
-     *         number of bytes to skip when reading an avro record.
-     *     <li>{@link Options#AVRO_NUM_RECORDS AVRO_NUM_RECORDS}: Optional
-     *         number of avro records, if data includes only records.
-     *     <li>{@link Options#AVRO_SCHEMA AVRO_SCHEMA}: Optional string
-     *         representing avro schema, if data includes only records.
-     *     <li>{@link Options#AVRO_SCHEMALESS AVRO_SCHEMALESS}: When user
-     *         provides 'avro_schema', avro data is assumed to be schemaless,
-     *         unless specified. Default is 'true' when given avro_schema.
-     *         Igonred when avro_schema is not given.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
-     *         </ul>
      *     <li>{@link Options#BAD_RECORD_TABLE_NAME BAD_RECORD_TABLE_NAME}:
-     *         Optional name of a table to which records that were rejected are
-     *         written.  The bad-record-table has the following columns:
-     *         line_number (long), line_rejected (string), error_message
-     *         (string). When error handling is Abort, bad records table is not
-     *         populated.
+     *         Name of a table to which records that were rejected are written.
+     *         The bad-record-table has the following columns: line_number
+     *         (long), line_rejected (string), error_message (string).  When
+     *         {@link Options#ERROR_HANDLING ERROR_HANDLING} is {@link
+     *         Options#ABORT ABORT}, bad records table is not populated.
      *     <li>{@link Options#BAD_RECORD_TABLE_LIMIT BAD_RECORD_TABLE_LIMIT}: A
      *         positive integer indicating the maximum number of records that
-     *         can be  written to the bad-record-table.   Default value is
-     *         10000
+     *         can be written to the bad-record-table. The default value is
+     *         '10000'.
      *     <li>{@link Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
-     *         BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions: A positive
+     *         BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions, a positive
      *         integer indicating the maximum number of records that can be
      *         written to the bad-record-table per file/payload. Default value
-     *         will be 'bad_record_table_limit' and total size of the table per
-     *         rank is limited to 'bad_record_table_limit'
-     *     <li>{@link Options#BATCH_SIZE BATCH_SIZE}: Internal tuning
-     *         parameter--number of records per batch when inserting data.
+     *         will be {@link Options#BAD_RECORD_TABLE_LIMIT
+     *         BAD_RECORD_TABLE_LIMIT} and total size of the table per rank is
+     *         limited to {@link Options#BAD_RECORD_TABLE_LIMIT
+     *         BAD_RECORD_TABLE_LIMIT}.
+     *     <li>{@link Options#BATCH_SIZE BATCH_SIZE}: Number of records to
+     *         insert per batch when inserting data. The default value is
+     *         '50000'.
      *     <li>{@link Options#COLUMN_FORMATS COLUMN_FORMATS}: For each target
      *         column specified, applies the column-property-bound format to
      *         the source data loaded into that column.  Each column format
@@ -2736,13 +2792,12 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         comma-delimited list of columns from the source data to skip.
      *         Mutually exclusive with {@link Options#COLUMNS_TO_LOAD
      *         COLUMNS_TO_LOAD}.
-     *     <li>{@link Options#COMPRESSION_TYPE COMPRESSION_TYPE}: Optional:
+     *     <li>{@link Options#COMPRESSION_TYPE COMPRESSION_TYPE}: Source data
      *         compression type.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#NONE NONE}: Uncompressed file
-     *             <li>{@link Options#AUTO AUTO}: Default. Auto detect
-     *                 compression type
+     *             <li>{@link Options#NONE NONE}: No compression.
+     *             <li>{@link Options#AUTO AUTO}: Auto detect compression type
      *             <li>{@link Options#GZIP GZIP}: gzip file compression.
      *             <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
      *         </ul>
@@ -2806,10 +2861,19 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#DELIMITED_TEXT
      *         DELIMITED_TEXT}.
+     *     <li>{@link Options#FLATTEN_COLUMNS FLATTEN_COLUMNS}: Specifies how
+     *         to handle nested columns.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}: Break up nested columns to
+     *                 multiple columns
+     *             <li>{@link Options#FALSE FALSE}: Treat nested columns as
+     *                 json columns instead of flattening
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#GDAL_CONFIGURATION_OPTIONS
      *         GDAL_CONFIGURATION_OPTIONS}: Comma separated list of gdal conf
-     *         options, for the specific requets: key=value. The default value
-     *         is ''.
+     *         options, for the specific requets: key=value
      *     <li>{@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}: Specifies
      *         the record collision error-suppression policy for inserting into
      *         a table with a <a
@@ -2855,24 +2919,40 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 the response.
      *         </ul>
      *         The default value is {@link Options#FULL FULL}.
+     *     <li>{@link Options#KAFKA_CONSUMERS_PER_RANK
+     *         KAFKA_CONSUMERS_PER_RANK}: Number of Kafka consumer threads per
+     *         rank (valid range 1-6). The default value is '1'.
      *     <li>{@link Options#KAFKA_GROUP_ID KAFKA_GROUP_ID}: The group id to
-     *         be used consuming data from a kakfa topic (valid only for kafka
-     *         datasource subscriptions).
+     *         be used when consuming data from a Kafka topic (valid only for
+     *         Kafka datasource subscriptions).
      *     <li>{@link Options#KAFKA_OFFSET_RESET_POLICY
-     *         KAFKA_OFFSET_RESET_POLICY}: Policy to determine whether the data
-     *         consumption starts either at earliest offset or latest offset.
+     *         KAFKA_OFFSET_RESET_POLICY}: Policy to determine whether the
+     *         Kafka data consumption starts either at earliest offset or
+     *         latest offset.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#EARLIEST EARLIEST}
      *             <li>{@link Options#LATEST LATEST}
      *         </ul>
      *         The default value is {@link Options#EARLIEST EARLIEST}.
+     *     <li>{@link Options#KAFKA_OPTIMISTIC_INGEST KAFKA_OPTIMISTIC_INGEST}:
+     *         Enable optimistic ingestion where Kafka topic offsets and table
+     *         data are committed independently to achieve parallelism.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#KAFKA_SUBSCRIPTION_CANCEL_AFTER
-     *         KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the subscription lifespan
-     *         (in minutes). Expired subscription will be cancelled
+     *         KAFKA_SUBSCRIPTION_CANCEL_AFTER}: Sets the Kafka subscription
+     *         lifespan (in minutes). Expired subscription will be cancelled
      *         automatically.
-     *     <li>{@link Options#LAYER LAYER}: Optional: geo files layer(s)
-     *         name(s): comma separated. The default value is ''.
+     *     <li>{@link Options#KAFKA_TYPE_INFERENCE_FETCH_TIMEOUT
+     *         KAFKA_TYPE_INFERENCE_FETCH_TIMEOUT}: Maximum time to collect
+     *         Kafka messages before type inferencing on the set of them.
+     *     <li>{@link Options#LAYER LAYER}: Geo files layer(s) name(s): comma
+     *         separated.
      *     <li>{@link Options#LOADING_MODE LOADING_MODE}: Scheme for
      *         distributing the extraction and loading of data from the source
      *         data file(s). This option applies only when loading files that
@@ -2907,33 +2987,32 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 strictly accessible to the head node will be loaded.
      *         </ul>
      *         The default value is {@link Options#HEAD HEAD}.
-     *     <li>{@link Options#LOCAL_TIME_OFFSET LOCAL_TIME_OFFSET}: For Avro
-     *         local timestamp columns
+     *     <li>{@link Options#LOCAL_TIME_OFFSET LOCAL_TIME_OFFSET}: Apply an
+     *         offset to Avro local timestamp columns.
      *     <li>{@link Options#MAX_RECORDS_TO_LOAD MAX_RECORDS_TO_LOAD}: Limit
-     *         the number of records to load in this request: If this number is
-     *         larger than a batch_size, then the number of records loaded will
-     *         be limited to the next whole number of batch_size (per working
-     *         thread). The default value is ''.
-     *     <li>{@link Options#NUM_TASKS_PER_RANK NUM_TASKS_PER_RANK}: Optional:
-     *         number of tasks for reading file per rank. Default will be
-     *         external_file_reader_num_tasks
+     *         the number of records to load in this request: if this number is
+     *         larger than {@link Options#BATCH_SIZE BATCH_SIZE}, then the
+     *         number of records loaded will be limited to the next whole
+     *         number of {@link Options#BATCH_SIZE BATCH_SIZE} (per working
+     *         thread).
+     *     <li>{@link Options#NUM_TASKS_PER_RANK NUM_TASKS_PER_RANK}: Number of
+     *         tasks for reading file per rank. Default will be system
+     *         configuration parameter, external_file_reader_num_tasks.
      *     <li>{@link Options#POLL_INTERVAL POLL_INTERVAL}: If {@link
      *         Options#TRUE TRUE}, the number of seconds between attempts to
      *         load external files into the table.  If zero, polling will be
      *         continuous as long as data is found.  If no data is found, the
-     *         interval will steadily increase to a maximum of 60 seconds.
-     *     <li>{@link Options#PRIMARY_KEYS PRIMARY_KEYS}: Optional: comma
-     *         separated list of column names, to set as primary keys, when not
-     *         specified in the type. The default value is ''.
-     *     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_ID
-     *         SCHEMA_REGISTRY_SCHEMA_ID}
+     *         interval will steadily increase to a maximum of 60 seconds. The
+     *         default value is '0'.
+     *     <li>{@link Options#PRIMARY_KEYS PRIMARY_KEYS}: Comma separated list
+     *         of column names to set as primary keys, when not specified in
+     *         the type.
      *     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_NAME
-     *         SCHEMA_REGISTRY_SCHEMA_NAME}
-     *     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_VERSION
-     *         SCHEMA_REGISTRY_SCHEMA_VERSION}
-     *     <li>{@link Options#SHARD_KEYS SHARD_KEYS}: Optional: comma separated
-     *         list of column names, to set as primary keys, when not specified
-     *         in the type. The default value is ''.
+     *         SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro schema in the
+     *         schema registry to use when reading Avro records.
+     *     <li>{@link Options#SHARD_KEYS SHARD_KEYS}: Comma separated list of
+     *         column names to set as shard keys, when not specified in the
+     *         type.
      *     <li>{@link Options#SKIP_LINES SKIP_LINES}: Skip number of lines from
      *         begining of file.
      *     <li>{@link Options#SUBSCRIBE SUBSCRIBE}: Continuously poll the data
@@ -2944,14 +3023,15 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#TABLE_INSERT_MODE TABLE_INSERT_MODE}: Optional:
-     *         table_insert_mode. When inserting records from multiple files:
-     *         if table_per_file then insert from each file into a new table.
-     *         Currently supported only for shapefiles.
+     *     <li>{@link Options#TABLE_INSERT_MODE TABLE_INSERT_MODE}: Insertion
+     *         scheme to use when inserting records from multiple shapefiles.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#SINGLE SINGLE}
-     *             <li>{@link Options#TABLE_PER_FILE TABLE_PER_FILE}
+     *             <li>{@link Options#SINGLE SINGLE}: Insert all records into a
+     *                 single table.
+     *             <li>{@link Options#TABLE_PER_FILE TABLE_PER_FILE}: Insert
+     *                 records from each file into a new table corresponding to
+     *                 that file.
      *         </ul>
      *         The default value is {@link Options#SINGLE SINGLE}.
      *     <li>{@link Options#TEXT_COMMENT_STRING TEXT_COMMENT_STRING}:
@@ -3014,11 +3094,15 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *     <li>{@link Options#TEXT_SEARCH_COLUMNS TEXT_SEARCH_COLUMNS}: Add
      *         'text_search' property to internally inferenced string columns.
      *         Comma seperated list of column names or '*' for all columns. To
-     *         add text_search property only to string columns of minimum size,
-     *         set also the option 'text_search_min_column_length'
+     *         add 'text_search' property only to string columns greater than
+     *         or equal to a minimum size, also set the {@link
+     *         Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     *         TEXT_SEARCH_MIN_COLUMN_LENGTH}
      *     <li>{@link Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
-     *         TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used
-     *         only when 'text_search_columns' has a value.
+     *         TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set the minimum column size for
+     *         strings to apply the 'text_search' property to. Used only when
+     *         {@link Options#TEXT_SEARCH_COLUMNS TEXT_SEARCH_COLUMNS} has a
+     *         value.
      *     <li>{@link Options#TRUNCATE_STRINGS TRUNCATE_STRINGS}: If set to
      *         {@link Options#TRUE TRUE}, truncate string values that are
      *         longer than the column's type size.
@@ -3038,7 +3122,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#TYPE_INFERENCE_MODE TYPE_INFERENCE_MODE}:
-     *         optimize type inference for:
+     *         Optimize type inferencing for either speed or accuracy.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#ACCURACY ACCURACY}: Scans data to get
@@ -3054,7 +3138,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         target="_top">primary key</a>. If set to {@link Options#TRUE
      *         TRUE}, any existing table record with primary key values that
      *         match those of a record being inserted will be replaced by that
-     *         new record (the new data will be "upserted"). If set to {@link
+     *         new record (the new data will be 'upserted'). If set to {@link
      *         Options#FALSE FALSE}, any existing table record with primary key
      *         values that match those of a record being inserted will remain
      *         unchanged, while the new record will be rejected and the error

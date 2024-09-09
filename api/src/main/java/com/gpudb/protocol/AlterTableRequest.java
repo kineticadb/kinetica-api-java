@@ -33,11 +33,13 @@ import org.apache.avro.generic.IndexedRecord;
  * href="../../../../../../concepts/indexes/#chunk-skip-index"
  * target="_top">chunk skip</a>, <a
  * href="../../../../../../concepts/indexes/#geospatial-index"
- * target="_top">geospatial</a>, or <a
+ * target="_top">geospatial</a>, <a
  * href="../../../../../../concepts/indexes/#cagra-index"
- * target="_top">CAGRA</a> index. This can speed up certain operations when
- * using expressions containing equality or relational operators on indexed
- * columns. This only applies to tables.
+ * target="_top">CAGRA</a>, or <a
+ * href="../../../../../../concepts/indexes/#hnsw-index" target="_top">HNSW</a>
+ * index. This can speed up certain operations when using expressions
+ * containing equality or relational operators on indexed columns. This only
+ * applies to tables.
  * <p>
  * Create or delete a <a href="../../../../../../concepts/tables/#foreign-key"
  * target="_top">foreign key</a> on a particular column.
@@ -103,9 +105,11 @@ public class AlterTableRequest implements IndexedRecord {
          * href="../../../../../../concepts/indexes/#chunk-skip-index"
          * target="_top">chunk skip index</a>, <a
          * href="../../../../../../concepts/indexes/#geospatial-index"
-         * target="_top">geospatial index</a>, or <a
+         * target="_top">geospatial index</a>, <a
          * href="../../../../../../concepts/indexes/#cagra-index"
-         * target="_top">CAGRA index</a> (depending on the specified {@link
+         * target="_top">CAGRA index</a>, or <a
+         * href="../../../../../../concepts/indexes/#hnsw-index"
+         * target="_top">HNSW index</a> (depending on the specified {@link
          * Options#INDEX_TYPE INDEX_TYPE}), on the column name specified in
          * {@link #getValue() value}. If this column already has the specified
          * index, an error will be returned.
@@ -125,9 +129,11 @@ public class AlterTableRequest implements IndexedRecord {
          * href="../../../../../../concepts/indexes/#chunk-skip-index"
          * target="_top">chunk skip index</a>, <a
          * href="../../../../../../concepts/indexes/#geospatial-index"
-         * target="_top">geospatial index</a>, or <a
+         * target="_top">geospatial index</a>, <a
          * href="../../../../../../concepts/indexes/#cagra-index"
-         * target="_top">CAGRA index</a> (depending on the specified {@link
+         * target="_top">CAGRA index</a>, or <a
+         * href="../../../../../../concepts/indexes/#hnsw-index"
+         * target="_top">HNSW index</a> (depending on the specified {@link
          * Options#INDEX_TYPE INDEX_TYPE}), on the column name specified in
          * {@link #getValue() value}. If this column does not have the
          * specified index, an error will be returned.
@@ -519,6 +525,11 @@ public class AlterTableRequest implements IndexedRecord {
          *         target="_top">CAGRA index</a> on a <a
          *         href="../../../../../../vector_search/#vector-type"
          *         target="_top">vector column</a>
+         *     <li>{@link Options#HNSW HNSW}: Create or delete an <a
+         *         href="../../../../../../concepts/indexes/#hnsw-index"
+         *         target="_top">HNSW index</a> on a <a
+         *         href="../../../../../../vector_search/#vector-type"
+         *         target="_top">vector column</a>
          * </ul>
          * The default value is {@link Options#COLUMN COLUMN}.
          */
@@ -553,6 +564,15 @@ public class AlterTableRequest implements IndexedRecord {
          * target="_top">vector column</a>
          */
         public static final String CAGRA = "cagra";
+
+        /**
+         * Create or delete an <a
+         * href="../../../../../../concepts/indexes/#hnsw-index"
+         * target="_top">HNSW index</a> on a <a
+         * href="../../../../../../vector_search/#vector-type"
+         * target="_top">vector column</a>
+         */
+        public static final String HNSW = "hnsw";
 
         /**
          * Options to use when creating an index, in the format "key: value [,
@@ -599,9 +619,11 @@ public class AlterTableRequest implements IndexedRecord {
      *                        href="../../../../../../concepts/indexes/#chunk-skip-index"
      *                        target="_top">chunk skip index</a>, <a
      *                        href="../../../../../../concepts/indexes/#geospatial-index"
-     *                        target="_top">geospatial index</a>, or <a
+     *                        target="_top">geospatial index</a>, <a
      *                        href="../../../../../../concepts/indexes/#cagra-index"
-     *                        target="_top">CAGRA index</a> (depending on the
+     *                        target="_top">CAGRA index</a>, or <a
+     *                        href="../../../../../../concepts/indexes/#hnsw-index"
+     *                        target="_top">HNSW index</a> (depending on the
      *                        specified {@link Options#INDEX_TYPE INDEX_TYPE}),
      *                        on the column name specified in {@code value}. If
      *                        this column already has the specified index, an
@@ -618,9 +640,11 @@ public class AlterTableRequest implements IndexedRecord {
      *                        href="../../../../../../concepts/indexes/#chunk-skip-index"
      *                        target="_top">chunk skip index</a>, <a
      *                        href="../../../../../../concepts/indexes/#geospatial-index"
-     *                        target="_top">geospatial index</a>, or <a
+     *                        target="_top">geospatial index</a>, <a
      *                        href="../../../../../../concepts/indexes/#cagra-index"
-     *                        target="_top">CAGRA index</a> (depending on the
+     *                        target="_top">CAGRA index</a>, or <a
+     *                        href="../../../../../../concepts/indexes/#hnsw-index"
+     *                        target="_top">HNSW index</a> (depending on the
      *                        specified {@link Options#INDEX_TYPE INDEX_TYPE}),
      *                        on the column name specified in {@code value}. If
      *                        this column does not have the specified index, an
@@ -940,6 +964,12 @@ public class AlterTableRequest implements IndexedRecord {
      *                                 target="_top">CAGRA index</a> on a <a
      *                                 href="../../../../../../vector_search/#vector-type"
      *                                 target="_top">vector column</a>
+     *                             <li>{@link Options#HNSW HNSW}: Create or
+     *                                 delete an <a
+     *                                 href="../../../../../../concepts/indexes/#hnsw-index"
+     *                                 target="_top">HNSW index</a> on a <a
+     *                                 href="../../../../../../vector_search/#vector-type"
+     *                                 target="_top">vector column</a>
      *                         </ul>
      *                         The default value is {@link Options#COLUMN
      *                         COLUMN}.
@@ -999,9 +1029,11 @@ public class AlterTableRequest implements IndexedRecord {
      *         href="../../../../../../concepts/indexes/#chunk-skip-index"
      *         target="_top">chunk skip index</a>, <a
      *         href="../../../../../../concepts/indexes/#geospatial-index"
-     *         target="_top">geospatial index</a>, or <a
+     *         target="_top">geospatial index</a>, <a
      *         href="../../../../../../concepts/indexes/#cagra-index"
-     *         target="_top">CAGRA index</a> (depending on the specified {@link
+     *         target="_top">CAGRA index</a>, or <a
+     *         href="../../../../../../concepts/indexes/#hnsw-index"
+     *         target="_top">HNSW index</a> (depending on the specified {@link
      *         Options#INDEX_TYPE INDEX_TYPE}), on the column name specified in
      *         {@link #getValue() value}. If this column already has the
      *         specified index, an error will be returned.
@@ -1015,9 +1047,11 @@ public class AlterTableRequest implements IndexedRecord {
      *         href="../../../../../../concepts/indexes/#chunk-skip-index"
      *         target="_top">chunk skip index</a>, <a
      *         href="../../../../../../concepts/indexes/#geospatial-index"
-     *         target="_top">geospatial index</a>, or <a
+     *         target="_top">geospatial index</a>, <a
      *         href="../../../../../../concepts/indexes/#cagra-index"
-     *         target="_top">CAGRA index</a> (depending on the specified {@link
+     *         target="_top">CAGRA index</a>, or <a
+     *         href="../../../../../../concepts/indexes/#hnsw-index"
+     *         target="_top">HNSW index</a> (depending on the specified {@link
      *         Options#INDEX_TYPE INDEX_TYPE}), on the column name specified in
      *         {@link #getValue() value}. If this column does not have the
      *         specified index, an error will be returned.
@@ -1201,9 +1235,11 @@ public class AlterTableRequest implements IndexedRecord {
      *         href="../../../../../../concepts/indexes/#chunk-skip-index"
      *         target="_top">chunk skip index</a>, <a
      *         href="../../../../../../concepts/indexes/#geospatial-index"
-     *         target="_top">geospatial index</a>, or <a
+     *         target="_top">geospatial index</a>, <a
      *         href="../../../../../../concepts/indexes/#cagra-index"
-     *         target="_top">CAGRA index</a> (depending on the specified {@link
+     *         target="_top">CAGRA index</a>, or <a
+     *         href="../../../../../../concepts/indexes/#hnsw-index"
+     *         target="_top">HNSW index</a> (depending on the specified {@link
      *         Options#INDEX_TYPE INDEX_TYPE}), on the column name specified in
      *         {@link #getValue() value}. If this column already has the
      *         specified index, an error will be returned.
@@ -1217,9 +1253,11 @@ public class AlterTableRequest implements IndexedRecord {
      *         href="../../../../../../concepts/indexes/#chunk-skip-index"
      *         target="_top">chunk skip index</a>, <a
      *         href="../../../../../../concepts/indexes/#geospatial-index"
-     *         target="_top">geospatial index</a>, or <a
+     *         target="_top">geospatial index</a>, <a
      *         href="../../../../../../concepts/indexes/#cagra-index"
-     *         target="_top">CAGRA index</a> (depending on the specified {@link
+     *         target="_top">CAGRA index</a>, or <a
+     *         href="../../../../../../concepts/indexes/#hnsw-index"
+     *         target="_top">HNSW index</a> (depending on the specified {@link
      *         Options#INDEX_TYPE INDEX_TYPE}), on the column name specified in
      *         {@link #getValue() value}. If this column does not have the
      *         specified index, an error will be returned.
@@ -1526,6 +1564,11 @@ public class AlterTableRequest implements IndexedRecord {
      *                 target="_top">CAGRA index</a> on a <a
      *                 href="../../../../../../vector_search/#vector-type"
      *                 target="_top">vector column</a>
+     *             <li>{@link Options#HNSW HNSW}: Create or delete an <a
+     *                 href="../../../../../../concepts/indexes/#hnsw-index"
+     *                 target="_top">HNSW index</a> on a <a
+     *                 href="../../../../../../vector_search/#vector-type"
+     *                 target="_top">vector column</a>
      *         </ul>
      *         The default value is {@link Options#COLUMN COLUMN}.
      *     <li>{@link Options#INDEX_OPTIONS INDEX_OPTIONS}: Options to use when
@@ -1630,6 +1673,11 @@ public class AlterTableRequest implements IndexedRecord {
      *             <li>{@link Options#CAGRA CAGRA}: Create or delete a <a
      *                 href="../../../../../../concepts/indexes/#cagra-index"
      *                 target="_top">CAGRA index</a> on a <a
+     *                 href="../../../../../../vector_search/#vector-type"
+     *                 target="_top">vector column</a>
+     *             <li>{@link Options#HNSW HNSW}: Create or delete an <a
+     *                 href="../../../../../../concepts/indexes/#hnsw-index"
+     *                 target="_top">HNSW index</a> on a <a
      *                 href="../../../../../../vector_search/#vector-type"
      *                 target="_top">vector column</a>
      *         </ul>

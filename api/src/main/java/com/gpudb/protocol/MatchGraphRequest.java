@@ -23,7 +23,7 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * IMPORTANT: It's highly recommended that you review the <a
  * href="../../../../../../graph_solver/network_graph_solver/"
- * target="_top">Network Graphs & Solvers</a> concepts documentation, the <a
+ * target="_top">Graphs & Solvers</a> concepts documentation, the <a
  * href="../../../../../../guides/graph_rest_guide/" target="_top">Graph REST
  * Tutorial</a>, and/or some <a
  * href="../../../../../../guide-tags/graph---match/"
@@ -429,10 +429,11 @@ public class MatchGraphRequest implements IndexedRecord {
         public static final String NUM_CYCLES = "num_cycles";
 
         /**
-         * For the {@link SolveMethod#MATCH_CLUSTERS MATCH_CLUSTERS} solver
-         * only. Terminates the cluster exchanges within the first step
-         * iterations of a cycle (inner loop) unless convergence is reached.
-         * The default value is '10'.
+         * For the {@link SolveMethod#MATCH_CLUSTERS MATCH_CLUSTERS} and {@link
+         * SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solvers only.
+         * Terminates the cluster exchanges within the first step iterations of
+         * a cycle (inner loop) unless convergence is reached. The default
+         * value is '10'.
          */
         public static final String NUM_LOOPS_PER_CYCLE = "num_loops_per_cycle";
 
@@ -445,10 +446,11 @@ public class MatchGraphRequest implements IndexedRecord {
         public static final String NUM_OUTPUT_CLUSTERS = "num_output_clusters";
 
         /**
-         * For the {@link SolveMethod#MATCH_CLUSTERS MATCH_CLUSTERS} solver
-         * only. If set (value greater than zero), it terminates when the
-         * number of clusters goes below than this number. The default value is
-         * '0'.
+         * For the {@link SolveMethod#MATCH_CLUSTERS MATCH_CLUSTERS} and {@link
+         * SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solvers only. If set
+         * (value greater than zero), it terminates when the number of clusters
+         * goes below than this number. For embedding solver the default is 8.
+         * The default value is '0'.
          */
         public static final String MAX_NUM_CLUSTERS = "max_num_clusters";
 
@@ -586,9 +588,10 @@ public class MatchGraphRequest implements IndexedRecord {
         public static final String CHARGING_PENALTY = "charging_penalty";
 
         /**
-         * For the {@link SolveMethod#MATCH_SIMILARITY MATCH_SIMILARITY} solver
-         * only. Searches within this maximum hops for source and target node
-         * pairs to compute the Jaccard scores. The default value is '3'.
+         * For the {@link SolveMethod#MATCH_SIMILARITY MATCH_SIMILARITY} and
+         * {@link SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solvers only.
+         * Searches within this maximum hops for source and target node pairs
+         * to compute the Jaccard scores. The default value is '3'.
          */
         public static final String MAX_HOPS = "max_hops";
 
@@ -633,6 +636,65 @@ public class MatchGraphRequest implements IndexedRecord {
          * default value is '1000'.
          */
         public static final String MAX_VECTOR_DIMENSION = "max_vector_dimension";
+
+        /**
+         * For the {@link SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solvers
+         * only. Solves to find the optimal weights per sub feature in vector
+         * emdeddings.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String OPTIMIZE_EMBEDDING_WEIGHTS = "optimize_embedding_weights";
+
+        /**
+         * For the {@link SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solver
+         * only. User specified weights per sub feature in vector embeddings.
+         * The string contains the comma separated float values for each
+         * sub-feature in the vector space. These values will ONLY be used if
+         * 'optimize_embedding_weights' is false. The default value is
+         * '1.0,1.0,1.0,1.0'.
+         */
+        public static final String EMBEDDING_WEIGHTS = "embedding_weights";
+
+        /**
+         * For the {@link SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solver
+         * only. Sets the number of random nodes from the graph for solving the
+         * weights using stochastic gradient descent. The default value is
+         * '1000'.
+         */
+        public static final String OPTIMIZATION_SAMPLING_SIZE = "optimization_sampling_size";
+
+        /**
+         * For the {@link SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solver
+         * only. When the iterations (epochs) for the convergence of the
+         * stochastic gradient descent algorithm reaches this number it bails
+         * out unless relative error between consecutive iterations is below
+         * the 'optimization_error_tolerance' option. The default value is
+         * '1000'.
+         */
+        public static final String OPTIMIZATION_MAX_ITERATIONS = "optimization_max_iterations";
+
+        /**
+         * For the {@link SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solver
+         * only. When the relative error between all of the weights'
+         * consecutive iterations falls below this threshold the optimization
+         * cycle is interrupted unless the number of iterations reaches the
+         * limit set by the option 'max_optimization_iterations'. The default
+         * value is '0.001'.
+         */
+        public static final String OPTIMIZATION_ERROR_TOLERANCE = "optimization_error_tolerance";
+
+        /**
+         * For the {@link SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solver
+         * only. It is otherwise known as the learning rate, which is the
+         * proportionality constant in fornt of the gradient term in successive
+         * iterations. The default value is '0.3'.
+         */
+        public static final String OPTIMIZATION_ITERATION_RATE = "optimization_iteration_rate";
 
         private Options() {  }
     }
@@ -1032,11 +1094,13 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         during iterations. The default value is '10'.
      *                     <li>{@link Options#NUM_LOOPS_PER_CYCLE
      *                         NUM_LOOPS_PER_CYCLE}: For the {@link
-     *                         SolveMethod#MATCH_CLUSTERS MATCH_CLUSTERS}
-     *                         solver only. Terminates the cluster exchanges
-     *                         within the first step iterations of a cycle
-     *                         (inner loop) unless convergence is reached. The
-     *                         default value is '10'.
+     *                         SolveMethod#MATCH_CLUSTERS MATCH_CLUSTERS} and
+     *                         {@link SolveMethod#MATCH_EMBEDDING
+     *                         MATCH_EMBEDDING} solvers only. Terminates the
+     *                         cluster exchanges within the first step
+     *                         iterations of a cycle (inner loop) unless
+     *                         convergence is reached. The default value is
+     *                         '10'.
      *                     <li>{@link Options#NUM_OUTPUT_CLUSTERS
      *                         NUM_OUTPUT_CLUSTERS}: For the {@link
      *                         SolveMethod#MATCH_CLUSTERS MATCH_CLUSTERS}
@@ -1046,11 +1110,13 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         default value is '0'.
      *                     <li>{@link Options#MAX_NUM_CLUSTERS
      *                         MAX_NUM_CLUSTERS}: For the {@link
-     *                         SolveMethod#MATCH_CLUSTERS MATCH_CLUSTERS}
-     *                         solver only. If set (value greater than zero),
-     *                         it terminates when the number of clusters goes
-     *                         below than this number. The default value is
-     *                         '0'.
+     *                         SolveMethod#MATCH_CLUSTERS MATCH_CLUSTERS} and
+     *                         {@link SolveMethod#MATCH_EMBEDDING
+     *                         MATCH_EMBEDDING} solvers only. If set (value
+     *                         greater than zero), it terminates when the
+     *                         number of clusters goes below than this number.
+     *                         For embedding solver the default is 8. The
+     *                         default value is '0'.
      *                     <li>{@link Options#CLUSTER_QUALITY_METRIC
      *                         CLUSTER_QUALITY_METRIC}: For the {@link
      *                         SolveMethod#MATCH_CLUSTERS MATCH_CLUSTERS}
@@ -1152,10 +1218,11 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         is '30000.0'.
      *                     <li>{@link Options#MAX_HOPS MAX_HOPS}: For the
      *                         {@link SolveMethod#MATCH_SIMILARITY
-     *                         MATCH_SIMILARITY} solver only. Searches within
-     *                         this maximum hops for source and target node
-     *                         pairs to compute the Jaccard scores. The default
-     *                         value is '3'.
+     *                         MATCH_SIMILARITY} and {@link
+     *                         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING}
+     *                         solvers only. Searches within this maximum hops
+     *                         for source and target node pairs to compute the
+     *                         Jaccard scores. The default value is '3'.
      *                     <li>{@link Options#TRAVERSAL_NODE_LIMIT
      *                         TRAVERSAL_NODE_LIMIT}: For the {@link
      *                         SolveMethod#MATCH_SIMILARITY MATCH_SIMILARITY}
@@ -1195,6 +1262,63 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         solver only. Limits the number of dimensions in
      *                         node vector embeddings. The default value is
      *                         '1000'.
+     *                     <li>{@link Options#OPTIMIZE_EMBEDDING_WEIGHTS
+     *                         OPTIMIZE_EMBEDDING_WEIGHTS}: For the {@link
+     *                         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING}
+     *                         solvers only. Solves to find the optimal weights
+     *                         per sub feature in vector emdeddings.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link Options#EMBEDDING_WEIGHTS
+     *                         EMBEDDING_WEIGHTS}: For the {@link
+     *                         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING}
+     *                         solver only. User specified weights per sub
+     *                         feature in vector embeddings.  The string
+     *                         contains the comma separated float values for
+     *                         each sub-feature in the vector space. These
+     *                         values will ONLY be used if
+     *                         'optimize_embedding_weights' is false. The
+     *                         default value is '1.0,1.0,1.0,1.0'.
+     *                     <li>{@link Options#OPTIMIZATION_SAMPLING_SIZE
+     *                         OPTIMIZATION_SAMPLING_SIZE}: For the {@link
+     *                         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING}
+     *                         solver only. Sets the number of random nodes
+     *                         from the graph for solving the weights using
+     *                         stochastic gradient descent. The default value
+     *                         is '1000'.
+     *                     <li>{@link Options#OPTIMIZATION_MAX_ITERATIONS
+     *                         OPTIMIZATION_MAX_ITERATIONS}: For the {@link
+     *                         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING}
+     *                         solver only. When the iterations (epochs) for
+     *                         the convergence of the stochastic gradient
+     *                         descent algorithm  reaches this number it bails
+     *                         out unless relative error between consecutive
+     *                         iterations is below the
+     *                         'optimization_error_tolerance' option. The
+     *                         default value is '1000'.
+     *                     <li>{@link Options#OPTIMIZATION_ERROR_TOLERANCE
+     *                         OPTIMIZATION_ERROR_TOLERANCE}: For the {@link
+     *                         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING}
+     *                         solver only. When the relative error between all
+     *                         of the weights' consecutive iterations falls
+     *                         below this threshold  the optimization cycle is
+     *                         interrupted unless the number of iterations
+     *                         reaches the limit set by the option
+     *                         'max_optimization_iterations'. The default value
+     *                         is '0.001'.
+     *                     <li>{@link Options#OPTIMIZATION_ITERATION_RATE
+     *                         OPTIMIZATION_ITERATION_RATE}: For the {@link
+     *                         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING}
+     *                         solver only. It is otherwise known as the
+     *                         learning rate, which is the proportionality
+     *                         constant in fornt of the gradient term in
+     *                         successive iterations. The default value is
+     *                         '0.3'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -1640,7 +1764,8 @@ public class MatchGraphRequest implements IndexedRecord {
      *         (outer loop) when quality does not improve during iterations.
      *         The default value is '10'.
      *     <li>{@link Options#NUM_LOOPS_PER_CYCLE NUM_LOOPS_PER_CYCLE}: For the
-     *         {@link SolveMethod#MATCH_CLUSTERS MATCH_CLUSTERS} solver only.
+     *         {@link SolveMethod#MATCH_CLUSTERS MATCH_CLUSTERS} and {@link
+     *         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solvers only.
      *         Terminates the cluster exchanges within the first step
      *         iterations of a cycle (inner loop) unless convergence is
      *         reached. The default value is '10'.
@@ -1650,10 +1775,11 @@ public class MatchGraphRequest implements IndexedRecord {
      *         based on density. Default value of zero outputs all clusters.
      *         The default value is '0'.
      *     <li>{@link Options#MAX_NUM_CLUSTERS MAX_NUM_CLUSTERS}: For the
-     *         {@link SolveMethod#MATCH_CLUSTERS MATCH_CLUSTERS} solver only.
-     *         If set (value greater than zero), it terminates when the number
-     *         of clusters goes below than this number. The default value is
-     *         '0'.
+     *         {@link SolveMethod#MATCH_CLUSTERS MATCH_CLUSTERS} and {@link
+     *         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solvers only. If
+     *         set (value greater than zero), it terminates when the number of
+     *         clusters goes below than this number. For embedding solver the
+     *         default is 8. The default value is '0'.
      *     <li>{@link Options#CLUSTER_QUALITY_METRIC CLUSTER_QUALITY_METRIC}:
      *         For the {@link SolveMethod#MATCH_CLUSTERS MATCH_CLUSTERS} solver
      *         only. The quality metric for Louvain modularity optimization
@@ -1730,7 +1856,8 @@ public class MatchGraphRequest implements IndexedRecord {
      *         MATCH_CHARGING_STATIONS} solver only. This is the penalty for
      *         full charging. The default value is '30000.0'.
      *     <li>{@link Options#MAX_HOPS MAX_HOPS}: For the {@link
-     *         SolveMethod#MATCH_SIMILARITY MATCH_SIMILARITY} solver only.
+     *         SolveMethod#MATCH_SIMILARITY MATCH_SIMILARITY} and {@link
+     *         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solvers only.
      *         Searches within this maximum hops for source and target node
      *         pairs to compute the Jaccard scores. The default value is '3'.
      *     <li>{@link Options#TRAVERSAL_NODE_LIMIT TRAVERSAL_NODE_LIMIT}: For
@@ -1763,6 +1890,52 @@ public class MatchGraphRequest implements IndexedRecord {
      *         the {@link SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solver
      *         only. Limits the number of dimensions in node vector embeddings.
      *         The default value is '1000'.
+     *     <li>{@link Options#OPTIMIZE_EMBEDDING_WEIGHTS
+     *         OPTIMIZE_EMBEDDING_WEIGHTS}: For the {@link
+     *         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solvers only.
+     *         Solves to find the optimal weights per sub feature in vector
+     *         emdeddings.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#EMBEDDING_WEIGHTS EMBEDDING_WEIGHTS}: For the
+     *         {@link SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solver only.
+     *         User specified weights per sub feature in vector embeddings.
+     *         The string contains the comma separated float values for each
+     *         sub-feature in the vector space. These values will ONLY be used
+     *         if 'optimize_embedding_weights' is false. The default value is
+     *         '1.0,1.0,1.0,1.0'.
+     *     <li>{@link Options#OPTIMIZATION_SAMPLING_SIZE
+     *         OPTIMIZATION_SAMPLING_SIZE}: For the {@link
+     *         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solver only. Sets
+     *         the number of random nodes from the graph for solving the
+     *         weights using stochastic gradient descent. The default value is
+     *         '1000'.
+     *     <li>{@link Options#OPTIMIZATION_MAX_ITERATIONS
+     *         OPTIMIZATION_MAX_ITERATIONS}: For the {@link
+     *         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solver only. When
+     *         the iterations (epochs) for the convergence of the stochastic
+     *         gradient descent algorithm  reaches this number it bails out
+     *         unless relative error between consecutive iterations is below
+     *         the 'optimization_error_tolerance' option. The default value is
+     *         '1000'.
+     *     <li>{@link Options#OPTIMIZATION_ERROR_TOLERANCE
+     *         OPTIMIZATION_ERROR_TOLERANCE}: For the {@link
+     *         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solver only. When
+     *         the relative error between all of the weights' consecutive
+     *         iterations falls below this threshold  the optimization cycle is
+     *         interrupted unless the number of iterations reaches the limit
+     *         set by the option 'max_optimization_iterations'. The default
+     *         value is '0.001'.
+     *     <li>{@link Options#OPTIMIZATION_ITERATION_RATE
+     *         OPTIMIZATION_ITERATION_RATE}: For the {@link
+     *         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solver only. It is
+     *         otherwise known as the learning rate, which is the
+     *         proportionality constant in fornt of the gradient term in
+     *         successive iterations. The default value is '0.3'.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -1982,7 +2155,8 @@ public class MatchGraphRequest implements IndexedRecord {
      *         (outer loop) when quality does not improve during iterations.
      *         The default value is '10'.
      *     <li>{@link Options#NUM_LOOPS_PER_CYCLE NUM_LOOPS_PER_CYCLE}: For the
-     *         {@link SolveMethod#MATCH_CLUSTERS MATCH_CLUSTERS} solver only.
+     *         {@link SolveMethod#MATCH_CLUSTERS MATCH_CLUSTERS} and {@link
+     *         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solvers only.
      *         Terminates the cluster exchanges within the first step
      *         iterations of a cycle (inner loop) unless convergence is
      *         reached. The default value is '10'.
@@ -1992,10 +2166,11 @@ public class MatchGraphRequest implements IndexedRecord {
      *         based on density. Default value of zero outputs all clusters.
      *         The default value is '0'.
      *     <li>{@link Options#MAX_NUM_CLUSTERS MAX_NUM_CLUSTERS}: For the
-     *         {@link SolveMethod#MATCH_CLUSTERS MATCH_CLUSTERS} solver only.
-     *         If set (value greater than zero), it terminates when the number
-     *         of clusters goes below than this number. The default value is
-     *         '0'.
+     *         {@link SolveMethod#MATCH_CLUSTERS MATCH_CLUSTERS} and {@link
+     *         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solvers only. If
+     *         set (value greater than zero), it terminates when the number of
+     *         clusters goes below than this number. For embedding solver the
+     *         default is 8. The default value is '0'.
      *     <li>{@link Options#CLUSTER_QUALITY_METRIC CLUSTER_QUALITY_METRIC}:
      *         For the {@link SolveMethod#MATCH_CLUSTERS MATCH_CLUSTERS} solver
      *         only. The quality metric for Louvain modularity optimization
@@ -2072,7 +2247,8 @@ public class MatchGraphRequest implements IndexedRecord {
      *         MATCH_CHARGING_STATIONS} solver only. This is the penalty for
      *         full charging. The default value is '30000.0'.
      *     <li>{@link Options#MAX_HOPS MAX_HOPS}: For the {@link
-     *         SolveMethod#MATCH_SIMILARITY MATCH_SIMILARITY} solver only.
+     *         SolveMethod#MATCH_SIMILARITY MATCH_SIMILARITY} and {@link
+     *         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solvers only.
      *         Searches within this maximum hops for source and target node
      *         pairs to compute the Jaccard scores. The default value is '3'.
      *     <li>{@link Options#TRAVERSAL_NODE_LIMIT TRAVERSAL_NODE_LIMIT}: For
@@ -2105,6 +2281,52 @@ public class MatchGraphRequest implements IndexedRecord {
      *         the {@link SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solver
      *         only. Limits the number of dimensions in node vector embeddings.
      *         The default value is '1000'.
+     *     <li>{@link Options#OPTIMIZE_EMBEDDING_WEIGHTS
+     *         OPTIMIZE_EMBEDDING_WEIGHTS}: For the {@link
+     *         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solvers only.
+     *         Solves to find the optimal weights per sub feature in vector
+     *         emdeddings.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#EMBEDDING_WEIGHTS EMBEDDING_WEIGHTS}: For the
+     *         {@link SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solver only.
+     *         User specified weights per sub feature in vector embeddings.
+     *         The string contains the comma separated float values for each
+     *         sub-feature in the vector space. These values will ONLY be used
+     *         if 'optimize_embedding_weights' is false. The default value is
+     *         '1.0,1.0,1.0,1.0'.
+     *     <li>{@link Options#OPTIMIZATION_SAMPLING_SIZE
+     *         OPTIMIZATION_SAMPLING_SIZE}: For the {@link
+     *         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solver only. Sets
+     *         the number of random nodes from the graph for solving the
+     *         weights using stochastic gradient descent. The default value is
+     *         '1000'.
+     *     <li>{@link Options#OPTIMIZATION_MAX_ITERATIONS
+     *         OPTIMIZATION_MAX_ITERATIONS}: For the {@link
+     *         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solver only. When
+     *         the iterations (epochs) for the convergence of the stochastic
+     *         gradient descent algorithm  reaches this number it bails out
+     *         unless relative error between consecutive iterations is below
+     *         the 'optimization_error_tolerance' option. The default value is
+     *         '1000'.
+     *     <li>{@link Options#OPTIMIZATION_ERROR_TOLERANCE
+     *         OPTIMIZATION_ERROR_TOLERANCE}: For the {@link
+     *         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solver only. When
+     *         the relative error between all of the weights' consecutive
+     *         iterations falls below this threshold  the optimization cycle is
+     *         interrupted unless the number of iterations reaches the limit
+     *         set by the option 'max_optimization_iterations'. The default
+     *         value is '0.001'.
+     *     <li>{@link Options#OPTIMIZATION_ITERATION_RATE
+     *         OPTIMIZATION_ITERATION_RATE}: For the {@link
+     *         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solver only. It is
+     *         otherwise known as the learning rate, which is the
+     *         proportionality constant in fornt of the gradient term in
+     *         successive iterations. The default value is '0.3'.
      * </ul>
      * The default value is an empty {@link Map}.
      *

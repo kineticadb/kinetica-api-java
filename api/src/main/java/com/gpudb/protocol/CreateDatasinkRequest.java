@@ -74,6 +74,22 @@ public class CreateDatasinkRequest implements IndexedRecord {
         public static final String S3_REGION = "s3_region";
 
         /**
+         * Set to false for testing purposes or when necessary to bypass TLS
+         * errors (e.g.&nbsp;self-signed certificates). This value is true by
+         * default.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#TRUE TRUE}.
+         */
+        public static final String S3_VERIFY_SSL = "s3_verify_ssl";
+
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
          * When true (default), the requests URI should be specified in
          * virtual-hosted-style format where the bucket name is part of the
          * domain name in the URL.
@@ -87,9 +103,6 @@ public class CreateDatasinkRequest implements IndexedRecord {
          * The default value is {@link Options#TRUE TRUE}.
          */
         public static final String S3_USE_VIRTUAL_ADDRESSING = "s3_use_virtual_addressing";
-
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
 
         /**
          * Amazon IAM Role ARN which has required S3 permissions that can be
@@ -294,6 +307,16 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *                     <li>{@link Options#S3_REGION S3_REGION}: Name of the
      *                         Amazon S3 region where the given bucket is
      *                         located
+     *                     <li>{@link Options#S3_VERIFY_SSL S3_VERIFY_SSL}: Set
+     *                         to false for testing purposes or when necessary
+     *                         to bypass TLS errors (e.g. self-signed
+     *                         certificates). This value is true by default.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#S3_USE_VIRTUAL_ADDRESSING
      *                         S3_USE_VIRTUAL_ADDRESSING}: When true (default),
      *                         the requests URI should be specified in
@@ -491,6 +514,15 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *         Amazon S3 bucket to use as the data sink
      *     <li>{@link Options#S3_REGION S3_REGION}: Name of the Amazon S3
      *         region where the given bucket is located
+     *     <li>{@link Options#S3_VERIFY_SSL S3_VERIFY_SSL}: Set to false for
+     *         testing purposes or when necessary to bypass TLS errors (e.g.
+     *         self-signed certificates). This value is true by default.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#S3_USE_VIRTUAL_ADDRESSING
      *         S3_USE_VIRTUAL_ADDRESSING}: When true (default), the requests
      *         URI should be specified in virtual-hosted-style format where the
@@ -615,6 +647,15 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *         Amazon S3 bucket to use as the data sink
      *     <li>{@link Options#S3_REGION S3_REGION}: Name of the Amazon S3
      *         region where the given bucket is located
+     *     <li>{@link Options#S3_VERIFY_SSL S3_VERIFY_SSL}: Set to false for
+     *         testing purposes or when necessary to bypass TLS errors (e.g.
+     *         self-signed certificates). This value is true by default.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#S3_USE_VIRTUAL_ADDRESSING
      *         S3_USE_VIRTUAL_ADDRESSING}: When true (default), the requests
      *         URI should be specified in virtual-hosted-style format where the

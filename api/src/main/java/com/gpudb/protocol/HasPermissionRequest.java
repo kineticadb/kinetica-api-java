@@ -129,6 +129,11 @@ public class HasPermissionRequest implements IndexedRecord {
         public static final String CONNECT = "connect";
 
         /**
+         * Ability to create new objects of this type.
+         */
+        public static final String CREATE = "create";
+
+        /**
          * Delete rows from tables.
          */
         public static final String DELETE = "delete";
@@ -256,6 +261,8 @@ public class HasPermissionRequest implements IndexedRecord {
      *                            object.
      *                        <li>{@link Permission#CONNECT CONNECT}: Connect
      *                            access on the given data source or data sink.
+     *                        <li>{@link Permission#CREATE CREATE}: Ability to
+     *                            create new objects of this type.
      *                        <li>{@link Permission#DELETE DELETE}: Delete rows
      *                            from tables.
      *                        <li>{@link Permission#EXECUTE EXECUTE}: Ability
@@ -409,6 +416,8 @@ public class HasPermissionRequest implements IndexedRecord {
      *         administrative access on the object.
      *     <li>{@link Permission#CONNECT CONNECT}: Connect access on the given
      *         data source or data sink.
+     *     <li>{@link Permission#CREATE CREATE}: Ability to create new objects
+     *         of this type.
      *     <li>{@link Permission#DELETE DELETE}: Delete rows from tables.
      *     <li>{@link Permission#EXECUTE EXECUTE}: Ability to Execute the
      *         Procedure object.
@@ -436,6 +445,8 @@ public class HasPermissionRequest implements IndexedRecord {
      *         administrative access on the object.
      *     <li>{@link Permission#CONNECT CONNECT}: Connect access on the given
      *         data source or data sink.
+     *     <li>{@link Permission#CREATE CREATE}: Ability to create new objects
+     *         of this type.
      *     <li>{@link Permission#DELETE DELETE}: Delete rows from tables.
      *     <li>{@link Permission#EXECUTE EXECUTE}: Ability to Execute the
      *         Procedure object.

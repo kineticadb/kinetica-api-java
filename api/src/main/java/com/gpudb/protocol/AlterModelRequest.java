@@ -29,8 +29,13 @@ public class AlterModelRequest implements IndexedRecord {
 
     public static final class Action {
         public static final String CONTAINER = "container";
+        public static final String CREDENTIAL = "credential";
         public static final String REGISTRY = "registry";
         public static final String REFRESH = "refresh";
+        public static final String REMOTE_MODEL_NAME = "remote_model_name";
+        public static final String REMOTE_MODEL_LOCATION = "remote_model_location";
+        public static final String REMOTE_MODEL_PROVIDER_TYPE = "remote_model_provider_type";
+        public static final String REMOTE_MODEL_TYPE = "remote_model_type";
         public static final String STOP_DEPLOYMENT = "stop_deployment";
 
         private Action() {  }

@@ -101,7 +101,7 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
          *     <li>{@link Options#TRUE TRUE}
          *     <li>{@link Options#FALSE FALSE}
          * </ul>
-         * The default value is {@link Options#TRUE TRUE}.
+         * The default value is {@link Options#FALSE FALSE}.
          */
         public static final String USE_INDEXED_PARAMETERS = "use_indexed_parameters";
 
@@ -175,7 +175,8 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
      *                             <li>{@link Options#TRUE TRUE}
      *                             <li>{@link Options#FALSE FALSE}
      *                         </ul>
-     *                         The default value is {@link Options#TRUE TRUE}.
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -271,7 +272,7 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
      *             <li>{@link Options#TRUE TRUE}
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
-     *         The default value is {@link Options#TRUE TRUE}.
+     *         The default value is {@link Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -317,7 +318,7 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
      *             <li>{@link Options#TRUE TRUE}
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
-     *         The default value is {@link Options#TRUE TRUE}.
+     *         The default value is {@link Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      *

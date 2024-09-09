@@ -155,6 +155,13 @@ public class AggregateUniqueRequest implements IndexedRecord {
         public static final String DESCENDING = "descending";
 
         /**
+         * Comma-separated list of the columns to be sorted by as well as the
+         * sort direction, e.g., 'timestamp asc, x desc'. The default value is
+         * ''.
+         */
+        public static final String ORDER_BY = "order_by";
+
+        /**
          * The name of the table used to store the results, in
          * [schema_name.]table_name format, using standard <a
          * href="../../../../../../concepts/tables/#table-name-resolution"
@@ -337,6 +344,11 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#ASCENDING
      *                         ASCENDING}.
+     *                     <li>{@link Options#ORDER_BY ORDER_BY}:
+     *                         Comma-separated list of the columns to be sorted
+     *                         by as well as the sort direction, e.g.,
+     *                         'timestamp asc, x desc'. The default value is
+     *                         ''.
      *                     <li>{@link Options#RESULT_TABLE RESULT_TABLE}: The
      *                         name of the table used to store the results, in
      *                         [schema_name.]table_name format, using standard
@@ -510,6 +522,11 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#ASCENDING
      *                         ASCENDING}.
+     *                     <li>{@link Options#ORDER_BY ORDER_BY}:
+     *                         Comma-separated list of the columns to be sorted
+     *                         by as well as the sort direction, e.g.,
+     *                         'timestamp asc, x desc'. The default value is
+     *                         ''.
      *                     <li>{@link Options#RESULT_TABLE RESULT_TABLE}: The
      *                         name of the table used to store the results, in
      *                         [schema_name.]table_name format, using standard
@@ -791,6 +808,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *             <li>{@link Options#DESCENDING DESCENDING}
      *         </ul>
      *         The default value is {@link Options#ASCENDING ASCENDING}.
+     *     <li>{@link Options#ORDER_BY ORDER_BY}: Comma-separated list of the
+     *         columns to be sorted by as well as the sort direction, e.g.,
+     *         'timestamp asc, x desc'. The default value is ''.
      *     <li>{@link Options#RESULT_TABLE RESULT_TABLE}: The name of the table
      *         used to store the results, in [schema_name.]table_name format,
      *         using standard <a
@@ -898,6 +918,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *             <li>{@link Options#DESCENDING DESCENDING}
      *         </ul>
      *         The default value is {@link Options#ASCENDING ASCENDING}.
+     *     <li>{@link Options#ORDER_BY ORDER_BY}: Comma-separated list of the
+     *         columns to be sorted by as well as the sort direction, e.g.,
+     *         'timestamp asc, x desc'. The default value is ''.
      *     <li>{@link Options#RESULT_TABLE RESULT_TABLE}: The name of the table
      *         used to store the results, in [schema_name.]table_name format,
      *         using standard <a

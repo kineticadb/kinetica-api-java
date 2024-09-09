@@ -30,7 +30,16 @@ public class ImportModelRequest implements IndexedRecord {
     }
 
     public static final class Options {
+        public static final String CREDENTIAL = "credential";
         public static final String MEMORY_LIMIT = "memory_limit";
+        public static final String REMOTE_MODEL_NAME = "remote_model_name";
+        public static final String REMOTE_MODEL_LOCATION = "remote_model_location";
+        public static final String REMOTE_MODEL_PROVIDER_TYPE = "remote_model_provider_type";
+        public static final String NVIDIA = "nvidia";
+        public static final String OPENAI = "openai";
+        public static final String SQLGPT = "sqlgpt";
+        public static final String REMOTE_MODEL_TYPE = "remote_model_type";
+        public static final String EMBEDDING = "embedding";
 
         private Options() {  }
     }
