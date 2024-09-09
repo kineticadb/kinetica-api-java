@@ -2827,7 +2827,7 @@ public abstract class GPUdbBase {
                 Snappy.getNativeLibraryVersion();
                 return true;
             }
-            catch (UnsatisfiedLinkError e) {
+            catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
                 GPUdbLogger.warn(
                         "Disabling Snappy compression, as it is unavailable on this system, " +
                         "potentially due to lack of write permission on the system temp directory.  " +

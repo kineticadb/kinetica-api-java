@@ -2,6 +2,12 @@
 
 ## Version 7.1
 
+### Version 7.1.10.4 - 2024-09-08
+
+#### Fixed
+-   Snappy error for `fullshaded` JDBC JAR
+
+
 ### Version 7.1.10.3 - 2024-08-05
 
 #### Changed
