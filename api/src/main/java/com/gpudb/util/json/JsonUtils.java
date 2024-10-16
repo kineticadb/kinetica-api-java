@@ -53,6 +53,9 @@ public class JsonUtils {
     /**
      * Converts a List<String> to a JSON array where each element is a valid JSON String
      * @param list - the parameterized input list
+     * 
+     * @return a string representation of a JSON array of the given list of JSON strings
+     *
      * @return     - a JSON array as a String
      */
     public static String toJsonArray(List<String> list) {
@@ -65,8 +68,10 @@ public class JsonUtils {
 
     /**
      * Wrapper for ObjectMapper().writeValueAsString that throws GPUdbException
-     * @param value
-     * @return
+     * @param value - object to convert to JSON string
+     * 
+     * @return a JSON string representation of the given object
+     *
      * @throws GPUdbException
      */
     public static String toJsonString(Object value) throws GPUdbException

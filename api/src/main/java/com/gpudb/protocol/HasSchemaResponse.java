@@ -86,8 +86,8 @@ public class HasSchemaResponse implements IndexedRecord {
      * Indicates whether the schema exists or not.
      * Supported values:
      * <ul>
-     *     <li>{@link SchemaExists#TRUE TRUE}
-     *     <li>{@link SchemaExists#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @return The current value of {@code schemaExists}.
@@ -100,8 +100,8 @@ public class HasSchemaResponse implements IndexedRecord {
      * Indicates whether the schema exists or not.
      * Supported values:
      * <ul>
-     *     <li>{@link SchemaExists#TRUE TRUE}
-     *     <li>{@link SchemaExists#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @param schemaExists  The new value for {@code schemaExists}.

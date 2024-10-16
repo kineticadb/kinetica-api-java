@@ -2,6 +2,23 @@
 
 ## Version 7.2
 
+### Version 7.2.2.0 - 2024-10-15
+
+#### Changed
+-   Modified POM for publishing to Maven Central Repository
+-   Upgraded Jackson core library to 2.17.1
+-   Downgraded Logback library to 1.3.14
+-   Upgraded SLF4j library to 2.0.13
+
+#### Fixed
+-   Issue with dependent JDBC `fullshaded` driver terminating with no linked
+    Snappy library
+-   JavaDoc generation warnings
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
 ### Version 7.2.1.0 - 2024-09-08
 
 #### Added

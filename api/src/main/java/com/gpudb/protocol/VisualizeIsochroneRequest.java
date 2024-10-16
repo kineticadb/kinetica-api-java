@@ -660,11 +660,10 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      *                       response.
      *                       Supported values:
      *                       <ul>
-     *                           <li>{@link GenerateImage#TRUE TRUE}
-     *                           <li>{@link GenerateImage#FALSE FALSE}
+     *                           <li>{@code true}
+     *                           <li>{@code false}
      *                       </ul>
-     *                       The default value is {@link GenerateImage#TRUE
-     *                       TRUE}.
+     *                       The default value is {@code true}.
      * @param levelsTable  Name of the table to output the isochrones to, in
      *                     [schema_name.]table_name format, using standard <a
      *                     href="../../../../../../concepts/tables/#table-name-resolution"
@@ -1263,10 +1262,10 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      * isochrones in the response.
      * Supported values:
      * <ul>
-     *     <li>{@link GenerateImage#TRUE TRUE}
-     *     <li>{@link GenerateImage#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
-     * The default value is {@link GenerateImage#TRUE TRUE}.
+     * The default value is {@code true}.
      *
      * @return The current value of {@code generateImage}.
      */
@@ -1279,10 +1278,10 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      * isochrones in the response.
      * Supported values:
      * <ul>
-     *     <li>{@link GenerateImage#TRUE TRUE}
-     *     <li>{@link GenerateImage#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
-     * The default value is {@link GenerateImage#TRUE TRUE}.
+     * The default value is {@code true}.
      *
      * @param generateImage  The new value for {@code generateImage}.
      *

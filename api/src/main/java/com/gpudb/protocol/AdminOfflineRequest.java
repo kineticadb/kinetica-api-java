@@ -90,8 +90,8 @@ public class AdminOfflineRequest implements IndexedRecord {
      * @param offline  Set to true if desired state is offline.
      *                 Supported values:
      *                 <ul>
-     *                     <li>{@link Offline#TRUE TRUE}
-     *                     <li>{@link Offline#FALSE FALSE}
+     *                     <li>{@code true}
+     *                     <li>{@code false}
      *                 </ul>
      * @param options  Optional parameters.
      *                 <ul>
@@ -114,8 +114,8 @@ public class AdminOfflineRequest implements IndexedRecord {
      * Set to true if desired state is offline.
      * Supported values:
      * <ul>
-     *     <li>{@link Offline#TRUE TRUE}
-     *     <li>{@link Offline#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @return The current value of {@code offline}.
@@ -128,8 +128,8 @@ public class AdminOfflineRequest implements IndexedRecord {
      * Set to true if desired state is offline.
      * Supported values:
      * <ul>
-     *     <li>{@link Offline#TRUE TRUE}
-     *     <li>{@link Offline#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @param offline  The new value for {@code offline}.

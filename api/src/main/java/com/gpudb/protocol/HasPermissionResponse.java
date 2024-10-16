@@ -172,10 +172,8 @@ public class HasPermissionResponse implements IndexedRecord {
      * specified target.
      * Supported values:
      * <ul>
-     *     <li>{@link HasPermission#TRUE TRUE}: User has the effective queried
-     *         permission
-     *     <li>{@link HasPermission#FALSE FALSE}: User does not have the
-     *         queried permission
+     *     <li>{@code true}: User has the effective queried permission
+     *     <li>{@code false}: User does not have the queried permission
      * </ul>
      *
      * @return The current value of {@code hasPermission}.
@@ -189,10 +187,8 @@ public class HasPermissionResponse implements IndexedRecord {
      * specified target.
      * Supported values:
      * <ul>
-     *     <li>{@link HasPermission#TRUE TRUE}: User has the effective queried
-     *         permission
-     *     <li>{@link HasPermission#FALSE FALSE}: User does not have the
-     *         queried permission
+     *     <li>{@code true}: User has the effective queried permission
+     *     <li>{@code false}: User does not have the queried permission
      * </ul>
      *
      * @param hasPermission  The new value for {@code hasPermission}.

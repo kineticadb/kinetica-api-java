@@ -145,9 +145,8 @@ public class HasRoleResponse implements IndexedRecord {
      * target {@link com.gpudb.protocol.HasRoleRequest#getRole() role}.
      * Supported values:
      * <ul>
-     *     <li>{@link HasRole#TRUE TRUE}: User has membership in the role
-     *     <li>{@link HasRole#FALSE FALSE}: User does not have membership in
-     *         the role
+     *     <li>{@code true}: User has membership in the role
+     *     <li>{@code false}: User does not have membership in the role
      * </ul>
      *
      * @return The current value of {@code hasRole}.
@@ -161,9 +160,8 @@ public class HasRoleResponse implements IndexedRecord {
      * target {@link com.gpudb.protocol.HasRoleRequest#getRole() role}.
      * Supported values:
      * <ul>
-     *     <li>{@link HasRole#TRUE TRUE}: User has membership in the role
-     *     <li>{@link HasRole#FALSE FALSE}: User does not have membership in
-     *         the role
+     *     <li>{@code true}: User has membership in the role
+     *     <li>{@code false}: User does not have membership in the role
      * </ul>
      *
      * @param hasRole  The new value for {@code hasRole}.

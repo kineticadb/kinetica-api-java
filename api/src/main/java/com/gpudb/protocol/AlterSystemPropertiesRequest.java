@@ -296,6 +296,11 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String TPS_PER_TOM = "tps_per_tom";
 
         /**
+         * Enable RAG. The default value is 'false'.
+         */
+        public static final String AI_ENABLE_RAG = "ai_enable_rag";
+
+        /**
          * AI API provider type
          */
         public static final String AI_API_PROVIDER = "ai_api_provider";
@@ -658,6 +663,10 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    allowed value is '2'. The maximum
      *                                    allowed value is '8192'.
      *                                <li>{@link
+     *                                    PropertyUpdatesMap#AI_ENABLE_RAG
+     *                                    AI_ENABLE_RAG}: Enable RAG. The
+     *                                    default value is 'false'.
+     *                                <li>{@link
      *                                    PropertyUpdatesMap#AI_API_PROVIDER
      *                                    AI_API_PROVIDER}: AI API provider
      *                                    type
@@ -869,6 +878,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#TPS_PER_TOM TPS_PER_TOM}: Sets the
      *         tps_per_tom value of the conf. The minimum allowed value is '2'.
      *         The maximum allowed value is '8192'.
+     *     <li>{@link PropertyUpdatesMap#AI_ENABLE_RAG AI_ENABLE_RAG}: Enable
+     *         RAG. The default value is 'false'.
      *     <li>{@link PropertyUpdatesMap#AI_API_PROVIDER AI_API_PROVIDER}: AI
      *         API provider type
      *     <li>{@link PropertyUpdatesMap#AI_API_URL AI_API_URL}: AI API URL
@@ -1044,6 +1055,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#TPS_PER_TOM TPS_PER_TOM}: Sets the
      *         tps_per_tom value of the conf. The minimum allowed value is '2'.
      *         The maximum allowed value is '8192'.
+     *     <li>{@link PropertyUpdatesMap#AI_ENABLE_RAG AI_ENABLE_RAG}: Enable
+     *         RAG. The default value is 'false'.
      *     <li>{@link PropertyUpdatesMap#AI_API_PROVIDER AI_API_PROVIDER}: AI
      *         API provider type
      *     <li>{@link PropertyUpdatesMap#AI_API_URL AI_API_URL}: AI API URL

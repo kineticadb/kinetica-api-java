@@ -140,6 +140,12 @@ public class CreateJoinTableRequest implements IndexedRecord {
          */
         public static final String ENABLE_VIRTUAL_CHUNKING = "enable_virtual_chunking";
 
+        /**
+         * Use equi-join to do primary key joins rather than using
+         * primary-key-index
+         */
+        public static final String ENABLE_PK_EQUI_JOIN = "enable_pk_equi_join";
+
         private Options() {  }
     }
 
@@ -259,6 +265,10 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                         ENABLE_VIRTUAL_CHUNKING}: Collect chunks with
      *                         accumulated size less than chunk_size into a
      *                         single chunk. The default value is 'false'.
+     *                     <li>{@link Options#ENABLE_PK_EQUI_JOIN
+     *                         ENABLE_PK_EQUI_JOIN}: Use equi-join to do
+     *                         primary key joins rather than using
+     *                         primary-key-index
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -448,6 +458,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *     <li>{@link Options#ENABLE_VIRTUAL_CHUNKING ENABLE_VIRTUAL_CHUNKING}:
      *         Collect chunks with accumulated size less than chunk_size into a
      *         single chunk. The default value is 'false'.
+     *     <li>{@link Options#ENABLE_PK_EQUI_JOIN ENABLE_PK_EQUI_JOIN}: Use
+     *         equi-join to do primary key joins rather than using
+     *         primary-key-index
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -511,6 +524,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *     <li>{@link Options#ENABLE_VIRTUAL_CHUNKING ENABLE_VIRTUAL_CHUNKING}:
      *         Collect chunks with accumulated size less than chunk_size into a
      *         single chunk. The default value is 'false'.
+     *     <li>{@link Options#ENABLE_PK_EQUI_JOIN ENABLE_PK_EQUI_JOIN}: Use
+     *         equi-join to do primary key joins rather than using
+     *         primary-key-index
      * </ul>
      * The default value is an empty {@link Map}.
      *

@@ -88,7 +88,7 @@ import java.util.stream.Stream;
  *
  * 2. Secured setup
  *
- * @apiNote - If {@code options.setBypassSslCertCheck( true )} is set, then all forms
+ * If {@code options.setBypassSslCertCheck( true )} is set, then all forms
  * of certificate checking whether self-signed or one issued by a known CA will be
  * bypassed and an unsecured connection will be set up.
  *

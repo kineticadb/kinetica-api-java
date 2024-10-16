@@ -86,8 +86,8 @@ public class HasTableResponse implements IndexedRecord {
      * Indicates whether the table exists or not.
      * Supported values:
      * <ul>
-     *     <li>{@link TableExists#TRUE TRUE}
-     *     <li>{@link TableExists#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @return The current value of {@code tableExists}.
@@ -100,8 +100,8 @@ public class HasTableResponse implements IndexedRecord {
      * Indicates whether the table exists or not.
      * Supported values:
      * <ul>
-     *     <li>{@link TableExists#TRUE TRUE}
-     *     <li>{@link TableExists#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @param tableExists  The new value for {@code tableExists}.

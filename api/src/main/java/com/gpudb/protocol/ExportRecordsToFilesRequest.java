@@ -289,6 +289,7 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      * Constructs an ExportRecordsToFilesRequest object with the specified
      * parameters.
      *
+     * @param tableName
      * @param filepath  Path to data export target.  If {@code filepath} has a
      *                  file extension, it is read as the name of a file. If
      *                  {@code filepath} is a directory, then the source table

@@ -52,7 +52,7 @@ public class AdminVerifyDbResponse implements IndexedRecord {
 
     /**
      * True if no errors were found, false otherwise. The default value is
-     * false.
+     * {@code false}.
      *
      * @return The current value of {@code verifiedOk}.
      */
@@ -62,7 +62,7 @@ public class AdminVerifyDbResponse implements IndexedRecord {
 
     /**
      * True if no errors were found, false otherwise. The default value is
-     * false.
+     * {@code false}.
      *
      * @param verifiedOk  The new value for {@code verifiedOk}.
      *

@@ -84,8 +84,8 @@ public class HasTypeResponse implements IndexedRecord {
      * Indicates whether the type exists or not.
      * Supported values:
      * <ul>
-     *     <li>{@link TypeExists#TRUE TRUE}
-     *     <li>{@link TypeExists#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @return The current value of {@code typeExists}.
@@ -98,8 +98,8 @@ public class HasTypeResponse implements IndexedRecord {
      * Indicates whether the type exists or not.
      * Supported values:
      * <ul>
-     *     <li>{@link TypeExists#TRUE TRUE}
-     *     <li>{@link TypeExists#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @param typeExists  The new value for {@code typeExists}.

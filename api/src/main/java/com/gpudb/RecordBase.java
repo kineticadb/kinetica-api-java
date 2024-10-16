@@ -307,6 +307,8 @@ public abstract class RecordBase implements Record {
      *
      * @param name   The name of the column.
      *
+     * @return a native Java array of the appropriate type for the given column name
+     *
      * @throws GPUdbException              If an error occurs during the operation.
      * @throws JsonProcessingException
      * @throws JsonMappingException
@@ -323,6 +325,8 @@ public abstract class RecordBase implements Record {
      * For binary columns with vector property, return float[].
      *
      * @param index  The index of the column.
+     *
+     * @return a native Java array of the appropriate type for the given column index
      *
      * @throws GPUdbException              If an error occurs during the operation.
      * @throws JsonProcessingException
@@ -410,6 +414,8 @@ public abstract class RecordBase implements Record {
      *
      * @param name  The name of the column.
      *
+     * @return a native Java map of the appropriate type for the given column name
+     *
      * @throws GPUdbException              If an error occurs during the operation.
      * @throws JsonProcessingException
      * @throws JsonMappingException
@@ -424,6 +430,8 @@ public abstract class RecordBase implements Record {
      * For string columns with JSON property, return a Java Map representing the JSON object.
      *
      * @param index  The index of the column.
+     *
+     * @return a native Java map of the appropriate type for the given column index
      *
      * @throws GPUdbException              If an error occurs during the operation.
      * @throws JsonProcessingException
@@ -462,7 +470,8 @@ public abstract class RecordBase implements Record {
      * For byte columns with a vector property, return a native Java array of float.
      *
      * @param name   The name of the column.
-     * @param value  The value to be parsed (based on the given column's type).
+     *
+     * @return an array of floats for the given vector column name
      *
      * @throws GPUdbException              If an error occurs during the operation.
      * @throws JsonProcessingException
@@ -477,8 +486,9 @@ public abstract class RecordBase implements Record {
     /**
      * For byte columns with a vector property, return a native Java array of float.
      *
-     * @param name   The name of the column.
-     * @param value  The value to be parsed (based on the given column's type).
+     * @param index   The index of the column.
+     *
+     * @return an array of floats for the given vector column index
      *
      * @throws GPUdbException              If an error occurs during the operation.
      * @throws JsonProcessingException
@@ -850,7 +860,7 @@ public abstract class RecordBase implements Record {
      * String, or Map<String, String>.
      * If the column is not of a relevant type, throw an error.
      *
-     * @param name   The name of the column.
+     * @param index  The index of the column.
      * @param value  The value to be parsed (based on the given column's type).
      *
      * @throws GPUdbException  if an error occurs during the operation.

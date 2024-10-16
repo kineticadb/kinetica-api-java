@@ -109,6 +109,34 @@ public class AlterDatasourceRequest implements IndexedRecord {
         public static final String S3_REGION = "s3_region";
 
         /**
+         * Set to false for testing purposes or when necessary to bypass TLS
+         * errors (e.g.&nbsp;self-signed certificates). This value is true by
+         * default.
+         * Supported values:
+         * <ul>
+         *     <li>{@link DatasourceUpdatesMap#TRUE TRUE}
+         *     <li>{@link DatasourceUpdatesMap#FALSE FALSE}
+         * </ul>
+         * The default value is {@link DatasourceUpdatesMap#TRUE TRUE}.
+         */
+        public static final String S3_VERIFY_SSL = "s3_verify_ssl";
+
+        /**
+         * Whether to use virtual addressing when referencing the Amazon S3
+         * source.
+         * Supported values:
+         * <ul>
+         *     <li>{@link DatasourceUpdatesMap#TRUE TRUE}: The requests URI
+         *         should be specified in virtual-hosted-style format where the
+         *         bucket name is part of the domain name in the URL.
+         *     <li>{@link DatasourceUpdatesMap#FALSE FALSE}: Use path-style URI
+         *         for requests.
+         * </ul>
+         * The default value is {@link DatasourceUpdatesMap#TRUE TRUE}.
+         */
+        public static final String S3_USE_VIRTUAL_ADDRESSING = "s3_use_virtual_addressing";
+
+        /**
          * Amazon IAM Role ARN which has required S3 permissions that can be
          * assumed for the given S3 IAM user
          */
@@ -254,6 +282,24 @@ public class AlterDatasourceRequest implements IndexedRecord {
          */
         public static final String SCHEMA_NAME = "schema_name";
 
+        /**
+         * Location of Confluent Schema Registry in
+         * '[storage_path[:storage_port]]' format.
+         */
+        public static final String SCHEMA_REGISTRY_LOCATION = "schema_registry_location";
+
+        /**
+         * Confluent Schema Registry <a
+         * href="../../../../../../concepts/credentials"
+         * target="_top">credential</a> object name.
+         */
+        public static final String SCHEMA_REGISTRY_CREDENTIAL = "schema_registry_credential";
+
+        /**
+         * Confluent Schema Registry port (optional).
+         */
+        public static final String SCHEMA_REGISTRY_PORT = "schema_registry_port";
+
         private DatasourceUpdatesMap() {  }
     }
 
@@ -336,6 +382,46 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                      S3_REGION}: Name of the Amazon S3
      *                                      region where the given bucket is
      *                                      located
+     *                                  <li>{@link
+     *                                      DatasourceUpdatesMap#S3_VERIFY_SSL
+     *                                      S3_VERIFY_SSL}: Set to false for
+     *                                      testing purposes or when necessary
+     *                                      to bypass TLS errors (e.g.
+     *                                      self-signed certificates). This
+     *                                      value is true by default.
+     *                                      Supported values:
+     *                                      <ul>
+     *                                          <li>{@link
+     *                                              DatasourceUpdatesMap#TRUE
+     *                                              TRUE}
+     *                                          <li>{@link
+     *                                              DatasourceUpdatesMap#FALSE
+     *                                              FALSE}
+     *                                      </ul>
+     *                                      The default value is {@link
+     *                                      DatasourceUpdatesMap#TRUE TRUE}.
+     *                                  <li>{@link
+     *                                      DatasourceUpdatesMap#S3_USE_VIRTUAL_ADDRESSING
+     *                                      S3_USE_VIRTUAL_ADDRESSING}: Whether
+     *                                      to use virtual addressing when
+     *                                      referencing the Amazon S3 source.
+     *                                      Supported values:
+     *                                      <ul>
+     *                                          <li>{@link
+     *                                              DatasourceUpdatesMap#TRUE
+     *                                              TRUE}: The requests URI
+     *                                              should be specified in
+     *                                              virtual-hosted-style format
+     *                                              where the bucket name is
+     *                                              part of the domain name in
+     *                                              the URL.
+     *                                          <li>{@link
+     *                                              DatasourceUpdatesMap#FALSE
+     *                                              FALSE}: Use path-style URI
+     *                                              for requests.
+     *                                      </ul>
+     *                                      The default value is {@link
+     *                                      DatasourceUpdatesMap#TRUE TRUE}.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#S3_AWS_ROLE_ARN
      *                                      S3_AWS_ROLE_ARN}: Amazon IAM Role
@@ -499,6 +585,23 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                      DatasourceUpdatesMap#SCHEMA_NAME
      *                                      SCHEMA_NAME} is empty, then the
      *                                      user's default schema will be used.
+     *                                  <li>{@link
+     *                                      DatasourceUpdatesMap#SCHEMA_REGISTRY_LOCATION
+     *                                      SCHEMA_REGISTRY_LOCATION}: Location
+     *                                      of Confluent Schema Registry in
+     *                                      '[storage_path[:storage_port]]'
+     *                                      format.
+     *                                  <li>{@link
+     *                                      DatasourceUpdatesMap#SCHEMA_REGISTRY_CREDENTIAL
+     *                                      SCHEMA_REGISTRY_CREDENTIAL}:
+     *                                      Confluent Schema Registry <a
+     *                                      href="../../../../../../concepts/credentials"
+     *                                      target="_top">credential</a> object
+     *                                      name.
+     *                                  <li>{@link
+     *                                      DatasourceUpdatesMap#SCHEMA_REGISTRY_PORT
+     *                                      SCHEMA_REGISTRY_PORT}: Confluent
+     *                                      Schema Registry port (optional).
      *                              </ul>
      * @param options  Optional parameters.
      */
@@ -562,6 +665,28 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         of the Amazon S3 bucket to use as the data source
      *     <li>{@link DatasourceUpdatesMap#S3_REGION S3_REGION}: Name of the
      *         Amazon S3 region where the given bucket is located
+     *     <li>{@link DatasourceUpdatesMap#S3_VERIFY_SSL S3_VERIFY_SSL}: Set to
+     *         false for testing purposes or when necessary to bypass TLS
+     *         errors (e.g. self-signed certificates). This value is true by
+     *         default.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link DatasourceUpdatesMap#TRUE TRUE}
+     *             <li>{@link DatasourceUpdatesMap#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link DatasourceUpdatesMap#TRUE TRUE}.
+     *     <li>{@link DatasourceUpdatesMap#S3_USE_VIRTUAL_ADDRESSING
+     *         S3_USE_VIRTUAL_ADDRESSING}: Whether to use virtual addressing
+     *         when referencing the Amazon S3 source.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link DatasourceUpdatesMap#TRUE TRUE}: The requests URI
+     *                 should be specified in virtual-hosted-style format where
+     *                 the bucket name is part of the domain name in the URL.
+     *             <li>{@link DatasourceUpdatesMap#FALSE FALSE}: Use path-style
+     *                 URI for requests.
+     *         </ul>
+     *         The default value is {@link DatasourceUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasourceUpdatesMap#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}:
      *         Amazon IAM Role ARN which has required S3 permissions that can
      *         be assumed for the given S3 IAM user
@@ -651,6 +776,16 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         SCHEMA_NAME} doesn't exist, an error will be thrown. If {@link
      *         DatasourceUpdatesMap#SCHEMA_NAME SCHEMA_NAME} is empty, then the
      *         user's default schema will be used.
+     *     <li>{@link DatasourceUpdatesMap#SCHEMA_REGISTRY_LOCATION
+     *         SCHEMA_REGISTRY_LOCATION}: Location of Confluent Schema Registry
+     *         in '[storage_path[:storage_port]]' format.
+     *     <li>{@link DatasourceUpdatesMap#SCHEMA_REGISTRY_CREDENTIAL
+     *         SCHEMA_REGISTRY_CREDENTIAL}: Confluent Schema Registry <a
+     *         href="../../../../../../concepts/credentials"
+     *         target="_top">credential</a> object name.
+     *     <li>{@link DatasourceUpdatesMap#SCHEMA_REGISTRY_PORT
+     *         SCHEMA_REGISTRY_PORT}: Confluent Schema Registry port
+     *         (optional).
      * </ul>
      *
      * @return The current value of {@code datasourceUpdatesMap}.
@@ -692,6 +827,28 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         of the Amazon S3 bucket to use as the data source
      *     <li>{@link DatasourceUpdatesMap#S3_REGION S3_REGION}: Name of the
      *         Amazon S3 region where the given bucket is located
+     *     <li>{@link DatasourceUpdatesMap#S3_VERIFY_SSL S3_VERIFY_SSL}: Set to
+     *         false for testing purposes or when necessary to bypass TLS
+     *         errors (e.g. self-signed certificates). This value is true by
+     *         default.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link DatasourceUpdatesMap#TRUE TRUE}
+     *             <li>{@link DatasourceUpdatesMap#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link DatasourceUpdatesMap#TRUE TRUE}.
+     *     <li>{@link DatasourceUpdatesMap#S3_USE_VIRTUAL_ADDRESSING
+     *         S3_USE_VIRTUAL_ADDRESSING}: Whether to use virtual addressing
+     *         when referencing the Amazon S3 source.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link DatasourceUpdatesMap#TRUE TRUE}: The requests URI
+     *                 should be specified in virtual-hosted-style format where
+     *                 the bucket name is part of the domain name in the URL.
+     *             <li>{@link DatasourceUpdatesMap#FALSE FALSE}: Use path-style
+     *                 URI for requests.
+     *         </ul>
+     *         The default value is {@link DatasourceUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasourceUpdatesMap#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}:
      *         Amazon IAM Role ARN which has required S3 permissions that can
      *         be assumed for the given S3 IAM user
@@ -781,6 +938,16 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         SCHEMA_NAME} doesn't exist, an error will be thrown. If {@link
      *         DatasourceUpdatesMap#SCHEMA_NAME SCHEMA_NAME} is empty, then the
      *         user's default schema will be used.
+     *     <li>{@link DatasourceUpdatesMap#SCHEMA_REGISTRY_LOCATION
+     *         SCHEMA_REGISTRY_LOCATION}: Location of Confluent Schema Registry
+     *         in '[storage_path[:storage_port]]' format.
+     *     <li>{@link DatasourceUpdatesMap#SCHEMA_REGISTRY_CREDENTIAL
+     *         SCHEMA_REGISTRY_CREDENTIAL}: Confluent Schema Registry <a
+     *         href="../../../../../../concepts/credentials"
+     *         target="_top">credential</a> object name.
+     *     <li>{@link DatasourceUpdatesMap#SCHEMA_REGISTRY_PORT
+     *         SCHEMA_REGISTRY_PORT}: Confluent Schema Registry port
+     *         (optional).
      * </ul>
      *
      * @param datasourceUpdatesMap  The new value for {@code

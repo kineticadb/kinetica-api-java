@@ -362,8 +362,8 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
      * Whether this cluster operation is currently in progress or not.
      * Supported values:
      * <ul>
-     *     <li>{@link InProgress#TRUE TRUE}
-     *     <li>{@link InProgress#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @return The current value of {@code inProgress}.
@@ -376,8 +376,8 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
      * Whether this cluster operation is currently in progress or not.
      * Supported values:
      * <ul>
-     *     <li>{@link InProgress#TRUE TRUE}
-     *     <li>{@link InProgress#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @param inProgress  The new value for {@code inProgress}.
@@ -512,8 +512,8 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
      * Whether a user stopped this operation at any point while in progress.
      * Supported values:
      * <ul>
-     *     <li>{@link UserStopped#TRUE TRUE}
-     *     <li>{@link UserStopped#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @return The current value of {@code userStopped}.
@@ -526,8 +526,8 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
      * Whether a user stopped this operation at any point while in progress.
      * Supported values:
      * <ul>
-     *     <li>{@link UserStopped#TRUE TRUE}
-     *     <li>{@link UserStopped#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @param userStopped  The new value for {@code userStopped}.
@@ -564,8 +564,8 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
      * Whether this operation was a dry run.
      * Supported values:
      * <ul>
-     *     <li>{@link DryRun#TRUE TRUE}
-     *     <li>{@link DryRun#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @return The current value of {@code dryRun}.
@@ -578,8 +578,8 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
      * Whether this operation was a dry run.
      * Supported values:
      * <ul>
-     *     <li>{@link DryRun#TRUE TRUE}
-     *     <li>{@link DryRun#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @param dryRun  The new value for {@code dryRun}.
@@ -616,8 +616,8 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
      * Whether adding ranks is (or was) part of this operation.
      * Supported values:
      * <ul>
-     *     <li>{@link AddRanks#TRUE TRUE}
-     *     <li>{@link AddRanks#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @return The current value of {@code addRanks}.
@@ -630,8 +630,8 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
      * Whether adding ranks is (or was) part of this operation.
      * Supported values:
      * <ul>
-     *     <li>{@link AddRanks#TRUE TRUE}
-     *     <li>{@link AddRanks#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @param addRanks  The new value for {@code addRanks}.
@@ -754,8 +754,8 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
      * Whether removing ranks is (or was) part of this operation.
      * Supported values:
      * <ul>
-     *     <li>{@link RemoveRanks#TRUE TRUE}
-     *     <li>{@link RemoveRanks#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @return The current value of {@code removeRanks}.
@@ -768,8 +768,8 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
      * Whether removing ranks is (or was) part of this operation.
      * Supported values:
      * <ul>
-     *     <li>{@link RemoveRanks#TRUE TRUE}
-     *     <li>{@link RemoveRanks#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @param removeRanks  The new value for {@code removeRanks}.
@@ -870,8 +870,8 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
      * operation.
      * Supported values:
      * <ul>
-     *     <li>{@link Rebalance#TRUE TRUE}
-     *     <li>{@link Rebalance#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @return The current value of {@code rebalance}.
@@ -885,8 +885,8 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
      * operation.
      * Supported values:
      * <ul>
-     *     <li>{@link Rebalance#TRUE TRUE}
-     *     <li>{@link Rebalance#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @param rebalance  The new value for {@code rebalance}.
@@ -903,8 +903,8 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
      * operation.
      * Supported values:
      * <ul>
-     *     <li>{@link RebalanceUnshardedData#TRUE TRUE}
-     *     <li>{@link RebalanceUnshardedData#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @return The current value of {@code rebalanceUnshardedData}.
@@ -918,8 +918,8 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
      * operation.
      * Supported values:
      * <ul>
-     *     <li>{@link RebalanceUnshardedData#TRUE TRUE}
-     *     <li>{@link RebalanceUnshardedData#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @param rebalanceUnshardedData  The new value for {@code
@@ -1000,8 +1000,8 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
      * Whether rebalancing of sharded data is (or was) part of this operation.
      * Supported values:
      * <ul>
-     *     <li>{@link RebalanceShardedData#TRUE TRUE}
-     *     <li>{@link RebalanceShardedData#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @return The current value of {@code rebalanceShardedData}.
@@ -1014,8 +1014,8 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
      * Whether rebalancing of sharded data is (or was) part of this operation.
      * Supported values:
      * <ul>
-     *     <li>{@link RebalanceShardedData#TRUE TRUE}
-     *     <li>{@link RebalanceShardedData#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @param rebalanceShardedData  The new value for {@code

@@ -82,10 +82,61 @@ public class AlterDatasinkRequest implements IndexedRecord {
         public static final String S3_REGION = "s3_region";
 
         /**
+         * Set to false for testing purposes or when necessary to bypass TLS
+         * errors (e.g.&nbsp;self-signed certificates). This value is true by
+         * default.
+         * Supported values:
+         * <ul>
+         *     <li>{@link DatasinkUpdatesMap#TRUE TRUE}
+         *     <li>{@link DatasinkUpdatesMap#FALSE FALSE}
+         * </ul>
+         * The default value is {@link DatasinkUpdatesMap#TRUE TRUE}.
+         */
+        public static final String S3_VERIFY_SSL = "s3_verify_ssl";
+
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
+         * When true (default), the requests URI should be specified in
+         * virtual-hosted-style format where the bucket name is part of the
+         * domain name in the URL.
+         * <p>
+         * Otherwise set to false to use path-style URI for requests.
+         * Supported values:
+         * <ul>
+         *     <li>{@link DatasinkUpdatesMap#TRUE TRUE}
+         *     <li>{@link DatasinkUpdatesMap#FALSE FALSE}
+         * </ul>
+         * The default value is {@link DatasinkUpdatesMap#TRUE TRUE}.
+         */
+        public static final String S3_USE_VIRTUAL_ADDRESSING = "s3_use_virtual_addressing";
+
+        /**
          * Amazon IAM Role ARN which has required S3 permissions that can be
          * assumed for the given S3 IAM user
          */
         public static final String S3_AWS_ROLE_ARN = "s3_aws_role_arn";
+
+        /**
+         * Customer encryption algorithm used encrypting data
+         */
+        public static final String S3_ENCRYPTION_CUSTOMER_ALGORITHM = "s3_encryption_customer_algorithm";
+
+        /**
+         * Customer encryption key to encrypt or decrypt data
+         */
+        public static final String S3_ENCRYPTION_CUSTOMER_KEY = "s3_encryption_customer_key";
+
+        /**
+         * Server side encryption type
+         */
+        public static final String S3_ENCRYPTION_TYPE = "s3_encryption_type";
+
+        /**
+         * KMS key
+         */
+        public static final String S3_KMS_KEY_ID = "s3_kms_key_id";
 
         /**
          * Kerberos keytab file location for the given HDFS user.  This may be
@@ -108,9 +159,6 @@ public class AlterDatasinkRequest implements IndexedRecord {
          * The default value is {@link DatasinkUpdatesMap#FALSE FALSE}.
          */
         public static final String HDFS_USE_KERBEROS = "hdfs_use_kerberos";
-
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
 
         /**
          * Name of the Azure storage account to use as the data sink, this is
@@ -303,11 +351,64 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *                                    region where the given bucket is
      *                                    located
      *                                <li>{@link
+     *                                    DatasinkUpdatesMap#S3_VERIFY_SSL
+     *                                    S3_VERIFY_SSL}: Set to false for
+     *                                    testing purposes or when necessary to
+     *                                    bypass TLS errors (e.g. self-signed
+     *                                    certificates). This value is true by
+     *                                    default.
+     *                                    Supported values:
+     *                                    <ul>
+     *                                        <li>{@link
+     *                                            DatasinkUpdatesMap#TRUE TRUE}
+     *                                        <li>{@link
+     *                                            DatasinkUpdatesMap#FALSE
+     *                                            FALSE}
+     *                                    </ul>
+     *                                    The default value is {@link
+     *                                    DatasinkUpdatesMap#TRUE TRUE}.
+     *                                <li>{@link
+     *                                    DatasinkUpdatesMap#S3_USE_VIRTUAL_ADDRESSING
+     *                                    S3_USE_VIRTUAL_ADDRESSING}: When true
+     *                                    (default), the requests URI should be
+     *                                    specified in virtual-hosted-style
+     *                                    format where the bucket name is part
+     *                                    of the domain name in the URL.
+     *                                    Otherwise set to false to use
+     *                                    path-style URI for requests.
+     *                                    Supported values:
+     *                                    <ul>
+     *                                        <li>{@link
+     *                                            DatasinkUpdatesMap#TRUE TRUE}
+     *                                        <li>{@link
+     *                                            DatasinkUpdatesMap#FALSE
+     *                                            FALSE}
+     *                                    </ul>
+     *                                    The default value is {@link
+     *                                    DatasinkUpdatesMap#TRUE TRUE}.
+     *                                <li>{@link
      *                                    DatasinkUpdatesMap#S3_AWS_ROLE_ARN
      *                                    S3_AWS_ROLE_ARN}: Amazon IAM Role ARN
      *                                    which has required S3 permissions
      *                                    that can be assumed for the given S3
      *                                    IAM user
+     *                                <li>{@link
+     *                                    DatasinkUpdatesMap#S3_ENCRYPTION_CUSTOMER_ALGORITHM
+     *                                    S3_ENCRYPTION_CUSTOMER_ALGORITHM}:
+     *                                    Customer encryption algorithm used
+     *                                    encrypting data
+     *                                <li>{@link
+     *                                    DatasinkUpdatesMap#S3_ENCRYPTION_CUSTOMER_KEY
+     *                                    S3_ENCRYPTION_CUSTOMER_KEY}: Customer
+     *                                    encryption key to encrypt or decrypt
+     *                                    data
+     *                                <li>{@link
+     *                                    DatasinkUpdatesMap#S3_ENCRYPTION_TYPE
+     *                                    S3_ENCRYPTION_TYPE}: Server side
+     *                                    encryption type
+     *                                <li>{@link
+     *                                    DatasinkUpdatesMap#S3_KMS_KEY_ID
+     *                                    S3_KMS_KEY_ID}: KMS key
      *                                <li>{@link
      *                                    DatasinkUpdatesMap#HDFS_KERBEROS_KEYTAB
      *                                    HDFS_KERBEROS_KEYTAB}: Kerberos
@@ -525,9 +626,39 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *         of the Amazon S3 bucket to use as the data sink
      *     <li>{@link DatasinkUpdatesMap#S3_REGION S3_REGION}: Name of the
      *         Amazon S3 region where the given bucket is located
+     *     <li>{@link DatasinkUpdatesMap#S3_VERIFY_SSL S3_VERIFY_SSL}: Set to
+     *         false for testing purposes or when necessary to bypass TLS
+     *         errors (e.g. self-signed certificates). This value is true by
+     *         default.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link DatasinkUpdatesMap#TRUE TRUE}
+     *             <li>{@link DatasinkUpdatesMap#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link DatasinkUpdatesMap#TRUE TRUE}.
+     *     <li>{@link DatasinkUpdatesMap#S3_USE_VIRTUAL_ADDRESSING
+     *         S3_USE_VIRTUAL_ADDRESSING}: When true (default), the requests
+     *         URI should be specified in virtual-hosted-style format where the
+     *         bucket name is part of the domain name in the URL.   Otherwise
+     *         set to false to use path-style URI for requests.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link DatasinkUpdatesMap#TRUE TRUE}
+     *             <li>{@link DatasinkUpdatesMap#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link DatasinkUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasinkUpdatesMap#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}:
      *         Amazon IAM Role ARN which has required S3 permissions that can
      *         be assumed for the given S3 IAM user
+     *     <li>{@link DatasinkUpdatesMap#S3_ENCRYPTION_CUSTOMER_ALGORITHM
+     *         S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer encryption algorithm
+     *         used encrypting data
+     *     <li>{@link DatasinkUpdatesMap#S3_ENCRYPTION_CUSTOMER_KEY
+     *         S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption key to encrypt
+     *         or decrypt data
+     *     <li>{@link DatasinkUpdatesMap#S3_ENCRYPTION_TYPE
+     *         S3_ENCRYPTION_TYPE}: Server side encryption type
+     *     <li>{@link DatasinkUpdatesMap#S3_KMS_KEY_ID S3_KMS_KEY_ID}: KMS key
      *     <li>{@link DatasinkUpdatesMap#HDFS_KERBEROS_KEYTAB
      *         HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for the
      *         given HDFS user.  This may be a KIFS file.
@@ -652,9 +783,39 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *         of the Amazon S3 bucket to use as the data sink
      *     <li>{@link DatasinkUpdatesMap#S3_REGION S3_REGION}: Name of the
      *         Amazon S3 region where the given bucket is located
+     *     <li>{@link DatasinkUpdatesMap#S3_VERIFY_SSL S3_VERIFY_SSL}: Set to
+     *         false for testing purposes or when necessary to bypass TLS
+     *         errors (e.g. self-signed certificates). This value is true by
+     *         default.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link DatasinkUpdatesMap#TRUE TRUE}
+     *             <li>{@link DatasinkUpdatesMap#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link DatasinkUpdatesMap#TRUE TRUE}.
+     *     <li>{@link DatasinkUpdatesMap#S3_USE_VIRTUAL_ADDRESSING
+     *         S3_USE_VIRTUAL_ADDRESSING}: When true (default), the requests
+     *         URI should be specified in virtual-hosted-style format where the
+     *         bucket name is part of the domain name in the URL.   Otherwise
+     *         set to false to use path-style URI for requests.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link DatasinkUpdatesMap#TRUE TRUE}
+     *             <li>{@link DatasinkUpdatesMap#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link DatasinkUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasinkUpdatesMap#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}:
      *         Amazon IAM Role ARN which has required S3 permissions that can
      *         be assumed for the given S3 IAM user
+     *     <li>{@link DatasinkUpdatesMap#S3_ENCRYPTION_CUSTOMER_ALGORITHM
+     *         S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer encryption algorithm
+     *         used encrypting data
+     *     <li>{@link DatasinkUpdatesMap#S3_ENCRYPTION_CUSTOMER_KEY
+     *         S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption key to encrypt
+     *         or decrypt data
+     *     <li>{@link DatasinkUpdatesMap#S3_ENCRYPTION_TYPE
+     *         S3_ENCRYPTION_TYPE}: Server side encryption type
+     *     <li>{@link DatasinkUpdatesMap#S3_KMS_KEY_ID S3_KMS_KEY_ID}: KMS key
      *     <li>{@link DatasinkUpdatesMap#HDFS_KERBEROS_KEYTAB
      *         HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for the
      *         given HDFS user.  This may be a KIFS file.

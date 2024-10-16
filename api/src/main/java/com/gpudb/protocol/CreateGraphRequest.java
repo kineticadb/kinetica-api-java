@@ -254,11 +254,10 @@ public class CreateGraphRequest implements IndexedRecord {
      *                       details.
      *                       Supported values:
      *                       <ul>
-     *                           <li>{@link DirectedGraph#TRUE TRUE}
-     *                           <li>{@link DirectedGraph#FALSE FALSE}
+     *                           <li>{@code true}
+     *                           <li>{@code false}
      *                       </ul>
-     *                       The default value is {@link DirectedGraph#TRUE
-     *                       TRUE}.
+     *                       The default value is {@code true}.
      * @param nodes  Nodes represent fundamental topological units of a graph.
      *               Nodes must be specified using <a
      *               href="../../../../../../graph_solver/network_graph_solver/#identifiers"
@@ -484,10 +483,10 @@ public class CreateGraphRequest implements IndexedRecord {
      * target="_top">Directed Graphs</a> for more details.
      * Supported values:
      * <ul>
-     *     <li>{@link DirectedGraph#TRUE TRUE}
-     *     <li>{@link DirectedGraph#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
-     * The default value is {@link DirectedGraph#TRUE TRUE}.
+     * The default value is {@code true}.
      *
      * @return The current value of {@code directedGraph}.
      */
@@ -503,10 +502,10 @@ public class CreateGraphRequest implements IndexedRecord {
      * target="_top">Directed Graphs</a> for more details.
      * Supported values:
      * <ul>
-     *     <li>{@link DirectedGraph#TRUE TRUE}
-     *     <li>{@link DirectedGraph#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
-     * The default value is {@link DirectedGraph#TRUE TRUE}.
+     * The default value is {@code true}.
      *
      * @param directedGraph  The new value for {@code directedGraph}.
      *

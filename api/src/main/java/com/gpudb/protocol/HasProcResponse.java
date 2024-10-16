@@ -86,8 +86,8 @@ public class HasProcResponse implements IndexedRecord {
      * Indicates whether the proc exists or not.
      * Supported values:
      * <ul>
-     *     <li>{@link ProcExists#TRUE TRUE}
-     *     <li>{@link ProcExists#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @return The current value of {@code procExists}.
@@ -100,8 +100,8 @@ public class HasProcResponse implements IndexedRecord {
      * Indicates whether the proc exists or not.
      * Supported values:
      * <ul>
-     *     <li>{@link ProcExists#TRUE TRUE}
-     *     <li>{@link ProcExists#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @param procExists  The new value for {@code procExists}.

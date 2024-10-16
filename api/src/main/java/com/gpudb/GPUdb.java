@@ -677,12 +677,8 @@ public class GPUdb extends GPUdbBase {
      * @param offline  Set to true if desired state is offline.
      *                 Supported values:
      *                 <ul>
-     *                     <li>{@link
-     *                         com.gpudb.protocol.AdminOfflineRequest.Offline#TRUE
-     *                         TRUE}
-     *                     <li>{@link
-     *                         com.gpudb.protocol.AdminOfflineRequest.Offline#FALSE
-     *                         FALSE}
+     *                     <li>{@code true}
+     *                     <li>{@code false}
      *                 </ul>
      * @param options  Optional parameters.
      *                 <ul>
@@ -3996,11 +3992,68 @@ public class GPUdb extends GPUdbBase {
      *                                    region where the given bucket is
      *                                    located
      *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#S3_VERIFY_SSL
+     *                                    S3_VERIFY_SSL}: Set to false for
+     *                                    testing purposes or when necessary to
+     *                                    bypass TLS errors (e.g. self-signed
+     *                                    certificates). This value is true by
+     *                                    default.
+     *                                    Supported values:
+     *                                    <ul>
+     *                                        <li>{@link
+     *                                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#TRUE
+     *                                            TRUE}
+     *                                        <li>{@link
+     *                                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FALSE
+     *                                            FALSE}
+     *                                    </ul>
+     *                                    The default value is {@link
+     *                                    com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#TRUE
+     *                                    TRUE}.
+     *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#S3_USE_VIRTUAL_ADDRESSING
+     *                                    S3_USE_VIRTUAL_ADDRESSING}: When true
+     *                                    (default), the requests URI should be
+     *                                    specified in virtual-hosted-style
+     *                                    format where the bucket name is part
+     *                                    of the domain name in the URL.
+     *                                    Otherwise set to false to use
+     *                                    path-style URI for requests.
+     *                                    Supported values:
+     *                                    <ul>
+     *                                        <li>{@link
+     *                                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#TRUE
+     *                                            TRUE}
+     *                                        <li>{@link
+     *                                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FALSE
+     *                                            FALSE}
+     *                                    </ul>
+     *                                    The default value is {@link
+     *                                    com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#TRUE
+     *                                    TRUE}.
+     *                                <li>{@link
      *                                    com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#S3_AWS_ROLE_ARN
      *                                    S3_AWS_ROLE_ARN}: Amazon IAM Role ARN
      *                                    which has required S3 permissions
      *                                    that can be assumed for the given S3
      *                                    IAM user
+     *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#S3_ENCRYPTION_CUSTOMER_ALGORITHM
+     *                                    S3_ENCRYPTION_CUSTOMER_ALGORITHM}:
+     *                                    Customer encryption algorithm used
+     *                                    encrypting data
+     *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#S3_ENCRYPTION_CUSTOMER_KEY
+     *                                    S3_ENCRYPTION_CUSTOMER_KEY}: Customer
+     *                                    encryption key to encrypt or decrypt
+     *                                    data
+     *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#S3_ENCRYPTION_TYPE
+     *                                    S3_ENCRYPTION_TYPE}: Server side
+     *                                    encryption type
+     *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#S3_KMS_KEY_ID
+     *                                    S3_KMS_KEY_ID}: KMS key
      *                                <li>{@link
      *                                    com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#HDFS_KERBEROS_KEYTAB
      *                                    HDFS_KERBEROS_KEYTAB}: Kerberos
@@ -4290,6 +4343,48 @@ public class GPUdb extends GPUdbBase {
      *                                      region where the given bucket is
      *                                      located
      *                                  <li>{@link
+     *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#S3_VERIFY_SSL
+     *                                      S3_VERIFY_SSL}: Set to false for
+     *                                      testing purposes or when necessary
+     *                                      to bypass TLS errors (e.g.
+     *                                      self-signed certificates). This
+     *                                      value is true by default.
+     *                                      Supported values:
+     *                                      <ul>
+     *                                          <li>{@link
+     *                                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     *                                              TRUE}
+     *                                          <li>{@link
+     *                                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+     *                                              FALSE}
+     *                                      </ul>
+     *                                      The default value is {@link
+     *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     *                                      TRUE}.
+     *                                  <li>{@link
+     *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#S3_USE_VIRTUAL_ADDRESSING
+     *                                      S3_USE_VIRTUAL_ADDRESSING}: Whether
+     *                                      to use virtual addressing when
+     *                                      referencing the Amazon S3 source.
+     *                                      Supported values:
+     *                                      <ul>
+     *                                          <li>{@link
+     *                                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     *                                              TRUE}: The requests URI
+     *                                              should be specified in
+     *                                              virtual-hosted-style format
+     *                                              where the bucket name is
+     *                                              part of the domain name in
+     *                                              the URL.
+     *                                          <li>{@link
+     *                                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+     *                                              FALSE}: Use path-style URI
+     *                                              for requests.
+     *                                      </ul>
+     *                                      The default value is {@link
+     *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     *                                      TRUE}.
+     *                                  <li>{@link
      *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#S3_AWS_ROLE_ARN
      *                                      S3_AWS_ROLE_ARN}: Amazon IAM Role
      *                                      ARN which has required S3
@@ -4456,6 +4551,23 @@ public class GPUdb extends GPUdbBase {
      *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#SCHEMA_NAME
      *                                      SCHEMA_NAME} is empty, then the
      *                                      user's default schema will be used.
+     *                                  <li>{@link
+     *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#SCHEMA_REGISTRY_LOCATION
+     *                                      SCHEMA_REGISTRY_LOCATION}: Location
+     *                                      of Confluent Schema Registry in
+     *                                      '[storage_path[:storage_port]]'
+     *                                      format.
+     *                                  <li>{@link
+     *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#SCHEMA_REGISTRY_CREDENTIAL
+     *                                      SCHEMA_REGISTRY_CREDENTIAL}:
+     *                                      Confluent Schema Registry <a
+     *                                      href="../../../../../concepts/credentials"
+     *                                      target="_top">credential</a> object
+     *                                      name.
+     *                                  <li>{@link
+     *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#SCHEMA_REGISTRY_PORT
+     *                                      SCHEMA_REGISTRY_PORT}: Confluent
+     *                                      Schema Registry port (optional).
      *                              </ul>
      * @param options  Optional parameters.
      *
@@ -5218,6 +5330,10 @@ public class GPUdb extends GPUdbBase {
      *                                    value of the conf. The minimum
      *                                    allowed value is '2'. The maximum
      *                                    allowed value is '8192'.
+     *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_ENABLE_RAG
+     *                                    AI_ENABLE_RAG}: Enable RAG. The
+     *                                    default value is 'false'.
      *                                <li>{@link
      *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_API_PROVIDER
      *                                    AI_API_PROVIDER}: AI API provider
@@ -7176,6 +7292,12 @@ public class GPUdb extends GPUdbBase {
      *                         S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption
      *                         key to encrypt or decrypt data
      *                     <li>{@link
+     *                         com.gpudb.protocol.CreateDatasinkRequest.Options#S3_ENCRYPTION_TYPE
+     *                         S3_ENCRYPTION_TYPE}: Server side encryption type
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateDatasinkRequest.Options#S3_KMS_KEY_ID
+     *                         S3_KMS_KEY_ID}: KMS key
+     *                     <li>{@link
      *                         com.gpudb.protocol.CreateDatasinkRequest.Options#HDFS_KERBEROS_KEYTAB
      *                         HDFS_KERBEROS_KEYTAB}: Kerberos keytab file
      *                         location for the given HDFS user.  This may be a
@@ -7814,16 +7936,10 @@ public class GPUdb extends GPUdbBase {
      *                       details.
      *                       Supported values:
      *                       <ul>
-     *                           <li>{@link
-     *                               com.gpudb.protocol.CreateGraphRequest.DirectedGraph#TRUE
-     *                               TRUE}
-     *                           <li>{@link
-     *                               com.gpudb.protocol.CreateGraphRequest.DirectedGraph#FALSE
-     *                               FALSE}
+     *                           <li>{@code true}
+     *                           <li>{@code false}
      *                       </ul>
-     *                       The default value is {@link
-     *                       com.gpudb.protocol.CreateGraphRequest.DirectedGraph#TRUE
-     *                       TRUE}.
+     *                       The default value is {@code true}.
      * @param nodes  Nodes represent fundamental topological units of a graph.
      *               Nodes must be specified using <a
      *               href="../../../../../graph_solver/network_graph_solver/#identifiers"
@@ -8330,6 +8446,11 @@ public class GPUdb extends GPUdbBase {
      *                         ENABLE_VIRTUAL_CHUNKING}: Collect chunks with
      *                         accumulated size less than chunk_size into a
      *                         single chunk. The default value is 'false'.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateJoinTableRequest.Options#ENABLE_PK_EQUI_JOIN
+     *                         ENABLE_PK_EQUI_JOIN}: Use equi-join to do
+     *                         primary key joins rather than using
+     *                         primary-key-index
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      *
@@ -13797,6 +13918,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * All filenames created are returned in the response.
      *
+     * @param tableName
      * @param filepath  Path to data export target.  If {@code filepath} has a
      *                  file extension, it is read as the name of a file. If
      *                  {@code filepath} is a directory, then the source table
@@ -21569,8 +21691,8 @@ public class GPUdb extends GPUdbBase {
      *                                 within the range [1, 500]. If both min
      *                                 and max are specified, min must be less
      *                                 than or equal to max. The minimum
-     *                                 allowed value is '1'. The maximum
-     *                                 allowed value is '500'.
+     *                                 allowed value is 1. The maximum allowed
+     *                                 value is 500.
      *                             <li>{@link
      *                                 com.gpudb.protocol.InsertRecordsRandomRequest.Options#MAX
      *                                 MAX}: Maximum possible length for
@@ -21579,8 +21701,8 @@ public class GPUdb extends GPUdbBase {
      *                                 within the range [1, 500]. If both min
      *                                 and max are specified, max must be
      *                                 greater than or equal to min. The
-     *                                 minimum allowed value is '1'. The
-     *                                 maximum allowed value is '500'.
+     *                                 minimum allowed value is 1. The maximum
+     *                                 allowed value is 500.
      *                         </ul>
      *                 </ul>
      *                 The default value is an empty {@link Map}.
@@ -27800,16 +27922,10 @@ public class GPUdb extends GPUdbBase {
      *                       the response.
      *                       Supported values:
      *                       <ul>
-     *                           <li>{@link
-     *                               com.gpudb.protocol.VisualizeIsochroneRequest.GenerateImage#TRUE
-     *                               TRUE}
-     *                           <li>{@link
-     *                               com.gpudb.protocol.VisualizeIsochroneRequest.GenerateImage#FALSE
-     *                               FALSE}
+     *                           <li>{@code true}
+     *                           <li>{@code false}
      *                       </ul>
-     *                       The default value is {@link
-     *                       com.gpudb.protocol.VisualizeIsochroneRequest.GenerateImage#TRUE
-     *                       TRUE}.
+     *                       The default value is {@code true}.
      * @param levelsTable  Name of the table to output the isochrones to, in
      *                     [schema_name.]table_name format, using standard <a
      *                     href="../../../../../concepts/tables/#table-name-resolution"

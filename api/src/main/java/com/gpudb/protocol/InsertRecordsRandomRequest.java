@@ -263,14 +263,14 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
          *         generated series; default is 100 records per series. Must be
          *         an integral value within the range [1, 500]. If both min and
          *         max are specified, min must be less than or equal to max.
-         *         The minimum allowed value is '1'. The maximum allowed value
-         *         is '500'.
+         *         The minimum allowed value is 1. The maximum allowed value is
+         *         500.
          *     <li>{@link Options#MAX MAX}: Maximum possible length for
          *         generated series; default is 500 records per series. Must be
          *         an integral value within the range [1, 500]. If both min and
          *         max are specified, max must be greater than or equal to min.
-         *         The minimum allowed value is '1'. The maximum allowed value
-         *         is '500'.
+         *         The minimum allowed value is 1. The maximum allowed value is
+         *         500.
          * </ul>
          */
         public static final String TRACK_LENGTH = "track_length";
@@ -517,8 +517,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                                 [1, 500]. If both min and max are
      *                                 specified, min must be less than or
      *                                 equal to max. The minimum allowed value
-     *                                 is '1'. The maximum allowed value is
-     *                                 '500'.
+     *                                 is 1. The maximum allowed value is 500.
      *                             <li>{@link Options#MAX MAX}: Maximum
      *                                 possible length for generated series;
      *                                 default is 500 records per series. Must
@@ -526,8 +525,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                                 [1, 500]. If both min and max are
      *                                 specified, max must be greater than or
      *                                 equal to min. The minimum allowed value
-     *                                 is '1'. The maximum allowed value is
-     *                                 '500'.
+     *                                 is 1. The maximum allowed value is 500.
      *                         </ul>
      *                 </ul>
      *                 The default value is an empty {@link Map}.
@@ -746,14 +744,14 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                 generated series; default is 100 records per series.
      *                 Must be an integral value within the range [1, 500]. If
      *                 both min and max are specified, min must be less than or
-     *                 equal to max. The minimum allowed value is '1'. The
-     *                 maximum allowed value is '500'.
+     *                 equal to max. The minimum allowed value is 1. The
+     *                 maximum allowed value is 500.
      *             <li>{@link Options#MAX MAX}: Maximum possible length for
      *                 generated series; default is 500 records per series.
      *                 Must be an integral value within the range [1, 500]. If
      *                 both min and max are specified, max must be greater than
-     *                 or equal to min. The minimum allowed value is '1'. The
-     *                 maximum allowed value is '500'.
+     *                 or equal to min. The minimum allowed value is 1. The
+     *                 maximum allowed value is 500.
      *         </ul>
      * </ul>
      * The default value is an empty {@link Map}.
@@ -922,14 +920,14 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                 generated series; default is 100 records per series.
      *                 Must be an integral value within the range [1, 500]. If
      *                 both min and max are specified, min must be less than or
-     *                 equal to max. The minimum allowed value is '1'. The
-     *                 maximum allowed value is '500'.
+     *                 equal to max. The minimum allowed value is 1. The
+     *                 maximum allowed value is 500.
      *             <li>{@link Options#MAX MAX}: Maximum possible length for
      *                 generated series; default is 500 records per series.
      *                 Must be an integral value within the range [1, 500]. If
      *                 both min and max are specified, max must be greater than
-     *                 or equal to min. The minimum allowed value is '1'. The
-     *                 maximum allowed value is '500'.
+     *                 or equal to min. The minimum allowed value is 1. The
+     *                 maximum allowed value is 500.
      *         </ul>
      * </ul>
      * The default value is an empty {@link Map}.

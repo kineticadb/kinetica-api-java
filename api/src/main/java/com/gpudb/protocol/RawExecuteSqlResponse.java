@@ -199,8 +199,8 @@ public class RawExecuteSqlResponse implements IndexedRecord {
      * Too many records. Returned a partial set.
      * Supported values:
      * <ul>
-     *     <li>{@link HasMoreRecords#TRUE TRUE}
-     *     <li>{@link HasMoreRecords#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @return The current value of {@code hasMoreRecords}.
@@ -213,8 +213,8 @@ public class RawExecuteSqlResponse implements IndexedRecord {
      * Too many records. Returned a partial set.
      * Supported values:
      * <ul>
-     *     <li>{@link HasMoreRecords#TRUE TRUE}
-     *     <li>{@link HasMoreRecords#FALSE FALSE}
+     *     <li>{@code true}
+     *     <li>{@code false}
      * </ul>
      *
      * @param hasMoreRecords  The new value for {@code hasMoreRecords}.
