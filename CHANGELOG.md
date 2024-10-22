@@ -2,6 +2,13 @@
 
 ## Version 7.2
 
+### Version 7.2.2.1 - 2024-10-22
+
+#### Changed
+-   Modified server version extractor to handle all 5 version components
+-   Made the full set of system properties for the active cluster available
+
+
 ### Version 7.2.2.0 - 2024-10-15
 
 #### Changed

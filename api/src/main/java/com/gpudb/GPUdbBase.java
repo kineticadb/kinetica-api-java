@@ -1189,13 +1189,37 @@ public abstract class GPUdbBase {
         private final int minor;
         private final int revision;
         private final int abiVersion;
+        private final long build;
 
-        public GPUdbVersion( int major, int minor,
-                             int revision, int abiVersion ) {
+        /**
+         * Creates a {@link GPUdbBase.GPUdbVersion} with a 4-component version
+         * number.  The build number for this version will be 0.
+         *
+         * @param major Major component of this version
+         * @param minor Minor component of this version
+         * @param revision Revision component of this version
+         * @param abiVersion ABI version component of this version
+         */
+        public GPUdbVersion( int major, int minor, int revision, int abiVersion ) {
+            this(major, minor, revision, abiVersion, 0);
+        }
+
+        /**
+         * Creates a {@link GPUdbBase.GPUdbVersion} with a 5-component version
+         * number.
+         *
+         * @param major Major component of this version
+         * @param minor Minor component of this version
+         * @param revision Revision component of this version
+         * @param abiVersion ABI version component of this version
+         * @param build Build number component of this version
+         */
+        public GPUdbVersion( int major, int minor, int revision, int abiVersion, long build ) {
             this.major = major;
             this.minor = minor;
             this.revision = revision;
             this.abiVersion = abiVersion;
+            this.build = build;
         }
 
         /**
@@ -1236,88 +1260,244 @@ public abstract class GPUdbBase {
 
 
         /**
-         * Given all four components of a version, check if this version
-         * object is newer than the given one (not equal to).
+         * Gets the build number (fifth) component of the version.
          *
-         * @return true if this version is newer than the given version.
+         * @return  the 'build' component value; 0 if this version wasn't
+         *          created with a build number component
          */
-        public boolean isNewerThan( int otherMajor, int otherMinor,
-                                    int otherRevision, int otherAbiVersion ) {
-            if ( this.major > otherMajor ) {
-                // Example: _7_.2.1.0 is newer than _5_.0.0.0
-                return true;
-            }
-            if ( (this.major == otherMajor) && (this.minor > otherMinor) ) {
-                // Example: 6._2_.0.0 is newer than 6._1_.1.0, but
-                // 7._2_.0.0 is NOT newer than 8._1_.0.0
-                return true;
-            }
-            if ( (this.major == otherMajor) && (this.minor == otherMinor)
-                && (this.revision > otherRevision) ) {
-                // Example: 6.2._2_.0 is newer than 6.2._1_.0, but
-                // 7.7._3_.0 is NOT newer than 9.9._0_.0
-                return true;
-            }
-            if ( (this.major == otherMajor) && (this.minor == otherMinor)
-                && (this.revision == otherRevision)
-                && (this.abiVersion > otherAbiVersion) ) {
-                // Example: 6.2.1._3_ is newer than 6.2.1._1_, but
-                // 7.7.3._1_ is NOT newer than 9.9.0._0_
-                return true;
-            }
-
-            // All others must be a newer version than this
-            return false;
-        }  // isNewerrThan
-
-        /**
-         * Given all four components of a version, check if this version
-         * object is older than the given one (not equal to).
-         *
-         * @return true if this version is older than the given version.
-         */
-        public boolean isOlderThan( int otherMajor, int otherMinor,
-                                    int otherRevision, int otherAbiVersion ) {
-            if ( this.major < otherMajor ) {
-                // Example: _6_.2.1.0 is older than _7_.0.0.0
-                return true;
-            }
-            if ( (this.major == otherMajor) && (this.minor < otherMinor) ) {
-                // Example: 6._1_.1.0 is older than 6._2_.0.0, but
-                // 8._1_.0.0 is NOT older than 7._2_.0.0
-                return true;
-            }
-            if ( (this.major == otherMajor) && (this.minor == otherMinor)
-                && (this.revision < otherRevision) ) {
-                // Example: 6.2._1_.0 is older than 6.2._2_.0, but
-                // 9.9._0_.0 is NOT older than 7.7._3_.0
-                return true;
-            }
-            if ( (this.major == otherMajor) && (this.minor == otherMinor)
-                && (this.revision == otherRevision)
-                && (this.abiVersion < otherAbiVersion) ) {
-                // Example: 6.2.1._1_ is older than 6.2.1._3_, but
-                // 9.9.0._0_ is NOT older than 7.7.3._1_
-                return true;
-            }
-            // All others must be an older version than this
-            return false;
-        }  // end isOlderThan
-
-
-        /**
-         * Given all four components of a version, check if this version
-         * object is to the given one.
-         *
-         * @return true if this version is the same as the given version.
-         */
-        public boolean isEqualTo( int otherMajor, int otherMinor,
-                                  int otherRevision, int otherAbiVersion ) {
-            return ( (this.major == otherMajor)
-                && (this.minor == otherMinor)
-                && (this.revision == otherRevision)
-                && (this.abiVersion == otherAbiVersion) );
+        public long getBuild() {
+            return this.build;
         }
+
+        
+        /**
+         * Get the four-component version.
+         *
+         * <pre>
+         *     major.minor.revision.abiVersion
+         * </pre>
+         *
+         * @return the four-component version number as a String.
+         */
+        public String getVersion() {
+            return
+                    this.major +
+                    "." +
+                    this.minor +
+                    "." +
+                    this.revision +
+                    "." +
+                    this.abiVersion;
+        }
+
+        /**
+         * Get the full five-component version.
+         * 
+         * For versions created with four components, the build number will be 0.
+         *
+         * Either:
+         *
+         * <pre>
+         *     major.minor.revision.abiVersion.0
+         * </pre>
+         *
+         * or
+         *
+         * <pre>
+         *     major.minor.revision.abiVersion.buildNumber
+         * </pre>
+         *
+         * @return the five-component version number as a String.
+         */
+        public String getFullVersion() {
+            return
+                    this.getVersion() +
+                    "." +
+                    this.build;
+        }
+
+
+        /**
+         * Compare this version to the one represented by the five given version
+         * components.
+         * 
+         * @param otherMajor Major component of the version to compare to
+         * @param otherMinor Minor component of the version to compare to
+         * @param otherRevision Revision component of the version to compare to
+         * @param otherAbiVersion ABI version component of the version to compare to
+         * @param otherBuild Build number component of the version to compare to
+         * 
+         * @return -1 if this version is less than the one with the specified
+         *         components, 1 if this version is greater, and 0 if equal.
+         */
+        public int compareTo( int otherMajor, int otherMinor, int otherRevision, int otherAbiVersion, long otherBuild ) {
+            
+            if (this.major == otherMajor) {
+                if (this.minor == otherMinor) {
+                    if (this.revision == otherRevision) {
+                        if (this.abiVersion == otherAbiVersion) {
+                            if (this.build == otherBuild)
+                                return 0;
+                            return this.build < otherBuild ? -1 : 1;
+                        }
+                        return this.abiVersion < otherAbiVersion ? -1 : 1;
+                    }
+                    return this.revision < otherRevision ? -1 : 1;
+                }
+                return this.minor < otherMinor ? -1 : 1;
+            }
+            return this.major < otherMajor ? -1 : 1;
+        }
+
+        /**
+         * Compare this version to the given version.
+         * 
+         * @param otherVersion {@link GPUdbVersion} to compare this one to
+         * 
+         * @return -1 if this version is less than the given one, 1 if this
+         *         version is greater, and 0 if they're equal.
+         */
+        public int compareTo( GPUdbVersion otherVersion ) {
+            return this.compareTo(otherVersion.major, otherVersion.minor, otherVersion.revision, otherVersion.abiVersion, otherVersion.build);
+        }
+
+        
+        /**
+         * Determine whether this version is newer than the given version
+         * (not equal to).
+         *
+         * @param otherVersion {@link GPUdbVersion} to compare this one to
+         * 
+         * @return true if this version is newer than the given one.
+         */
+        public boolean isNewerThan( GPUdbVersion otherVersion ) {
+            return this.isNewerThan(otherVersion.major, otherVersion.minor, otherVersion.revision, otherVersion.abiVersion, otherVersion.build);
+        }
+
+        /**
+         * Determine whether this version is newer than the one represented by
+         * the four given version components (not equal to).
+         *
+         * @param otherMajor Major component of the version to compare to
+         * @param otherMinor Minor component of the version to compare to
+         * @param otherRevision Revision component of the version to compare to
+         * @param otherAbiVersion ABI version component of the version to compare to
+         * 
+         * @return true if this version is newer than the one with the given
+         *         components.
+         */
+        public boolean isNewerThan( int otherMajor, int otherMinor, int otherRevision, int otherAbiVersion ) {
+            return this.isNewerThan(otherMajor, otherMinor, otherRevision, otherAbiVersion, 0);
+        }
+
+        /**
+         * Determine whether this version is newer than the one represented by
+         * the five given version components (not equal to).
+         *
+         * @param otherMajor Major component of the version to compare to
+         * @param otherMinor Minor component of the version to compare to
+         * @param otherRevision Revision component of the version to compare to
+         * @param otherAbiVersion ABI version component of the version to compare to
+         * @param otherBuild Build number component of the version to compare to
+         * 
+         * @return true if this version is newer than the one with the given
+         *         components.
+         */
+        public boolean isNewerThan( int otherMajor, int otherMinor, int otherRevision, int otherAbiVersion, long otherBuild ) {
+            return this.compareTo(otherMajor, otherMinor, otherRevision, otherAbiVersion, otherBuild) > 0;
+        }
+
+
+        /**
+         * Determine whether this version is older than the given version
+         * (not equal to).
+         *
+         * @param otherVersion {@link GPUdbVersion} to compare this one to
+         * 
+         * @return true if this version is older than the given one.
+         */
+        public boolean isOlderThan( GPUdbVersion otherVersion ) {
+            return this.isOlderThan(otherVersion.major, otherVersion.minor, otherVersion.revision, otherVersion.abiVersion, otherVersion.build);
+        }
+
+        /**
+         * Determine whether this version is older than the one represented by
+         * the four given version components (not equal to).
+         *
+         * @param otherMajor Major component of the version to compare to
+         * @param otherMinor Minor component of the version to compare to
+         * @param otherRevision Revision component of the version to compare to
+         * @param otherAbiVersion ABI version component of the version to compare to
+         * 
+         * @return true if this version is older than the one with the given
+         *         components.
+         */
+        public boolean isOlderThan( int otherMajor, int otherMinor, int otherRevision, int otherAbiVersion ) {
+            return this.isOlderThan(otherMajor, otherMinor, otherRevision, otherAbiVersion, 0);
+        }
+
+        /**
+         * Determine whether this version is older than the one represented by
+         * the five given version components (not equal to).
+         *
+         * @param otherMajor Major component of the version to compare to
+         * @param otherMinor Minor component of the version to compare to
+         * @param otherRevision Revision component of the version to compare to
+         * @param otherAbiVersion ABI version component of the version to compare to
+         * @param otherBuild Build number component of the version to compare to
+         * 
+         * @return true if this version is older than the one with the given
+         *         components.
+         */
+        public boolean isOlderThan( int otherMajor, int otherMinor, int otherRevision, int otherAbiVersion, long otherBuild ) {
+            return this.compareTo(otherMajor, otherMinor, otherRevision, otherAbiVersion, otherBuild) < 0;
+        }
+
+
+        /**
+         * Determine whether this version is equal to the given version.
+         *
+         * @param otherVersion {@link GPUdbVersion} to compare this one to
+         * 
+         * @return true if this version is equal to the given one.
+         */
+        public boolean isEqualTo( GPUdbVersion otherVersion ) {
+            return this.isEqualTo(otherVersion.major, otherVersion.minor, otherVersion.revision, otherVersion.abiVersion, otherVersion.build);
+        }
+
+        /**
+         * Determine whether this version is equal to the one represented by
+         * the four given version components.
+         *
+         * @param otherMajor Major component of the version to compare to
+         * @param otherMinor Minor component of the version to compare to
+         * @param otherRevision Revision component of the version to compare to
+         * @param otherAbiVersion ABI version component of the version to compare to
+         * 
+         * @return true if this version is equal to the one with the given
+         *         components.
+         */
+        public boolean isEqualTo( int otherMajor, int otherMinor, int otherRevision, int otherAbiVersion ) {
+            return this.isEqualTo(otherMajor, otherMinor, otherRevision, otherAbiVersion, 0);
+        }
+
+        /**
+         * Determine whether this version is equal to the one represented by
+         * the five given version components.
+         *
+         * @param otherMajor Major component of the version to compare to
+         * @param otherMinor Minor component of the version to compare to
+         * @param otherRevision Revision component of the version to compare to
+         * @param otherAbiVersion ABI version component of the version to compare to
+         * @param otherBuild Build number component of the version to compare to
+         * 
+         * @return true if this version is equal to the one with the given
+         *         components.
+         */
+        public boolean isEqualTo( int otherMajor, int otherMinor, int otherRevision, int otherAbiVersion, long otherBuild ) {
+            return this.compareTo(otherMajor, otherMinor, otherRevision, otherAbiVersion, otherBuild) == 0;
+        }
+
 
         @Override
         public boolean equals(Object obj) {
@@ -1340,19 +1520,13 @@ public abstract class GPUdbBase {
         @Override
         public String toString() {
 
-            return this.major +
-                    "." +
-                    this.minor +
-                    "." +
-                    this.revision +
-                    "." +
-                    this.abiVersion;
+            return getVersion();
         }
 
-		@Override
-		public int hashCode() {
-			return Objects.hash(this.major, this.minor, this.revision, this.abiVersion);
-		}
+        @Override
+        public int hashCode() {
+            return Objects.hash(this.major, this.minor, this.revision, this.abiVersion);
+        }
 
     }  // end class GPUdbVersion
 
@@ -1921,20 +2095,46 @@ public abstract class GPUdbBase {
      */
     public static class ClusterAddressInfo {
         // Members
-        private URL           activeHeadNodeUrl;
-        private List<URL>     workerRankUrls;
-        private Set<String>   hostNames;  // could have IPs, too
-        private URL           hostManagerUrl;
-        private boolean       isPrimaryCluster;
+        private URL                activeHeadNodeUrl;
+        private Map<String,String> systemProperties;
+        private List<URL>          workerRankUrls;
+        private Set<String>        hostNames;  // could have IPs, too
+        private URL                hostManagerUrl;
+        private boolean            isPrimaryCluster = false;
+
 
         // Constructors
         // ------------
+
+        /**
+         * Constructor for an active cluster
+         */
+        protected ClusterAddressInfo( URL activeHeadNodeUrl,
+                                      Map<String,String> systemProperties,
+                                      List<URL> workerRankUrls,
+                                      Set<String> hostNames,
+                                      URL hostManagerUrl) {
+            this.activeHeadNodeUrl = activeHeadNodeUrl;
+            this.systemProperties  = systemProperties;
+            this.workerRankUrls    = workerRankUrls;
+            this.hostNames         = hostNames;
+            this.hostManagerUrl    = hostManagerUrl;
+
+            // Ensure that all the known ranks' hostnames are also accounted for
+            updateHostnamesBasedOnRankUrls();
+        }
+
+        /**
+         * @deprecated
+         * Constructor for an active cluster
+         */
         protected ClusterAddressInfo( URL activeHeadNodeUrl,
                                       List<URL> workerRankUrls,
                                       Set<String> hostNames,
                                       URL hostManagerUrl,
                                       boolean isPrimaryCluster) {
             this.activeHeadNodeUrl = activeHeadNodeUrl;
+            this.systemProperties  = new HashMap<>();
             this.workerRankUrls    = workerRankUrls;
             this.hostNames         = hostNames;
             this.hostManagerUrl    = hostManagerUrl;
@@ -1959,45 +2159,9 @@ public abstract class GPUdbBase {
 
         /// As close to a default constructor as we can get...
         protected ClusterAddressInfo( URL activeHeadNodeUrl ) throws GPUdbException {
-            this.activeHeadNodeUrl    = activeHeadNodeUrl;
-
-            // Set default values for the rest of the members
-            this.workerRankUrls   = new ArrayList<>();
-            this.hostNames        = new HashSet<>();
-            this.isPrimaryCluster = false;
-
-            // Create a host manager URL with the Kinetica default port for
-            // host managers
-            try {
-                if ( !activeHeadNodeUrl.getPath().isEmpty() ) {
-                    // If we're using HTTPD, then use the appropriate URL
-                    // (likely, http[s]://hostname_or_IP:port/gpudb-host-manager)
-                    // Also, use the default httpd port (8082, usually)
-                    this.hostManagerUrl = new URL(
-                            activeHeadNodeUrl.getProtocol(),
-                            activeHeadNodeUrl.getHost(),
-                            DEFAULT_HTTPD_HOST_MANAGER_PORT,
-                            "/gpudb-host-manager"
-                    );
-                } else {
-                    // The host manager URL shouldn't use any path and
-                    // use the host manager port
-                    this.hostManagerUrl = new URL(
-                            activeHeadNodeUrl.getProtocol(),
-                            activeHeadNodeUrl.getHost(),
-                            DEFAULT_HOST_MANAGER_PORT,
-                            ""
-                    );
-                }
-            } catch ( MalformedURLException ex ) {
-                throw new GPUdbException( "Error in creating the host manager URL: " + ex.getMessage(), ex );
-            }
-
-            GPUdbLogger.debug_with_info( "Created host manager URL: " + this.hostManagerUrl );
-
-            // Ensure that all the known ranks' hostnames are also accounted for
-            updateHostnamesBasedOnRankUrls();
+            this(activeHeadNodeUrl, DEFAULT_HOST_MANAGER_PORT);
         }
+
 
         // Allow a host manager port along with the active URL
         protected ClusterAddressInfo( URL activeHeadNodeUrl,
@@ -2005,9 +2169,9 @@ public abstract class GPUdbBase {
             this.activeHeadNodeUrl = activeHeadNodeUrl;
 
             // Set default values for the rest of the members
+            this.systemProperties = new HashMap<>();
             this.workerRankUrls   = new ArrayList<>();
             this.hostNames        = new HashSet<>();
-            this.isPrimaryCluster = false;
 
             // Create a host manager URL with the given port for host managers
             try {
@@ -2046,6 +2210,10 @@ public abstract class GPUdbBase {
         // -------
         public URL getActiveHeadNodeUrl() {
             return this.activeHeadNodeUrl;
+        }
+
+        public Map<String,String> getSystemProperties() {
+            return this.systemProperties;
         }
 
         public List<URL> getWorkerRankUrls() {
@@ -2096,6 +2264,15 @@ public abstract class GPUdbBase {
          */
         public ClusterAddressInfo setActiveHeadNodeUrl( URL value ) {
             this.activeHeadNodeUrl = value;
+            return this;
+        }
+
+        /**
+         * Set the system properties.  Return this object to be able to
+         * chain operations.
+         */
+        public ClusterAddressInfo setSystemProperties( Map<String,String> value ) {
+            this.systemProperties = value;
             return this;
         }
 
@@ -2486,7 +2663,7 @@ public abstract class GPUdbBase {
             TrustStrategy acceptingTrustStrategy = (chain, authType) -> {
                 KeyStore trustStore;
                 try {
-                	trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+                    trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
                 } catch (KeyStoreException e) {
                     String errorMessage = String.format(SslErrorMessageFormat, e.getMessage());
                     GPUdbLogger.error( errorMessage );
@@ -2494,7 +2671,7 @@ public abstract class GPUdbBase {
                 }
                 try (FileInputStream truststoreInputStream = new FileInputStream(this.trustStoreFilePath)) {
                     try {
-                    	trustStore.load(truststoreInputStream, this.trustStorePassword.toCharArray());
+                        trustStore.load(truststoreInputStream, this.trustStorePassword.toCharArray());
                     } catch (IOException | NoSuchAlgorithmException | CertificateException e) {
                         String errorMessage = String.format(SslErrorMessageFormat, e.getMessage());
                         GPUdbLogger.error( errorMessage );
@@ -2714,9 +2891,8 @@ public abstract class GPUdbBase {
      */
     public List<URL> getURLs() {
         List<URL> activeHeadNodeURLs = new ArrayList<>();
-        for (ClusterAddressInfo hostAddress : this.hostAddresses) {
+        for (ClusterAddressInfo hostAddress : this.hostAddresses)
             activeHeadNodeURLs.add(hostAddress.getActiveHeadNodeUrl());
-        }
         return activeHeadNodeURLs;
     }
 
@@ -2737,22 +2913,6 @@ public abstract class GPUdbBase {
     }
 
     /**
-     * Gets the active URL of the GPUdb server.
-     *
-     * @return  the URL
-     */
-    public URL getURL() {
-        if ( getHARingSize() == 1 ) {
-            return this.hostAddresses.get( 0 ).getActiveHeadNodeUrl();
-        }
-
-        synchronized (this.urlLock) {
-            int currClusterIndex = getCurrentClusterIndex();
-            return this.hostAddresses.get( currClusterIndex ).getActiveHeadNodeUrl();
-        }
-    }
-
-    /**
      * Gets the list of URLs for the GPUdb host manager. At any given time, one
      * URL will be active and used for all GPUdb calls (call {@link #getHmURL
      * getHmURL} to determine which one), but in the event of failure, the
@@ -2763,10 +2923,43 @@ public abstract class GPUdbBase {
      */
     public List<URL> getHmURLs() {
         List<URL> hmURLs = new ArrayList<>();
-        for (ClusterAddressInfo hostAddress : this.hostAddresses) {
+        for (ClusterAddressInfo hostAddress : this.hostAddresses)
             hmURLs.add(hostAddress.getHostManagerUrl());
-        }
         return hmURLs;
+    }
+
+
+    /**
+     * Gets the active cluster's information object.
+     *
+     * @return  {@link GPUdbBase.ClusterAddressInfo} for the active cluster.
+     */
+    public ClusterAddressInfo getClusterInfo() {
+        if ( getHARingSize() == 1 )
+            return this.hostAddresses.get( 0 );
+
+        synchronized (this.urlLock) {
+            int currClusterIndex = getCurrentClusterIndex();
+            return this.hostAddresses.get( currClusterIndex );
+        }
+    }
+
+    /**
+     * Gets the active cluster's system properties mapping.
+     *
+     * @return  {@link Map} of system property settings
+     */
+    public Map<String,String> getSystemProperties() {
+        return this.getClusterInfo().getSystemProperties();
+    }
+
+    /**
+     * Gets the active URL of the GPUdb server.
+     *
+     * @return  the URL
+     */
+    public URL getURL() {
+        return this.getClusterInfo().getActiveHeadNodeUrl();
     }
 
     /**
@@ -2775,14 +2968,7 @@ public abstract class GPUdbBase {
      * @return  the URL
      */
     public URL getHmURL() {
-        if ( getHARingSize() == 1 ) {
-            return this.hostAddresses.get( 0 ).getHostManagerUrl();
-        }
-
-        synchronized (this.urlLock) {
-            int currClusterIndex = getCurrentClusterIndex();
-            return this.hostAddresses.get( currClusterIndex ).getHostManagerUrl();
-        }
+        return this.getClusterInfo().getHostManagerUrl();
     }
 
     /**
@@ -3280,7 +3466,7 @@ public abstract class GPUdbBase {
      */
     private URL switchHmURL(URL oldURL, int oldNumClusterSwitches) throws GPUdbFailoverDisabledException, GPUdbHAUnavailableException {
 
-    	GPUdbLogger.debug_with_info(String.format(
+        GPUdbLogger.debug_with_info(String.format(
                 "Attempting to switch Host Manager URLs, from: %s; originally failing URL: %s",
                 getHmURL().toString(), oldURL.toString()));
 
@@ -3662,11 +3848,11 @@ public abstract class GPUdbBase {
                                                      Map<String, String> createTableOptions,
                                                      Map<String, String> insertRecordsOptions) throws GPUdbException {
 
-    	JsonOptions jOpts = jsonOptions == null ? JsonOptions.defaultOptions() : jsonOptions;
-    	Map<String, String> ctOpts = createTableOptions == null ? new LinkedHashMap<>() : createTableOptions;
-    	Map<String, String> irOpts = insertRecordsOptions == null ? new LinkedHashMap<>() : new LinkedHashMap<>(insertRecordsOptions);
+        JsonOptions jOpts = jsonOptions == null ? JsonOptions.defaultOptions() : jsonOptions;
+        Map<String, String> ctOpts = createTableOptions == null ? new LinkedHashMap<>() : createTableOptions;
+        Map<String, String> irOpts = insertRecordsOptions == null ? new LinkedHashMap<>() : new LinkedHashMap<>(insertRecordsOptions);
 
-    	if( jsonRecords == null || jsonRecords.isEmpty() ) {
+        if( jsonRecords == null || jsonRecords.isEmpty() ) {
             throw new GPUdbException( "No records to insert" );
         }
 
@@ -4005,16 +4191,16 @@ public abstract class GPUdbBase {
      */
     public <T extends Record> GPUdbSqlIterator<T> query(String sql, Object parameters, Map<String, String> sqlOptions) throws GPUdbException
     {
-    	Map<String, String> sqlOpts = sqlOptions == null ? new HashMap<>() : new HashMap<>(sqlOptions);
+        Map<String, String> sqlOpts = sqlOptions == null ? new HashMap<>() : new HashMap<>(sqlOptions);
 
-    	if (!(this instanceof GPUdb))
+        if (!(this instanceof GPUdb))
             throw new GPUdbException("Only supported on GPUdb objects");
 
         if (parameters instanceof String)
-        	sqlOpts.put(com.gpudb.protocol.ExecuteSqlRequest.Options.QUERY_PARAMETERS,
+            sqlOpts.put(com.gpudb.protocol.ExecuteSqlRequest.Options.QUERY_PARAMETERS,
                 (String)parameters);
         else if (parameters != null)
-        	sqlOpts.put(com.gpudb.protocol.ExecuteSqlRequest.Options.QUERY_PARAMETERS,
+            sqlOpts.put(com.gpudb.protocol.ExecuteSqlRequest.Options.QUERY_PARAMETERS,
                 JsonUtils.toJsonString(parameters));
 
         return new GPUdbSqlIterator<>((GPUdb)this, sql, sqlOpts);
@@ -4068,16 +4254,16 @@ public abstract class GPUdbBase {
      */
     public long execute(String sql, Object parameters, Map<String, String> sqlOptions) throws GPUdbException
     {
-    	Map<String, String> sqlOpts = sqlOptions == null ? new HashMap<>() : new HashMap<>(sqlOptions);
+        Map<String, String> sqlOpts = sqlOptions == null ? new HashMap<>() : new HashMap<>(sqlOptions);
 
         if (!(this instanceof GPUdb))
             throw new GPUdbException("Only supported on GPUdb objects");
 
         if (parameters instanceof String)
-        	sqlOpts.put(com.gpudb.protocol.ExecuteSqlRequest.Options.QUERY_PARAMETERS,
+            sqlOpts.put(com.gpudb.protocol.ExecuteSqlRequest.Options.QUERY_PARAMETERS,
                 (String)parameters);
         else if (parameters != null)
-        	sqlOpts.put(com.gpudb.protocol.ExecuteSqlRequest.Options.QUERY_PARAMETERS,
+            sqlOpts.put(com.gpudb.protocol.ExecuteSqlRequest.Options.QUERY_PARAMETERS,
                 JsonUtils.toJsonString(parameters));
 
         ExecuteSqlResponse response = ((GPUdb)this).executeSql(sql, 0, 1, "", null, sqlOpts);
@@ -4368,10 +4554,10 @@ public abstract class GPUdbBase {
         // Create an object to store all the information about this cluster
         ClusterAddressInfo clusterInfo = new ClusterAddressInfo(
                 activeHeadNodeUrl,
+                systemProperties,
                 rankURLs,
                 clusterHostnames,
-                hostManagerUrl,
-                false
+                hostManagerUrl
         );
 
         // Check if this cluster is the primary cluster
@@ -4927,12 +5113,15 @@ public abstract class GPUdbBase {
      * Given the system properties, extract and return the server version.  If
      * no server version was not able to parsed, throw an exception.
      *
-     * @return {@link GPUdbBase.GPUdbVersion} object or null.
+     * @param systemProperties Properties {@link Map} containing the server version
+     *
+     * @return {@link GPUdbBase.GPUdbVersion} representing the server's version
      */
     private static GPUdbVersion parseServerVersion( Map<String, String> systemProperties )
         throws GPUdbException {
         // Get the server version in a string format
         String serverVersionStr = systemProperties.get( DATABASE_SERVER_VERSION_KEY );
+        GPUdbVersion serverVersion = null;
 
         if ( serverVersionStr == null ) {
             throw new GPUdbException( "System properties does not have any entry for the '" + DATABASE_SERVER_VERSION_KEY + "' key" );
@@ -4941,23 +5130,28 @@ public abstract class GPUdbBase {
         // Now parse the version string
         try {
             // Split on period (.); note that the expected format is
-            // A.B.C.D.datewithtimestamp.  We will only extract A, B, C, and D.
+            // A.B.C.D.datewithtimestamp.  We will extract all components.
             int[] components = new int[4];
+            long componentBuild = 0;
+
             // Need to escape the period since we're passing a regex
             String[] componentStrings = serverVersionStr.split( "\\.", 5 );
+
             // Check that we get at least four components
             if ( componentStrings.length < 4 ) {
                 throw new GPUdbException( "Server version string in /show/system/properties response malformed (expected at least four components): " + serverVersionStr );
             }
-            // Parse each component
-            for ( int i = 0; i < 4; ++i  ) {
+            // Parse each primary component
+            for ( int i = 0; i < 4; ++i  )
                 components[ i ] = Integer.parseInt( componentStrings[ i ] );
-            }
+            componentBuild = Long.parseLong(componentStrings[4]);
 
-            return new GPUdbVersion( components[0], components[1], components[2], components[3] );
+            serverVersion = new GPUdbVersion( components[0], components[1], components[2], components[3], componentBuild );
         } catch (Exception ex) {
             throw new GPUdbException( "Could not parse server version; error: " + ex.getMessage(), ex );
         }
+        
+        return serverVersion;
     }  // end parseServerVersion
 
 
