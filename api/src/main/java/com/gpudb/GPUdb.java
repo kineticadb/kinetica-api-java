@@ -2157,9 +2157,9 @@ public class GPUdb extends GPUdbBase {
      *                         aggregated results.
      *                     <li>{@link
      *                         com.gpudb.protocol.AggregateGroupByRequest.Options#SORT_ORDER
-     *                         SORT_ORDER}: String indicating how the returned
-     *                         values should be sorted - ascending or
-     *                         descending.
+     *                         SORT_ORDER}: [DEPRECATED--use order_by instead]
+     *                         String indicating how the returned values should
+     *                         be sorted - ascending or descending.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
@@ -2178,8 +2178,8 @@ public class GPUdb extends GPUdbBase {
      *                         ASCENDING}.
      *                     <li>{@link
      *                         com.gpudb.protocol.AggregateGroupByRequest.Options#SORT_BY
-     *                         SORT_BY}: String determining how the results are
-     *                         sorted.
+     *                         SORT_BY}: [DEPRECATED--use order_by instead]
+     *                         String determining how the results are sorted.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link

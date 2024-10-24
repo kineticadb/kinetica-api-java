@@ -184,8 +184,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String HAVING = "having";
 
         /**
-         * String indicating how the returned values should be sorted -
-         * ascending or descending.
+         * [DEPRECATED--use order_by instead] String indicating how the
+         * returned values should be sorted - ascending or descending.
          * Supported values:
          * <ul>
          *     <li>{@link Options#ASCENDING ASCENDING}: Indicates that the
@@ -210,7 +210,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String DESCENDING = "descending";
 
         /**
-         * String determining how the results are sorted.
+         * [DEPRECATED--use order_by instead] String determining how the
+         * results are sorted.
          * Supported values:
          * <ul>
          *     <li>{@link Options#KEY KEY}: Indicates that the returned values
@@ -481,7 +482,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         computing the aggregate group by.
      *                     <li>{@link Options#HAVING HAVING}: Filter expression
      *                         to apply to the aggregated results.
-     *                     <li>{@link Options#SORT_ORDER SORT_ORDER}: String
+     *                     <li>{@link Options#SORT_ORDER SORT_ORDER}:
+     *                         [DEPRECATED--use order_by instead] String
      *                         indicating how the returned values should be
      *                         sorted - ascending or descending.
      *                         Supported values:
@@ -495,7 +497,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#ASCENDING
      *                         ASCENDING}.
-     *                     <li>{@link Options#SORT_BY SORT_BY}: String
+     *                     <li>{@link Options#SORT_BY SORT_BY}:
+     *                         [DEPRECATED--use order_by instead] String
      *                         determining how the results are sorted.
      *                         Supported values:
      *                         <ul>
@@ -727,7 +730,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         computing the aggregate group by.
      *                     <li>{@link Options#HAVING HAVING}: Filter expression
      *                         to apply to the aggregated results.
-     *                     <li>{@link Options#SORT_ORDER SORT_ORDER}: String
+     *                     <li>{@link Options#SORT_ORDER SORT_ORDER}:
+     *                         [DEPRECATED--use order_by instead] String
      *                         indicating how the returned values should be
      *                         sorted - ascending or descending.
      *                         Supported values:
@@ -741,7 +745,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#ASCENDING
      *                         ASCENDING}.
-     *                     <li>{@link Options#SORT_BY SORT_BY}: String
+     *                     <li>{@link Options#SORT_BY SORT_BY}:
+     *                         [DEPRECATED--use order_by instead] String
      *                         determining how the results are sorted.
      *                         Supported values:
      *                         <ul>
@@ -1083,8 +1088,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         apply to the table prior to computing the aggregate group by.
      *     <li>{@link Options#HAVING HAVING}: Filter expression to apply to the
      *         aggregated results.
-     *     <li>{@link Options#SORT_ORDER SORT_ORDER}: String indicating how the
-     *         returned values should be sorted - ascending or descending.
+     *     <li>{@link Options#SORT_ORDER SORT_ORDER}: [DEPRECATED--use order_by
+     *         instead] String indicating how the returned values should be
+     *         sorted - ascending or descending.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#ASCENDING ASCENDING}: Indicates that the
@@ -1094,8 +1100,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 order.
      *         </ul>
      *         The default value is {@link Options#ASCENDING ASCENDING}.
-     *     <li>{@link Options#SORT_BY SORT_BY}: String determining how the
-     *         results are sorted.
+     *     <li>{@link Options#SORT_BY SORT_BY}: [DEPRECATED--use order_by
+     *         instead] String determining how the results are sorted.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#KEY KEY}: Indicates that the returned
@@ -1244,8 +1250,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         apply to the table prior to computing the aggregate group by.
      *     <li>{@link Options#HAVING HAVING}: Filter expression to apply to the
      *         aggregated results.
-     *     <li>{@link Options#SORT_ORDER SORT_ORDER}: String indicating how the
-     *         returned values should be sorted - ascending or descending.
+     *     <li>{@link Options#SORT_ORDER SORT_ORDER}: [DEPRECATED--use order_by
+     *         instead] String indicating how the returned values should be
+     *         sorted - ascending or descending.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#ASCENDING ASCENDING}: Indicates that the
@@ -1255,8 +1262,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 order.
      *         </ul>
      *         The default value is {@link Options#ASCENDING ASCENDING}.
-     *     <li>{@link Options#SORT_BY SORT_BY}: String determining how the
-     *         results are sorted.
+     *     <li>{@link Options#SORT_BY SORT_BY}: [DEPRECATED--use order_by
+     *         instead] String determining how the results are sorted.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#KEY KEY}: Indicates that the returned

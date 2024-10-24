@@ -2825,9 +2825,9 @@ public abstract class GPUdbBase {
 
         // Get the Kinetica server's version and store it for future use
         try {
-            updateServerVersion();
+            this.serverVersion = parseServerVersion( this.getSystemProperties() );
         } catch (GPUdbException ex) {
-            GPUdbLogger.debug_with_info( "Could not update the server version: " + ex.getMessage() );
+            GPUdbLogger.debug_with_info( "Could not update the server version: " + ex.getMessage() + " from " + this.getSystemProperties());
         }
     }   // end init
 
@@ -2946,11 +2946,20 @@ public abstract class GPUdbBase {
 
     /**
      * Gets the active cluster's system properties mapping.
+     * 
+     * If this cluster was created without a system properties map, load it now.
      *
      * @return  {@link Map} of system property settings
      */
     public Map<String,String> getSystemProperties() {
-        return this.getClusterInfo().getSystemProperties();
+    	ClusterAddressInfo cai = this.getClusterInfo();
+    	if (cai.getSystemProperties().isEmpty())
+			try {
+				cai.setSystemProperties(this.getSystemProperties(cai.getActiveHeadNodeUrl()));
+			} catch (GPUdbException e) {
+	            GPUdbLogger.warn( "Unable to lazy-load system properties for head node: " + cai.getActiveHeadNodeUrl());
+			}
+        return cai.getSystemProperties();
     }
 
     /**
@@ -5155,35 +5164,6 @@ public abstract class GPUdbBase {
     }  // end parseServerVersion
 
 
-
-
-
-    /**
-     * If the database version hasn't been set already, update it by querying
-     * the server about its system properties.  If any issue arises, throw
-     * an exception.  Save the server version internally.
-     */
-    protected void updateServerVersion() throws GPUdbException {
-        if ( this.serverVersion != null ) {
-            // We've already gotten the server version; so nothing to do!
-            return;
-        }
-
-        // Get the database version from the server
-        try {
-            ShowSystemPropertiesResponse response;
-            response = submitRequest(
-                    appendPathToURL( this.getURL(), "/show/system/properties" ),
-                    new ShowSystemPropertiesRequest(),
-                    new ShowSystemPropertiesResponse(),
-                    false
-            );
-            this.serverVersion = parseServerVersion( response.getPropertyMap() );
-        } catch ( MalformedURLException | GPUdbException ex ) {
-            String msg = ( "Failed to get database version from the server; " + ex.getMessage() );
-            throw new GPUdbException( msg, ex );
-        }
-    }  // end updateServerVersion
 
 
 

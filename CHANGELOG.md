@@ -2,6 +2,12 @@
 
 ## Version 7.2
 
+### Version 7.2.2.2 - 2024-10-24
+
+#### Fixed
+-   Issue with lookup up server version when auto-discovery is disabled
+
+
 ### Version 7.2.2.1 - 2024-10-22
 
 #### Changed
