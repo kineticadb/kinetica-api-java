@@ -202,6 +202,8 @@ public abstract class GPUdbBase {
     // Some string constants to be used internally
     private static final String DATABASE_SERVER_VERSION_KEY = "version.gpudb_core_version";
 
+    private static final long DEFAULT_FAILBACK_POLLING_INTERVAL = 5;
+
     /**
      * A set of configurable options for the GPUdb API. May be passed into the
      * {@link GPUdb#GPUdb(String, GPUdbBase.Options) GPUdb constructor} to
@@ -233,6 +235,7 @@ public abstract class GPUdbBase {
         private long  initialConnectionAttemptTimeout = DEFAULT_INITIAL_CONNECTION_ATTEMPT_TIMEOUT_MS;
         private int   maxTotalConnections   = DEFAULT_MAX_TOTAL_CONNECTIONS;
         private int   maxConnectionsPerHost = DEFAULT_MAX_CONNECTIONS_PER_HOST;
+        private FailbackOptions failbackOptions = FailbackOptions.defaultOptions();
 
         /**
          * No-argument constructor needed for the copy constructor.
@@ -267,6 +270,7 @@ public abstract class GPUdbBase {
             this.connectionInactivityValidationTimeout = other.connectionInactivityValidationTimeout;
             this.trustStoreFilePath = other.trustStoreFilePath;
             this.trustStorePassword = other.trustStorePassword;
+            this.failbackOptions = other.failbackOptions;
 
             // Shallow copy; not cloneable and no copy constructor available
             this.executor             = other.executor;
@@ -301,6 +305,7 @@ public abstract class GPUdbBase {
             s.append("maxTotalConnections: ").append(this.maxTotalConnections).append(", ");
             s.append("maxConnectionsPerHost: ").append(this.maxConnectionsPerHost).append(", ");
             s.append("useSnappy: ").append(this.useSnappy);
+            s.append("failbackOptions: ").append(this.failbackOptions);
 
             s.append("}");
 
@@ -620,6 +625,10 @@ public abstract class GPUdbBase {
             return 0;
         }
 
+
+        public FailbackOptions getFailbackOptions() {
+            return failbackOptions;
+        }
 
         /**
          * Sets the URL of the primary cluster to use amongst the HA clusters.
@@ -1160,6 +1169,13 @@ public abstract class GPUdbBase {
         public Options setIntraClusterFailoverTimeout(long value) {
             return this;
         }
+
+        public Options setFailbackOptions(FailbackOptions failbackOptions) {
+            this.failbackOptions = failbackOptions;
+            return this;
+        }
+
+        
 
     }  // end class Options
 
@@ -1754,6 +1770,36 @@ public abstract class GPUdbBase {
     }
 
 
+    public static final class FailbackOptions {
+
+        public static final long POLLING_INTERVAL = DEFAULT_FAILBACK_POLLING_INTERVAL;
+        
+        public final long pollingInterval;
+
+        public static FailbackOptions defaultOptions() {
+            return new FailbackOptions();
+        }
+        
+        public FailbackOptions() {
+            this.pollingInterval = POLLING_INTERVAL;
+        }
+
+        public FailbackOptions(long pollingInterval) {
+            this.pollingInterval = pollingInterval;
+        }
+
+        @Override
+        public String toString() {
+            return "FailbackOptions [pollingInterval=" + pollingInterval + "]";
+        }
+
+        public long getPollingInterval() {
+            return pollingInterval;
+        }
+
+        
+    }
+
     /**
      * A special exception indicating the server is shutting down
      */
@@ -2228,6 +2274,7 @@ public abstract class GPUdbBase {
             return this.hostManagerUrl;
         }
 
+        @Deprecated
         public boolean getIsPrimaryCluster() {
             return this.isPrimaryCluster;
         }
@@ -2468,6 +2515,7 @@ public abstract class GPUdbBase {
     private int           hostManagerPort;
     private long          initialConnectionAttemptTimeoutNS;
     private GPUdbVersion  serverVersion;
+    private FailbackPollerService failbackPollerService;
     private ExecutorService     executor;
     private Map<String, String> httpHeaders;
     private HASynchronicityMode haSyncMode;
@@ -2818,16 +2866,23 @@ public abstract class GPUdbBase {
             })
             .build();
 
+
         // Parse the user given URL(s) and store information on all clusters
         // running Kinetica--automatically discovers the HA ring head nodes,
         // takes care of the primary URL, and randomizes the backup clusters
         processUrls( urls );
 
-        // Get the Kinetica server's version and store it for future use
+        // Verify connectivity and retrieve server version
         try {
-            this.serverVersion = parseServerVersion( this.getSystemProperties() );
-        } catch (GPUdbException ex) {
-            GPUdbLogger.debug_with_info( "Could not update the server version: " + ex.getMessage() + " from " + this.getSystemProperties());
+            Map<String, String> sysProps = this.getSystemProperties();
+            // If auto-discovery is disabled, sysProps will be empty
+            if (sysProps.isEmpty())
+                sysProps = this.getSystemProperties(this.getURL());
+            this.serverVersion = parseServerVersion( sysProps );
+        } catch ( GPUdbException ex ) {
+            this.httpClient.close(CloseMode.GRACEFUL);
+            String msg = String.format("Connectivity check for <%s> failed: %s", this.getURL(), ex.getMessage());
+            throw new GPUdbException( msg, ex );
         }
     }   // end init
 
@@ -2839,6 +2894,7 @@ public abstract class GPUdbBase {
         // Release the resources-- the HTTP client
 
         this.httpClient.close(CloseMode.GRACEFUL);
+        failbackPollerService.stop();
     }
 
 
@@ -2952,14 +3008,7 @@ public abstract class GPUdbBase {
      * @return  {@link Map} of system property settings
      */
     public Map<String,String> getSystemProperties() {
-    	ClusterAddressInfo cai = this.getClusterInfo();
-    	if (cai.getSystemProperties().isEmpty())
-			try {
-				cai.setSystemProperties(this.getSystemProperties(cai.getActiveHeadNodeUrl()));
-			} catch (GPUdbException e) {
-	            GPUdbLogger.warn( "Unable to lazy-load system properties for head node: " + cai.getActiveHeadNodeUrl());
-			}
-        return cai.getSystemProperties();
+        return this.getClusterInfo().getSystemProperties();
     }
 
     /**
@@ -3324,7 +3373,7 @@ public abstract class GPUdbBase {
     /**
      * Set the pointer to the current URL index in a thread-safe manner.
      */
-    private void setCurrClusterIndexPointer(int newIndex) {
+    void setCurrClusterIndexPointer(int newIndex) {
         synchronized ( this.urlLock ) {
             this.currentClusterIndexPointer = newIndex;
         }
@@ -3338,6 +3387,9 @@ public abstract class GPUdbBase {
         return this.haUrlIndices.get( getCurrClusterIndexPointer() );
     }
 
+    public List<ClusterAddressInfo> getHostAddresses() {
+        return hostAddresses;
+    }
 
     /**
      * Select the next cluster based on the HA failover priority set by the user.
@@ -3432,28 +3484,44 @@ public abstract class GPUdbBase {
 
             // This thread is the first one here--select the next cluster to use
             // during this HA failover
-            this.selectNextCluster();
+            while( !isKineticaRunning(getURL())) {
+                this.selectNextCluster();
 
-            // If we've circled back, shuffle the indices again so that future
-            // requests go to a different randomly selected cluster, but also
-            // let the caller know that we've circled back
-            if ( getURL().equals( oldURL ) ) {
-                GPUdbLogger.debug_with_info(String.format(
-                        "Current URL is the same as the original URL: %s; randomizing URLs and throwing exception",
-                        oldURL
-                ));
-                // Re-shuffle and set the index counter to zero
-                randomizeURLs();
+                // If we've circled back, shuffle the indices again so that future
+                // requests go to a different randomly selected cluster, but also
+                // let the caller know that we've circled back
+                if ( getURL().equals( oldURL ) ) {
+                    GPUdbLogger.debug_with_info(String.format(
+                            "Current URL is the same as the original URL: %s; randomizing URLs and throwing exception",
+                            oldURL
+                    ));
+                    // Re-shuffle and set the index counter to zero
+                    randomizeURLs();
 
-                // Let the user know that we've circled back
-                throw new GPUdbHAUnavailableException("Circled back to original URL; no clusters available for fail-over among these: " + getURLs().toString());
+                    // Let the user know that we've circled back
+                    throw new GPUdbHAUnavailableException("Circled back to original URL; no clusters available for fail-over among these: " + getURLs().toString());
+                }
+
+            }
+            // Haven't circled back to the old URL; so return the new one
+            GPUdbLogger.warn("Switched to fail-over URL: " +  getURL());
+
+            // Invoke the failback poller here
+            if( checkFailbackConditions() ) {
+                // Invoke poller.
+                FailbackOptions failbackOptions = this.options.getFailbackOptions();
+                failbackPollerService = new FailbackPollerService(this, failbackOptions != null ? failbackOptions : FailbackOptions.defaultOptions());
+                failbackPollerService.start();
             }
 
-            // Haven't circled back to the old URL; so return the new one
-            GPUdbLogger.warn("Switched to fail-over URL: " +  getURL().toString());
             return getURL();
         }
     }  // end switchURL
+
+
+    private boolean checkFailbackConditions() {
+        return getPrimaryUrl() != null && !getPrimaryUrl().toExternalForm().isEmpty() && getHARingSize() > 1;
+    }
 
     /**
      * Switches the host manager  URL of the HA ring cluster.  Check if we've
@@ -3706,7 +3774,8 @@ public abstract class GPUdbBase {
                     appendPathToURL( url, ENDPOINT_SHOW_SYSTEM_STATUS ),
                     new ShowSystemStatusRequest(),
                     new ShowSystemStatusResponse(),
-                    false
+                    false,
+                    DEFAULT_SERVER_CONNECTION_TIMEOUT
             );
         } catch (MalformedURLException ex) {
             throw new GPUdbException( "Error forming URL: " + url + " -- " + ex.getMessage(), ex );
@@ -6269,9 +6338,10 @@ public abstract class GPUdbBase {
 
         int requestSize = -1;
         HttpPost              postRequest    = null;
+        HttpEntity            requestPacket  = null;
         HttpEntity            responseEntity = null;
-        HttpHost              host = null;
-        ClassicHttpResponse postResponse   = null;
+        HttpHost              host           = null;
+        ClassicHttpResponse   postResponse   = null;
 
         try {
             // Log at the trace level
@@ -6281,7 +6351,6 @@ public abstract class GPUdbBase {
             postRequest = initializeHttpPostRequest( url, responseTimeout );
             host = new HttpHost( url.getProtocol(), url.getHost(), url.getPort() );
 
-            HttpEntity requestPacket;
             if (enableCompression && this.useSnappy) {
                 // Use snappy to compress the original request body
                 byte[] encodedRequest = Snappy.compress(Avro.encode(request).array());
@@ -6440,6 +6509,12 @@ public abstract class GPUdbBase {
                 try {
                     inputStream.skip(Long.MAX_VALUE);
                 } catch (Exception ex) {
+                } finally {
+                    try {
+                        inputStream.close();
+                    } catch (IOException ex) {
+                        GPUdbLogger.error( ex.getMessage() );
+                    }
                 }
             }
         } catch (GPUdbExitException ex) {
@@ -6473,6 +6548,20 @@ public abstract class GPUdbBase {
             if ( responseEntity != null ) {
                 EntityUtils.consumeQuietly( responseEntity );
             }
+
+            if ( requestPacket != null)
+                try {
+                    requestPacket.close();
+                } catch (IOException ex) {
+                    GPUdbLogger.error( ex.getMessage() );
+                }
+
+            if ( responseEntity != null)
+                try {
+                    responseEntity.close();
+                } catch (IOException ex) {
+                    GPUdbLogger.error( ex.getMessage() );
+                }
 
             // Close the stream
             if ( postResponse != null ) {

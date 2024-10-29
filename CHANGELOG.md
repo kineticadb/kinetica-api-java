@@ -2,6 +2,19 @@
 
 ## Version 7.2
 
+### Version 7.2.2.3 - 2024-10-29
+
+#### Added
+-   Failback to a primary cluster after failing over to a secondary cluster
+
+#### Changed
+-   Upgraded Avro library to 1.11.4
+
+#### Fixed
+-   Error message for bad URLs with auto-discovery disabled
+-   Potential resource leaks upon connection errors
+
+
 ### Version 7.2.2.2 - 2024-10-24
 
 #### Fixed
