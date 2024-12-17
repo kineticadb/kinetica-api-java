@@ -327,6 +327,14 @@ public class CreateTypeRequest implements IndexedRecord {
 
         /**
          * This property indicates that this column will be part of (or the
+         * entire) <a
+         * href="../../../../../../concepts/tables/#soft-primary-keys"
+         * target="_top">soft primary key</a>.
+         */
+        public static final String SOFT_PRIMARY_KEY = "soft_primary_key";
+
+        /**
+         * This property indicates that this column will be part of (or the
          * entire) <a href="../../../../../../concepts/tables/#shard-keys"
          * target="_top">shard key</a>.
          */
@@ -589,6 +597,12 @@ public class CreateTypeRequest implements IndexedRecord {
      *                            be part of (or the entire) <a
      *                            href="../../../../../../concepts/tables/#primary-keys"
      *                            target="_top">primary key</a>.
+     *                        <li>{@link Properties#SOFT_PRIMARY_KEY
+     *                            SOFT_PRIMARY_KEY}: This property indicates
+     *                            that this column will be part of (or the
+     *                            entire) <a
+     *                            href="../../../../../../concepts/tables/#soft-primary-keys"
+     *                            target="_top">soft primary key</a>.
      *                        <li>{@link Properties#SHARD_KEY SHARD_KEY}: This
      *                            property indicates that this column will be
      *                            part of (or the entire) <a
@@ -823,6 +837,11 @@ public class CreateTypeRequest implements IndexedRecord {
      *         indicates that this column will be part of (or the entire) <a
      *         href="../../../../../../concepts/tables/#primary-keys"
      *         target="_top">primary key</a>.
+     *     <li>{@link Properties#SOFT_PRIMARY_KEY SOFT_PRIMARY_KEY}: This
+     *         property indicates that this column will be part of (or the
+     *         entire) <a
+     *         href="../../../../../../concepts/tables/#soft-primary-keys"
+     *         target="_top">soft primary key</a>.
      *     <li>{@link Properties#SHARD_KEY SHARD_KEY}: This property indicates
      *         that this column will be part of (or the entire) <a
      *         href="../../../../../../concepts/tables/#shard-keys"
@@ -1000,6 +1019,11 @@ public class CreateTypeRequest implements IndexedRecord {
      *         indicates that this column will be part of (or the entire) <a
      *         href="../../../../../../concepts/tables/#primary-keys"
      *         target="_top">primary key</a>.
+     *     <li>{@link Properties#SOFT_PRIMARY_KEY SOFT_PRIMARY_KEY}: This
+     *         property indicates that this column will be part of (or the
+     *         entire) <a
+     *         href="../../../../../../concepts/tables/#soft-primary-keys"
+     *         target="_top">soft primary key</a>.
      *     <li>{@link Properties#SHARD_KEY SHARD_KEY}: This property indicates
      *         that this column will be part of (or the entire) <a
      *         href="../../../../../../concepts/tables/#shard-keys"

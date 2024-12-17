@@ -6409,6 +6409,15 @@ public abstract class GPUdbBase {
                         statusCode, responseMessage, responseEntity.getContentType()
                 ));
 
+            // Handle unauthorized connection specially--better error messaging
+            if ((statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) ||
+                (statusCode == HttpURLConnection.HTTP_FORBIDDEN)) {
+                // Got status 401 -- unauthorized, 403 -- forbidden
+                GPUdbLogger.debug_with_info( "Got status code: " + statusCode );
+                String errorMsg = (String.format("Server response status: %d : %s", statusCode, responseMessage));
+                throw new GPUdbUnauthorizedAccessException(errorMsg);
+            }
+
             // Ensure that we're not getting any HTML snippet (may be
             // returned by the HTTPD server)
             if (
@@ -6417,12 +6426,7 @@ public abstract class GPUdbBase {
                     responseEntity.getContentType().startsWith( "text" )
             ) {
                 String errorMsg;
-                // Handle unauthorized connection specially--better error messaging
-                if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                    GPUdbLogger.debug_with_info( "Got status code: " + statusCode );
-                    errorMsg = ("Unauthorized access: " + responseMessage );
-                    throw new GPUdbUnauthorizedAccessException(errorMsg);
-                } else if ( (statusCode == HttpURLConnection.HTTP_UNAVAILABLE)
+                if (   (statusCode == HttpURLConnection.HTTP_UNAVAILABLE)
                     || (statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR)
                     || (statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT)
                 ) {
@@ -6440,19 +6444,6 @@ public abstract class GPUdbBase {
                     errorMsg = ("Cannot parse response from server: '" + responseMessage + "'; status code: " + statusCode );
                 }
                 throw new SubmitException( url, request, requestSize, errorMsg );
-            }
-
-            // Parse response based on error code
-            if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                // Got status 401 -- unauthorized
-                GPUdbLogger.debug_with_info( "Got status code: " + statusCode );
-                String errorMsg = (String.format("Server response status: %d : %s", statusCode, responseMessage));
-                throw new GPUdbUnauthorizedAccessException(errorMsg);
-                // Note: Keeping the original code here in case some unforeseen
-                // problem arises that we haven't thought of yet by changing
-                // which exception is thrown.
-                // throw new SubmitException( url, request, requestSize,
-                //                            responseMessage );
             }
 
             InputStream inputStream = responseEntity.getContent();
@@ -6677,7 +6668,8 @@ public abstract class GPUdbBase {
             }
 
             // Parse response based on error code
-            if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+            if ((statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) ||
+                (statusCode == HttpURLConnection.HTTP_FORBIDDEN)) {
                 GPUdbLogger.debug_with_info( "Got status code: " + statusCode );
                 String errorMsg = (String.format("Server response status: %d : %s", statusCode, responseMessage));
                 throw new GPUdbUnauthorizedAccessException(errorMsg);
@@ -6845,7 +6837,8 @@ public abstract class GPUdbBase {
             }
 
             // Parse response based on error code
-            if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+            if ((statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) ||
+                (statusCode == HttpURLConnection.HTTP_FORBIDDEN)) {
                 GPUdbLogger.debug_with_info( "Got status code: " + statusCode );
                 String errorMsg = (String.format("Server response status: %d : %s", statusCode, responseMessage));
                 throw new GPUdbUnauthorizedAccessException(errorMsg);

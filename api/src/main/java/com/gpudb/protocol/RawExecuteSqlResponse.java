@@ -229,7 +229,7 @@ public class RawExecuteSqlResponse implements IndexedRecord {
     /**
      * Name of the table that has the result records of the query. Valid, when
      * {@link #getHasMoreRecords() hasMoreRecords} is {@link
-     * HasMoreRecords#TRUE TRUE} (Subject to config.paging_tables_enabled)
+     * HasMoreRecords#TRUE TRUE}
      *
      * @return The current value of {@code pagingTable}.
      */
@@ -240,7 +240,7 @@ public class RawExecuteSqlResponse implements IndexedRecord {
     /**
      * Name of the table that has the result records of the query. Valid, when
      * {@link #getHasMoreRecords() hasMoreRecords} is {@link
-     * HasMoreRecords#TRUE TRUE} (Subject to config.paging_tables_enabled)
+     * HasMoreRecords#TRUE TRUE}
      *
      * @param pagingTable  The new value for {@code pagingTable}.
      *

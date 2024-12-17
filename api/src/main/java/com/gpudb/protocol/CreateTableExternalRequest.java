@@ -866,6 +866,12 @@ public class CreateTableExternalRequest implements IndexedRecord {
         public static final String SKIP_LINES = "skip_lines";
 
         /**
+         * Starting offsets by partition to fetch from kafka. A comma separated
+         * list of partition:offset pairs.
+         */
+        public static final String START_OFFSETS = "start_offsets";
+
+        /**
          * Continuously poll the data source to check for new data and load it
          * into the table.
          * Supported values:
@@ -1802,6 +1808,10 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         keys, when not specified in the type.
      *                     <li>{@link Options#SKIP_LINES SKIP_LINES}: Skip
      *                         number of lines from begining of file.
+     *                     <li>{@link Options#START_OFFSETS START_OFFSETS}:
+     *                         Starting offsets by partition to fetch from
+     *                         kafka. A comma separated list of
+     *                         partition:offset pairs.
      *                     <li>{@link Options#SUBSCRIBE SUBSCRIBE}:
      *                         Continuously poll the data source to check for
      *                         new data and load it into the table.
@@ -2738,6 +2748,9 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         type.
      *     <li>{@link Options#SKIP_LINES SKIP_LINES}: Skip number of lines from
      *         begining of file.
+     *     <li>{@link Options#START_OFFSETS START_OFFSETS}: Starting offsets by
+     *         partition to fetch from kafka. A comma separated list of
+     *         partition:offset pairs.
      *     <li>{@link Options#SUBSCRIBE SUBSCRIBE}: Continuously poll the data
      *         source to check for new data and load it into the table.
      *         Supported values:
@@ -3216,6 +3229,9 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         type.
      *     <li>{@link Options#SKIP_LINES SKIP_LINES}: Skip number of lines from
      *         begining of file.
+     *     <li>{@link Options#START_OFFSETS START_OFFSETS}: Starting offsets by
+     *         partition to fetch from kafka. A comma separated list of
+     *         partition:offset pairs.
      *     <li>{@link Options#SUBSCRIBE SUBSCRIBE}: Continuously poll the data
      *         source to check for new data and load it into the table.
      *         Supported values:

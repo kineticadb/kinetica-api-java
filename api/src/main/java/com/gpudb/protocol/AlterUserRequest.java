@@ -47,9 +47,30 @@ public class AlterUserRequest implements IndexedRecord {
      */
     public static final class Action {
         /**
+         * Is the user allowed to login.
+         */
+        public static final String SET_ACTIVATED = "set_activated";
+
+        /**
+         * User may login
+         */
+        public static final String TRUE = "true";
+
+        /**
+         * User may not login
+         */
+        public static final String FALSE = "false";
+
+        /**
          * Sets the comment for an internal user.
          */
         public static final String SET_COMMENT = "set_comment";
+
+        /**
+         * Set the default_schema for an internal user. An empty string means
+         * the user will have no default schema.
+         */
+        public static final String SET_DEFAULT_SCHEMA = "set_default_schema";
 
         /**
          * Sets the password of the user. The user must be an internal user.
@@ -62,12 +83,6 @@ public class AlterUserRequest implements IndexedRecord {
          * default resource group.
          */
         public static final String SET_RESOURCE_GROUP = "set_resource_group";
-
-        /**
-         * Set the default_schema for an internal user. An empty string means
-         * the user will have no default schema.
-         */
-        public static final String SET_DEFAULT_SCHEMA = "set_default_schema";
 
         private Action() {  }
     }
@@ -94,8 +109,16 @@ public class AlterUserRequest implements IndexedRecord {
      * @param action  Modification operation to be applied to the user.
      *                Supported values:
      *                <ul>
+     *                    <li>{@link Action#SET_ACTIVATED SET_ACTIVATED}: Is
+     *                        the user allowed to login.
+     *                    <li>{@link Action#TRUE TRUE}: User may login
+     *                    <li>{@link Action#FALSE FALSE}: User may not login
      *                    <li>{@link Action#SET_COMMENT SET_COMMENT}: Sets the
      *                        comment for an internal user.
+     *                    <li>{@link Action#SET_DEFAULT_SCHEMA
+     *                        SET_DEFAULT_SCHEMA}: Set the default_schema for
+     *                        an internal user. An empty string means the user
+     *                        will have no default schema.
      *                    <li>{@link Action#SET_PASSWORD SET_PASSWORD}: Sets
      *                        the password of the user. The user must be an
      *                        internal user.
@@ -104,10 +127,6 @@ public class AlterUserRequest implements IndexedRecord {
      *                        an internal user. The resource group must exist,
      *                        otherwise, an empty string assigns the user to
      *                        the default resource group.
-     *                    <li>{@link Action#SET_DEFAULT_SCHEMA
-     *                        SET_DEFAULT_SCHEMA}: Set the default_schema for
-     *                        an internal user. An empty string means the user
-     *                        will have no default schema.
      *                </ul>
      * @param value  The value of the modification, depending on {@code
      *               action}.
@@ -146,17 +165,21 @@ public class AlterUserRequest implements IndexedRecord {
      * Modification operation to be applied to the user.
      * Supported values:
      * <ul>
+     *     <li>{@link Action#SET_ACTIVATED SET_ACTIVATED}: Is the user allowed
+     *         to login.
+     *     <li>{@link Action#TRUE TRUE}: User may login
+     *     <li>{@link Action#FALSE FALSE}: User may not login
      *     <li>{@link Action#SET_COMMENT SET_COMMENT}: Sets the comment for an
      *         internal user.
+     *     <li>{@link Action#SET_DEFAULT_SCHEMA SET_DEFAULT_SCHEMA}: Set the
+     *         default_schema for an internal user. An empty string means the
+     *         user will have no default schema.
      *     <li>{@link Action#SET_PASSWORD SET_PASSWORD}: Sets the password of
      *         the user. The user must be an internal user.
      *     <li>{@link Action#SET_RESOURCE_GROUP SET_RESOURCE_GROUP}: Sets the
      *         resource group for an internal user. The resource group must
      *         exist, otherwise, an empty string assigns the user to the
      *         default resource group.
-     *     <li>{@link Action#SET_DEFAULT_SCHEMA SET_DEFAULT_SCHEMA}: Set the
-     *         default_schema for an internal user. An empty string means the
-     *         user will have no default schema.
      * </ul>
      *
      * @return The current value of {@code action}.
@@ -169,17 +192,21 @@ public class AlterUserRequest implements IndexedRecord {
      * Modification operation to be applied to the user.
      * Supported values:
      * <ul>
+     *     <li>{@link Action#SET_ACTIVATED SET_ACTIVATED}: Is the user allowed
+     *         to login.
+     *     <li>{@link Action#TRUE TRUE}: User may login
+     *     <li>{@link Action#FALSE FALSE}: User may not login
      *     <li>{@link Action#SET_COMMENT SET_COMMENT}: Sets the comment for an
      *         internal user.
+     *     <li>{@link Action#SET_DEFAULT_SCHEMA SET_DEFAULT_SCHEMA}: Set the
+     *         default_schema for an internal user. An empty string means the
+     *         user will have no default schema.
      *     <li>{@link Action#SET_PASSWORD SET_PASSWORD}: Sets the password of
      *         the user. The user must be an internal user.
      *     <li>{@link Action#SET_RESOURCE_GROUP SET_RESOURCE_GROUP}: Sets the
      *         resource group for an internal user. The resource group must
      *         exist, otherwise, an empty string assigns the user to the
      *         default resource group.
-     *     <li>{@link Action#SET_DEFAULT_SCHEMA SET_DEFAULT_SCHEMA}: Set the
-     *         default_schema for an internal user. An empty string means the
-     *         user will have no default schema.
      * </ul>
      *
      * @param action  The new value for {@code action}.

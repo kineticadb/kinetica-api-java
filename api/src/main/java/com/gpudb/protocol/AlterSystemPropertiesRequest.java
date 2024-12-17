@@ -228,6 +228,12 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String ENABLE_OVERLAPPED_EQUI_JOIN = "enable_overlapped_equi_join";
 
         /**
+         * Enable the one_step compound-equi-join algorithm. The default value
+         * is 'true'.
+         */
+        public static final String ENABLE_ONE_STEP_COMPOUND_EQUI_JOIN = "enable_one_step_compound_equi_join";
+
+        /**
          * Maximum number of records to be ingested in a single batch. The
          * default value is '1000'. The minimum allowed value is '1'. The
          * maximum allowed value is '10000000'.
@@ -590,6 +596,12 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    overlapped-equi-join filter. The
      *                                    default value is 'true'.
      *                                <li>{@link
+     *                                    PropertyUpdatesMap#ENABLE_ONE_STEP_COMPOUND_EQUI_JOIN
+     *                                    ENABLE_ONE_STEP_COMPOUND_EQUI_JOIN}:
+     *                                    Enable the one_step
+     *                                    compound-equi-join algorithm. The
+     *                                    default value is 'true'.
+     *                                <li>{@link
      *                                    PropertyUpdatesMap#KAFKA_BATCH_SIZE
      *                                    KAFKA_BATCH_SIZE}: Maximum number of
      *                                    records to be ingested in a single
@@ -838,6 +850,9 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#ENABLE_OVERLAPPED_EQUI_JOIN
      *         ENABLE_OVERLAPPED_EQUI_JOIN}: Enable overlapped-equi-join
      *         filter. The default value is 'true'.
+     *     <li>{@link PropertyUpdatesMap#ENABLE_ONE_STEP_COMPOUND_EQUI_JOIN
+     *         ENABLE_ONE_STEP_COMPOUND_EQUI_JOIN}: Enable the one_step
+     *         compound-equi-join algorithm. The default value is 'true'.
      *     <li>{@link PropertyUpdatesMap#KAFKA_BATCH_SIZE KAFKA_BATCH_SIZE}:
      *         Maximum number of records to be ingested in a single batch. The
      *         default value is '1000'. The minimum allowed value is '1'. The
@@ -1015,6 +1030,9 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#ENABLE_OVERLAPPED_EQUI_JOIN
      *         ENABLE_OVERLAPPED_EQUI_JOIN}: Enable overlapped-equi-join
      *         filter. The default value is 'true'.
+     *     <li>{@link PropertyUpdatesMap#ENABLE_ONE_STEP_COMPOUND_EQUI_JOIN
+     *         ENABLE_ONE_STEP_COMPOUND_EQUI_JOIN}: Enable the one_step
+     *         compound-equi-join algorithm. The default value is 'true'.
      *     <li>{@link PropertyUpdatesMap#KAFKA_BATCH_SIZE KAFKA_BATCH_SIZE}:
      *         Maximum number of records to be ingested in a single batch. The
      *         default value is '1000'. The minimum allowed value is '1'. The

@@ -145,6 +145,12 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
         public static final String TRUE = "true";
         public static final String FALSE = "false";
 
+        /**
+         * For multihead record retrieval without shard key expression -
+         * specifies from which tom to retrieve data.
+         */
+        public static final String ROUTE_TO_TOM = "route_to_tom";
+
         private Options() {  }
     }
 
@@ -236,6 +242,10 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#ROUTE_TO_TOM ROUTE_TO_TOM}: For
+     *                         multihead record retrieval without shard key
+     *                         expression - specifies from which tom to
+     *                         retrieve data.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -328,6 +338,10 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#ROUTE_TO_TOM ROUTE_TO_TOM}: For
+     *                         multihead record retrieval without shard key
+     *                         expression - specifies from which tom to
+     *                         retrieve data.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -528,6 +542,9 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#ROUTE_TO_TOM ROUTE_TO_TOM}: For multihead record
+     *         retrieval without shard key expression - specifies from which
+     *         tom to retrieve data.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -570,6 +587,9 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#ROUTE_TO_TOM ROUTE_TO_TOM}: For multihead record
+     *         retrieval without shard key expression - specifies from which
+     *         tom to retrieve data.
      * </ul>
      * The default value is an empty {@link Map}.
      *

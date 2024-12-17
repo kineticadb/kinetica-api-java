@@ -191,6 +191,21 @@ public class GrantPermissionRequest implements IndexedRecord {
          */
         public static final String FILTER_EXPRESSION = "filter_expression";
 
+        /**
+         * Allow the recipient to grant the same permission (or subset) to
+         * others.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String WITH_GRANT_OPTION = "with_grant_option";
+
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
         private Options() {  }
     }
 
@@ -281,6 +296,16 @@ public class GrantPermissionRequest implements IndexedRecord {
      *                         to apply to this grant.  Only rows that match
      *                         the filter will be affected. The default value
      *                         is ''.
+     *                     <li>{@link Options#WITH_GRANT_OPTION
+     *                         WITH_GRANT_OPTION}: Allow the recipient to grant
+     *                         the same permission (or subset) to others.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -458,6 +483,14 @@ public class GrantPermissionRequest implements IndexedRecord {
      *     <li>{@link Options#FILTER_EXPRESSION FILTER_EXPRESSION}: Optional
      *         filter expression to apply to this grant.  Only rows that match
      *         the filter will be affected. The default value is ''.
+     *     <li>{@link Options#WITH_GRANT_OPTION WITH_GRANT_OPTION}: Allow the
+     *         recipient to grant the same permission (or subset) to others.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -475,6 +508,14 @@ public class GrantPermissionRequest implements IndexedRecord {
      *     <li>{@link Options#FILTER_EXPRESSION FILTER_EXPRESSION}: Optional
      *         filter expression to apply to this grant.  Only rows that match
      *         the filter will be affected. The default value is ''.
+     *     <li>{@link Options#WITH_GRANT_OPTION WITH_GRANT_OPTION}: Allow the
+     *         recipient to grant the same permission (or subset) to others.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      *

@@ -30,6 +30,8 @@ import org.apache.avro.generic.IndexedRecord;
  * Create or delete a <a
  * href="../../../../../../concepts/indexes/#column-index"
  * target="_top">column</a>, <a
+ * href="../../../../../../concepts/indexes/#low-cardinality-index"
+ * target="_top">low-cardinality index</a>, <a
  * href="../../../../../../concepts/indexes/#chunk-skip-index"
  * target="_top">chunk skip</a>, <a
  * href="../../../../../../concepts/indexes/#geospatial-index"
@@ -102,6 +104,8 @@ public class AlterTableRequest implements IndexedRecord {
         /**
          * Creates a <a href="../../../../../../concepts/indexes/#column-index"
          * target="_top">column (attribute) index</a>, <a
+         * href="../../../../../../concepts/indexes/#low-cardinality-index"
+         * target="_top">low-cardinality index</a>, <a
          * href="../../../../../../concepts/indexes/#chunk-skip-index"
          * target="_top">chunk skip index</a>, <a
          * href="../../../../../../concepts/indexes/#geospatial-index"
@@ -126,6 +130,8 @@ public class AlterTableRequest implements IndexedRecord {
         /**
          * Deletes a <a href="../../../../../../concepts/indexes/#column-index"
          * target="_top">column (attribute) index</a>, <a
+         * href="../../../../../../concepts/indexes/#low-cardinality-index"
+         * target="_top">low-cardinality index</a>, <a
          * href="../../../../../../concepts/indexes/#chunk-skip-index"
          * target="_top">chunk skip index</a>, <a
          * href="../../../../../../concepts/indexes/#geospatial-index"
@@ -514,6 +520,9 @@ public class AlterTableRequest implements IndexedRecord {
          *     <li>{@link Options#COLUMN COLUMN}: Create or delete a <a
          *         href="../../../../../../concepts/indexes/#column-index"
          *         target="_top">column (attribute) index</a>.
+         *     <li>{@link Options#LOW_CARDINALITY LOW_CARDINALITY}: Create a <a
+         *         href="../../../../../../concepts/indexes/#low-cardinality-index"
+         *         target="_top">low-cardinality column (attribute) index</a>.
          *     <li>{@link Options#CHUNK_SKIP CHUNK_SKIP}: Create or delete a <a
          *         href="../../../../../../concepts/indexes/#chunk-skip-index"
          *         target="_top">chunk skip index</a>.
@@ -541,6 +550,13 @@ public class AlterTableRequest implements IndexedRecord {
          * target="_top">column (attribute) index</a>.
          */
         public static final String COLUMN = "column";
+
+        /**
+         * Create a <a
+         * href="../../../../../../concepts/indexes/#low-cardinality-index"
+         * target="_top">low-cardinality column (attribute) index</a>.
+         */
+        public static final String LOW_CARDINALITY = "low_cardinality";
 
         /**
          * Create or delete a <a
@@ -616,6 +632,8 @@ public class AlterTableRequest implements IndexedRecord {
      *                        a <a
      *                        href="../../../../../../concepts/indexes/#column-index"
      *                        target="_top">column (attribute) index</a>, <a
+     *                        href="../../../../../../concepts/indexes/#low-cardinality-index"
+     *                        target="_top">low-cardinality index</a>, <a
      *                        href="../../../../../../concepts/indexes/#chunk-skip-index"
      *                        target="_top">chunk skip index</a>, <a
      *                        href="../../../../../../concepts/indexes/#geospatial-index"
@@ -637,6 +655,8 @@ public class AlterTableRequest implements IndexedRecord {
      *                        a <a
      *                        href="../../../../../../concepts/indexes/#column-index"
      *                        target="_top">column (attribute) index</a>, <a
+     *                        href="../../../../../../concepts/indexes/#low-cardinality-index"
+     *                        target="_top">low-cardinality index</a>, <a
      *                        href="../../../../../../concepts/indexes/#chunk-skip-index"
      *                        target="_top">chunk skip index</a>, <a
      *                        href="../../../../../../concepts/indexes/#geospatial-index"
@@ -950,6 +970,11 @@ public class AlterTableRequest implements IndexedRecord {
      *                                 href="../../../../../../concepts/indexes/#column-index"
      *                                 target="_top">column (attribute)
      *                                 index</a>.
+     *                             <li>{@link Options#LOW_CARDINALITY
+     *                                 LOW_CARDINALITY}: Create a <a
+     *                                 href="../../../../../../concepts/indexes/#low-cardinality-index"
+     *                                 target="_top">low-cardinality column
+     *                                 (attribute) index</a>.
      *                             <li>{@link Options#CHUNK_SKIP CHUNK_SKIP}:
      *                                 Create or delete a <a
      *                                 href="../../../../../../concepts/indexes/#chunk-skip-index"
@@ -1026,6 +1051,8 @@ public class AlterTableRequest implements IndexedRecord {
      *     <li>{@link Action#CREATE_INDEX CREATE_INDEX}: Creates a <a
      *         href="../../../../../../concepts/indexes/#column-index"
      *         target="_top">column (attribute) index</a>, <a
+     *         href="../../../../../../concepts/indexes/#low-cardinality-index"
+     *         target="_top">low-cardinality index</a>, <a
      *         href="../../../../../../concepts/indexes/#chunk-skip-index"
      *         target="_top">chunk skip index</a>, <a
      *         href="../../../../../../concepts/indexes/#geospatial-index"
@@ -1044,6 +1071,8 @@ public class AlterTableRequest implements IndexedRecord {
      *     <li>{@link Action#DELETE_INDEX DELETE_INDEX}: Deletes a <a
      *         href="../../../../../../concepts/indexes/#column-index"
      *         target="_top">column (attribute) index</a>, <a
+     *         href="../../../../../../concepts/indexes/#low-cardinality-index"
+     *         target="_top">low-cardinality index</a>, <a
      *         href="../../../../../../concepts/indexes/#chunk-skip-index"
      *         target="_top">chunk skip index</a>, <a
      *         href="../../../../../../concepts/indexes/#geospatial-index"
@@ -1232,6 +1261,8 @@ public class AlterTableRequest implements IndexedRecord {
      *     <li>{@link Action#CREATE_INDEX CREATE_INDEX}: Creates a <a
      *         href="../../../../../../concepts/indexes/#column-index"
      *         target="_top">column (attribute) index</a>, <a
+     *         href="../../../../../../concepts/indexes/#low-cardinality-index"
+     *         target="_top">low-cardinality index</a>, <a
      *         href="../../../../../../concepts/indexes/#chunk-skip-index"
      *         target="_top">chunk skip index</a>, <a
      *         href="../../../../../../concepts/indexes/#geospatial-index"
@@ -1250,6 +1281,8 @@ public class AlterTableRequest implements IndexedRecord {
      *     <li>{@link Action#DELETE_INDEX DELETE_INDEX}: Deletes a <a
      *         href="../../../../../../concepts/indexes/#column-index"
      *         target="_top">column (attribute) index</a>, <a
+     *         href="../../../../../../concepts/indexes/#low-cardinality-index"
+     *         target="_top">low-cardinality index</a>, <a
      *         href="../../../../../../concepts/indexes/#chunk-skip-index"
      *         target="_top">chunk skip index</a>, <a
      *         href="../../../../../../concepts/indexes/#geospatial-index"
@@ -1551,6 +1584,11 @@ public class AlterTableRequest implements IndexedRecord {
      *             <li>{@link Options#COLUMN COLUMN}: Create or delete a <a
      *                 href="../../../../../../concepts/indexes/#column-index"
      *                 target="_top">column (attribute) index</a>.
+     *             <li>{@link Options#LOW_CARDINALITY LOW_CARDINALITY}: Create
+     *                 a <a
+     *                 href="../../../../../../concepts/indexes/#low-cardinality-index"
+     *                 target="_top">low-cardinality column (attribute)
+     *                 index</a>.
      *             <li>{@link Options#CHUNK_SKIP CHUNK_SKIP}: Create or delete
      *                 a <a
      *                 href="../../../../../../concepts/indexes/#chunk-skip-index"
@@ -1662,6 +1700,11 @@ public class AlterTableRequest implements IndexedRecord {
      *             <li>{@link Options#COLUMN COLUMN}: Create or delete a <a
      *                 href="../../../../../../concepts/indexes/#column-index"
      *                 target="_top">column (attribute) index</a>.
+     *             <li>{@link Options#LOW_CARDINALITY LOW_CARDINALITY}: Create
+     *                 a <a
+     *                 href="../../../../../../concepts/indexes/#low-cardinality-index"
+     *                 target="_top">low-cardinality column (attribute)
+     *                 index</a>.
      *             <li>{@link Options#CHUNK_SKIP CHUNK_SKIP}: Create or delete
      *                 a <a
      *                 href="../../../../../../concepts/indexes/#chunk-skip-index"

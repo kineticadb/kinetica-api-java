@@ -48,14 +48,18 @@ public class CreateUserInternalRequest implements IndexedRecord {
      */
     public static final class Options {
         /**
-         * Name of an existing resource group to associate with this user
+         * Is the user allowed to login.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}: User may login
+         *     <li>{@link Options#FALSE FALSE}: User may not login
+         * </ul>
+         * The default value is {@link Options#TRUE TRUE}.
          */
-        public static final String RESOURCE_GROUP = "resource_group";
+        public static final String ACTIVATED = "activated";
 
-        /**
-         * Default schema to associate with this user
-         */
-        public static final String DEFAULT_SCHEMA = "default_schema";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
 
         /**
          * When {@link Options#TRUE TRUE}, a home directory in KiFS is created
@@ -69,8 +73,10 @@ public class CreateUserInternalRequest implements IndexedRecord {
          */
         public static final String CREATE_HOME_DIRECTORY = "create_home_directory";
 
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
+        /**
+         * Default schema to associate with this user
+         */
+        public static final String DEFAULT_SCHEMA = "default_schema";
 
         /**
          * The maximum capacity to apply to the created directory if {@link
@@ -79,6 +85,11 @@ public class CreateUserInternalRequest implements IndexedRecord {
          * the system default limit is applied.
          */
         public static final String DIRECTORY_DATA_LIMIT = "directory_data_limit";
+
+        /**
+         * Name of an existing resource group to associate with this user
+         */
+        public static final String RESOURCE_GROUP = "resource_group";
 
         private Options() {  }
     }
@@ -108,11 +119,16 @@ public class CreateUserInternalRequest implements IndexedRecord {
      *                  empty string for no password.
      * @param options  Optional parameters.
      *                 <ul>
-     *                     <li>{@link Options#RESOURCE_GROUP RESOURCE_GROUP}:
-     *                         Name of an existing resource group to associate
-     *                         with this user
-     *                     <li>{@link Options#DEFAULT_SCHEMA DEFAULT_SCHEMA}:
-     *                         Default schema to associate with this user
+     *                     <li>{@link Options#ACTIVATED ACTIVATED}: Is the user
+     *                         allowed to login.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}: User may
+     *                                 login
+     *                             <li>{@link Options#FALSE FALSE}: User may
+     *                                 not login
+     *                         </ul>
+     *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#CREATE_HOME_DIRECTORY
      *                         CREATE_HOME_DIRECTORY}: When {@link Options#TRUE
      *                         TRUE}, a home directory in KiFS is created for
@@ -123,6 +139,8 @@ public class CreateUserInternalRequest implements IndexedRecord {
      *                             <li>{@link Options#FALSE FALSE}
      *                         </ul>
      *                         The default value is {@link Options#TRUE TRUE}.
+     *                     <li>{@link Options#DEFAULT_SCHEMA DEFAULT_SCHEMA}:
+     *                         Default schema to associate with this user
      *                     <li>{@link Options#DIRECTORY_DATA_LIMIT
      *                         DIRECTORY_DATA_LIMIT}: The maximum capacity to
      *                         apply to the created directory if {@link
@@ -130,6 +148,9 @@ public class CreateUserInternalRequest implements IndexedRecord {
      *                         CREATE_HOME_DIRECTORY} is {@link Options#TRUE
      *                         TRUE}. Set to -1 to indicate no upper limit. If
      *                         empty, the system default limit is applied.
+     *                     <li>{@link Options#RESOURCE_GROUP RESOURCE_GROUP}:
+     *                         Name of an existing resource group to associate
+     *                         with this user
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -190,10 +211,14 @@ public class CreateUserInternalRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#RESOURCE_GROUP RESOURCE_GROUP}: Name of an
-     *         existing resource group to associate with this user
-     *     <li>{@link Options#DEFAULT_SCHEMA DEFAULT_SCHEMA}: Default schema to
-     *         associate with this user
+     *     <li>{@link Options#ACTIVATED ACTIVATED}: Is the user allowed to
+     *         login.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}: User may login
+     *             <li>{@link Options#FALSE FALSE}: User may not login
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#CREATE_HOME_DIRECTORY CREATE_HOME_DIRECTORY}:
      *         When {@link Options#TRUE TRUE}, a home directory in KiFS is
      *         created for this user.
@@ -203,11 +228,15 @@ public class CreateUserInternalRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
+     *     <li>{@link Options#DEFAULT_SCHEMA DEFAULT_SCHEMA}: Default schema to
+     *         associate with this user
      *     <li>{@link Options#DIRECTORY_DATA_LIMIT DIRECTORY_DATA_LIMIT}: The
      *         maximum capacity to apply to the created directory if {@link
      *         Options#CREATE_HOME_DIRECTORY CREATE_HOME_DIRECTORY} is {@link
      *         Options#TRUE TRUE}. Set to -1 to indicate no upper limit. If
      *         empty, the system default limit is applied.
+     *     <li>{@link Options#RESOURCE_GROUP RESOURCE_GROUP}: Name of an
+     *         existing resource group to associate with this user
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -220,10 +249,14 @@ public class CreateUserInternalRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#RESOURCE_GROUP RESOURCE_GROUP}: Name of an
-     *         existing resource group to associate with this user
-     *     <li>{@link Options#DEFAULT_SCHEMA DEFAULT_SCHEMA}: Default schema to
-     *         associate with this user
+     *     <li>{@link Options#ACTIVATED ACTIVATED}: Is the user allowed to
+     *         login.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}: User may login
+     *             <li>{@link Options#FALSE FALSE}: User may not login
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#CREATE_HOME_DIRECTORY CREATE_HOME_DIRECTORY}:
      *         When {@link Options#TRUE TRUE}, a home directory in KiFS is
      *         created for this user.
@@ -233,11 +266,15 @@ public class CreateUserInternalRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
+     *     <li>{@link Options#DEFAULT_SCHEMA DEFAULT_SCHEMA}: Default schema to
+     *         associate with this user
      *     <li>{@link Options#DIRECTORY_DATA_LIMIT DIRECTORY_DATA_LIMIT}: The
      *         maximum capacity to apply to the created directory if {@link
      *         Options#CREATE_HOME_DIRECTORY CREATE_HOME_DIRECTORY} is {@link
      *         Options#TRUE TRUE}. Set to -1 to indicate no upper limit. If
      *         empty, the system default limit is applied.
+     *     <li>{@link Options#RESOURCE_GROUP RESOURCE_GROUP}: Name of an
+     *         existing resource group to associate with this user
      * </ul>
      * The default value is an empty {@link Map}.
      *

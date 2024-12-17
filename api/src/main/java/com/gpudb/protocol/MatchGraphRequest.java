@@ -134,6 +134,11 @@ public class MatchGraphRequest implements IndexedRecord {
          */
         public static final String MATCH_EMBEDDING = "match_embedding";
 
+        /**
+         * Solves for isochrones for a set of input sources
+         */
+        public static final String MATCH_ISOCHRONE = "match_isochrone";
+
         private SolveMethod() {  }
     }
 
@@ -696,6 +701,13 @@ public class MatchGraphRequest implements IndexedRecord {
          */
         public static final String OPTIMIZATION_ITERATION_RATE = "optimization_iteration_rate";
 
+        /**
+         * For the {@link SolveMethod#MATCH_ISOCHRONE MATCH_ISOCHRONE} solver
+         * only. Sets the maximal reachability limmit for computing isochrones.
+         * Zero means no limit. The default value is '0.0'.
+         */
+        public static final String MAX_RADIUS = "max_radius";
+
         private Options() {  }
     }
 
@@ -798,6 +810,9 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         <li>{@link SolveMethod#MATCH_EMBEDDING
      *                             MATCH_EMBEDDING}: Creates vector node
      *                             embeddings
+     *                         <li>{@link SolveMethod#MATCH_ISOCHRONE
+     *                             MATCH_ISOCHRONE}: Solves for isochrones for
+     *                             a set of input sources
      *                     </ul>
      *                     The default value is {@link SolveMethod#MARKOV_CHAIN
      *                     MARKOV_CHAIN}.
@@ -1319,6 +1334,11 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         constant in fornt of the gradient term in
      *                         successive iterations. The default value is
      *                         '0.3'.
+     *                     <li>{@link Options#MAX_RADIUS MAX_RADIUS}: For the
+     *                         {@link SolveMethod#MATCH_ISOCHRONE
+     *                         MATCH_ISOCHRONE} solver only. Sets the maximal
+     *                         reachability limmit for computing isochrones.
+     *                         Zero means no limit. The default value is '0.0'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -1439,6 +1459,8 @@ public class MatchGraphRequest implements IndexedRecord {
      *         pattern in the graph
      *     <li>{@link SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING}: Creates
      *         vector node embeddings
+     *     <li>{@link SolveMethod#MATCH_ISOCHRONE MATCH_ISOCHRONE}: Solves for
+     *         isochrones for a set of input sources
      * </ul>
      * The default value is {@link SolveMethod#MARKOV_CHAIN MARKOV_CHAIN}.
      *
@@ -1497,6 +1519,8 @@ public class MatchGraphRequest implements IndexedRecord {
      *         pattern in the graph
      *     <li>{@link SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING}: Creates
      *         vector node embeddings
+     *     <li>{@link SolveMethod#MATCH_ISOCHRONE MATCH_ISOCHRONE}: Solves for
+     *         isochrones for a set of input sources
      * </ul>
      * The default value is {@link SolveMethod#MARKOV_CHAIN MARKOV_CHAIN}.
      *
@@ -1936,6 +1960,10 @@ public class MatchGraphRequest implements IndexedRecord {
      *         otherwise known as the learning rate, which is the
      *         proportionality constant in fornt of the gradient term in
      *         successive iterations. The default value is '0.3'.
+     *     <li>{@link Options#MAX_RADIUS MAX_RADIUS}: For the {@link
+     *         SolveMethod#MATCH_ISOCHRONE MATCH_ISOCHRONE} solver only. Sets
+     *         the maximal reachability limmit for computing isochrones. Zero
+     *         means no limit. The default value is '0.0'.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -2327,6 +2355,10 @@ public class MatchGraphRequest implements IndexedRecord {
      *         otherwise known as the learning rate, which is the
      *         proportionality constant in fornt of the gradient term in
      *         successive iterations. The default value is '0.3'.
+     *     <li>{@link Options#MAX_RADIUS MAX_RADIUS}: For the {@link
+     *         SolveMethod#MATCH_ISOCHRONE MATCH_ISOCHRONE} solver only. Sets
+     *         the maximal reachability limmit for computing isochrones. Zero
+     *         means no limit. The default value is '0.0'.
      * </ul>
      * The default value is an empty {@link Map}.
      *

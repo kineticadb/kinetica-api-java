@@ -233,6 +233,13 @@ public final class ColumnProperty {
 
     /**
      * This property indicates that this column will be part of (or the entire)
+     * <a href="../../../../../concepts/tables/#soft-primary-keys"
+     * target="_top">soft primary key</a>.
+     */
+    public static final String SOFT_PRIMARY_KEY = "soft_primary_key";
+
+    /**
+     * This property indicates that this column will be part of (or the entire)
      * <a href="../../../../../concepts/tables/#shard-keys" target="_top">shard
      * key</a>.
      */

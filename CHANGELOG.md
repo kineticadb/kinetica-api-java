@@ -2,6 +2,14 @@
 
 ## Version 7.2
 
+### Version 7.2.2.4 - 2024-12-17
+
+#### Added
+-   Support for key lookups returning a subset of a table's columns with fewer
+    lookup restrictions via `RecordRetriever.getColumnsByKey()`
+-   Support for key lookups returning records from a specified offset
+
+
 ### Version 7.2.2.3 - 2024-10-29
 
 #### Added

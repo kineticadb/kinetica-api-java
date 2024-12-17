@@ -4,8 +4,11 @@ import com.gpudb.GPUdbBase.GPUdbExitException;
 import com.gpudb.GPUdbBase.GPUdbUnauthorizedAccessException;
 import com.gpudb.protocol.AdminShowShardsRequest;
 import com.gpudb.protocol.AdminShowShardsResponse;
+import com.gpudb.protocol.GetRecordsByColumnRequest;
+import com.gpudb.protocol.GetRecordsByColumnResponse;
 import com.gpudb.protocol.GetRecordsRequest;
 import com.gpudb.protocol.GetRecordsResponse;
+import com.gpudb.protocol.RawGetRecordsByColumnResponse;
 import com.gpudb.protocol.RawGetRecordsResponse;
 import com.gpudb.protocol.ShowTableResponse;
 import java.net.MalformedURLException;
@@ -44,6 +47,7 @@ public class RecordRetriever<T> {
     private com.gpudb.WorkerList workerList;
     private List<Integer> routingTable;
     private List<URL> workerUrls;
+    private URL last_used_url;
 
     /**
      * Creates a {@link RecordRetriever} with the specified parameters.
@@ -701,10 +705,18 @@ public class RecordRetriever<T> {
      */
     public GetRecordsResponse<T> getByKey(List<Object> keyValues, String expression)
             throws GPUdbException {
+        return getByKey(keyValues, expression, 0);
+    }
+
+    public GetRecordsResponse<T> getByKey(List<Object> keyValues, String expression,
+        long offset) throws GPUdbException {
 
         boolean doWorkerLookup = this.isWorkerLookupSupported;
         String compositeExpression = expression;
         boolean keyValuesSpecified = keyValues != null && !keyValues.isEmpty();
+
+        if (offset < 1)
+            last_used_url = null;
 
         if (!keyValuesSpecified) {
             // Use head rank if table is [randomly] sharded and no keys are given,
@@ -750,12 +762,11 @@ public class RecordRetriever<T> {
                 );
         }
 
-
-        GetRecordsRequest request = new GetRecordsRequest(tableName, 0, GPUdb.END_OF_SET, retrievalOptions);
+        GetRecordsRequest request = new GetRecordsRequest(tableName, offset, GPUdb.END_OF_SET,
+            retrievalOptions);
         RawGetRecordsResponse response = new RawGetRecordsResponse();
         GetRecordsResponse<T> decodedResponse = new GetRecordsResponse<>();
         
-
         long retrievalAttemptTimestamp = new Timestamp( System.currentTimeMillis() ).getTime();
         URL currURL = getCurrentHeadNodeURL();
         int currentCountClusterSwitches = getCurrentClusterSwitchCount();
@@ -773,7 +784,14 @@ public class RecordRetriever<T> {
                 // If the table is replicated and it's determined that the
                 // server supports it, use random worker rank for lookups
                 if ( this.isTableReplicated ) {
-                    url = this.workerUrls.get( ThreadLocalRandom.current().nextInt( this.workerUrls.size() ) );
+                    // For replicated tables, use the same worker for new pages (i.e., offset > 0)
+                    // in case the data is in a different order on different workers
+                    if (last_used_url != null)
+                        url = last_used_url;
+                    else {
+                        url = this.workerUrls.get( ThreadLocalRandom.current().nextInt( this.workerUrls.size() ) );
+                        last_used_url = url; // Remember for next time
+                    }
                 } else {
                     // Not a replicated table; so calculate the shard to figure
                     // out which worker rank contains the requested records
@@ -884,6 +902,226 @@ public class RecordRetriever<T> {
 
         return decodedResponse;
     }  // getByKey()
+
+    
+    /**
+     * Retrieves records with the given key values and filter expression from
+     * the database using a direct-to-rank fast key lookup, if possible, and
+     * falling back to a standard lookup via the head node, if not.
+     * 
+     * This method operates in four modes, depending on the parameters passed:
+     * 
+     * * keyValues only - attempts a direct-to-rank lookup for records matching
+     *                    the given key values
+     * * keyValues & expression - attempts a direct-to-rank lookup for records
+     *                    matching the given key values, filtering them by the
+     *                    given expression
+     * * expression only - requests, via the head rank, all records in the table
+     *                    matching the given filter expression
+     * * neither - retrieves all records from the table via the head rank
+     *
+     * @param columns     The requested columns (which can include expressions)
+     *                    being requested.  May use "*" for all columns.
+     * @param keyValues   the key values to use for the lookup; these must
+     *                    correspond to either the explicit or implicit shard
+     *                    key for sharded tables or the primary key of
+     *                    replicated tables
+     * @param expression  a filter expression that will be applied to the data
+     *                    requested by the key values; if no key values are
+     *                    specified this filter will be applied to all of the
+     *                    data in the target table
+     *
+     * @return            a {@link com.gpudb.protocol.GetRecordsResponse} with
+     *                    the requested records
+     */
+    public GetRecordsByColumnResponse getColumnsByKey(List<String> columns, List<Object> keyValues,
+        String expression) throws GPUdbException {
+        return getColumnsByKey(columns, keyValues, expression, 0);
+    }
+
+    public GetRecordsByColumnResponse getColumnsByKey(List<String> columns, List<Object> keyValues,
+        String expression, long offset) throws GPUdbException {
+
+        boolean doWorkerLookup = this.isWorkerLookupSupported;
+        String compositeExpression = expression;
+        boolean keyValuesSpecified = keyValues != null && !keyValues.isEmpty();
+
+        if (offset < 1)
+            last_used_url = null;
+
+        if (!keyValuesSpecified)
+        {
+            // Use head rank if table is [randomly] sharded and no keys are given,
+            //   or if the table is replicated and no expression (or keys) is given.
+            if (!this.isTableReplicated)
+                doWorkerLookup = false;
+        } else {
+            // Eliminate the case where key values are given, but the table has no
+            //   key columns with which to associate them
+            if (!shardKeyBuilder.hasKey())
+                throw new IllegalArgumentException(
+                        "Cannot associate the specified keyValues with columns, " +
+                        "as the table has no primary or shard key."
+                );
+
+            // Since we have a keyed table, build the composite expression to be
+            //   used for both sharded-with-PK/SK and replicated-with-PK tables;
+            //   randomly-sharded & replicated-without-PK will only use expression
+            String keyExpression = shardKeyBuilder.buildExpression( keyValues );
+
+            // If the key expression exists, but the filter expression doesn't,
+            //   use the key, otherwise if both exist, concatenate both
+            if ( keyExpression != null && !keyExpression.isEmpty() )
+                if ( expression == null || expression.isEmpty() )
+                    compositeExpression = keyExpression;
+                else
+                    compositeExpression = ( "(" + keyExpression + ") and (" + expression + ")" );
+        }
+
+        // Create the options for the key lookup; first include general options
+        Map<String, String> retrievalOptions = new HashMap<>( this.options );
+
+        // Add the retrieval expression to the options, if any
+        if ( compositeExpression != null && !compositeExpression.isEmpty() )
+        {
+            retrievalOptions.put(GetRecordsRequest.Options.EXPRESSION, compositeExpression);
+        }
+
+        GetRecordsByColumnRequest request = new GetRecordsByColumnRequest(tableName, columns,
+            offset, GPUdb.END_OF_SET, retrievalOptions);
+        RawGetRecordsByColumnResponse response = new RawGetRecordsByColumnResponse();
+        GetRecordsByColumnResponse decodedResponse = new GetRecordsByColumnResponse();
+
+        long retrievalAttemptTimestamp = new Timestamp( System.currentTimeMillis() ).getTime();
+        URL currURL = getCurrentHeadNodeURL();
+        int currentCountClusterSwitches = getCurrentClusterSwitchCount();
+
+        try {
+            if (!doWorkerLookup) {
+                // Get from the head node
+                GPUdbLogger.debug_with_info( "Retrieving records from rank-0 with <" + compositeExpression + ">" );
+                response = gpudb.submitRequest("/get/records/bycolumn", request, response, false);
+            } else {
+                // Get the record(s) from a worker rank; whether from a random
+                // or a specific one depends on a few things
+                URL url;
+
+                // If the table is replicated and it's determined that the
+                // server supports it, use random worker rank for lookups
+                if ( this.isTableReplicated )
+                {
+                    // For replicated tables, use the same worker for new pages (i.e., offset > 0)
+                    // in case the data is in a different order on different workers
+                    if (last_used_url != null)
+                        url = last_used_url;
+                    else {
+                        url = this.workerUrls.get( ThreadLocalRandom.current().nextInt( this.workerUrls.size() ) );
+                        last_used_url = url; // Remember for next time
+                    }
+                } else {
+                    // Not a replicated table; so calculate the shard to figure
+                    // out which worker rank contains the requested records
+                    RecordKey shardKey;
+                    try {
+                        shardKey = shardKeyBuilder.build( keyValues );
+                    } catch (GPUdbException ex) {
+                        throw new GPUdbException( "Unable to calculate the shard value; please check data for unshardable values");
+                    }
+
+                    url = this.workerUrls.get( shardKey.route( this.routingTable ) );
+                }
+
+                GPUdbLogger.debug_with_info( "Retrieving records from <" + url + "/bycolumn> with <" + compositeExpression + ">" );
+                response = gpudb.submitRequest(GPUdbBase.appendPathToURL(url, "/bycolumn"), request, response, false);
+            }
+
+            // Check if shard re-balancing is under way at the server; if so,
+            // we need to update the shard mapping
+            if ( response.getInfo().get( "data_rerouted" ) == "true" )
+                updateWorkerQueues( currentCountClusterSwitches );
+
+            // Set up the decoded response
+            decodedResponse.setTableName(response.getTableName());
+            decodedResponse.setDataType( Type.fromDynamicSchema( response.getResponseSchemaStr(), response.getBinaryEncodedResponse() ) );
+            decodedResponse.setData( DynamicTableRecord.transpose( response.getResponseSchemaStr(), response.getBinaryEncodedResponse(), decodedResponse.getDataType() ) );
+            decodedResponse.setTotalNumberOfRecords(response.getTotalNumberOfRecords());
+            decodedResponse.setHasMoreRecords(response.getHasMoreRecords());
+            decodedResponse.setInfo(response.getInfo());
+        } catch ( GPUdbUnauthorizedAccessException ex ) {
+            // Any permission related problem should get propagated
+            throw ex;
+        } catch ( GPUdbException ex ) {
+            boolean didFailoverSucceed = false;
+            if ( (ex instanceof GPUdbExitException) || ex.hadConnectionFailure() ) {
+                GPUdbLogger.warn( "Caught EXIT exception or had other connection failure: " + ex.getMessage() );
+
+                // We did encounter an HA failover trigger
+                // Switch to a different, healthy cluster in the HA ring, if any
+                try {
+                    // Switch to a different, healthy cluster in the HA ring, if any
+                    forceFailover( currURL, currentCountClusterSwitches );
+                    didFailoverSucceed = true;
+                } catch (GPUdbException ex2) {
+                    // We've now tried all the HA clusters and circled back;
+                    // propagate the error to the user
+                    String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
+                    throw new GPUdbException( originalCause + "; " + ex2.getMessage(), true );
+                }
+            } else {
+                // For debugging purposes only (can be very useful!)
+                GPUdbLogger.debug_with_info( "Caught GPUdbException: " + ex.getMessage() );
+            }
+            GPUdbLogger.debug_with_info( "Did failover succeed? " + didFailoverSucceed );
+
+            // Update the worker queues since we've failed over to a
+            // different cluster
+            GPUdbLogger.debug_with_info( "Updating worker queues" );
+            boolean updatedWorkerQueues = updateWorkerQueues( currentCountClusterSwitches );
+            GPUdbLogger.debug_with_info( "Did we update the worker queue? " + updatedWorkerQueues );
+            boolean retry = false;
+            synchronized ( this.shardUpdateTime ) {
+                retry = ( didFailoverSucceed
+                          || updatedWorkerQueues
+                          || ( retrievalAttemptTimestamp < this.shardUpdateTime.longValue() ) );
+            }
+            GPUdbLogger.debug_with_info( "'retry' value: " + retry );
+            if ( retry ) {
+                // We need to try fetching the records again
+                try {
+                    // Don't use the modified expression;use the original one
+                    return this.getColumnsByKey( columns, keyValues, expression );
+                } catch (Exception ex2) {
+                    // Re-setting the exception since we may re-try again
+                    throw new GPUdbException( ex2.getMessage() );
+                }
+            }
+            throw new GPUdbException( ex.getMessage() );
+        } catch (Exception ex) {
+            GPUdbLogger.debug_with_info( "Caught java exception: " + ex.getMessage() );
+            // Retrieval failed, but maybe due to shard mapping changes (due to
+            // cluster reconfiguration)? Check if the mapping needs to be updated
+            // or has been updated by another thread already after the
+            // insertion was attempted
+            boolean updatedWorkerQueues = updateWorkerQueues( currentCountClusterSwitches );
+            boolean retry = false;
+            synchronized ( this.shardUpdateTime ) {
+                retry = ( updatedWorkerQueues
+                          || ( retrievalAttemptTimestamp < this.shardUpdateTime.longValue() ) );
+            }
+            if ( retry ) {
+                // We need to try fetching the records again
+                try {
+                    return this.getColumnsByKey( columns, keyValues, expression );
+                } catch (Exception ex2) {
+                    // Re-setting the exception since we may re-try again
+                    throw new GPUdbException( ex2.getMessage() );
+                }
+            }
+            throw new GPUdbException( ex.getMessage() );
+        }
+
+        return decodedResponse;
+    }  // getColumnsByKey()
 
 
     /**

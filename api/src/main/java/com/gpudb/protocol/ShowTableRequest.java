@@ -71,6 +71,20 @@ public class ShowTableRequest implements IndexedRecord {
      */
     public static final class Options {
         /**
+         * Include view dependencies in the output.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String DEPENDENCIES = "dependencies";
+
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
          * If {@link Options#TRUE TRUE} then the table sizes will wait for read
          * lock before returning.
          * Supported values:
@@ -82,8 +96,19 @@ public class ShowTableRequest implements IndexedRecord {
          */
         public static final String FORCE_SYNCHRONOUS = "force_synchronous";
 
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
+        /**
+         * If {@link Options#TRUE TRUE} then the number of records in each
+         * table, along with a cumulative count, will be returned; blank,
+         * otherwise. This version will return the sizes cached at rank 0,
+         * which may be stale if there is a multihead insert occuring.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String GET_CACHED_SIZES = "get_cached_sizes";
 
         /**
          * If {@link Options#TRUE TRUE} then the number of records in each
@@ -99,10 +124,9 @@ public class ShowTableRequest implements IndexedRecord {
         public static final String GET_SIZES = "get_sizes";
 
         /**
-         * If {@link Options#TRUE TRUE} then the number of records in each
-         * table, along with a cumulative count, will be returned; blank,
-         * otherwise. This version will return the sizes cached at rank 0,
-         * which may be stale if there is a multihead insert occuring.
+         * If {@link Options#FALSE FALSE} will return an error if the provided
+         * {@link #getTableName() tableName} does not exist. If {@link
+         * Options#TRUE TRUE} then it will return an empty result.
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}
@@ -110,7 +134,7 @@ public class ShowTableRequest implements IndexedRecord {
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
-        public static final String GET_CACHED_SIZES = "get_cached_sizes";
+        public static final String NO_ERROR_IF_NOT_EXISTS = "no_error_if_not_exists";
 
         /**
          * If {@link #getTableName() tableName} is a schema, then {@link
@@ -130,19 +154,6 @@ public class ShowTableRequest implements IndexedRecord {
          * The default value is {@link Options#TRUE TRUE}.
          */
         public static final String SHOW_CHILDREN = "show_children";
-
-        /**
-         * If {@link Options#FALSE FALSE} will return an error if the provided
-         * {@link #getTableName() tableName} does not exist. If {@link
-         * Options#TRUE TRUE} then it will return an empty result.
-         * Supported values:
-         * <ul>
-         *     <li>{@link Options#TRUE TRUE}
-         *     <li>{@link Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link Options#FALSE FALSE}.
-         */
-        public static final String NO_ERROR_IF_NOT_EXISTS = "no_error_if_not_exists";
 
         /**
          * If {@link Options#TRUE TRUE} then column info (memory usage, etc)
@@ -181,6 +192,15 @@ public class ShowTableRequest implements IndexedRecord {
      *                   then returns information about all tables and views.
      * @param options  Optional parameters.
      *                 <ul>
+     *                     <li>{@link Options#DEPENDENCIES DEPENDENCIES}:
+     *                         Include view dependencies in the output.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                     <li>{@link Options#FORCE_SYNCHRONOUS
      *                         FORCE_SYNCHRONOUS}: If {@link Options#TRUE TRUE}
      *                         then the table sizes will wait for read lock
@@ -191,6 +211,20 @@ public class ShowTableRequest implements IndexedRecord {
      *                             <li>{@link Options#FALSE FALSE}
      *                         </ul>
      *                         The default value is {@link Options#TRUE TRUE}.
+     *                     <li>{@link Options#GET_CACHED_SIZES
+     *                         GET_CACHED_SIZES}: If {@link Options#TRUE TRUE}
+     *                         then the number of records in each table, along
+     *                         with a cumulative count, will be returned;
+     *                         blank, otherwise. This version will return the
+     *                         sizes cached at rank 0, which may be stale if
+     *                         there is a multihead insert occuring.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                     <li>{@link Options#GET_SIZES GET_SIZES}: If {@link
      *                         Options#TRUE TRUE} then the number of records in
      *                         each table, along with a cumulative count, will
@@ -202,13 +236,12 @@ public class ShowTableRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
-     *                     <li>{@link Options#GET_CACHED_SIZES
-     *                         GET_CACHED_SIZES}: If {@link Options#TRUE TRUE}
-     *                         then the number of records in each table, along
-     *                         with a cumulative count, will be returned;
-     *                         blank, otherwise. This version will return the
-     *                         sizes cached at rank 0, which may be stale if
-     *                         there is a multihead insert occuring.
+     *                     <li>{@link Options#NO_ERROR_IF_NOT_EXISTS
+     *                         NO_ERROR_IF_NOT_EXISTS}: If {@link Options#FALSE
+     *                         FALSE} will return an error if the provided
+     *                         {@code tableName} does not exist. If {@link
+     *                         Options#TRUE TRUE} then it will return an empty
+     *                         result.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
@@ -233,19 +266,6 @@ public class ShowTableRequest implements IndexedRecord {
      *                             <li>{@link Options#FALSE FALSE}
      *                         </ul>
      *                         The default value is {@link Options#TRUE TRUE}.
-     *                     <li>{@link Options#NO_ERROR_IF_NOT_EXISTS
-     *                         NO_ERROR_IF_NOT_EXISTS}: If {@link Options#FALSE
-     *                         FALSE} will return an error if the provided
-     *                         {@code tableName} does not exist. If {@link
-     *                         Options#TRUE TRUE} then it will return an empty
-     *                         result.
-     *                         Supported values:
-     *                         <ul>
-     *                             <li>{@link Options#TRUE TRUE}
-     *                             <li>{@link Options#FALSE FALSE}
-     *                         </ul>
-     *                         The default value is {@link Options#FALSE
-     *                         FALSE}.
      *                     <li>{@link Options#GET_COLUMN_INFO GET_COLUMN_INFO}:
      *                         If {@link Options#TRUE TRUE} then column info
      *                         (memory usage, etc) will be returned.
@@ -296,6 +316,14 @@ public class ShowTableRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
+     *     <li>{@link Options#DEPENDENCIES DEPENDENCIES}: Include view
+     *         dependencies in the output.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#FORCE_SYNCHRONOUS FORCE_SYNCHRONOUS}: If {@link
      *         Options#TRUE TRUE} then the table sizes will wait for read lock
      *         before returning.
@@ -305,6 +333,17 @@ public class ShowTableRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
+     *     <li>{@link Options#GET_CACHED_SIZES GET_CACHED_SIZES}: If {@link
+     *         Options#TRUE TRUE} then the number of records in each table,
+     *         along with a cumulative count, will be returned; blank,
+     *         otherwise. This version will return the sizes cached at rank 0,
+     *         which may be stale if there is a multihead insert occuring.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#GET_SIZES GET_SIZES}: If {@link Options#TRUE
      *         TRUE} then the number of records in each table, along with a
      *         cumulative count, will be returned; blank, otherwise.
@@ -314,11 +353,10 @@ public class ShowTableRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#GET_CACHED_SIZES GET_CACHED_SIZES}: If {@link
-     *         Options#TRUE TRUE} then the number of records in each table,
-     *         along with a cumulative count, will be returned; blank,
-     *         otherwise. This version will return the sizes cached at rank 0,
-     *         which may be stale if there is a multihead insert occuring.
+     *     <li>{@link Options#NO_ERROR_IF_NOT_EXISTS NO_ERROR_IF_NOT_EXISTS}:
+     *         If {@link Options#FALSE FALSE} will return an error if the
+     *         provided {@link #getTableName() tableName} does not exist. If
+     *         {@link Options#TRUE TRUE} then it will return an empty result.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
@@ -340,16 +378,6 @@ public class ShowTableRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
-     *     <li>{@link Options#NO_ERROR_IF_NOT_EXISTS NO_ERROR_IF_NOT_EXISTS}:
-     *         If {@link Options#FALSE FALSE} will return an error if the
-     *         provided {@link #getTableName() tableName} does not exist. If
-     *         {@link Options#TRUE TRUE} then it will return an empty result.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#GET_COLUMN_INFO GET_COLUMN_INFO}: If {@link
      *         Options#TRUE TRUE} then column info (memory usage, etc) will be
      *         returned.
@@ -371,6 +399,14 @@ public class ShowTableRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
+     *     <li>{@link Options#DEPENDENCIES DEPENDENCIES}: Include view
+     *         dependencies in the output.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#FORCE_SYNCHRONOUS FORCE_SYNCHRONOUS}: If {@link
      *         Options#TRUE TRUE} then the table sizes will wait for read lock
      *         before returning.
@@ -380,6 +416,17 @@ public class ShowTableRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
+     *     <li>{@link Options#GET_CACHED_SIZES GET_CACHED_SIZES}: If {@link
+     *         Options#TRUE TRUE} then the number of records in each table,
+     *         along with a cumulative count, will be returned; blank,
+     *         otherwise. This version will return the sizes cached at rank 0,
+     *         which may be stale if there is a multihead insert occuring.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#GET_SIZES GET_SIZES}: If {@link Options#TRUE
      *         TRUE} then the number of records in each table, along with a
      *         cumulative count, will be returned; blank, otherwise.
@@ -389,11 +436,10 @@ public class ShowTableRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#GET_CACHED_SIZES GET_CACHED_SIZES}: If {@link
-     *         Options#TRUE TRUE} then the number of records in each table,
-     *         along with a cumulative count, will be returned; blank,
-     *         otherwise. This version will return the sizes cached at rank 0,
-     *         which may be stale if there is a multihead insert occuring.
+     *     <li>{@link Options#NO_ERROR_IF_NOT_EXISTS NO_ERROR_IF_NOT_EXISTS}:
+     *         If {@link Options#FALSE FALSE} will return an error if the
+     *         provided {@link #getTableName() tableName} does not exist. If
+     *         {@link Options#TRUE TRUE} then it will return an empty result.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
@@ -415,16 +461,6 @@ public class ShowTableRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
-     *     <li>{@link Options#NO_ERROR_IF_NOT_EXISTS NO_ERROR_IF_NOT_EXISTS}:
-     *         If {@link Options#FALSE FALSE} will return an error if the
-     *         provided {@link #getTableName() tableName} does not exist. If
-     *         {@link Options#TRUE TRUE} then it will return an empty result.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#GET_COLUMN_INFO GET_COLUMN_INFO}: If {@link
      *         Options#TRUE TRUE} then column info (memory usage, etc) will be
      *         returned.
