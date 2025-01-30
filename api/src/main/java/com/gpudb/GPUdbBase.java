@@ -14,7 +14,6 @@ import org.apache.avro.io.DecoderFactory;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.hc.client5.http.ConnectTimeoutException;
 import org.apache.hc.client5.http.HttpRequestRetryStrategy;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.config.ConnectionConfig;
@@ -52,6 +51,7 @@ import javax.net.ssl.SSLSession;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -2851,7 +2851,7 @@ public abstract class GPUdbBase {
                     // Retry if the exception is one of the ones below
                     return
                         e instanceof NoHttpResponseException ||
-                        e instanceof ConnectTimeoutException;
+                        e instanceof SocketTimeoutException;
                 }
 
                 @Override
@@ -6342,6 +6342,7 @@ public abstract class GPUdbBase {
         HttpEntity            responseEntity = null;
         HttpHost              host           = null;
         ClassicHttpResponse   postResponse   = null;
+        long                  requestTime    = 0;
 
         try {
             // Log at the trace level
@@ -6376,6 +6377,8 @@ public abstract class GPUdbBase {
                 if (GPUdbLogger.isTraceEnabled())
                     GPUdbLogger.trace("Executing <" + request.toString() + ">");
 
+                requestTime = System.currentTimeMillis();
+                
                 postResponse = this.httpClient.executeOpen( host, postRequest, null );
             } catch ( javax.net.ssl.SSLException ex) {
                 String errorMsg = null;
@@ -6386,13 +6389,16 @@ public abstract class GPUdbBase {
                 } else {
                     errorMsg = String.format(SslErrorMessageFormat, "Error: " + ex.getMessage());
                 }
+                errorMsg = String.format("Encountered SSL error when trying to connect to server at %s.  %s", url.toString(), errorMsg);
                 GPUdbLogger.error( errorMsg );
                 throw new GPUdbException( errorMsg );
             } catch (Exception ex) {
                 // Trigger an HA failover at the caller level
-                GPUdbLogger.error( ex, "Throwing exit exception due to ");
-//                ex.printStackTrace();
-                throw new GPUdbExitException("Error submitting endpoint request: " + ExceptionUtils.getRootCauseMessage(ex));
+            	requestTime = System.currentTimeMillis() - requestTime;
+                GPUdbLogger.error( ex, "Throwing exit exception after " + requestTime + "ms due to ");
+
+            	String errorMessage = "Error submitting endpoint <%s> request after <%d>ms due to: %s";
+                throw new GPUdbExitException(String.format(errorMessage, url.toString(), requestTime, ExceptionUtils.getRootCauseMessage(ex)));
             }
 
             // Get the status code and the messages of the response
@@ -6439,10 +6445,10 @@ public abstract class GPUdbBase {
                             + "; response message: " + responseMessage
                     );
                     throw new GPUdbExitException(responseMessage);
-                } else {
-                    // All other issues are simply propagated to the user
-                    errorMsg = ("Cannot parse response from server: '" + responseMessage + "'; status code: " + statusCode );
                 }
+
+                // All other issues are simply propagated to the user
+                errorMsg = ("Cannot parse response from server: '" + responseMessage + "'; status code: " + statusCode );
                 throw new SubmitException( url, request, requestSize, errorMsg );
             }
 
@@ -6596,8 +6602,9 @@ public abstract class GPUdbBase {
 
         HttpPost              postRequest    = null;
         HttpEntity            responseEntity = null;
-        HttpHost              host = null;
-        ClassicHttpResponse postResponse   = null;
+        HttpHost              host           = null;
+        ClassicHttpResponse postResponse     = null;
+        long                  requestTime    = 0;
 
         try {
             // Log at the trace level
@@ -6612,27 +6619,28 @@ public abstract class GPUdbBase {
 
             // Execute the request
             try {
+                requestTime = System.currentTimeMillis();
+                
                 postResponse = this.httpClient.executeOpen( host, postRequest, null );
             } catch ( javax.net.ssl.SSLException ex) {
                 String errorMsg;
                 if( ex.getMessage().toLowerCase().contains("subject alternative names")) {
-                    errorMsg = "Server SSL certificate not found in specified trust store.  Please use the options to " +
-                            "bypass the certificate check or add the server's certificate or CA cert in the server's " +
-                            "certificate path to the trust store and try again.";
+                    errorMsg = String.format(SslErrorMessageFormat, "Server SSL certificate not found in specified trust store.");
                 } else if( ex.getMessage().toLowerCase().contains("unable to find valid certification path")) {
-                    errorMsg = "No trust store was specified, but server requires SSL certificate validation.  " +
-                            "Please use the options to bypass the certificate check or specify a trust store containing " +
-                            "the server's certificate or CA cert in the server's certificate path and try again.";
+                    errorMsg = String.format(SslErrorMessageFormat, "No trust store was specified, but server requires SSL certificate validation.");
                 } else {
-                    errorMsg = "Error: " + ex.getMessage();
+                    errorMsg = String.format(SslErrorMessageFormat, "Error: " + ex.getMessage());
                 }
                 errorMsg = String.format("Encountered SSL error when trying to connect to server at %s.  %s", url.toString(), errorMsg);
                 GPUdbLogger.error( errorMsg );
                 throw new GPUdbException( errorMsg );
             } catch (Exception ex) {
                 // Trigger an HA failover at the caller level
-                GPUdbLogger.error( ex, "Throwing exit exception due to ");
-                throw new GPUdbExitException("Error submitting endpoint request: " + ExceptionUtils.getRootCauseMessage(ex));
+            	requestTime = System.currentTimeMillis() - requestTime;
+                GPUdbLogger.error( ex, "Throwing exit exception after " + requestTime + "ms due to ");
+
+                String errorMessage = "Error submitting endpoint <%s> request after <%d>ms due to: %s";
+                throw new GPUdbExitException(String.format(errorMessage, url.toString(), requestTime, ExceptionUtils.getRootCauseMessage(ex)));
             }
 
             // Get the status code and the messages of the response
@@ -6773,8 +6781,9 @@ public abstract class GPUdbBase {
 
         HttpPost              postRequest    = null;
         HttpEntity            responseEntity = null;
-        HttpHost              host = null;
-        ClassicHttpResponse postResponse   = null;
+        HttpHost              host           = null;
+        ClassicHttpResponse postResponse     = null;
+        long                  requestTime    = 0;
 
         try {
             GPUdbLogger.trace_with_info( "Sending request to " + url.toString() );
@@ -6789,23 +6798,22 @@ public abstract class GPUdbBase {
             } catch ( javax.net.ssl.SSLException ex) {
                 String errorMsg;
                 if( ex.getMessage().toLowerCase().contains("subject alternative names")) {
-                    errorMsg = "Server SSL certificate not found in specified trust store.  Please use the options to " +
-                            "bypass the certificate check or add the server's certificate or CA cert in the server's " +
-                            "certificate path to the trust store and try again.";
+                    errorMsg = String.format(SslErrorMessageFormat, "Server SSL certificate not found in specified trust store.");
                 } else if( ex.getMessage().toLowerCase().contains("unable to find valid certification path")) {
-                    errorMsg = "No trust store was specified, but server requires SSL certificate validation.  " +
-                            "Please use the options to bypass the certificate check or specify a trust store containing " +
-                            "the server's certificate or CA cert in the server's certificate path and try again.";
+                    errorMsg = String.format(SslErrorMessageFormat, "No trust store was specified, but server requires SSL certificate validation.");
                 } else {
-                    errorMsg = "Error: " + ex.getMessage();
+                    errorMsg = String.format(SslErrorMessageFormat, "Error: " + ex.getMessage());
                 }
                 errorMsg = String.format("Encountered SSL error when trying to connect to server at %s.  %s", url.toString(), errorMsg);
                 GPUdbLogger.error( errorMsg );
                 throw new GPUdbException( errorMsg );
             } catch (Exception ex) {
                 // Trigger an HA failover at the caller level
-                GPUdbLogger.error( ex, "Throwing exit exception due to ");
-                throw new GPUdbExitException("Error submitting endpoint request: " + ExceptionUtils.getRootCauseMessage(ex));
+            	requestTime = System.currentTimeMillis() - requestTime;
+                GPUdbLogger.error( ex, "Throwing exit exception after " + requestTime + "ms due to ");
+
+            	String errorMessage = "Error submitting endpoint <%s> request after <%d>ms due to: %s";
+                throw new GPUdbExitException(String.format(errorMessage, url.toString(), requestTime, ExceptionUtils.getRootCauseMessage(ex)));
             }
 
             // Get the status code and the messages of the response

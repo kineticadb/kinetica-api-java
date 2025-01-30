@@ -285,6 +285,12 @@ public final class ColumnProperty {
      */
     public static final String INIT_WITH_UUID = "init_with_uuid";
 
+    /**
+     * For 'date', 'time', 'datetime', or 'timestamp' column types, always
+     * update the field with 'NOW()' upon any update.
+     */
+    public static final String UPDATE_WITH_NOW = "update_with_now";
+
     private ColumnProperty() {  }
 }
 

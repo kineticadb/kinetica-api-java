@@ -314,11 +314,6 @@ public class CreateTableRequest implements IndexedRecord {
          */
         public static final String STRATEGY_DEFINITION = "strategy_definition";
 
-        /**
-         * &lt;DEVELOPER&gt;
-         */
-        public static final String IS_VIRTUAL_UNION = "is_virtual_union";
-
         private Options() {  }
     }
 
@@ -551,8 +546,6 @@ public class CreateTableRequest implements IndexedRecord {
      *                         href="../../../../../../rm/concepts/#tier-strategies"
      *                         target="_top">tier strategy</a> for the table
      *                         and its columns.
-     *                     <li>{@link Options#IS_VIRTUAL_UNION
-     *                         IS_VIRTUAL_UNION}: &lt;DEVELOPER&gt;
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -788,8 +781,6 @@ public class CreateTableRequest implements IndexedRecord {
      *     <li>{@link Options#STRATEGY_DEFINITION STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
-     *     <li>{@link Options#IS_VIRTUAL_UNION IS_VIRTUAL_UNION}:
-     *         &lt;DEVELOPER&gt;
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -967,8 +958,6 @@ public class CreateTableRequest implements IndexedRecord {
      *     <li>{@link Options#STRATEGY_DEFINITION STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
-     *     <li>{@link Options#IS_VIRTUAL_UNION IS_VIRTUAL_UNION}:
-     *         &lt;DEVELOPER&gt;
      * </ul>
      * The default value is an empty {@link Map}.
      *

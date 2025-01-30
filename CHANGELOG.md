@@ -2,6 +2,16 @@
 
 ## Version 7.2
 
+### Version 7.2.2.5 - 2025-01-30
+
+#### Added
+-   Improved error reporting on connection failures
+
+#### Changed
+-   Switched retry handler to retry on `SocketTimeoutException` instead of
+    `ConnectTimeoutException`
+
+
 ### Version 7.2.2.4 - 2024-12-17
 
 #### Added

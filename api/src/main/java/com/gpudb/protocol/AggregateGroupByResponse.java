@@ -69,7 +69,9 @@ public class AggregateGroupByResponse {
     }
 
     /**
-     * Total/Filtered number of records.
+     * Total/Filtered number of records.  This may be an over-estimate if a
+     * limit was applied and there are additional records (i.e., when {@link
+     * #getHasMoreRecords() hasMoreRecords} is true).
      *
      * @return The current value of {@code totalNumberOfRecords}.
      */
@@ -78,7 +80,9 @@ public class AggregateGroupByResponse {
     }
 
     /**
-     * Total/Filtered number of records.
+     * Total/Filtered number of records.  This may be an over-estimate if a
+     * limit was applied and there are additional records (i.e., when {@link
+     * #getHasMoreRecords() hasMoreRecords} is true).
      *
      * @param totalNumberOfRecords  The new value for {@code
      *                              totalNumberOfRecords}.

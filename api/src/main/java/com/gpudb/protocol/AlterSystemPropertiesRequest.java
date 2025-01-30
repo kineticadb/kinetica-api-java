@@ -346,6 +346,12 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          */
         public static final String POSTGRES_PROXY_KEEP_ALIVE = "postgres_proxy_keep_alive";
 
+        /**
+         * The default maximum capacity to apply when creating a KiFS directory
+         * (bytes). The minimum allowed value is '-1'.
+         */
+        public static final String KIFS_DIRECTORY_DATA_LIMIT = "kifs_directory_data_limit";
+
         private PropertyUpdatesMap() {  }
     }
 
@@ -708,6 +714,13 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    POSTGRES_PROXY_KEEP_ALIVE}: Enable
      *                                    postgres proxy keep alive. The
      *                                    default value is 'false'.
+     *                                <li>{@link
+     *                                    PropertyUpdatesMap#KIFS_DIRECTORY_DATA_LIMIT
+     *                                    KIFS_DIRECTORY_DATA_LIMIT}: The
+     *                                    default maximum capacity to apply
+     *                                    when creating a KiFS directory
+     *                                    (bytes). The minimum allowed value is
+     *                                    '-1'.
      *                            </ul>
      * @param options  Optional parameters.
      *                 <ul>
@@ -912,6 +925,10 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#POSTGRES_PROXY_KEEP_ALIVE
      *         POSTGRES_PROXY_KEEP_ALIVE}: Enable  postgres proxy keep alive.
      *         The default value is 'false'.
+     *     <li>{@link PropertyUpdatesMap#KIFS_DIRECTORY_DATA_LIMIT
+     *         KIFS_DIRECTORY_DATA_LIMIT}: The default maximum capacity to
+     *         apply when creating a KiFS directory (bytes). The minimum
+     *         allowed value is '-1'.
      * </ul>
      *
      * @return The current value of {@code propertyUpdatesMap}.
@@ -1092,6 +1109,10 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#POSTGRES_PROXY_KEEP_ALIVE
      *         POSTGRES_PROXY_KEEP_ALIVE}: Enable  postgres proxy keep alive.
      *         The default value is 'false'.
+     *     <li>{@link PropertyUpdatesMap#KIFS_DIRECTORY_DATA_LIMIT
+     *         KIFS_DIRECTORY_DATA_LIMIT}: The default maximum capacity to
+     *         apply when creating a KiFS directory (bytes). The minimum
+     *         allowed value is '-1'.
      * </ul>
      *
      * @param propertyUpdatesMap  The new value for {@code propertyUpdatesMap}.

@@ -2152,6 +2152,23 @@ public class GPUdb extends GPUdbBase {
      *                         EXPRESSION}: Filter expression to apply to the
      *                         table prior to computing the aggregate group by.
      *                     <li>{@link
+     *                         com.gpudb.protocol.AggregateGroupByRequest.Options#CHUNKED_EXPRESSION_EVALUATION
+     *                         CHUNKED_EXPRESSION_EVALUATION}: evaluate the
+     *                         filter expression during group-by chunk
+     *                         processing.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link
      *                         com.gpudb.protocol.AggregateGroupByRequest.Options#HAVING
      *                         HAVING}: Filter expression to apply to the
      *                         aggregated results.
@@ -5372,6 +5389,13 @@ public class GPUdb extends GPUdbBase {
      *                                    POSTGRES_PROXY_KEEP_ALIVE}: Enable
      *                                    postgres proxy keep alive. The
      *                                    default value is 'false'.
+     *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KIFS_DIRECTORY_DATA_LIMIT
+     *                                    KIFS_DIRECTORY_DATA_LIMIT}: The
+     *                                    default maximum capacity to apply
+     *                                    when creating a KiFS directory
+     *                                    (bytes). The minimum allowed value is
+     *                                    '-1'.
      *                            </ul>
      * @param options  Optional parameters.
      *                 <ul>
@@ -9756,9 +9780,6 @@ public class GPUdb extends GPUdbBase {
      *                         href="../../../../../rm/concepts/#tier-strategies"
      *                         target="_top">tier strategy</a> for the table
      *                         and its columns.
-     *                     <li>{@link
-     *                         com.gpudb.protocol.CreateTableRequest.Options#IS_VIRTUAL_UNION
-     *                         IS_VIRTUAL_UNION}: &lt;DEVELOPER&gt;
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      *
@@ -11647,6 +11668,12 @@ public class GPUdb extends GPUdbBase {
      *                            INIT_WITH_UUID}: For 'uuid' type, replace
      *                            empty strings and invalid UUID values with
      *                            randomly-generated UUIDs upon insert.
+     *                        <li>{@link
+     *                            com.gpudb.protocol.CreateTypeRequest.Properties#UPDATE_WITH_NOW
+     *                            UPDATE_WITH_NOW}: For 'date', 'time',
+     *                            'datetime', or 'timestamp' column types,
+     *                            always update the field with 'NOW()' upon any
+     *                            update.
      *                    </ul>
      *                    The default value is an empty {@link Map}.
      * @param options  Optional parameters. The default value is an empty

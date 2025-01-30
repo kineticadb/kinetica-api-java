@@ -379,6 +379,12 @@ public class CreateTypeRequest implements IndexedRecord {
          */
         public static final String INIT_WITH_UUID = "init_with_uuid";
 
+        /**
+         * For 'date', 'time', 'datetime', or 'timestamp' column types, always
+         * update the field with 'NOW()' upon any update.
+         */
+        public static final String UPDATE_WITH_NOW = "update_with_now";
+
         private Properties() {  }
     }
 
@@ -643,6 +649,11 @@ public class CreateTypeRequest implements IndexedRecord {
      *                            INIT_WITH_UUID}: For 'uuid' type, replace
      *                            empty strings and invalid UUID values with
      *                            randomly-generated UUIDs upon insert.
+     *                        <li>{@link Properties#UPDATE_WITH_NOW
+     *                            UPDATE_WITH_NOW}: For 'date', 'time',
+     *                            'datetime', or 'timestamp' column types,
+     *                            always update the field with 'NOW()' upon any
+     *                            update.
      *                    </ul>
      *                    The default value is an empty {@link Map}.
      * @param options  Optional parameters. The default value is an empty
@@ -872,6 +883,9 @@ public class CreateTypeRequest implements IndexedRecord {
      *     <li>{@link Properties#INIT_WITH_UUID INIT_WITH_UUID}: For 'uuid'
      *         type, replace empty strings and invalid UUID values with
      *         randomly-generated UUIDs upon insert.
+     *     <li>{@link Properties#UPDATE_WITH_NOW UPDATE_WITH_NOW}: For 'date',
+     *         'time', 'datetime', or 'timestamp' column types, always update
+     *         the field with 'NOW()' upon any update.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -1054,6 +1068,9 @@ public class CreateTypeRequest implements IndexedRecord {
      *     <li>{@link Properties#INIT_WITH_UUID INIT_WITH_UUID}: For 'uuid'
      *         type, replace empty strings and invalid UUID values with
      *         randomly-generated UUIDs upon insert.
+     *     <li>{@link Properties#UPDATE_WITH_NOW UPDATE_WITH_NOW}: For 'date',
+     *         'time', 'datetime', or 'timestamp' column types, always update
+     *         the field with 'NOW()' upon any update.
      * </ul>
      * The default value is an empty {@link Map}.
      *

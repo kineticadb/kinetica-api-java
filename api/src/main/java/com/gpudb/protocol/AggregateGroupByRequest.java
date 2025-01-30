@@ -179,6 +179,17 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String EXPRESSION = "expression";
 
         /**
+         * evaluate the filter expression during group-by chunk processing.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String CHUNKED_EXPRESSION_EVALUATION = "chunked_expression_evaluation";
+
+        /**
          * Filter expression to apply to the aggregated results.
          */
         public static final String HAVING = "having";
@@ -480,6 +491,17 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                     <li>{@link Options#EXPRESSION EXPRESSION}: Filter
      *                         expression to apply to the table prior to
      *                         computing the aggregate group by.
+     *                     <li>{@link Options#CHUNKED_EXPRESSION_EVALUATION
+     *                         CHUNKED_EXPRESSION_EVALUATION}: evaluate the
+     *                         filter expression during group-by chunk
+     *                         processing.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                     <li>{@link Options#HAVING HAVING}: Filter expression
      *                         to apply to the aggregated results.
      *                     <li>{@link Options#SORT_ORDER SORT_ORDER}:
@@ -728,6 +750,17 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                     <li>{@link Options#EXPRESSION EXPRESSION}: Filter
      *                         expression to apply to the table prior to
      *                         computing the aggregate group by.
+     *                     <li>{@link Options#CHUNKED_EXPRESSION_EVALUATION
+     *                         CHUNKED_EXPRESSION_EVALUATION}: evaluate the
+     *                         filter expression during group-by chunk
+     *                         processing.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                     <li>{@link Options#HAVING HAVING}: Filter expression
      *                         to apply to the aggregated results.
      *                     <li>{@link Options#SORT_ORDER SORT_ORDER}:
@@ -1086,6 +1119,15 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         non-existent, it will be automatically created.
      *     <li>{@link Options#EXPRESSION EXPRESSION}: Filter expression to
      *         apply to the table prior to computing the aggregate group by.
+     *     <li>{@link Options#CHUNKED_EXPRESSION_EVALUATION
+     *         CHUNKED_EXPRESSION_EVALUATION}: evaluate the filter expression
+     *         during group-by chunk processing.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#HAVING HAVING}: Filter expression to apply to the
      *         aggregated results.
      *     <li>{@link Options#SORT_ORDER SORT_ORDER}: [DEPRECATED--use order_by
@@ -1248,6 +1290,15 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         non-existent, it will be automatically created.
      *     <li>{@link Options#EXPRESSION EXPRESSION}: Filter expression to
      *         apply to the table prior to computing the aggregate group by.
+     *     <li>{@link Options#CHUNKED_EXPRESSION_EVALUATION
+     *         CHUNKED_EXPRESSION_EVALUATION}: evaluate the filter expression
+     *         during group-by chunk processing.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#HAVING HAVING}: Filter expression to apply to the
      *         aggregated results.
      *     <li>{@link Options#SORT_ORDER SORT_ORDER}: [DEPRECATED--use order_by
