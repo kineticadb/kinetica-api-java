@@ -504,7 +504,7 @@ public abstract class GPUdbBase {
          * Gets the period of inactivity (in milliseconds) after
          * which connection validity would be checked before reusing it.
          * This is for fine-tuning server connection parameters.  Using the
-         * default of 200ms should suffice for most users.
+         * default of 100ms should suffice for most users.
          *
          * @return  the connection inactivity period (in milliseconds)
          *
@@ -533,9 +533,12 @@ public abstract class GPUdbBase {
         /**
          * Gets the server connection timeout value, in milliseconds, after
          * which an inability to establish a connection with the GPUdb server
-         * will result in requests being aborted.  A timeout of zero is interpreted
-         * as an infinite timeout. Note that this is different from the request
-         * timeout.
+         * will result in requests being aborted.  This serves to limit both the
+         * time waiting to initially connect to the server and the time waiting
+         * for a response from the server when performing a status check.  A
+         * timeout of zero is interpreted as an infinite timeout. Note that this
+         * is different from the request timeout for requests other than a
+         * system status check.
          *
          * @return  the connection timeout value
          *
@@ -1020,12 +1023,25 @@ public abstract class GPUdbBase {
         }
 
         /**
+         * Gets the server connection timeout value, in milliseconds, after
+         * which an inability to establish a connection with the GPUdb server
+         * will result in requests being aborted.  This serves to limit both the
+         * time waiting to initially connect to the server and the time waiting
+         * for a response from the server when performing a status check.  A
+         * timeout of zero is interpreted as an infinite timeout. Note that this
+         * is different from the request timeout for requests other than a
+         * system status check.
+         * 
          * Sets the server connection timeout value, in milliseconds, after
          * which an inability to establish a connection with the GPUdb server
-         * will result in requests being aborted.  A timeout of zero is interpreted
-         * as an infinite timeout. Note that this is different from the request
+         * will result in requests being aborted.  This serves to limit both the
+         * time waiting to initially connect to the server and the time waiting
+         * for a response from the server when performing a status check.  A
+         * timeout of zero is interpreted as an infinite timeout. Note that this
+         * is different from the request timeout for requests other than a
+         * system status check.
          *
-         * The default is 10000, which is equivalent to 10 seconds.
+         * The default is 5000, which is equivalent to 5 seconds.
          *
          * @param value  the server connection timeout value
          * @return       the current {@link Options} instance
@@ -1048,7 +1064,7 @@ public abstract class GPUdbBase {
          * This is for fine-tuning server connection parameters.  Using the
          * default of 200ms should suffice for most users.
          *
-         * The default is 200 (in milliseconds).
+         * The default is 100 (in milliseconds).
          *
          * *Note*: Non-positive value passed to this method disables connection
          *         validation.  So, use with great caution!
@@ -3775,7 +3791,7 @@ public abstract class GPUdbBase {
                     new ShowSystemStatusRequest(),
                     new ShowSystemStatusResponse(),
                     false,
-                    DEFAULT_SERVER_CONNECTION_TIMEOUT
+                    this.options.getServerConnectionTimeout()
             );
         } catch (MalformedURLException ex) {
             throw new GPUdbException( "Error forming URL: " + url + " -- " + ex.getMessage(), ex );

@@ -74,13 +74,13 @@ public class CreateDatasinkRequest implements IndexedRecord {
         public static final String S3_REGION = "s3_region";
 
         /**
-         * Set to false for testing purposes or when necessary to bypass TLS
-         * errors (e.g.&nbsp;self-signed certificates). This value is true by
-         * default.
+         * Whether to verify SSL connections.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#TRUE TRUE}
-         *     <li>{@link Options#FALSE FALSE}
+         *     <li>{@link Options#TRUE TRUE}: Connect with SSL verification
+         *     <li>{@link Options#FALSE FALSE}: Connect without verifying the
+         *         SSL connection; for testing purposes, bypassing TLS errors,
+         *         self-signed certificates, etc.
          * </ul>
          * The default value is {@link Options#TRUE TRUE}.
          */
@@ -90,15 +90,15 @@ public class CreateDatasinkRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * When true (default), the requests URI should be specified in
-         * virtual-hosted-style format where the bucket name is part of the
-         * domain name in the URL.
-         * <p>
-         * Otherwise set to false to use path-style URI for requests.
+         * Whether to use virtual addressing when referencing the Amazon S3
+         * sink.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#TRUE TRUE}
-         *     <li>{@link Options#FALSE FALSE}
+         *     <li>{@link Options#TRUE TRUE}: The requests URI should be
+         *         specified in virtual-hosted-style format where the bucket
+         *         name is part of the domain name in the URL.
+         *     <li>{@link Options#FALSE FALSE}: Use path-style URI for
+         *         requests.
          * </ul>
          * The default value is {@link Options#TRUE TRUE}.
          */
@@ -225,19 +225,25 @@ public class CreateDatasinkRequest implements IndexedRecord {
 
         /**
          * The desired format of JSON encoded notifications message.
-         * <p>
-         * If {@link Options#NESTED NESTED}, records are returned as an array.
-         * Otherwise, only a single record per messages is returned.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#FLAT FLAT}
-         *     <li>{@link Options#NESTED NESTED}
+         *     <li>{@link Options#FLAT FLAT}: A single record is returned per
+         *         message
+         *     <li>{@link Options#NESTED NESTED}: Records are returned as an
+         *         array per message
          * </ul>
          * The default value is {@link Options#FLAT FLAT}.
          */
         public static final String JSON_FORMAT = "json_format";
 
+        /**
+         * A single record is returned per message
+         */
         public static final String FLAT = "flat";
+
+        /**
+         * Records are returned as an array per message
+         */
         public static final String NESTED = "nested";
 
         /**
@@ -297,7 +303,7 @@ public class CreateDatasinkRequest implements IndexedRecord {
      * @param destination  Destination for the output data in format
      *                     'storage_provider_type://path[:port]'.  Supported
      *                     storage provider types are 'azure', 'gcs', 'hdfs',
-     *                     'http', 'https', 'jdbc', 'kafka' and 's3'.
+     *                     'http', 'https', 'jdbc', 'kafka', and 's3'.
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link Options#CONNECTION_TIMEOUT
@@ -317,27 +323,31 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *                     <li>{@link Options#S3_REGION S3_REGION}: Name of the
      *                         Amazon S3 region where the given bucket is
      *                         located
-     *                     <li>{@link Options#S3_VERIFY_SSL S3_VERIFY_SSL}: Set
-     *                         to false for testing purposes or when necessary
-     *                         to bypass TLS errors (e.g. self-signed
-     *                         certificates). This value is true by default.
+     *                     <li>{@link Options#S3_VERIFY_SSL S3_VERIFY_SSL}:
+     *                         Whether to verify SSL connections.
      *                         Supported values:
      *                         <ul>
-     *                             <li>{@link Options#TRUE TRUE}
-     *                             <li>{@link Options#FALSE FALSE}
+     *                             <li>{@link Options#TRUE TRUE}: Connect with
+     *                                 SSL verification
+     *                             <li>{@link Options#FALSE FALSE}: Connect
+     *                                 without verifying the SSL connection;
+     *                                 for testing purposes, bypassing TLS
+     *                                 errors, self-signed certificates, etc.
      *                         </ul>
      *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#S3_USE_VIRTUAL_ADDRESSING
-     *                         S3_USE_VIRTUAL_ADDRESSING}: When true (default),
-     *                         the requests URI should be specified in
-     *                         virtual-hosted-style format where the bucket
-     *                         name is part of the domain name in the URL.
-     *                         Otherwise set to false to use path-style URI for
-     *                         requests.
+     *                         S3_USE_VIRTUAL_ADDRESSING}: Whether to use
+     *                         virtual addressing when referencing the Amazon
+     *                         S3 sink.
      *                         Supported values:
      *                         <ul>
-     *                             <li>{@link Options#TRUE TRUE}
-     *                             <li>{@link Options#FALSE FALSE}
+     *                             <li>{@link Options#TRUE TRUE}: The requests
+     *                                 URI should be specified in
+     *                                 virtual-hosted-style format where the
+     *                                 bucket name is part of the domain name
+     *                                 in the URL.
+     *                             <li>{@link Options#FALSE FALSE}: Use
+     *                                 path-style URI for requests.
      *                         </ul>
      *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}:
@@ -415,13 +425,13 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *                         '1000000'.
      *                     <li>{@link Options#JSON_FORMAT JSON_FORMAT}: The
      *                         desired format of JSON encoded notifications
-     *                         message.   If {@link Options#NESTED NESTED},
-     *                         records are returned as an array. Otherwise,
-     *                         only a single record per messages is returned.
+     *                         message.
      *                         Supported values:
      *                         <ul>
-     *                             <li>{@link Options#FLAT FLAT}
-     *                             <li>{@link Options#NESTED NESTED}
+     *                             <li>{@link Options#FLAT FLAT}: A single
+     *                                 record is returned per message
+     *                             <li>{@link Options#NESTED NESTED}: Records
+     *                                 are returned as an array per message
      *                         </ul>
      *                         The default value is {@link Options#FLAT FLAT}.
      *                     <li>{@link Options#USE_MANAGED_CREDENTIALS
@@ -490,7 +500,7 @@ public class CreateDatasinkRequest implements IndexedRecord {
      * 'storage_provider_type://path[:port]'.
      * <p>
      * Supported storage provider types are 'azure', 'gcs', 'hdfs', 'http',
-     * 'https', 'jdbc', 'kafka' and 's3'.
+     * 'https', 'jdbc', 'kafka', and 's3'.
      *
      * @return The current value of {@code destination}.
      */
@@ -503,7 +513,7 @@ public class CreateDatasinkRequest implements IndexedRecord {
      * 'storage_provider_type://path[:port]'.
      * <p>
      * Supported storage provider types are 'azure', 'gcs', 'hdfs', 'http',
-     * 'https', 'jdbc', 'kafka' and 's3'.
+     * 'https', 'jdbc', 'kafka', and 's3'.
      *
      * @param destination  The new value for {@code destination}.
      *
@@ -528,24 +538,26 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *         Amazon S3 bucket to use as the data sink
      *     <li>{@link Options#S3_REGION S3_REGION}: Name of the Amazon S3
      *         region where the given bucket is located
-     *     <li>{@link Options#S3_VERIFY_SSL S3_VERIFY_SSL}: Set to false for
-     *         testing purposes or when necessary to bypass TLS errors (e.g.
-     *         self-signed certificates). This value is true by default.
+     *     <li>{@link Options#S3_VERIFY_SSL S3_VERIFY_SSL}: Whether to verify
+     *         SSL connections.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
+     *             <li>{@link Options#TRUE TRUE}: Connect with SSL verification
+     *             <li>{@link Options#FALSE FALSE}: Connect without verifying
+     *                 the SSL connection; for testing purposes, bypassing TLS
+     *                 errors, self-signed certificates, etc.
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#S3_USE_VIRTUAL_ADDRESSING
-     *         S3_USE_VIRTUAL_ADDRESSING}: When true (default), the requests
-     *         URI should be specified in virtual-hosted-style format where the
-     *         bucket name is part of the domain name in the URL.   Otherwise
-     *         set to false to use path-style URI for requests.
+     *         S3_USE_VIRTUAL_ADDRESSING}: Whether to use virtual addressing
+     *         when referencing the Amazon S3 sink.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
+     *             <li>{@link Options#TRUE TRUE}: The requests URI should be
+     *                 specified in virtual-hosted-style format where the
+     *                 bucket name is part of the domain name in the URL.
+     *             <li>{@link Options#FALSE FALSE}: Use path-style URI for
+     *                 requests.
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}: Amazon IAM Role
@@ -606,13 +618,13 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *         in bytes of each notification message. The default value is
      *         '1000000'.
      *     <li>{@link Options#JSON_FORMAT JSON_FORMAT}: The desired format of
-     *         JSON encoded notifications message.   If {@link Options#NESTED
-     *         NESTED}, records are returned as an array. Otherwise, only a
-     *         single record per messages is returned.
+     *         JSON encoded notifications message.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#FLAT FLAT}
-     *             <li>{@link Options#NESTED NESTED}
+     *             <li>{@link Options#FLAT FLAT}: A single record is returned
+     *                 per message
+     *             <li>{@link Options#NESTED NESTED}: Records are returned as
+     *                 an array per message
      *         </ul>
      *         The default value is {@link Options#FLAT FLAT}.
      *     <li>{@link Options#USE_MANAGED_CREDENTIALS USE_MANAGED_CREDENTIALS}:
@@ -664,24 +676,26 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *         Amazon S3 bucket to use as the data sink
      *     <li>{@link Options#S3_REGION S3_REGION}: Name of the Amazon S3
      *         region where the given bucket is located
-     *     <li>{@link Options#S3_VERIFY_SSL S3_VERIFY_SSL}: Set to false for
-     *         testing purposes or when necessary to bypass TLS errors (e.g.
-     *         self-signed certificates). This value is true by default.
+     *     <li>{@link Options#S3_VERIFY_SSL S3_VERIFY_SSL}: Whether to verify
+     *         SSL connections.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
+     *             <li>{@link Options#TRUE TRUE}: Connect with SSL verification
+     *             <li>{@link Options#FALSE FALSE}: Connect without verifying
+     *                 the SSL connection; for testing purposes, bypassing TLS
+     *                 errors, self-signed certificates, etc.
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#S3_USE_VIRTUAL_ADDRESSING
-     *         S3_USE_VIRTUAL_ADDRESSING}: When true (default), the requests
-     *         URI should be specified in virtual-hosted-style format where the
-     *         bucket name is part of the domain name in the URL.   Otherwise
-     *         set to false to use path-style URI for requests.
+     *         S3_USE_VIRTUAL_ADDRESSING}: Whether to use virtual addressing
+     *         when referencing the Amazon S3 sink.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
+     *             <li>{@link Options#TRUE TRUE}: The requests URI should be
+     *                 specified in virtual-hosted-style format where the
+     *                 bucket name is part of the domain name in the URL.
+     *             <li>{@link Options#FALSE FALSE}: Use path-style URI for
+     *                 requests.
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}: Amazon IAM Role
@@ -742,13 +756,13 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *         in bytes of each notification message. The default value is
      *         '1000000'.
      *     <li>{@link Options#JSON_FORMAT JSON_FORMAT}: The desired format of
-     *         JSON encoded notifications message.   If {@link Options#NESTED
-     *         NESTED}, records are returned as an array. Otherwise, only a
-     *         single record per messages is returned.
+     *         JSON encoded notifications message.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#FLAT FLAT}
-     *             <li>{@link Options#NESTED NESTED}
+     *             <li>{@link Options#FLAT FLAT}: A single record is returned
+     *                 per message
+     *             <li>{@link Options#NESTED NESTED}: Records are returned as
+     *                 an array per message
      *         </ul>
      *         The default value is {@link Options#FLAT FLAT}.
      *     <li>{@link Options#USE_MANAGED_CREDENTIALS USE_MANAGED_CREDENTIALS}:

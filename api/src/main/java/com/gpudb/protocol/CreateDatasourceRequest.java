@@ -91,13 +91,13 @@ public class CreateDatasourceRequest implements IndexedRecord {
         public static final String S3_REGION = "s3_region";
 
         /**
-         * Set to false for testing purposes or when necessary to bypass TLS
-         * errors (e.g.&nbsp;self-signed certificates). This value is true by
-         * default.
+         * Whether to verify SSL connections.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#TRUE TRUE}
-         *     <li>{@link Options#FALSE FALSE}
+         *     <li>{@link Options#TRUE TRUE}: Connect with SSL verification
+         *     <li>{@link Options#FALSE FALSE}: Connect without verifying the
+         *         SSL connection; for testing purposes, bypassing TLS errors,
+         *         self-signed certificates, etc.
          * </ul>
          * The default value is {@link Options#TRUE TRUE}.
          */
@@ -306,9 +306,8 @@ public class CreateDatasourceRequest implements IndexedRecord {
      * @param name  Name of the data source to be created.
      * @param location  Location of the remote storage in
      *                  'storage_provider_type://[storage_path[:storage_port]]'
-     *                  format.  Supported storage provider types are
-     *                  'azure','gcs','hdfs','jdbc','kafka', 'confluent' and
-     *                  's3'.
+     *                  format.  Supported storage provider types are 'azure',
+     *                  'gcs', 'hdfs', 'jdbc', 'kafka', 'confluent', and 's3'.
      * @param userName  Name of the remote system user; may be an empty string
      * @param password  Password for the remote system user; may be an empty
      *                  string
@@ -341,14 +340,16 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                     <li>{@link Options#S3_REGION S3_REGION}: Name of the
      *                         Amazon S3 region where the given bucket is
      *                         located
-     *                     <li>{@link Options#S3_VERIFY_SSL S3_VERIFY_SSL}: Set
-     *                         to false for testing purposes or when necessary
-     *                         to bypass TLS errors (e.g. self-signed
-     *                         certificates). This value is true by default.
+     *                     <li>{@link Options#S3_VERIFY_SSL S3_VERIFY_SSL}:
+     *                         Whether to verify SSL connections.
      *                         Supported values:
      *                         <ul>
-     *                             <li>{@link Options#TRUE TRUE}
-     *                             <li>{@link Options#FALSE FALSE}
+     *                             <li>{@link Options#TRUE TRUE}: Connect with
+     *                                 SSL verification
+     *                             <li>{@link Options#FALSE FALSE}: Connect
+     *                                 without verifying the SSL connection;
+     *                                 for testing purposes, bypassing TLS
+     *                                 errors, self-signed certificates, etc.
      *                         </ul>
      *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#S3_USE_VIRTUAL_ADDRESSING
@@ -516,8 +517,8 @@ public class CreateDatasourceRequest implements IndexedRecord {
      * Location of the remote storage in
      * 'storage_provider_type://[storage_path[:storage_port]]' format.
      * <p>
-     * Supported storage provider types are
-     * 'azure','gcs','hdfs','jdbc','kafka', 'confluent' and 's3'.
+     * Supported storage provider types are 'azure', 'gcs', 'hdfs', 'jdbc',
+     * 'kafka', 'confluent', and 's3'.
      *
      * @return The current value of {@code location}.
      */
@@ -529,8 +530,8 @@ public class CreateDatasourceRequest implements IndexedRecord {
      * Location of the remote storage in
      * 'storage_provider_type://[storage_path[:storage_port]]' format.
      * <p>
-     * Supported storage provider types are
-     * 'azure','gcs','hdfs','jdbc','kafka', 'confluent' and 's3'.
+     * Supported storage provider types are 'azure', 'gcs', 'hdfs', 'jdbc',
+     * 'kafka', 'confluent', and 's3'.
      *
      * @param location  The new value for {@code location}.
      *
@@ -605,13 +606,14 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         Amazon S3 bucket to use as the data source
      *     <li>{@link Options#S3_REGION S3_REGION}: Name of the Amazon S3
      *         region where the given bucket is located
-     *     <li>{@link Options#S3_VERIFY_SSL S3_VERIFY_SSL}: Set to false for
-     *         testing purposes or when necessary to bypass TLS errors (e.g.
-     *         self-signed certificates). This value is true by default.
+     *     <li>{@link Options#S3_VERIFY_SSL S3_VERIFY_SSL}: Whether to verify
+     *         SSL connections.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
+     *             <li>{@link Options#TRUE TRUE}: Connect with SSL verification
+     *             <li>{@link Options#FALSE FALSE}: Connect without verifying
+     *                 the SSL connection; for testing purposes, bypassing TLS
+     *                 errors, self-signed certificates, etc.
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#S3_USE_VIRTUAL_ADDRESSING
@@ -749,13 +751,14 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         Amazon S3 bucket to use as the data source
      *     <li>{@link Options#S3_REGION S3_REGION}: Name of the Amazon S3
      *         region where the given bucket is located
-     *     <li>{@link Options#S3_VERIFY_SSL S3_VERIFY_SSL}: Set to false for
-     *         testing purposes or when necessary to bypass TLS errors (e.g.
-     *         self-signed certificates). This value is true by default.
+     *     <li>{@link Options#S3_VERIFY_SSL S3_VERIFY_SSL}: Whether to verify
+     *         SSL connections.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
+     *             <li>{@link Options#TRUE TRUE}: Connect with SSL verification
+     *             <li>{@link Options#FALSE FALSE}: Connect without verifying
+     *                 the SSL connection; for testing purposes, bypassing TLS
+     *                 errors, self-signed certificates, etc.
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#S3_USE_VIRTUAL_ADDRESSING

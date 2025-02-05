@@ -51,7 +51,8 @@ public class AlterDatasinkRequest implements IndexedRecord {
          * Destination for the output data in format
          * 'destination_type://path[:port]'.
          * <p>
-         * Supported destination types are 'http', 'https' and 'kafka'.
+         * Supported destination types are 'azure', 'gcs', 'hdfs', 'http',
+         * 'https', 'jdbc', 'kafka', and 's3'.
          */
         public static final String DESTINATION = "destination";
 
@@ -82,13 +83,14 @@ public class AlterDatasinkRequest implements IndexedRecord {
         public static final String S3_REGION = "s3_region";
 
         /**
-         * Set to false for testing purposes or when necessary to bypass TLS
-         * errors (e.g.&nbsp;self-signed certificates). This value is true by
-         * default.
+         * Whether to verify SSL connections.
          * Supported values:
          * <ul>
-         *     <li>{@link DatasinkUpdatesMap#TRUE TRUE}
-         *     <li>{@link DatasinkUpdatesMap#FALSE FALSE}
+         *     <li>{@link DatasinkUpdatesMap#TRUE TRUE}: Connect with SSL
+         *         verification
+         *     <li>{@link DatasinkUpdatesMap#FALSE FALSE}: Connect without
+         *         verifying the SSL connection; for testing purposes,
+         *         bypassing TLS errors, self-signed certificates, etc.
          * </ul>
          * The default value is {@link DatasinkUpdatesMap#TRUE TRUE}.
          */
@@ -98,15 +100,15 @@ public class AlterDatasinkRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * When true (default), the requests URI should be specified in
-         * virtual-hosted-style format where the bucket name is part of the
-         * domain name in the URL.
-         * <p>
-         * Otherwise set to false to use path-style URI for requests.
+         * Whether to use virtual addressing when referencing the Amazon S3
+         * sink.
          * Supported values:
          * <ul>
-         *     <li>{@link DatasinkUpdatesMap#TRUE TRUE}
-         *     <li>{@link DatasinkUpdatesMap#FALSE FALSE}
+         *     <li>{@link DatasinkUpdatesMap#TRUE TRUE}: The requests URI
+         *         should be specified in virtual-hosted-style format where the
+         *         bucket name is part of the domain name in the URL.
+         *     <li>{@link DatasinkUpdatesMap#FALSE FALSE}: Use path-style URI
+         *         for requests.
          * </ul>
          * The default value is {@link DatasinkUpdatesMap#TRUE TRUE}.
          */
@@ -204,6 +206,16 @@ public class AlterDatasinkRequest implements IndexedRecord {
         public static final String GCS_SERVICE_ACCOUNT_KEYS = "gcs_service_account_keys";
 
         /**
+         * JDBC driver jar file location.  This may be a KIFS file.
+         */
+        public static final String JDBC_DRIVER_JAR_PATH = "jdbc_driver_jar_path";
+
+        /**
+         * Name of the JDBC driver class
+         */
+        public static final String JDBC_DRIVER_CLASS_NAME = "jdbc_driver_class_name";
+
+        /**
          * The publicly-accessible full path URL to the kafka broker, e.g.,
          * 'http://172.123.45.67:9300'.
          */
@@ -265,19 +277,25 @@ public class AlterDatasinkRequest implements IndexedRecord {
 
         /**
          * The desired format of JSON encoded notifications message.
-         * <p>
-         * If {@link DatasinkUpdatesMap#NESTED NESTED}, records are returned as
-         * an array. Otherwise, only a single record per messages is returned.
          * Supported values:
          * <ul>
-         *     <li>{@link DatasinkUpdatesMap#FLAT FLAT}
-         *     <li>{@link DatasinkUpdatesMap#NESTED NESTED}
+         *     <li>{@link DatasinkUpdatesMap#FLAT FLAT}: A single record is
+         *         returned per message
+         *     <li>{@link DatasinkUpdatesMap#NESTED NESTED}: Records are
+         *         returned as an array per message
          * </ul>
          * The default value is {@link DatasinkUpdatesMap#FLAT FLAT}.
          */
         public static final String JSON_FORMAT = "json_format";
 
+        /**
+         * A single record is returned per message
+         */
         public static final String FLAT = "flat";
+
+        /**
+         * Records are returned as an array per message
+         */
         public static final String NESTED = "nested";
 
         /**
@@ -328,7 +346,8 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *                                    output data in format
      *                                    'destination_type://path[:port]'.
      *                                    Supported destination types are
-     *                                    'http', 'https' and 'kafka'.
+     *                                    'azure', 'gcs', 'hdfs', 'http',
+     *                                    'https', 'jdbc', 'kafka', and 's3'.
      *                                <li>{@link
      *                                    DatasinkUpdatesMap#CONNECTION_TIMEOUT
      *                                    CONNECTION_TIMEOUT}: Timeout in
@@ -352,37 +371,44 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *                                    located
      *                                <li>{@link
      *                                    DatasinkUpdatesMap#S3_VERIFY_SSL
-     *                                    S3_VERIFY_SSL}: Set to false for
-     *                                    testing purposes or when necessary to
-     *                                    bypass TLS errors (e.g. self-signed
-     *                                    certificates). This value is true by
-     *                                    default.
+     *                                    S3_VERIFY_SSL}: Whether to verify SSL
+     *                                    connections.
      *                                    Supported values:
      *                                    <ul>
      *                                        <li>{@link
-     *                                            DatasinkUpdatesMap#TRUE TRUE}
+     *                                            DatasinkUpdatesMap#TRUE
+     *                                            TRUE}: Connect with SSL
+     *                                            verification
      *                                        <li>{@link
      *                                            DatasinkUpdatesMap#FALSE
-     *                                            FALSE}
+     *                                            FALSE}: Connect without
+     *                                            verifying the SSL connection;
+     *                                            for testing purposes,
+     *                                            bypassing TLS errors,
+     *                                            self-signed certificates,
+     *                                            etc.
      *                                    </ul>
      *                                    The default value is {@link
      *                                    DatasinkUpdatesMap#TRUE TRUE}.
      *                                <li>{@link
      *                                    DatasinkUpdatesMap#S3_USE_VIRTUAL_ADDRESSING
-     *                                    S3_USE_VIRTUAL_ADDRESSING}: When true
-     *                                    (default), the requests URI should be
-     *                                    specified in virtual-hosted-style
-     *                                    format where the bucket name is part
-     *                                    of the domain name in the URL.
-     *                                    Otherwise set to false to use
-     *                                    path-style URI for requests.
+     *                                    S3_USE_VIRTUAL_ADDRESSING}: Whether
+     *                                    to use virtual addressing when
+     *                                    referencing the Amazon S3 sink.
      *                                    Supported values:
      *                                    <ul>
      *                                        <li>{@link
-     *                                            DatasinkUpdatesMap#TRUE TRUE}
+     *                                            DatasinkUpdatesMap#TRUE
+     *                                            TRUE}: The requests URI
+     *                                            should be specified in
+     *                                            virtual-hosted-style format
+     *                                            where the bucket name is part
+     *                                            of the domain name in the
+     *                                            URL.
      *                                        <li>{@link
      *                                            DatasinkUpdatesMap#FALSE
-     *                                            FALSE}
+     *                                            FALSE}: Use path-style URI
+     *                                            for requests.
      *                                    </ul>
      *                                    The default value is {@link
      *                                    DatasinkUpdatesMap#TRUE TRUE}.
@@ -471,6 +497,15 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *                                    GCS_SERVICE_ACCOUNT_KEYS}: Google
      *                                    Cloud service account keys to use for
      *                                    authenticating the data sink
+     *                                <li>{@link
+     *                                    DatasinkUpdatesMap#JDBC_DRIVER_JAR_PATH
+     *                                    JDBC_DRIVER_JAR_PATH}: JDBC driver
+     *                                    jar file location.  This may be a
+     *                                    KIFS file.
+     *                                <li>{@link
+     *                                    DatasinkUpdatesMap#JDBC_DRIVER_CLASS_NAME
+     *                                    JDBC_DRIVER_CLASS_NAME}: Name of the
+     *                                    JDBC driver class
      *                                <li>{@link DatasinkUpdatesMap#KAFKA_URL
      *                                    KAFKA_URL}: The publicly-accessible
      *                                    full path URL to the kafka broker,
@@ -540,17 +575,16 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *                                <li>{@link DatasinkUpdatesMap#JSON_FORMAT
      *                                    JSON_FORMAT}: The desired format of
      *                                    JSON encoded notifications message.
-     *                                    If {@link DatasinkUpdatesMap#NESTED
-     *                                    NESTED}, records are returned as an
-     *                                    array. Otherwise, only a single
-     *                                    record per messages is returned.
      *                                    Supported values:
      *                                    <ul>
      *                                        <li>{@link
-     *                                            DatasinkUpdatesMap#FLAT FLAT}
+     *                                            DatasinkUpdatesMap#FLAT
+     *                                            FLAT}: A single record is
+     *                                            returned per message
      *                                        <li>{@link
      *                                            DatasinkUpdatesMap#NESTED
-     *                                            NESTED}
+     *                                            NESTED}: Records are returned
+     *                                            as an array per message
      *                                    </ul>
      *                                    The default value is {@link
      *                                    DatasinkUpdatesMap#FLAT FLAT}.
@@ -613,7 +647,8 @@ public class AlterDatasinkRequest implements IndexedRecord {
      * <ul>
      *     <li>{@link DatasinkUpdatesMap#DESTINATION DESTINATION}: Destination
      *         for the output data in format 'destination_type://path[:port]'.
-     *         Supported destination types are 'http', 'https' and 'kafka'.
+     *         Supported destination types are 'azure', 'gcs', 'hdfs', 'http',
+     *         'https', 'jdbc', 'kafka', and 's3'.
      *     <li>{@link DatasinkUpdatesMap#CONNECTION_TIMEOUT
      *         CONNECTION_TIMEOUT}: Timeout in seconds for connecting to this
      *         sink
@@ -626,25 +661,27 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *         of the Amazon S3 bucket to use as the data sink
      *     <li>{@link DatasinkUpdatesMap#S3_REGION S3_REGION}: Name of the
      *         Amazon S3 region where the given bucket is located
-     *     <li>{@link DatasinkUpdatesMap#S3_VERIFY_SSL S3_VERIFY_SSL}: Set to
-     *         false for testing purposes or when necessary to bypass TLS
-     *         errors (e.g. self-signed certificates). This value is true by
-     *         default.
+     *     <li>{@link DatasinkUpdatesMap#S3_VERIFY_SSL S3_VERIFY_SSL}: Whether
+     *         to verify SSL connections.
      *         Supported values:
      *         <ul>
-     *             <li>{@link DatasinkUpdatesMap#TRUE TRUE}
-     *             <li>{@link DatasinkUpdatesMap#FALSE FALSE}
+     *             <li>{@link DatasinkUpdatesMap#TRUE TRUE}: Connect with SSL
+     *                 verification
+     *             <li>{@link DatasinkUpdatesMap#FALSE FALSE}: Connect without
+     *                 verifying the SSL connection; for testing purposes,
+     *                 bypassing TLS errors, self-signed certificates, etc.
      *         </ul>
      *         The default value is {@link DatasinkUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasinkUpdatesMap#S3_USE_VIRTUAL_ADDRESSING
-     *         S3_USE_VIRTUAL_ADDRESSING}: When true (default), the requests
-     *         URI should be specified in virtual-hosted-style format where the
-     *         bucket name is part of the domain name in the URL.   Otherwise
-     *         set to false to use path-style URI for requests.
+     *         S3_USE_VIRTUAL_ADDRESSING}: Whether to use virtual addressing
+     *         when referencing the Amazon S3 sink.
      *         Supported values:
      *         <ul>
-     *             <li>{@link DatasinkUpdatesMap#TRUE TRUE}
-     *             <li>{@link DatasinkUpdatesMap#FALSE FALSE}
+     *             <li>{@link DatasinkUpdatesMap#TRUE TRUE}: The requests URI
+     *                 should be specified in virtual-hosted-style format where
+     *                 the bucket name is part of the domain name in the URL.
+     *             <li>{@link DatasinkUpdatesMap#FALSE FALSE}: Use path-style
+     *                 URI for requests.
      *         </ul>
      *         The default value is {@link DatasinkUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasinkUpdatesMap#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}:
@@ -693,6 +730,11 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *     <li>{@link DatasinkUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
      *         GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud service account keys to
      *         use for authenticating the data sink
+     *     <li>{@link DatasinkUpdatesMap#JDBC_DRIVER_JAR_PATH
+     *         JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location.  This may
+     *         be a KIFS file.
+     *     <li>{@link DatasinkUpdatesMap#JDBC_DRIVER_CLASS_NAME
+     *         JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
      *     <li>{@link DatasinkUpdatesMap#KAFKA_URL KAFKA_URL}: The
      *         publicly-accessible full path URL to the kafka broker, e.g.,
      *         'http://172.123.45.67:9300'.
@@ -734,13 +776,13 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *         Maximum size in bytes of each notification message. The default
      *         value is '1000000'.
      *     <li>{@link DatasinkUpdatesMap#JSON_FORMAT JSON_FORMAT}: The desired
-     *         format of JSON encoded notifications message.   If {@link
-     *         DatasinkUpdatesMap#NESTED NESTED}, records are returned as an
-     *         array. Otherwise, only a single record per messages is returned.
+     *         format of JSON encoded notifications message.
      *         Supported values:
      *         <ul>
-     *             <li>{@link DatasinkUpdatesMap#FLAT FLAT}
-     *             <li>{@link DatasinkUpdatesMap#NESTED NESTED}
+     *             <li>{@link DatasinkUpdatesMap#FLAT FLAT}: A single record is
+     *                 returned per message
+     *             <li>{@link DatasinkUpdatesMap#NESTED NESTED}: Records are
+     *                 returned as an array per message
      *         </ul>
      *         The default value is {@link DatasinkUpdatesMap#FLAT FLAT}.
      *     <li>{@link DatasinkUpdatesMap#SKIP_VALIDATION SKIP_VALIDATION}:
@@ -770,7 +812,8 @@ public class AlterDatasinkRequest implements IndexedRecord {
      * <ul>
      *     <li>{@link DatasinkUpdatesMap#DESTINATION DESTINATION}: Destination
      *         for the output data in format 'destination_type://path[:port]'.
-     *         Supported destination types are 'http', 'https' and 'kafka'.
+     *         Supported destination types are 'azure', 'gcs', 'hdfs', 'http',
+     *         'https', 'jdbc', 'kafka', and 's3'.
      *     <li>{@link DatasinkUpdatesMap#CONNECTION_TIMEOUT
      *         CONNECTION_TIMEOUT}: Timeout in seconds for connecting to this
      *         sink
@@ -783,25 +826,27 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *         of the Amazon S3 bucket to use as the data sink
      *     <li>{@link DatasinkUpdatesMap#S3_REGION S3_REGION}: Name of the
      *         Amazon S3 region where the given bucket is located
-     *     <li>{@link DatasinkUpdatesMap#S3_VERIFY_SSL S3_VERIFY_SSL}: Set to
-     *         false for testing purposes or when necessary to bypass TLS
-     *         errors (e.g. self-signed certificates). This value is true by
-     *         default.
+     *     <li>{@link DatasinkUpdatesMap#S3_VERIFY_SSL S3_VERIFY_SSL}: Whether
+     *         to verify SSL connections.
      *         Supported values:
      *         <ul>
-     *             <li>{@link DatasinkUpdatesMap#TRUE TRUE}
-     *             <li>{@link DatasinkUpdatesMap#FALSE FALSE}
+     *             <li>{@link DatasinkUpdatesMap#TRUE TRUE}: Connect with SSL
+     *                 verification
+     *             <li>{@link DatasinkUpdatesMap#FALSE FALSE}: Connect without
+     *                 verifying the SSL connection; for testing purposes,
+     *                 bypassing TLS errors, self-signed certificates, etc.
      *         </ul>
      *         The default value is {@link DatasinkUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasinkUpdatesMap#S3_USE_VIRTUAL_ADDRESSING
-     *         S3_USE_VIRTUAL_ADDRESSING}: When true (default), the requests
-     *         URI should be specified in virtual-hosted-style format where the
-     *         bucket name is part of the domain name in the URL.   Otherwise
-     *         set to false to use path-style URI for requests.
+     *         S3_USE_VIRTUAL_ADDRESSING}: Whether to use virtual addressing
+     *         when referencing the Amazon S3 sink.
      *         Supported values:
      *         <ul>
-     *             <li>{@link DatasinkUpdatesMap#TRUE TRUE}
-     *             <li>{@link DatasinkUpdatesMap#FALSE FALSE}
+     *             <li>{@link DatasinkUpdatesMap#TRUE TRUE}: The requests URI
+     *                 should be specified in virtual-hosted-style format where
+     *                 the bucket name is part of the domain name in the URL.
+     *             <li>{@link DatasinkUpdatesMap#FALSE FALSE}: Use path-style
+     *                 URI for requests.
      *         </ul>
      *         The default value is {@link DatasinkUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasinkUpdatesMap#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}:
@@ -850,6 +895,11 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *     <li>{@link DatasinkUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
      *         GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud service account keys to
      *         use for authenticating the data sink
+     *     <li>{@link DatasinkUpdatesMap#JDBC_DRIVER_JAR_PATH
+     *         JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location.  This may
+     *         be a KIFS file.
+     *     <li>{@link DatasinkUpdatesMap#JDBC_DRIVER_CLASS_NAME
+     *         JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
      *     <li>{@link DatasinkUpdatesMap#KAFKA_URL KAFKA_URL}: The
      *         publicly-accessible full path URL to the kafka broker, e.g.,
      *         'http://172.123.45.67:9300'.
@@ -891,13 +941,13 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *         Maximum size in bytes of each notification message. The default
      *         value is '1000000'.
      *     <li>{@link DatasinkUpdatesMap#JSON_FORMAT JSON_FORMAT}: The desired
-     *         format of JSON encoded notifications message.   If {@link
-     *         DatasinkUpdatesMap#NESTED NESTED}, records are returned as an
-     *         array. Otherwise, only a single record per messages is returned.
+     *         format of JSON encoded notifications message.
      *         Supported values:
      *         <ul>
-     *             <li>{@link DatasinkUpdatesMap#FLAT FLAT}
-     *             <li>{@link DatasinkUpdatesMap#NESTED NESTED}
+     *             <li>{@link DatasinkUpdatesMap#FLAT FLAT}: A single record is
+     *                 returned per message
+     *             <li>{@link DatasinkUpdatesMap#NESTED NESTED}: Records are
+     *                 returned as an array per message
      *         </ul>
      *         The default value is {@link DatasinkUpdatesMap#FLAT FLAT}.
      *     <li>{@link DatasinkUpdatesMap#SKIP_VALIDATION SKIP_VALIDATION}:

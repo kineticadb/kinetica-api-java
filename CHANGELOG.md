@@ -2,6 +2,13 @@
 
 ## Version 7.2
 
+### Version 7.2.2.6 - 2025-02-04
+
+#### Changed
+-   Switched read timeout on system status checks to the configured server
+    connection timeout
+
+
 ### Version 7.2.2.5 - 2025-01-30
 
 #### Added

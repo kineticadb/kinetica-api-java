@@ -3984,7 +3984,8 @@ public class GPUdb extends GPUdbBase {
      *                                    output data in format
      *                                    'destination_type://path[:port]'.
      *                                    Supported destination types are
-     *                                    'http', 'https' and 'kafka'.
+     *                                    'azure', 'gcs', 'hdfs', 'http',
+     *                                    'https', 'jdbc', 'kafka', and 's3'.
      *                                <li>{@link
      *                                    com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#CONNECTION_TIMEOUT
      *                                    CONNECTION_TIMEOUT}: Timeout in
@@ -4010,40 +4011,45 @@ public class GPUdb extends GPUdbBase {
      *                                    located
      *                                <li>{@link
      *                                    com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#S3_VERIFY_SSL
-     *                                    S3_VERIFY_SSL}: Set to false for
-     *                                    testing purposes or when necessary to
-     *                                    bypass TLS errors (e.g. self-signed
-     *                                    certificates). This value is true by
-     *                                    default.
+     *                                    S3_VERIFY_SSL}: Whether to verify SSL
+     *                                    connections.
      *                                    Supported values:
      *                                    <ul>
      *                                        <li>{@link
      *                                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#TRUE
-     *                                            TRUE}
+     *                                            TRUE}: Connect with SSL
+     *                                            verification
      *                                        <li>{@link
      *                                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FALSE
-     *                                            FALSE}
+     *                                            FALSE}: Connect without
+     *                                            verifying the SSL connection;
+     *                                            for testing purposes,
+     *                                            bypassing TLS errors,
+     *                                            self-signed certificates,
+     *                                            etc.
      *                                    </ul>
      *                                    The default value is {@link
      *                                    com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#TRUE
      *                                    TRUE}.
      *                                <li>{@link
      *                                    com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#S3_USE_VIRTUAL_ADDRESSING
-     *                                    S3_USE_VIRTUAL_ADDRESSING}: When true
-     *                                    (default), the requests URI should be
-     *                                    specified in virtual-hosted-style
-     *                                    format where the bucket name is part
-     *                                    of the domain name in the URL.
-     *                                    Otherwise set to false to use
-     *                                    path-style URI for requests.
+     *                                    S3_USE_VIRTUAL_ADDRESSING}: Whether
+     *                                    to use virtual addressing when
+     *                                    referencing the Amazon S3 sink.
      *                                    Supported values:
      *                                    <ul>
      *                                        <li>{@link
      *                                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#TRUE
-     *                                            TRUE}
+     *                                            TRUE}: The requests URI
+     *                                            should be specified in
+     *                                            virtual-hosted-style format
+     *                                            where the bucket name is part
+     *                                            of the domain name in the
+     *                                            URL.
      *                                        <li>{@link
      *                                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FALSE
-     *                                            FALSE}
+     *                                            FALSE}: Use path-style URI
+     *                                            for requests.
      *                                    </ul>
      *                                    The default value is {@link
      *                                    com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#TRUE
@@ -4136,6 +4142,15 @@ public class GPUdb extends GPUdbBase {
      *                                    Cloud service account keys to use for
      *                                    authenticating the data sink
      *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#JDBC_DRIVER_JAR_PATH
+     *                                    JDBC_DRIVER_JAR_PATH}: JDBC driver
+     *                                    jar file location.  This may be a
+     *                                    KIFS file.
+     *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#JDBC_DRIVER_CLASS_NAME
+     *                                    JDBC_DRIVER_CLASS_NAME}: Name of the
+     *                                    JDBC driver class
+     *                                <li>{@link
      *                                    com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#KAFKA_URL
      *                                    KAFKA_URL}: The publicly-accessible
      *                                    full path URL to the kafka broker,
@@ -4214,19 +4229,16 @@ public class GPUdb extends GPUdbBase {
      *                                    com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#JSON_FORMAT
      *                                    JSON_FORMAT}: The desired format of
      *                                    JSON encoded notifications message.
-     *                                    If {@link
-     *                                    com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#NESTED
-     *                                    NESTED}, records are returned as an
-     *                                    array. Otherwise, only a single
-     *                                    record per messages is returned.
      *                                    Supported values:
      *                                    <ul>
      *                                        <li>{@link
      *                                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FLAT
-     *                                            FLAT}
+     *                                            FLAT}: A single record is
+     *                                            returned per message
      *                                        <li>{@link
      *                                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#NESTED
-     *                                            NESTED}
+     *                                            NESTED}: Records are returned
+     *                                            as an array per message
      *                                    </ul>
      *                                    The default value is {@link
      *                                    com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FLAT
@@ -4307,8 +4319,8 @@ public class GPUdb extends GPUdbBase {
      *                                      storage in
      *                                      'storage_provider_type://[storage_path[:storage_port]]'
      *                                      format.  Supported storage provider
-     *                                      types are
-     *                                      'azure','gcs','hdfs','kafka' and
+     *                                      types are 'azure', 'gcs', 'hdfs',
+     *                                      'jdbc', 'kafka', 'confluent', and
      *                                      's3'.
      *                                  <li>{@link
      *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#USER_NAME
@@ -4361,19 +4373,22 @@ public class GPUdb extends GPUdbBase {
      *                                      located
      *                                  <li>{@link
      *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#S3_VERIFY_SSL
-     *                                      S3_VERIFY_SSL}: Set to false for
-     *                                      testing purposes or when necessary
-     *                                      to bypass TLS errors (e.g.
-     *                                      self-signed certificates). This
-     *                                      value is true by default.
+     *                                      S3_VERIFY_SSL}: Whether to verify
+     *                                      SSL connections.
      *                                      Supported values:
      *                                      <ul>
      *                                          <li>{@link
      *                                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
-     *                                              TRUE}
+     *                                              TRUE}: Connect with SSL
+     *                                              verification
      *                                          <li>{@link
      *                                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
-     *                                              FALSE}
+     *                                              FALSE}: Connect without
+     *                                              verifying the SSL
+     *                                              connection; for testing
+     *                                              purposes, bypassing TLS
+     *                                              errors, self-signed
+     *                                              certificates, etc.
      *                                      </ul>
      *                                      The default value is {@link
      *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
@@ -4484,6 +4499,15 @@ public class GPUdb extends GPUdbBase {
      *                                      Cloud service account keys to use
      *                                      for authenticating the data source
      *                                  <li>{@link
+     *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#JDBC_DRIVER_JAR_PATH
+     *                                      JDBC_DRIVER_JAR_PATH}: JDBC driver
+     *                                      jar file location.  This may be a
+     *                                      KIFS file.
+     *                                  <li>{@link
+     *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#JDBC_DRIVER_CLASS_NAME
+     *                                      JDBC_DRIVER_CLASS_NAME}: Name of
+     *                                      the JDBC driver class
+     *                                  <li>{@link
      *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_URL
      *                                      KAFKA_URL}: The publicly-accessible
      *                                      full path URL to the Kafka broker,
@@ -4493,15 +4517,6 @@ public class GPUdb extends GPUdbBase {
      *                                      KAFKA_TOPIC_NAME}: Name of the
      *                                      Kafka topic to use as the data
      *                                      source
-     *                                  <li>{@link
-     *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#JDBC_DRIVER_JAR_PATH
-     *                                      JDBC_DRIVER_JAR_PATH}: JDBC driver
-     *                                      jar file location.  This may be a
-     *                                      KIFS file.
-     *                                  <li>{@link
-     *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#JDBC_DRIVER_CLASS_NAME
-     *                                      JDBC_DRIVER_CLASS_NAME}: Name of
-     *                                      the JDBC driver class
      *                                  <li>{@link
      *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#ANONYMOUS
      *                                      ANONYMOUS}: Create an anonymous
@@ -7268,7 +7283,7 @@ public class GPUdb extends GPUdbBase {
      * @param destination  Destination for the output data in format
      *                     'storage_provider_type://path[:port]'.  Supported
      *                     storage provider types are 'azure', 'gcs', 'hdfs',
-     *                     'http', 'https', 'jdbc', 'kafka' and 's3'.
+     *                     'http', 'https', 'jdbc', 'kafka', and 's3'.
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link
@@ -7295,38 +7310,39 @@ public class GPUdb extends GPUdbBase {
      *                         the given bucket is located
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateDatasinkRequest.Options#S3_VERIFY_SSL
-     *                         S3_VERIFY_SSL}: Set to false for testing
-     *                         purposes or when necessary to bypass TLS errors
-     *                         (e.g. self-signed certificates). This value is
-     *                         true by default.
+     *                         S3_VERIFY_SSL}: Whether to verify SSL
+     *                         connections.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateDatasinkRequest.Options#TRUE
-     *                                 TRUE}
+     *                                 TRUE}: Connect with SSL verification
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateDatasinkRequest.Options#FALSE
-     *                                 FALSE}
+     *                                 FALSE}: Connect without verifying the
+     *                                 SSL connection; for testing purposes,
+     *                                 bypassing TLS errors, self-signed
+     *                                 certificates, etc.
      *                         </ul>
      *                         The default value is {@link
      *                         com.gpudb.protocol.CreateDatasinkRequest.Options#TRUE
      *                         TRUE}.
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateDatasinkRequest.Options#S3_USE_VIRTUAL_ADDRESSING
-     *                         S3_USE_VIRTUAL_ADDRESSING}: When true (default),
-     *                         the requests URI should be specified in
-     *                         virtual-hosted-style format where the bucket
-     *                         name is part of the domain name in the URL.
-     *                         Otherwise set to false to use path-style URI for
-     *                         requests.
+     *                         S3_USE_VIRTUAL_ADDRESSING}: Whether to use
+     *                         virtual addressing when referencing the Amazon
+     *                         S3 sink.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateDatasinkRequest.Options#TRUE
-     *                                 TRUE}
+     *                                 TRUE}: The requests URI should be
+     *                                 specified in virtual-hosted-style format
+     *                                 where the bucket name is part of the
+     *                                 domain name in the URL.
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateDatasinkRequest.Options#FALSE
-     *                                 FALSE}
+     *                                 FALSE}: Use path-style URI for requests.
      *                         </ul>
      *                         The default value is {@link
      *                         com.gpudb.protocol.CreateDatasinkRequest.Options#TRUE
@@ -7435,19 +7451,17 @@ public class GPUdb extends GPUdbBase {
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateDatasinkRequest.Options#JSON_FORMAT
      *                         JSON_FORMAT}: The desired format of JSON encoded
-     *                         notifications message.   If {@link
-     *                         com.gpudb.protocol.CreateDatasinkRequest.Options#NESTED
-     *                         NESTED}, records are returned as an array.
-     *                         Otherwise, only a single record per messages is
-     *                         returned.
+     *                         notifications message.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateDatasinkRequest.Options#FLAT
-     *                                 FLAT}
+     *                                 FLAT}: A single record is returned per
+     *                                 message
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateDatasinkRequest.Options#NESTED
-     *                                 NESTED}
+     *                                 NESTED}: Records are returned as an
+     *                                 array per message
      *                         </ul>
      *                         The default value is {@link
      *                         com.gpudb.protocol.CreateDatasinkRequest.Options#FLAT
@@ -7546,9 +7560,8 @@ public class GPUdb extends GPUdbBase {
      * @param name  Name of the data source to be created.
      * @param location  Location of the remote storage in
      *                  'storage_provider_type://[storage_path[:storage_port]]'
-     *                  format.  Supported storage provider types are
-     *                  'azure','gcs','hdfs','jdbc','kafka', 'confluent' and
-     *                  's3'.
+     *                  format.  Supported storage provider types are 'azure',
+     *                  'gcs', 'hdfs', 'jdbc', 'kafka', 'confluent', and 's3'.
      * @param userName  Name of the remote system user; may be an empty string
      * @param password  Password for the remote system user; may be an empty
      *                  string
@@ -7594,18 +7607,19 @@ public class GPUdb extends GPUdbBase {
      *                         the given bucket is located
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateDatasourceRequest.Options#S3_VERIFY_SSL
-     *                         S3_VERIFY_SSL}: Set to false for testing
-     *                         purposes or when necessary to bypass TLS errors
-     *                         (e.g. self-signed certificates). This value is
-     *                         true by default.
+     *                         S3_VERIFY_SSL}: Whether to verify SSL
+     *                         connections.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
-     *                                 TRUE}
+     *                                 TRUE}: Connect with SSL verification
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE
-     *                                 FALSE}
+     *                                 FALSE}: Connect without verifying the
+     *                                 SSL connection; for testing purposes,
+     *                                 bypassing TLS errors, self-signed
+     *                                 certificates, etc.
      *                         </ul>
      *                         The default value is {@link
      *                         com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE

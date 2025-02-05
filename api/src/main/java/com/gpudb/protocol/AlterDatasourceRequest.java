@@ -53,8 +53,8 @@ public class AlterDatasourceRequest implements IndexedRecord {
          * Location of the remote storage in
          * 'storage_provider_type://[storage_path[:storage_port]]' format.
          * <p>
-         * Supported storage provider types are 'azure','gcs','hdfs','kafka'
-         * and 's3'.
+         * Supported storage provider types are 'azure', 'gcs', 'hdfs', 'jdbc',
+         * 'kafka', 'confluent', and 's3'.
          */
         public static final String LOCATION = "location";
 
@@ -109,13 +109,14 @@ public class AlterDatasourceRequest implements IndexedRecord {
         public static final String S3_REGION = "s3_region";
 
         /**
-         * Set to false for testing purposes or when necessary to bypass TLS
-         * errors (e.g.&nbsp;self-signed certificates). This value is true by
-         * default.
+         * Whether to verify SSL connections.
          * Supported values:
          * <ul>
-         *     <li>{@link DatasourceUpdatesMap#TRUE TRUE}
-         *     <li>{@link DatasourceUpdatesMap#FALSE FALSE}
+         *     <li>{@link DatasourceUpdatesMap#TRUE TRUE}: Connect with SSL
+         *         verification
+         *     <li>{@link DatasourceUpdatesMap#FALSE FALSE}: Connect without
+         *         verifying the SSL connection; for testing purposes,
+         *         bypassing TLS errors, self-signed certificates, etc.
          * </ul>
          * The default value is {@link DatasourceUpdatesMap#TRUE TRUE}.
          */
@@ -218,6 +219,16 @@ public class AlterDatasourceRequest implements IndexedRecord {
         public static final String GCS_SERVICE_ACCOUNT_KEYS = "gcs_service_account_keys";
 
         /**
+         * JDBC driver jar file location.  This may be a KIFS file.
+         */
+        public static final String JDBC_DRIVER_JAR_PATH = "jdbc_driver_jar_path";
+
+        /**
+         * Name of the JDBC driver class
+         */
+        public static final String JDBC_DRIVER_CLASS_NAME = "jdbc_driver_class_name";
+
+        /**
          * The publicly-accessible full path URL to the Kafka broker, e.g.,
          * 'http://172.123.45.67:9300'.
          */
@@ -227,16 +238,6 @@ public class AlterDatasourceRequest implements IndexedRecord {
          * Name of the Kafka topic to use as the data source
          */
         public static final String KAFKA_TOPIC_NAME = "kafka_topic_name";
-
-        /**
-         * JDBC driver jar file location.  This may be a KIFS file.
-         */
-        public static final String JDBC_DRIVER_JAR_PATH = "jdbc_driver_jar_path";
-
-        /**
-         * Name of the JDBC driver class
-         */
-        public static final String JDBC_DRIVER_CLASS_NAME = "jdbc_driver_class_name";
 
         /**
          * Create an anonymous connection to the storage provider--DEPRECATED:
@@ -331,8 +332,8 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                      storage in
      *                                      'storage_provider_type://[storage_path[:storage_port]]'
      *                                      format.  Supported storage provider
-     *                                      types are
-     *                                      'azure','gcs','hdfs','kafka' and
+     *                                      types are 'azure', 'gcs', 'hdfs',
+     *                                      'jdbc', 'kafka', 'confluent', and
      *                                      's3'.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#USER_NAME
@@ -384,19 +385,22 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                      located
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#S3_VERIFY_SSL
-     *                                      S3_VERIFY_SSL}: Set to false for
-     *                                      testing purposes or when necessary
-     *                                      to bypass TLS errors (e.g.
-     *                                      self-signed certificates). This
-     *                                      value is true by default.
+     *                                      S3_VERIFY_SSL}: Whether to verify
+     *                                      SSL connections.
      *                                      Supported values:
      *                                      <ul>
      *                                          <li>{@link
      *                                              DatasourceUpdatesMap#TRUE
-     *                                              TRUE}
+     *                                              TRUE}: Connect with SSL
+     *                                              verification
      *                                          <li>{@link
      *                                              DatasourceUpdatesMap#FALSE
-     *                                              FALSE}
+     *                                              FALSE}: Connect without
+     *                                              verifying the SSL
+     *                                              connection; for testing
+     *                                              purposes, bypassing TLS
+     *                                              errors, self-signed
+     *                                              certificates, etc.
      *                                      </ul>
      *                                      The default value is {@link
      *                                      DatasourceUpdatesMap#TRUE TRUE}.
@@ -504,6 +508,15 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                      Cloud service account keys to use
      *                                      for authenticating the data source
      *                                  <li>{@link
+     *                                      DatasourceUpdatesMap#JDBC_DRIVER_JAR_PATH
+     *                                      JDBC_DRIVER_JAR_PATH}: JDBC driver
+     *                                      jar file location.  This may be a
+     *                                      KIFS file.
+     *                                  <li>{@link
+     *                                      DatasourceUpdatesMap#JDBC_DRIVER_CLASS_NAME
+     *                                      JDBC_DRIVER_CLASS_NAME}: Name of
+     *                                      the JDBC driver class
+     *                                  <li>{@link
      *                                      DatasourceUpdatesMap#KAFKA_URL
      *                                      KAFKA_URL}: The publicly-accessible
      *                                      full path URL to the Kafka broker,
@@ -513,15 +526,6 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                      KAFKA_TOPIC_NAME}: Name of the
      *                                      Kafka topic to use as the data
      *                                      source
-     *                                  <li>{@link
-     *                                      DatasourceUpdatesMap#JDBC_DRIVER_JAR_PATH
-     *                                      JDBC_DRIVER_JAR_PATH}: JDBC driver
-     *                                      jar file location.  This may be a
-     *                                      KIFS file.
-     *                                  <li>{@link
-     *                                      DatasourceUpdatesMap#JDBC_DRIVER_CLASS_NAME
-     *                                      JDBC_DRIVER_CLASS_NAME}: Name of
-     *                                      the JDBC driver class
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#ANONYMOUS
      *                                      ANONYMOUS}: Create an anonymous
@@ -639,8 +643,8 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *     <li>{@link DatasourceUpdatesMap#LOCATION LOCATION}: Location of the
      *         remote storage in
      *         'storage_provider_type://[storage_path[:storage_port]]' format.
-     *         Supported storage provider types are
-     *         'azure','gcs','hdfs','kafka' and 's3'.
+     *         Supported storage provider types are 'azure', 'gcs', 'hdfs',
+     *         'jdbc', 'kafka', 'confluent', and 's3'.
      *     <li>{@link DatasourceUpdatesMap#USER_NAME USER_NAME}: Name of the
      *         remote system user; may be an empty string
      *     <li>{@link DatasourceUpdatesMap#PASSWORD PASSWORD}: Password for the
@@ -665,14 +669,16 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         of the Amazon S3 bucket to use as the data source
      *     <li>{@link DatasourceUpdatesMap#S3_REGION S3_REGION}: Name of the
      *         Amazon S3 region where the given bucket is located
-     *     <li>{@link DatasourceUpdatesMap#S3_VERIFY_SSL S3_VERIFY_SSL}: Set to
-     *         false for testing purposes or when necessary to bypass TLS
-     *         errors (e.g. self-signed certificates). This value is true by
-     *         default.
+     *     <li>{@link DatasourceUpdatesMap#S3_VERIFY_SSL S3_VERIFY_SSL}:
+     *         Whether to verify SSL connections.
      *         Supported values:
      *         <ul>
-     *             <li>{@link DatasourceUpdatesMap#TRUE TRUE}
-     *             <li>{@link DatasourceUpdatesMap#FALSE FALSE}
+     *             <li>{@link DatasourceUpdatesMap#TRUE TRUE}: Connect with SSL
+     *                 verification
+     *             <li>{@link DatasourceUpdatesMap#FALSE FALSE}: Connect
+     *                 without verifying the SSL connection; for testing
+     *                 purposes, bypassing TLS errors, self-signed
+     *                 certificates, etc.
      *         </ul>
      *         The default value is {@link DatasourceUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasourceUpdatesMap#S3_USE_VIRTUAL_ADDRESSING
@@ -733,16 +739,16 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *     <li>{@link DatasourceUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
      *         GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud service account keys to
      *         use for authenticating the data source
-     *     <li>{@link DatasourceUpdatesMap#KAFKA_URL KAFKA_URL}: The
-     *         publicly-accessible full path URL to the Kafka broker, e.g.,
-     *         'http://172.123.45.67:9300'.
-     *     <li>{@link DatasourceUpdatesMap#KAFKA_TOPIC_NAME KAFKA_TOPIC_NAME}:
-     *         Name of the Kafka topic to use as the data source
      *     <li>{@link DatasourceUpdatesMap#JDBC_DRIVER_JAR_PATH
      *         JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location.  This may
      *         be a KIFS file.
      *     <li>{@link DatasourceUpdatesMap#JDBC_DRIVER_CLASS_NAME
      *         JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
+     *     <li>{@link DatasourceUpdatesMap#KAFKA_URL KAFKA_URL}: The
+     *         publicly-accessible full path URL to the Kafka broker, e.g.,
+     *         'http://172.123.45.67:9300'.
+     *     <li>{@link DatasourceUpdatesMap#KAFKA_TOPIC_NAME KAFKA_TOPIC_NAME}:
+     *         Name of the Kafka topic to use as the data source
      *     <li>{@link DatasourceUpdatesMap#ANONYMOUS ANONYMOUS}: Create an
      *         anonymous connection to the storage provider--DEPRECATED: this
      *         is now the default.  Specify use_managed_credentials for
@@ -801,8 +807,8 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *     <li>{@link DatasourceUpdatesMap#LOCATION LOCATION}: Location of the
      *         remote storage in
      *         'storage_provider_type://[storage_path[:storage_port]]' format.
-     *         Supported storage provider types are
-     *         'azure','gcs','hdfs','kafka' and 's3'.
+     *         Supported storage provider types are 'azure', 'gcs', 'hdfs',
+     *         'jdbc', 'kafka', 'confluent', and 's3'.
      *     <li>{@link DatasourceUpdatesMap#USER_NAME USER_NAME}: Name of the
      *         remote system user; may be an empty string
      *     <li>{@link DatasourceUpdatesMap#PASSWORD PASSWORD}: Password for the
@@ -827,14 +833,16 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         of the Amazon S3 bucket to use as the data source
      *     <li>{@link DatasourceUpdatesMap#S3_REGION S3_REGION}: Name of the
      *         Amazon S3 region where the given bucket is located
-     *     <li>{@link DatasourceUpdatesMap#S3_VERIFY_SSL S3_VERIFY_SSL}: Set to
-     *         false for testing purposes or when necessary to bypass TLS
-     *         errors (e.g. self-signed certificates). This value is true by
-     *         default.
+     *     <li>{@link DatasourceUpdatesMap#S3_VERIFY_SSL S3_VERIFY_SSL}:
+     *         Whether to verify SSL connections.
      *         Supported values:
      *         <ul>
-     *             <li>{@link DatasourceUpdatesMap#TRUE TRUE}
-     *             <li>{@link DatasourceUpdatesMap#FALSE FALSE}
+     *             <li>{@link DatasourceUpdatesMap#TRUE TRUE}: Connect with SSL
+     *                 verification
+     *             <li>{@link DatasourceUpdatesMap#FALSE FALSE}: Connect
+     *                 without verifying the SSL connection; for testing
+     *                 purposes, bypassing TLS errors, self-signed
+     *                 certificates, etc.
      *         </ul>
      *         The default value is {@link DatasourceUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasourceUpdatesMap#S3_USE_VIRTUAL_ADDRESSING
@@ -895,16 +903,16 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *     <li>{@link DatasourceUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
      *         GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud service account keys to
      *         use for authenticating the data source
-     *     <li>{@link DatasourceUpdatesMap#KAFKA_URL KAFKA_URL}: The
-     *         publicly-accessible full path URL to the Kafka broker, e.g.,
-     *         'http://172.123.45.67:9300'.
-     *     <li>{@link DatasourceUpdatesMap#KAFKA_TOPIC_NAME KAFKA_TOPIC_NAME}:
-     *         Name of the Kafka topic to use as the data source
      *     <li>{@link DatasourceUpdatesMap#JDBC_DRIVER_JAR_PATH
      *         JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location.  This may
      *         be a KIFS file.
      *     <li>{@link DatasourceUpdatesMap#JDBC_DRIVER_CLASS_NAME
      *         JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
+     *     <li>{@link DatasourceUpdatesMap#KAFKA_URL KAFKA_URL}: The
+     *         publicly-accessible full path URL to the Kafka broker, e.g.,
+     *         'http://172.123.45.67:9300'.
+     *     <li>{@link DatasourceUpdatesMap#KAFKA_TOPIC_NAME KAFKA_TOPIC_NAME}:
+     *         Name of the Kafka topic to use as the data source
      *     <li>{@link DatasourceUpdatesMap#ANONYMOUS ANONYMOUS}: Create an
      *         anonymous connection to the storage provider--DEPRECATED: this
      *         is now the default.  Specify use_managed_credentials for
