@@ -314,6 +314,37 @@ public class CreateTableRequest implements IndexedRecord {
          */
         public static final String STRATEGY_DEFINITION = "strategy_definition";
 
+        /**
+         * Set startup data loading scheme for the table.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#ALWAYS ALWAYS}
+         *     <li>{@link Options#LAZY LAZY}
+         *     <li>{@link Options#ON_DEMAND ON_DEMAND}
+         *     <li>{@link Options#SYSTEM SYSTEM}
+         * </ul>
+         * The default value is {@link Options#EMPTY_STRING EMPTY_STRING}.
+         */
+        public static final String LOAD_VECTORS_POLICY = "load_vectors_policy";
+
+        public static final String ALWAYS = "always";
+        public static final String LAZY = "lazy";
+        public static final String ON_DEMAND = "on_demand";
+        public static final String SYSTEM = "system";
+
+        /**
+         * Set startup primary-key index generation scheme for the table.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#ALWAYS ALWAYS}
+         *     <li>{@link Options#LAZY LAZY}
+         *     <li>{@link Options#ON_DEMAND ON_DEMAND}
+         *     <li>{@link Options#SYSTEM SYSTEM}
+         * </ul>
+         * The default value is {@link Options#EMPTY_STRING EMPTY_STRING}.
+         */
+        public static final String BUILD_PK_INDEX_POLICY = "build_pk_index_policy";
+
         private Options() {  }
     }
 
@@ -546,6 +577,30 @@ public class CreateTableRequest implements IndexedRecord {
      *                         href="../../../../../../rm/concepts/#tier-strategies"
      *                         target="_top">tier strategy</a> for the table
      *                         and its columns.
+     *                     <li>{@link Options#LOAD_VECTORS_POLICY
+     *                         LOAD_VECTORS_POLICY}: Set startup data loading
+     *                         scheme for the table.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#ALWAYS ALWAYS}
+     *                             <li>{@link Options#LAZY LAZY}
+     *                             <li>{@link Options#ON_DEMAND ON_DEMAND}
+     *                             <li>{@link Options#SYSTEM SYSTEM}
+     *                         </ul>
+     *                         The default value is {@link Options#EMPTY_STRING
+     *                         EMPTY_STRING}.
+     *                     <li>{@link Options#BUILD_PK_INDEX_POLICY
+     *                         BUILD_PK_INDEX_POLICY}: Set startup primary-key
+     *                         index generation scheme for the table.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#ALWAYS ALWAYS}
+     *                             <li>{@link Options#LAZY LAZY}
+     *                             <li>{@link Options#ON_DEMAND ON_DEMAND}
+     *                             <li>{@link Options#SYSTEM SYSTEM}
+     *                         </ul>
+     *                         The default value is {@link Options#EMPTY_STRING
+     *                         EMPTY_STRING}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -781,6 +836,26 @@ public class CreateTableRequest implements IndexedRecord {
      *     <li>{@link Options#STRATEGY_DEFINITION STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
+     *     <li>{@link Options#LOAD_VECTORS_POLICY LOAD_VECTORS_POLICY}: Set
+     *         startup data loading scheme for the table.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#ALWAYS ALWAYS}
+     *             <li>{@link Options#LAZY LAZY}
+     *             <li>{@link Options#ON_DEMAND ON_DEMAND}
+     *             <li>{@link Options#SYSTEM SYSTEM}
+     *         </ul>
+     *         The default value is {@link Options#EMPTY_STRING EMPTY_STRING}.
+     *     <li>{@link Options#BUILD_PK_INDEX_POLICY BUILD_PK_INDEX_POLICY}: Set
+     *         startup primary-key index generation scheme for the table.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#ALWAYS ALWAYS}
+     *             <li>{@link Options#LAZY LAZY}
+     *             <li>{@link Options#ON_DEMAND ON_DEMAND}
+     *             <li>{@link Options#SYSTEM SYSTEM}
+     *         </ul>
+     *         The default value is {@link Options#EMPTY_STRING EMPTY_STRING}.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -958,6 +1033,26 @@ public class CreateTableRequest implements IndexedRecord {
      *     <li>{@link Options#STRATEGY_DEFINITION STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
+     *     <li>{@link Options#LOAD_VECTORS_POLICY LOAD_VECTORS_POLICY}: Set
+     *         startup data loading scheme for the table.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#ALWAYS ALWAYS}
+     *             <li>{@link Options#LAZY LAZY}
+     *             <li>{@link Options#ON_DEMAND ON_DEMAND}
+     *             <li>{@link Options#SYSTEM SYSTEM}
+     *         </ul>
+     *         The default value is {@link Options#EMPTY_STRING EMPTY_STRING}.
+     *     <li>{@link Options#BUILD_PK_INDEX_POLICY BUILD_PK_INDEX_POLICY}: Set
+     *         startup primary-key index generation scheme for the table.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#ALWAYS ALWAYS}
+     *             <li>{@link Options#LAZY LAZY}
+     *             <li>{@link Options#ON_DEMAND ON_DEMAND}
+     *             <li>{@link Options#SYSTEM SYSTEM}
+     *         </ul>
+     *         The default value is {@link Options#EMPTY_STRING EMPTY_STRING}.
      * </ul>
      * The default value is an empty {@link Map}.
      *

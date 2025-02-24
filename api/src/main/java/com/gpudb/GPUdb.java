@@ -5882,7 +5882,34 @@ public class GPUdb extends GPUdbBase {
      *                        com.gpudb.protocol.AlterTableRequest.Action#CHANGE_OWNER
      *                        CHANGE_OWNER}: Change the owner resource group of
      *                        the table.
+     *                    <li>{@link
+     *                        com.gpudb.protocol.AlterTableRequest.Action#SET_LOAD_VECTORS_POLICY
+     *                        SET_LOAD_VECTORS_POLICY}: Set startup data
+     *                        loading scheme for the table
+     *                    <li>{@link
+     *                        com.gpudb.protocol.AlterTableRequest.Action#ALWAYS
+     *                        ALWAYS}
+     *                    <li>{@link
+     *                        com.gpudb.protocol.AlterTableRequest.Action#LAZY
+     *                        LAZY}
+     *                    <li>{@link
+     *                        com.gpudb.protocol.AlterTableRequest.Action#ON_DEMAND
+     *                        ON_DEMAND}
+     *                    <li>{@link
+     *                        com.gpudb.protocol.AlterTableRequest.Action#SYSTEM
+     *                        SYSTEM}
+     *                    <li>{@link
+     *                        com.gpudb.protocol.AlterTableRequest.Action#SET_BUILD_PK_INDEX_POLICY
+     *                        SET_BUILD_PK_INDEX_POLICY}: Set startup primary
+     *                        key generation scheme for the table
+     *                    <li>{@link
+     *                        com.gpudb.protocol.AlterTableRequest.Action#SET_BUILD_MATERIALIZED_VIEW_POLICY
+     *                        SET_BUILD_MATERIALIZED_VIEW_POLICY}: Set startup
+     *                        rebuild scheme for the materialized view
      *                </ul>
+     *                The default value is {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#EMPTY_STRING
+     *                EMPTY_STRING}.
      * @param value  The value of the modification, depending on {@code
      *               action}. For example, if {@code action} is {@link
      *               com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN
@@ -8599,6 +8626,28 @@ public class GPUdb extends GPUdbBase {
      *                         EXECUTE_AS}: User name to use to run the refresh
      *                         job
      *                     <li>{@link
+     *                         com.gpudb.protocol.CreateMaterializedViewRequest.Options#BUILD_MATERIALIZED_VIEW_POLICY
+     *                         BUILD_MATERIALIZED_VIEW_POLICY}: Sets startup
+     *                         materialized view rebuild scheme.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#ALWAYS
+     *                                 ALWAYS}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#LAZY
+     *                                 LAZY}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_DEMAND
+     *                                 ON_DEMAND}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#SYSTEM
+     *                                 SYSTEM}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.CreateMaterializedViewRequest.Options#EMPTY_STRING
+     *                         EMPTY_STRING}.
+     *                     <li>{@link
      *                         com.gpudb.protocol.CreateMaterializedViewRequest.Options#PERSIST
      *                         PERSIST}: If {@link
      *                         com.gpudb.protocol.CreateMaterializedViewRequest.Options#TRUE
@@ -9794,6 +9843,50 @@ public class GPUdb extends GPUdbBase {
      *                         href="../../../../../rm/concepts/#tier-strategies"
      *                         target="_top">tier strategy</a> for the table
      *                         and its columns.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateTableRequest.Options#LOAD_VECTORS_POLICY
+     *                         LOAD_VECTORS_POLICY}: Set startup data loading
+     *                         scheme for the table.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateTableRequest.Options#ALWAYS
+     *                                 ALWAYS}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateTableRequest.Options#LAZY
+     *                                 LAZY}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateTableRequest.Options#ON_DEMAND
+     *                                 ON_DEMAND}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateTableRequest.Options#SYSTEM
+     *                                 SYSTEM}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.CreateTableRequest.Options#EMPTY_STRING
+     *                         EMPTY_STRING}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateTableRequest.Options#BUILD_PK_INDEX_POLICY
+     *                         BUILD_PK_INDEX_POLICY}: Set startup primary-key
+     *                         index generation scheme for the table.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateTableRequest.Options#ALWAYS
+     *                                 ALWAYS}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateTableRequest.Options#LAZY
+     *                                 LAZY}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateTableRequest.Options#ON_DEMAND
+     *                                 ON_DEMAND}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateTableRequest.Options#SYSTEM
+     *                                 SYSTEM}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.CreateTableRequest.Options#EMPTY_STRING
+     *                         EMPTY_STRING}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      *

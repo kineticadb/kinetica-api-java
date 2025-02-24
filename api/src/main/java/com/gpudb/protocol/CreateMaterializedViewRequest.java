@@ -71,6 +71,24 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
         public static final String EXECUTE_AS = "execute_as";
 
         /**
+         * Sets startup materialized view rebuild scheme.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#ALWAYS ALWAYS}
+         *     <li>{@link Options#LAZY LAZY}
+         *     <li>{@link Options#ON_DEMAND ON_DEMAND}
+         *     <li>{@link Options#SYSTEM SYSTEM}
+         * </ul>
+         * The default value is {@link Options#EMPTY_STRING EMPTY_STRING}.
+         */
+        public static final String BUILD_MATERIALIZED_VIEW_POLICY = "build_materialized_view_policy";
+
+        public static final String ALWAYS = "always";
+        public static final String LAZY = "lazy";
+        public static final String ON_DEMAND = "on_demand";
+        public static final String SYSTEM = "system";
+
+        /**
          * If {@link Options#TRUE TRUE}, then the materialized view specified
          * in {@link #getTableName() tableName} will be persisted and will not
          * expire unless a {@link Options#TTL TTL} is specified.   If {@link
@@ -215,6 +233,18 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                         automatically created.
      *                     <li>{@link Options#EXECUTE_AS EXECUTE_AS}: User name
      *                         to use to run the refresh job
+     *                     <li>{@link Options#BUILD_MATERIALIZED_VIEW_POLICY
+     *                         BUILD_MATERIALIZED_VIEW_POLICY}: Sets startup
+     *                         materialized view rebuild scheme.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#ALWAYS ALWAYS}
+     *                             <li>{@link Options#LAZY LAZY}
+     *                             <li>{@link Options#ON_DEMAND ON_DEMAND}
+     *                             <li>{@link Options#SYSTEM SYSTEM}
+     *                         </ul>
+     *                         The default value is {@link Options#EMPTY_STRING
+     *                         EMPTY_STRING}.
      *                     <li>{@link Options#PERSIST PERSIST}: If {@link
      *                         Options#TRUE TRUE}, then the materialized view
      *                         specified in {@code tableName} will be persisted
@@ -336,6 +366,17 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *         created.
      *     <li>{@link Options#EXECUTE_AS EXECUTE_AS}: User name to use to run
      *         the refresh job
+     *     <li>{@link Options#BUILD_MATERIALIZED_VIEW_POLICY
+     *         BUILD_MATERIALIZED_VIEW_POLICY}: Sets startup materialized view
+     *         rebuild scheme.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#ALWAYS ALWAYS}
+     *             <li>{@link Options#LAZY LAZY}
+     *             <li>{@link Options#ON_DEMAND ON_DEMAND}
+     *             <li>{@link Options#SYSTEM SYSTEM}
+     *         </ul>
+     *         The default value is {@link Options#EMPTY_STRING EMPTY_STRING}.
      *     <li>{@link Options#PERSIST PERSIST}: If {@link Options#TRUE TRUE},
      *         then the materialized view specified in {@link #getTableName()
      *         tableName} will be persisted and will not expire unless a {@link
@@ -410,6 +451,17 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *         created.
      *     <li>{@link Options#EXECUTE_AS EXECUTE_AS}: User name to use to run
      *         the refresh job
+     *     <li>{@link Options#BUILD_MATERIALIZED_VIEW_POLICY
+     *         BUILD_MATERIALIZED_VIEW_POLICY}: Sets startup materialized view
+     *         rebuild scheme.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#ALWAYS ALWAYS}
+     *             <li>{@link Options#LAZY LAZY}
+     *             <li>{@link Options#ON_DEMAND ON_DEMAND}
+     *             <li>{@link Options#SYSTEM SYSTEM}
+     *         </ul>
+     *         The default value is {@link Options#EMPTY_STRING EMPTY_STRING}.
      *     <li>{@link Options#PERSIST PERSIST}: If {@link Options#TRUE TRUE},
      *         then the materialized view specified in {@link #getTableName()
      *         tableName} will be persisted and will not expire unless a {@link

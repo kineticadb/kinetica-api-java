@@ -387,6 +387,26 @@ public class AlterTableRequest implements IndexedRecord {
          */
         public static final String CHANGE_OWNER = "change_owner";
 
+        /**
+         * Set startup data loading scheme for the table
+         */
+        public static final String SET_LOAD_VECTORS_POLICY = "set_load_vectors_policy";
+
+        public static final String ALWAYS = "always";
+        public static final String LAZY = "lazy";
+        public static final String ON_DEMAND = "on_demand";
+        public static final String SYSTEM = "system";
+
+        /**
+         * Set startup primary key generation scheme for the table
+         */
+        public static final String SET_BUILD_PK_INDEX_POLICY = "set_build_pk_index_policy";
+
+        /**
+         * Set startup rebuild scheme for the materialized view
+         */
+        public static final String SET_BUILD_MATERIALIZED_VIEW_POLICY = "set_build_materialized_view_policy";
+
         private Action() {  }
     }
 
@@ -860,7 +880,22 @@ public class AlterTableRequest implements IndexedRecord {
      *                        can be Kafka / S3 / Azure.
      *                    <li>{@link Action#CHANGE_OWNER CHANGE_OWNER}: Change
      *                        the owner resource group of the table.
+     *                    <li>{@link Action#SET_LOAD_VECTORS_POLICY
+     *                        SET_LOAD_VECTORS_POLICY}: Set startup data
+     *                        loading scheme for the table
+     *                    <li>{@link Action#ALWAYS ALWAYS}
+     *                    <li>{@link Action#LAZY LAZY}
+     *                    <li>{@link Action#ON_DEMAND ON_DEMAND}
+     *                    <li>{@link Action#SYSTEM SYSTEM}
+     *                    <li>{@link Action#SET_BUILD_PK_INDEX_POLICY
+     *                        SET_BUILD_PK_INDEX_POLICY}: Set startup primary
+     *                        key generation scheme for the table
+     *                    <li>{@link Action#SET_BUILD_MATERIALIZED_VIEW_POLICY
+     *                        SET_BUILD_MATERIALIZED_VIEW_POLICY}: Set startup
+     *                        rebuild scheme for the materialized view
      *                </ul>
+     *                The default value is {@link Action#EMPTY_STRING
+     *                EMPTY_STRING}.
      * @param value  The value of the modification, depending on {@code
      *               action}. For example, if {@code action} is {@link
      *               Action#ADD_COLUMN ADD_COLUMN}, this would be the column
@@ -1243,7 +1278,20 @@ public class AlterTableRequest implements IndexedRecord {
      *         source subscription. The data source can be Kafka / S3 / Azure.
      *     <li>{@link Action#CHANGE_OWNER CHANGE_OWNER}: Change the owner
      *         resource group of the table.
+     *     <li>{@link Action#SET_LOAD_VECTORS_POLICY SET_LOAD_VECTORS_POLICY}:
+     *         Set startup data loading scheme for the table
+     *     <li>{@link Action#ALWAYS ALWAYS}
+     *     <li>{@link Action#LAZY LAZY}
+     *     <li>{@link Action#ON_DEMAND ON_DEMAND}
+     *     <li>{@link Action#SYSTEM SYSTEM}
+     *     <li>{@link Action#SET_BUILD_PK_INDEX_POLICY
+     *         SET_BUILD_PK_INDEX_POLICY}: Set startup primary key generation
+     *         scheme for the table
+     *     <li>{@link Action#SET_BUILD_MATERIALIZED_VIEW_POLICY
+     *         SET_BUILD_MATERIALIZED_VIEW_POLICY}: Set startup rebuild scheme
+     *         for the materialized view
      * </ul>
+     * The default value is {@link Action#EMPTY_STRING EMPTY_STRING}.
      *
      * @return The current value of {@code action}.
      */
@@ -1453,7 +1501,20 @@ public class AlterTableRequest implements IndexedRecord {
      *         source subscription. The data source can be Kafka / S3 / Azure.
      *     <li>{@link Action#CHANGE_OWNER CHANGE_OWNER}: Change the owner
      *         resource group of the table.
+     *     <li>{@link Action#SET_LOAD_VECTORS_POLICY SET_LOAD_VECTORS_POLICY}:
+     *         Set startup data loading scheme for the table
+     *     <li>{@link Action#ALWAYS ALWAYS}
+     *     <li>{@link Action#LAZY LAZY}
+     *     <li>{@link Action#ON_DEMAND ON_DEMAND}
+     *     <li>{@link Action#SYSTEM SYSTEM}
+     *     <li>{@link Action#SET_BUILD_PK_INDEX_POLICY
+     *         SET_BUILD_PK_INDEX_POLICY}: Set startup primary key generation
+     *         scheme for the table
+     *     <li>{@link Action#SET_BUILD_MATERIALIZED_VIEW_POLICY
+     *         SET_BUILD_MATERIALIZED_VIEW_POLICY}: Set startup rebuild scheme
+     *         for the materialized view
      * </ul>
+     * The default value is {@link Action#EMPTY_STRING EMPTY_STRING}.
      *
      * @param action  The new value for {@code action}.
      *

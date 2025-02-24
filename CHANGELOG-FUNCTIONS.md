@@ -3,6 +3,16 @@
 
 ## Version 7.2
 
+
+### Version 7.2.2.11 -- 2025-02-14
+
+##### Non-breaking changes
+
+-   Added ``load_vectors_policy`` and ``build_pk_index_policy`` options to ``/create/table``
+-   Added ``build_materialized_view_policy`` option to ``/create/materializedview``
+-   Added ``set_load_vectors_policy``, ``set_build_pk_index_policy`` and ``set_build_materialized_view_policy`` to ``action`` in ``/alter/table``
+
+
 ### Version 7.2.2.7 -- 2025-01-01
 
 ##### Non-breaking changes

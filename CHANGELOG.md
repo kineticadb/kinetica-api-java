@@ -2,6 +2,19 @@
 
 ## Version 7.2
 
+### Version 7.2.2.7 - 2025-02-24
+
+#### Added
+-   Support for parallel HA modes
+-   More error types supported in retrying connections
+
+#### Changed
+-   Upgraded Logback library to 1.3.15
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
 ### Version 7.2.2.6 - 2025-02-04
 
 #### Changed

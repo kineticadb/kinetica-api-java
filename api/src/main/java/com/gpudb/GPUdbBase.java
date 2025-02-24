@@ -14,6 +14,7 @@ import org.apache.avro.io.DecoderFactory;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.hc.client5.http.ConnectTimeoutException;
 import org.apache.hc.client5.http.HttpRequestRetryStrategy;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.config.ConnectionConfig;
@@ -49,10 +50,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
+import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
@@ -1963,8 +1961,13 @@ public abstract class GPUdbBase {
         NONE( "REPL_NONE" ),
         // Synchronize all endpoint calls
         SYNCHRONOUS( "REPL_SYNC" ),
+        // Sends a http request directly to each cluster, executes the query locally, 
+        // and waits for the response from each cluster
+        SYNCHRONOUS_PARALLEL( "REPL_SYNC_PARALLEL" ),
         // Do NOT synchronize any endpoint call
-        ASYNCHRONOUS( "REPL_ASYNC" );
+        ASYNCHRONOUS( "REPL_ASYNC" ),
+        // Queues a request to RMQ for each cluster, executes the query locally, and returns to the user
+        ASYNCHRONOUS_PARALLEL( "REPL_ASYNC_PARALLEL" );
 
         private String syncMode;
 
@@ -2860,6 +2863,8 @@ public abstract class GPUdbBase {
             .setRetryStrategy(new HttpRequestRetryStrategy() {
                 @Override
                 public boolean retryRequest(HttpRequest httpRequest, IOException e, int executionCount, HttpContext httpContext) {
+                    GPUdbLogger.trace_with_info(String.format("Retrying %d times for exception %s", executionCount, e.getMessage()));
+
                     if (executionCount > HTTP_REQUEST_MAX_RETRY_ATTEMPTS) {
                         return false;
                     }
@@ -2867,7 +2872,11 @@ public abstract class GPUdbBase {
                     // Retry if the exception is one of the ones below
                     return
                         e instanceof NoHttpResponseException ||
-                        e instanceof SocketTimeoutException;
+                        e instanceof SocketTimeoutException  ||
+                        e instanceof ConnectException ||
+                        e instanceof UnknownHostException ||
+                        e instanceof ConnectionClosedException ||
+                        e instanceof NoRouteToHostException;
                 }
 
                 @Override
@@ -6444,7 +6453,7 @@ public abstract class GPUdbBase {
             // returned by the HTTPD server)
             if (
                     (responseEntity.getContentType() != null) &&
-                    (responseEntity.getContentType().length() > 0) &&
+                    (!responseEntity.getContentType().isEmpty()) &&
                     responseEntity.getContentType().startsWith( "text" )
             ) {
                 String errorMsg;
