@@ -77,6 +77,22 @@ public class AdminRepairTableRequest implements IndexedRecord {
          */
         public static final String REPLAY_WAL = "replay_wal";
 
+        /**
+         * If {@link Options#FALSE FALSE} only table chunk data already known
+         * to be corrupted will be repaired. Otherwise the database will
+         * perform a full table scan to check for correctness.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String VERIFY_ALL = "verify_all";
+
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
         private Options() {  }
     }
 
@@ -112,6 +128,18 @@ public class AdminRepairTableRequest implements IndexedRecord {
      *                             <li>{@link Options#REPLAY_WAL REPLAY_WAL}:
      *                                 Manually invokes wal replay on the table
      *                         </ul>
+     *                     <li>{@link Options#VERIFY_ALL VERIFY_ALL}: If {@link
+     *                         Options#FALSE FALSE} only table chunk data
+     *                         already known to be corrupted will be repaired.
+     *                         Otherwise the database will perform a full table
+     *                         scan to check for correctness.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -155,6 +183,16 @@ public class AdminRepairTableRequest implements IndexedRecord {
      *             <li>{@link Options#REPLAY_WAL REPLAY_WAL}: Manually invokes
      *                 wal replay on the table
      *         </ul>
+     *     <li>{@link Options#VERIFY_ALL VERIFY_ALL}: If {@link Options#FALSE
+     *         FALSE} only table chunk data already known to be corrupted will
+     *         be repaired. Otherwise the database will perform a full table
+     *         scan to check for correctness.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -178,6 +216,16 @@ public class AdminRepairTableRequest implements IndexedRecord {
      *             <li>{@link Options#REPLAY_WAL REPLAY_WAL}: Manually invokes
      *                 wal replay on the table
      *         </ul>
+     *     <li>{@link Options#VERIFY_ALL VERIFY_ALL}: If {@link Options#FALSE
+     *         FALSE} only table chunk data already known to be corrupted will
+     *         be repaired. Otherwise the database will perform a full table
+     *         scan to check for correctness.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      *

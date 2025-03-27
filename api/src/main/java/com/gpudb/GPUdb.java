@@ -1235,6 +1235,26 @@ public class GPUdb extends GPUdbBase {
      *                                 REPLAY_WAL}: Manually invokes wal replay
      *                                 on the table
      *                         </ul>
+     *                     <li>{@link
+     *                         com.gpudb.protocol.AdminRepairTableRequest.Options#VERIFY_ALL
+     *                         VERIFY_ALL}: If {@link
+     *                         com.gpudb.protocol.AdminRepairTableRequest.Options#FALSE
+     *                         FALSE} only table chunk data already known to be
+     *                         corrupted will be repaired. Otherwise the
+     *                         database will perform a full table scan to check
+     *                         for correctness.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.AdminRepairTableRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.AdminRepairTableRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.AdminRepairTableRequest.Options#FALSE
+     *                         FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      *
@@ -5885,31 +5905,28 @@ public class GPUdb extends GPUdbBase {
      *                    <li>{@link
      *                        com.gpudb.protocol.AlterTableRequest.Action#SET_LOAD_VECTORS_POLICY
      *                        SET_LOAD_VECTORS_POLICY}: Set startup data
-     *                        loading scheme for the table
-     *                    <li>{@link
-     *                        com.gpudb.protocol.AlterTableRequest.Action#ALWAYS
-     *                        ALWAYS}
-     *                    <li>{@link
-     *                        com.gpudb.protocol.AlterTableRequest.Action#LAZY
-     *                        LAZY}
-     *                    <li>{@link
-     *                        com.gpudb.protocol.AlterTableRequest.Action#ON_DEMAND
-     *                        ON_DEMAND}
-     *                    <li>{@link
-     *                        com.gpudb.protocol.AlterTableRequest.Action#SYSTEM
-     *                        SYSTEM}
+     *                        loading scheme for the table; see description of
+     *                        'load_vectors_policy' in {@link
+     *                        GPUdb#createTable(String, String, Map)
+     *                        createTable} for possible values for {@code
+     *                        value}
      *                    <li>{@link
      *                        com.gpudb.protocol.AlterTableRequest.Action#SET_BUILD_PK_INDEX_POLICY
      *                        SET_BUILD_PK_INDEX_POLICY}: Set startup primary
-     *                        key generation scheme for the table
+     *                        key generation scheme for the table; see
+     *                        description of 'build_pk_index_policy' in {@link
+     *                        GPUdb#createTable(String, String, Map)
+     *                        createTable} for possible values for {@code
+     *                        value}
      *                    <li>{@link
      *                        com.gpudb.protocol.AlterTableRequest.Action#SET_BUILD_MATERIALIZED_VIEW_POLICY
      *                        SET_BUILD_MATERIALIZED_VIEW_POLICY}: Set startup
-     *                        rebuild scheme for the materialized view
+     *                        rebuilding scheme for the materialized view; see
+     *                        description of 'build_materialized_view_policy'
+     *                        in {@link GPUdb#createMaterializedView(String,
+     *                        Map) createMaterializedView} for possible values
+     *                        for {@code value}
      *                </ul>
-     *                The default value is {@link
-     *                com.gpudb.protocol.AlterTableRequest.Action#EMPTY_STRING
-     *                EMPTY_STRING}.
      * @param value  The value of the modification, depending on {@code
      *               action}. For example, if {@code action} is {@link
      *               com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN
@@ -8633,20 +8650,26 @@ public class GPUdb extends GPUdbBase {
      *                         <ul>
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#ALWAYS
-     *                                 ALWAYS}
+     *                                 ALWAYS}: Rebuild as many materialized
+     *                                 views as possible before accepting
+     *                                 requests.
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#LAZY
-     *                                 LAZY}
+     *                                 LAZY}: Rebuild the necessary
+     *                                 materialized views at start, and load
+     *                                 the remainder lazily.
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_DEMAND
-     *                                 ON_DEMAND}
+     *                                 ON_DEMAND}: Rebuild materialized views
+     *                                 as requests use them.
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#SYSTEM
-     *                                 SYSTEM}
+     *                                 SYSTEM}: Rebuild materialized views
+     *                                 using the system-configured default.
      *                         </ul>
      *                         The default value is {@link
-     *                         com.gpudb.protocol.CreateMaterializedViewRequest.Options#EMPTY_STRING
-     *                         EMPTY_STRING}.
+     *                         com.gpudb.protocol.CreateMaterializedViewRequest.Options#SYSTEM
+     *                         SYSTEM}.
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateMaterializedViewRequest.Options#PERSIST
      *                         PERSIST}: If {@link
@@ -9851,20 +9874,25 @@ public class GPUdb extends GPUdbBase {
      *                         <ul>
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateTableRequest.Options#ALWAYS
-     *                                 ALWAYS}
+     *                                 ALWAYS}: Load as much vector data as
+     *                                 possible into memory before accepting
+     *                                 requests.
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateTableRequest.Options#LAZY
-     *                                 LAZY}
+     *                                 LAZY}: Load the necessary vector data at
+     *                                 start, and load the remainder lazily.
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateTableRequest.Options#ON_DEMAND
-     *                                 ON_DEMAND}
+     *                                 ON_DEMAND}: Load vector data as requests
+     *                                 use it.
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateTableRequest.Options#SYSTEM
-     *                                 SYSTEM}
+     *                                 SYSTEM}: Load vector data using the
+     *                                 system-configured default.
      *                         </ul>
      *                         The default value is {@link
-     *                         com.gpudb.protocol.CreateTableRequest.Options#EMPTY_STRING
-     *                         EMPTY_STRING}.
+     *                         com.gpudb.protocol.CreateTableRequest.Options#SYSTEM
+     *                         SYSTEM}.
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateTableRequest.Options#BUILD_PK_INDEX_POLICY
      *                         BUILD_PK_INDEX_POLICY}: Set startup primary-key
@@ -9873,20 +9901,26 @@ public class GPUdb extends GPUdbBase {
      *                         <ul>
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateTableRequest.Options#ALWAYS
-     *                                 ALWAYS}
+     *                                 ALWAYS}: Generate as much primary key
+     *                                 index data as possible before accepting
+     *                                 requests.
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateTableRequest.Options#LAZY
-     *                                 LAZY}
+     *                                 LAZY}: Generate the necessary primary
+     *                                 key index data at start, and load the
+     *                                 remainder lazily.
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateTableRequest.Options#ON_DEMAND
-     *                                 ON_DEMAND}
+     *                                 ON_DEMAND}: Generate primary key index
+     *                                 data as requests use it.
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateTableRequest.Options#SYSTEM
-     *                                 SYSTEM}
+     *                                 SYSTEM}: Generate primary key index data
+     *                                 using the system-configured default.
      *                         </ul>
      *                         The default value is {@link
-     *                         com.gpudb.protocol.CreateTableRequest.Options#EMPTY_STRING
-     *                         EMPTY_STRING}.
+     *                         com.gpudb.protocol.CreateTableRequest.Options#SYSTEM
+     *                         SYSTEM}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      *

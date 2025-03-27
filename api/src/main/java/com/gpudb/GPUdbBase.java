@@ -2863,7 +2863,7 @@ public abstract class GPUdbBase {
             .setRetryStrategy(new HttpRequestRetryStrategy() {
                 @Override
                 public boolean retryRequest(HttpRequest httpRequest, IOException e, int executionCount, HttpContext httpContext) {
-                    GPUdbLogger.trace_with_info(String.format("Retrying %d times for exception %s", executionCount, e.getMessage()));
+                    GPUdbLogger.trace_with_info(String.format("Retry #%d for exception %s", executionCount, e.getMessage()));
 
                     if (executionCount > HTTP_REQUEST_MAX_RETRY_ATTEMPTS) {
                         return false;
@@ -2880,8 +2880,18 @@ public abstract class GPUdbBase {
                 }
 
                 @Override
-                public boolean retryRequest(HttpResponse httpResponse, int i, HttpContext httpContext) {
-                    return false;
+                public boolean retryRequest(HttpResponse httpResponse, int executionCount, HttpContext httpContext) {
+                    boolean doRetry = 
+                            executionCount <= HTTP_REQUEST_MAX_RETRY_ATTEMPTS &&
+                            (
+                                httpResponse.getCode() == 502 ||
+                                httpResponse.getCode() == 503
+                            );
+
+                    if (doRetry)
+                        GPUdbLogger.trace_with_info(String.format("Retry #%d for status %s", executionCount, httpResponse.getCode()));
+
+                    return doRetry;
                 }
 
                 @Override
@@ -6457,9 +6467,11 @@ public abstract class GPUdbBase {
                     responseEntity.getContentType().startsWith( "text" )
             ) {
                 String errorMsg;
-                if (   (statusCode == HttpURLConnection.HTTP_UNAVAILABLE)
-                    || (statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR)
-                    || (statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT)
+                if (
+                        statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR ||
+                        statusCode == HttpURLConnection.HTTP_BAD_GATEWAY ||
+                        statusCode == HttpURLConnection.HTTP_UNAVAILABLE ||
+                        statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT
                 ) {
                     // Some status codes should trigger an exit exception which will
                     // in turn trigger a failover on the client side
@@ -6506,11 +6518,14 @@ public abstract class GPUdbBase {
                                 "Throwing EXIT exception from " + url.toString() + "; response_code: " + statusCode + "; message: " + message
                         );
                         throw new GPUdbExitException(message);
-                    } else if( statusCode == HttpURLConnection.HTTP_UNAVAILABLE ) {
+                    } else if(
+                            statusCode == HttpURLConnection.HTTP_BAD_GATEWAY ||
+                            statusCode == HttpURLConnection.HTTP_UNAVAILABLE
+                    ) {
                         GPUdbLogger.debug_with_info(
                             "Throwing EXIT exception from " + url.toString() + "; response_code: " + statusCode + "; message: " + message
                         );
-                        throw new GPUdbExitException("cluster may be stopped or suspended");
+                        throw new GPUdbExitException("Cluster may be stopped or suspended: " + message);
                     }
                     // A legitimate error
                     GPUdbLogger.debug_with_info(
@@ -6709,8 +6724,9 @@ public abstract class GPUdbBase {
             }
             
             if (
-                    statusCode == HttpURLConnection.HTTP_UNAVAILABLE ||
                     statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR ||
+                    statusCode == HttpURLConnection.HTTP_BAD_GATEWAY ||
+                    statusCode == HttpURLConnection.HTTP_UNAVAILABLE ||
                     statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT ||
                     responseMessage.contains( DB_EXITING_ERROR_MESSAGE ) ||
                     responseMessage.contains( DB_CONNECTION_REFUSED_ERROR_MESSAGE ) ||
@@ -6878,8 +6894,9 @@ public abstract class GPUdbBase {
             }
             
             if (
-                    statusCode == HttpURLConnection.HTTP_UNAVAILABLE ||
                     statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR ||
+                    statusCode == HttpURLConnection.HTTP_BAD_GATEWAY ||
+                    statusCode == HttpURLConnection.HTTP_UNAVAILABLE ||
                     statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT ||
                     responseMessage.contains( DB_EXITING_ERROR_MESSAGE ) ||
                     responseMessage.contains( DB_CONNECTION_REFUSED_ERROR_MESSAGE ) ||

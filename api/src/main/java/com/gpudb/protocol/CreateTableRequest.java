@@ -318,30 +318,55 @@ public class CreateTableRequest implements IndexedRecord {
          * Set startup data loading scheme for the table.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#ALWAYS ALWAYS}
-         *     <li>{@link Options#LAZY LAZY}
-         *     <li>{@link Options#ON_DEMAND ON_DEMAND}
-         *     <li>{@link Options#SYSTEM SYSTEM}
+         *     <li>{@link Options#ALWAYS ALWAYS}: Load as much vector data as
+         *         possible into memory before accepting requests.
+         *     <li>{@link Options#LAZY LAZY}: Load the necessary vector data at
+         *         start, and load the remainder lazily.
+         *     <li>{@link Options#ON_DEMAND ON_DEMAND}: Load vector data as
+         *         requests use it.
+         *     <li>{@link Options#SYSTEM SYSTEM}: Load vector data using the
+         *         system-configured default.
          * </ul>
-         * The default value is {@link Options#EMPTY_STRING EMPTY_STRING}.
+         * The default value is {@link Options#SYSTEM SYSTEM}.
          */
         public static final String LOAD_VECTORS_POLICY = "load_vectors_policy";
 
+        /**
+         * Generate as much primary key index data as possible before accepting
+         * requests.
+         */
         public static final String ALWAYS = "always";
+
+        /**
+         * Generate the necessary primary key index data at start, and load the
+         * remainder lazily.
+         */
         public static final String LAZY = "lazy";
+
+        /**
+         * Generate primary key index data as requests use it.
+         */
         public static final String ON_DEMAND = "on_demand";
+
+        /**
+         * Generate primary key index data using the system-configured default.
+         */
         public static final String SYSTEM = "system";
 
         /**
          * Set startup primary-key index generation scheme for the table.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#ALWAYS ALWAYS}
-         *     <li>{@link Options#LAZY LAZY}
-         *     <li>{@link Options#ON_DEMAND ON_DEMAND}
-         *     <li>{@link Options#SYSTEM SYSTEM}
+         *     <li>{@link Options#ALWAYS ALWAYS}: Generate as much primary key
+         *         index data as possible before accepting requests.
+         *     <li>{@link Options#LAZY LAZY}: Generate the necessary primary
+         *         key index data at start, and load the remainder lazily.
+         *     <li>{@link Options#ON_DEMAND ON_DEMAND}: Generate primary key
+         *         index data as requests use it.
+         *     <li>{@link Options#SYSTEM SYSTEM}: Generate primary key index
+         *         data using the system-configured default.
          * </ul>
-         * The default value is {@link Options#EMPTY_STRING EMPTY_STRING}.
+         * The default value is {@link Options#SYSTEM SYSTEM}.
          */
         public static final String BUILD_PK_INDEX_POLICY = "build_pk_index_policy";
 
@@ -582,25 +607,40 @@ public class CreateTableRequest implements IndexedRecord {
      *                         scheme for the table.
      *                         Supported values:
      *                         <ul>
-     *                             <li>{@link Options#ALWAYS ALWAYS}
-     *                             <li>{@link Options#LAZY LAZY}
-     *                             <li>{@link Options#ON_DEMAND ON_DEMAND}
-     *                             <li>{@link Options#SYSTEM SYSTEM}
+     *                             <li>{@link Options#ALWAYS ALWAYS}: Load as
+     *                                 much vector data as possible into memory
+     *                                 before accepting requests.
+     *                             <li>{@link Options#LAZY LAZY}: Load the
+     *                                 necessary vector data at start, and load
+     *                                 the remainder lazily.
+     *                             <li>{@link Options#ON_DEMAND ON_DEMAND}:
+     *                                 Load vector data as requests use it.
+     *                             <li>{@link Options#SYSTEM SYSTEM}: Load
+     *                                 vector data using the system-configured
+     *                                 default.
      *                         </ul>
-     *                         The default value is {@link Options#EMPTY_STRING
-     *                         EMPTY_STRING}.
+     *                         The default value is {@link Options#SYSTEM
+     *                         SYSTEM}.
      *                     <li>{@link Options#BUILD_PK_INDEX_POLICY
      *                         BUILD_PK_INDEX_POLICY}: Set startup primary-key
      *                         index generation scheme for the table.
      *                         Supported values:
      *                         <ul>
-     *                             <li>{@link Options#ALWAYS ALWAYS}
-     *                             <li>{@link Options#LAZY LAZY}
-     *                             <li>{@link Options#ON_DEMAND ON_DEMAND}
-     *                             <li>{@link Options#SYSTEM SYSTEM}
+     *                             <li>{@link Options#ALWAYS ALWAYS}: Generate
+     *                                 as much primary key index data as
+     *                                 possible before accepting requests.
+     *                             <li>{@link Options#LAZY LAZY}: Generate the
+     *                                 necessary primary key index data at
+     *                                 start, and load the remainder lazily.
+     *                             <li>{@link Options#ON_DEMAND ON_DEMAND}:
+     *                                 Generate primary key index data as
+     *                                 requests use it.
+     *                             <li>{@link Options#SYSTEM SYSTEM}: Generate
+     *                                 primary key index data using the
+     *                                 system-configured default.
      *                         </ul>
-     *                         The default value is {@link Options#EMPTY_STRING
-     *                         EMPTY_STRING}.
+     *                         The default value is {@link Options#SYSTEM
+     *                         SYSTEM}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -840,22 +880,31 @@ public class CreateTableRequest implements IndexedRecord {
      *         startup data loading scheme for the table.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#ALWAYS ALWAYS}
-     *             <li>{@link Options#LAZY LAZY}
-     *             <li>{@link Options#ON_DEMAND ON_DEMAND}
-     *             <li>{@link Options#SYSTEM SYSTEM}
+     *             <li>{@link Options#ALWAYS ALWAYS}: Load as much vector data
+     *                 as possible into memory before accepting requests.
+     *             <li>{@link Options#LAZY LAZY}: Load the necessary vector
+     *                 data at start, and load the remainder lazily.
+     *             <li>{@link Options#ON_DEMAND ON_DEMAND}: Load vector data as
+     *                 requests use it.
+     *             <li>{@link Options#SYSTEM SYSTEM}: Load vector data using
+     *                 the system-configured default.
      *         </ul>
-     *         The default value is {@link Options#EMPTY_STRING EMPTY_STRING}.
+     *         The default value is {@link Options#SYSTEM SYSTEM}.
      *     <li>{@link Options#BUILD_PK_INDEX_POLICY BUILD_PK_INDEX_POLICY}: Set
      *         startup primary-key index generation scheme for the table.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#ALWAYS ALWAYS}
-     *             <li>{@link Options#LAZY LAZY}
-     *             <li>{@link Options#ON_DEMAND ON_DEMAND}
-     *             <li>{@link Options#SYSTEM SYSTEM}
+     *             <li>{@link Options#ALWAYS ALWAYS}: Generate as much primary
+     *                 key index data as possible before accepting requests.
+     *             <li>{@link Options#LAZY LAZY}: Generate the necessary
+     *                 primary key index data at start, and load the remainder
+     *                 lazily.
+     *             <li>{@link Options#ON_DEMAND ON_DEMAND}: Generate primary
+     *                 key index data as requests use it.
+     *             <li>{@link Options#SYSTEM SYSTEM}: Generate primary key
+     *                 index data using the system-configured default.
      *         </ul>
-     *         The default value is {@link Options#EMPTY_STRING EMPTY_STRING}.
+     *         The default value is {@link Options#SYSTEM SYSTEM}.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -1037,22 +1086,31 @@ public class CreateTableRequest implements IndexedRecord {
      *         startup data loading scheme for the table.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#ALWAYS ALWAYS}
-     *             <li>{@link Options#LAZY LAZY}
-     *             <li>{@link Options#ON_DEMAND ON_DEMAND}
-     *             <li>{@link Options#SYSTEM SYSTEM}
+     *             <li>{@link Options#ALWAYS ALWAYS}: Load as much vector data
+     *                 as possible into memory before accepting requests.
+     *             <li>{@link Options#LAZY LAZY}: Load the necessary vector
+     *                 data at start, and load the remainder lazily.
+     *             <li>{@link Options#ON_DEMAND ON_DEMAND}: Load vector data as
+     *                 requests use it.
+     *             <li>{@link Options#SYSTEM SYSTEM}: Load vector data using
+     *                 the system-configured default.
      *         </ul>
-     *         The default value is {@link Options#EMPTY_STRING EMPTY_STRING}.
+     *         The default value is {@link Options#SYSTEM SYSTEM}.
      *     <li>{@link Options#BUILD_PK_INDEX_POLICY BUILD_PK_INDEX_POLICY}: Set
      *         startup primary-key index generation scheme for the table.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#ALWAYS ALWAYS}
-     *             <li>{@link Options#LAZY LAZY}
-     *             <li>{@link Options#ON_DEMAND ON_DEMAND}
-     *             <li>{@link Options#SYSTEM SYSTEM}
+     *             <li>{@link Options#ALWAYS ALWAYS}: Generate as much primary
+     *                 key index data as possible before accepting requests.
+     *             <li>{@link Options#LAZY LAZY}: Generate the necessary
+     *                 primary key index data at start, and load the remainder
+     *                 lazily.
+     *             <li>{@link Options#ON_DEMAND ON_DEMAND}: Generate primary
+     *                 key index data as requests use it.
+     *             <li>{@link Options#SYSTEM SYSTEM}: Generate primary key
+     *                 index data using the system-configured default.
      *         </ul>
-     *         The default value is {@link Options#EMPTY_STRING EMPTY_STRING}.
+     *         The default value is {@link Options#SYSTEM SYSTEM}.
      * </ul>
      * The default value is an empty {@link Map}.
      *

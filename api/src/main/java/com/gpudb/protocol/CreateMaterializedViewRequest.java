@@ -74,18 +74,39 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
          * Sets startup materialized view rebuild scheme.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#ALWAYS ALWAYS}
-         *     <li>{@link Options#LAZY LAZY}
-         *     <li>{@link Options#ON_DEMAND ON_DEMAND}
-         *     <li>{@link Options#SYSTEM SYSTEM}
+         *     <li>{@link Options#ALWAYS ALWAYS}: Rebuild as many materialized
+         *         views as possible before accepting requests.
+         *     <li>{@link Options#LAZY LAZY}: Rebuild the necessary
+         *         materialized views at start, and load the remainder lazily.
+         *     <li>{@link Options#ON_DEMAND ON_DEMAND}: Rebuild materialized
+         *         views as requests use them.
+         *     <li>{@link Options#SYSTEM SYSTEM}: Rebuild materialized views
+         *         using the system-configured default.
          * </ul>
-         * The default value is {@link Options#EMPTY_STRING EMPTY_STRING}.
+         * The default value is {@link Options#SYSTEM SYSTEM}.
          */
         public static final String BUILD_MATERIALIZED_VIEW_POLICY = "build_materialized_view_policy";
 
+        /**
+         * Rebuild as many materialized views as possible before accepting
+         * requests.
+         */
         public static final String ALWAYS = "always";
+
+        /**
+         * Rebuild the necessary materialized views at start, and load the
+         * remainder lazily.
+         */
         public static final String LAZY = "lazy";
+
+        /**
+         * Rebuild materialized views as requests use them.
+         */
         public static final String ON_DEMAND = "on_demand";
+
+        /**
+         * Rebuild materialized views using the system-configured default.
+         */
         public static final String SYSTEM = "system";
 
         /**
@@ -238,13 +259,21 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                         materialized view rebuild scheme.
      *                         Supported values:
      *                         <ul>
-     *                             <li>{@link Options#ALWAYS ALWAYS}
-     *                             <li>{@link Options#LAZY LAZY}
-     *                             <li>{@link Options#ON_DEMAND ON_DEMAND}
-     *                             <li>{@link Options#SYSTEM SYSTEM}
+     *                             <li>{@link Options#ALWAYS ALWAYS}: Rebuild
+     *                                 as many materialized views as possible
+     *                                 before accepting requests.
+     *                             <li>{@link Options#LAZY LAZY}: Rebuild the
+     *                                 necessary materialized views at start,
+     *                                 and load the remainder lazily.
+     *                             <li>{@link Options#ON_DEMAND ON_DEMAND}:
+     *                                 Rebuild materialized views as requests
+     *                                 use them.
+     *                             <li>{@link Options#SYSTEM SYSTEM}: Rebuild
+     *                                 materialized views using the
+     *                                 system-configured default.
      *                         </ul>
-     *                         The default value is {@link Options#EMPTY_STRING
-     *                         EMPTY_STRING}.
+     *                         The default value is {@link Options#SYSTEM
+     *                         SYSTEM}.
      *                     <li>{@link Options#PERSIST PERSIST}: If {@link
      *                         Options#TRUE TRUE}, then the materialized view
      *                         specified in {@code tableName} will be persisted
@@ -371,12 +400,18 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *         rebuild scheme.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#ALWAYS ALWAYS}
-     *             <li>{@link Options#LAZY LAZY}
-     *             <li>{@link Options#ON_DEMAND ON_DEMAND}
-     *             <li>{@link Options#SYSTEM SYSTEM}
+     *             <li>{@link Options#ALWAYS ALWAYS}: Rebuild as many
+     *                 materialized views as possible before accepting
+     *                 requests.
+     *             <li>{@link Options#LAZY LAZY}: Rebuild the necessary
+     *                 materialized views at start, and load the remainder
+     *                 lazily.
+     *             <li>{@link Options#ON_DEMAND ON_DEMAND}: Rebuild
+     *                 materialized views as requests use them.
+     *             <li>{@link Options#SYSTEM SYSTEM}: Rebuild materialized
+     *                 views using the system-configured default.
      *         </ul>
-     *         The default value is {@link Options#EMPTY_STRING EMPTY_STRING}.
+     *         The default value is {@link Options#SYSTEM SYSTEM}.
      *     <li>{@link Options#PERSIST PERSIST}: If {@link Options#TRUE TRUE},
      *         then the materialized view specified in {@link #getTableName()
      *         tableName} will be persisted and will not expire unless a {@link
@@ -456,12 +491,18 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *         rebuild scheme.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#ALWAYS ALWAYS}
-     *             <li>{@link Options#LAZY LAZY}
-     *             <li>{@link Options#ON_DEMAND ON_DEMAND}
-     *             <li>{@link Options#SYSTEM SYSTEM}
+     *             <li>{@link Options#ALWAYS ALWAYS}: Rebuild as many
+     *                 materialized views as possible before accepting
+     *                 requests.
+     *             <li>{@link Options#LAZY LAZY}: Rebuild the necessary
+     *                 materialized views at start, and load the remainder
+     *                 lazily.
+     *             <li>{@link Options#ON_DEMAND ON_DEMAND}: Rebuild
+     *                 materialized views as requests use them.
+     *             <li>{@link Options#SYSTEM SYSTEM}: Rebuild materialized
+     *                 views using the system-configured default.
      *         </ul>
-     *         The default value is {@link Options#EMPTY_STRING EMPTY_STRING}.
+     *         The default value is {@link Options#SYSTEM SYSTEM}.
      *     <li>{@link Options#PERSIST PERSIST}: If {@link Options#TRUE TRUE},
      *         then the materialized view specified in {@link #getTableName()
      *         tableName} will be persisted and will not expire unless a {@link
