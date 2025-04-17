@@ -3,6 +3,10 @@
 
 ## Version 7.2
 
+### Version 7.2.2.14
+
+#### Changed Endpoints
+-   Added new options ``background_worker_threads`` to ``/alter/system/properties`` endpoint
 
 ### Version 7.2.2.12
 

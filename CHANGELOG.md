@@ -2,6 +2,18 @@
 
 ## Version 7.2
 
+### Version 7.2.2.9 - 2025-04-17
+
+#### Added
+-   Handled connection scenario where primary cluster is initially down.
+
+#### Fixed
+-   Handling of HA synchronicity mode and other protected headers.
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
 ### Version 7.2.2.8 - 2025-03-27
 
 #### Added

@@ -302,6 +302,14 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String TPS_PER_TOM = "tps_per_tom";
 
         /**
+         * Size of the worker rank background thread pool. This includes
+         * background operations such as watermark evictions catalog table
+         * updates. The minimum allowed value is '1'. The maximum allowed value
+         * is '8192'.
+         */
+        public static final String BACKGROUND_WORKER_THREADS = "background_worker_threads";
+
+        /**
          * Enable RAG. The default value is 'false'.
          */
         public static final String AI_ENABLE_RAG = "ai_enable_rag";
@@ -681,6 +689,15 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    allowed value is '2'. The maximum
      *                                    allowed value is '8192'.
      *                                <li>{@link
+     *                                    PropertyUpdatesMap#BACKGROUND_WORKER_THREADS
+     *                                    BACKGROUND_WORKER_THREADS}: Size of
+     *                                    the worker rank background thread
+     *                                    pool. This includes background
+     *                                    operations such as watermark
+     *                                    evictions catalog table updates. The
+     *                                    minimum allowed value is '1'. The
+     *                                    maximum allowed value is '8192'.
+     *                                <li>{@link
      *                                    PropertyUpdatesMap#AI_ENABLE_RAG
      *                                    AI_ENABLE_RAG}: Enable RAG. The
      *                                    default value is 'false'.
@@ -906,6 +923,11 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#TPS_PER_TOM TPS_PER_TOM}: Sets the
      *         tps_per_tom value of the conf. The minimum allowed value is '2'.
      *         The maximum allowed value is '8192'.
+     *     <li>{@link PropertyUpdatesMap#BACKGROUND_WORKER_THREADS
+     *         BACKGROUND_WORKER_THREADS}: Size of the worker rank background
+     *         thread pool. This includes background operations such as
+     *         watermark evictions catalog table updates. The minimum allowed
+     *         value is '1'. The maximum allowed value is '8192'.
      *     <li>{@link PropertyUpdatesMap#AI_ENABLE_RAG AI_ENABLE_RAG}: Enable
      *         RAG. The default value is 'false'.
      *     <li>{@link PropertyUpdatesMap#AI_API_PROVIDER AI_API_PROVIDER}: AI
@@ -1090,6 +1112,11 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#TPS_PER_TOM TPS_PER_TOM}: Sets the
      *         tps_per_tom value of the conf. The minimum allowed value is '2'.
      *         The maximum allowed value is '8192'.
+     *     <li>{@link PropertyUpdatesMap#BACKGROUND_WORKER_THREADS
+     *         BACKGROUND_WORKER_THREADS}: Size of the worker rank background
+     *         thread pool. This includes background operations such as
+     *         watermark evictions catalog table updates. The minimum allowed
+     *         value is '1'. The maximum allowed value is '8192'.
      *     <li>{@link PropertyUpdatesMap#AI_ENABLE_RAG AI_ENABLE_RAG}: Enable
      *         RAG. The default value is 'false'.
      *     <li>{@link PropertyUpdatesMap#AI_API_PROVIDER AI_API_PROVIDER}: AI

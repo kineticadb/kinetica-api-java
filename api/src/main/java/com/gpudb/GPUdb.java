@@ -5389,6 +5389,15 @@ public class GPUdb extends GPUdbBase {
      *                                    allowed value is '2'. The maximum
      *                                    allowed value is '8192'.
      *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#BACKGROUND_WORKER_THREADS
+     *                                    BACKGROUND_WORKER_THREADS}: Size of
+     *                                    the worker rank background thread
+     *                                    pool. This includes background
+     *                                    operations such as watermark
+     *                                    evictions catalog table updates. The
+     *                                    minimum allowed value is '1'. The
+     *                                    maximum allowed value is '8192'.
+     *                                <li>{@link
      *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_ENABLE_RAG
      *                                    AI_ENABLE_RAG}: Enable RAG. The
      *                                    default value is 'false'.

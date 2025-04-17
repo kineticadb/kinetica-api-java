@@ -1978,6 +1978,19 @@ public abstract class GPUdbBase {
         public String getMode() {
             return this.syncMode;
         }
+
+        public static Vector<String> getValuesAsVector() {
+            Vector<String> values = new Vector<>();
+            for (HASynchronicityMode mode : HASynchronicityMode.values()) {
+                values.add(mode.getMode());
+            }
+            return values;
+        }
+
+        public static String getModeByEnum(HASynchronicityMode mode) {
+            return mode != null ? mode.getMode() : null;
+        }
+    
     }
 
 
@@ -2517,6 +2530,7 @@ public abstract class GPUdbBase {
     private int           numClusterSwitches;
     private String        username;
     private String        password;
+    private String        oauthToken;
     private String        authorization;
     private Pattern       hostnameRegex;
     private boolean       useHttpd = false;
@@ -2631,9 +2645,24 @@ public abstract class GPUdbBase {
         // Save some parameters passed in via the options object
         this.username      = this.options.getUsername();
         this.password      = this.options.getPassword();
+        this.oauthToken    = this.options.getOauthToken();
         this.hostnameRegex = this.options.getHostnameRegex();
 
+        // The headers must be set before any call can be made
+        this.httpHeaders = new HashMap<>();
+
+        for (Map.Entry<String, String> entry : this.options.getHttpHeaders().entrySet()) {
+            if (entry.getKey() != null && entry.getValue() != null) {
+                this.httpHeaders.put(entry.getKey(), entry.getValue());
+            }
+        }
+        
+        getAuthorizationFromHttpHeaders();
         this.authorization = createAuthorizationHeader();
+        this.haSyncMode    = createHASyncModeHeader();
+
+        // Remove the protected Http headers if any (which are in the array PROTECTED_HEADERS)
+        removeProtectedHttpHeaders();
 
         // Save various options
         this.useSnappy            = checkSnappy(this.options.getUseSnappy());
@@ -2673,14 +2702,7 @@ public abstract class GPUdbBase {
             GPUdbLogger.debug_with_info(String.format("Using %s trust store for HTTPS connections: ", this.trustStoreFilePath));
         }
 
-        // The headers must be set before any call can be made
-        this.httpHeaders = new HashMap<>();
 
-        for (Map.Entry<String, String> entry : this.options.getHttpHeaders().entrySet()) {
-            if (entry.getKey() != null && entry.getValue() != null) {
-                this.httpHeaders.put(entry.getKey(), entry.getValue());
-            }
-        }
 
         // Initialize the caches for table types
         this.knownTypeObjectMaps = new ConcurrentHashMap<>(16, 0.75f, 1);
@@ -2912,7 +2934,7 @@ public abstract class GPUdbBase {
             Map<String, String> sysProps = this.getSystemProperties();
             // If auto-discovery is disabled, sysProps will be empty
             if (sysProps.isEmpty())
-                sysProps = this.getSystemProperties(this.getURL());
+                sysProps = this.getSystemProperties(null);  // triggers failover
             this.serverVersion = parseServerVersion( sysProps );
         } catch ( GPUdbException ex ) {
             this.httpClient.close(CloseMode.GRACEFUL);
@@ -2929,9 +2951,15 @@ public abstract class GPUdbBase {
         // Release the resources-- the HTTP client
 
         this.httpClient.close(CloseMode.GRACEFUL);
-        failbackPollerService.stop();
+        this.failbackPollerService.stop();
     }
 
+
+    protected void removeProtectedHttpHeaders() {
+        for( String key: PROTECTED_HEADERS ) {
+        	this.httpHeaders.remove(key);
+        }
+    }
 
     /**
      *  Choose and return the authentication mode based on the presence of
@@ -2945,13 +2973,13 @@ public abstract class GPUdbBase {
      */
     protected String createAuthorizationHeader() {
 
-        if( this.options.getOauthToken() != null && !this.options.getOauthToken().isEmpty()) {
-            return "Bearer " + this.options.getOauthToken();
+        if( this.oauthToken != null && !this.oauthToken.isEmpty()) {
+            return "Bearer " + this.oauthToken;
         }
 
         if(
-            ((this.options.getUsername() != null) && !this.options.getUsername().isEmpty()) ||
-            ((this.options.getPassword() != null) && !this.options.getPassword().isEmpty())
+            ((this.username != null) && !this.username.isEmpty()) ||
+            ((this.password != null) && !this.password.isEmpty())
         ) {
             return "Basic " +
                     Base64.encodeBase64String
@@ -2967,6 +2995,33 @@ public abstract class GPUdbBase {
         return null;
     }
 
+    protected void getAuthorizationFromHttpHeaders() {
+        String headerAuth = this.httpHeaders.get(HEADER_AUTHORIZATION);
+        if (headerAuth != null) {
+            if (headerAuth.startsWith("Bearer")) {
+                String[] splits = headerAuth.split(" ");
+                this.authorization = splits.length > 2 && !splits[1].isEmpty() ? splits[1] : "";
+            }
+
+            if (headerAuth.startsWith("Basic")) {
+                String[] splits = headerAuth.split(" ");
+                if( splits.length == 2 && !splits[1].isEmpty()) {
+                    String decodedCredentials = new String(Base64.decodeBase64(splits[1]), StandardCharsets.UTF_8);
+                    String[] userPassword = decodedCredentials.split(":");
+                    this.username = userPassword[0];
+                    this.password = userPassword[1];
+                }
+            }
+        }
+    }
+
+    protected HASynchronicityMode createHASyncModeHeader() {
+        String headerHASyncMode = this.httpHeaders.get(HEADER_HA_SYNC_MODE);
+        if( headerHASyncMode != null ) {
+            return HASynchronicityMode.valueOf(headerHASyncMode);
+        }
+        return HASynchronicityMode.DEFAULT;
+    }
 
     // Properties
     // ----------
@@ -3545,8 +3600,10 @@ public abstract class GPUdbBase {
             if( checkFailbackConditions() ) {
                 // Invoke poller.
                 FailbackOptions failbackOptions = this.options.getFailbackOptions();
-                failbackPollerService = new FailbackPollerService(this, failbackOptions != null ? failbackOptions : FailbackOptions.defaultOptions());
-                failbackPollerService.start();
+                if( failbackPollerService == null ) {
+                    failbackPollerService = new FailbackPollerService(this, failbackOptions != null ? failbackOptions : FailbackOptions.defaultOptions());
+                    failbackPollerService.start();
+                }
             }
 
             return getURL();
@@ -3797,6 +3854,14 @@ public abstract class GPUdbBase {
 
     /**
      * Given a URL, return the system status information.
+     * 
+     * This method will raise an exception if the status check fails and not try
+     * to fail over.
+     * 
+     * This check is used during the initial connection sequence to determine
+     * if an individual node is in a running state.
+     * 
+     * @param url  The URL on which /show/system/status will be called
      */
     private JsonNode getSystemStatusInformation( URL url )
         throws GPUdbException, GPUdbExitException {
@@ -3837,18 +3902,45 @@ public abstract class GPUdbBase {
 
     /**
      * Given a URL, return the system properties information
+     * 
+     * This method operates in one of two ways, depending on the given URL:
+     * 
+     * * If the URL is null, the active head node URL will be queried for system
+     *   properties, and if unable to be contacted, failover will commence.
+     *   This mode is used after the initial connection sequence to determine if
+     *   the user's primary cluster is active and to fail over if not.
+     * * If the URL is non-null, it will be queried for system properties, and
+     *   if unable to be contacted, an exception will be thrown.
+     *   This mode is used during the initial connection sequence to determine
+     *   if an individual node can respond to a system property query and to
+     *   build a cluster information object with the response if so.
+     * 
+     * @param url  The URL on which /show/system/properties will be called; if
+     *             null, the active head node URL will be used
      */
     private Map<String, String> getSystemProperties( URL url ) throws GPUdbException {
         // Call /show/system/properties at the given URL
         ShowSystemPropertiesResponse response = null;
         try {
-            GPUdbLogger.debug_with_info( "Getting system properties for URL: " + url);
-            response = submitRequest(
-                    appendPathToURL( url, ENDPOINT_SHOW_SYSTEM_PROPERTIES ),
+            if( url == null ){
+                // Get system properties for the current URL
+                // This will trigger failover and also failback if the primary URL cannot be connected to
+                GPUdbLogger.debug_with_info( "Getting system properties for URL: " + getURL());
+                response = submitRequest(
+                    ENDPOINT_SHOW_SYSTEM_PROPERTIES,
                     new ShowSystemPropertiesRequest(),
                     new ShowSystemPropertiesResponse(),
                     false
-            );
+                );
+            } else {
+                GPUdbLogger.debug_with_info( "Getting system properties for URL: " + url);
+                response = submitRequest(
+                        appendPathToURL( url, ENDPOINT_SHOW_SYSTEM_PROPERTIES ),
+                        new ShowSystemPropertiesRequest(),
+                        new ShowSystemPropertiesResponse(),
+                        false
+                    );
+            }
         } catch (MalformedURLException ex) {
             throw new GPUdbException( "Error forming URL: " + url + " -- " + ex.getMessage(), ex );
         }
@@ -3878,9 +3970,17 @@ public abstract class GPUdbBase {
     /**
      * Given a URL, return whether the server is running at that address.
      *
+     * This method will log an exception if the running check fails and not try
+     * to fail over, unless the problem checking the running status was with
+     * authorization, which will result in an exception.
+     * 
+     * This check is used during the initial connection sequence to determine
+     * if an individual node is in a running state.
+     * 
      * @param url - The URL to check for
      *
-     * @throws GPUdbException - Throws only {@link GPUdbUnauthorizedAccessException}, logs other exceptions as warnings
+     * @throws GPUdbException - Throws only {@link GPUdbUnauthorizedAccessException},
+     *                          logs other exceptions as warnings
      */
     boolean isSystemRunning( URL url ) throws GPUdbException {
         boolean systemRunning = false;
@@ -5550,6 +5650,9 @@ public abstract class GPUdbBase {
      * NOTE:  This method's primary use is in support of requests other than
      * {@link #getRecordsJson} and its other variants and
      * {@link #insertRecordsFromJson} and its other variants.
+     * 
+     * IMPORTANT:  This method will attempt to fail over to an available
+     * cluster if the current one goes down.
      *
      * @param <T>       the type of the response object
      * @param endpoint  the GPUdb endpoint to send the request to
@@ -5579,6 +5682,9 @@ public abstract class GPUdbBase {
      * NOTE:  This method's primary use is in support of requests other than
      * {@link #getRecordsJson} and its other variants and
      * {@link #insertRecordsFromJson} and its other variants.
+     *
+     * IMPORTANT:  This method will attempt to fail over to an available
+     * cluster if the current one goes down.
      *
      * @param <T>                the type of the response object
      * @param endpoint           the GPUdb endpoint to send the request to
@@ -5706,6 +5812,9 @@ public abstract class GPUdbBase {
      * NOTE:  This method's primary use is in support of
      * {@link #insertRecordsFromJson} and its other variants.
      *
+     * IMPORTANT:  This method will attempt to fail over to an available
+     * cluster if the current one goes down.
+     *
      * @param endpoint           the GPUdb endpoint to send the request to
      * @param payload            the payload as a JSON String
      * @param enableCompression  whether to compress the request
@@ -5830,6 +5939,9 @@ public abstract class GPUdbBase {
      * NOTE:  This method's primary use is in support of
      * {@link #getRecordsJson} and its other variants.
      *
+     * IMPORTANT:  This method will attempt to fail over to an available
+     * cluster if the current one goes down.
+     *
      * @param endpoint           the GPUdb endpoint to send the request to
      * @param enableCompression  whether to compress the request
      *
@@ -5950,6 +6062,9 @@ public abstract class GPUdbBase {
      * NOTE:  This method's primary use is in support of
      * {@link #getRecordsJson} and its other variants.
      *
+     * IMPORTANT:  This method will *not* attempt to fail over to an available
+     * cluster if the current one goes down.
+     *
      * @param url                the URL to send the request to
      * @param enableCompression  whether to compress the request
      * @return                   the response object (same as {@code response}
@@ -5976,6 +6091,9 @@ public abstract class GPUdbBase {
      *
      * NOTE:  This method's primary use is in support of
      * {@link #insertRecordsFromJson} and its other variants.
+     *
+     * IMPORTANT:  This method will *not* attempt to fail over to an available
+     * cluster if the current one goes down.
      *
      * @param url                the URL to send the request to
      * @param payload            the payload as a JSON String
@@ -6192,6 +6310,9 @@ public abstract class GPUdbBase {
      * {@link #getRecordsJson} and its other variants and
      * {@link #insertRecordsFromJson} and its other variants.
      *
+     * IMPORTANT:  This method will *not* attempt to fail over to an available
+     * cluster if the current one goes down.
+     *
      * @param <T>                the type of the response object
      * @param url                the URL to send the request to
      * @param request            the request object
@@ -6225,6 +6346,9 @@ public abstract class GPUdbBase {
      * NOTE:  This method's primary use is in support of requests other than
      * {@link #getRecordsJson} and its other variants and
      * {@link #insertRecordsFromJson} and its other variants.
+     *
+     * IMPORTANT:  This method will *not* attempt to fail over to an available
+     * cluster if the current one goes down.
      *
      * @param <T>                the type of the response object
      * @param url                the URL to send the request to
@@ -6262,6 +6386,9 @@ public abstract class GPUdbBase {
      * {@link #getRecordsJson} and its other variants and
      * {@link #insertRecordsFromJson} and its other variants.
      *
+     * IMPORTANT:  This method will *not* attempt to fail over to an available
+     * cluster if the current one goes down.
+     *
      * @param <T>                the type of the response object
      * @param url                the URL to send the request to
      * @param request            the request object
@@ -6295,6 +6422,9 @@ public abstract class GPUdbBase {
      * NOTE:  This method's primary use is in support of
      * {@link #insertRecordsFromJson} and its other variants.
      *
+     * IMPORTANT:  This method will *not* attempt to fail over to an available
+     * cluster if the current one goes down.
+     *
      * @param url                the URL to send the request to
      * @param payload            the payload as a JSON String
      * @param enableCompression  whether to compress the request
@@ -6325,6 +6455,9 @@ public abstract class GPUdbBase {
      * NOTE:  This method's primary use is in support of
      * {@link #getRecordsJson} and its other variants.
      *
+     * IMPORTANT:  This method will *not* attempt to fail over to an available
+     * cluster if the current one goes down.
+     *
      * @param url                the URL to send the request to
      * @param enableCompression  whether to compress the request
      * @return                   the response object (same as {@code response}
@@ -6351,6 +6484,9 @@ public abstract class GPUdbBase {
      * NOTE:  This method's primary use is in support of requests other than
      * {@link #getRecordsJson} and its other variants and
      * {@link #insertRecordsFromJson} and its other variants.
+     *
+     * IMPORTANT:  This method will *not* attempt to fail over to an available
+     * cluster if the current one goes down.
      *
      * @param <T>                the type of the response object
      * @param url                the URL to send the request to
@@ -6624,6 +6760,9 @@ public abstract class GPUdbBase {
      * NOTE:  This method's primary use is in support of
      * {@link #insertRecordsFromJson} and its other variants.
      *
+     * IMPORTANT:  This method will *not* attempt to fail over to an available
+     * cluster if the current one goes down.
+     *
      * @param url                the URL to send the request to
      * @param payload            the payload as a JSON String
      * @param enableCompression  whether to compress the request
@@ -6806,6 +6945,9 @@ public abstract class GPUdbBase {
      * NOTE:  This method's primary use is in support of
      * {@link #getRecordsJson} and its other variants.
      *
+     * IMPORTANT:  This method will *not* attempt to fail over to an available
+     * cluster if the current one goes down.
+     *
      * @param url                the URL to send the request to
      * @param enableCompression  whether to compress the request
      * @param responseTimeout    a positive integer representing the number of
@@ -6958,6 +7100,9 @@ public abstract class GPUdbBase {
 
     /**
      * Verifies that GPUdb is running on the server.
+     *
+     * IMPORTANT:  This method will attempt to fail over to an available cluster
+     * if the current one goes down.
      *
      * @throws GPUdbException if an error occurs and/or GPUdb is not running on
      * the server
