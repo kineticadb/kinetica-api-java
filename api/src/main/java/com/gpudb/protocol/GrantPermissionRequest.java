@@ -252,6 +252,19 @@ public class GrantPermissionRequest implements IndexedRecord {
      * FILTER_EXPRESSION}: Optional filter expression to apply to this grant.
      * Only rows that match the filter will be affected.  The default value is
      * ''.
+     *         <li> {@link
+     * com.gpudb.protocol.GrantPermissionRequest.Options#WITH_GRANT_OPTION
+     * WITH_GRANT_OPTION}: Allow the recipient to grant the same permission (or
+     * subset) to others
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.GrantPermissionRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.GrantPermissionRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.GrantPermissionRequest.Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -269,6 +282,23 @@ public class GrantPermissionRequest implements IndexedRecord {
          * match the filter will be affected.  The default value is ''.
          */
         public static final String FILTER_EXPRESSION = "filter_expression";
+
+        /**
+         * Allow the recipient to grant the same permission (or subset) to
+         * others
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.GrantPermissionRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.GrantPermissionRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.GrantPermissionRequest.Options#FALSE FALSE}.
+         */
+        public static final String WITH_GRANT_OPTION = "with_grant_option";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
 
         private Options() {  }
     }
@@ -385,6 +415,22 @@ public class GrantPermissionRequest implements IndexedRecord {
      *                 FILTER_EXPRESSION}: Optional filter expression to apply
      *                 to this grant.  Only rows that match the filter will be
      *                 affected.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GrantPermissionRequest.Options#WITH_GRANT_OPTION
+     *                 WITH_GRANT_OPTION}: Allow the recipient to grant the
+     *                 same permission (or subset) to others
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GrantPermissionRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GrantPermissionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.GrantPermissionRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -642,6 +688,19 @@ public class GrantPermissionRequest implements IndexedRecord {
      *         FILTER_EXPRESSION}: Optional filter expression to apply to this
      *         grant.  Only rows that match the filter will be affected.  The
      *         default value is ''.
+     *                 <li> {@link
+     *         com.gpudb.protocol.GrantPermissionRequest.Options#WITH_GRANT_OPTION
+     *         WITH_GRANT_OPTION}: Allow the recipient to grant the same
+     *         permission (or subset) to others
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.GrantPermissionRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.GrantPermissionRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.GrantPermissionRequest.Options#FALSE FALSE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -663,6 +722,22 @@ public class GrantPermissionRequest implements IndexedRecord {
      *                 FILTER_EXPRESSION}: Optional filter expression to apply
      *                 to this grant.  Only rows that match the filter will be
      *                 affected.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GrantPermissionRequest.Options#WITH_GRANT_OPTION
+     *                 WITH_GRANT_OPTION}: Allow the recipient to grant the
+     *                 same permission (or subset) to others
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GrantPermissionRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GrantPermissionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.GrantPermissionRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

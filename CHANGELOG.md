@@ -2,6 +2,12 @@
 
 ## Version 7.1
 
+### Version 7.1.10.5 - 2025-04-29
+
+#### Added
+-   Failover support for a cluster starting up and draining its HA queue
+
+
 ### Version 7.1.10.4 - 2024-09-08
 
 #### Fixed

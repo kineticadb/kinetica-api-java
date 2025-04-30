@@ -3,6 +3,12 @@
 
 ## Version 7.1
 
+### Version 7.1.10.9
+
+#### Changed Endpoints
+-   Added option ``with_grant_option`` to ``/grant/permission`` endpoint to allow recipient to grant to others
+
+
 ### Version 7.1.10.0
 
 #### Changed Endpoints

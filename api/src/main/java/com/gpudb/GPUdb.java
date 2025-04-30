@@ -16786,6 +16786,22 @@ public class GPUdb extends GPUdbBase {
      *                 FILTER_EXPRESSION}: Optional filter expression to apply
      *                 to this grant.  Only rows that match the filter will be
      *                 affected.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GrantPermissionRequest.Options#WITH_GRANT_OPTION
+     *                 WITH_GRANT_OPTION}: Allow the recipient to grant the
+     *                 same permission (or subset) to others
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GrantPermissionRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GrantPermissionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.GrantPermissionRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
