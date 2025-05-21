@@ -2,6 +2,23 @@
 
 ## Version 7.2
 
+### Version 7.2.2.10 - 2025-05-20
+
+#### Added
+-   Helper function for converting HA sync mode strings into enum constants.
+
+#### Changed
+-   Simplified design of fail-back poller.
+
+#### Fixed
+-   Handling of connection & fail-back when server blocks connections while
+    processing HA-queued requests.
+-   Fail-back poller not initiating after first fail-over/fail-back.
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
 ### Version 7.2.2.9 - 2025-04-17
 
 #### Added
@@ -178,6 +195,12 @@
 
 
 ## Version 7.1
+
+### Version 7.1.10.5 - 2025-04-29
+
+#### Added
+-   Failover support for a cluster starting up and draining its HA queue
+
 
 ### Version 7.1.10.4 - 2024-09-08
 

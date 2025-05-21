@@ -614,6 +614,51 @@ public class GPUdb extends GPUdbBase {
     }
 
     /**
+     * Pauses consumption of messages from other HA clusters to support data
+     * repair/recovery scenarios. In-flight queries may fail to replicate to
+     * other clusters in the ring when going offline.
+     *
+     * @param request  {@link AdminHaOfflineRequest Request} object containing
+     *                 the parameters for the operation.
+     *
+     * @return {@link AdminHaOfflineResponse Response} object containing the
+     *         results of the operation.
+     *
+     * @throws GPUdbException  if an error occurs during the operation.
+     */
+    public AdminHaOfflineResponse adminHaOffline(AdminHaOfflineRequest request) throws GPUdbException {
+        AdminHaOfflineResponse actualResponse_ = new AdminHaOfflineResponse();
+        submitRequest("/admin/ha/offline", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+    /**
+     * Pauses consumption of messages from other HA clusters to support data
+     * repair/recovery scenarios. In-flight queries may fail to replicate to
+     * other clusters in the ring when going offline.
+     *
+     * @param offline  Set to true if desired state is offline.
+     *                 Supported values:
+     *                 <ul>
+     *                     <li>{@code true}
+     *                     <li>{@code false}
+     *                 </ul>
+     * @param options  Optional parameters. The default value is an empty
+     *                 {@link Map}.
+     *
+     * @return {@link AdminHaOfflineResponse Response} object containing the
+     *         results of the operation.
+     *
+     * @throws GPUdbException  if an error occurs during the operation.
+     */
+    public AdminHaOfflineResponse adminHaOffline(boolean offline, Map<String, String> options) throws GPUdbException {
+        AdminHaOfflineRequest actualRequest_ = new AdminHaOfflineRequest(offline, options);
+        AdminHaOfflineResponse actualResponse_ = new AdminHaOfflineResponse();
+        submitRequest("/admin/ha/offline", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+    /**
      * Restarts the HA processing on the given cluster as a mechanism of
      * accepting breaking HA conf changes. Additionally the cluster is put into
      * read-only while HA is restarting.
@@ -10985,6 +11030,9 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
      *                         FALSE}.
      *                     <li>{@link
+     *                         com.gpudb.protocol.CreateTableExternalRequest.Options#TYPE_INFERENCE_MAX_RECORDS_READ
+     *                         TYPE_INFERENCE_MAX_RECORDS_READ}
+     *                     <li>{@link
      *                         com.gpudb.protocol.CreateTableExternalRequest.Options#TYPE_INFERENCE_MODE
      *                         TYPE_INFERENCE_MODE}: Optimize type inferencing
      *                         for either speed or accuracy.
@@ -20075,6 +20123,9 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
      *                         FALSE}.
      *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TYPE_INFERENCE_MAX_RECORDS_READ
+     *                         TYPE_INFERENCE_MAX_RECORDS_READ}
+     *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TYPE_INFERENCE_MODE
      *                         TYPE_INFERENCE_MODE}: Optimize type inferencing
      *                         for either speed or accuracy.
@@ -21053,6 +21104,10 @@ public class GPUdb extends GPUdbBase {
      *                         The default value is {@link
      *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TYPE_INFERENCE_MAX_RECORDS_READ
+     *                         TYPE_INFERENCE_MAX_RECORDS_READ}: The default
+     *                         value is ''.
      *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TYPE_INFERENCE_MODE
      *                         TYPE_INFERENCE_MODE}: optimize type inference

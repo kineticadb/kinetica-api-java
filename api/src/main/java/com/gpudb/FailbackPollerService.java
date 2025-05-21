@@ -1,28 +1,22 @@
 package com.gpudb;
 
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import com.gpudb.GPUdbBase.FailbackOptions;
-import com.gpudb.protocol.ShowSystemPropertiesResponse;
+import com.gpudb.protocol.InsertRecordsRandomRequest;
 
-public class FailbackPollerService {
+class FailbackPollerService {
 
-    static final int DEFAULT_START_DELAY = 0, DEFAULT_TERMINATION_TIMEOUT = 5;  // Both values are in secs
-    private ScheduledExecutorService scheduler;
-    private ScheduledFuture<?> futureTask;
+    static final int DEFAULT_TERMINATION_TIMEOUT = 5;  // Value in secs
     private final GPUdbBase gpudb;
     private final URL primaryURL;
-    private final long pollingInterval;
-    private final TimeUnit timeUnit;
+    private final long pollingIntervalMs;
     private volatile boolean isRunning = false;
+    private Thread pollerThread;
     private final Object lock = new Object(); // To synchronize start/stop/restart operations
+	private static final InsertRecordsRandomRequest POLL_REQUEST = new InsertRecordsRandomRequest().setTableName("").setCount(1);
 
     public FailbackPollerService(GPUdbBase gpUdbBase, FailbackOptions options) {
         this(gpUdbBase, options.getPollingInterval(), TimeUnit.SECONDS);
@@ -31,132 +25,139 @@ public class FailbackPollerService {
     public FailbackPollerService(GPUdbBase gpudb, long pollingInterval, TimeUnit timeUnit) {
         this.gpudb = gpudb;
         this.primaryURL = gpudb.getPrimaryUrl();
-        this.pollingInterval = pollingInterval;
-        this.timeUnit = timeUnit;
+        this.pollingIntervalMs = timeUnit.toMillis(pollingInterval);
     }
 
     // Start the poller thread
     public void start() {
-        synchronized (lock) {
-            if (isRunning) {
+        synchronized (this.lock) {
+            if (this.isRunning) {
                 GPUdbLogger.warn("Poller is already running.");
                 return;
             }
 
             GPUdbLogger.debug_with_info("Starting the poller...");
-            scheduler = Executors.newSingleThreadScheduledExecutor();
-            isRunning = true;
-
-            // Schedule the poller task to run at fixed intervals
-            futureTask = scheduler.scheduleWithFixedDelay(this::pollingTask, DEFAULT_START_DELAY, pollingInterval, timeUnit);
-        }
-    }
-
-    // Polling task to be executed at fixed intervals
-    private void pollingTask() {
-        try {
-            GPUdbLogger.debug_with_info("Polling...");
-            if (poll()) {
-                GPUdbLogger.debug_with_info("Poll successful. Stopping the poller...");
-                resetClusterPointers();
-                stop(); // Stop if polling operation is successful
-            }
-        } catch (Exception e) {
-            handleException(e);
+            this.isRunning = true;
+            
+            // Create a daemon thread for polling
+            this.pollerThread = new Thread(() -> {
+                try {
+                    while (this.isRunning) {
+                        try {
+                            GPUdbLogger.debug_with_info("Polling...");
+                            if (poll()) {
+                                GPUdbLogger.debug_with_info("Poll successful. Stopping the poller...");
+                                resetClusterPointers();
+                                stop(); // Stop if polling operation is successful
+                                break;
+                            }
+                            // Sleep for the polling interval
+                            Thread.sleep(this.pollingIntervalMs);
+                        } catch (InterruptedException ie) {
+                            Thread.currentThread().interrupt();
+                            break;
+                        } catch (Exception e) {
+                            handleException(e);
+                        }
+                    }
+                } catch (Exception e) {
+                    GPUdbLogger.error("Error in poller thread: " + e.getMessage());
+                }
+            });
+            
+            // Set as daemon thread so it doesn't prevent JVM shutdown
+            this.pollerThread.setDaemon(true);
+            this.pollerThread.setName("FailbackPoller-Thread");
+            this.pollerThread.start();
         }
     }
 
     // Method to do the actual polling
     private boolean poll() {
-        boolean kineticaRunning = gpudb.isKineticaRunning(primaryURL); // Tests the availability of the primary URL
+        boolean kineticaRunning = this.gpudb.isKineticaRunning(this.primaryURL); // Tests the availability of the primary URL
 
-        if( kineticaRunning ) {
-
+        if (kineticaRunning) {
             GPUdb.Options options = new GPUdb.Options();
             options.setDisableAutoDiscovery(true);
             options.setDisableFailover(true);
-            options.setUsername(gpudb.getUsername());
-            options.setPassword(gpudb.getPassword());
-
-            GPUdb db;
+            options.setUsername(this.gpudb.getUsername());
+            options.setPassword(this.gpudb.getPassword());
+            options.setBypassSslCertCheck(this.gpudb.getBypassSslCertCheck());
 
             try {
-                db = new GPUdb(gpudb.getURL(), options);
-                GPUdbLogger.debug_with_info(String.format("Failback to primary cluster [%s] succeeded", primaryURL.toString()));
-            } catch (GPUdbException e) {
-                GPUdbLogger.warn(String.format("Failback to primary cluster at [%s] did not succeed", primaryURL.toString()));
+                GPUdb db = new GPUdb(this.primaryURL, options);
+                // This request will always fail, but will fail in the expected
+                // way if the database is fully reachable
+                db.insertRecordsRandom(POLL_REQUEST);
+                GPUdbLogger.error(String.format("Failback check to primary cluster [%s] unexpectedly failed to throw an exception", this.primaryURL.toString()));
+            } catch (Exception e) {
+            	if (!e.getMessage().contains("table name may not be empty"))
+            	{
+            		GPUdbLogger.debug_with_info(String.format("Kinetica running on primary cluster at [%s], but connection did not succeed", this.primaryURL.toString()));
+            		kineticaRunning = false;
+            	}
             }
-
         } else {
-            GPUdbLogger.debug_with_info(String.format("Kinetica is not running at : %s", primaryURL.toString()));
+            GPUdbLogger.debug_with_info(String.format("Kinetica is not running at : %s", this.primaryURL.toString()));
         }
         return kineticaRunning;
     }
 
-
     private void resetClusterPointers() {
-        List<GPUdbBase.ClusterAddressInfo> hostAddresses = gpudb.getHostAddresses();
+        List<GPUdbBase.ClusterAddressInfo> hostAddresses = this.gpudb.getHostAddresses();
         // ToDo - Should we check for (&& x.getActiveHeadNodeUrl().toExternalForm().equals(primaryURL.toExternalForm()) as well ?
         int indexOfPrimaryCluster = hostAddresses.stream()
-                .filter(x -> x.isPrimaryCluster() )
+                .filter(x -> x.isPrimaryCluster())
                 .findFirst()
                 .map(hostAddresses::indexOf)
                 .orElse(-1);
 
-        if( indexOfPrimaryCluster != -1) {
+        if (indexOfPrimaryCluster != -1) {
             GPUdbLogger.debug_with_info(String.format("Failing back to cluster at index %d with URL %s", 
-            indexOfPrimaryCluster, hostAddresses.get(indexOfPrimaryCluster).getActiveHeadNodeUrl()));
-            gpudb.setCurrClusterIndexPointer(indexOfPrimaryCluster);
+                indexOfPrimaryCluster, hostAddresses.get(indexOfPrimaryCluster).getActiveHeadNodeUrl()));
+            this.gpudb.setCurrClusterIndexPointer(indexOfPrimaryCluster);
         } else {
-            GPUdbLogger.error(String.format("Primary cluster could not be located for URL : %s", primaryURL));
+            GPUdbLogger.error(String.format("Primary cluster could not be located for URL : %s", this.primaryURL));
         }
     }
 
-
     // Handle specific exceptions that require warnings
-    private void handleException(Exception e) {
+    private static void handleException(Exception e) {
         GPUdbLogger.debug_with_info(String.format("Warning: Exception during polling: %s", e.getMessage()));
     }
 
     // Stop the poller thread
     public void stop() {
-        synchronized (lock) {
-            if (!isRunning) {
+        synchronized (this.lock) {
+            if (!this.isRunning) {
                 GPUdbLogger.debug_with_info("Poller is already stopped.");
                 return;
             }
 
             GPUdbLogger.debug_with_info("Stopping the poller...");
-            if (futureTask != null) {
-                futureTask.cancel(true); // Cancel the scheduled task
+            this.isRunning = false;
+            
+            // Interrupt the thread to wake it up if it's sleeping
+            if (this.pollerThread != null) {
+            	this.pollerThread.interrupt();
+                
+                // Give the thread some time to terminate naturally
+                try {
+                	this.pollerThread.join(TimeUnit.SECONDS.toMillis(DEFAULT_TERMINATION_TIMEOUT));
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                this.pollerThread = null;
             }
-            shutdownScheduler();
-            isRunning = false;
         }
     }
 
     public boolean isRunning() {
         boolean running;
-        synchronized(lock) {
-            running = isRunning;
+        synchronized (this.lock) {
+            running = this.isRunning;
         }
-
         return running;
-    }
-
-    // Gracefully shut down the internal scheduler
-    private void shutdownScheduler() {
-        if (scheduler != null) {
-            scheduler.shutdown();
-            try {
-                if (!scheduler.awaitTermination(DEFAULT_TERMINATION_TIMEOUT, TimeUnit.SECONDS)) {
-                    scheduler.shutdownNow(); // Force shutdown if not terminated after waiting
-                }
-            } catch (InterruptedException e) {
-                scheduler.shutdownNow();
-                Thread.currentThread().interrupt();
-            }
-        }
     }
 
     // Restart the poller thread after it has been stopped
@@ -165,6 +166,4 @@ public class FailbackPollerService {
         stop(); // Stop the existing poller if it's running
         start(); // Start the poller again
     }
-
 }
-

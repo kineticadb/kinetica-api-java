@@ -913,6 +913,11 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String TRUNCATE_TABLE = "truncate_table";
 
         /**
+         * The default value is ''.
+         */
+        public static final String TYPE_INFERENCE_MAX_RECORDS_READ = "type_inference_max_records_read";
+
+        /**
          * optimize type inference for:
          * Supported values:
          * <ul>
@@ -1707,6 +1712,9 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#TYPE_INFERENCE_MAX_RECORDS_READ
+     *                         TYPE_INFERENCE_MAX_RECORDS_READ}: The default
+     *                         value is ''.
      *                     <li>{@link Options#TYPE_INFERENCE_MODE
      *                         TYPE_INFERENCE_MODE}: optimize type inference
      *                         for:
@@ -2517,6 +2525,8 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#TYPE_INFERENCE_MAX_RECORDS_READ
+     *         TYPE_INFERENCE_MAX_RECORDS_READ}: The default value is ''.
      *     <li>{@link Options#TYPE_INFERENCE_MODE TYPE_INFERENCE_MODE}:
      *         optimize type inference for:
      *         Supported values:
@@ -2925,6 +2935,8 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#TYPE_INFERENCE_MAX_RECORDS_READ
+     *         TYPE_INFERENCE_MAX_RECORDS_READ}: The default value is ''.
      *     <li>{@link Options#TYPE_INFERENCE_MODE TYPE_INFERENCE_MODE}:
      *         optimize type inference for:
      *         Supported values:

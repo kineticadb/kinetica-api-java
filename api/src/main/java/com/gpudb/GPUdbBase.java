@@ -14,7 +14,6 @@ import org.apache.avro.io.DecoderFactory;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.hc.client5.http.ConnectTimeoutException;
 import org.apache.hc.client5.http.HttpRequestRetryStrategy;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.config.ConnectionConfig;
@@ -628,7 +627,7 @@ public abstract class GPUdbBase {
 
 
         public FailbackOptions getFailbackOptions() {
-            return failbackOptions;
+            return this.failbackOptions;
         }
 
         /**
@@ -1954,19 +1953,28 @@ public abstract class GPUdbBase {
      * A enumeration of high-availability synchronicity override modes.
      */
     public enum HASynchronicityMode {
-        // No override; defer to the HA process for synchronizing
-        // endpoints (which has different logic for different endpoints)
+        /* No override; defer to the HA process for synchronizing
+         * endpoints (which has different logic for different endpoints)
+         */
         DEFAULT( "default" ),
-        // Do not replicate the endpoint calls
+        /* Do not replicate the endpoint calls
+         */
         NONE( "REPL_NONE" ),
-        // Synchronize all endpoint calls
+        /* Executes the query locally, sends an http request directly to each
+         * cluster, sequentially, and returns the response
+         */
         SYNCHRONOUS( "REPL_SYNC" ),
-        // Sends a http request directly to each cluster, executes the query locally, 
-        // and waits for the response from each cluster
+        /* Sends a http request directly to each cluster, executes the query locally, 
+         * and waits for the response from each cluster
+         */
         SYNCHRONOUS_PARALLEL( "REPL_SYNC_PARALLEL" ),
-        // Do NOT synchronize any endpoint call
+        /* Executes the query locally, queues a request to RMQ for each cluster,
+         * and returns to the user
+         */
         ASYNCHRONOUS( "REPL_ASYNC" ),
-        // Queues a request to RMQ for each cluster, executes the query locally, and returns to the user
+        /* Queues a request to RMQ for each cluster, executes the query locally,
+         * and returns to the user
+         */
         ASYNCHRONOUS_PARALLEL( "REPL_ASYNC_PARALLEL" );
 
         private String syncMode;
@@ -1977,6 +1985,26 @@ public abstract class GPUdbBase {
 
         public String getMode() {
             return this.syncMode;
+        }
+
+        /*
+         * Convert the given HA sync mode text into an enumeration constant
+         * 
+         * @param value the HA sync mode text to look up
+         * @return the matching HA sync mode enumeration constant
+         */
+        public static HASynchronicityMode fromValue(String value) {
+            if (value == null)
+                return null;
+
+            String upperValue = value.toUpperCase();
+            String upperValuePlus = "REPL_" + upperValue;
+
+            for (HASynchronicityMode haMode : HASynchronicityMode.values())
+                if (haMode.syncMode.equals(upperValue) || haMode.name().equals(upperValue) || haMode.syncMode.equals(upperValuePlus))
+                    return haMode;
+
+            return null;
         }
 
         public static Vector<String> getValuesAsVector() {
@@ -2128,6 +2156,7 @@ public abstract class GPUdbBase {
     private static final String DB_CONNECTION_REFUSED_ERROR_MESSAGE = "Connection refused";
     private static final String DB_EXITING_ERROR_MESSAGE            = "Kinetica is exiting";
     private static final String DB_SHUTTING_DOWN_ERROR_MESSAGE      = "System shutting down";
+    private static final String DB_DRAINING_HAQ_ERROR_MESSAGE       = "Unavailable: Draining HA queue";
     private static final String DB_SYSTEM_LIMITED_ERROR_MESSAGE     = "system-limited-fatal";
     private static final String DB_EOF_FROM_SERVER_ERROR_MESSAGE    = "Unexpected end of file from server";
 
@@ -3328,6 +3357,10 @@ public abstract class GPUdbBase {
         return this.hostAddresses.size();
     }
 
+    public boolean getBypassSslCertCheck() {
+        return this.bypassSslCertCheck;
+    }
+
 
     /**
      * Adds an HTTP header to the map of additional HTTP headers to send to
@@ -3478,7 +3511,7 @@ public abstract class GPUdbBase {
     }
 
     public List<ClusterAddressInfo> getHostAddresses() {
-        return hostAddresses;
+        return this.hostAddresses;
     }
 
     /**
@@ -3596,13 +3629,17 @@ public abstract class GPUdbBase {
             // Haven't circled back to the old URL; so return the new one
             GPUdbLogger.warn("Switched to fail-over URL: " +  getURL());
 
-            // Invoke the failback poller here
+            // Invoke the fail-back poller here
             if( checkFailbackConditions() ) {
-                // Invoke poller.
-                FailbackOptions failbackOptions = this.options.getFailbackOptions();
-                if( failbackPollerService == null ) {
-                    failbackPollerService = new FailbackPollerService(this, failbackOptions != null ? failbackOptions : FailbackOptions.defaultOptions());
-                    failbackPollerService.start();
+                // Create the fail-back poller, if not initialized yet
+                if( this.failbackPollerService == null ) {
+                    FailbackOptions failbackOptions = this.options.getFailbackOptions();
+                    this.failbackPollerService = new FailbackPollerService(this, failbackOptions != null ? failbackOptions : FailbackOptions.defaultOptions());
+                }
+                // Start the newly-created or previously-stopped poller;
+                //   skip if one is already active
+                if( !this.failbackPollerService.isRunning() ) {
+                	this.failbackPollerService.start();
                 }
             }
 
@@ -4904,7 +4941,7 @@ public abstract class GPUdbBase {
                 // Parse the URLs (a single attempt)
                 GPUdbLogger.debug_with_info( "Attempting to parse the user-given URLs: " + urls.toString() );
                 this.processClusterInformationForAllUrls( urls );
-                GPUdbLogger.debug_with_info( "Parsed the user-given URLs successfully: " + this.hostAddresses.toString() );
+                GPUdbLogger.debug_with_info( "Processed the cluster URLs successfully: " + this.hostAddresses.toString() );
                 return; // one successful attempt is all we need
             } catch (GPUdbHostnameRegexFailureException ex) {
                 // There's no point in keep trying since the URLs aren't
@@ -6639,6 +6676,15 @@ public abstract class GPUdbBase {
                 String status = decoder.readString();
                 String message = decoder.readString();
 
+                // Parse response based on error code
+                if (statusCode == HttpURLConnection.HTTP_BAD_REQUEST) {
+                    if (message != null)
+                        if (message.contains( DB_SHUTTING_DOWN_ERROR_MESSAGE ))
+                            throw new GPUdbExitException("Kinetica shutting down");
+                        else if (message.contains( DB_DRAINING_HAQ_ERROR_MESSAGE ))
+                            throw new GPUdbExitException("Draining HA message queue");
+                }
+
                 if (status.equals("ERROR")) {
                     // Check if Kinetica is shutting down
                     if (
@@ -7243,7 +7289,7 @@ public abstract class GPUdbBase {
      *
      * @return true if Kinetica is running, false otherwise.
      */
-    @Deprecated
+    // @Deprecated
     public boolean isKineticaRunning(URL url) {
 
         // Use a super short timeout (0.5 second)

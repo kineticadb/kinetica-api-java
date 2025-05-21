@@ -1036,6 +1036,8 @@ public class CreateTableExternalRequest implements IndexedRecord {
          */
         public static final String TRUNCATE_TABLE = "truncate_table";
 
+        public static final String TYPE_INFERENCE_MAX_RECORDS_READ = "type_inference_max_records_read";
+
         /**
          * Optimize type inferencing for either speed or accuracy.
          * Supported values:
@@ -1947,6 +1949,8 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#TYPE_INFERENCE_MAX_RECORDS_READ
+     *                         TYPE_INFERENCE_MAX_RECORDS_READ}
      *                     <li>{@link Options#TYPE_INFERENCE_MODE
      *                         TYPE_INFERENCE_MODE}: Optimize type inferencing
      *                         for either speed or accuracy.
@@ -2857,6 +2861,8 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#TYPE_INFERENCE_MAX_RECORDS_READ
+     *         TYPE_INFERENCE_MAX_RECORDS_READ}
      *     <li>{@link Options#TYPE_INFERENCE_MODE TYPE_INFERENCE_MODE}:
      *         Optimize type inferencing for either speed or accuracy.
      *         Supported values:
@@ -3338,6 +3344,8 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#TYPE_INFERENCE_MAX_RECORDS_READ
+     *         TYPE_INFERENCE_MAX_RECORDS_READ}
      *     <li>{@link Options#TYPE_INFERENCE_MODE TYPE_INFERENCE_MODE}:
      *         Optimize type inferencing for either speed or accuracy.
      *         Supported values:
