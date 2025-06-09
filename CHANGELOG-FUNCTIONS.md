@@ -3,6 +3,12 @@
 
 ## Version 7.2
 
+### Version 7.2.2.20
+-   Added ``/admin/send/alert``
+
+#### Changed Endpoints
+-   Added ``/admin/ha/offline``
+
 ### Version 7.2.2.18
 
 #### Changed Endpoints

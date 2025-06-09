@@ -1316,6 +1316,62 @@ public class GPUdb extends GPUdbBase {
     }
 
     /**
+     * Sends a user generated alert to the monitoring system.
+     *
+     * @param request  {@link AdminSendAlertRequest Request} object containing
+     *                 the parameters for the operation.
+     *
+     * @return {@link AdminSendAlertResponse Response} object containing the
+     *         results of the operation.
+     *
+     * @throws GPUdbException  if an error occurs during the operation.
+     */
+    public AdminSendAlertResponse adminSendAlert(AdminSendAlertRequest request) throws GPUdbException {
+        AdminSendAlertResponse actualResponse_ = new AdminSendAlertResponse();
+        submitRequest("/admin/send/alert", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+    /**
+     * Sends a user generated alert to the monitoring system.
+     *
+     * @param message  Alert message body. The default value is ''.
+     * @param label  Label to add to alert message. The default value is ''.
+     * @param logLevel  Alert message logging criteria.
+     *                  Supported values:
+     *                  <ul>
+     *                      <li>{@link
+     *                          com.gpudb.protocol.AdminSendAlertRequest.LogLevel#FATAL
+     *                          FATAL}
+     *                      <li>{@link
+     *                          com.gpudb.protocol.AdminSendAlertRequest.LogLevel#ERROR
+     *                          ERROR}
+     *                      <li>{@link
+     *                          com.gpudb.protocol.AdminSendAlertRequest.LogLevel#WARN
+     *                          WARN}
+     *                      <li>{@link
+     *                          com.gpudb.protocol.AdminSendAlertRequest.LogLevel#INFO
+     *                          INFO}
+     *                      <li>{@link
+     *                          com.gpudb.protocol.AdminSendAlertRequest.LogLevel#DEBUG
+     *                          DEBUG}
+     *                  </ul>
+     * @param options  Optional parameters. The default value is an empty
+     *                 {@link Map}.
+     *
+     * @return {@link AdminSendAlertResponse Response} object containing the
+     *         results of the operation.
+     *
+     * @throws GPUdbException  if an error occurs during the operation.
+     */
+    public AdminSendAlertResponse adminSendAlert(String message, String label, String logLevel, Map<String, String> options) throws GPUdbException {
+        AdminSendAlertRequest actualRequest_ = new AdminSendAlertRequest(message, label, logLevel, options);
+        AdminSendAlertResponse actualResponse_ = new AdminSendAlertResponse();
+        submitRequest("/admin/send/alert", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+    /**
      * Requests a list of the most recent alerts.
      * Returns lists of alert data, including timestamp and type.
      *
@@ -17643,6 +17699,9 @@ public class GPUdb extends GPUdbBase {
      *                            READ}: Ability to read, list and use the
      *                            object.
      *                        <li>{@link
+     *                            com.gpudb.protocol.GrantPermissionRequest.Permission#SEND_ALERT
+     *                            SEND_ALERT}: Ability to send system alerts.
+     *                        <li>{@link
      *                            com.gpudb.protocol.GrantPermissionRequest.Permission#UPDATE
      *                            UPDATE}: Update access to the table.
      *                        <li>{@link
@@ -17957,6 +18016,9 @@ public class GPUdb extends GPUdbBase {
      *                        <li>{@link
      *                            com.gpudb.protocol.GrantPermissionSystemRequest.Permission#SYSTEM_READ
      *                            SYSTEM_READ}: Read-only access to all tables.
+     *                        <li>{@link
+     *                            com.gpudb.protocol.GrantPermissionSystemRequest.Permission#SYSTEM_SEND_ALERT
+     *                            SYSTEM_SEND_ALERT}: Send system alerts.
      *                    </ul>
      * @param options  Optional parameters. The default value is an empty
      *                 {@link Map}.
@@ -18183,6 +18245,9 @@ public class GPUdb extends GPUdbBase {
      *                            com.gpudb.protocol.HasPermissionRequest.Permission#READ
      *                            READ}: Ability to read, list and use the
      *                            object.
+     *                        <li>{@link
+     *                            com.gpudb.protocol.HasPermissionRequest.Permission#SEND_ALERT
+     *                            SEND_ALERT}: Ability to send system alerts.
      *                        <li>{@link
      *                            com.gpudb.protocol.HasPermissionRequest.Permission#UPDATE
      *                            UPDATE}: Update access to the table.
@@ -24132,6 +24197,9 @@ public class GPUdb extends GPUdbBase {
      *                            READ}: Ability to read, list and use the
      *                            object.
      *                        <li>{@link
+     *                            com.gpudb.protocol.RevokePermissionRequest.Permission#SEND_ALERT
+     *                            SEND_ALERT}: Ability to send system alerts.
+     *                        <li>{@link
      *                            com.gpudb.protocol.RevokePermissionRequest.Permission#UPDATE
      *                            UPDATE}: Update access to the table.
      *                        <li>{@link
@@ -24424,6 +24492,9 @@ public class GPUdb extends GPUdbBase {
      *                        <li>{@link
      *                            com.gpudb.protocol.RevokePermissionSystemRequest.Permission#SYSTEM_READ
      *                            SYSTEM_READ}: Read-only access to all tables.
+     *                        <li>{@link
+     *                            com.gpudb.protocol.RevokePermissionSystemRequest.Permission#SYSTEM_SEND_ALERT
+     *                            SYSTEM_SEND_ALERT}: Send system alerts.
      *                    </ul>
      * @param options  Optional parameters. The default value is an empty
      *                 {@link Map}.

@@ -67,6 +67,11 @@ public class RevokePermissionSystemRequest implements IndexedRecord {
          */
         public static final String SYSTEM_READ = "system_read";
 
+        /**
+         * Send system alerts.
+         */
+        public static final String SYSTEM_SEND_ALERT = "system_send_alert";
+
         private Permission() {  }
     }
 
@@ -103,6 +108,8 @@ public class RevokePermissionSystemRequest implements IndexedRecord {
      *                            Read and write access to all tables.
      *                        <li>{@link Permission#SYSTEM_READ SYSTEM_READ}:
      *                            Read-only access to all tables.
+     *                        <li>{@link Permission#SYSTEM_SEND_ALERT
+     *                            SYSTEM_SEND_ALERT}: Send system alerts.
      *                    </ul>
      * @param options  Optional parameters. The default value is an empty
      *                 {@link Map}.
@@ -149,6 +156,8 @@ public class RevokePermissionSystemRequest implements IndexedRecord {
      *         access to all tables.
      *     <li>{@link Permission#SYSTEM_READ SYSTEM_READ}: Read-only access to
      *         all tables.
+     *     <li>{@link Permission#SYSTEM_SEND_ALERT SYSTEM_SEND_ALERT}: Send
+     *         system alerts.
      * </ul>
      *
      * @return The current value of {@code permission}.
@@ -170,6 +179,8 @@ public class RevokePermissionSystemRequest implements IndexedRecord {
      *         access to all tables.
      *     <li>{@link Permission#SYSTEM_READ SYSTEM_READ}: Read-only access to
      *         all tables.
+     *     <li>{@link Permission#SYSTEM_SEND_ALERT SYSTEM_SEND_ALERT}: Send
+     *         system alerts.
      * </ul>
      *
      * @param permission  The new value for {@code permission}.

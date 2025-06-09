@@ -2,6 +2,25 @@
 
 ## Version 7.2
 
+### Version 7.2.2.11 - 2025-06-08
+
+#### Added
+-   Greater protection for the `GPUdbSqlIterator` against errant iteration
+    states being returned by the server.
+
+#### Changed
+-   Simplified reset of failover tracking after successful fail-back.
+-   Aligned `GPUdbSqlIterator` with `Iterator` interface.
+
+#### Fixed
+-   `GPUdbSqlIterator` failing to iterate past the first batch of results.
+-   `GPUdbSqlIterator` making a clear all database call when processing queries
+    that don't use a paging table.
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
 ### Version 7.2.2.10 - 2025-05-20
 
 #### Added

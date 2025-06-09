@@ -154,6 +154,11 @@ public class GrantPermissionRequest implements IndexedRecord {
         public static final String READ = "read";
 
         /**
+         * Ability to send system alerts.
+         */
+        public static final String SEND_ALERT = "send_alert";
+
+        /**
          * Update access to the table.
          */
         public static final String UPDATE = "update";
@@ -278,6 +283,8 @@ public class GrantPermissionRequest implements IndexedRecord {
      *                            access to tables.
      *                        <li>{@link Permission#READ READ}: Ability to
      *                            read, list and use the object.
+     *                        <li>{@link Permission#SEND_ALERT SEND_ALERT}:
+     *                            Ability to send system alerts.
      *                        <li>{@link Permission#UPDATE UPDATE}: Update
      *                            access to the table.
      *                        <li>{@link Permission#USER_ADMIN USER_ADMIN}:
@@ -430,6 +437,8 @@ public class GrantPermissionRequest implements IndexedRecord {
      *     <li>{@link Permission#INSERT INSERT}: Insert access to tables.
      *     <li>{@link Permission#READ READ}: Ability to read, list and use the
      *         object.
+     *     <li>{@link Permission#SEND_ALERT SEND_ALERT}: Ability to send system
+     *         alerts.
      *     <li>{@link Permission#UPDATE UPDATE}: Update access to the table.
      *     <li>{@link Permission#USER_ADMIN USER_ADMIN}: Access to administer
      *         users and roles that do not have system_admin permission.
@@ -459,6 +468,8 @@ public class GrantPermissionRequest implements IndexedRecord {
      *     <li>{@link Permission#INSERT INSERT}: Insert access to tables.
      *     <li>{@link Permission#READ READ}: Ability to read, list and use the
      *         object.
+     *     <li>{@link Permission#SEND_ALERT SEND_ALERT}: Ability to send system
+     *         alerts.
      *     <li>{@link Permission#UPDATE UPDATE}: Update access to the table.
      *     <li>{@link Permission#USER_ADMIN USER_ADMIN}: Access to administer
      *         users and roles that do not have system_admin permission.

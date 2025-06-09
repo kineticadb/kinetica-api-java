@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import com.gpudb.protocol.ClearTableRequest;
@@ -20,6 +21,19 @@ import com.gpudb.protocol.ExecuteSqlResponse;
  * a {@link Map}. The 'batchSize' for the number of records
  * returned is set to a default of '10000', which can be modified using
  * the parameter 'batchSize' to the constructor.
+ * 
+ * Example usage, passing a database connection and a SQL statement to the
+ * {@link GPUdbSqlIterator}:
+ * 
+ *     try (GPUdbSqlIterator<Record> iterator = new GPUdbSqlIterator<>(gpudb, sql);)
+ *     {
+ *         for (Record record : iterator)
+ *             System.out.println(record);
+ *     }
+ *     catch (Exception e)
+ *     {
+ *         System.err.println("Error in iteration: " + e.getMessage());
+ *     }
  * 
  * Copyright (c) 2023 Kinetica DB Inc.
  */
@@ -36,6 +50,7 @@ public class GPUdbSqlIterator<T extends Record> implements Iterable<T>, AutoClos
     private List<T> records = new ArrayList<>();
     private long offset;
     private long totalCount;
+    private boolean hasMoreRecords;
     private String pagingTableName;
     private List<String> pagingTableNames = new ArrayList<>();
 
@@ -90,7 +105,7 @@ public class GPUdbSqlIterator<T extends Record> implements Iterable<T>, AutoClos
         this.sqlOptions = sqlOptions;
 
         this.pagingTableName = UUID.randomUUID().toString().replaceAll("-", "_");
-        sqlOptions.put(ExecuteSqlRequest.Options.PAGING_TABLE, pagingTableName);
+        sqlOptions.put(ExecuteSqlRequest.Options.PAGING_TABLE, this.pagingTableName);
         checkAndFetchRecords();
     }
 
@@ -100,36 +115,44 @@ public class GPUdbSqlIterator<T extends Record> implements Iterable<T>, AutoClos
 
     public long size()
     {
-        return totalCount;
+        return this.totalCount;
     }
 
     private void checkAndFetchRecords() throws GPUdbException {
-        if (records.size() > 0 && recordPosition < records.size()) {
+        if (this.records.size() > 0 && this.recordPosition < this.records.size()) {
             return;
         }
-        records.clear();
-        recordPosition = 0;
-        if (offset > totalCount) {
+        this.records.clear();
+        this.recordPosition = 0;
+        if (this.offset > this.totalCount) {
             return;
         }
         executeSql();
-        offset += batchSize;
+        this.offset += this.batchSize;
     }
 
     private void executeSql() throws GPUdbException {
-        ExecuteSqlResponse response = db.executeSql(sql, offset, batchSize, "", null, sqlOptions);
-        records = (List<T>) response.getData();
-        totalCount = response.getTotalNumberOfRecords();
+        ExecuteSqlResponse response = this.db.executeSql(this.sql, this.offset, this.batchSize, "", null, this.sqlOptions);
+        this.records = (List<T>) response.getData();
+        this.totalCount = response.getTotalNumberOfRecords();
+        this.hasMoreRecords = response.getHasMoreRecords() && this.records.size() > 0;
 
-        if (totalCount == 0)
+        if (GPUdbLogger.isTraceEnabled())
+        	GPUdbLogger.trace(String.format("Retrieved <%d/%d> records using offset/batch <%d/%d> for query <%s>", this.records.size(), this.totalCount, this.offset, this.batchSize, this.sql));
+
+        if (this.totalCount == 0)
             return;
 
-        pagingTableName = response.getPagingTable();
-        pagingTableNames.add(pagingTableName);
+        this.pagingTableName = response.getPagingTable();
+        
+        if (this.pagingTableName != null && !this.pagingTableName.isEmpty())
+        {
+        	this.pagingTableNames.add(this.pagingTableName);
+	
+	        String resultTableList = response.getInfo().get("result_table_list");
 
-        String resultTableList = response.getInfo().get("result_table_list");
-        if (resultTableList != null) {
-            pagingTableNames.addAll(Arrays.asList(resultTableList.split(",")));
+	        if (resultTableList != null && !resultTableList.isEmpty())
+	        	this.pagingTableNames.addAll(Arrays.asList(resultTableList.split(",")));
         }
     }
 
@@ -137,11 +160,11 @@ public class GPUdbSqlIterator<T extends Record> implements Iterable<T>, AutoClos
     public void close() throws Exception {
         Map<String, String> options = new HashMap<>();
         options.put(ClearTableRequest.Options.NO_ERROR_IF_NOT_EXISTS, ClearTableRequest.Options.TRUE);
-        pagingTableNames.forEach(tableName -> {
+        this.pagingTableNames.forEach(tableName -> {
             try {
-                db.clearTable(tableName, null, options);
+            	this.db.clearTable(tableName, null, options);
             } catch (GPUdbException e) {
-                GPUdbLogger.debug(String.format("Error in deleting paging tables : %s", e.getMessage()));
+                GPUdbLogger.debug(String.format("Error in deleting paging table <%s>: %s", tableName, e.getMessage()));
             }
         });
     }
@@ -155,14 +178,18 @@ public class GPUdbSqlIterator<T extends Record> implements Iterable<T>, AutoClos
 
         @Override
         public boolean hasNext() {
-            return records.size() > 0 && recordPosition < records.size();
+            return records.size() > 0 && recordPosition < records.size() || hasMoreRecords;
         }
 
         @Override
         public T next() {
             try {
                 checkAndFetchRecords();
-                T record = (T) records.get(recordPosition++);
+
+                if (recordPosition >= records.size())
+                	throw new NoSuchElementException("No more records exist in result set.");
+
+                T record = records.get(recordPosition++);
                 return record;
             } catch (GPUdbException ex) {
                 throw new RuntimeException(ex);

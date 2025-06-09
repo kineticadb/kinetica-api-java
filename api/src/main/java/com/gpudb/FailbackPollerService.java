@@ -95,7 +95,9 @@ class FailbackPollerService {
             	{
             		GPUdbLogger.debug_with_info(String.format("Kinetica running on primary cluster at [%s], but connection did not succeed", this.primaryURL.toString()));
             		kineticaRunning = false;
-            	}
+            	} else {
+                    GPUdbLogger.info(String.format("Failback to primary cluster at [%s] succeeded", this.primaryURL));
+                }
             }
         } else {
             GPUdbLogger.debug_with_info(String.format("Kinetica is not running at : %s", this.primaryURL.toString()));
@@ -104,21 +106,7 @@ class FailbackPollerService {
     }
 
     private void resetClusterPointers() {
-        List<GPUdbBase.ClusterAddressInfo> hostAddresses = this.gpudb.getHostAddresses();
-        // ToDo - Should we check for (&& x.getActiveHeadNodeUrl().toExternalForm().equals(primaryURL.toExternalForm()) as well ?
-        int indexOfPrimaryCluster = hostAddresses.stream()
-                .filter(x -> x.isPrimaryCluster())
-                .findFirst()
-                .map(hostAddresses::indexOf)
-                .orElse(-1);
-
-        if (indexOfPrimaryCluster != -1) {
-            GPUdbLogger.debug_with_info(String.format("Failing back to cluster at index %d with URL %s", 
-                indexOfPrimaryCluster, hostAddresses.get(indexOfPrimaryCluster).getActiveHeadNodeUrl()));
-            this.gpudb.setCurrClusterIndexPointer(indexOfPrimaryCluster);
-        } else {
-            GPUdbLogger.error(String.format("Primary cluster could not be located for URL : %s", this.primaryURL));
-        }
+        this.gpudb.setCurrClusterIndexPointer(0);
     }
 
     // Handle specific exceptions that require warnings
