@@ -284,10 +284,14 @@ public class AlterDatasourceRequest implements IndexedRecord {
         public static final String SCHEMA_NAME = "schema_name";
 
         /**
-         * Location of Confluent Schema Registry in
-         * '[storage_path[:storage_port]]' format.
+         * Confluent Schema registry connection timeout (in Secs)
          */
-        public static final String SCHEMA_REGISTRY_LOCATION = "schema_registry_location";
+        public static final String SCHEMA_REGISTRY_CONNECTION_RETRIES = "schema_registry_connection_retries";
+
+        /**
+         * Confluent Schema registry connection timeout (in Secs)
+         */
+        public static final String SCHEMA_REGISTRY_CONNECTION_TIMEOUT = "schema_registry_connection_timeout";
 
         /**
          * Confluent Schema Registry <a
@@ -295,6 +299,12 @@ public class AlterDatasourceRequest implements IndexedRecord {
          * target="_top">credential</a> object name.
          */
         public static final String SCHEMA_REGISTRY_CREDENTIAL = "schema_registry_credential";
+
+        /**
+         * Location of Confluent Schema Registry in
+         * '[storage_path[:storage_port]]' format.
+         */
+        public static final String SCHEMA_REGISTRY_LOCATION = "schema_registry_location";
 
         /**
          * Confluent Schema Registry port (optional).
@@ -590,11 +600,15 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                      SCHEMA_NAME} is empty, then the
      *                                      user's default schema will be used.
      *                                  <li>{@link
-     *                                      DatasourceUpdatesMap#SCHEMA_REGISTRY_LOCATION
-     *                                      SCHEMA_REGISTRY_LOCATION}: Location
-     *                                      of Confluent Schema Registry in
-     *                                      '[storage_path[:storage_port]]'
-     *                                      format.
+     *                                      DatasourceUpdatesMap#SCHEMA_REGISTRY_CONNECTION_RETRIES
+     *                                      SCHEMA_REGISTRY_CONNECTION_RETRIES}:
+     *                                      Confluent Schema registry
+     *                                      connection timeout (in Secs)
+     *                                  <li>{@link
+     *                                      DatasourceUpdatesMap#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
+     *                                      SCHEMA_REGISTRY_CONNECTION_TIMEOUT}:
+     *                                      Confluent Schema registry
+     *                                      connection timeout (in Secs)
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#SCHEMA_REGISTRY_CREDENTIAL
      *                                      SCHEMA_REGISTRY_CREDENTIAL}:
@@ -602,6 +616,12 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                      href="../../../../../../concepts/credentials"
      *                                      target="_top">credential</a> object
      *                                      name.
+     *                                  <li>{@link
+     *                                      DatasourceUpdatesMap#SCHEMA_REGISTRY_LOCATION
+     *                                      SCHEMA_REGISTRY_LOCATION}: Location
+     *                                      of Confluent Schema Registry in
+     *                                      '[storage_path[:storage_port]]'
+     *                                      format.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#SCHEMA_REGISTRY_PORT
      *                                      SCHEMA_REGISTRY_PORT}: Confluent
@@ -782,13 +802,19 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         SCHEMA_NAME} doesn't exist, an error will be thrown. If {@link
      *         DatasourceUpdatesMap#SCHEMA_NAME SCHEMA_NAME} is empty, then the
      *         user's default schema will be used.
-     *     <li>{@link DatasourceUpdatesMap#SCHEMA_REGISTRY_LOCATION
-     *         SCHEMA_REGISTRY_LOCATION}: Location of Confluent Schema Registry
-     *         in '[storage_path[:storage_port]]' format.
+     *     <li>{@link DatasourceUpdatesMap#SCHEMA_REGISTRY_CONNECTION_RETRIES
+     *         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent Schema registry
+     *         connection timeout (in Secs)
+     *     <li>{@link DatasourceUpdatesMap#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
+     *         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent Schema registry
+     *         connection timeout (in Secs)
      *     <li>{@link DatasourceUpdatesMap#SCHEMA_REGISTRY_CREDENTIAL
      *         SCHEMA_REGISTRY_CREDENTIAL}: Confluent Schema Registry <a
      *         href="../../../../../../concepts/credentials"
      *         target="_top">credential</a> object name.
+     *     <li>{@link DatasourceUpdatesMap#SCHEMA_REGISTRY_LOCATION
+     *         SCHEMA_REGISTRY_LOCATION}: Location of Confluent Schema Registry
+     *         in '[storage_path[:storage_port]]' format.
      *     <li>{@link DatasourceUpdatesMap#SCHEMA_REGISTRY_PORT
      *         SCHEMA_REGISTRY_PORT}: Confluent Schema Registry port
      *         (optional).
@@ -946,13 +972,19 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         SCHEMA_NAME} doesn't exist, an error will be thrown. If {@link
      *         DatasourceUpdatesMap#SCHEMA_NAME SCHEMA_NAME} is empty, then the
      *         user's default schema will be used.
-     *     <li>{@link DatasourceUpdatesMap#SCHEMA_REGISTRY_LOCATION
-     *         SCHEMA_REGISTRY_LOCATION}: Location of Confluent Schema Registry
-     *         in '[storage_path[:storage_port]]' format.
+     *     <li>{@link DatasourceUpdatesMap#SCHEMA_REGISTRY_CONNECTION_RETRIES
+     *         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent Schema registry
+     *         connection timeout (in Secs)
+     *     <li>{@link DatasourceUpdatesMap#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
+     *         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent Schema registry
+     *         connection timeout (in Secs)
      *     <li>{@link DatasourceUpdatesMap#SCHEMA_REGISTRY_CREDENTIAL
      *         SCHEMA_REGISTRY_CREDENTIAL}: Confluent Schema Registry <a
      *         href="../../../../../../concepts/credentials"
      *         target="_top">credential</a> object name.
+     *     <li>{@link DatasourceUpdatesMap#SCHEMA_REGISTRY_LOCATION
+     *         SCHEMA_REGISTRY_LOCATION}: Location of Confluent Schema Registry
+     *         in '[storage_path[:storage_port]]' format.
      *     <li>{@link DatasourceUpdatesMap#SCHEMA_REGISTRY_PORT
      *         SCHEMA_REGISTRY_PORT}: Confluent Schema Registry port
      *         (optional).

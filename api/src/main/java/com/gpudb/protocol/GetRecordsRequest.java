@@ -60,6 +60,7 @@ public class GetRecordsRequest implements IndexedRecord {
         public static final String BINARY = "binary";
         public static final String JSON = "json";
         public static final String GEOJSON = "geojson";
+        public static final String ARROW = "arrow";
 
         private Encoding() {  }
     }
@@ -232,6 +233,7 @@ public class GetRecordsRequest implements IndexedRecord {
      *                      <li>{@link Encoding#BINARY BINARY}
      *                      <li>{@link Encoding#JSON JSON}
      *                      <li>{@link Encoding#GEOJSON GEOJSON}
+     *                      <li>{@link Encoding#ARROW ARROW}
      *                  </ul>
      *                  The default value is {@link Encoding#BINARY BINARY}.
      * @param options  <ul>
@@ -380,6 +382,7 @@ public class GetRecordsRequest implements IndexedRecord {
      *     <li>{@link Encoding#BINARY BINARY}
      *     <li>{@link Encoding#JSON JSON}
      *     <li>{@link Encoding#GEOJSON GEOJSON}
+     *     <li>{@link Encoding#ARROW ARROW}
      * </ul>
      * The default value is {@link Encoding#BINARY BINARY}.
      *
@@ -398,6 +401,7 @@ public class GetRecordsRequest implements IndexedRecord {
      *     <li>{@link Encoding#BINARY BINARY}
      *     <li>{@link Encoding#JSON JSON}
      *     <li>{@link Encoding#GEOJSON GEOJSON}
+     *     <li>{@link Encoding#ARROW ARROW}
      * </ul>
      * The default value is {@link Encoding#BINARY BINARY}.
      *

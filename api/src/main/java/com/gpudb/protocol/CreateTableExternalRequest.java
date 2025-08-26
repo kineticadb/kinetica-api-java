@@ -849,6 +849,26 @@ public class CreateTableExternalRequest implements IndexedRecord {
         public static final String ON_START = "on_start";
 
         /**
+         * Confluent Schema registry connection timeout (in Secs)
+         */
+        public static final String SCHEMA_REGISTRY_CONNECTION_RETRIES = "schema_registry_connection_retries";
+
+        /**
+         * Confluent Schema registry connection timeout (in Secs)
+         */
+        public static final String SCHEMA_REGISTRY_CONNECTION_TIMEOUT = "schema_registry_connection_timeout";
+
+        /**
+         * Max records to skip due to SR connection failures, before failing
+         */
+        public static final String SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES = "schema_registry_max_consecutive_connection_failures";
+
+        /**
+         * Max records to skip due to schema related errors, before failing
+         */
+        public static final String MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE = "max_consecutive_invalid_schema_failure";
+
+        /**
          * Name of the Avro schema in the schema registry to use when reading
          * Avro records.
          */
@@ -1801,6 +1821,24 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#MANUAL
      *                         MANUAL}.
+     *                     <li>{@link
+     *                         Options#SCHEMA_REGISTRY_CONNECTION_RETRIES
+     *                         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent
+     *                         Schema registry connection timeout (in Secs)
+     *                     <li>{@link
+     *                         Options#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
+     *                         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent
+     *                         Schema registry connection timeout (in Secs)
+     *                     <li>{@link
+     *                         Options#SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES
+     *                         SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES}:
+     *                         Max records to skip due to SR connection
+     *                         failures, before failing
+     *                     <li>{@link
+     *                         Options#MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE
+     *                         MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE}: Max
+     *                         records to skip due to schema related errors,
+     *                         before failing
      *                     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_NAME
      *                         SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro
      *                         schema in the schema registry to use when
@@ -2744,6 +2782,19 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 GPUdb.alterTable} on this table.
      *         </ul>
      *         The default value is {@link Options#MANUAL MANUAL}.
+     *     <li>{@link Options#SCHEMA_REGISTRY_CONNECTION_RETRIES
+     *         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent Schema registry
+     *         connection timeout (in Secs)
+     *     <li>{@link Options#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
+     *         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent Schema registry
+     *         connection timeout (in Secs)
+     *     <li>{@link
+     *         Options#SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES
+     *         SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES}: Max
+     *         records to skip due to SR connection failures, before failing
+     *     <li>{@link Options#MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE
+     *         MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE}: Max records to skip due
+     *         to schema related errors, before failing
      *     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_NAME
      *         SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro schema in the
      *         schema registry to use when reading Avro records.
@@ -3227,6 +3278,19 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 GPUdb.alterTable} on this table.
      *         </ul>
      *         The default value is {@link Options#MANUAL MANUAL}.
+     *     <li>{@link Options#SCHEMA_REGISTRY_CONNECTION_RETRIES
+     *         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent Schema registry
+     *         connection timeout (in Secs)
+     *     <li>{@link Options#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
+     *         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent Schema registry
+     *         connection timeout (in Secs)
+     *     <li>{@link
+     *         Options#SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES
+     *         SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES}: Max
+     *         records to skip due to SR connection failures, before failing
+     *     <li>{@link Options#MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE
+     *         MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE}: Max records to skip due
+     *         to schema related errors, before failing
      *     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_NAME
      *         SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro schema in the
      *         schema registry to use when reading Avro records.

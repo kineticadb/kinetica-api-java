@@ -66,6 +66,18 @@ public class ShowEnvironmentRequest implements IndexedRecord {
         public static final String TRUE = "true";
         public static final String FALSE = "false";
 
+        /**
+         * If {@link Options#TRUE TRUE} only return the names of the installed
+         * environments and omit package listing.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String SHOW_NAMES_ONLY = "show_names_only";
+
         private Options() {  }
     }
 
@@ -99,6 +111,17 @@ public class ShowEnvironmentRequest implements IndexedRecord {
      *                         the environment specified in {@code
      *                         environmentName} does not exist, then an error
      *                         is returned.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link Options#SHOW_NAMES_ONLY SHOW_NAMES_ONLY}:
+     *                         If {@link Options#TRUE TRUE} only return the
+     *                         names of the installed environments and omit
+     *                         package listing.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
@@ -156,6 +179,15 @@ public class ShowEnvironmentRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#SHOW_NAMES_ONLY SHOW_NAMES_ONLY}: If {@link
+     *         Options#TRUE TRUE} only return the names of the installed
+     *         environments and omit package listing.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -174,6 +206,15 @@ public class ShowEnvironmentRequest implements IndexedRecord {
      *         error is returned. If {@link Options#FALSE FALSE} and if the
      *         environment specified in {@link #getEnvironmentName()
      *         environmentName} does not exist, then an error is returned.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#SHOW_NAMES_ONLY SHOW_NAMES_ONLY}: If {@link
+     *         Options#TRUE TRUE} only return the names of the installed
+     *         environments and omit package listing.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}

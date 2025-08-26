@@ -103,6 +103,18 @@ public class InsertRecordsRequest<T> {
         public static final String IGNORE_EXISTING_PK = "ignore_existing_pk";
 
         /**
+         * The record with higher value for the column resolves the primary-key
+         * insert conflict. The default value is ''.
+         */
+        public static final String PK_CONFLICT_PREDICATE_HIGHER = "pk_conflict_predicate_higher";
+
+        /**
+         * The record with lower value for the column resolves the primary-key
+         * insert conflict. The default value is ''.
+         */
+        public static final String PK_CONFLICT_PREDICATE_LOWER = "pk_conflict_predicate_lower";
+
+        /**
          * If {@link Options#TRUE TRUE} then return the internal record id
          * along for each inserted record.
          * Supported values:
@@ -267,6 +279,16 @@ public class InsertRecordsRequest<T> {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#PK_CONFLICT_PREDICATE_HIGHER
+     *                         PK_CONFLICT_PREDICATE_HIGHER}: The record with
+     *                         higher value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
+     *                     <li>{@link Options#PK_CONFLICT_PREDICATE_LOWER
+     *                         PK_CONFLICT_PREDICATE_LOWER}: The record with
+     *                         lower value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
      *                     <li>{@link Options#RETURN_RECORD_IDS
      *                         RETURN_RECORD_IDS}: If {@link Options#TRUE TRUE}
      *                         then return the internal record id along for
@@ -445,6 +467,14 @@ public class InsertRecordsRequest<T> {
      *                 existing records
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#PK_CONFLICT_PREDICATE_HIGHER
+     *         PK_CONFLICT_PREDICATE_HIGHER}: The record with higher value for
+     *         the column resolves the primary-key insert conflict. The default
+     *         value is ''.
+     *     <li>{@link Options#PK_CONFLICT_PREDICATE_LOWER
+     *         PK_CONFLICT_PREDICATE_LOWER}: The record with lower value for
+     *         the column resolves the primary-key insert conflict. The default
+     *         value is ''.
      *     <li>{@link Options#RETURN_RECORD_IDS RETURN_RECORD_IDS}: If {@link
      *         Options#TRUE TRUE} then return the internal record id along for
      *         each inserted record.
@@ -559,6 +589,14 @@ public class InsertRecordsRequest<T> {
      *                 existing records
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#PK_CONFLICT_PREDICATE_HIGHER
+     *         PK_CONFLICT_PREDICATE_HIGHER}: The record with higher value for
+     *         the column resolves the primary-key insert conflict. The default
+     *         value is ''.
+     *     <li>{@link Options#PK_CONFLICT_PREDICATE_LOWER
+     *         PK_CONFLICT_PREDICATE_LOWER}: The record with lower value for
+     *         the column resolves the primary-key insert conflict. The default
+     *         value is ''.
      *     <li>{@link Options#RETURN_RECORD_IDS RETURN_RECORD_IDS}: If {@link
      *         Options#TRUE TRUE} then return the internal record id along for
      *         each inserted record.

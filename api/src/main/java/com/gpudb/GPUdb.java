@@ -4705,11 +4705,15 @@ public class GPUdb extends GPUdbBase {
      *                                      SCHEMA_NAME} is empty, then the
      *                                      user's default schema will be used.
      *                                  <li>{@link
-     *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#SCHEMA_REGISTRY_LOCATION
-     *                                      SCHEMA_REGISTRY_LOCATION}: Location
-     *                                      of Confluent Schema Registry in
-     *                                      '[storage_path[:storage_port]]'
-     *                                      format.
+     *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#SCHEMA_REGISTRY_CONNECTION_RETRIES
+     *                                      SCHEMA_REGISTRY_CONNECTION_RETRIES}:
+     *                                      Confluent Schema registry
+     *                                      connection timeout (in Secs)
+     *                                  <li>{@link
+     *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
+     *                                      SCHEMA_REGISTRY_CONNECTION_TIMEOUT}:
+     *                                      Confluent Schema registry
+     *                                      connection timeout (in Secs)
      *                                  <li>{@link
      *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#SCHEMA_REGISTRY_CREDENTIAL
      *                                      SCHEMA_REGISTRY_CREDENTIAL}:
@@ -4717,6 +4721,12 @@ public class GPUdb extends GPUdbBase {
      *                                      href="../../../../../concepts/credentials"
      *                                      target="_top">credential</a> object
      *                                      name.
+     *                                  <li>{@link
+     *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#SCHEMA_REGISTRY_LOCATION
+     *                                      SCHEMA_REGISTRY_LOCATION}: Location
+     *                                      of Confluent Schema Registry in
+     *                                      '[storage_path[:storage_port]]'
+     *                                      format.
      *                                  <li>{@link
      *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#SCHEMA_REGISTRY_PORT
      *                                      SCHEMA_REGISTRY_PORT}: Confluent
@@ -5498,6 +5508,18 @@ public class GPUdb extends GPUdbBase {
      *                                    evictions catalog table updates. The
      *                                    minimum allowed value is '1'. The
      *                                    maximum allowed value is '8192'.
+     *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#LOG_DEBUG_JOB_INFO
+     *                                    LOG_DEBUG_JOB_INFO}: Outputs various
+     *                                    job-related information to the rank
+     *                                    logs. Used for troubleshooting.
+     *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_THREAD_HANG_LOGGING
+     *                                    ENABLE_THREAD_HANG_LOGGING}: Log a
+     *                                    stack trace for any thread that runs
+     *                                    longer than a defined threshold. Used
+     *                                    for troubleshooting. The default
+     *                                    value is 'true'.
      *                                <li>{@link
      *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AI_ENABLE_RAG
      *                                    AI_ENABLE_RAG}: Enable RAG. The
@@ -6981,6 +7003,18 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.AppendRecordsRequest.Options#FALSE
      *                         FALSE}.
      *                     <li>{@link
+     *                         com.gpudb.protocol.AppendRecordsRequest.Options#PK_CONFLICT_PREDICATE_HIGHER
+     *                         PK_CONFLICT_PREDICATE_HIGHER}: The record with
+     *                         higher value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.AppendRecordsRequest.Options#PK_CONFLICT_PREDICATE_LOWER
+     *                         PK_CONFLICT_PREDICATE_LOWER}: The record with
+     *                         lower value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
+     *                     <li>{@link
      *                         com.gpudb.protocol.AppendRecordsRequest.Options#TRUNCATE_STRINGS
      *                         TRUNCATE_STRINGS}: If set to {@link
      *                         com.gpudb.protocol.AppendRecordsRequest.Options#TRUE
@@ -7966,6 +8000,14 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.CreateDatasourceRequest.Options#SCHEMA_REGISTRY_PORT
      *                         SCHEMA_REGISTRY_PORT}: Confluent Schema Registry
      *                         port (optional).
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateDatasourceRequest.Options#SCHEMA_REGISTRY_CONNECTION_RETRIES
+     *                         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent
+     *                         Schema registry connection timeout (in Secs)
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateDatasourceRequest.Options#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
+     *                         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent
+     *                         Schema registry connection timeout (in Secs)
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      *
@@ -10878,6 +10920,24 @@ public class GPUdb extends GPUdbBase {
      *                         The default value is {@link
      *                         com.gpudb.protocol.CreateTableExternalRequest.Options#MANUAL
      *                         MANUAL}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_CONNECTION_RETRIES
+     *                         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent
+     *                         Schema registry connection timeout (in Secs)
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
+     *                         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent
+     *                         Schema registry connection timeout (in Secs)
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES
+     *                         SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES}:
+     *                         Max records to skip due to SR connection
+     *                         failures, before failing
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateTableExternalRequest.Options#MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE
+     *                         MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE}: Max
+     *                         records to skip due to schema related errors,
+     *                         before failing
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateTableExternalRequest.Options#SCHEMA_REGISTRY_SCHEMA_NAME
      *                         SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro
@@ -18799,6 +18859,18 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.InsertRecordsRequest.Options#FALSE
      *                         FALSE}.
      *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsRequest.Options#PK_CONFLICT_PREDICATE_HIGHER
+     *                         PK_CONFLICT_PREDICATE_HIGHER}: The record with
+     *                         higher value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsRequest.Options#PK_CONFLICT_PREDICATE_LOWER
+     *                         PK_CONFLICT_PREDICATE_LOWER}: The record with
+     *                         lower value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
+     *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsRequest.Options#RETURN_RECORD_IDS
      *                         RETURN_RECORD_IDS}: If {@link
      *                         com.gpudb.protocol.InsertRecordsRequest.Options#TRUE
@@ -19035,6 +19107,18 @@ public class GPUdb extends GPUdbBase {
      *                         The default value is {@link
      *                         com.gpudb.protocol.InsertRecordsRequest.Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsRequest.Options#PK_CONFLICT_PREDICATE_HIGHER
+     *                         PK_CONFLICT_PREDICATE_HIGHER}: The record with
+     *                         higher value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsRequest.Options#PK_CONFLICT_PREDICATE_LOWER
+     *                         PK_CONFLICT_PREDICATE_LOWER}: The record with
+     *                         lower value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
      *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsRequest.Options#RETURN_RECORD_IDS
      *                         RETURN_RECORD_IDS}: If {@link
@@ -19980,6 +20064,24 @@ public class GPUdb extends GPUdbBase {
      *                         PRIMARY_KEYS}: Comma separated list of column
      *                         names to set as primary keys, when not specified
      *                         in the type.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SCHEMA_REGISTRY_CONNECTION_RETRIES
+     *                         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent
+     *                         Schema registry connection timeout (in Secs)
+     *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
+     *                         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent
+     *                         Schema registry connection timeout (in Secs)
+     *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES
+     *                         SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES}:
+     *                         Max records to skip due to SR connection
+     *                         failures, before failing
+     *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE
+     *                         MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE}: Max
+     *                         records to skip due to schema related errors,
+     *                         before failing
      *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SCHEMA_REGISTRY_SCHEMA_NAME
      *                         SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro
@@ -20967,6 +21069,24 @@ public class GPUdb extends GPUdbBase {
      *                         PRIMARY_KEYS}: Optional: comma separated list of
      *                         column names, to set as primary keys, when not
      *                         specified in the type. The default value is ''.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SCHEMA_REGISTRY_CONNECTION_RETRIES
+     *                         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent
+     *                         Schema registry connection timeout (in Secs)
+     *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
+     *                         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent
+     *                         Schema registry connection timeout (in Secs)
+     *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES
+     *                         SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES}:
+     *                         Max records to skip due to SR connection
+     *                         failures, before failing
+     *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE
+     *                         MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE}: Max
+     *                         records to skip due to schema related errors,
+     *                         before failing
      *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SCHEMA_REGISTRY_SCHEMA_ID
      *                         SCHEMA_REGISTRY_SCHEMA_ID}
@@ -24847,6 +24967,24 @@ public class GPUdb extends GPUdbBase {
      *                         FALSE} and if the environment specified in
      *                         {@code environmentName} does not exist, then an
      *                         error is returned.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.ShowEnvironmentRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.ShowEnvironmentRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.ShowEnvironmentRequest.Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.ShowEnvironmentRequest.Options#SHOW_NAMES_ONLY
+     *                         SHOW_NAMES_ONLY}: If {@link
+     *                         com.gpudb.protocol.ShowEnvironmentRequest.Options#TRUE
+     *                         TRUE} only return the names of the installed
+     *                         environments and omit package listing.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link

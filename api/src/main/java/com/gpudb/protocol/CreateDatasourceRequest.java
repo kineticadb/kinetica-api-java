@@ -279,6 +279,16 @@ public class CreateDatasourceRequest implements IndexedRecord {
          */
         public static final String SCHEMA_REGISTRY_PORT = "schema_registry_port";
 
+        /**
+         * Confluent Schema registry connection timeout (in Secs)
+         */
+        public static final String SCHEMA_REGISTRY_CONNECTION_RETRIES = "schema_registry_connection_retries";
+
+        /**
+         * Confluent Schema registry connection timeout (in Secs)
+         */
+        public static final String SCHEMA_REGISTRY_CONNECTION_TIMEOUT = "schema_registry_connection_timeout";
+
         private Options() {  }
     }
 
@@ -481,6 +491,14 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                     <li>{@link Options#SCHEMA_REGISTRY_PORT
      *                         SCHEMA_REGISTRY_PORT}: Confluent Schema Registry
      *                         port (optional).
+     *                     <li>{@link
+     *                         Options#SCHEMA_REGISTRY_CONNECTION_RETRIES
+     *                         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent
+     *                         Schema registry connection timeout (in Secs)
+     *                     <li>{@link
+     *                         Options#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
+     *                         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent
+     *                         Schema registry connection timeout (in Secs)
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -720,6 +738,12 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         target="_top">credential</a> object name.
      *     <li>{@link Options#SCHEMA_REGISTRY_PORT SCHEMA_REGISTRY_PORT}:
      *         Confluent Schema Registry port (optional).
+     *     <li>{@link Options#SCHEMA_REGISTRY_CONNECTION_RETRIES
+     *         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent Schema registry
+     *         connection timeout (in Secs)
+     *     <li>{@link Options#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
+     *         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent Schema registry
+     *         connection timeout (in Secs)
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -865,6 +889,12 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         target="_top">credential</a> object name.
      *     <li>{@link Options#SCHEMA_REGISTRY_PORT SCHEMA_REGISTRY_PORT}:
      *         Confluent Schema Registry port (optional).
+     *     <li>{@link Options#SCHEMA_REGISTRY_CONNECTION_RETRIES
+     *         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent Schema registry
+     *         connection timeout (in Secs)
+     *     <li>{@link Options#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
+     *         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent Schema registry
+     *         connection timeout (in Secs)
      * </ul>
      * The default value is an empty {@link Map}.
      *

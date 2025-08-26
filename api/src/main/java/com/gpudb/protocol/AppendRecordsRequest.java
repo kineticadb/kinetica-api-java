@@ -143,6 +143,18 @@ public class AppendRecordsRequest implements IndexedRecord {
         public static final String IGNORE_EXISTING_PK = "ignore_existing_pk";
 
         /**
+         * The record with higher value for the column resolves the primary-key
+         * insert conflict. The default value is ''.
+         */
+        public static final String PK_CONFLICT_PREDICATE_HIGHER = "pk_conflict_predicate_higher";
+
+        /**
+         * The record with lower value for the column resolves the primary-key
+         * insert conflict. The default value is ''.
+         */
+        public static final String PK_CONFLICT_PREDICATE_LOWER = "pk_conflict_predicate_lower";
+
+        /**
          * If set to {@link Options#TRUE TRUE}, it allows inserting longer
          * strings into smaller charN string columns by truncating the longer
          * strings to fit.
@@ -290,6 +302,16 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#PK_CONFLICT_PREDICATE_HIGHER
+     *                         PK_CONFLICT_PREDICATE_HIGHER}: The record with
+     *                         higher value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
+     *                     <li>{@link Options#PK_CONFLICT_PREDICATE_LOWER
+     *                         PK_CONFLICT_PREDICATE_LOWER}: The record with
+     *                         lower value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
      *                     <li>{@link Options#TRUNCATE_STRINGS
      *                         TRUNCATE_STRINGS}: If set to {@link Options#TRUE
      *                         TRUE}, it allows inserting longer strings into
@@ -479,6 +501,14 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                 with those of a target table record
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#PK_CONFLICT_PREDICATE_HIGHER
+     *         PK_CONFLICT_PREDICATE_HIGHER}: The record with higher value for
+     *         the column resolves the primary-key insert conflict. The default
+     *         value is ''.
+     *     <li>{@link Options#PK_CONFLICT_PREDICATE_LOWER
+     *         PK_CONFLICT_PREDICATE_LOWER}: The record with lower value for
+     *         the column resolves the primary-key insert conflict. The default
+     *         value is ''.
      *     <li>{@link Options#TRUNCATE_STRINGS TRUNCATE_STRINGS}: If set to
      *         {@link Options#TRUE TRUE}, it allows inserting longer strings
      *         into smaller charN string columns by truncating the longer
@@ -574,6 +604,14 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                 with those of a target table record
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#PK_CONFLICT_PREDICATE_HIGHER
+     *         PK_CONFLICT_PREDICATE_HIGHER}: The record with higher value for
+     *         the column resolves the primary-key insert conflict. The default
+     *         value is ''.
+     *     <li>{@link Options#PK_CONFLICT_PREDICATE_LOWER
+     *         PK_CONFLICT_PREDICATE_LOWER}: The record with lower value for
+     *         the column resolves the primary-key insert conflict. The default
+     *         value is ''.
      *     <li>{@link Options#TRUNCATE_STRINGS TRUNCATE_STRINGS}: If set to
      *         {@link Options#TRUE TRUE}, it allows inserting longer strings
      *         into smaller charN string columns by truncating the longer

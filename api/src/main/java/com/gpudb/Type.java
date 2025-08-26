@@ -730,7 +730,6 @@ public final class Type implements Serializable {
                 case ColumnProperty.CHAR256:
                 case ColumnProperty.DATE:
                 case ColumnProperty.DATETIME:
-                case ColumnProperty.DECIMAL:
                 case ColumnProperty.INT8:
                 case ColumnProperty.INT16:
                 case ColumnProperty.IPV4:
@@ -752,6 +751,8 @@ public final class Type implements Serializable {
                     if (type.startsWith(ColumnProperty.ARRAY))
                         columnProperties.add(type);
                     else if (type.startsWith(ColumnProperty.VECTOR))
+                        columnProperties.add(type);
+                    else if (type.startsWith(ColumnProperty.DECIMAL))
                         columnProperties.add(type);
             }
 

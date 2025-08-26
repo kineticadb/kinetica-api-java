@@ -2,6 +2,23 @@
 
 ## Version 7.2
 
+### Version 7.2.2.13 - 2025-08-24
+
+#### Changed
+-   Improved forward-compatibility for new `DECIMAL` type
+-   Upgraded Apache Commons Lang3 library to 3.18.0
+
+
+### Version 7.2.2.12 - 2025-08-18
+
+#### Fixed
+-   Issue with `GPUdbSqlIterator` iterating over a batch size that is greater
+    than the configured `max_get_records_size` on the server.
+
+#### Notes
+-   Check `CHANGELOG-FUNCTIONS.md` for endpoint related changes.
+
+
 ### Version 7.2.2.11 - 2025-06-08
 
 #### Added

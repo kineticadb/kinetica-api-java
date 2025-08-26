@@ -127,8 +127,10 @@ public class GPUdbSqlIterator<T extends Record> implements Iterable<T>, AutoClos
         if (this.offset > this.totalCount) {
             return;
         }
+
         executeSql();
-        this.offset += this.batchSize;
+        // Account for max_get_records_size limiting server result set
+        this.offset += this.records.size();
     }
 
     private void executeSql() throws GPUdbException {

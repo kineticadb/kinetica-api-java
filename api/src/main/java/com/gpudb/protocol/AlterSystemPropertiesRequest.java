@@ -310,6 +310,18 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String BACKGROUND_WORKER_THREADS = "background_worker_threads";
 
         /**
+         * Outputs various job-related information to the rank logs. Used for
+         * troubleshooting.
+         */
+        public static final String LOG_DEBUG_JOB_INFO = "log_debug_job_info";
+
+        /**
+         * Log a stack trace for any thread that runs longer than a defined
+         * threshold. Used for troubleshooting. The default value is 'true'.
+         */
+        public static final String ENABLE_THREAD_HANG_LOGGING = "enable_thread_hang_logging";
+
+        /**
          * Enable RAG. The default value is 'false'.
          */
         public static final String AI_ENABLE_RAG = "ai_enable_rag";
@@ -698,6 +710,18 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    minimum allowed value is '1'. The
      *                                    maximum allowed value is '8192'.
      *                                <li>{@link
+     *                                    PropertyUpdatesMap#LOG_DEBUG_JOB_INFO
+     *                                    LOG_DEBUG_JOB_INFO}: Outputs various
+     *                                    job-related information to the rank
+     *                                    logs. Used for troubleshooting.
+     *                                <li>{@link
+     *                                    PropertyUpdatesMap#ENABLE_THREAD_HANG_LOGGING
+     *                                    ENABLE_THREAD_HANG_LOGGING}: Log a
+     *                                    stack trace for any thread that runs
+     *                                    longer than a defined threshold. Used
+     *                                    for troubleshooting. The default
+     *                                    value is 'true'.
+     *                                <li>{@link
      *                                    PropertyUpdatesMap#AI_ENABLE_RAG
      *                                    AI_ENABLE_RAG}: Enable RAG. The
      *                                    default value is 'false'.
@@ -928,6 +952,13 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         thread pool. This includes background operations such as
      *         watermark evictions catalog table updates. The minimum allowed
      *         value is '1'. The maximum allowed value is '8192'.
+     *     <li>{@link PropertyUpdatesMap#LOG_DEBUG_JOB_INFO
+     *         LOG_DEBUG_JOB_INFO}: Outputs various job-related information to
+     *         the rank logs. Used for troubleshooting.
+     *     <li>{@link PropertyUpdatesMap#ENABLE_THREAD_HANG_LOGGING
+     *         ENABLE_THREAD_HANG_LOGGING}: Log a stack trace for any thread
+     *         that runs longer than a defined threshold. Used for
+     *         troubleshooting. The default value is 'true'.
      *     <li>{@link PropertyUpdatesMap#AI_ENABLE_RAG AI_ENABLE_RAG}: Enable
      *         RAG. The default value is 'false'.
      *     <li>{@link PropertyUpdatesMap#AI_API_PROVIDER AI_API_PROVIDER}: AI
@@ -1117,6 +1148,13 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         thread pool. This includes background operations such as
      *         watermark evictions catalog table updates. The minimum allowed
      *         value is '1'. The maximum allowed value is '8192'.
+     *     <li>{@link PropertyUpdatesMap#LOG_DEBUG_JOB_INFO
+     *         LOG_DEBUG_JOB_INFO}: Outputs various job-related information to
+     *         the rank logs. Used for troubleshooting.
+     *     <li>{@link PropertyUpdatesMap#ENABLE_THREAD_HANG_LOGGING
+     *         ENABLE_THREAD_HANG_LOGGING}: Log a stack trace for any thread
+     *         that runs longer than a defined threshold. Used for
+     *         troubleshooting. The default value is 'true'.
      *     <li>{@link PropertyUpdatesMap#AI_ENABLE_RAG AI_ENABLE_RAG}: Enable
      *         RAG. The default value is 'false'.
      *     <li>{@link PropertyUpdatesMap#AI_API_PROVIDER AI_API_PROVIDER}: AI
