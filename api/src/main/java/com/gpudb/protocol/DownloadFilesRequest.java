@@ -97,7 +97,7 @@ public class DownloadFilesRequest implements IndexedRecord {
      *
      * @param fileNames  An array of the file names to download from KiFS. File
      *                   paths may contain wildcard characters after the KiFS
-     *                   directory delimeter.  Accepted wildcard characters are
+     *                   directory delimiter.  Accepted wildcard characters are
      *                   asterisk (*) to represent any string of zero or more
      *                   characters, and question mark (?) to indicate a single
      *                   character.
@@ -140,7 +140,7 @@ public class DownloadFilesRequest implements IndexedRecord {
 
     /**
      * An array of the file names to download from KiFS. File paths may contain
-     * wildcard characters after the KiFS directory delimeter.
+     * wildcard characters after the KiFS directory delimiter.
      * <p>
      * Accepted wildcard characters are asterisk (*) to represent any string of
      * zero or more characters, and question mark (?) to indicate a single
@@ -154,7 +154,7 @@ public class DownloadFilesRequest implements IndexedRecord {
 
     /**
      * An array of the file names to download from KiFS. File paths may contain
-     * wildcard characters after the KiFS directory delimeter.
+     * wildcard characters after the KiFS directory delimiter.
      * <p>
      * Accepted wildcard characters are asterisk (*) to represent any string of
      * zero or more characters, and question mark (?) to indicate a single

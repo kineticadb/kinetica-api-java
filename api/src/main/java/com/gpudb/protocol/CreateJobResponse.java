@@ -44,9 +44,15 @@ public class CreateJobResponse implements IndexedRecord {
     public static final class Info {
         /**
          * The job tag specified by the user or if unspecified by user, a
-         * unique identifier generated internally for the job across clusters.
+         * unique identifier generated internally.
          */
         public static final String JOB_TAG = "job_tag";
+
+        /**
+         * A unique identifier for this job generated for use in tracing
+         * telemetry data
+         */
+        public static final String QUERY_ID = "query_id";
 
         private Info() {  }
     }
@@ -86,7 +92,9 @@ public class CreateJobResponse implements IndexedRecord {
      * <ul>
      *     <li>{@link Info#JOB_TAG JOB_TAG}: The job tag specified by the user
      *         or if unspecified by user, a unique identifier generated
-     *         internally for the job across clusters.
+     *         internally.
+     *     <li>{@link Info#QUERY_ID QUERY_ID}: A unique identifier for this job
+     *         generated for use in tracing telemetry data
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -101,7 +109,9 @@ public class CreateJobResponse implements IndexedRecord {
      * <ul>
      *     <li>{@link Info#JOB_TAG JOB_TAG}: The job tag specified by the user
      *         or if unspecified by user, a unique identifier generated
-     *         internally for the job across clusters.
+     *         internally.
+     *     <li>{@link Info#QUERY_ID QUERY_ID}: A unique identifier for this job
+     *         generated for use in tracing telemetry data
      * </ul>
      * The default value is an empty {@link Map}.
      *

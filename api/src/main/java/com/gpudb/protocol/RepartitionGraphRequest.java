@@ -54,7 +54,7 @@ public class RepartitionGraphRequest implements IndexedRecord {
     public static final class Options {
         /**
          * If a non-empty value is specified, the original graph will be kept
-         * (non-default behaviour) and a new balanced graph will be created
+         * (non-default behavior) and a new balanced graph will be created
          * under this given name.  When the value is empty (default), the
          * generated 'balanced' graph will replace the original 'unbalanced'
          * graph under the same graph name. The default value is ''.
@@ -63,18 +63,13 @@ public class RepartitionGraphRequest implements IndexedRecord {
 
         /**
          * The distributed shortest path solve is run from this source node to
-         * all the nodes in the graph to create balaced partitions using the
+         * all the nodes in the graph to create balanced partitions using the
          * iso-distance levels of the solution.  The source node is selected by
          * the rebalance algorithm automatically (default case when the value
          * is an empty string). Otherwise, the user specified node is used as
          * the source. The default value is ''.
          */
         public static final String SOURCE_NODE = "source_node";
-
-        /**
-         * The default value is ''.
-         */
-        public static final String SQL_REQUEST_AVRO_JSON = "sql_request_avro_json";
 
         private Options() {  }
     }
@@ -99,7 +94,7 @@ public class RepartitionGraphRequest implements IndexedRecord {
      *                 <ul>
      *                     <li>{@link Options#NEW_GRAPH_NAME NEW_GRAPH_NAME}:
      *                         If a non-empty value is specified, the original
-     *                         graph will be kept (non-default behaviour) and a
+     *                         graph will be kept (non-default behavior) and a
      *                         new balanced graph will be created under this
      *                         given name.  When the value is empty (default),
      *                         the generated 'balanced' graph will replace the
@@ -108,15 +103,13 @@ public class RepartitionGraphRequest implements IndexedRecord {
      *                     <li>{@link Options#SOURCE_NODE SOURCE_NODE}: The
      *                         distributed shortest path solve is run from this
      *                         source node to all the nodes in the graph to
-     *                         create balaced partitions using the iso-distance
-     *                         levels of the solution.  The source node is
-     *                         selected by the rebalance algorithm
+     *                         create balanced partitions using the
+     *                         iso-distance levels of the solution.  The source
+     *                         node is selected by the rebalance algorithm
      *                         automatically (default case when the value is an
      *                         empty string). Otherwise, the user specified
      *                         node is used as the source. The default value is
      *                         ''.
-     *                     <li>{@link Options#SQL_REQUEST_AVRO_JSON
-     *                         SQL_REQUEST_AVRO_JSON}: The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -151,19 +144,17 @@ public class RepartitionGraphRequest implements IndexedRecord {
      * <ul>
      *     <li>{@link Options#NEW_GRAPH_NAME NEW_GRAPH_NAME}: If a non-empty
      *         value is specified, the original graph will be kept (non-default
-     *         behaviour) and a new balanced graph will be created under this
+     *         behavior) and a new balanced graph will be created under this
      *         given name.  When the value is empty (default), the generated
      *         'balanced' graph will replace the original 'unbalanced' graph
      *         under the same graph name. The default value is ''.
      *     <li>{@link Options#SOURCE_NODE SOURCE_NODE}: The distributed
      *         shortest path solve is run from this source node to all the
-     *         nodes in the graph to create balaced partitions using the
+     *         nodes in the graph to create balanced partitions using the
      *         iso-distance levels of the solution.  The source node is
      *         selected by the rebalance algorithm automatically (default case
      *         when the value is an empty string). Otherwise, the user
      *         specified node is used as the source. The default value is ''.
-     *     <li>{@link Options#SQL_REQUEST_AVRO_JSON SQL_REQUEST_AVRO_JSON}: The
-     *         default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -178,19 +169,17 @@ public class RepartitionGraphRequest implements IndexedRecord {
      * <ul>
      *     <li>{@link Options#NEW_GRAPH_NAME NEW_GRAPH_NAME}: If a non-empty
      *         value is specified, the original graph will be kept (non-default
-     *         behaviour) and a new balanced graph will be created under this
+     *         behavior) and a new balanced graph will be created under this
      *         given name.  When the value is empty (default), the generated
      *         'balanced' graph will replace the original 'unbalanced' graph
      *         under the same graph name. The default value is ''.
      *     <li>{@link Options#SOURCE_NODE SOURCE_NODE}: The distributed
      *         shortest path solve is run from this source node to all the
-     *         nodes in the graph to create balaced partitions using the
+     *         nodes in the graph to create balanced partitions using the
      *         iso-distance levels of the solution.  The source node is
      *         selected by the rebalance algorithm automatically (default case
      *         when the value is an empty string). Otherwise, the user
      *         specified node is used as the source. The default value is ''.
-     *     <li>{@link Options#SQL_REQUEST_AVRO_JSON SQL_REQUEST_AVRO_JSON}: The
-     *         default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      *

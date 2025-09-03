@@ -51,13 +51,13 @@ public class RevokePermissionDirectoryRequest implements IndexedRecord {
     public static final class Permission {
         /**
          * For files in the directory, access to list files, download files, or
-         * use files in server side functions
+         * use files in server side functions.
          */
         public static final String DIRECTORY_READ = "directory_read";
 
         /**
          * Access to upload files to, or delete files from, the directory. A
-         * user or role with write access automatically has read acceess
+         * user or role with write access automatically has read access.
          */
         public static final String DIRECTORY_WRITE = "directory_write";
 
@@ -92,12 +92,12 @@ public class RevokePermissionDirectoryRequest implements IndexedRecord {
      *                        <li>{@link Permission#DIRECTORY_READ
      *                            DIRECTORY_READ}: For files in the directory,
      *                            access to list files, download files, or use
-     *                            files in server side functions
+     *                            files in server side functions.
      *                        <li>{@link Permission#DIRECTORY_WRITE
      *                            DIRECTORY_WRITE}: Access to upload files to,
      *                            or delete files from, the directory. A user
      *                            or role with write access automatically has
-     *                            read acceess
+     *                            read access.
      *                    </ul>
      * @param directoryName  Name of the KiFS directory to which the permission
      *                       revokes access
@@ -140,10 +140,10 @@ public class RevokePermissionDirectoryRequest implements IndexedRecord {
      * <ul>
      *     <li>{@link Permission#DIRECTORY_READ DIRECTORY_READ}: For files in
      *         the directory, access to list files, download files, or use
-     *         files in server side functions
+     *         files in server side functions.
      *     <li>{@link Permission#DIRECTORY_WRITE DIRECTORY_WRITE}: Access to
      *         upload files to, or delete files from, the directory. A user or
-     *         role with write access automatically has read acceess
+     *         role with write access automatically has read access.
      * </ul>
      *
      * @return The current value of {@code permission}.
@@ -158,10 +158,10 @@ public class RevokePermissionDirectoryRequest implements IndexedRecord {
      * <ul>
      *     <li>{@link Permission#DIRECTORY_READ DIRECTORY_READ}: For files in
      *         the directory, access to list files, download files, or use
-     *         files in server side functions
+     *         files in server side functions.
      *     <li>{@link Permission#DIRECTORY_WRITE DIRECTORY_WRITE}: Access to
      *         upload files to, or delete files from, the directory. A user or
-     *         role with write access automatically has read acceess
+     *         role with write access automatically has read access.
      * </ul>
      *
      * @param permission  The new value for {@code permission}.

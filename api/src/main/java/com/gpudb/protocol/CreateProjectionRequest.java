@@ -344,6 +344,12 @@ public class CreateProjectionRequest implements IndexedRecord {
         public static final String STRATEGY_DEFINITION = "strategy_definition";
 
         /**
+         * The default <a href="../../../../../../concepts/column_compression/"
+         * target="_top">compression codec</a> for the projection's columns.
+         */
+        public static final String COMPRESSION_CODEC = "compression_codec";
+
+        /**
          * If set, window functions which require a reshard will be computed
          * separately and joined back together, if the width of the projection
          * is greater than the join_window_functions_threshold. The default
@@ -596,6 +602,11 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                         href="../../../../../../rm/concepts/#tier-strategies"
      *                         target="_top">tier strategy</a> for the table
      *                         and its columns.
+     *                     <li>{@link Options#COMPRESSION_CODEC
+     *                         COMPRESSION_CODEC}: The default <a
+     *                         href="../../../../../../concepts/column_compression/"
+     *                         target="_top">compression codec</a> for the
+     *                         projection's columns.
      *                     <li>{@link Options#JOIN_WINDOW_FUNCTIONS
      *                         JOIN_WINDOW_FUNCTIONS}: If set, window functions
      *                         which require a reshard will be computed
@@ -869,6 +880,10 @@ public class CreateProjectionRequest implements IndexedRecord {
      *     <li>{@link Options#STRATEGY_DEFINITION STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
+     *     <li>{@link Options#COMPRESSION_CODEC COMPRESSION_CODEC}: The default
+     *         <a href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression codec</a> for the projection's
+     *         columns.
      *     <li>{@link Options#JOIN_WINDOW_FUNCTIONS JOIN_WINDOW_FUNCTIONS}: If
      *         set, window functions which require a reshard will be computed
      *         separately and joined back together, if the width of the
@@ -1051,6 +1066,10 @@ public class CreateProjectionRequest implements IndexedRecord {
      *     <li>{@link Options#STRATEGY_DEFINITION STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
+     *     <li>{@link Options#COMPRESSION_CODEC COMPRESSION_CODEC}: The default
+     *         <a href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression codec</a> for the projection's
+     *         columns.
      *     <li>{@link Options#JOIN_WINDOW_FUNCTIONS JOIN_WINDOW_FUNCTIONS}: If
      *         set, window functions which require a reshard will be computed
      *         separately and joined back together, if the width of the

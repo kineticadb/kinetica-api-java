@@ -56,8 +56,8 @@ public class AdminRepairTableRequest implements IndexedRecord {
          *         corrupted chunks
          *     <li>{@link Options#SHRINK_COLUMNS SHRINK_COLUMNS}: Shrinks
          *         corrupted chunks to the shortest column
-         *     <li>{@link Options#REPLAY_WAL REPLAY_WAL}: Manually invokes wal
-         *         replay on the table
+         *     <li>{@link Options#REPLAY_WAL REPLAY_WAL}: Manually invokes
+         *         write-ahead log (WAL) replay on the table
          * </ul>
          */
         public static final String REPAIR_POLICY = "repair_policy";
@@ -73,7 +73,7 @@ public class AdminRepairTableRequest implements IndexedRecord {
         public static final String SHRINK_COLUMNS = "shrink_columns";
 
         /**
-         * Manually invokes wal replay on the table
+         * Manually invokes write-ahead log (WAL) replay on the table
          */
         public static final String REPLAY_WAL = "replay_wal";
 
@@ -126,7 +126,8 @@ public class AdminRepairTableRequest implements IndexedRecord {
      *                                 SHRINK_COLUMNS}: Shrinks corrupted
      *                                 chunks to the shortest column
      *                             <li>{@link Options#REPLAY_WAL REPLAY_WAL}:
-     *                                 Manually invokes wal replay on the table
+     *                                 Manually invokes write-ahead log (WAL)
+     *                                 replay on the table
      *                         </ul>
      *                     <li>{@link Options#VERIFY_ALL VERIFY_ALL}: If {@link
      *                         Options#FALSE FALSE} only table chunk data
@@ -181,7 +182,7 @@ public class AdminRepairTableRequest implements IndexedRecord {
      *             <li>{@link Options#SHRINK_COLUMNS SHRINK_COLUMNS}: Shrinks
      *                 corrupted chunks to the shortest column
      *             <li>{@link Options#REPLAY_WAL REPLAY_WAL}: Manually invokes
-     *                 wal replay on the table
+     *                 write-ahead log (WAL) replay on the table
      *         </ul>
      *     <li>{@link Options#VERIFY_ALL VERIFY_ALL}: If {@link Options#FALSE
      *         FALSE} only table chunk data already known to be corrupted will
@@ -214,7 +215,7 @@ public class AdminRepairTableRequest implements IndexedRecord {
      *             <li>{@link Options#SHRINK_COLUMNS SHRINK_COLUMNS}: Shrinks
      *                 corrupted chunks to the shortest column
      *             <li>{@link Options#REPLAY_WAL REPLAY_WAL}: Manually invokes
-     *                 wal replay on the table
+     *                 write-ahead log (WAL) replay on the table
      *         </ul>
      *     <li>{@link Options#VERIFY_ALL VERIFY_ALL}: If {@link Options#FALSE
      *         FALSE} only table chunk data already known to be corrupted will

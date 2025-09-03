@@ -141,6 +141,36 @@ public class CreateJoinTableRequest implements IndexedRecord {
         public static final String ENABLE_VIRTUAL_CHUNKING = "enable_virtual_chunking";
 
         /**
+         * Maximum number of records per virtual-chunk. When set, enables
+         * virtual chunking. Defaults to chunk_size if virtual chunking
+         * otherwise enabled.
+         */
+        public static final String MAX_VIRTUAL_CHUNK_SIZE = "max_virtual_chunk_size";
+
+        /**
+         * Minimum number of records per virtual-chunk. When set, enables
+         * virtual chunking. Defaults to chunk_size if virtual chunking
+         * otherwise enabled.
+         */
+        public static final String MIN_VIRTUAL_CHUNK_SIZE = "min_virtual_chunk_size";
+
+        /**
+         * Allow using the lazy result store to cache computation of one side
+         * of a multichunk equi-join.  Reduces computation but also reduces
+         * parallelism to the number of chunks on the other side of the
+         * equi-join
+         */
+        public static final String ENABLE_EQUI_JOIN_LAZY_RESULT_STORE = "enable_equi_join_lazy_result_store";
+
+        /**
+         * Allow using the lazy result store to cache computation of one side
+         * of a multichunk predicate-equi-join. Reduces computation but also
+         * reduces parallelism to the number of chunks on the other side of the
+         * equi-join
+         */
+        public static final String ENABLE_PREDICATE_EQUI_JOIN_LAZY_RESULT_STORE = "enable_predicate_equi_join_lazy_result_store";
+
+        /**
          * Use equi-join to do primary key joins rather than using
          * primary-key-index
          */
@@ -265,6 +295,32 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                         ENABLE_VIRTUAL_CHUNKING}: Collect chunks with
      *                         accumulated size less than chunk_size into a
      *                         single chunk. The default value is 'false'.
+     *                     <li>{@link Options#MAX_VIRTUAL_CHUNK_SIZE
+     *                         MAX_VIRTUAL_CHUNK_SIZE}: Maximum number of
+     *                         records per virtual-chunk. When set, enables
+     *                         virtual chunking. Defaults to chunk_size if
+     *                         virtual chunking otherwise enabled.
+     *                     <li>{@link Options#MIN_VIRTUAL_CHUNK_SIZE
+     *                         MIN_VIRTUAL_CHUNK_SIZE}: Minimum number of
+     *                         records per virtual-chunk. When set, enables
+     *                         virtual chunking. Defaults to chunk_size if
+     *                         virtual chunking otherwise enabled.
+     *                     <li>{@link
+     *                         Options#ENABLE_EQUI_JOIN_LAZY_RESULT_STORE
+     *                         ENABLE_EQUI_JOIN_LAZY_RESULT_STORE}: Allow using
+     *                         the lazy result store to cache computation of
+     *                         one side of a multichunk equi-join.  Reduces
+     *                         computation but also reduces parallelism to the
+     *                         number of chunks on the other side of the
+     *                         equi-join
+     *                     <li>{@link
+     *                         Options#ENABLE_PREDICATE_EQUI_JOIN_LAZY_RESULT_STORE
+     *                         ENABLE_PREDICATE_EQUI_JOIN_LAZY_RESULT_STORE}:
+     *                         Allow using the lazy result store to cache
+     *                         computation of one side of a multichunk
+     *                         predicate-equi-join. Reduces computation but
+     *                         also reduces parallelism to the number of chunks
+     *                         on the other side of the equi-join
      *                     <li>{@link Options#ENABLE_PK_EQUI_JOIN
      *                         ENABLE_PK_EQUI_JOIN}: Use equi-join to do
      *                         primary key joins rather than using
@@ -458,6 +514,25 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *     <li>{@link Options#ENABLE_VIRTUAL_CHUNKING ENABLE_VIRTUAL_CHUNKING}:
      *         Collect chunks with accumulated size less than chunk_size into a
      *         single chunk. The default value is 'false'.
+     *     <li>{@link Options#MAX_VIRTUAL_CHUNK_SIZE MAX_VIRTUAL_CHUNK_SIZE}:
+     *         Maximum number of records per virtual-chunk. When set, enables
+     *         virtual chunking. Defaults to chunk_size if virtual chunking
+     *         otherwise enabled.
+     *     <li>{@link Options#MIN_VIRTUAL_CHUNK_SIZE MIN_VIRTUAL_CHUNK_SIZE}:
+     *         Minimum number of records per virtual-chunk. When set, enables
+     *         virtual chunking. Defaults to chunk_size if virtual chunking
+     *         otherwise enabled.
+     *     <li>{@link Options#ENABLE_EQUI_JOIN_LAZY_RESULT_STORE
+     *         ENABLE_EQUI_JOIN_LAZY_RESULT_STORE}: Allow using the lazy result
+     *         store to cache computation of one side of a multichunk
+     *         equi-join.  Reduces computation but also reduces parallelism to
+     *         the number of chunks on the other side of the equi-join
+     *     <li>{@link Options#ENABLE_PREDICATE_EQUI_JOIN_LAZY_RESULT_STORE
+     *         ENABLE_PREDICATE_EQUI_JOIN_LAZY_RESULT_STORE}: Allow using the
+     *         lazy result store to cache computation of one side of a
+     *         multichunk predicate-equi-join. Reduces computation but also
+     *         reduces parallelism to the number of chunks on the other side of
+     *         the equi-join
      *     <li>{@link Options#ENABLE_PK_EQUI_JOIN ENABLE_PK_EQUI_JOIN}: Use
      *         equi-join to do primary key joins rather than using
      *         primary-key-index
@@ -524,6 +599,25 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *     <li>{@link Options#ENABLE_VIRTUAL_CHUNKING ENABLE_VIRTUAL_CHUNKING}:
      *         Collect chunks with accumulated size less than chunk_size into a
      *         single chunk. The default value is 'false'.
+     *     <li>{@link Options#MAX_VIRTUAL_CHUNK_SIZE MAX_VIRTUAL_CHUNK_SIZE}:
+     *         Maximum number of records per virtual-chunk. When set, enables
+     *         virtual chunking. Defaults to chunk_size if virtual chunking
+     *         otherwise enabled.
+     *     <li>{@link Options#MIN_VIRTUAL_CHUNK_SIZE MIN_VIRTUAL_CHUNK_SIZE}:
+     *         Minimum number of records per virtual-chunk. When set, enables
+     *         virtual chunking. Defaults to chunk_size if virtual chunking
+     *         otherwise enabled.
+     *     <li>{@link Options#ENABLE_EQUI_JOIN_LAZY_RESULT_STORE
+     *         ENABLE_EQUI_JOIN_LAZY_RESULT_STORE}: Allow using the lazy result
+     *         store to cache computation of one side of a multichunk
+     *         equi-join.  Reduces computation but also reduces parallelism to
+     *         the number of chunks on the other side of the equi-join
+     *     <li>{@link Options#ENABLE_PREDICATE_EQUI_JOIN_LAZY_RESULT_STORE
+     *         ENABLE_PREDICATE_EQUI_JOIN_LAZY_RESULT_STORE}: Allow using the
+     *         lazy result store to cache computation of one side of a
+     *         multichunk predicate-equi-join. Reduces computation but also
+     *         reduces parallelism to the number of chunks on the other side of
+     *         the equi-join
      *     <li>{@link Options#ENABLE_PK_EQUI_JOIN ENABLE_PK_EQUI_JOIN}: Use
      *         equi-join to do primary key joins rather than using
      *         primary-key-index

@@ -17,7 +17,7 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#alterResourceGroup(AlterResourceGroupRequest)
  * GPUdb.alterResourceGroup}.
  * <p>
- * Alters the properties of an exisiting resource group to facilitate resource
+ * Alters the properties of an existing resource group to facilitate resource
  * management.
  */
 public class AlterResourceGroupRequest implements IndexedRecord {
@@ -50,14 +50,15 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      * limits.  The only valid attribute limit that can be set is max_memory
      * (in bytes) for the VRAM & RAM tiers.
      * <p>
-     * For instance, to set max VRAM capacity to 1GB and max RAM capacity to
-     * 10GB, use:  {'VRAM':{'max_memory':'1000000000'},
-     * 'RAM':{'max_memory':'10000000000'}}
+     * For instance, to set max VRAM capacity to 1GB per rank per GPU and max
+     * RAM capacity to 10GB per rank, use:
+     * {'VRAM':{'max_memory':'1000000000'}, 'RAM':{'max_memory':'10000000000'}}
      */
     public static final class TierAttributes {
         /**
-         * Maximum amount of memory usable in the given tier at one time for
-         * this group.
+         * Maximum amount of memory usable at one time, per rank, per GPU, for
+         * the VRAM tier; or maximum amount of memory usable at one time, per
+         * rank, for the RAM tier.
          */
         public static final String MAX_MEMORY = "max_memory";
 
@@ -70,16 +71,34 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      * <p>
      * If the resource group ranking is to be updated, this indicates the
      * relative ranking among existing resource groups where this resource
-     * group will be moved; leave blank if not changing the ranking.  When
-     * using {@link Ranking#BEFORE BEFORE} or {@link Ranking#AFTER AFTER},
-     * specify which resource group this one will be inserted before or after
-     * in {@link #getAdjoiningResourceGroup() adjoiningResourceGroup}.
+     * group will be placed.
      */
     public static final class Ranking {
+        /**
+         * Don't change the ranking
+         */
         public static final String EMPTY_STRING = "";
+
+        /**
+         * Make this resource group the new first one in the ordering
+         */
         public static final String FIRST = "first";
+
+        /**
+         * Make this resource group the new last one in the ordering
+         */
         public static final String LAST = "last";
+
+        /**
+         * Place this resource group before the one specified by {@link
+         * #getAdjoiningResourceGroup() adjoiningResourceGroup} in the ordering
+         */
         public static final String BEFORE = "before";
+
+        /**
+         * Place this resource group after the one specified by {@link
+         * #getAdjoiningResourceGroup() adjoiningResourceGroup} in the ordering
+         */
         public static final String AFTER = "after";
 
         private Ranking() {  }
@@ -94,13 +113,15 @@ public class AlterResourceGroupRequest implements IndexedRecord {
     public static final class Options {
         /**
          * Maximum number of simultaneous threads that will be used to execute
-         * a request for this group. The minimum allowed value is '4'.
+         * a request, per rank, for this group. The minimum allowed value is
+         * '4'.
          */
         public static final String MAX_CPU_CONCURRENCY = "max_cpu_concurrency";
 
         /**
-         * Maximum amount of cumulative ram usage regardless of tier status for
-         * this group. The minimum allowed value is '-1'.
+         * Maximum amount of data, per rank, in bytes, that can be used by all
+         * database objects within this group.  Set to -1 to indicate no upper
+         * limit. The minimum allowed value is '-1'.
          */
         public static final String MAX_DATA = "max_data";
 
@@ -172,37 +193,43 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      * parameters.
      *
      * @param name  Name of the group to be altered. Must be an existing
-     *              resource group name or an empty string when used
-     *              inconjunction with the is_default_group option.
+     *              resource group name or an empty string when used in
+     *              conjunction with {@link Options#IS_DEFAULT_GROUP
+     *              IS_DEFAULT_GROUP}.
      * @param tierAttributes  Optional map containing tier names and their
      *                        respective attribute group limits.  The only
      *                        valid attribute limit that can be set is
      *                        max_memory (in bytes) for the VRAM & RAM tiers.
-     *                        For instance, to set max VRAM capacity to 1GB and
-     *                        max RAM capacity to 10GB, use:
-     *                        {'VRAM':{'max_memory':'1000000000'},
+     *                        For instance, to set max VRAM capacity to 1GB per
+     *                        rank per GPU and max RAM capacity to 10GB per
+     *                        rank, use:  {'VRAM':{'max_memory':'1000000000'},
      *                        'RAM':{'max_memory':'10000000000'}}.
      *                        <ul>
      *                            <li>{@link TierAttributes#MAX_MEMORY
      *                                MAX_MEMORY}: Maximum amount of memory
-     *                                usable in the given tier at one time for
-     *                                this group.
+     *                                usable at one time, per rank, per GPU,
+     *                                for the VRAM tier; or maximum amount of
+     *                                memory usable at one time, per rank, for
+     *                                the RAM tier.
      *                        </ul>
      *                        The default value is an empty {@link Map}.
      * @param ranking  If the resource group ranking is to be updated, this
      *                 indicates the relative ranking among existing resource
-     *                 groups where this resource group will be moved; leave
-     *                 blank if not changing the ranking.  When using {@link
-     *                 Ranking#BEFORE BEFORE} or {@link Ranking#AFTER AFTER},
-     *                 specify which resource group this one will be inserted
-     *                 before or after in {@code adjoiningResourceGroup}.
+     *                 groups where this resource group will be placed.
      *                 Supported values:
      *                 <ul>
-     *                     <li>{@link Ranking#EMPTY_STRING EMPTY_STRING}
-     *                     <li>{@link Ranking#FIRST FIRST}
-     *                     <li>{@link Ranking#LAST LAST}
-     *                     <li>{@link Ranking#BEFORE BEFORE}
-     *                     <li>{@link Ranking#AFTER AFTER}
+     *                     <li>{@link Ranking#EMPTY_STRING EMPTY_STRING}: Don't
+     *                         change the ranking
+     *                     <li>{@link Ranking#FIRST FIRST}: Make this resource
+     *                         group the new first one in the ordering
+     *                     <li>{@link Ranking#LAST LAST}: Make this resource
+     *                         group the new last one in the ordering
+     *                     <li>{@link Ranking#BEFORE BEFORE}: Place this
+     *                         resource group before the one specified by
+     *                         {@code adjoiningResourceGroup} in the ordering
+     *                     <li>{@link Ranking#AFTER AFTER}: Place this resource
+     *                         group after the one specified by {@code
+     *                         adjoiningResourceGroup} in the ordering
      *                 </ul>
      *                 The default value is {@link Ranking#EMPTY_STRING
      *                 EMPTY_STRING}.
@@ -218,12 +245,13 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      *                     <li>{@link Options#MAX_CPU_CONCURRENCY
      *                         MAX_CPU_CONCURRENCY}: Maximum number of
      *                         simultaneous threads that will be used to
-     *                         execute a request for this group. The minimum
-     *                         allowed value is '4'.
+     *                         execute a request, per rank, for this group. The
+     *                         minimum allowed value is '4'.
      *                     <li>{@link Options#MAX_DATA MAX_DATA}: Maximum
-     *                         amount of cumulative ram usage regardless of
-     *                         tier status for this group. The minimum allowed
-     *                         value is '-1'.
+     *                         amount of data, per rank, in bytes, that can be
+     *                         used by all database objects within this group.
+     *                         Set to -1 to indicate no upper limit. The
+     *                         minimum allowed value is '-1'.
      *                     <li>{@link Options#MAX_SCHEDULING_PRIORITY
      *                         MAX_SCHEDULING_PRIORITY}: Maximum priority of a
      *                         scheduled task for this group. The minimum
@@ -272,8 +300,8 @@ public class AlterResourceGroupRequest implements IndexedRecord {
 
     /**
      * Name of the group to be altered. Must be an existing resource group name
-     * or an empty string when used inconjunction with the is_default_group
-     * option.
+     * or an empty string when used in conjunction with {@link
+     * Options#IS_DEFAULT_GROUP IS_DEFAULT_GROUP}.
      *
      * @return The current value of {@code name}.
      */
@@ -283,8 +311,8 @@ public class AlterResourceGroupRequest implements IndexedRecord {
 
     /**
      * Name of the group to be altered. Must be an existing resource group name
-     * or an empty string when used inconjunction with the is_default_group
-     * option.
+     * or an empty string when used in conjunction with {@link
+     * Options#IS_DEFAULT_GROUP IS_DEFAULT_GROUP}.
      *
      * @param name  The new value for {@code name}.
      *
@@ -300,12 +328,15 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      * limits.  The only valid attribute limit that can be set is max_memory
      * (in bytes) for the VRAM & RAM tiers.
      * <p>
-     * For instance, to set max VRAM capacity to 1GB and max RAM capacity to
-     * 10GB, use:  {'VRAM':{'max_memory':'1000000000'},
+     * For instance, to set max VRAM capacity to 1GB per rank per GPU and max
+     * RAM capacity to 10GB per rank, use:
+     * {'VRAM':{'max_memory':'1000000000'},
      * 'RAM':{'max_memory':'10000000000'}}.
      * <ul>
      *     <li>{@link TierAttributes#MAX_MEMORY MAX_MEMORY}: Maximum amount of
-     *         memory usable in the given tier at one time for this group.
+     *         memory usable at one time, per rank, per GPU, for the VRAM tier;
+     *         or maximum amount of memory usable at one time, per rank, for
+     *         the RAM tier.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -320,12 +351,15 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      * limits.  The only valid attribute limit that can be set is max_memory
      * (in bytes) for the VRAM & RAM tiers.
      * <p>
-     * For instance, to set max VRAM capacity to 1GB and max RAM capacity to
-     * 10GB, use:  {'VRAM':{'max_memory':'1000000000'},
+     * For instance, to set max VRAM capacity to 1GB per rank per GPU and max
+     * RAM capacity to 10GB per rank, use:
+     * {'VRAM':{'max_memory':'1000000000'},
      * 'RAM':{'max_memory':'10000000000'}}.
      * <ul>
      *     <li>{@link TierAttributes#MAX_MEMORY MAX_MEMORY}: Maximum amount of
-     *         memory usable in the given tier at one time for this group.
+     *         memory usable at one time, per rank, per GPU, for the VRAM tier;
+     *         or maximum amount of memory usable at one time, per rank, for
+     *         the RAM tier.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -341,17 +375,21 @@ public class AlterResourceGroupRequest implements IndexedRecord {
     /**
      * If the resource group ranking is to be updated, this indicates the
      * relative ranking among existing resource groups where this resource
-     * group will be moved; leave blank if not changing the ranking.  When
-     * using {@link Ranking#BEFORE BEFORE} or {@link Ranking#AFTER AFTER},
-     * specify which resource group this one will be inserted before or after
-     * in {@link #getAdjoiningResourceGroup() adjoiningResourceGroup}.
+     * group will be placed.
      * Supported values:
      * <ul>
-     *     <li>{@link Ranking#EMPTY_STRING EMPTY_STRING}
-     *     <li>{@link Ranking#FIRST FIRST}
-     *     <li>{@link Ranking#LAST LAST}
-     *     <li>{@link Ranking#BEFORE BEFORE}
-     *     <li>{@link Ranking#AFTER AFTER}
+     *     <li>{@link Ranking#EMPTY_STRING EMPTY_STRING}: Don't change the
+     *         ranking
+     *     <li>{@link Ranking#FIRST FIRST}: Make this resource group the new
+     *         first one in the ordering
+     *     <li>{@link Ranking#LAST LAST}: Make this resource group the new last
+     *         one in the ordering
+     *     <li>{@link Ranking#BEFORE BEFORE}: Place this resource group before
+     *         the one specified by {@link #getAdjoiningResourceGroup()
+     *         adjoiningResourceGroup} in the ordering
+     *     <li>{@link Ranking#AFTER AFTER}: Place this resource group after the
+     *         one specified by {@link #getAdjoiningResourceGroup()
+     *         adjoiningResourceGroup} in the ordering
      * </ul>
      * The default value is {@link Ranking#EMPTY_STRING EMPTY_STRING}.
      *
@@ -364,17 +402,21 @@ public class AlterResourceGroupRequest implements IndexedRecord {
     /**
      * If the resource group ranking is to be updated, this indicates the
      * relative ranking among existing resource groups where this resource
-     * group will be moved; leave blank if not changing the ranking.  When
-     * using {@link Ranking#BEFORE BEFORE} or {@link Ranking#AFTER AFTER},
-     * specify which resource group this one will be inserted before or after
-     * in {@link #getAdjoiningResourceGroup() adjoiningResourceGroup}.
+     * group will be placed.
      * Supported values:
      * <ul>
-     *     <li>{@link Ranking#EMPTY_STRING EMPTY_STRING}
-     *     <li>{@link Ranking#FIRST FIRST}
-     *     <li>{@link Ranking#LAST LAST}
-     *     <li>{@link Ranking#BEFORE BEFORE}
-     *     <li>{@link Ranking#AFTER AFTER}
+     *     <li>{@link Ranking#EMPTY_STRING EMPTY_STRING}: Don't change the
+     *         ranking
+     *     <li>{@link Ranking#FIRST FIRST}: Make this resource group the new
+     *         first one in the ordering
+     *     <li>{@link Ranking#LAST LAST}: Make this resource group the new last
+     *         one in the ordering
+     *     <li>{@link Ranking#BEFORE BEFORE}: Place this resource group before
+     *         the one specified by {@link #getAdjoiningResourceGroup()
+     *         adjoiningResourceGroup} in the ordering
+     *     <li>{@link Ranking#AFTER AFTER}: Place this resource group after the
+     *         one specified by {@link #getAdjoiningResourceGroup()
+     *         adjoiningResourceGroup} in the ordering
      * </ul>
      * The default value is {@link Ranking#EMPTY_STRING EMPTY_STRING}.
      *
@@ -420,9 +462,11 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      * <ul>
      *     <li>{@link Options#MAX_CPU_CONCURRENCY MAX_CPU_CONCURRENCY}: Maximum
      *         number of simultaneous threads that will be used to execute a
-     *         request for this group. The minimum allowed value is '4'.
-     *     <li>{@link Options#MAX_DATA MAX_DATA}: Maximum amount of cumulative
-     *         ram usage regardless of tier status for this group. The minimum
+     *         request, per rank, for this group. The minimum allowed value is
+     *         '4'.
+     *     <li>{@link Options#MAX_DATA MAX_DATA}: Maximum amount of data, per
+     *         rank, in bytes, that can be used by all database objects within
+     *         this group.  Set to -1 to indicate no upper limit. The minimum
      *         allowed value is '-1'.
      *     <li>{@link Options#MAX_SCHEDULING_PRIORITY MAX_SCHEDULING_PRIORITY}:
      *         Maximum priority of a scheduled task for this group. The minimum
@@ -466,9 +510,11 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      * <ul>
      *     <li>{@link Options#MAX_CPU_CONCURRENCY MAX_CPU_CONCURRENCY}: Maximum
      *         number of simultaneous threads that will be used to execute a
-     *         request for this group. The minimum allowed value is '4'.
-     *     <li>{@link Options#MAX_DATA MAX_DATA}: Maximum amount of cumulative
-     *         ram usage regardless of tier status for this group. The minimum
+     *         request, per rank, for this group. The minimum allowed value is
+     *         '4'.
+     *     <li>{@link Options#MAX_DATA MAX_DATA}: Maximum amount of data, per
+     *         rank, in bytes, that can be used by all database objects within
+     *         this group.  Set to -1 to indicate no upper limit. The minimum
      *         allowed value is '-1'.
      *     <li>{@link Options#MAX_SCHEDULING_PRIORITY MAX_SCHEDULING_PRIORITY}:
      *         Maximum priority of a scheduled task for this group. The minimum

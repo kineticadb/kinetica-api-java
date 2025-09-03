@@ -248,6 +248,12 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
          */
         public static final String STRATEGY_DEFINITION = "strategy_definition";
 
+        /**
+         * The default <a href="../../../../../../concepts/column_compression/"
+         * target="_top">compression codec</a> for this table's columns.
+         */
+        public static final String COMPRESSION_CODEC = "compression_codec";
+
         private CreateTableOptions() {  }
     }
 
@@ -768,6 +774,12 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                                    href="../../../../../../rm/concepts/#tier-strategies"
      *                                    target="_top">tier strategy</a> for
      *                                    the table and its columns.
+     *                                <li>{@link
+     *                                    CreateTableOptions#COMPRESSION_CODEC
+     *                                    COMPRESSION_CODEC}: The default <a
+     *                                    href="../../../../../../concepts/column_compression/"
+     *                                    target="_top">compression codec</a>
+     *                                    for this table's columns.
      *                            </ul>
      *                            The default value is an empty {@link Map}.
      * @param options  Optional parameters.
@@ -1188,6 +1200,10 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
+     *     <li>{@link CreateTableOptions#COMPRESSION_CODEC COMPRESSION_CODEC}:
+     *         The default <a
+     *         href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression codec</a> for this table's columns.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -1322,6 +1338,10 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
+     *     <li>{@link CreateTableOptions#COMPRESSION_CODEC COMPRESSION_CODEC}:
+     *         The default <a
+     *         href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression codec</a> for this table's columns.
      * </ul>
      * The default value is an empty {@link Map}.
      *

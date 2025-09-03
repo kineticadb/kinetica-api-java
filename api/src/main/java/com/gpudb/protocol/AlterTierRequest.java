@@ -16,7 +16,7 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link com.gpudb.GPUdb#alterTier(AlterTierRequest)
  * GPUdb.alterTier}.
  * <p>
- * Alters properties of an exisiting <a
+ * Alters properties of an existing <a
  * href="../../../../../../rm/concepts/#storage-tiers" target="_top">tier</a>
  * to facilitate <a href="../../../../../../rm/concepts/"
  * target="_top">resource management</a>.
@@ -53,7 +53,7 @@ public class AlterTierRequest implements IndexedRecord {
      */
     public static final class Options {
         /**
-         * Maximum size in bytes this tier may hold at once.
+         * Maximum size in bytes this tier may hold at once, per rank.
          */
         public static final String CAPACITY = "capacity";
 
@@ -119,11 +119,11 @@ public class AlterTierRequest implements IndexedRecord {
      * Constructs an AlterTierRequest object with the specified parameters.
      *
      * @param name  Name of the tier to be altered. Must be an existing tier
-     *              group name.
+     *              group name:  vram, ram, disk[n], persist, cold[n].
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link Options#CAPACITY CAPACITY}: Maximum size
-     *                         in bytes this tier may hold at once.
+     *                         in bytes this tier may hold at once, per rank.
      *                     <li>{@link Options#HIGH_WATERMARK HIGH_WATERMARK}:
      *                         Threshold of usage of this tier's resource that
      *                         once exceeded, will trigger watermark-based
@@ -166,7 +166,8 @@ public class AlterTierRequest implements IndexedRecord {
     }
 
     /**
-     * Name of the tier to be altered. Must be an existing tier group name.
+     * Name of the tier to be altered. Must be an existing tier group name:
+     * vram, ram, disk[n], persist, cold[n].
      *
      * @return The current value of {@code name}.
      */
@@ -175,7 +176,8 @@ public class AlterTierRequest implements IndexedRecord {
     }
 
     /**
-     * Name of the tier to be altered. Must be an existing tier group name.
+     * Name of the tier to be altered. Must be an existing tier group name:
+     * vram, ram, disk[n], persist, cold[n].
      *
      * @param name  The new value for {@code name}.
      *
@@ -190,7 +192,7 @@ public class AlterTierRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *     <li>{@link Options#CAPACITY CAPACITY}: Maximum size in bytes this
-     *         tier may hold at once.
+     *         tier may hold at once, per rank.
      *     <li>{@link Options#HIGH_WATERMARK HIGH_WATERMARK}: Threshold of
      *         usage of this tier's resource that once exceeded, will trigger
      *         watermark-based eviction from this tier. The minimum allowed
@@ -229,7 +231,7 @@ public class AlterTierRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *     <li>{@link Options#CAPACITY CAPACITY}: Maximum size in bytes this
-     *         tier may hold at once.
+     *         tier may hold at once, per rank.
      *     <li>{@link Options#HIGH_WATERMARK HIGH_WATERMARK}: Threshold of
      *         usage of this tier's resource that once exceeded, will trigger
      *         watermark-based eviction from this tier. The minimum allowed

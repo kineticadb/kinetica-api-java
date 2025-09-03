@@ -14,14 +14,14 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of results returned by {@link
- * com.gpudb.GPUdb#mergeRecords(MergeRecordsRequest) GPUdb.mergeRecords}.
+ * com.gpudb.GPUdb#clearTables(ClearTablesRequest) GPUdb.clearTables}.
  */
-public class MergeRecordsResponse implements IndexedRecord {
+public class ClearTablesResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("MergeRecordsResponse")
+            .record("ClearTablesResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("tableName").type().stringType().noDefault()
+                .name("tables").type().map().values().stringType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -35,56 +35,42 @@ public class MergeRecordsResponse implements IndexedRecord {
         return schema$;
     }
 
-    /**
-     * A set of string constants for the {@link MergeRecordsResponse} parameter
-     * {@link #getInfo() info}.
-     * <p>
-     * Additional information.
-     */
-    public static final class Info {
-        /**
-         * The fully qualified name of the result table (i.e.&nbsp;including
-         * the schema)
-         */
-        public static final String QUALIFIED_TABLE_NAME = "qualified_table_name";
-
-        private Info() {  }
-    }
-
-    private String tableName;
+    private Map<String, String> tables;
     private Map<String, String> info;
 
     /**
-     * Constructs a MergeRecordsResponse object with default parameters.
+     * Constructs a ClearTablesResponse object with default parameters.
      */
-    public MergeRecordsResponse() {
+    public ClearTablesResponse() {
     }
 
     /**
-     * @return The current value of {@code tableName}.
+     * For each table in {@link
+     * com.gpudb.protocol.ClearTablesRequest#getTableNames() tableNames}, any
+     * error from the clear operation, or an empty string if successful.
+     *
+     * @return The current value of {@code tables}.
      */
-    public String getTableName() {
-        return tableName;
+    public Map<String, String> getTables() {
+        return tables;
     }
 
     /**
-     * @param tableName  The new value for {@code tableName}.
+     * For each table in {@link
+     * com.gpudb.protocol.ClearTablesRequest#getTableNames() tableNames}, any
+     * error from the clear operation, or an empty string if successful.
+     *
+     * @param tables  The new value for {@code tables}.
      *
      * @return {@code this} to mimic the builder pattern.
      */
-    public MergeRecordsResponse setTableName(String tableName) {
-        this.tableName = (tableName == null) ? "" : tableName;
+    public ClearTablesResponse setTables(Map<String, String> tables) {
+        this.tables = (tables == null) ? new LinkedHashMap<String, String>() : tables;
         return this;
     }
 
     /**
      * Additional information.
-     * <ul>
-     *     <li>{@link Info#QUALIFIED_TABLE_NAME QUALIFIED_TABLE_NAME}: The
-     *         fully qualified name of the result table (i.e. including the
-     *         schema)
-     * </ul>
-     * The default value is an empty {@link Map}.
      *
      * @return The current value of {@code info}.
      */
@@ -94,18 +80,12 @@ public class MergeRecordsResponse implements IndexedRecord {
 
     /**
      * Additional information.
-     * <ul>
-     *     <li>{@link Info#QUALIFIED_TABLE_NAME QUALIFIED_TABLE_NAME}: The
-     *         fully qualified name of the result table (i.e. including the
-     *         schema)
-     * </ul>
-     * The default value is an empty {@link Map}.
      *
      * @param info  The new value for {@code info}.
      *
      * @return {@code this} to mimic the builder pattern.
      */
-    public MergeRecordsResponse setInfo(Map<String, String> info) {
+    public ClearTablesResponse setInfo(Map<String, String> info) {
         this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
         return this;
     }
@@ -135,7 +115,7 @@ public class MergeRecordsResponse implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.tableName;
+                return this.tables;
 
             case 1:
                 return this.info;
@@ -159,7 +139,7 @@ public class MergeRecordsResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.tableName = (String)value;
+                this.tables = (Map<String, String>)value;
                 break;
 
             case 1:
@@ -181,9 +161,9 @@ public class MergeRecordsResponse implements IndexedRecord {
             return false;
         }
 
-        MergeRecordsResponse that = (MergeRecordsResponse)obj;
+        ClearTablesResponse that = (ClearTablesResponse)obj;
 
-        return ( this.tableName.equals( that.tableName )
+        return ( this.tables.equals( that.tables )
                  && this.info.equals( that.info ) );
     }
 
@@ -192,9 +172,9 @@ public class MergeRecordsResponse implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "tableName" ) );
+        builder.append( gd.toString( "tables" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.tableName ) );
+        builder.append( gd.toString( this.tables ) );
         builder.append( ", " );
         builder.append( gd.toString( "info" ) );
         builder.append( ": " );
@@ -207,7 +187,7 @@ public class MergeRecordsResponse implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.tableName.hashCode();
+        hashCode = (31 * hashCode) + this.tables.hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }

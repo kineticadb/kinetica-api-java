@@ -63,33 +63,14 @@ public class ExecuteProcRequest implements IndexedRecord {
      */
     public static final class Options {
         /**
-         * A comma-delimited list of table names from {@link
-         * #getInputTableNames() inputTableNames} from which input data will be
-         * cached for use in subsequent calls to {@link
-         * com.gpudb.GPUdb#executeProc(ExecuteProcRequest) GPUdb.executeProc}
-         * with the {@link Options#USE_CACHED_INPUT USE_CACHED_INPUT} option.
-         * Cached input data will be retained until the proc status is cleared
-         * with the {@link
-         * com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)
-         * clear_complete} option of {@link
-         * com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)
-         * GPUdb.showProcStatus} and all proc instances using the cached data
-         * have completed. The default value is ''.
+         * No longer supported; option will be ignored. The default value is
+         * ''.
          */
         public static final String CACHE_INPUT = "cache_input";
 
         /**
-         * A comma-delimited list of run IDs (as returned from prior calls to
-         * {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)
-         * GPUdb.executeProc}) of running or completed proc instances from
-         * which input data cached using the {@link Options#CACHE_INPUT
-         * CACHE_INPUT} option will be used. Cached input data will not be used
-         * for any tables specified in {@link #getInputTableNames()
-         * inputTableNames}, but data from all other tables cached for the
-         * specified run IDs will be passed to the proc. If the same table was
-         * cached for multiple specified run IDs, the cached data from the
-         * first run ID specified in the list that includes that table will be
-         * used. The default value is ''.
+         * No longer supported; option will be ignored. The default value is
+         * ''.
          */
         public static final String USE_CACHED_INPUT = "use_cached_input";
 
@@ -219,37 +200,12 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                          default value is an empty {@link List}.
      * @param options  Optional parameters.
      *                 <ul>
-     *                     <li>{@link Options#CACHE_INPUT CACHE_INPUT}: A
-     *                         comma-delimited list of table names from {@code
-     *                         inputTableNames} from which input data will be
-     *                         cached for use in subsequent calls to {@link
-     *                         com.gpudb.GPUdb#executeProc(ExecuteProcRequest)
-     *                         GPUdb.executeProc} with the {@link
-     *                         Options#USE_CACHED_INPUT USE_CACHED_INPUT}
-     *                         option. Cached input data will be retained until
-     *                         the proc status is cleared with the {@link
-     *                         com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)
-     *                         clear_complete} option of {@link
-     *                         com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)
-     *                         GPUdb.showProcStatus} and all proc instances
-     *                         using the cached data have completed. The
+     *                     <li>{@link Options#CACHE_INPUT CACHE_INPUT}: No
+     *                         longer supported; option will be ignored. The
      *                         default value is ''.
      *                     <li>{@link Options#USE_CACHED_INPUT
-     *                         USE_CACHED_INPUT}: A comma-delimited list of run
-     *                         IDs (as returned from prior calls to {@link
-     *                         com.gpudb.GPUdb#executeProc(ExecuteProcRequest)
-     *                         GPUdb.executeProc}) of running or completed proc
-     *                         instances from which input data cached using the
-     *                         {@link Options#CACHE_INPUT CACHE_INPUT} option
-     *                         will be used. Cached input data will not be used
-     *                         for any tables specified in {@code
-     *                         inputTableNames}, but data from all other tables
-     *                         cached for the specified run IDs will be passed
-     *                         to the proc. If the same table was cached for
-     *                         multiple specified run IDs, the cached data from
-     *                         the first run ID specified in the list that
-     *                         includes that table will be used. The default
-     *                         value is ''.
+     *                         USE_CACHED_INPUT}: No longer supported; option
+     *                         will be ignored. The default value is ''.
      *                     <li>{@link Options#RUN_TAG RUN_TAG}: A string that,
      *                         if not empty, can be used in subsequent calls to
      *                         {@link
@@ -496,31 +452,10 @@ public class ExecuteProcRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#CACHE_INPUT CACHE_INPUT}: A comma-delimited list
-     *         of table names from {@link #getInputTableNames()
-     *         inputTableNames} from which input data will be cached for use in
-     *         subsequent calls to {@link
-     *         com.gpudb.GPUdb#executeProc(ExecuteProcRequest)
-     *         GPUdb.executeProc} with the {@link Options#USE_CACHED_INPUT
-     *         USE_CACHED_INPUT} option. Cached input data will be retained
-     *         until the proc status is cleared with the {@link
-     *         com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)
-     *         clear_complete} option of {@link
-     *         com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)
-     *         GPUdb.showProcStatus} and all proc instances using the cached
-     *         data have completed. The default value is ''.
-     *     <li>{@link Options#USE_CACHED_INPUT USE_CACHED_INPUT}: A
-     *         comma-delimited list of run IDs (as returned from prior calls to
-     *         {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)
-     *         GPUdb.executeProc}) of running or completed proc instances from
-     *         which input data cached using the {@link Options#CACHE_INPUT
-     *         CACHE_INPUT} option will be used. Cached input data will not be
-     *         used for any tables specified in {@link #getInputTableNames()
-     *         inputTableNames}, but data from all other tables cached for the
-     *         specified run IDs will be passed to the proc. If the same table
-     *         was cached for multiple specified run IDs, the cached data from
-     *         the first run ID specified in the list that includes that table
-     *         will be used. The default value is ''.
+     *     <li>{@link Options#CACHE_INPUT CACHE_INPUT}: No longer supported;
+     *         option will be ignored. The default value is ''.
+     *     <li>{@link Options#USE_CACHED_INPUT USE_CACHED_INPUT}: No longer
+     *         supported; option will be ignored. The default value is ''.
      *     <li>{@link Options#RUN_TAG RUN_TAG}: A string that, if not empty,
      *         can be used in subsequent calls to {@link
      *         com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)
@@ -563,31 +498,10 @@ public class ExecuteProcRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#CACHE_INPUT CACHE_INPUT}: A comma-delimited list
-     *         of table names from {@link #getInputTableNames()
-     *         inputTableNames} from which input data will be cached for use in
-     *         subsequent calls to {@link
-     *         com.gpudb.GPUdb#executeProc(ExecuteProcRequest)
-     *         GPUdb.executeProc} with the {@link Options#USE_CACHED_INPUT
-     *         USE_CACHED_INPUT} option. Cached input data will be retained
-     *         until the proc status is cleared with the {@link
-     *         com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)
-     *         clear_complete} option of {@link
-     *         com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)
-     *         GPUdb.showProcStatus} and all proc instances using the cached
-     *         data have completed. The default value is ''.
-     *     <li>{@link Options#USE_CACHED_INPUT USE_CACHED_INPUT}: A
-     *         comma-delimited list of run IDs (as returned from prior calls to
-     *         {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)
-     *         GPUdb.executeProc}) of running or completed proc instances from
-     *         which input data cached using the {@link Options#CACHE_INPUT
-     *         CACHE_INPUT} option will be used. Cached input data will not be
-     *         used for any tables specified in {@link #getInputTableNames()
-     *         inputTableNames}, but data from all other tables cached for the
-     *         specified run IDs will be passed to the proc. If the same table
-     *         was cached for multiple specified run IDs, the cached data from
-     *         the first run ID specified in the list that includes that table
-     *         will be used. The default value is ''.
+     *     <li>{@link Options#CACHE_INPUT CACHE_INPUT}: No longer supported;
+     *         option will be ignored. The default value is ''.
+     *     <li>{@link Options#USE_CACHED_INPUT USE_CACHED_INPUT}: No longer
+     *         supported; option will be ignored. The default value is ''.
      *     <li>{@link Options#RUN_TAG RUN_TAG}: A string that, if not empty,
      *         can be used in subsequent calls to {@link
      *         com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)

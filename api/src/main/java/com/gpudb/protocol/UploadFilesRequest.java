@@ -21,7 +21,7 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * Uploads one or more files to <a href="../../../../../../tools/kifs/"
  * target="_top">KiFS</a>. There are two methods for uploading files: load
- * files in their entirety, or load files in parts. The latter is recommeded
+ * files in their entirety, or load files in parts. The latter is recommended
  * for files of approximately 60 MB or larger.
  * <p>
  * To upload files in their entirety, populate {@link #getFileNames()
@@ -69,7 +69,7 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#showDirectories(ShowDirectoriesRequest)
  * GPUdb.showDirectories}. The user must have write permission on the
  * directory. Nested directories are permitted in file name paths. Directories
- * are deliniated with the directory separator of '/'.  For example, given the
+ * are delineated with the directory separator of '/'.  For example, given the
  * file path '/a/b/c/d.txt', 'a' must be a KiFS directory.
  * <p>
  * These characters are allowed in file name paths: letters, numbers, spaces,

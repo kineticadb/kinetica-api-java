@@ -71,7 +71,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         /**
          * Sets the maximum number of simultaneous threads allocated to a given
          * request, on each rank. Note that thread allocation may also be
-         * limted by resource group limits and/or system load.
+         * limited by resource group limits and/or system load.
          */
         public static final String SUBTASK_CONCURRENCY_LIMIT = "subtask_concurrency_limit";
 
@@ -93,15 +93,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String CHUNK_MAX_MEMORY = "chunk_max_memory";
 
         /**
-         * Attempts to evict columns from memory to the persistent store.
-         * Value string is a semicolon separated list of entries, each entry
-         * being a table name optionally followed by a comma and a comma
-         * separated list of column names to attempt to evict.  An empty value
-         * string will attempt to evict all tables and columns.
-         */
-        public static final String EVICT_COLUMNS = "evict_columns";
-
-        /**
          * Sets the execution_mode for kernel executions to the specified
          * string value. Possible values are host, device, default (engine
          * decides) or an integer value that indicates max chunk size to exec
@@ -114,45 +105,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          * accessed from.  Path must exist on the head node
          */
         public static final String EXTERNAL_FILES_DIRECTORY = "external_files_directory";
-
-        /**
-         * Flushes any changes to any tables to the persistent store.  These
-         * changes include updates to the vector store, object store, and text
-         * search store.  Value string can be 'true', 'false' or 'text_search'
-         * to flush the text search store only.
-         */
-        public static final String FLUSH_TO_DISK = "flush_to_disk";
-
-        /**
-         * Clears cached results.  Useful to allow repeated timing of
-         * endpoints.  Value string is the name of the table for which to clear
-         * the cached results, or an empty string to clear the cached results
-         * for all tables.
-         */
-        public static final String CLEAR_CACHE = "clear_cache";
-
-        /**
-         * Invoke the communicator test and report timing results. Value string
-         * is a semicolon separated list of [key]=[value] expressions.
-         * Expressions are: num_transactions=[num] where num is the number of
-         * request reply transactions to invoke per test; message_size=[bytes]
-         * where bytes is the size in bytes of the messages to send;
-         * check_values=[enabled] where if enabled is true the value of the
-         * messages received are verified.
-         */
-        public static final String COMMUNICATOR_TEST = "communicator_test";
-
-        /**
-         * Invoke the network speed test and report timing results. Value
-         * string is a semicolon-separated list of [key]=[value] expressions.
-         * Valid expressions are: seconds=[time] where time is the time in
-         * seconds to run the test; data_size=[bytes] where bytes is the size
-         * in bytes of the block to be transferred; threads=[number of
-         * threads]; to_ranks=[space-separated list of ranks] where the list of
-         * ranks is the ranks that rank 0 will send data to and get data from.
-         * If to_ranks is unspecified then all worker ranks are used.
-         */
-        public static final String NETWORK_SPEED = "network_speed";
 
         /**
          * Number of minutes after which filtering (e.g., {@link
@@ -171,11 +123,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          * allowed value is '0'. The maximum allowed value is '1000000'.
          */
         public static final String MAX_GET_RECORDS_SIZE = "max_get_records_size";
-
-        /**
-         * &lt;DEVELOPER&gt;
-         */
-        public static final String MAX_GRBC_BATCH_SIZE = "max_grbc_batch_size";
 
         /**
          * Enable or disable auditing.
@@ -215,12 +162,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          * value is '2147483647'.
          */
         public static final String SHADOW_FILTER_SIZE = "shadow_filter_size";
-
-        /**
-         * compress vector on set_compression (instead of waiting for
-         * background thread). The default value is 'false'.
-         */
-        public static final String SYNCHRONOUS_COMPRESSION = "synchronous_compression";
 
         /**
          * Enable overlapped-equi-join filter. The default value is 'true'.
@@ -290,14 +231,18 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String SYSTEM_METADATA_RETENTION_PERIOD = "system_metadata_retention_period";
 
         /**
-         * Sets the tcs_per_tom value of the conf. The minimum allowed value is
-         * '2'. The maximum allowed value is '8192'.
+         * Size of the worker rank data calculation thread pool.  This is
+         * primarily used for computation-based operations such as aggregates
+         * and record retrieval. The minimum allowed value is '2'. The maximum
+         * allowed value is '8192'.
          */
         public static final String TCS_PER_TOM = "tcs_per_tom";
 
         /**
-         * Sets the tps_per_tom value of the conf. The minimum allowed value is
-         * '2'. The maximum allowed value is '8192'.
+         * Size of the worker rank data processing thread pool.  This includes
+         * operations such as inserts, updates, & deletes on table data.
+         * Multi-head inserts are not affected by this limit. The minimum
+         * allowed value is '2'. The maximum allowed value is '8192'.
          */
         public static final String TPS_PER_TOM = "tps_per_tom";
 
@@ -371,6 +316,27 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          * (bytes). The minimum allowed value is '-1'.
          */
         public static final String KIFS_DIRECTORY_DATA_LIMIT = "kifs_directory_data_limit";
+
+        /**
+         * The default <a href="../../../../../../concepts/column_compression/"
+         * target="_top">compression algorithm</a> applied to any column
+         * without a column-level or table-level default compression specified
+         * at the time it was created
+         */
+        public static final String COMPRESSION_CODEC = "compression_codec";
+
+        /**
+         * Time interval in seconds after which the database will apply
+         * optimizations/transformations to persisted data, such as
+         * compression. The minimum allowed value is '0'.
+         */
+        public static final String DISK_AUTO_OPTIMIZE_TIMEOUT = "disk_auto_optimize_timeout";
+
+        /**
+         * Initializes HA replay from the given timestamp (as milliseconds
+         * since unix epoch). The minimum allowed value is '-1'.
+         */
+        public static final String HA_CONSUMER_REPLAY_OFFSET = "ha_consumer_replay_offset";
 
         private PropertyUpdatesMap() {  }
     }
@@ -455,7 +421,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    maximum number of simultaneous
      *                                    threads allocated to a given request,
      *                                    on each rank. Note that thread
-     *                                    allocation may also be limted by
+     *                                    allocation may also be limited by
      *                                    resource group limits and/or system
      *                                    load.
      *                                <li>{@link PropertyUpdatesMap#CHUNK_SIZE
@@ -475,18 +441,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    columns in a chunk to be used for all
      *                                    new tables.
      *                                <li>{@link
-     *                                    PropertyUpdatesMap#EVICT_COLUMNS
-     *                                    EVICT_COLUMNS}: Attempts to evict
-     *                                    columns from memory to the persistent
-     *                                    store.  Value string is a semicolon
-     *                                    separated list of entries, each entry
-     *                                    being a table name optionally
-     *                                    followed by a comma and a comma
-     *                                    separated list of column names to
-     *                                    attempt to evict.  An empty value
-     *                                    string will attempt to evict all
-     *                                    tables and columns.
-     *                                <li>{@link
      *                                    PropertyUpdatesMap#EXECUTION_MODE
      *                                    EXECUTION_MODE}: Sets the
      *                                    execution_mode for kernel executions
@@ -501,57 +455,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    root directory path where external
      *                                    table data files are accessed from.
      *                                    Path must exist on the head node
-     *                                <li>{@link
-     *                                    PropertyUpdatesMap#FLUSH_TO_DISK
-     *                                    FLUSH_TO_DISK}: Flushes any changes
-     *                                    to any tables to the persistent
-     *                                    store.  These changes include updates
-     *                                    to the vector store, object store,
-     *                                    and text search store.  Value string
-     *                                    can be 'true', 'false' or
-     *                                    'text_search' to flush the text
-     *                                    search store only.
-     *                                <li>{@link PropertyUpdatesMap#CLEAR_CACHE
-     *                                    CLEAR_CACHE}: Clears cached results.
-     *                                    Useful to allow repeated timing of
-     *                                    endpoints.  Value string is the name
-     *                                    of the table for which to clear the
-     *                                    cached results, or an empty string to
-     *                                    clear the cached results for all
-     *                                    tables.
-     *                                <li>{@link
-     *                                    PropertyUpdatesMap#COMMUNICATOR_TEST
-     *                                    COMMUNICATOR_TEST}: Invoke the
-     *                                    communicator test and report timing
-     *                                    results. Value string is a semicolon
-     *                                    separated list of [key]=[value]
-     *                                    expressions.  Expressions are:
-     *                                    num_transactions=[num] where num is
-     *                                    the number of request reply
-     *                                    transactions to invoke per test;
-     *                                    message_size=[bytes] where bytes is
-     *                                    the size in bytes of the messages to
-     *                                    send; check_values=[enabled] where if
-     *                                    enabled is true the value of the
-     *                                    messages received are verified.
-     *                                <li>{@link
-     *                                    PropertyUpdatesMap#NETWORK_SPEED
-     *                                    NETWORK_SPEED}: Invoke the network
-     *                                    speed test and report timing results.
-     *                                    Value string is a semicolon-separated
-     *                                    list of [key]=[value] expressions.
-     *                                    Valid expressions are: seconds=[time]
-     *                                    where time is the time in seconds to
-     *                                    run the test; data_size=[bytes] where
-     *                                    bytes is the size in bytes of the
-     *                                    block to be transferred;
-     *                                    threads=[number of threads];
-     *                                    to_ranks=[space-separated list of
-     *                                    ranks] where the list of ranks is the
-     *                                    ranks that rank 0 will send data to
-     *                                    and get data from. If to_ranks is
-     *                                    unspecified then all worker ranks are
-     *                                    used.
      *                                <li>{@link
      *                                    PropertyUpdatesMap#REQUEST_TIMEOUT
      *                                    REQUEST_TIMEOUT}: Number of minutes
@@ -572,10 +475,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    call. The default value is '20000'.
      *                                    The minimum allowed value is '0'. The
      *                                    maximum allowed value is '1000000'.
-     *                                <li>{@link
-     *                                    PropertyUpdatesMap#MAX_GRBC_BATCH_SIZE
-     *                                    MAX_GRBC_BATCH_SIZE}:
-     *                                    &lt;DEVELOPER&gt;
      *                                <li>{@link
      *                                    PropertyUpdatesMap#ENABLE_AUDIT
      *                                    ENABLE_AUDIT}: Enable or disable
@@ -610,12 +509,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    minimum allowed value is '0'. The
      *                                    maximum allowed value is
      *                                    '2147483647'.
-     *                                <li>{@link
-     *                                    PropertyUpdatesMap#SYNCHRONOUS_COMPRESSION
-     *                                    SYNCHRONOUS_COMPRESSION}: compress
-     *                                    vector on set_compression (instead of
-     *                                    waiting for background thread). The
-     *                                    default value is 'false'.
      *                                <li>{@link
      *                                    PropertyUpdatesMap#ENABLE_OVERLAPPED_EQUI_JOIN
      *                                    ENABLE_OVERLAPPED_EQUI_JOIN}: Enable
@@ -691,15 +584,22 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    value of the conf. The minimum
      *                                    allowed value is '1'.
      *                                <li>{@link PropertyUpdatesMap#TCS_PER_TOM
-     *                                    TCS_PER_TOM}: Sets the tcs_per_tom
-     *                                    value of the conf. The minimum
-     *                                    allowed value is '2'. The maximum
-     *                                    allowed value is '8192'.
+     *                                    TCS_PER_TOM}: Size of the worker rank
+     *                                    data calculation thread pool.  This
+     *                                    is primarily used for
+     *                                    computation-based operations such as
+     *                                    aggregates and record retrieval. The
+     *                                    minimum allowed value is '2'. The
+     *                                    maximum allowed value is '8192'.
      *                                <li>{@link PropertyUpdatesMap#TPS_PER_TOM
-     *                                    TPS_PER_TOM}: Sets the tps_per_tom
-     *                                    value of the conf. The minimum
-     *                                    allowed value is '2'. The maximum
-     *                                    allowed value is '8192'.
+     *                                    TPS_PER_TOM}: Size of the worker rank
+     *                                    data processing thread pool.  This
+     *                                    includes operations such as inserts,
+     *                                    updates, & deletes on table data.
+     *                                    Multi-head inserts are not affected
+     *                                    by this limit. The minimum allowed
+     *                                    value is '2'. The maximum allowed
+     *                                    value is '8192'.
      *                                <li>{@link
      *                                    PropertyUpdatesMap#BACKGROUND_WORKER_THREADS
      *                                    BACKGROUND_WORKER_THREADS}: Size of
@@ -762,6 +662,30 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    when creating a KiFS directory
      *                                    (bytes). The minimum allowed value is
      *                                    '-1'.
+     *                                <li>{@link
+     *                                    PropertyUpdatesMap#COMPRESSION_CODEC
+     *                                    COMPRESSION_CODEC}: The default <a
+     *                                    href="../../../../../../concepts/column_compression/"
+     *                                    target="_top">compression
+     *                                    algorithm</a> applied to any column
+     *                                    without a column-level or table-level
+     *                                    default compression specified at the
+     *                                    time it was created
+     *                                <li>{@link
+     *                                    PropertyUpdatesMap#DISK_AUTO_OPTIMIZE_TIMEOUT
+     *                                    DISK_AUTO_OPTIMIZE_TIMEOUT}: Time
+     *                                    interval in seconds after which the
+     *                                    database will apply
+     *                                    optimizations/transformations to
+     *                                    persisted data, such as compression.
+     *                                    The minimum allowed value is '0'.
+     *                                <li>{@link
+     *                                    PropertyUpdatesMap#HA_CONSUMER_REPLAY_OFFSET
+     *                                    HA_CONSUMER_REPLAY_OFFSET}:
+     *                                    Initializes HA replay from the given
+     *                                    timestamp (as milliseconds since unix
+     *                                    epoch). The minimum allowed value is
+     *                                    '-1'.
      *                            </ul>
      * @param options  Optional parameters.
      *                 <ul>
@@ -811,8 +735,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#SUBTASK_CONCURRENCY_LIMIT
      *         SUBTASK_CONCURRENCY_LIMIT}: Sets the maximum number of
      *         simultaneous threads allocated to a given request, on each rank.
-     *         Note that thread allocation may also be limted by resource group
-     *         limits and/or system load.
+     *         Note that thread allocation may also be limited by resource
+     *         group limits and/or system load.
      *     <li>{@link PropertyUpdatesMap#CHUNK_SIZE CHUNK_SIZE}: Sets the
      *         number of records per chunk to be used for all new tables.
      *     <li>{@link PropertyUpdatesMap#CHUNK_COLUMN_MAX_MEMORY
@@ -821,12 +745,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#CHUNK_MAX_MEMORY CHUNK_MAX_MEMORY}:
      *         Indicates the target maximum data size for all columns in a
      *         chunk to be used for all new tables.
-     *     <li>{@link PropertyUpdatesMap#EVICT_COLUMNS EVICT_COLUMNS}: Attempts
-     *         to evict columns from memory to the persistent store.  Value
-     *         string is a semicolon separated list of entries, each entry
-     *         being a table name optionally followed by a comma and a comma
-     *         separated list of column names to attempt to evict.  An empty
-     *         value string will attempt to evict all tables and columns.
      *     <li>{@link PropertyUpdatesMap#EXECUTION_MODE EXECUTION_MODE}: Sets
      *         the execution_mode for kernel executions to the specified string
      *         value. Possible values are host, device, default (engine
@@ -836,34 +754,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         EXTERNAL_FILES_DIRECTORY}: Sets the root directory path where
      *         external table data files are accessed from.  Path must exist on
      *         the head node
-     *     <li>{@link PropertyUpdatesMap#FLUSH_TO_DISK FLUSH_TO_DISK}: Flushes
-     *         any changes to any tables to the persistent store.  These
-     *         changes include updates to the vector store, object store, and
-     *         text search store.  Value string can be 'true', 'false' or
-     *         'text_search' to flush the text search store only.
-     *     <li>{@link PropertyUpdatesMap#CLEAR_CACHE CLEAR_CACHE}: Clears
-     *         cached results.  Useful to allow repeated timing of endpoints.
-     *         Value string is the name of the table for which to clear the
-     *         cached results, or an empty string to clear the cached results
-     *         for all tables.
-     *     <li>{@link PropertyUpdatesMap#COMMUNICATOR_TEST COMMUNICATOR_TEST}:
-     *         Invoke the communicator test and report timing results. Value
-     *         string is a semicolon separated list of [key]=[value]
-     *         expressions.  Expressions are: num_transactions=[num] where num
-     *         is the number of request reply transactions to invoke per test;
-     *         message_size=[bytes] where bytes is the size in bytes of the
-     *         messages to send; check_values=[enabled] where if enabled is
-     *         true the value of the messages received are verified.
-     *     <li>{@link PropertyUpdatesMap#NETWORK_SPEED NETWORK_SPEED}: Invoke
-     *         the network speed test and report timing results. Value string
-     *         is a semicolon-separated list of [key]=[value] expressions.
-     *         Valid expressions are: seconds=[time] where time is the time in
-     *         seconds to run the test; data_size=[bytes] where bytes is the
-     *         size in bytes of the block to be transferred; threads=[number of
-     *         threads]; to_ranks=[space-separated list of ranks] where the
-     *         list of ranks is the ranks that rank 0 will send data to and get
-     *         data from. If to_ranks is unspecified then all worker ranks are
-     *         used.
      *     <li>{@link PropertyUpdatesMap#REQUEST_TIMEOUT REQUEST_TIMEOUT}:
      *         Number of minutes after which filtering (e.g., {@link
      *         com.gpudb.GPUdb#filter(FilterRequest) GPUdb.filter}) and
@@ -877,8 +767,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         database will serve for a given data retrieval call. The default
      *         value is '20000'. The minimum allowed value is '0'. The maximum
      *         allowed value is '1000000'.
-     *     <li>{@link PropertyUpdatesMap#MAX_GRBC_BATCH_SIZE
-     *         MAX_GRBC_BATCH_SIZE}: &lt;DEVELOPER&gt;
      *     <li>{@link PropertyUpdatesMap#ENABLE_AUDIT ENABLE_AUDIT}: Enable or
      *         disable auditing.
      *     <li>{@link PropertyUpdatesMap#AUDIT_HEADERS AUDIT_HEADERS}: Enable
@@ -897,10 +785,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         SHADOW_FILTER_SIZE}: Size of the shadow filter chunk cache in
      *         bytes. The default value is '10000000'. The minimum allowed
      *         value is '0'. The maximum allowed value is '2147483647'.
-     *     <li>{@link PropertyUpdatesMap#SYNCHRONOUS_COMPRESSION
-     *         SYNCHRONOUS_COMPRESSION}: compress vector on set_compression
-     *         (instead of waiting for background thread). The default value is
-     *         'false'.
      *     <li>{@link PropertyUpdatesMap#ENABLE_OVERLAPPED_EQUI_JOIN
      *         ENABLE_OVERLAPPED_EQUI_JOIN}: Enable overlapped-equi-join
      *         filter. The default value is 'true'.
@@ -941,12 +825,16 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         SYSTEM_METADATA_RETENTION_PERIOD}: Sets the
      *         system_metadata.retention_period value of the conf. The minimum
      *         allowed value is '1'.
-     *     <li>{@link PropertyUpdatesMap#TCS_PER_TOM TCS_PER_TOM}: Sets the
-     *         tcs_per_tom value of the conf. The minimum allowed value is '2'.
-     *         The maximum allowed value is '8192'.
-     *     <li>{@link PropertyUpdatesMap#TPS_PER_TOM TPS_PER_TOM}: Sets the
-     *         tps_per_tom value of the conf. The minimum allowed value is '2'.
-     *         The maximum allowed value is '8192'.
+     *     <li>{@link PropertyUpdatesMap#TCS_PER_TOM TCS_PER_TOM}: Size of the
+     *         worker rank data calculation thread pool.  This is primarily
+     *         used for computation-based operations such as aggregates and
+     *         record retrieval. The minimum allowed value is '2'. The maximum
+     *         allowed value is '8192'.
+     *     <li>{@link PropertyUpdatesMap#TPS_PER_TOM TPS_PER_TOM}: Size of the
+     *         worker rank data processing thread pool.  This includes
+     *         operations such as inserts, updates, & deletes on table data.
+     *         Multi-head inserts are not affected by this limit. The minimum
+     *         allowed value is '2'. The maximum allowed value is '8192'.
      *     <li>{@link PropertyUpdatesMap#BACKGROUND_WORKER_THREADS
      *         BACKGROUND_WORKER_THREADS}: Size of the worker rank background
      *         thread pool. This includes background operations such as
@@ -982,6 +870,21 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         KIFS_DIRECTORY_DATA_LIMIT}: The default maximum capacity to
      *         apply when creating a KiFS directory (bytes). The minimum
      *         allowed value is '-1'.
+     *     <li>{@link PropertyUpdatesMap#COMPRESSION_CODEC COMPRESSION_CODEC}:
+     *         The default <a
+     *         href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression algorithm</a> applied to any column
+     *         without a column-level or table-level default compression
+     *         specified at the time it was created
+     *     <li>{@link PropertyUpdatesMap#DISK_AUTO_OPTIMIZE_TIMEOUT
+     *         DISK_AUTO_OPTIMIZE_TIMEOUT}: Time interval in seconds after
+     *         which the database will apply optimizations/transformations to
+     *         persisted data, such as compression. The minimum allowed value
+     *         is '0'.
+     *     <li>{@link PropertyUpdatesMap#HA_CONSUMER_REPLAY_OFFSET
+     *         HA_CONSUMER_REPLAY_OFFSET}: Initializes HA replay from the given
+     *         timestamp (as milliseconds since unix epoch). The minimum
+     *         allowed value is '-1'.
      * </ul>
      *
      * @return The current value of {@code propertyUpdatesMap}.
@@ -1007,8 +910,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#SUBTASK_CONCURRENCY_LIMIT
      *         SUBTASK_CONCURRENCY_LIMIT}: Sets the maximum number of
      *         simultaneous threads allocated to a given request, on each rank.
-     *         Note that thread allocation may also be limted by resource group
-     *         limits and/or system load.
+     *         Note that thread allocation may also be limited by resource
+     *         group limits and/or system load.
      *     <li>{@link PropertyUpdatesMap#CHUNK_SIZE CHUNK_SIZE}: Sets the
      *         number of records per chunk to be used for all new tables.
      *     <li>{@link PropertyUpdatesMap#CHUNK_COLUMN_MAX_MEMORY
@@ -1017,12 +920,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#CHUNK_MAX_MEMORY CHUNK_MAX_MEMORY}:
      *         Indicates the target maximum data size for all columns in a
      *         chunk to be used for all new tables.
-     *     <li>{@link PropertyUpdatesMap#EVICT_COLUMNS EVICT_COLUMNS}: Attempts
-     *         to evict columns from memory to the persistent store.  Value
-     *         string is a semicolon separated list of entries, each entry
-     *         being a table name optionally followed by a comma and a comma
-     *         separated list of column names to attempt to evict.  An empty
-     *         value string will attempt to evict all tables and columns.
      *     <li>{@link PropertyUpdatesMap#EXECUTION_MODE EXECUTION_MODE}: Sets
      *         the execution_mode for kernel executions to the specified string
      *         value. Possible values are host, device, default (engine
@@ -1032,34 +929,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         EXTERNAL_FILES_DIRECTORY}: Sets the root directory path where
      *         external table data files are accessed from.  Path must exist on
      *         the head node
-     *     <li>{@link PropertyUpdatesMap#FLUSH_TO_DISK FLUSH_TO_DISK}: Flushes
-     *         any changes to any tables to the persistent store.  These
-     *         changes include updates to the vector store, object store, and
-     *         text search store.  Value string can be 'true', 'false' or
-     *         'text_search' to flush the text search store only.
-     *     <li>{@link PropertyUpdatesMap#CLEAR_CACHE CLEAR_CACHE}: Clears
-     *         cached results.  Useful to allow repeated timing of endpoints.
-     *         Value string is the name of the table for which to clear the
-     *         cached results, or an empty string to clear the cached results
-     *         for all tables.
-     *     <li>{@link PropertyUpdatesMap#COMMUNICATOR_TEST COMMUNICATOR_TEST}:
-     *         Invoke the communicator test and report timing results. Value
-     *         string is a semicolon separated list of [key]=[value]
-     *         expressions.  Expressions are: num_transactions=[num] where num
-     *         is the number of request reply transactions to invoke per test;
-     *         message_size=[bytes] where bytes is the size in bytes of the
-     *         messages to send; check_values=[enabled] where if enabled is
-     *         true the value of the messages received are verified.
-     *     <li>{@link PropertyUpdatesMap#NETWORK_SPEED NETWORK_SPEED}: Invoke
-     *         the network speed test and report timing results. Value string
-     *         is a semicolon-separated list of [key]=[value] expressions.
-     *         Valid expressions are: seconds=[time] where time is the time in
-     *         seconds to run the test; data_size=[bytes] where bytes is the
-     *         size in bytes of the block to be transferred; threads=[number of
-     *         threads]; to_ranks=[space-separated list of ranks] where the
-     *         list of ranks is the ranks that rank 0 will send data to and get
-     *         data from. If to_ranks is unspecified then all worker ranks are
-     *         used.
      *     <li>{@link PropertyUpdatesMap#REQUEST_TIMEOUT REQUEST_TIMEOUT}:
      *         Number of minutes after which filtering (e.g., {@link
      *         com.gpudb.GPUdb#filter(FilterRequest) GPUdb.filter}) and
@@ -1073,8 +942,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         database will serve for a given data retrieval call. The default
      *         value is '20000'. The minimum allowed value is '0'. The maximum
      *         allowed value is '1000000'.
-     *     <li>{@link PropertyUpdatesMap#MAX_GRBC_BATCH_SIZE
-     *         MAX_GRBC_BATCH_SIZE}: &lt;DEVELOPER&gt;
      *     <li>{@link PropertyUpdatesMap#ENABLE_AUDIT ENABLE_AUDIT}: Enable or
      *         disable auditing.
      *     <li>{@link PropertyUpdatesMap#AUDIT_HEADERS AUDIT_HEADERS}: Enable
@@ -1093,10 +960,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         SHADOW_FILTER_SIZE}: Size of the shadow filter chunk cache in
      *         bytes. The default value is '10000000'. The minimum allowed
      *         value is '0'. The maximum allowed value is '2147483647'.
-     *     <li>{@link PropertyUpdatesMap#SYNCHRONOUS_COMPRESSION
-     *         SYNCHRONOUS_COMPRESSION}: compress vector on set_compression
-     *         (instead of waiting for background thread). The default value is
-     *         'false'.
      *     <li>{@link PropertyUpdatesMap#ENABLE_OVERLAPPED_EQUI_JOIN
      *         ENABLE_OVERLAPPED_EQUI_JOIN}: Enable overlapped-equi-join
      *         filter. The default value is 'true'.
@@ -1137,12 +1000,16 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         SYSTEM_METADATA_RETENTION_PERIOD}: Sets the
      *         system_metadata.retention_period value of the conf. The minimum
      *         allowed value is '1'.
-     *     <li>{@link PropertyUpdatesMap#TCS_PER_TOM TCS_PER_TOM}: Sets the
-     *         tcs_per_tom value of the conf. The minimum allowed value is '2'.
-     *         The maximum allowed value is '8192'.
-     *     <li>{@link PropertyUpdatesMap#TPS_PER_TOM TPS_PER_TOM}: Sets the
-     *         tps_per_tom value of the conf. The minimum allowed value is '2'.
-     *         The maximum allowed value is '8192'.
+     *     <li>{@link PropertyUpdatesMap#TCS_PER_TOM TCS_PER_TOM}: Size of the
+     *         worker rank data calculation thread pool.  This is primarily
+     *         used for computation-based operations such as aggregates and
+     *         record retrieval. The minimum allowed value is '2'. The maximum
+     *         allowed value is '8192'.
+     *     <li>{@link PropertyUpdatesMap#TPS_PER_TOM TPS_PER_TOM}: Size of the
+     *         worker rank data processing thread pool.  This includes
+     *         operations such as inserts, updates, & deletes on table data.
+     *         Multi-head inserts are not affected by this limit. The minimum
+     *         allowed value is '2'. The maximum allowed value is '8192'.
      *     <li>{@link PropertyUpdatesMap#BACKGROUND_WORKER_THREADS
      *         BACKGROUND_WORKER_THREADS}: Size of the worker rank background
      *         thread pool. This includes background operations such as
@@ -1177,6 +1044,21 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#KIFS_DIRECTORY_DATA_LIMIT
      *         KIFS_DIRECTORY_DATA_LIMIT}: The default maximum capacity to
      *         apply when creating a KiFS directory (bytes). The minimum
+     *         allowed value is '-1'.
+     *     <li>{@link PropertyUpdatesMap#COMPRESSION_CODEC COMPRESSION_CODEC}:
+     *         The default <a
+     *         href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression algorithm</a> applied to any column
+     *         without a column-level or table-level default compression
+     *         specified at the time it was created
+     *     <li>{@link PropertyUpdatesMap#DISK_AUTO_OPTIMIZE_TIMEOUT
+     *         DISK_AUTO_OPTIMIZE_TIMEOUT}: Time interval in seconds after
+     *         which the database will apply optimizations/transformations to
+     *         persisted data, such as compression. The minimum allowed value
+     *         is '0'.
+     *     <li>{@link PropertyUpdatesMap#HA_CONSUMER_REPLAY_OFFSET
+     *         HA_CONSUMER_REPLAY_OFFSET}: Initializes HA replay from the given
+     *         timestamp (as milliseconds since unix epoch). The minimum
      *         allowed value is '-1'.
      * </ul>
      *

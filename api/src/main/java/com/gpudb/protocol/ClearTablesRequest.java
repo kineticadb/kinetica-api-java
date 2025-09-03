@@ -15,15 +15,17 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#showWal(ShowWalRequest)
- * GPUdb.showWal}.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#clearTables(ClearTablesRequest) GPUdb.clearTables}.
  * <p>
- * Requests table write-ahead log (WAL) properties.
- * Returns information about the requested table WAL entries.
+ * Clears (drops) tables in the database cluster. The operation is synchronous
+ * meaning that the tables will be cleared before the function returns. The
+ * response payload returns the status of the operation for each table
+ * requested.
  */
-public class ShowWalRequest implements IndexedRecord {
+public class ClearTablesRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("ShowWalRequest")
+            .record("ClearTablesRequest")
             .namespace("com.gpudb")
             .fields()
                 .name("tableNames").type().array().items().stringType().noDefault()
@@ -41,23 +43,26 @@ public class ShowWalRequest implements IndexedRecord {
     }
 
     /**
-     * A set of string constants for the {@link ShowWalRequest} parameter
+     * A set of string constants for the {@link ClearTablesRequest} parameter
      * {@link #getOptions() options}.
      * <p>
      * Optional parameters.
      */
     public static final class Options {
         /**
-         * If {@link Options#TRUE TRUE} include a map of the WAL settings for
-         * the requested tables.
+         * If {@link Options#TRUE TRUE} and if a table specified in {@link
+         * #getTableNames() tableNames} does not exist no error is returned. If
+         * {@link Options#FALSE FALSE} and if a table specified in {@link
+         * #getTableNames() tableNames} does not exist then an error is
+         * returned.
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}
          *     <li>{@link Options#FALSE FALSE}
          * </ul>
-         * The default value is {@link Options#TRUE TRUE}.
+         * The default value is {@link Options#FALSE FALSE}.
          */
-        public static final String SHOW_SETTINGS = "show_settings";
+        public static final String NO_ERROR_IF_NOT_EXISTS = "no_error_if_not_exists";
 
         public static final String TRUE = "true";
         public static final String FALSE = "false";
@@ -69,39 +74,56 @@ public class ShowWalRequest implements IndexedRecord {
     private Map<String, String> options;
 
     /**
-     * Constructs a ShowWalRequest object with default parameters.
+     * Constructs a ClearTablesRequest object with default parameters.
      */
-    public ShowWalRequest() {
+    public ClearTablesRequest() {
         tableNames = new ArrayList<>();
         options = new LinkedHashMap<>();
     }
 
     /**
-     * Constructs a ShowWalRequest object with the specified parameters.
+     * Constructs a ClearTablesRequest object with the specified parameters.
      *
-     * @param tableNames  List of tables to query. An asterisk returns all
-     *                    tables.
+     * @param tableNames  Names of the tables to be cleared, in
+     *                    [schema_name.]table_name format, using standard <a
+     *                    href="../../../../../../concepts/tables/#table-name-resolution"
+     *                    target="_top">name resolution rules</a>. Must be
+     *                    existing tables. Empty list clears all available
+     *                    tables, though this behavior is be prevented by
+     *                    default via gpudb.conf parameter 'disable_clear_all'.
+     *                    The default value is an empty {@link List}.
      * @param options  Optional parameters.
      *                 <ul>
-     *                     <li>{@link Options#SHOW_SETTINGS SHOW_SETTINGS}: If
-     *                         {@link Options#TRUE TRUE} include a map of the
-     *                         WAL settings for the requested tables.
+     *                     <li>{@link Options#NO_ERROR_IF_NOT_EXISTS
+     *                         NO_ERROR_IF_NOT_EXISTS}: If {@link Options#TRUE
+     *                         TRUE} and if a table specified in {@code
+     *                         tableNames} does not exist no error is returned.
+     *                         If {@link Options#FALSE FALSE} and if a table
+     *                         specified in {@code tableNames} does not exist
+     *                         then an error is returned.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
      *                             <li>{@link Options#FALSE FALSE}
      *                         </ul>
-     *                         The default value is {@link Options#TRUE TRUE}.
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
-    public ShowWalRequest(List<String> tableNames, Map<String, String> options) {
+    public ClearTablesRequest(List<String> tableNames, Map<String, String> options) {
         this.tableNames = (tableNames == null) ? new ArrayList<String>() : tableNames;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
     /**
-     * List of tables to query. An asterisk returns all tables.
+     * Names of the tables to be cleared, in [schema_name.]table_name format,
+     * using standard <a
+     * href="../../../../../../concepts/tables/#table-name-resolution"
+     * target="_top">name resolution rules</a>. Must be existing tables. Empty
+     * list clears all available tables, though this behavior is be prevented
+     * by default via gpudb.conf parameter 'disable_clear_all'. The default
+     * value is an empty {@link List}.
      *
      * @return The current value of {@code tableNames}.
      */
@@ -110,13 +132,19 @@ public class ShowWalRequest implements IndexedRecord {
     }
 
     /**
-     * List of tables to query. An asterisk returns all tables.
+     * Names of the tables to be cleared, in [schema_name.]table_name format,
+     * using standard <a
+     * href="../../../../../../concepts/tables/#table-name-resolution"
+     * target="_top">name resolution rules</a>. Must be existing tables. Empty
+     * list clears all available tables, though this behavior is be prevented
+     * by default via gpudb.conf parameter 'disable_clear_all'. The default
+     * value is an empty {@link List}.
      *
      * @param tableNames  The new value for {@code tableNames}.
      *
      * @return {@code this} to mimic the builder pattern.
      */
-    public ShowWalRequest setTableNames(List<String> tableNames) {
+    public ClearTablesRequest setTableNames(List<String> tableNames) {
         this.tableNames = (tableNames == null) ? new ArrayList<String>() : tableNames;
         return this;
     }
@@ -124,15 +152,18 @@ public class ShowWalRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#SHOW_SETTINGS SHOW_SETTINGS}: If {@link
-     *         Options#TRUE TRUE} include a map of the WAL settings for the
-     *         requested tables.
+     *     <li>{@link Options#NO_ERROR_IF_NOT_EXISTS NO_ERROR_IF_NOT_EXISTS}:
+     *         If {@link Options#TRUE TRUE} and if a table specified in {@link
+     *         #getTableNames() tableNames} does not exist no error is
+     *         returned. If {@link Options#FALSE FALSE} and if a table
+     *         specified in {@link #getTableNames() tableNames} does not exist
+     *         then an error is returned.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
-     *         The default value is {@link Options#TRUE TRUE}.
+     *         The default value is {@link Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -145,15 +176,18 @@ public class ShowWalRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#SHOW_SETTINGS SHOW_SETTINGS}: If {@link
-     *         Options#TRUE TRUE} include a map of the WAL settings for the
-     *         requested tables.
+     *     <li>{@link Options#NO_ERROR_IF_NOT_EXISTS NO_ERROR_IF_NOT_EXISTS}:
+     *         If {@link Options#TRUE TRUE} and if a table specified in {@link
+     *         #getTableNames() tableNames} does not exist no error is
+     *         returned. If {@link Options#FALSE FALSE} and if a table
+     *         specified in {@link #getTableNames() tableNames} does not exist
+     *         then an error is returned.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
-     *         The default value is {@link Options#TRUE TRUE}.
+     *         The default value is {@link Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -161,7 +195,7 @@ public class ShowWalRequest implements IndexedRecord {
      *
      * @return {@code this} to mimic the builder pattern.
      */
-    public ShowWalRequest setOptions(Map<String, String> options) {
+    public ClearTablesRequest setOptions(Map<String, String> options) {
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
         return this;
     }
@@ -237,7 +271,7 @@ public class ShowWalRequest implements IndexedRecord {
             return false;
         }
 
-        ShowWalRequest that = (ShowWalRequest)obj;
+        ClearTablesRequest that = (ClearTablesRequest)obj;
 
         return ( this.tableNames.equals( that.tableNames )
                  && this.options.equals( that.options ) );

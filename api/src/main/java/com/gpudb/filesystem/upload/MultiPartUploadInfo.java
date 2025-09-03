@@ -5,8 +5,8 @@ import java.util.Map;
 
 /**
  * This is an internal class and not meant to be used by the end users of the
- * filesystem API. The consequences of using this class directly in client code
- * is not guaranteed and maybe undesirable.
+ * {@code filesystem} API. The consequences of using this class directly in
+ * client code is not guaranteed and maybe undesirable.
 
  * This class packages and mimics certain important attributes of a multi-part
  * upload operation. The attributes of this class are in one-one correspondence
@@ -33,7 +33,7 @@ public class MultiPartUploadInfo {
         }
 
         public String getValue() {
-            return value;
+            return this.value;
         }
     }
 
@@ -71,7 +71,7 @@ public class MultiPartUploadInfo {
     }
 
     public String getUuid() {
-        return uuid;
+        return this.uuid;
     }
 
     public void setUuid(String uuid) {
@@ -79,7 +79,7 @@ public class MultiPartUploadInfo {
     }
 
     public MultiPartOperation getPartOperation() {
-        return partOperation;
+        return this.partOperation;
     }
 
     public void setPartOperation(MultiPartOperation partOperation) {
@@ -87,7 +87,7 @@ public class MultiPartUploadInfo {
     }
 
     public int getUploadPartNumber() {
-        return uploadPartNumber;
+        return this.uploadPartNumber;
     }
 
     public void setUploadPartNumber(int uploadPartNumber) {
@@ -95,7 +95,7 @@ public class MultiPartUploadInfo {
     }
 
     public long getTotalParts() {
-        return totalParts;
+        return this.totalParts;
     }
 
     public void setTotalParts(long totalParts) {
@@ -105,7 +105,7 @@ public class MultiPartUploadInfo {
 
 
     public String getFileName() {
-        return fileName;
+        return this.fileName;
     }
 
     public void setFileName(String fileName) {
@@ -114,9 +114,13 @@ public class MultiPartUploadInfo {
 
     @Override
     public String toString() {
-        return "MultiPartUploadInfo{" + "uuid='" + uuid + '\'' + ", " +
-                "partOperation=" + partOperation + ", " +
-                "uploadPartNumber=" + uploadPartNumber + ", " +
-                "totalParts=" + totalParts + ", fileName='" + fileName + '\'' + '}';
+        return
+                "MultiPartUploadInfo{" +
+                    "uuid='" + this.uuid + '\'' + ", " +
+                    "partOperation=" + this.partOperation + ", " +
+                    "uploadPartNumber=" + this.uploadPartNumber + ", " +
+                    "totalParts=" + this.totalParts + ", " +
+                    "fileName='" + this.fileName + '\'' +
+                '}';
     }
 }

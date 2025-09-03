@@ -4,7 +4,6 @@ import com.gpudb.GPUdb;
 import com.gpudb.GPUdbException;
 import com.gpudb.GPUdbLogger;
 import com.gpudb.filesystem.GPUdbFileHandler;
-import com.gpudb.filesystem.common.FileOperation;
 import com.gpudb.filesystem.upload.FileUploader;
 import com.gpudb.filesystem.upload.UploadOptions;
 import com.gpudb.protocol.DeleteDirectoryRequest;
@@ -14,16 +13,13 @@ import java.util.*;
 
 /**
  * This is an internal class and not meant to be used by the end users of the
- * filesystem API. The consequences of using this class directly in client code
- * is not guaranteed and maybe undesirable.
+ * {@code filesystem} API. The consequences of using this class directly in
+ * client code is not guaranteed and maybe undesirable.
  *
  * This class uses FileUploader class to upload files to server and then
  * uses insertRecordsFromFile method to ingest the uploaded file.
  */
 public class FileIngestor {
-
-    private final String KIFS_PREFIX = "kifs://";
-    private final String REMOTE_USER_HOME_DIR = "~";
 
     private final GPUdb db;
 
@@ -53,17 +49,16 @@ public class FileIngestor {
                         final String tableName,
                         final List<String> fileNames,
                         IngestOptions ingestOptions,
-                        TableCreationOptions createTableOptions) throws GPUdbException {
+                        TableCreationOptions createTableOptions) {
         this.db = db;
         this.tableName = tableName;
         this.fileNames = fileNames;
         this.ingestOptions = ingestOptions == null ? new IngestOptions() : ingestOptions;
         this.createTableOptions = createTableOptions == null ? new TableCreationOptions() : createTableOptions;
-
     }
 
     public IngestOptions getIngestOptions() {
-        return ingestOptions;
+        return this.ingestOptions;
     }
 
     public void setIngestOptions(IngestOptions ingestOptions) {
@@ -71,7 +66,7 @@ public class FileIngestor {
     }
 
     public TableCreationOptions getCreateTableOptions() {
-        return createTableOptions;
+        return this.createTableOptions;
     }
 
     public void setCreateTableOptions(TableCreationOptions createTableOptions) {
@@ -84,58 +79,57 @@ public class FileIngestor {
      * to ingest from the uploaded files.
      *
      * The files are uploaded to the location identified by 'kifs://~/<some_uuid>' where '~' indicates the user's
-     * home directory on the server and ingested therefrom.
+     * home directory on the server and ingested there from.
      *
-     * @return - An {@link IngestResult} object
+     * @return  An {@link IngestResult} object
      */
     public IngestResult ingestFromFiles() {
-        final String temp_dir = UUID.randomUUID().toString();
+        final String ingestStagingDir = UUID.randomUUID().toString();
         Set<String> filesUploaded = new HashSet<>();
 
         try {
             // Upload the files to '~/" on KIFS, this directory is automatically aliased to
             // the users' home directory
-            final String remoteDirName = REMOTE_USER_HOME_DIR + FileOperation.getKifsPathSeparator() + temp_dir;
+            final String remoteDirName = GPUdbFileHandler.REMOTE_USER_HOME_DIR_PREFIX + GPUdbFileHandler.KIFS_PATH_SEPARATOR + ingestStagingDir;
 
-            fileUploader = new FileUploader(db,
-                    fileNames,
+            this.fileUploader = new FileUploader(
+                    this.db,
+                    this.fileNames,
                     remoteDirName,
                     UploadOptions.defaultOptions(),
                     null,
                     new GPUdbFileHandler.Options());
 
             // Get the names of the files uploaded without any path component
-            filesUploaded = fileUploader.getNamesOfFilesUploaded();
+            filesUploaded = this.fileUploader.getNamesOfFilesUploaded();
 
-            fileUploader.upload();
+            this.fileUploader.upload();
 
 
             List<String> filePaths = new ArrayList<>();
 
             for (String fileName : filesUploaded) {
-                String fullyQualifiedFileName = String.format("%s%s%s%s%s%s",
-                        KIFS_PREFIX,
-                        REMOTE_USER_HOME_DIR,
-                        FileOperation.getKifsPathSeparator(),
-                        temp_dir,
-                        FileOperation.getKifsPathSeparator(),
+                String fullyQualifiedFileName = String.format("%s%s%s%s",
+                        GPUdbFileHandler.KIFS_PATH_PREFIX,
+                        remoteDirName,
+                        GPUdbFileHandler.KIFS_PATH_SEPARATOR,
                         fileName);
                 filePaths.add( fullyQualifiedFileName );
             }
 
-            InsertRecordsFromFilesResponse resp = db.insertRecordsFromFiles(
-                    tableName,
+            InsertRecordsFromFilesResponse resp = this.db.insertRecordsFromFiles(
+                    this.tableName,
                     filePaths,
-                    new LinkedHashMap<String, Map<String, String>>(),
-                    createTableOptions.getOptions(),
-                    ingestOptions.getOptions()
+                    new LinkedHashMap<>(),
+                    this.createTableOptions.getOptions(),
+                    this.ingestOptions.getOptions()
             );
 
-            deleteIngestedFiles( temp_dir);
+            deleteIngestedFiles( ingestStagingDir);
             return convertToIngestResult(resp, null);
         } catch (GPUdbException ex) {
             GPUdbLogger.error( ex.getMessage() );
-            deleteIngestedFiles( temp_dir);
+            deleteIngestedFiles( ingestStagingDir);
             return convertToIngestResult( null, ex );
         }
     }
@@ -147,7 +141,7 @@ public class FileIngestor {
         options.put( DeleteDirectoryRequest.Options.NO_ERROR_IF_NOT_EXISTS, DeleteDirectoryRequest.Options.TRUE);
 
         try {
-            db.deleteDirectory(remoteDirName, options);
+            this.db.deleteDirectory(remoteDirName, options);
         } catch (GPUdbException e) {
             GPUdbLogger.error( e.getMessage() );
         }
@@ -156,11 +150,12 @@ public class FileIngestor {
     /**
      * This method converts an object of type {@link InsertRecordsFromFilesResponse}
      * to an object of type {@link IngestResult}.
-     * @param resp - An object of type {@link InsertRecordsFromFilesResponse}
-     * @param ex - A GPUdbException object
-     * @return - An object of type {@link IngestResult}
+     * 
+     * @param resp  The response object from a given insert records call.
+     * @param ex  The exception object from a given insert records call.
+     * @return  An object of type {@link IngestResult}, combining the two.
      */
-    private IngestResult convertToIngestResult( InsertRecordsFromFilesResponse resp, GPUdbException ex ) {
+    private static IngestResult convertToIngestResult( InsertRecordsFromFilesResponse resp, GPUdbException ex ) {
         IngestResult ingestResult = new IngestResult();
         ingestResult.setException( ex );
         ingestResult.setErrorMessage( ex != null ? ex.getMessage() : null );

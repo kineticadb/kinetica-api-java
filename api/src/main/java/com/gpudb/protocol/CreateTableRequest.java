@@ -16,10 +16,37 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#createTable(CreateTableRequest) GPUdb.createTable}.
  * <p>
- * Creates a new table. If a new table is being created, the type of the table
- * is given by {@link #getTypeId() typeId}, which must be the ID of a currently
- * registered type (i.e. one created via {@link
- * com.gpudb.GPUdb#createType(CreateTypeRequest) GPUdb.createType}).
+ * Creates a new table with the given type (definition of columns).  The type
+ * is specified in {@link #getTypeId() typeId} as either a numerical type ID
+ * (as returned by {@link com.gpudb.GPUdb#createType(CreateTypeRequest)
+ * GPUdb.createType}) or as a list of columns, each specified as a list of the
+ * column name, data type, and any column attributes.
+ * <p>
+ * Example of a type definition with some parameters:
+ * <pre>
+ *
+ *     [
+ *         ["id", "int8", "primary_key"],
+ *         ["dept_id", "int8", "primary_key", "shard_key"],
+ *         ["manager_id", "int8", "nullable"],
+ *         ["first_name", "char32"],
+ *         ["last_name", "char64"],
+ *         ["salary", "decimal"],
+ *         ["hire_date", "date"]
+ *     ]
+ * </pre>
+ * Each column definition consists of the column name (which should meet the
+ * standard <a href="../../../../../../concepts/tables/#table-naming-criteria"
+ * target="_top">column naming criteria</a>), the column's <a
+ * href="../../../../../../concepts/types/#types-chart" target="_top">specific
+ * type</a> (int, long, float, double, string, bytes, or any of the properties
+ * map values from {@link com.gpudb.GPUdb#createType(CreateTypeRequest)
+ * GPUdb.createType}), and any <a
+ * href="../../../../../../concepts/types/#types-data-handling"
+ * target="_top">data handling</a>, <a
+ * href="../../../../../../concepts/types/#types-data-keys" target="_top">data
+ * key</a>, or <a href="../../../../../../concepts/types/#types-data-replace"
+ * target="_top">data replacement</a> properties.
  * <p>
  * A table may optionally be designated to use a <a
  * href="../../../../../../concepts/tables/#replication"
@@ -115,17 +142,6 @@ public class CreateTableRequest implements IndexedRecord {
          * The default value is {@link Options#FALSE FALSE}.
          */
         public static final String IS_COLLECTION = "is_collection";
-
-        /**
-         * No longer supported; value will be ignored.
-         * Supported values:
-         * <ul>
-         *     <li>{@link Options#TRUE TRUE}
-         *     <li>{@link Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link Options#FALSE FALSE}.
-         */
-        public static final String DISALLOW_HOMOGENEOUS_TABLES = "disallow_homogeneous_tables";
 
         /**
          * Affects the <a
@@ -293,12 +309,10 @@ public class CreateTableRequest implements IndexedRecord {
          * Indicates whether the table is a <a
          * href="../../../../../../concepts/tables_memory_only/"
          * target="_top">memory-only table</a>. A result table cannot contain
-         * columns with store_only or text_search <a
+         * columns with text_search <a
          * href="../../../../../../concepts/types/#data-handling"
-         * target="_top">data-handling</a> or that are <a
-         * href="../../../../../../concepts/types/#primitive-types"
-         * target="_top">non-charN strings</a>, and it will not be retained if
-         * the server is restarted.
+         * target="_top">data-handling</a>, and it will not be retained if the
+         * server is restarted.
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}
@@ -313,6 +327,12 @@ public class CreateTableRequest implements IndexedRecord {
          * target="_top">tier strategy</a> for the table and its columns.
          */
         public static final String STRATEGY_DEFINITION = "strategy_definition";
+
+        /**
+         * The default <a href="../../../../../../concepts/column_compression/"
+         * target="_top">compression codec</a> for this table's columns.
+         */
+        public static final String COMPRESSION_CODEC = "compression_codec";
 
         /**
          * Set startup data loading scheme for the table.
@@ -398,8 +418,11 @@ public class CreateTableRequest implements IndexedRecord {
      *                   requests with existing table of the same name and type
      *                   ID may be suppressed by using the {@link
      *                   Options#NO_ERROR_IF_EXISTS NO_ERROR_IF_EXISTS} option.
-     * @param typeId  ID of a currently registered type. All objects added to
-     *                the newly created table will be of this type.
+     * @param typeId  The type for the table, specified as either an existing
+     *                table's numerical type ID (as returned by {@link
+     *                com.gpudb.GPUdb#createType(CreateTypeRequest)
+     *                GPUdb.createType}) or a type definition (as described
+     *                above).
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link Options#NO_ERROR_IF_EXISTS
@@ -450,16 +473,6 @@ public class CreateTableRequest implements IndexedRecord {
      *                         GPUdb.createSchema} to create a schema instead]
      *                         Indicates whether to create a schema instead of
      *                         a table.
-     *                         Supported values:
-     *                         <ul>
-     *                             <li>{@link Options#TRUE TRUE}
-     *                             <li>{@link Options#FALSE FALSE}
-     *                         </ul>
-     *                         The default value is {@link Options#FALSE
-     *                         FALSE}.
-     *                     <li>{@link Options#DISALLOW_HOMOGENEOUS_TABLES
-     *                         DISALLOW_HOMOGENEOUS_TABLES}: No longer
-     *                         supported; value will be ignored.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
@@ -583,13 +596,10 @@ public class CreateTableRequest implements IndexedRecord {
      *                         Indicates whether the table is a <a
      *                         href="../../../../../../concepts/tables_memory_only/"
      *                         target="_top">memory-only table</a>. A result
-     *                         table cannot contain columns with store_only or
-     *                         text_search <a
+     *                         table cannot contain columns with text_search <a
      *                         href="../../../../../../concepts/types/#data-handling"
-     *                         target="_top">data-handling</a> or that are <a
-     *                         href="../../../../../../concepts/types/#primitive-types"
-     *                         target="_top">non-charN strings</a>, and it will
-     *                         not be retained if the server is restarted.
+     *                         target="_top">data-handling</a>, and it will not
+     *                         be retained if the server is restarted.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
@@ -602,6 +612,11 @@ public class CreateTableRequest implements IndexedRecord {
      *                         href="../../../../../../rm/concepts/#tier-strategies"
      *                         target="_top">tier strategy</a> for the table
      *                         and its columns.
+     *                     <li>{@link Options#COMPRESSION_CODEC
+     *                         COMPRESSION_CODEC}: The default <a
+     *                         href="../../../../../../concepts/column_compression/"
+     *                         target="_top">compression codec</a> for this
+     *                         table's columns.
      *                     <li>{@link Options#LOAD_VECTORS_POLICY
      *                         LOAD_VECTORS_POLICY}: Set startup data loading
      *                         scheme for the table.
@@ -686,8 +701,10 @@ public class CreateTableRequest implements IndexedRecord {
     }
 
     /**
-     * ID of a currently registered type. All objects added to the newly
-     * created table will be of this type.
+     * The type for the table, specified as either an existing table's
+     * numerical type ID (as returned by {@link
+     * com.gpudb.GPUdb#createType(CreateTypeRequest) GPUdb.createType}) or a
+     * type definition (as described above).
      *
      * @return The current value of {@code typeId}.
      */
@@ -696,8 +713,10 @@ public class CreateTableRequest implements IndexedRecord {
     }
 
     /**
-     * ID of a currently registered type. All objects added to the newly
-     * created table will be of this type.
+     * The type for the table, specified as either an existing table's
+     * numerical type ID (as returned by {@link
+     * com.gpudb.GPUdb#createType(CreateTypeRequest) GPUdb.createType}) or a
+     * type definition (as described above).
      *
      * @param typeId  The new value for {@code typeId}.
      *
@@ -747,15 +766,6 @@ public class CreateTableRequest implements IndexedRecord {
      *         use {@link com.gpudb.GPUdb#createSchema(CreateSchemaRequest)
      *         GPUdb.createSchema} to create a schema instead]  Indicates
      *         whether to create a schema instead of a table.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#DISALLOW_HOMOGENEOUS_TABLES
-     *         DISALLOW_HOMOGENEOUS_TABLES}: No longer supported; value will be
-     *         ignored.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
@@ -861,12 +871,10 @@ public class CreateTableRequest implements IndexedRecord {
      *         whether the table is a <a
      *         href="../../../../../../concepts/tables_memory_only/"
      *         target="_top">memory-only table</a>. A result table cannot
-     *         contain columns with store_only or text_search <a
+     *         contain columns with text_search <a
      *         href="../../../../../../concepts/types/#data-handling"
-     *         target="_top">data-handling</a> or that are <a
-     *         href="../../../../../../concepts/types/#primitive-types"
-     *         target="_top">non-charN strings</a>, and it will not be retained
-     *         if the server is restarted.
+     *         target="_top">data-handling</a>, and it will not be retained if
+     *         the server is restarted.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
@@ -876,6 +884,9 @@ public class CreateTableRequest implements IndexedRecord {
      *     <li>{@link Options#STRATEGY_DEFINITION STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
+     *     <li>{@link Options#COMPRESSION_CODEC COMPRESSION_CODEC}: The default
+     *         <a href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression codec</a> for this table's columns.
      *     <li>{@link Options#LOAD_VECTORS_POLICY LOAD_VECTORS_POLICY}: Set
      *         startup data loading scheme for the table.
      *         Supported values:
@@ -959,15 +970,6 @@ public class CreateTableRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#DISALLOW_HOMOGENEOUS_TABLES
-     *         DISALLOW_HOMOGENEOUS_TABLES}: No longer supported; value will be
-     *         ignored.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#IS_REPLICATED IS_REPLICATED}: Affects the <a
      *         href="../../../../../../concepts/tables/#distribution"
      *         target="_top">distribution scheme</a> for the table's data.  If
@@ -1067,12 +1069,10 @@ public class CreateTableRequest implements IndexedRecord {
      *         whether the table is a <a
      *         href="../../../../../../concepts/tables_memory_only/"
      *         target="_top">memory-only table</a>. A result table cannot
-     *         contain columns with store_only or text_search <a
+     *         contain columns with text_search <a
      *         href="../../../../../../concepts/types/#data-handling"
-     *         target="_top">data-handling</a> or that are <a
-     *         href="../../../../../../concepts/types/#primitive-types"
-     *         target="_top">non-charN strings</a>, and it will not be retained
-     *         if the server is restarted.
+     *         target="_top">data-handling</a>, and it will not be retained if
+     *         the server is restarted.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
@@ -1082,6 +1082,9 @@ public class CreateTableRequest implements IndexedRecord {
      *     <li>{@link Options#STRATEGY_DEFINITION STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
+     *     <li>{@link Options#COMPRESSION_CODEC COMPRESSION_CODEC}: The default
+     *         <a href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression codec</a> for this table's columns.
      *     <li>{@link Options#LOAD_VECTORS_POLICY LOAD_VECTORS_POLICY}: Set
      *         startup data loading scheme for the table.
      *         Supported values:

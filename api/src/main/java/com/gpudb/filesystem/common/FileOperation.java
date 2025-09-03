@@ -20,8 +20,8 @@ import java.util.*;
 
 /**
  * This is an internal class and not meant to be used by the end users of the
- * filesystem API. The consequences of using this class directly in client code
- * is not guaranteed and maybe undesirable.
+ * {@code filesystem} API. The consequences of using this class directly in
+ * client code is not guaranteed and maybe undesirable.
 
  * This is the base class from which the classes {@link com.gpudb.filesystem.upload.FileUploader}
  * and {@link com.gpudb.filesystem.download.FileDownloader} are derived.
@@ -31,11 +31,8 @@ import java.util.*;
  * and also determining which files to be uploaded/downloaded either in one go
  * or in parts based on the size and a threshold which is given by the method
  * getFileSizeToSplit() of the GPUdbFileHandler.Options class.
- *
  */
 public class FileOperation {
-
-    protected static final String KIFS_PATH_SEPARATOR = "/";
 
     protected final OpMode opMode;
 
@@ -55,12 +52,16 @@ public class FileOperation {
      */
     protected List<String> fileNames;
 
+    /**
+     * The list of files uploaded, used by the {@link FileIngestor} to insert
+     * records from the uploaded files into the database.
+     */
     protected Set<String> namesOfFilesUploaded;
 
     /**
-     * This stores the directory name from which the source files for any
-     * operation (upload or download) is to be searched in. So, for uploads
-     * this is the name of the KIFS directory and for downloads this is the
+     * This stores the directory name into which the source files for any
+     * operation (upload or download) will be written. So, for uploads,
+     * this is the name of the KIFS directory; and for downloads, this is the
      * name of the local directory.
      */
     protected String dirName;
@@ -84,16 +85,19 @@ public class FileOperation {
     protected final GPUdbFileHandler.Options fileHandlerOptions;
 
     /**
-     *
-     * @param db - The {@link GPUdb} instance
-     * @param opMode - Indicates whether this is an upload or download operation
-     * @param fileNames - List<String> - List of inout file names
-     * @param dirName - Name of the local/remote directory depending upon
-     *                whether it is a download/upload operation.
-     * @param recursive - boolean - Indicates whether the path resolution needs
-     * @param fileHandlerOptions - a GPUdbFileHandler.Options type object
-     * @throws GPUdbException - propagates exceptions raised from various argument
-     * validations.
+     * Constructs a new file operation instance, managing the transfer of a set
+     * of files to a target directory.
+     * 
+     * @param db  The {@link GPUdb} instance used to access KiFS.
+     * @param opMode  Indicates whether this is an upload or download operation.
+     * @param fileNames  List of source file names.
+     * @param dirName  Name of the local/remote target directory depending upon
+     *        whether it is a download/upload operation.
+     * @param recursive  Indicates whether any directories given in
+     *        {@code fileNames} should be searched for files recursively.
+     * @param fileHandlerOptions  Options for setting up the files for transfer.
+     * @throws GPUdbException  propagates exceptions raised from various argument
+     *        validations.
      */
     public FileOperation(final GPUdb db,
                          final OpMode opMode,
@@ -109,7 +113,7 @@ public class FileOperation {
         this.fileHandlerOptions = fileHandlerOptions;
         this.namesOfFilesUploaded = new LinkedHashSet<>();
 
-        decideMultiPart( opMode );
+        decideMultiPart();
     }
 
     /**
@@ -118,24 +122,24 @@ public class FileOperation {
      * method to prepare the list of file names to be passed on to the
      * {@link GPUdb#insertRecordsFromFiles(InsertRecordsFromFilesRequest)}
      * endpoint.
-     * @return - A set of file names without the path information.
+     * 
+     * @return  A set of file names without the path information.
      */
     public Set<String> getNamesOfFilesUploaded() {
-        return namesOfFilesUploaded;
+        return this.namesOfFilesUploaded;
     }
 
     /**
      * This method resolves the file names passed in and decides on which could
      * be downloaded in one go and which ones are large enough to be downloaded
      * in parts.
-     * This method internally calls the method {@link #traverseLocalDirectories(String, List)}
-     * and gets the file names properly resolved in a list.
-     *
-     * @param opMode - {@link OpMode}
+     * 
+     * This method calls {@link #traverseLocalDirectories(String, List)} and
+     * gets the file names properly resolved in a list.
      */
-    protected void decideMultiPart(OpMode opMode) throws GPUdbException {
+    protected void decideMultiPart() throws GPUdbException {
 
-        if( opMode == OpMode.UPLOAD ) {
+        if( this.opMode == OpMode.UPLOAD ) {
             decideMultiPartUpload();
         } else {
             decideMultiPartDownload();
@@ -152,41 +156,39 @@ public class FileOperation {
      * {@link #traverseLocalDirectories(String, List)} to get the file names
      * normalized with fully resolved paths.
      */
-    private void decideMultiPartUpload( ) {
-        if (fullFileList == null) {
-            fullFileList = new ArrayList<>();
-        }
-        else {
-            fullFileList.clear();
-        }
+    private void decideMultiPartUpload() {
+        if (this.fullFileList == null)
+            this.fullFileList = new ArrayList<>();
+        else
+            this.fullFileList.clear();
 
-        if( fullFileBatchManager == null ) {
-            fullFileBatchManager = new FullFileBatchManager( this.fileHandlerOptions );
-        } else {
-            fullFileBatchManager.clearBatches();
-        }
+        if( this.fullFileBatchManager == null )
+            this.fullFileBatchManager = new FullFileBatchManager( this.fileHandlerOptions );
+        else
+            this.fullFileBatchManager.clearBatches();
 
-        if (multiPartList == null) {
-            multiPartList = new ArrayList<>();
-        }
-        else {
-            multiPartList.clear();
-        }
+        if (this.multiPartList == null)
+            this.multiPartList = new ArrayList<>();
+        else
+            this.multiPartList.clear();
 
-        if( multiPartRemoteFileNames == null ) {
-            multiPartRemoteFileNames = new ArrayList<>();
-        } else {
-            multiPartRemoteFileNames.clear();
-        }
+        if ( this.multiPartRemoteFileNames == null )
+            this.multiPartRemoteFileNames = new ArrayList<>();
+        else
+            this.multiPartRemoteFileNames.clear();
 
         try {
-            List<Triple<String, String, String>> parsedFileNames = parseFileNames( fileNames );
+            List<Triple<String, String, String>> parsedFileNames = parseFileNames( this.fileNames );
             Pair<List<String>, List<String>> resolvedFileLists;
 
             for (Triple<String, String, String> triple : parsedFileNames) {
+
                 String path = triple.getMiddle();
                 String name = triple.getRight();
 
+                List<String> localFileList = null;
+                List<String> remoteFileList = null;
+                
                 // This is a case of a wildcard search either recursive over
                 // directories (e.g., "<some_path>/**.csv", ./**.csv, ../*.csv etc.)
                 // Since we have wildcards we need to traverse the directories
@@ -194,14 +196,17 @@ public class FileOperation {
                 // in the directory and its sub directories.
                 if (name.contains("*") || name.contains("?")) {
                     resolvedFileLists = traverseLocalDirectories( path, Collections.singletonList(name) );
-                    sortFilesIntoFullAndMultipartLists( resolvedFileLists.getLeft(), resolvedFileLists.getRight() );
+                    localFileList = resolvedFileLists.getLeft();
+                    remoteFileList = resolvedFileLists.getRight();
                 } else {
                     // This is the case where we are dealing with actual file
                     // names with no wildcards.
-                    sortFilesIntoFullAndMultipartLists( Collections.singletonList( path + File.separator + name),
-                            Collections.singletonList( dirName + FileOperation.KIFS_PATH_SEPARATOR + name ) );
+                    localFileList = Collections.singletonList( path + File.separator + name);
+                    remoteFileList = Collections.singletonList( this.dirName + GPUdbFileHandler.KIFS_PATH_SEPARATOR + name );
                 }
 
+                // Put the files found into the correct single/multi-part upload buckets
+                sortFilesIntoFullAndMultipartLists( localFileList, remoteFileList );
             }
         } catch (IOException e) {
             GPUdbLogger.error( e.getMessage() );
@@ -212,35 +217,30 @@ public class FileOperation {
      * This method examines the sizes of the files to be downloaded from the
      * server and puts them into two separate lists for downloading files in
      * one go and for multi-part downloads for large files.
-     *
      */
     private void decideMultiPartDownload() throws GPUdbException {
-        if (fullFileList == null) {
-            fullFileList = new ArrayList<>();
-        }
-        else {
-            fullFileList.clear();
-        }
+        if (this.fullFileList == null)
+            this.fullFileList = new ArrayList<>();
+        else
+            this.fullFileList.clear();
 
-        if (multiPartList == null) {
-            multiPartList = new ArrayList<>();
-        }
-        else {
-            multiPartList.clear();
-        }
+        if (this.multiPartList == null)
+            this.multiPartList = new ArrayList<>();
+        else
+            this.multiPartList.clear();
 
-        List<Triple<String, String, String>> parsedFileNames = parseFileNames( fileNames );
+        List<Triple<String, String, String>> parsedFileNames = parseFileNames( this.fileNames );
 
         for (Triple<String, String, String> triple : parsedFileNames) {
             String path = triple.getMiddle();
             String name = triple.getRight();
 
-            ShowFilesResponse sfResp = db.showFiles( Collections.singletonList( path + FileOperation.KIFS_PATH_SEPARATOR + name), new HashMap<String, String>());
+            ShowFilesResponse sfResp = this.db.showFiles( Collections.singletonList( path + GPUdbFileHandler.KIFS_PATH_SEPARATOR + name), new HashMap<>());
 
-            if( sfResp.getSizes().get( 0 ) > fileHandlerOptions.getFileSizeToSplit() ) {
-                multiPartList.add( sfResp.getFileNames().get( 0 ) );
+            if( sfResp.getSizes().get( 0 ) > this.fileHandlerOptions.getFileSizeToSplit() ) {
+                this.multiPartList.add( sfResp.getFileNames().get( 0 ) );
             } else {
-                fullFileList.add( sfResp.getFileNames().get( 0 ) );
+                this.fullFileList.add( sfResp.getFileNames().get( 0 ) );
             }
         }
     }
@@ -249,9 +249,10 @@ public class FileOperation {
      * This method takes a list of completely resolved file paths and
      * puts each file into either the {@link #multiPartList} or
      * {@link #fullFileList} depending on the file size threshold returned by
-     * the method getFileSizeToSplit() of the GPUdbFileHandler.Options class.
+     * {@link com.gpudb.filesystem.GPUdbFileHandler.Options#getFileSizeToSplit}.
      *
-     * @param fileList - a list of file names
+     * @param fileList  A list of source file names to triage by size.
+     * @param remoteFileList  A list of target file names for the given sources.
      */
     protected void sortFilesIntoFullAndMultipartLists( List<String> fileList, List<String> remoteFileList ) {
 
@@ -259,7 +260,7 @@ public class FileOperation {
             String localFileName = fileList.get(i);
             String fileNameWithoutPath = StringUtils.substringAfterLast( localFileName, File.separator );
 
-            namesOfFilesUploaded.add( fileNameWithoutPath );
+            this.namesOfFilesUploaded.add( fileNameWithoutPath );
 
             String remoteFileName = remoteFileList.get( i );
 
@@ -268,33 +269,33 @@ public class FileOperation {
             try {
                 long fileSize = Files.size(filePath);
 
-                if ( fileSize > fileHandlerOptions.getFileSizeToSplit() ) {
-                    multiPartList.add(localFileName);
-                    multiPartRemoteFileNames.add( remoteFileName );
+                if ( fileSize > this.fileHandlerOptions.getFileSizeToSplit() ) {
+                    this.multiPartList.add(localFileName);
+                    this.multiPartRemoteFileNames.add( remoteFileName );
                 } else {
                     // Add the 'localFileName', remoteFileName and fileSize
                     // to the FullFileBatchManager instance.
-                    fullFileBatchManager.addFile( localFileName, remoteFileName, fileSize );
+                    this.fullFileBatchManager.addFile( localFileName, remoteFileName, fileSize );
                 }
 
             } catch (IOException e) {
-                GPUdbLogger.error(e.getMessage());
+                GPUdbLogger.error(String.format("Error getting file size of <%s>: %s", localFileName, e.getMessage()));
             }
         }
-
     }
+
 
     /**
      * This method gets the file stats for the files residing on the KIFS.
      *
-     * @param dirName - Name of the KIFS directory root.
-     * @return - List of {@link KifsFileInfo} objects
-     * @throws GPUdbException if 'show/files' endpoint fails
+     * @param path  Name of the KIFS file or directory of files to retrieve info on.
+     * @return  List of {@link KifsFileInfo} objects for the KiFS file(s) found.
+     * @throws GPUdbException  If the '/show/files' endpoint call fails.
      */
-    protected List<KifsFileInfo> getFileInfoFromServer( String dirName, String fileName ) throws GPUdbException {
+    protected List<KifsFileInfo> getFileInfoFromServer( String path ) throws GPUdbException {
         List<KifsFileInfo> resp = new ArrayList<>();
 
-        ShowFilesResponse sfResp = db.showFiles( Collections.singletonList( dirName + KIFS_PATH_SEPARATOR + fileName ), new HashMap<String, String>() );
+        ShowFilesResponse sfResp = this.db.showFiles( Collections.singletonList(path), new HashMap<>() );
 
         int count = sfResp.getFileNames().size();
 
@@ -313,37 +314,10 @@ public class FileOperation {
         return resp;
     }
 
-    /**
-     * This method gets the file stats for the files residing on the KIFS.
-     *
-     * @param dirName - Name of the KIFS directory root.
-     * @return - List of {@link KifsFileInfo} objects
-     * @throws GPUdbException in case 'show/files' endpoint fails
-     */
-    protected List<KifsFileInfo> getFileInfoFromServer( String dirName ) throws GPUdbException {
-        List<KifsFileInfo> resp = new ArrayList<>();
 
-        ShowFilesResponse sfResp = db.showFiles( Collections.singletonList(dirName), new HashMap<String, String>() );
-
-        int count = sfResp.getFileNames().size();
-
-        for( int i = 0; i < count; i++ ) {
-            KifsFileInfo fileInfo = new KifsFileInfo();
-
-            fileInfo.setFileName( sfResp.getFileNames().get( i ) );
-            fileInfo.setFileSize( sfResp.getSizes().get( i ) );
-            fileInfo.setCreationTime( sfResp.getCreationTimes().get( i ) );
-            fileInfo.setCreatedBy( sfResp.getUsers().get( i ) );
-
-            resp.add( fileInfo );
-
-        }
-
-        return resp;
-    }
     /**
      * This method traverses the local directory hierarchy starting with the
-     * directory given by the argument 'startingDirName' and the list of file
+     * directory given by the argument {@code startingDirName} and the list of file
      * names. The method takes care of recursive searches based on a pattern
      * like (*|**|?) and returns the list of all files found with their fully
      * normalized and absolute paths for the other methods to work with.
@@ -351,19 +325,19 @@ public class FileOperation {
      * This method is internal and is only invoked when the input file names
      * have a wildcard pattern.
      *
-     * @param startingDirName - Directory to start searching from
-     * @param fileNames - Wildcard pattern to search for
-     * @return - Pair of lists; the first element is the list of local file
-     * names and the second a list of remote file names
+     * @param startingDirName  Local directory to start searching from
+     * @param localFileNames  Local file names & wildcard patterns to search for
+     * @return  Pair of lists; the first element is the list of local file
+     *        names and the second a list of remote file names
      */
     protected Pair<List<String>, List<String>> traverseLocalDirectories(String startingDirName,
-                                                                        List<String> fileNames) throws IOException {
+                                                                        List<String> localFileNames) throws IOException {
         List<String> fileList = new ArrayList<>();
         List<String> remoteFileNamesList = new ArrayList<>();
 
-        for ( String pattern: fileNames ) {
+        for ( String pattern : localFileNames ) {
 
-            LocalFileFinder finder = new LocalFileFinder( startingDirName, pattern, recursive, dirName );
+            LocalFileFinder finder = new LocalFileFinder( startingDirName, pattern, this.recursive, this.dirName );
             Files.walkFileTree( Paths.get(startingDirName), finder );
             fileList.addAll( finder.getMatchingFileNames() );
 
@@ -376,45 +350,47 @@ public class FileOperation {
     }
 
     /**
-     * This is an utility method that checks if a local directory exists or not
-     * @param dirName - Name of the directory
-     * @return - true if the directory exists and false if it doesn't exist or if
-     * the 'dirName' is null or empty.
+     * This is a utility method that checks if a local directory exists or not.
+     * 
+     * @param localDirName  Name of the local directory to check for.
+     * @return  True if the directory exists, and false if it doesn't exist or
+     *        if the {@code localDirName} is null or empty.
      */
-    public static boolean localDirExists(final String dirName) {
-        if( ( dirName == null ) || dirName.trim().isEmpty() ) {
+    public static boolean localDirExists(final String localDirName) {
+        if( ( localDirName == null ) || localDirName.trim().isEmpty() ) {
             GPUdbLogger.error("Directory name cannot be null or empty");
             return false;
         }
 
-        return Files.isDirectory( Paths.get( dirName ) );
+        return Files.isDirectory( Paths.get( localDirName ) );
     }
+
 
     /**
      * This method checks if a local file exists or not. If the file name is a
      * wildcard pattern it skips the check.
      *
-     * @param fileName - String - Name of the file
-     * @return - true if the file exists, false otherwise
+     * @param localFileName  Name of the file.
+     * @return  True if the file exists, false otherwise.
      */
-    public static boolean localFileExists(final String fileName) {
-        if( ( fileName == null ) || fileName.trim().isEmpty() ) {
+    public static boolean localFileExists(final String localFileName) {
+        if( ( localFileName == null ) || localFileName.trim().isEmpty() ) {
             GPUdbLogger.error("File name cannot be null or empty");
             return false;
         }
 
         // Extract just the file name from the path; if it is just the file name
-        // then the 'File.separator' will not be found and an empty string will
-        // be returned; in that case reinstate the value to 'fileName'.
-        String extractedFileName = StringUtils.substringAfterLast( fileName, File.separator );
+        // then the {@code File.separator} will not be found and an empty string
+        // will be returned; in that case reinstate the value to 'fileName'.
+        String extractedFileName = StringUtils.substringAfterLast( localFileName, File.separator );
         if( extractedFileName.isEmpty() ) {
-            extractedFileName = fileName;
+            extractedFileName = localFileName;
         }
 
         // Input filenames could be wildcard forms as well; if they are then do
         // not check for existence; otherwise check if the file exists
         if( !( extractedFileName.contains("*") || extractedFileName.contains("?") || extractedFileName.contains( "**") ) ) {
-            return Files.exists( Paths.get( fileName ) );
+            return Files.exists( Paths.get( localFileName ) );
         }
 
         // Return 'true' here because if there are wildcards the file list will
@@ -422,31 +398,40 @@ public class FileOperation {
         return true;
     }
 
+    
+    /**
+     * Use {@link GPUdbFileHandler#KIFS_PATH_SEPARATOR} directly instead.
+     * 
+     * @deprecated
+     * @return  The separator character used by KiFS between a directory and
+     *        the files it contains; can also be used in file names to create
+     *        "virtual" subdirectories.
+     */
     public static String getKifsPathSeparator() {
-        return KIFS_PATH_SEPARATOR;
+        return GPUdbFileHandler.KIFS_PATH_SEPARATOR;
     }
+
 
     /**
      * This method parses the list of file names passed in to the constructor
      * of the classes {@link com.gpudb.filesystem.upload.FileUploader},
      * {@link com.gpudb.filesystem.download.FileDownloader} which are derivatives
      * of this class. It resolves the file names, normalizes them and returns
-     * a corresponding list of absolute paths which are used ny the methods of
+     * a corresponding list of absolute paths which are used by the methods of
      * this class.
      *
-     * @param fileNames - List of file names passed in to the
-     *                  constructor of the derivatives of this class.
-     * @return - Returns a list of
-     * {@link Triple} objects where the first element is the root of the file
-     * path, the second the full path without the file name and the third just
-     * the file name itself.
+     * @param fileNamesToParse  List of file names passed in to the constructor
+     *        of the derivatives of this class.
+     * @return  A list of {@link Triple} objects where the first element is the
+     *        root of the file path, the second the full path without the file
+     *        name and the third just the file name itself.
      */
-    public static List<Triple<String, String, String>> parseFileNames(List<String> fileNames) {
+    public static List<Triple<String, String, String>> parseFileNames(List<String> fileNamesToParse) {
 
         List<Triple<String, String, String>> listOfRootPathFilenameTriples = new ArrayList<>();
 
-        for ( String file: fileNames ) {
-            Path path = Paths.get( file );
+        for ( String fileNameToParse: fileNamesToParse ) {
+            Path path = Paths.get( fileNameToParse );
             Path parent = path.getParent();
             String name = path.getFileName().toString();
             String root;
@@ -464,6 +449,5 @@ public class FileOperation {
 
         return listOfRootPathFilenameTriples;
     }
-
 
 }

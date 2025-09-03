@@ -97,10 +97,22 @@ public class ShowTableRequest implements IndexedRecord {
         public static final String FORCE_SYNCHRONOUS = "force_synchronous";
 
         /**
+         * If {@link Options#TRUE TRUE} then data about the last read, write,
+         * alter and create will be returned.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String GET_ACCESS_DATA = "get_access_data";
+
+        /**
          * If {@link Options#TRUE TRUE} then the number of records in each
          * table, along with a cumulative count, will be returned; blank,
          * otherwise. This version will return the sizes cached at rank 0,
-         * which may be stale if there is a multihead insert occuring.
+         * which may be stale if there is a multihead insert occurring.
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}
@@ -124,6 +136,18 @@ public class ShowTableRequest implements IndexedRecord {
         public static final String GET_SIZES = "get_sizes";
 
         /**
+         * If {@link Options#TRUE TRUE} then the response will not populate the
+         * additional_info field.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String SKIP_ADDITIONAL_INFO = "skip_additional_info";
+
+        /**
          * If {@link Options#FALSE FALSE} will return an error if the provided
          * {@link #getTableName() tableName} does not exist. If {@link
          * Options#TRUE TRUE} then it will return an empty result.
@@ -135,6 +159,19 @@ public class ShowTableRequest implements IndexedRecord {
          * The default value is {@link Options#FALSE FALSE}.
          */
         public static final String NO_ERROR_IF_NOT_EXISTS = "no_error_if_not_exists";
+
+        /**
+         * If {@link Options#TRUE TRUE} then the table list will not include
+         * tables from SYS_TEMP and other system temporary schemas.  This is
+         * the default behavior for non-admin users.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String SKIP_TEMP_SCHEMAS = "skip_temp_schemas";
 
         /**
          * If {@link #getTableName() tableName} is a schema, then {@link
@@ -211,13 +248,24 @@ public class ShowTableRequest implements IndexedRecord {
      *                             <li>{@link Options#FALSE FALSE}
      *                         </ul>
      *                         The default value is {@link Options#TRUE TRUE}.
+     *                     <li>{@link Options#GET_ACCESS_DATA GET_ACCESS_DATA}:
+     *                         If {@link Options#TRUE TRUE} then data about the
+     *                         last read, write, alter and create will be
+     *                         returned.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                     <li>{@link Options#GET_CACHED_SIZES
      *                         GET_CACHED_SIZES}: If {@link Options#TRUE TRUE}
      *                         then the number of records in each table, along
      *                         with a cumulative count, will be returned;
      *                         blank, otherwise. This version will return the
      *                         sizes cached at rank 0, which may be stale if
-     *                         there is a multihead insert occuring.
+     *                         there is a multihead insert occurring.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
@@ -236,12 +284,36 @@ public class ShowTableRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#SKIP_ADDITIONAL_INFO
+     *                         SKIP_ADDITIONAL_INFO}: If {@link Options#TRUE
+     *                         TRUE} then the response will not populate the
+     *                         additional_info field.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                     <li>{@link Options#NO_ERROR_IF_NOT_EXISTS
      *                         NO_ERROR_IF_NOT_EXISTS}: If {@link Options#FALSE
      *                         FALSE} will return an error if the provided
      *                         {@code tableName} does not exist. If {@link
      *                         Options#TRUE TRUE} then it will return an empty
      *                         result.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link Options#SKIP_TEMP_SCHEMAS
+     *                         SKIP_TEMP_SCHEMAS}: If {@link Options#TRUE TRUE}
+     *                         then the table list will not include tables from
+     *                         SYS_TEMP and other system temporary schemas.
+     *                         This is the default behavior for non-admin
+     *                         users.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
@@ -333,11 +405,20 @@ public class ShowTableRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
+     *     <li>{@link Options#GET_ACCESS_DATA GET_ACCESS_DATA}: If {@link
+     *         Options#TRUE TRUE} then data about the last read, write, alter
+     *         and create will be returned.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#GET_CACHED_SIZES GET_CACHED_SIZES}: If {@link
      *         Options#TRUE TRUE} then the number of records in each table,
      *         along with a cumulative count, will be returned; blank,
      *         otherwise. This version will return the sizes cached at rank 0,
-     *         which may be stale if there is a multihead insert occuring.
+     *         which may be stale if there is a multihead insert occurring.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
@@ -353,10 +434,29 @@ public class ShowTableRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#SKIP_ADDITIONAL_INFO SKIP_ADDITIONAL_INFO}: If
+     *         {@link Options#TRUE TRUE} then the response will not populate
+     *         the additional_info field.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#NO_ERROR_IF_NOT_EXISTS NO_ERROR_IF_NOT_EXISTS}:
      *         If {@link Options#FALSE FALSE} will return an error if the
      *         provided {@link #getTableName() tableName} does not exist. If
      *         {@link Options#TRUE TRUE} then it will return an empty result.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#SKIP_TEMP_SCHEMAS SKIP_TEMP_SCHEMAS}: If {@link
+     *         Options#TRUE TRUE} then the table list will not include tables
+     *         from SYS_TEMP and other system temporary schemas.  This is the
+     *         default behavior for non-admin users.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
@@ -416,11 +516,20 @@ public class ShowTableRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
+     *     <li>{@link Options#GET_ACCESS_DATA GET_ACCESS_DATA}: If {@link
+     *         Options#TRUE TRUE} then data about the last read, write, alter
+     *         and create will be returned.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#GET_CACHED_SIZES GET_CACHED_SIZES}: If {@link
      *         Options#TRUE TRUE} then the number of records in each table,
      *         along with a cumulative count, will be returned; blank,
      *         otherwise. This version will return the sizes cached at rank 0,
-     *         which may be stale if there is a multihead insert occuring.
+     *         which may be stale if there is a multihead insert occurring.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
@@ -436,10 +545,29 @@ public class ShowTableRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#SKIP_ADDITIONAL_INFO SKIP_ADDITIONAL_INFO}: If
+     *         {@link Options#TRUE TRUE} then the response will not populate
+     *         the additional_info field.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#NO_ERROR_IF_NOT_EXISTS NO_ERROR_IF_NOT_EXISTS}:
      *         If {@link Options#FALSE FALSE} will return an error if the
      *         provided {@link #getTableName() tableName} does not exist. If
      *         {@link Options#TRUE TRUE} then it will return an empty result.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#SKIP_TEMP_SCHEMAS SKIP_TEMP_SCHEMAS}: If {@link
+     *         Options#TRUE TRUE} then the table list will not include tables
+     *         from SYS_TEMP and other system temporary schemas.  This is the
+     *         default behavior for non-admin users.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}

@@ -97,11 +97,6 @@ public class AlterTableRequest implements IndexedRecord {
      */
     public static final class Action {
         /**
-         * No longer supported; action will be ignored.
-         */
-        public static final String ALLOW_HOMOGENEOUS_TABLES = "allow_homogeneous_tables";
-
-        /**
          * Creates a <a href="../../../../../../concepts/indexes/#column-index"
          * target="_top">column (attribute) index</a>, <a
          * href="../../../../../../concepts/indexes/#low-cardinality-index"
@@ -212,11 +207,6 @@ public class AlterTableRequest implements IndexedRecord {
          * in the {@link #getOptions() options} map.
          */
         public static final String CHANGE_COLUMN = "change_column";
-
-        /**
-         * No longer supported; action will be ignored.
-         */
-        public static final String SET_COLUMN_COMPRESSION = "set_column_compression";
 
         /**
          * Deletes the column specified in {@link #getValue() value} from the
@@ -435,8 +425,7 @@ public class AlterTableRequest implements IndexedRecord {
 
         /**
          * When adding or changing a column, set the column properties
-         * (strings, separated by a comma: data, store_only, text_search,
-         * char8, int8 etc).
+         * (strings, separated by a comma: data, text_search, char8, int8 etc).
          */
         public static final String COLUMN_PROPERTIES = "column_properties";
 
@@ -445,24 +434,6 @@ public class AlterTableRequest implements IndexedRecord {
          * separated by a comma: int, double, string, null etc).
          */
         public static final String COLUMN_TYPE = "column_type";
-
-        /**
-         * No longer supported; option will be ignored.
-         * Supported values:
-         * <ul>
-         *     <li>{@link Options#NONE NONE}
-         *     <li>{@link Options#SNAPPY SNAPPY}
-         *     <li>{@link Options#LZ4 LZ4}
-         *     <li>{@link Options#LZ4HC LZ4HC}
-         * </ul>
-         * The default value is {@link Options#SNAPPY SNAPPY}.
-         */
-        public static final String COMPRESSION_TYPE = "compression_type";
-
-        public static final String NONE = "none";
-        public static final String SNAPPY = "snappy";
-        public static final String LZ4 = "lz4";
-        public static final String LZ4HC = "lz4hc";
 
         /**
          * [DEPRECATED--please use {@link Options#ADD_COLUMN_EXPRESSION
@@ -650,9 +621,6 @@ public class AlterTableRequest implements IndexedRecord {
      * @param action  Modification operation to be applied.
      *                Supported values:
      *                <ul>
-     *                    <li>{@link Action#ALLOW_HOMOGENEOUS_TABLES
-     *                        ALLOW_HOMOGENEOUS_TABLES}: No longer supported;
-     *                        action will be ignored.
      *                    <li>{@link Action#CREATE_INDEX CREATE_INDEX}: Creates
      *                        a <a
      *                        href="../../../../../../concepts/indexes/#column-index"
@@ -748,9 +716,6 @@ public class AlterTableRequest implements IndexedRecord {
      *                        encoding to an existing 'char4' column, both
      *                        'char4' and 'dict' must be specified in the
      *                        {@code options} map.
-     *                    <li>{@link Action#SET_COLUMN_COMPRESSION
-     *                        SET_COLUMN_COMPRESSION}: No longer supported;
-     *                        action will be ignored.
      *                    <li>{@link Action#DELETE_COLUMN DELETE_COLUMN}:
      *                        Deletes the column specified in {@code value}
      *                        from the table specified in {@code tableName}.
@@ -933,24 +898,12 @@ public class AlterTableRequest implements IndexedRecord {
      *                     <li>{@link Options#COLUMN_PROPERTIES
      *                         COLUMN_PROPERTIES}: When adding or changing a
      *                         column, set the column properties (strings,
-     *                         separated by a comma: data, store_only,
-     *                         text_search, char8, int8 etc).
+     *                         separated by a comma: data, text_search, char8,
+     *                         int8 etc).
      *                     <li>{@link Options#COLUMN_TYPE COLUMN_TYPE}: When
      *                         adding or changing a column, set the column type
      *                         (strings, separated by a comma: int, double,
      *                         string, null etc).
-     *                     <li>{@link Options#COMPRESSION_TYPE
-     *                         COMPRESSION_TYPE}: No longer supported; option
-     *                         will be ignored.
-     *                         Supported values:
-     *                         <ul>
-     *                             <li>{@link Options#NONE NONE}
-     *                             <li>{@link Options#SNAPPY SNAPPY}
-     *                             <li>{@link Options#LZ4 LZ4}
-     *                             <li>{@link Options#LZ4HC LZ4HC}
-     *                         </ul>
-     *                         The default value is {@link Options#SNAPPY
-     *                         SNAPPY}.
      *                     <li>{@link Options#COPY_VALUES_FROM_COLUMN
      *                         COPY_VALUES_FROM_COLUMN}: [DEPRECATED--please
      *                         use {@link Options#ADD_COLUMN_EXPRESSION
@@ -1092,9 +1045,6 @@ public class AlterTableRequest implements IndexedRecord {
      * Modification operation to be applied.
      * Supported values:
      * <ul>
-     *     <li>{@link Action#ALLOW_HOMOGENEOUS_TABLES
-     *         ALLOW_HOMOGENEOUS_TABLES}: No longer supported; action will be
-     *         ignored.
      *     <li>{@link Action#CREATE_INDEX CREATE_INDEX}: Creates a <a
      *         href="../../../../../../concepts/indexes/#column-index"
      *         target="_top">column (attribute) index</a>, <a
@@ -1177,8 +1127,6 @@ public class AlterTableRequest implements IndexedRecord {
      *         listed for the change to take place, e.g., to add dictionary
      *         encoding to an existing 'char4' column, both 'char4' and 'dict'
      *         must be specified in the {@link #getOptions() options} map.
-     *     <li>{@link Action#SET_COLUMN_COMPRESSION SET_COLUMN_COMPRESSION}: No
-     *         longer supported; action will be ignored.
      *     <li>{@link Action#DELETE_COLUMN DELETE_COLUMN}: Deletes the column
      *         specified in {@link #getValue() value} from the table specified
      *         in {@link #getTableName() tableName}.
@@ -1321,9 +1269,6 @@ public class AlterTableRequest implements IndexedRecord {
      * Modification operation to be applied.
      * Supported values:
      * <ul>
-     *     <li>{@link Action#ALLOW_HOMOGENEOUS_TABLES
-     *         ALLOW_HOMOGENEOUS_TABLES}: No longer supported; action will be
-     *         ignored.
      *     <li>{@link Action#CREATE_INDEX CREATE_INDEX}: Creates a <a
      *         href="../../../../../../concepts/indexes/#column-index"
      *         target="_top">column (attribute) index</a>, <a
@@ -1406,8 +1351,6 @@ public class AlterTableRequest implements IndexedRecord {
      *         listed for the change to take place, e.g., to add dictionary
      *         encoding to an existing 'char4' column, both 'char4' and 'dict'
      *         must be specified in the {@link #getOptions() options} map.
-     *     <li>{@link Action#SET_COLUMN_COMPRESSION SET_COLUMN_COMPRESSION}: No
-     *         longer supported; action will be ignored.
      *     <li>{@link Action#DELETE_COLUMN DELETE_COLUMN}: Deletes the column
      *         specified in {@link #getValue() value} from the table specified
      *         in {@link #getTableName() tableName}.
@@ -1602,21 +1545,10 @@ public class AlterTableRequest implements IndexedRecord {
      *         data type.
      *     <li>{@link Options#COLUMN_PROPERTIES COLUMN_PROPERTIES}: When adding
      *         or changing a column, set the column properties (strings,
-     *         separated by a comma: data, store_only, text_search, char8, int8
-     *         etc).
+     *         separated by a comma: data, text_search, char8, int8 etc).
      *     <li>{@link Options#COLUMN_TYPE COLUMN_TYPE}: When adding or changing
      *         a column, set the column type (strings, separated by a comma:
      *         int, double, string, null etc).
-     *     <li>{@link Options#COMPRESSION_TYPE COMPRESSION_TYPE}: No longer
-     *         supported; option will be ignored.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link Options#NONE NONE}
-     *             <li>{@link Options#SNAPPY SNAPPY}
-     *             <li>{@link Options#LZ4 LZ4}
-     *             <li>{@link Options#LZ4HC LZ4HC}
-     *         </ul>
-     *         The default value is {@link Options#SNAPPY SNAPPY}.
      *     <li>{@link Options#COPY_VALUES_FROM_COLUMN COPY_VALUES_FROM_COLUMN}:
      *         [DEPRECATED--please use {@link Options#ADD_COLUMN_EXPRESSION
      *         ADD_COLUMN_EXPRESSION} instead.]
@@ -1718,21 +1650,10 @@ public class AlterTableRequest implements IndexedRecord {
      *         data type.
      *     <li>{@link Options#COLUMN_PROPERTIES COLUMN_PROPERTIES}: When adding
      *         or changing a column, set the column properties (strings,
-     *         separated by a comma: data, store_only, text_search, char8, int8
-     *         etc).
+     *         separated by a comma: data, text_search, char8, int8 etc).
      *     <li>{@link Options#COLUMN_TYPE COLUMN_TYPE}: When adding or changing
      *         a column, set the column type (strings, separated by a comma:
      *         int, double, string, null etc).
-     *     <li>{@link Options#COMPRESSION_TYPE COMPRESSION_TYPE}: No longer
-     *         supported; option will be ignored.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link Options#NONE NONE}
-     *             <li>{@link Options#SNAPPY SNAPPY}
-     *             <li>{@link Options#LZ4 LZ4}
-     *             <li>{@link Options#LZ4HC LZ4HC}
-     *         </ul>
-     *         The default value is {@link Options#SNAPPY SNAPPY}.
      *     <li>{@link Options#COPY_VALUES_FROM_COLUMN COPY_VALUES_FROM_COLUMN}:
      *         [DEPRECATED--please use {@link Options#ADD_COLUMN_EXPRESSION
      *         ADD_COLUMN_EXPRESSION} instead.]

@@ -50,7 +50,7 @@ public class ShowEnvironmentResponse implements IndexedRecord {
     }
 
     /**
-     * A list of all credential names.
+     * A list of all environment names.
      *
      * @return The current value of {@code environmentNames}.
      */
@@ -59,7 +59,7 @@ public class ShowEnvironmentResponse implements IndexedRecord {
     }
 
     /**
-     * A list of all credential names.
+     * A list of all environment names.
      *
      * @param environmentNames  The new value for {@code environmentNames}.
      *

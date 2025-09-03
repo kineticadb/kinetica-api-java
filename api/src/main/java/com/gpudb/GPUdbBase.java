@@ -2442,8 +2442,7 @@ public abstract class GPUdbBase {
             // Put the head rank's hostname in the saved hostnames (only if
             // it doesn't exist there already)
             if ( !doesClusterContainNode( this.activeHeadNodeUrl.getHost() ) ) {
-                String headRankHostname =
-                        this.activeHeadNodeUrl.getProtocol() + "://" + this.activeHeadNodeUrl.getHost();
+                String headRankHostname = this.activeHeadNodeUrl.getHost();
                 GPUdbLogger.debug_with_info( "Adding head rank's hostname to hostname list: " + headRankHostname );
                 this.hostNames.add( headRankHostname );
             }
@@ -2453,8 +2452,7 @@ public abstract class GPUdbBase {
             for (URL workerRank : this.workerRankUrls) {
                 // Check if this worker rank's host is already accounted for
                 if (!doesClusterContainNode(workerRank.getHost())) {
-                    String workerRankHostname =
-                            workerRank.getProtocol() + "://" + workerRank.getHost();
+                    String workerRankHostname = workerRank.getHost();
                     GPUdbLogger.debug_with_info("Adding worker rank's hostname to hostname list: " + workerRankHostname);
                     // Add the worker rank's hostname to the list
                     this.hostNames.add(workerRankHostname);
@@ -2478,17 +2476,18 @@ public abstract class GPUdbBase {
                 // We need to check for a string subset match since the
                 // hostnames contain the protocol as well as the actual hostname
                 // or IP address
-                try {
-                    URL tempUrl = new URL(hostname_);
-                    if (tempUrl.getHost().equals(hostName)) {
-                        GPUdbLogger.debug_with_info("Found matching hostname in hostname list");
+                // try {
+                    // URL tempUrl = new URL(hostname_);
+                    if (hostname_.equals(hostName)) {
+                        GPUdbLogger.debug_with_info(String.format("Found matching hostname %s in hostname list %s", hostName, this.hostNames));
                         return true;
                     }
-                } catch (MalformedURLException e) {
-                    GPUdbLogger.warn(String.format("Hostname %s is not a well formed URL", hostname_));
-                }
+                // } 
+                // catch (MalformedURLException e) {
+                //     GPUdbLogger.warn(String.format("Hostname %s is not a well formed URL", hostname_));
+                // }
             }
-            GPUdbLogger.debug_with_info( "Hostname not found in hostname list");
+            GPUdbLogger.debug_with_info( String.format("Hostname %s not found in hostname list %s", hostName, this.hostNames));
             return false; // found no match
         }
 
@@ -4625,14 +4624,15 @@ public abstract class GPUdbBase {
      * physical nodes (machines) used in the cluster, whether or not there are
      * active ranks running on any of them.  Each string will contain the protocol
      * and the hostname or the IP address, e.g. "http://abcd.com",
-     * "https://123.4.5.6".
+     * "https://123.4.5.6". This method will strip the protocol part off the 
+     * hostnames/IP addresses received from the server.
      *
      * @param systemProperties  A map containing all relevant system properties.
      * @param hostnameRegex     The regex to match the URLs again; if null, then
      *                          use the first element of the list, if the system
      *                          properties has multiple URLs for a given rank.
      *
-     * @return a list of hostnames or IP addresses along with the protocol.
+     * @return a list of hostnames or IP addresses without the protocol part.
      *         These are not full URLs.
      */
     private static Set<String> getHostNamesFromSystemProperties( Map<String, String> systemProperties,
@@ -4683,20 +4683,21 @@ public abstract class GPUdbBase {
                 // a match, throw an error.  If no regex is given, take
                 // the first hostname.
                 boolean doAdd = false;
+                
+                // The hostname might have the protocol; strip that out
+                String[] splitHostname = hostname.split( "://" );
+                String host;
+                if ( splitHostname.length > 1 ) {
+                    host = splitHostname[ 1 ];
+                } else {
+                    host = splitHostname[ 0 ];
+                }
+
                 if (hostnameRegex == null) {
                     // No regex given, so take the first one
-                    GPUdbLogger.debug_with_info("Keeping hostname: " + hostname);
+                    GPUdbLogger.debug_with_info("Keeping hostname: " + host);
                     doAdd = true;
                 } else {
-                    // The hostname might have the protocol; strip that out
-                    String[] splitHostname = hostname.split( "://" );
-                    String host;
-                    if ( splitHostname.length > 1 ) {
-                        host = splitHostname[ 1 ];
-                    } else {
-                        host = splitHostname[ 0 ];
-                    }
-
                     // Check if this hostname matches the regex
                     doAdd = hostnameRegex.matcher( host ).matches();
                     if (doAdd)
@@ -4707,7 +4708,7 @@ public abstract class GPUdbBase {
 
                 if ( doAdd ) {
                     // We've decided to use this hostname
-                    clusterHostnames.add( hostname );
+                    clusterHostnames.add( host );
                     found = true;
                     break;
                 }
@@ -5117,18 +5118,21 @@ public abstract class GPUdbBase {
             }
 
             // Skip processing this URL if Kinetica is not running at this address
+            // but create the 'ClusterAddressInfo' instance for it. It is not known
+            // at this point in time whether it could come up later or not.
             if ( !isSystemRunning( url ) ) {
 
-                // If this URL has been discovered by the API, then add it to
-                // the cluster list anyway
+                // Whether this URL has been discovered by the API or given by 
+                // the user, add it to the cluster list anyway
+                ClusterAddressInfo clusterInfo = new ClusterAddressInfo(url, this.hostManagerPort);
+                this.hostAddresses.add( clusterInfo );
+    
                 if ( isDiscoveredURL ) {
                     // Create a cluster info object with just the given URL and the
                     // host manager port in the option
-                    ClusterAddressInfo clusterInfo = new ClusterAddressInfo(url, this.hostManagerPort);
-                    this.hostAddresses.add( clusterInfo );
-                    GPUdbLogger.debug_with_info( "Added non-running cluster with API-discovered URL: " + clusterInfo.toString() );
+                    GPUdbLogger.debug_with_info( String.format("Added non-running cluster with API-discovered URL: %s", clusterInfo) );
                 } else {
-                    GPUdbLogger.debug_with_info( "Skipping non-running user-given URL: " + urlStr );
+                    GPUdbLogger.debug_with_info( String.format("Added non-running user-given URL: %s", urlStr) );
                 }
                 continue;
             }
@@ -5210,8 +5214,10 @@ public abstract class GPUdbBase {
                 if (getIndexOfClusterContainingNode(haUrl.getHost()) == -1) {
                     // We have not encountered this cluster yet; add it to the
                     // list of URLs to process
-                    GPUdbLogger.debug_with_info( "HA ring head node URL " + haUrl.toString() + " not found in known clusters; adding to queue to process" );
-                    urlQueue.add( haUrl );
+                    if( !urlQueue.contains(haUrl) ) {
+                        urlQueue.add( haUrl );
+                        GPUdbLogger.debug_with_info( "HA ring head node URL " + haUrl.toString() + " not found in known clusters; adding to queue to process" );
+                    }
                 } else {
                     GPUdbLogger.debug_with_info( "HA ring head node URL " + haUrl.toString() + " found in known clusters; skipping" );
                 }

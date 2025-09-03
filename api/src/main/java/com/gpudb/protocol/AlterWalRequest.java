@@ -18,8 +18,8 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link com.gpudb.GPUdb#alterWal(AlterWalRequest)
  * GPUdb.alterWal}.
  * <p>
- * Alters table wal settings.
- * Returns information about the requested table wal modifications.
+ * Alters table write-ahead log (WAL) settings.
+ * Returns information about the requested table WAL modifications.
  */
 public class AlterWalRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -53,7 +53,7 @@ public class AlterWalRequest implements IndexedRecord {
         public static final String MAX_SEGMENT_SIZE = "max_segment_size";
 
         /**
-         * Approximate number of segment files to split the wal across. Must be
+         * Approximate number of segment files to split the WAL across. Must be
          * at least two.
          */
         public static final String SEGMENT_COUNT = "segment_count";
@@ -62,8 +62,8 @@ public class AlterWalRequest implements IndexedRecord {
          * Maximum size of an individual segment file.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#NONE NONE}: Disables the wal
-         *     <li>{@link Options#BACKGROUND BACKGROUND}: Wal entries are
+         *     <li>{@link Options#NONE NONE}: Disables the WAL
+         *     <li>{@link Options#BACKGROUND BACKGROUND}: WAL entries are
          *         periodically written instead of immediately after each
          *         operation
          *     <li>{@link Options#FLUSH FLUSH}: Protects entries in the event
@@ -75,12 +75,12 @@ public class AlterWalRequest implements IndexedRecord {
         public static final String SYNC_POLICY = "sync_policy";
 
         /**
-         * Disables the wal
+         * Disables the WAL
          */
         public static final String NONE = "none";
 
         /**
-         * Wal entries are periodically written instead of immediately after
+         * WAL entries are periodically written instead of immediately after
          * each operation
          */
         public static final String BACKGROUND = "background";
@@ -96,7 +96,7 @@ public class AlterWalRequest implements IndexedRecord {
         public static final String FSYNC = "fsync";
 
         /**
-         * Specifies how frequently wal entries are written with background
+         * Specifies how frequently WAL entries are written with background
          * sync. This is a global setting and can only be used with the system
          * {options.table_names} specifier '*'.
          */
@@ -118,7 +118,7 @@ public class AlterWalRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * If {@link Options#TRUE TRUE} tables with unique wal settings will be
+         * If {@link Options#TRUE TRUE} tables with unique WAL settings will be
          * overridden when applying a system level change.
          * Supported values:
          * <ul>
@@ -130,7 +130,7 @@ public class AlterWalRequest implements IndexedRecord {
         public static final String OVERRIDE_NON_DEFAULT = "override_non_default";
 
         /**
-         * If {@link Options#TRUE TRUE} tables with unique wal settings will be
+         * If {@link Options#TRUE TRUE} tables with unique WAL settings will be
          * reverted to the current global settings. Cannot be used in
          * conjunction with any other option.
          * Supported values:
@@ -182,15 +182,15 @@ public class AlterWalRequest implements IndexedRecord {
      *                         segment file
      *                     <li>{@link Options#SEGMENT_COUNT SEGMENT_COUNT}:
      *                         Approximate number of segment files to split the
-     *                         wal across. Must be at least two.
+     *                         WAL across. Must be at least two.
      *                     <li>{@link Options#SYNC_POLICY SYNC_POLICY}: Maximum
      *                         size of an individual segment file.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#NONE NONE}: Disables the
-     *                                 wal
+     *                                 WAL
      *                             <li>{@link Options#BACKGROUND BACKGROUND}:
-     *                                 Wal entries are periodically written
+     *                                 WAL entries are periodically written
      *                                 instead of immediately after each
      *                                 operation
      *                             <li>{@link Options#FLUSH FLUSH}: Protects
@@ -199,7 +199,7 @@ public class AlterWalRequest implements IndexedRecord {
      *                                 entries in the event of an OS crash
      *                         </ul>
      *                     <li>{@link Options#FLUSH_FREQUENCY FLUSH_FREQUENCY}:
-     *                         Specifies how frequently wal entries are written
+     *                         Specifies how frequently WAL entries are written
      *                         with background sync. This is a global setting
      *                         and can only be used with the system
      *                         {options.table_names} specifier '*'.
@@ -214,7 +214,7 @@ public class AlterWalRequest implements IndexedRecord {
      *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#OVERRIDE_NON_DEFAULT
      *                         OVERRIDE_NON_DEFAULT}: If {@link Options#TRUE
-     *                         TRUE} tables with unique wal settings will be
+     *                         TRUE} tables with unique WAL settings will be
      *                         overridden when applying a system level change.
      *                         Supported values:
      *                         <ul>
@@ -225,7 +225,7 @@ public class AlterWalRequest implements IndexedRecord {
      *                         FALSE}.
      *                     <li>{@link Options#RESTORE_SYSTEM_SETTINGS
      *                         RESTORE_SYSTEM_SETTINGS}: If {@link Options#TRUE
-     *                         TRUE} tables with unique wal settings will be
+     *                         TRUE} tables with unique WAL settings will be
      *                         reverted to the current global settings. Cannot
      *                         be used in conjunction with any other option.
      *                         Supported values:
@@ -283,13 +283,13 @@ public class AlterWalRequest implements IndexedRecord {
      *     <li>{@link Options#MAX_SEGMENT_SIZE MAX_SEGMENT_SIZE}: Maximum size
      *         of an individual segment file
      *     <li>{@link Options#SEGMENT_COUNT SEGMENT_COUNT}: Approximate number
-     *         of segment files to split the wal across. Must be at least two.
+     *         of segment files to split the WAL across. Must be at least two.
      *     <li>{@link Options#SYNC_POLICY SYNC_POLICY}: Maximum size of an
      *         individual segment file.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#NONE NONE}: Disables the wal
-     *             <li>{@link Options#BACKGROUND BACKGROUND}: Wal entries are
+     *             <li>{@link Options#NONE NONE}: Disables the WAL
+     *             <li>{@link Options#BACKGROUND BACKGROUND}: WAL entries are
      *                 periodically written instead of immediately after each
      *                 operation
      *             <li>{@link Options#FLUSH FLUSH}: Protects entries in the
@@ -298,7 +298,7 @@ public class AlterWalRequest implements IndexedRecord {
      *                 event of an OS crash
      *         </ul>
      *     <li>{@link Options#FLUSH_FREQUENCY FLUSH_FREQUENCY}: Specifies how
-     *         frequently wal entries are written with background sync. This is
+     *         frequently WAL entries are written with background sync. This is
      *         a global setting and can only be used with the system
      *         {options.table_names} specifier '*'.
      *     <li>{@link Options#CHECKSUM CHECKSUM}: If {@link Options#TRUE TRUE}
@@ -310,7 +310,7 @@ public class AlterWalRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#OVERRIDE_NON_DEFAULT OVERRIDE_NON_DEFAULT}: If
-     *         {@link Options#TRUE TRUE} tables with unique wal settings will
+     *         {@link Options#TRUE TRUE} tables with unique WAL settings will
      *         be overridden when applying a system level change.
      *         Supported values:
      *         <ul>
@@ -319,7 +319,7 @@ public class AlterWalRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#RESTORE_SYSTEM_SETTINGS RESTORE_SYSTEM_SETTINGS}:
-     *         If {@link Options#TRUE TRUE} tables with unique wal settings
+     *         If {@link Options#TRUE TRUE} tables with unique WAL settings
      *         will be reverted to the current global settings. Cannot be used
      *         in conjunction with any other option.
      *         Supported values:
@@ -354,13 +354,13 @@ public class AlterWalRequest implements IndexedRecord {
      *     <li>{@link Options#MAX_SEGMENT_SIZE MAX_SEGMENT_SIZE}: Maximum size
      *         of an individual segment file
      *     <li>{@link Options#SEGMENT_COUNT SEGMENT_COUNT}: Approximate number
-     *         of segment files to split the wal across. Must be at least two.
+     *         of segment files to split the WAL across. Must be at least two.
      *     <li>{@link Options#SYNC_POLICY SYNC_POLICY}: Maximum size of an
      *         individual segment file.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#NONE NONE}: Disables the wal
-     *             <li>{@link Options#BACKGROUND BACKGROUND}: Wal entries are
+     *             <li>{@link Options#NONE NONE}: Disables the WAL
+     *             <li>{@link Options#BACKGROUND BACKGROUND}: WAL entries are
      *                 periodically written instead of immediately after each
      *                 operation
      *             <li>{@link Options#FLUSH FLUSH}: Protects entries in the
@@ -369,7 +369,7 @@ public class AlterWalRequest implements IndexedRecord {
      *                 event of an OS crash
      *         </ul>
      *     <li>{@link Options#FLUSH_FREQUENCY FLUSH_FREQUENCY}: Specifies how
-     *         frequently wal entries are written with background sync. This is
+     *         frequently WAL entries are written with background sync. This is
      *         a global setting and can only be used with the system
      *         {options.table_names} specifier '*'.
      *     <li>{@link Options#CHECKSUM CHECKSUM}: If {@link Options#TRUE TRUE}
@@ -381,7 +381,7 @@ public class AlterWalRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#OVERRIDE_NON_DEFAULT OVERRIDE_NON_DEFAULT}: If
-     *         {@link Options#TRUE TRUE} tables with unique wal settings will
+     *         {@link Options#TRUE TRUE} tables with unique WAL settings will
      *         be overridden when applying a system level change.
      *         Supported values:
      *         <ul>
@@ -390,7 +390,7 @@ public class AlterWalRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#RESTORE_SYSTEM_SETTINGS RESTORE_SYSTEM_SETTINGS}:
-     *         If {@link Options#TRUE TRUE} tables with unique wal settings
+     *         If {@link Options#TRUE TRUE} tables with unique WAL settings
      *         will be reverted to the current global settings. Cannot be used
      *         in conjunction with any other option.
      *         Supported values:

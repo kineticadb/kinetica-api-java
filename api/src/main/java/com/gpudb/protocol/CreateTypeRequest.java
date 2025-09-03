@@ -17,15 +17,39 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link com.gpudb.GPUdb#createType(CreateTypeRequest)
  * GPUdb.createType}.
  * <p>
- * Creates a new type describing the layout of a table. The type definition is
- * a JSON string describing the fields (i.e. columns) of the type. Each field
- * consists of a name and a data type. Supported data types are: double, float,
- * int, long, string, and bytes. In addition, one or more properties can be
- * specified for each column which customize the memory usage and query
- * availability of that column.  Note that some properties are mutually
- * exclusive--i.e. they cannot be specified for any given column
- * simultaneously.  One example of mutually exclusive properties are {@link
- * Properties#DATA DATA} and {@link Properties#STORE_ONLY STORE_ONLY}.
+ * Creates a new type describing the columns of a table. The type definition is
+ * specified as a list of columns, each specified as a list of the column name,
+ * data type, and any column attributes.
+ * <p>
+ * Example of a type definition with some parameters:
+ * <pre>
+ *
+ *     [
+ *         ["id", "int8", "primary_key"],
+ *         ["dept_id", "int8", "primary_key", "shard_key"],
+ *         ["manager_id", "int8", "nullable"],
+ *         ["first_name", "char32"],
+ *         ["last_name", "char64"],
+ *         ["salary", "decimal"],
+ *         ["hire_date", "date"]
+ *     ]
+ * </pre>
+ * Each column definition consists of the column name (which should meet the
+ * standard <a href="../../../../../../concepts/tables/#table-naming-criteria"
+ * target="_top">column naming criteria</a>), the column's <a
+ * href="../../../../../../concepts/types/#types-chart" target="_top">specific
+ * type</a> (int, long, float, double, string, bytes, or any of the possible
+ * values for {@link #getProperties() properties}), and any <a
+ * href="../../../../../../concepts/types/#types-data-handling"
+ * target="_top">data handling</a>, <a
+ * href="../../../../../../concepts/types/#types-data-keys" target="_top">data
+ * key</a>, or <a href="../../../../../../concepts/types/#types-data-replace"
+ * target="_top">data replacement</a> properties.
+ * <p>
+ * Note that some properties are mutually exclusive--i.e. they cannot be
+ * specified for any given column simultaneously.  One example of mutually
+ * exclusive properties are {@link Properties#PRIMARY_KEY PRIMARY_KEY} and
+ * {@link Properties#NULLABLE NULLABLE}.
  * <p>
  * A single <a href="../../../../../../concepts/tables/#primary-keys"
  * target="_top">primary key</a> and/or single <a
@@ -39,28 +63,6 @@ import org.apache.avro.generic.IndexedRecord;
  * incoming objects with primary key values that match existing objects will
  * either overwrite (i.e. update) the existing object or will be skipped and
  * not added into the set.
- * <p>
- * Example of a type definition with some of the parameters:
- * <pre>
- *
- *     {"type":"record",
- *     "name":"point",
- *     "fields":[{"name":"msg_id","type":"string"},
- *             {"name":"x","type":"double"},
- *             {"name":"y","type":"double"},
- *             {"name":"TIMESTAMP","type":"double"},
- *             {"name":"source","type":"string"},
- *             {"name":"group_id","type":"string"},
- *             {"name":"OBJECT_ID","type":"string"}]
- *     }
- * </pre>
- * Properties:
- * <pre>
- *
- *     {"group_id":["store_only"],
- *     "msg_id":["store_only","text_search"]
- *     }
- * </pre>
  */
 public class CreateTypeRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -87,11 +89,13 @@ public class CreateTypeRequest implements IndexedRecord {
      * A set of string constants for the {@link CreateTypeRequest} parameter
      * {@link #getProperties() properties}.
      * <p>
-     * Each key-value pair specifies the properties to use for a given column
-     * where the key is the column name.  All keys used must be relevant column
-     * names for the given table.  Specifying any property overrides the
-     * default properties for that column (which is based on the column's data
-     * type).
+     * [DEPRECATED--please use these property values in the {@link
+     * #getTypeDefinition() typeDefinition} directly, as described at the top,
+     * instead]  Each key-value pair specifies the properties to use for a
+     * given column where the key is the column name.  All keys used must be
+     * relevant column names for the given table.  Specifying any property
+     * overrides the default properties for that column (which is based on the
+     * column's data type).
      */
     public static final class Properties {
         /**
@@ -104,37 +108,9 @@ public class CreateTypeRequest implements IndexedRecord {
          * Valid only for select 'string' columns. Enables full text
          * search--see <a href="../../../../../../concepts/full_text_search/"
          * target="_top">Full Text Search</a> for details and applicable string
-         * column types. Can be set independently of {@link Properties#DATA
-         * DATA} and {@link Properties#STORE_ONLY STORE_ONLY}.
+         * column types.
          */
         public static final String TEXT_SEARCH = "text_search";
-
-        /**
-         * Persist the column value but do not make it available to queries
-         * (e.g.&nbsp;{@link com.gpudb.GPUdb#filter(FilterRequest)
-         * GPUdb.filter})-i.e.&nbsp;it is mutually exclusive to the {@link
-         * Properties#DATA DATA} property. Any 'bytes' type column must have a
-         * {@link Properties#STORE_ONLY STORE_ONLY} property. This property
-         * reduces system memory usage.
-         */
-        public static final String STORE_ONLY = "store_only";
-
-        /**
-         * Works in conjunction with the {@link Properties#DATA DATA} property
-         * for string columns. This property reduces system disk usage by
-         * disabling reverse string lookups. Queries like {@link
-         * com.gpudb.GPUdb#filter(FilterRequest) GPUdb.filter}, {@link
-         * com.gpudb.GPUdb#filterByList(FilterByListRequest)
-         * GPUdb.filterByList}, and {@link
-         * com.gpudb.GPUdb#filterByValue(FilterByValueRequest)
-         * GPUdb.filterByValue} work as usual but {@link
-         * com.gpudb.GPUdb#aggregateUnique(AggregateUniqueRequest)
-         * GPUdb.aggregateUnique} and {@link
-         * com.gpudb.GPUdb#aggregateGroupBy(AggregateGroupByRequest)
-         * GPUdb.aggregateGroupBy} are not allowed on columns with this
-         * property.
-         */
-        public static final String DISK_OPTIMIZED = "disk_optimized";
 
         /**
          * Valid only for 'long' columns. Indicates that this field represents
@@ -344,17 +320,27 @@ public class CreateTypeRequest implements IndexedRecord {
          * This property indicates that this column is nullable.  However,
          * setting this property is insufficient for making the column
          * nullable.  The user must declare the type of the column as a union
-         * between its regular type and 'null' in the avro schema for the
+         * between its regular type and 'null' in the Avro schema for the
          * record type in {@link #getTypeDefinition() typeDefinition}.  For
          * example, if a column is of type integer and is nullable, then the
-         * entry for the column in the avro schema must be: ['int', 'null'].
+         * entry for the column in the Avro schema must be: ['int', 'null'].
          * <p>
          * The C++, C#, Java, and Python APIs have built-in convenience for
-         * bypassing setting the avro schema by hand.  For those languages, one
-         * can use this property as usual and not have to worry about the avro
+         * bypassing setting the Avro schema by hand.  For those languages, one
+         * can use this property as usual and not have to worry about the Avro
          * schema for the record.
          */
         public static final String NULLABLE = "nullable";
+
+        /**
+         * This property indicates that this column should be <a
+         * href="../../../../../../concepts/column_compression/"
+         * target="_top">compressed</a> with the given codec and optional
+         * level; e.g., 'compress(snappy)' for Snappy compression and
+         * 'compress(zstd(7))' for zstd level 7 compression.  This property is
+         * primarily used in order to save disk space.
+         */
+        public static final String COMPRESS = "compress";
 
         /**
          * This property indicates that this column should be <a
@@ -388,6 +374,22 @@ public class CreateTypeRequest implements IndexedRecord {
         private Properties() {  }
     }
 
+    /**
+     * A set of string constants for the {@link CreateTypeRequest} parameter
+     * {@link #getOptions() options}.
+     * <p>
+     * Optional parameters.
+     */
+    public static final class Options {
+        /**
+         * The default <a href="../../../../../../concepts/column_compression/"
+         * target="_top">compression codec</a> for this type's columns.
+         */
+        public static final String COMPRESSION_CODEC = "compression_codec";
+
+        private Options() {  }
+    }
+
     private String typeDefinition;
     private String label;
     private Map<String, List<String>> properties;
@@ -407,16 +409,18 @@ public class CreateTypeRequest implements IndexedRecord {
      * Constructs a CreateTypeRequest object with the specified parameters.
      *
      * @param typeDefinition  a JSON string describing the columns of the type
-     *                        to be registered.
+     *                        to be registered, as described above.
      * @param label  A user-defined description string which can be used to
      *               differentiate between tables and types with otherwise
      *               identical schemas.
-     * @param properties  Each key-value pair specifies the properties to use
-     *                    for a given column where the key is the column name.
-     *                    All keys used must be relevant column names for the
-     *                    given table.  Specifying any property overrides the
-     *                    default properties for that column (which is based on
-     *                    the column's data type).
+     * @param properties  [DEPRECATED--please use these property values in the
+     *                    {@code typeDefinition} directly, as described at the
+     *                    top, instead]  Each key-value pair specifies the
+     *                    properties to use for a given column where the key is
+     *                    the column name.  All keys used must be relevant
+     *                    column names for the given table.  Specifying any
+     *                    property overrides the default properties for that
+     *                    column (which is based on the column's data type).
      *                    Valid values are:
      *                    <ul>
      *                        <li>{@link Properties#DATA DATA}: Default
@@ -429,35 +433,6 @@ public class CreateTypeRequest implements IndexedRecord {
      *                            href="../../../../../../concepts/full_text_search/"
      *                            target="_top">Full Text Search</a> for
      *                            details and applicable string column types.
-     *                            Can be set independently of {@link
-     *                            Properties#DATA DATA} and {@link
-     *                            Properties#STORE_ONLY STORE_ONLY}.
-     *                        <li>{@link Properties#STORE_ONLY STORE_ONLY}:
-     *                            Persist the column value but do not make it
-     *                            available to queries (e.g. {@link
-     *                            com.gpudb.GPUdb#filter(FilterRequest)
-     *                            GPUdb.filter})-i.e. it is mutually exclusive
-     *                            to the {@link Properties#DATA DATA} property.
-     *                            Any 'bytes' type column must have a {@link
-     *                            Properties#STORE_ONLY STORE_ONLY} property.
-     *                            This property reduces system memory usage.
-     *                        <li>{@link Properties#DISK_OPTIMIZED
-     *                            DISK_OPTIMIZED}: Works in conjunction with
-     *                            the {@link Properties#DATA DATA} property for
-     *                            string columns. This property reduces system
-     *                            disk usage by disabling reverse string
-     *                            lookups. Queries like {@link
-     *                            com.gpudb.GPUdb#filter(FilterRequest)
-     *                            GPUdb.filter}, {@link
-     *                            com.gpudb.GPUdb#filterByList(FilterByListRequest)
-     *                            GPUdb.filterByList}, and {@link
-     *                            com.gpudb.GPUdb#filterByValue(FilterByValueRequest)
-     *                            GPUdb.filterByValue} work as usual but {@link
-     *                            com.gpudb.GPUdb#aggregateUnique(AggregateUniqueRequest)
-     *                            GPUdb.aggregateUnique} and {@link
-     *                            com.gpudb.GPUdb#aggregateGroupBy(AggregateGroupByRequest)
-     *                            GPUdb.aggregateGroupBy} are not allowed on
-     *                            columns with this property.
      *                        <li>{@link Properties#TIMESTAMP TIMESTAMP}: Valid
      *                            only for 'long' columns. Indicates that this
      *                            field represents a timestamp and will be
@@ -620,16 +595,26 @@ public class CreateTypeRequest implements IndexedRecord {
      *                            insufficient for making the column nullable.
      *                            The user must declare the type of the column
      *                            as a union between its regular type and
-     *                            'null' in the avro schema for the record type
+     *                            'null' in the Avro schema for the record type
      *                            in {@code typeDefinition}.  For example, if a
      *                            column is of type integer and is nullable,
-     *                            then the entry for the column in the avro
+     *                            then the entry for the column in the Avro
      *                            schema must be: ['int', 'null'].  The C++,
      *                            C#, Java, and Python APIs have built-in
-     *                            convenience for bypassing setting the avro
+     *                            convenience for bypassing setting the Avro
      *                            schema by hand.  For those languages, one can
      *                            use this property as usual and not have to
-     *                            worry about the avro schema for the record.
+     *                            worry about the Avro schema for the record.
+     *                        <li>{@link Properties#COMPRESS COMPRESS}: This
+     *                            property indicates that this column should be
+     *                            <a
+     *                            href="../../../../../../concepts/column_compression/"
+     *                            target="_top">compressed</a> with the given
+     *                            codec and optional level; e.g.,
+     *                            'compress(snappy)' for Snappy compression and
+     *                            'compress(zstd(7))' for zstd level 7
+     *                            compression.  This property is primarily used
+     *                            in order to save disk space.
      *                        <li>{@link Properties#DICT DICT}: This property
      *                            indicates that this column should be <a
      *                            href="../../../../../../concepts/dictionary_encoding/"
@@ -656,8 +641,15 @@ public class CreateTypeRequest implements IndexedRecord {
      *                            update.
      *                    </ul>
      *                    The default value is an empty {@link Map}.
-     * @param options  Optional parameters. The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                     <li>{@link Options#COMPRESSION_CODEC
+     *                         COMPRESSION_CODEC}: The default <a
+     *                         href="../../../../../../concepts/column_compression/"
+     *                         target="_top">compression codec</a> for this
+     *                         type's columns.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      */
     public CreateTypeRequest(String typeDefinition, String label, Map<String, List<String>> properties, Map<String, String> options) {
         this.typeDefinition = (typeDefinition == null) ? "" : typeDefinition;
@@ -667,7 +659,8 @@ public class CreateTypeRequest implements IndexedRecord {
     }
 
     /**
-     * a JSON string describing the columns of the type to be registered.
+     * a JSON string describing the columns of the type to be registered, as
+     * described above.
      *
      * @return The current value of {@code typeDefinition}.
      */
@@ -676,7 +669,8 @@ public class CreateTypeRequest implements IndexedRecord {
     }
 
     /**
-     * a JSON string describing the columns of the type to be registered.
+     * a JSON string describing the columns of the type to be registered, as
+     * described above.
      *
      * @param typeDefinition  The new value for {@code typeDefinition}.
      *
@@ -711,11 +705,13 @@ public class CreateTypeRequest implements IndexedRecord {
     }
 
     /**
-     * Each key-value pair specifies the properties to use for a given column
-     * where the key is the column name.  All keys used must be relevant column
-     * names for the given table.  Specifying any property overrides the
-     * default properties for that column (which is based on the column's data
-     * type).
+     * [DEPRECATED--please use these property values in the {@link
+     * #getTypeDefinition() typeDefinition} directly, as described at the top,
+     * instead]  Each key-value pair specifies the properties to use for a
+     * given column where the key is the column name.  All keys used must be
+     * relevant column names for the given table.  Specifying any property
+     * overrides the default properties for that column (which is based on the
+     * column's data type).
      * Valid values are:
      * <ul>
      *     <li>{@link Properties#DATA DATA}: Default property for all numeric
@@ -725,29 +721,7 @@ public class CreateTypeRequest implements IndexedRecord {
      *         select 'string' columns. Enables full text search--see <a
      *         href="../../../../../../concepts/full_text_search/"
      *         target="_top">Full Text Search</a> for details and applicable
-     *         string column types. Can be set independently of {@link
-     *         Properties#DATA DATA} and {@link Properties#STORE_ONLY
-     *         STORE_ONLY}.
-     *     <li>{@link Properties#STORE_ONLY STORE_ONLY}: Persist the column
-     *         value but do not make it available to queries (e.g. {@link
-     *         com.gpudb.GPUdb#filter(FilterRequest) GPUdb.filter})-i.e. it is
-     *         mutually exclusive to the {@link Properties#DATA DATA} property.
-     *         Any 'bytes' type column must have a {@link Properties#STORE_ONLY
-     *         STORE_ONLY} property. This property reduces system memory usage.
-     *     <li>{@link Properties#DISK_OPTIMIZED DISK_OPTIMIZED}: Works in
-     *         conjunction with the {@link Properties#DATA DATA} property for
-     *         string columns. This property reduces system disk usage by
-     *         disabling reverse string lookups. Queries like {@link
-     *         com.gpudb.GPUdb#filter(FilterRequest) GPUdb.filter}, {@link
-     *         com.gpudb.GPUdb#filterByList(FilterByListRequest)
-     *         GPUdb.filterByList}, and {@link
-     *         com.gpudb.GPUdb#filterByValue(FilterByValueRequest)
-     *         GPUdb.filterByValue} work as usual but {@link
-     *         com.gpudb.GPUdb#aggregateUnique(AggregateUniqueRequest)
-     *         GPUdb.aggregateUnique} and {@link
-     *         com.gpudb.GPUdb#aggregateGroupBy(AggregateGroupByRequest)
-     *         GPUdb.aggregateGroupBy} are not allowed on columns with this
-     *         property.
+     *         string column types.
      *     <li>{@link Properties#TIMESTAMP TIMESTAMP}: Valid only for 'long'
      *         columns. Indicates that this field represents a timestamp and
      *         will be provided in milliseconds since the Unix epoch: 00:00:00
@@ -861,14 +835,21 @@ public class CreateTypeRequest implements IndexedRecord {
      *         that this column is nullable.  However, setting this property is
      *         insufficient for making the column nullable.  The user must
      *         declare the type of the column as a union between its regular
-     *         type and 'null' in the avro schema for the record type in {@link
+     *         type and 'null' in the Avro schema for the record type in {@link
      *         #getTypeDefinition() typeDefinition}.  For example, if a column
      *         is of type integer and is nullable, then the entry for the
-     *         column in the avro schema must be: ['int', 'null'].  The C++,
+     *         column in the Avro schema must be: ['int', 'null'].  The C++,
      *         C#, Java, and Python APIs have built-in convenience for
-     *         bypassing setting the avro schema by hand.  For those languages,
+     *         bypassing setting the Avro schema by hand.  For those languages,
      *         one can use this property as usual and not have to worry about
-     *         the avro schema for the record.
+     *         the Avro schema for the record.
+     *     <li>{@link Properties#COMPRESS COMPRESS}: This property indicates
+     *         that this column should be <a
+     *         href="../../../../../../concepts/column_compression/"
+     *         target="_top">compressed</a> with the given codec and optional
+     *         level; e.g., 'compress(snappy)' for Snappy compression and
+     *         'compress(zstd(7))' for zstd level 7 compression.  This property
+     *         is primarily used in order to save disk space.
      *     <li>{@link Properties#DICT DICT}: This property indicates that this
      *         column should be <a
      *         href="../../../../../../concepts/dictionary_encoding/"
@@ -896,11 +877,13 @@ public class CreateTypeRequest implements IndexedRecord {
     }
 
     /**
-     * Each key-value pair specifies the properties to use for a given column
-     * where the key is the column name.  All keys used must be relevant column
-     * names for the given table.  Specifying any property overrides the
-     * default properties for that column (which is based on the column's data
-     * type).
+     * [DEPRECATED--please use these property values in the {@link
+     * #getTypeDefinition() typeDefinition} directly, as described at the top,
+     * instead]  Each key-value pair specifies the properties to use for a
+     * given column where the key is the column name.  All keys used must be
+     * relevant column names for the given table.  Specifying any property
+     * overrides the default properties for that column (which is based on the
+     * column's data type).
      * Valid values are:
      * <ul>
      *     <li>{@link Properties#DATA DATA}: Default property for all numeric
@@ -910,29 +893,7 @@ public class CreateTypeRequest implements IndexedRecord {
      *         select 'string' columns. Enables full text search--see <a
      *         href="../../../../../../concepts/full_text_search/"
      *         target="_top">Full Text Search</a> for details and applicable
-     *         string column types. Can be set independently of {@link
-     *         Properties#DATA DATA} and {@link Properties#STORE_ONLY
-     *         STORE_ONLY}.
-     *     <li>{@link Properties#STORE_ONLY STORE_ONLY}: Persist the column
-     *         value but do not make it available to queries (e.g. {@link
-     *         com.gpudb.GPUdb#filter(FilterRequest) GPUdb.filter})-i.e. it is
-     *         mutually exclusive to the {@link Properties#DATA DATA} property.
-     *         Any 'bytes' type column must have a {@link Properties#STORE_ONLY
-     *         STORE_ONLY} property. This property reduces system memory usage.
-     *     <li>{@link Properties#DISK_OPTIMIZED DISK_OPTIMIZED}: Works in
-     *         conjunction with the {@link Properties#DATA DATA} property for
-     *         string columns. This property reduces system disk usage by
-     *         disabling reverse string lookups. Queries like {@link
-     *         com.gpudb.GPUdb#filter(FilterRequest) GPUdb.filter}, {@link
-     *         com.gpudb.GPUdb#filterByList(FilterByListRequest)
-     *         GPUdb.filterByList}, and {@link
-     *         com.gpudb.GPUdb#filterByValue(FilterByValueRequest)
-     *         GPUdb.filterByValue} work as usual but {@link
-     *         com.gpudb.GPUdb#aggregateUnique(AggregateUniqueRequest)
-     *         GPUdb.aggregateUnique} and {@link
-     *         com.gpudb.GPUdb#aggregateGroupBy(AggregateGroupByRequest)
-     *         GPUdb.aggregateGroupBy} are not allowed on columns with this
-     *         property.
+     *         string column types.
      *     <li>{@link Properties#TIMESTAMP TIMESTAMP}: Valid only for 'long'
      *         columns. Indicates that this field represents a timestamp and
      *         will be provided in milliseconds since the Unix epoch: 00:00:00
@@ -1046,14 +1007,21 @@ public class CreateTypeRequest implements IndexedRecord {
      *         that this column is nullable.  However, setting this property is
      *         insufficient for making the column nullable.  The user must
      *         declare the type of the column as a union between its regular
-     *         type and 'null' in the avro schema for the record type in {@link
+     *         type and 'null' in the Avro schema for the record type in {@link
      *         #getTypeDefinition() typeDefinition}.  For example, if a column
      *         is of type integer and is nullable, then the entry for the
-     *         column in the avro schema must be: ['int', 'null'].  The C++,
+     *         column in the Avro schema must be: ['int', 'null'].  The C++,
      *         C#, Java, and Python APIs have built-in convenience for
-     *         bypassing setting the avro schema by hand.  For those languages,
+     *         bypassing setting the Avro schema by hand.  For those languages,
      *         one can use this property as usual and not have to worry about
-     *         the avro schema for the record.
+     *         the Avro schema for the record.
+     *     <li>{@link Properties#COMPRESS COMPRESS}: This property indicates
+     *         that this column should be <a
+     *         href="../../../../../../concepts/column_compression/"
+     *         target="_top">compressed</a> with the given codec and optional
+     *         level; e.g., 'compress(snappy)' for Snappy compression and
+     *         'compress(zstd(7))' for zstd level 7 compression.  This property
+     *         is primarily used in order to save disk space.
      *     <li>{@link Properties#DICT DICT}: This property indicates that this
      *         column should be <a
      *         href="../../../../../../concepts/dictionary_encoding/"
@@ -1084,7 +1052,13 @@ public class CreateTypeRequest implements IndexedRecord {
     }
 
     /**
-     * Optional parameters. The default value is an empty {@link Map}.
+     * Optional parameters.
+     * <ul>
+     *     <li>{@link Options#COMPRESSION_CODEC COMPRESSION_CODEC}: The default
+     *         <a href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression codec</a> for this type's columns.
+     * </ul>
+     * The default value is an empty {@link Map}.
      *
      * @return The current value of {@code options}.
      */
@@ -1093,7 +1067,13 @@ public class CreateTypeRequest implements IndexedRecord {
     }
 
     /**
-     * Optional parameters. The default value is an empty {@link Map}.
+     * Optional parameters.
+     * <ul>
+     *     <li>{@link Options#COMPRESSION_CODEC COMPRESSION_CODEC}: The default
+     *         <a href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression codec</a> for this type's columns.
+     * </ul>
+     * The default value is an empty {@link Map}.
      *
      * @param options  The new value for {@code options}.
      *

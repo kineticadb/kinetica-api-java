@@ -15,7 +15,6 @@ import java.util.List;
  *
  * The static method {@link #defaultOptions()} can be used to retrieve the
  * default options for download.
- *
  */
 public class DownloadOptions {
 
@@ -31,14 +30,16 @@ public class DownloadOptions {
 
         return options;
     }
+
     /**
-     *
+     * Whether to overwrite existing files on the local file system with those
+     * downloaded from KiFS.
      */
     private boolean overwriteExisting;
 
 
     public boolean isOverwriteExisting() {
-        return overwriteExisting;
+        return this.overwriteExisting;
     }
 
     public void setOverwriteExisting(boolean overwriteExisting) {

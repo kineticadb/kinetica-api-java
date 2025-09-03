@@ -60,7 +60,7 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
         public static final String DATASINK_NAME = "datasink_name";
 
         /**
-         * Executes the statement per each jdbc session before doing actual
+         * Executes the statement per each JDBC session before doing actual
          * load. The default value is ''.
          */
         public static final String JDBC_SESSION_INIT_STATEMENT = "jdbc_session_init_statement";
@@ -79,7 +79,7 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
         public static final String REMOTE_TABLE = "remote_table";
 
         /**
-         * Wraps parametrized variables with st_geomfromtext or st_geomfromwkb
+         * Wraps parameterized variables with st_geomfromtext or st_geomfromwkb
          * based on source column type.
          * Supported values:
          * <ul>
@@ -144,7 +144,7 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
      *                         be exported
      *                     <li>{@link Options#JDBC_SESSION_INIT_STATEMENT
      *                         JDBC_SESSION_INIT_STATEMENT}: Executes the
-     *                         statement per each jdbc session before doing
+     *                         statement per each JDBC session before doing
      *                         actual load. The default value is ''.
      *                     <li>{@link Options#JDBC_CONNECTION_INIT_STATEMENT
      *                         JDBC_CONNECTION_INIT_STATEMENT}: Executes the
@@ -156,7 +156,7 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
      *                         remote_query cannot be specified. The default
      *                         value is ''.
      *                     <li>{@link Options#USE_ST_GEOMFROM_CASTS
-     *                         USE_ST_GEOMFROM_CASTS}: Wraps parametrized
+     *                         USE_ST_GEOMFROM_CASTS}: Wraps parameterized
      *                         variables with st_geomfromtext or st_geomfromwkb
      *                         based on source column type.
      *                         Supported values:
@@ -247,7 +247,7 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
      *         #getTableName() tableName} will be exported
      *     <li>{@link Options#JDBC_SESSION_INIT_STATEMENT
      *         JDBC_SESSION_INIT_STATEMENT}: Executes the statement per each
-     *         jdbc session before doing actual load. The default value is ''.
+     *         JDBC session before doing actual load. The default value is ''.
      *     <li>{@link Options#JDBC_CONNECTION_INIT_STATEMENT
      *         JDBC_CONNECTION_INIT_STATEMENT}: Executes the statement once
      *         before doing actual load. The default value is ''.
@@ -256,7 +256,7 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
      *         specified remote_query cannot be specified. The default value is
      *         ''.
      *     <li>{@link Options#USE_ST_GEOMFROM_CASTS USE_ST_GEOMFROM_CASTS}:
-     *         Wraps parametrized variables with st_geomfromtext or
+     *         Wraps parameterized variables with st_geomfromtext or
      *         st_geomfromwkb based on source column type.
      *         Supported values:
      *         <ul>
@@ -293,7 +293,7 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
      *         #getTableName() tableName} will be exported
      *     <li>{@link Options#JDBC_SESSION_INIT_STATEMENT
      *         JDBC_SESSION_INIT_STATEMENT}: Executes the statement per each
-     *         jdbc session before doing actual load. The default value is ''.
+     *         JDBC session before doing actual load. The default value is ''.
      *     <li>{@link Options#JDBC_CONNECTION_INIT_STATEMENT
      *         JDBC_CONNECTION_INIT_STATEMENT}: Executes the statement once
      *         before doing actual load. The default value is ''.
@@ -302,7 +302,7 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
      *         specified remote_query cannot be specified. The default value is
      *         ''.
      *     <li>{@link Options#USE_ST_GEOMFROM_CASTS USE_ST_GEOMFROM_CASTS}:
-     *         Wraps parametrized variables with st_geomfromtext or
+     *         Wraps parameterized variables with st_geomfromtext or
      *         st_geomfromwkb based on source column type.
      *         Supported values:
      *         <ul>

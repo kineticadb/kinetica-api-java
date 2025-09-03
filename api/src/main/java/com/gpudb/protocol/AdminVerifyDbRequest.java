@@ -115,11 +115,9 @@ public class AdminVerifyDbRequest implements IndexedRecord {
         /**
          * If {@link Options#TRUE TRUE}, orphaned table directories found on
          * workers for which there is no corresponding metadata will be
-         * deleted. Must set {@link Options#VERIFY_PERSIST VERIFY_PERSIST} in
-         * {@link #getOptions() options} to {@link Options#TRUE TRUE}. It is
-         * recommended to run this while the database is offline OR set {@link
-         * Options#CONCURRENT_SAFE CONCURRENT_SAFE} in {@link #getOptions()
-         * options} to {@link Options#TRUE TRUE}.
+         * deleted. It is recommended to run this while the database is offline
+         * OR set {@link Options#CONCURRENT_SAFE CONCURRENT_SAFE} in {@link
+         * #getOptions() options} to {@link Options#TRUE TRUE}.
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}
@@ -131,7 +129,8 @@ public class AdminVerifyDbRequest implements IndexedRecord {
 
         /**
          * If {@link Options#TRUE TRUE}, only the presence of orphaned table
-         * directories will be checked, all persistence checks will be skipped.
+         * directories will be checked, all persistence and table consistency
+         * checks will be skipped.
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}
@@ -140,6 +139,20 @@ public class AdminVerifyDbRequest implements IndexedRecord {
          * The default value is {@link Options#FALSE FALSE}.
          */
         public static final String VERIFY_ORPHANED_TABLES_ONLY = "verify_orphaned_tables_only";
+
+        /**
+         * Comma-separated list of table names to include when verifying table
+         * consistency on wokers. Cannot be used simultaneously with {@link
+         * Options#TABLE_EXCLUDES TABLE_EXCLUDES}.
+         */
+        public static final String TABLE_INCLUDES = "table_includes";
+
+        /**
+         * Comma-separated list of table names to exclude when verifying table
+         * consistency on wokers. Cannot be used simultaneously with {@link
+         * Options#TABLE_INCLUDES TABLE_INCLUDES}.
+         */
+        public static final String TABLE_EXCLUDES = "table_excludes";
 
         private Options() {  }
     }
@@ -219,13 +232,10 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *                         DELETE_ORPHANED_TABLES}: If {@link Options#TRUE
      *                         TRUE}, orphaned table directories found on
      *                         workers for which there is no corresponding
-     *                         metadata will be deleted. Must set {@link
-     *                         Options#VERIFY_PERSIST VERIFY_PERSIST} in {@code
-     *                         options} to {@link Options#TRUE TRUE}. It is
-     *                         recommended to run this while the database is
-     *                         offline OR set {@link Options#CONCURRENT_SAFE
-     *                         CONCURRENT_SAFE} in {@code options} to {@link
-     *                         Options#TRUE TRUE}.
+     *                         metadata will be deleted. It is recommended to
+     *                         run this while the database is offline OR set
+     *                         {@link Options#CONCURRENT_SAFE CONCURRENT_SAFE}
+     *                         in {@code options} to {@link Options#TRUE TRUE}.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
@@ -237,7 +247,8 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *                         VERIFY_ORPHANED_TABLES_ONLY}: If {@link
      *                         Options#TRUE TRUE}, only the presence of
      *                         orphaned table directories will be checked, all
-     *                         persistence checks will be skipped.
+     *                         persistence and table consistency checks will be
+     *                         skipped.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
@@ -245,6 +256,16 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#TABLE_INCLUDES TABLE_INCLUDES}:
+     *                         Comma-separated list of table names to include
+     *                         when verifying table consistency on wokers.
+     *                         Cannot be used simultaneously with {@link
+     *                         Options#TABLE_EXCLUDES TABLE_EXCLUDES}.
+     *                     <li>{@link Options#TABLE_EXCLUDES TABLE_EXCLUDES}:
+     *                         Comma-separated list of table names to exclude
+     *                         when verifying table consistency on wokers.
+     *                         Cannot be used simultaneously with {@link
+     *                         Options#TABLE_INCLUDES TABLE_INCLUDES}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -306,11 +327,9 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *     <li>{@link Options#DELETE_ORPHANED_TABLES DELETE_ORPHANED_TABLES}:
      *         If {@link Options#TRUE TRUE}, orphaned table directories found
      *         on workers for which there is no corresponding metadata will be
-     *         deleted. Must set {@link Options#VERIFY_PERSIST VERIFY_PERSIST}
+     *         deleted. It is recommended to run this while the database is
+     *         offline OR set {@link Options#CONCURRENT_SAFE CONCURRENT_SAFE}
      *         in {@link #getOptions() options} to {@link Options#TRUE TRUE}.
-     *         It is recommended to run this while the database is offline OR
-     *         set {@link Options#CONCURRENT_SAFE CONCURRENT_SAFE} in {@link
-     *         #getOptions() options} to {@link Options#TRUE TRUE}.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
@@ -320,13 +339,21 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *     <li>{@link Options#VERIFY_ORPHANED_TABLES_ONLY
      *         VERIFY_ORPHANED_TABLES_ONLY}: If {@link Options#TRUE TRUE}, only
      *         the presence of orphaned table directories will be checked, all
-     *         persistence checks will be skipped.
+     *         persistence and table consistency checks will be skipped.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#TABLE_INCLUDES TABLE_INCLUDES}: Comma-separated
+     *         list of table names to include when verifying table consistency
+     *         on wokers. Cannot be used simultaneously with {@link
+     *         Options#TABLE_EXCLUDES TABLE_EXCLUDES}.
+     *     <li>{@link Options#TABLE_EXCLUDES TABLE_EXCLUDES}: Comma-separated
+     *         list of table names to exclude when verifying table consistency
+     *         on wokers. Cannot be used simultaneously with {@link
+     *         Options#TABLE_INCLUDES TABLE_INCLUDES}.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -390,11 +417,9 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *     <li>{@link Options#DELETE_ORPHANED_TABLES DELETE_ORPHANED_TABLES}:
      *         If {@link Options#TRUE TRUE}, orphaned table directories found
      *         on workers for which there is no corresponding metadata will be
-     *         deleted. Must set {@link Options#VERIFY_PERSIST VERIFY_PERSIST}
+     *         deleted. It is recommended to run this while the database is
+     *         offline OR set {@link Options#CONCURRENT_SAFE CONCURRENT_SAFE}
      *         in {@link #getOptions() options} to {@link Options#TRUE TRUE}.
-     *         It is recommended to run this while the database is offline OR
-     *         set {@link Options#CONCURRENT_SAFE CONCURRENT_SAFE} in {@link
-     *         #getOptions() options} to {@link Options#TRUE TRUE}.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
@@ -404,13 +429,21 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *     <li>{@link Options#VERIFY_ORPHANED_TABLES_ONLY
      *         VERIFY_ORPHANED_TABLES_ONLY}: If {@link Options#TRUE TRUE}, only
      *         the presence of orphaned table directories will be checked, all
-     *         persistence checks will be skipped.
+     *         persistence and table consistency checks will be skipped.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#TABLE_INCLUDES TABLE_INCLUDES}: Comma-separated
+     *         list of table names to include when verifying table consistency
+     *         on wokers. Cannot be used simultaneously with {@link
+     *         Options#TABLE_EXCLUDES TABLE_EXCLUDES}.
+     *     <li>{@link Options#TABLE_EXCLUDES TABLE_EXCLUDES}: Comma-separated
+     *         list of table names to exclude when verifying table consistency
+     *         on wokers. Cannot be used simultaneously with {@link
+     *         Options#TABLE_INCLUDES TABLE_INCLUDES}.
      * </ul>
      * The default value is an empty {@link Map}.
      *

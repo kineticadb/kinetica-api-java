@@ -230,7 +230,7 @@ public class MatchGraphRequest implements IndexedRecord {
         public static final String MAX_SUPPLY_COMBINATIONS = "max_supply_combinations";
 
         /**
-         * This will add an additonal weight over the edges labelled as 'left
+         * This will add an additional weight over the edges labeled as 'left
          * turn' if the 'add_turn' option parameter of the {@link
          * com.gpudb.GPUdb#createGraph(CreateGraphRequest) GPUdb.createGraph}
          * was invoked at graph creation. The default value is '0.0'.
@@ -238,7 +238,7 @@ public class MatchGraphRequest implements IndexedRecord {
         public static final String LEFT_TURN_PENALTY = "left_turn_penalty";
 
         /**
-         * This will add an additonal weight over the edges labelled as' right
+         * This will add an additional weight over the edges labeled as' right
          * turn' if the 'add_turn' option parameter of the {@link
          * com.gpudb.GPUdb#createGraph(CreateGraphRequest) GPUdb.createGraph}
          * was invoked at graph creation. The default value is '0.0'.
@@ -246,7 +246,7 @@ public class MatchGraphRequest implements IndexedRecord {
         public static final String RIGHT_TURN_PENALTY = "right_turn_penalty";
 
         /**
-         * This will add an additonal weight over the edges labelled as
+         * This will add an additional weight over the edges labeled as
          * 'intersection' if the 'add_turn' option parameter of the {@link
          * com.gpudb.GPUdb#createGraph(CreateGraphRequest) GPUdb.createGraph}
          * was invoked at graph creation. The default value is '0.0'.
@@ -254,7 +254,7 @@ public class MatchGraphRequest implements IndexedRecord {
         public static final String INTERSECTION_PENALTY = "intersection_penalty";
 
         /**
-         * This will add an additonal weight over the edges labelled as 'sharp
+         * This will add an additional weight over the edges labeled as 'sharp
          * turn' or 'u-turn' if the 'add_turn' option parameter of the {@link
          * com.gpudb.GPUdb#createGraph(CreateGraphRequest) GPUdb.createGraph}
          * was invoked at graph creation. The default value is '0.0'.
@@ -285,7 +285,7 @@ public class MatchGraphRequest implements IndexedRecord {
          * For the {@link SolveMethod#MATCH_SUPPLY_DEMAND MATCH_SUPPLY_DEMAND}
          * and {@link SolveMethod#MATCH_PICKUP_DROPOFF MATCH_PICKUP_DROPOFF}
          * solvers only. If this constraint is greater than zero (default) then
-         * the trucks/rides will skip travelling from one demand/pick location
+         * the trucks/rides will skip traveling from one demand/pick location
          * to another if the cost between them is greater than this number
          * (distance or time). Zero (default) value means no check is
          * performed. The default value is '0.0'.
@@ -296,7 +296,7 @@ public class MatchGraphRequest implements IndexedRecord {
          * For the {@link SolveMethod#MARKOV_CHAIN MARKOV_CHAIN} solver only.
          * When true (non-default), the paths per sequence combination is
          * checked for folding over patterns and can significantly increase the
-         * execution time depending on the chain width and the number of gps
+         * execution time depending on the chain width and the number of GPS
          * samples.
          * Supported values:
          * <ul>
@@ -375,7 +375,7 @@ public class MatchGraphRequest implements IndexedRecord {
         /**
          * For the {@link SolveMethod#MATCH_SUPPLY_DEMAND MATCH_SUPPLY_DEMAND}
          * solver only. If specified (true), supply side actors are permuted
-         * for the demand combinations during msdo optimization - note that
+         * for the demand combinations during MSDO optimization - note that
          * this option increases optimization time significantly - use of
          * 'max_combinations' option is recommended to prevent prohibitively
          * long runs.
@@ -400,8 +400,8 @@ public class MatchGraphRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: Sets only one visit per demand
-         *         location by a salesman (tsm mode)
-         *     <li>{@link Options#FALSE FALSE}: No preset limit (usual msdo
+         *         location by a salesman (TSM mode)
+         *     <li>{@link Options#FALSE FALSE}: No preset limit (usual MSDO
          *         mode)
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
@@ -645,7 +645,7 @@ public class MatchGraphRequest implements IndexedRecord {
         /**
          * For the {@link SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solvers
          * only. Solves to find the optimal weights per sub feature in vector
-         * emdeddings.
+         * embeddings.
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}
@@ -696,14 +696,14 @@ public class MatchGraphRequest implements IndexedRecord {
         /**
          * For the {@link SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solver
          * only. It is otherwise known as the learning rate, which is the
-         * proportionality constant in fornt of the gradient term in successive
+         * proportionality constant in front of the gradient term in successive
          * iterations. The default value is '0.3'.
          */
         public static final String OPTIMIZATION_ITERATION_RATE = "optimization_iteration_rate";
 
         /**
          * For the {@link SolveMethod#MATCH_ISOCHRONE MATCH_ISOCHRONE} solver
-         * only. Sets the maximal reachability limmit for computing isochrones.
+         * only. Sets the maximal reachability limit for computing isochrones.
          * Zero means no limit. The default value is '0.0'.
          */
         public static final String MAX_RADIUS = "max_radius";
@@ -904,32 +904,32 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         'permute_supplies' is true. The default value is
      *                         '10000'.
      *                     <li>{@link Options#LEFT_TURN_PENALTY
-     *                         LEFT_TURN_PENALTY}: This will add an additonal
-     *                         weight over the edges labelled as 'left turn' if
+     *                         LEFT_TURN_PENALTY}: This will add an additional
+     *                         weight over the edges labeled as 'left turn' if
      *                         the 'add_turn' option parameter of the {@link
      *                         com.gpudb.GPUdb#createGraph(CreateGraphRequest)
      *                         GPUdb.createGraph} was invoked at graph
      *                         creation. The default value is '0.0'.
      *                     <li>{@link Options#RIGHT_TURN_PENALTY
-     *                         RIGHT_TURN_PENALTY}: This will add an additonal
-     *                         weight over the edges labelled as' right turn'
-     *                         if the 'add_turn' option parameter of the {@link
+     *                         RIGHT_TURN_PENALTY}: This will add an additional
+     *                         weight over the edges labeled as' right turn' if
+     *                         the 'add_turn' option parameter of the {@link
      *                         com.gpudb.GPUdb#createGraph(CreateGraphRequest)
      *                         GPUdb.createGraph} was invoked at graph
      *                         creation. The default value is '0.0'.
      *                     <li>{@link Options#INTERSECTION_PENALTY
      *                         INTERSECTION_PENALTY}: This will add an
-     *                         additonal weight over the edges labelled as
+     *                         additional weight over the edges labeled as
      *                         'intersection' if the 'add_turn' option
      *                         parameter of the {@link
      *                         com.gpudb.GPUdb#createGraph(CreateGraphRequest)
      *                         GPUdb.createGraph} was invoked at graph
      *                         creation. The default value is '0.0'.
      *                     <li>{@link Options#SHARP_TURN_PENALTY
-     *                         SHARP_TURN_PENALTY}: This will add an additonal
-     *                         weight over the edges labelled as 'sharp turn'
-     *                         or 'u-turn' if the 'add_turn' option parameter
-     *                         of the {@link
+     *                         SHARP_TURN_PENALTY}: This will add an additional
+     *                         weight over the edges labeled as 'sharp turn' or
+     *                         'u-turn' if the 'add_turn' option parameter of
+     *                         the {@link
      *                         com.gpudb.GPUdb#createGraph(CreateGraphRequest)
      *                         GPUdb.createGraph} was invoked at graph
      *                         creation. The default value is '0.0'.
@@ -959,7 +959,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         SolveMethod#MATCH_PICKUP_DROPOFF
      *                         MATCH_PICKUP_DROPOFF} solvers only. If this
      *                         constraint is greater than zero (default) then
-     *                         the trucks/rides will skip travelling from one
+     *                         the trucks/rides will skip traveling from one
      *                         demand/pick location to another if the cost
      *                         between them is greater than this number
      *                         (distance or time). Zero (default) value means
@@ -972,7 +972,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         sequence combination is checked for folding over
      *                         patterns and can significantly increase the
      *                         execution time depending on the chain width and
-     *                         the number of gps samples.
+     *                         the number of GPS samples.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Filter out
@@ -1049,7 +1049,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         SolveMethod#MATCH_SUPPLY_DEMAND
      *                         MATCH_SUPPLY_DEMAND} solver only. If specified
      *                         (true), supply side actors are permuted for the
-     *                         demand combinations during msdo optimization -
+     *                         demand combinations during MSDO optimization -
      *                         note that this option increases optimization
      *                         time significantly - use of 'max_combinations'
      *                         option is recommended to prevent prohibitively
@@ -1077,9 +1077,9 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Sets only one
      *                                 visit per demand location by a salesman
-     *                                 (tsm mode)
+     *                                 (TSM mode)
      *                             <li>{@link Options#FALSE FALSE}: No preset
-     *                                 limit (usual msdo mode)
+     *                                 limit (usual MSDO mode)
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
@@ -1281,7 +1281,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         OPTIMIZE_EMBEDDING_WEIGHTS}: For the {@link
      *                         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING}
      *                         solvers only. Solves to find the optimal weights
-     *                         per sub feature in vector emdeddings.
+     *                         per sub feature in vector embeddings.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
@@ -1331,13 +1331,13 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING}
      *                         solver only. It is otherwise known as the
      *                         learning rate, which is the proportionality
-     *                         constant in fornt of the gradient term in
+     *                         constant in front of the gradient term in
      *                         successive iterations. The default value is
      *                         '0.3'.
      *                     <li>{@link Options#MAX_RADIUS MAX_RADIUS}: For the
      *                         {@link SolveMethod#MATCH_ISOCHRONE
      *                         MATCH_ISOCHRONE} solver only. Sets the maximal
-     *                         reachability limmit for computing isochrones.
+     *                         reachability limit for computing isochrones.
      *                         Zero means no limit. The default value is '0.0'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
@@ -1632,25 +1632,25 @@ public class MatchGraphRequest implements IndexedRecord {
      *         locations if/when 'permute_supplies' is true. The default value
      *         is '10000'.
      *     <li>{@link Options#LEFT_TURN_PENALTY LEFT_TURN_PENALTY}: This will
-     *         add an additonal weight over the edges labelled as 'left turn'
+     *         add an additional weight over the edges labeled as 'left turn'
      *         if the 'add_turn' option parameter of the {@link
      *         com.gpudb.GPUdb#createGraph(CreateGraphRequest)
      *         GPUdb.createGraph} was invoked at graph creation. The default
      *         value is '0.0'.
      *     <li>{@link Options#RIGHT_TURN_PENALTY RIGHT_TURN_PENALTY}: This will
-     *         add an additonal weight over the edges labelled as' right turn'
+     *         add an additional weight over the edges labeled as' right turn'
      *         if the 'add_turn' option parameter of the {@link
      *         com.gpudb.GPUdb#createGraph(CreateGraphRequest)
      *         GPUdb.createGraph} was invoked at graph creation. The default
      *         value is '0.0'.
      *     <li>{@link Options#INTERSECTION_PENALTY INTERSECTION_PENALTY}: This
-     *         will add an additonal weight over the edges labelled as
+     *         will add an additional weight over the edges labeled as
      *         'intersection' if the 'add_turn' option parameter of the {@link
      *         com.gpudb.GPUdb#createGraph(CreateGraphRequest)
      *         GPUdb.createGraph} was invoked at graph creation. The default
      *         value is '0.0'.
      *     <li>{@link Options#SHARP_TURN_PENALTY SHARP_TURN_PENALTY}: This will
-     *         add an additonal weight over the edges labelled as 'sharp turn'
+     *         add an additional weight over the edges labeled as 'sharp turn'
      *         or 'u-turn' if the 'add_turn' option parameter of the {@link
      *         com.gpudb.GPUdb#createGraph(CreateGraphRequest)
      *         GPUdb.createGraph} was invoked at graph creation. The default
@@ -1674,7 +1674,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *         SolveMethod#MATCH_SUPPLY_DEMAND MATCH_SUPPLY_DEMAND} and {@link
      *         SolveMethod#MATCH_PICKUP_DROPOFF MATCH_PICKUP_DROPOFF} solvers
      *         only. If this constraint is greater than zero (default) then the
-     *         trucks/rides will skip travelling from one demand/pick location
+     *         trucks/rides will skip traveling from one demand/pick location
      *         to another if the cost between them is greater than this number
      *         (distance or time). Zero (default) value means no check is
      *         performed. The default value is '0.0'.
@@ -1683,7 +1683,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *         When true (non-default), the paths per sequence combination is
      *         checked for folding over patterns and can significantly increase
      *         the execution time depending on the chain width and the number
-     *         of gps samples.
+     *         of GPS samples.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Filter out the folded paths.
@@ -1740,7 +1740,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *     <li>{@link Options#PERMUTE_SUPPLIES PERMUTE_SUPPLIES}: For the
      *         {@link SolveMethod#MATCH_SUPPLY_DEMAND MATCH_SUPPLY_DEMAND}
      *         solver only. If specified (true), supply side actors are
-     *         permuted for the demand combinations during msdo optimization -
+     *         permuted for the demand combinations during MSDO optimization -
      *         note that this option increases optimization time significantly
      *         - use of 'max_combinations' option is recommended to prevent
      *         prohibitively long runs.
@@ -1762,8 +1762,8 @@ public class MatchGraphRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Sets only one visit per
-     *                 demand location by a salesman (tsm mode)
-     *             <li>{@link Options#FALSE FALSE}: No preset limit (usual msdo
+     *                 demand location by a salesman (TSM mode)
+     *             <li>{@link Options#FALSE FALSE}: No preset limit (usual MSDO
      *                 mode)
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
@@ -1918,7 +1918,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *         OPTIMIZE_EMBEDDING_WEIGHTS}: For the {@link
      *         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solvers only.
      *         Solves to find the optimal weights per sub feature in vector
-     *         emdeddings.
+     *         embeddings.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
@@ -1958,11 +1958,11 @@ public class MatchGraphRequest implements IndexedRecord {
      *         OPTIMIZATION_ITERATION_RATE}: For the {@link
      *         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solver only. It is
      *         otherwise known as the learning rate, which is the
-     *         proportionality constant in fornt of the gradient term in
+     *         proportionality constant in front of the gradient term in
      *         successive iterations. The default value is '0.3'.
      *     <li>{@link Options#MAX_RADIUS MAX_RADIUS}: For the {@link
      *         SolveMethod#MATCH_ISOCHRONE MATCH_ISOCHRONE} solver only. Sets
-     *         the maximal reachability limmit for computing isochrones. Zero
+     *         the maximal reachability limit for computing isochrones. Zero
      *         means no limit. The default value is '0.0'.
      * </ul>
      * The default value is an empty {@link Map}.
@@ -2027,25 +2027,25 @@ public class MatchGraphRequest implements IndexedRecord {
      *         locations if/when 'permute_supplies' is true. The default value
      *         is '10000'.
      *     <li>{@link Options#LEFT_TURN_PENALTY LEFT_TURN_PENALTY}: This will
-     *         add an additonal weight over the edges labelled as 'left turn'
+     *         add an additional weight over the edges labeled as 'left turn'
      *         if the 'add_turn' option parameter of the {@link
      *         com.gpudb.GPUdb#createGraph(CreateGraphRequest)
      *         GPUdb.createGraph} was invoked at graph creation. The default
      *         value is '0.0'.
      *     <li>{@link Options#RIGHT_TURN_PENALTY RIGHT_TURN_PENALTY}: This will
-     *         add an additonal weight over the edges labelled as' right turn'
+     *         add an additional weight over the edges labeled as' right turn'
      *         if the 'add_turn' option parameter of the {@link
      *         com.gpudb.GPUdb#createGraph(CreateGraphRequest)
      *         GPUdb.createGraph} was invoked at graph creation. The default
      *         value is '0.0'.
      *     <li>{@link Options#INTERSECTION_PENALTY INTERSECTION_PENALTY}: This
-     *         will add an additonal weight over the edges labelled as
+     *         will add an additional weight over the edges labeled as
      *         'intersection' if the 'add_turn' option parameter of the {@link
      *         com.gpudb.GPUdb#createGraph(CreateGraphRequest)
      *         GPUdb.createGraph} was invoked at graph creation. The default
      *         value is '0.0'.
      *     <li>{@link Options#SHARP_TURN_PENALTY SHARP_TURN_PENALTY}: This will
-     *         add an additonal weight over the edges labelled as 'sharp turn'
+     *         add an additional weight over the edges labeled as 'sharp turn'
      *         or 'u-turn' if the 'add_turn' option parameter of the {@link
      *         com.gpudb.GPUdb#createGraph(CreateGraphRequest)
      *         GPUdb.createGraph} was invoked at graph creation. The default
@@ -2069,7 +2069,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *         SolveMethod#MATCH_SUPPLY_DEMAND MATCH_SUPPLY_DEMAND} and {@link
      *         SolveMethod#MATCH_PICKUP_DROPOFF MATCH_PICKUP_DROPOFF} solvers
      *         only. If this constraint is greater than zero (default) then the
-     *         trucks/rides will skip travelling from one demand/pick location
+     *         trucks/rides will skip traveling from one demand/pick location
      *         to another if the cost between them is greater than this number
      *         (distance or time). Zero (default) value means no check is
      *         performed. The default value is '0.0'.
@@ -2078,7 +2078,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *         When true (non-default), the paths per sequence combination is
      *         checked for folding over patterns and can significantly increase
      *         the execution time depending on the chain width and the number
-     *         of gps samples.
+     *         of GPS samples.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Filter out the folded paths.
@@ -2135,7 +2135,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *     <li>{@link Options#PERMUTE_SUPPLIES PERMUTE_SUPPLIES}: For the
      *         {@link SolveMethod#MATCH_SUPPLY_DEMAND MATCH_SUPPLY_DEMAND}
      *         solver only. If specified (true), supply side actors are
-     *         permuted for the demand combinations during msdo optimization -
+     *         permuted for the demand combinations during MSDO optimization -
      *         note that this option increases optimization time significantly
      *         - use of 'max_combinations' option is recommended to prevent
      *         prohibitively long runs.
@@ -2157,8 +2157,8 @@ public class MatchGraphRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Sets only one visit per
-     *                 demand location by a salesman (tsm mode)
-     *             <li>{@link Options#FALSE FALSE}: No preset limit (usual msdo
+     *                 demand location by a salesman (TSM mode)
+     *             <li>{@link Options#FALSE FALSE}: No preset limit (usual MSDO
      *                 mode)
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
@@ -2313,7 +2313,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *         OPTIMIZE_EMBEDDING_WEIGHTS}: For the {@link
      *         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solvers only.
      *         Solves to find the optimal weights per sub feature in vector
-     *         emdeddings.
+     *         embeddings.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
@@ -2353,11 +2353,11 @@ public class MatchGraphRequest implements IndexedRecord {
      *         OPTIMIZATION_ITERATION_RATE}: For the {@link
      *         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solver only. It is
      *         otherwise known as the learning rate, which is the
-     *         proportionality constant in fornt of the gradient term in
+     *         proportionality constant in front of the gradient term in
      *         successive iterations. The default value is '0.3'.
      *     <li>{@link Options#MAX_RADIUS MAX_RADIUS}: For the {@link
      *         SolveMethod#MATCH_ISOCHRONE MATCH_ISOCHRONE} solver only. Sets
-     *         the maximal reachability limmit for computing isochrones. Zero
+     *         the maximal reachability limit for computing isochrones. Zero
      *         means no limit. The default value is '0.0'.
      * </ul>
      * The default value is an empty {@link Map}.

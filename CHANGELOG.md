@@ -2,6 +2,15 @@
 
 ## Version 7.2
 
+### Version 7.2.3.0 - 2025-09-03
+
+#### Fixed
+-   Handling of multi-part KiFS upload that is too big for the target directory.
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
 ### Version 7.2.2.13 - 2025-08-24
 
 #### Changed

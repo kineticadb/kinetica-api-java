@@ -58,7 +58,7 @@ public class ShowFilesRequest implements IndexedRecord {
      * @param paths  File paths to show. Each path can be a KiFS directory
      *               name, or a full path to a KiFS file. File paths may
      *               contain wildcard characters after the KiFS directory
-     *               delimeter.  Accepted wildcard characters are asterisk (*)
+     *               delimiter.  Accepted wildcard characters are asterisk (*)
      *               to represent any string of zero or more characters, and
      *               question mark (?) to indicate a single character.
      * @param options  Optional parameters. The default value is an empty
@@ -72,7 +72,7 @@ public class ShowFilesRequest implements IndexedRecord {
     /**
      * File paths to show. Each path can be a KiFS directory name, or a full
      * path to a KiFS file. File paths may contain wildcard characters after
-     * the KiFS directory delimeter.
+     * the KiFS directory delimiter.
      * <p>
      * Accepted wildcard characters are asterisk (*) to represent any string of
      * zero or more characters, and question mark (?) to indicate a single
@@ -87,7 +87,7 @@ public class ShowFilesRequest implements IndexedRecord {
     /**
      * File paths to show. Each path can be a KiFS directory name, or a full
      * path to a KiFS file. File paths may contain wildcard characters after
-     * the KiFS directory delimeter.
+     * the KiFS directory delimiter.
      * <p>
      * Accepted wildcard characters are asterisk (*) to represent any string of
      * zero or more characters, and question mark (?) to indicate a single

@@ -105,7 +105,7 @@ public class UpdateRecordsRequest<T> {
          * updated with values specified in {@link #getNewValuesMaps()
          * newValuesMaps} taking its place; "insert collisions" will result in
          * the collided-into record being updated with the values in {@link
-         * #getData() data}/{@code recordsToInsertStr} (if given).
+         * #getData() data} / {@code recordsToInsertStr} (if given).
          * <p>
          * If set to {@link Options#FALSE FALSE}, the existing collided-into
          * record will remain unchanged, while the update will be rejected and
@@ -294,7 +294,7 @@ public class UpdateRecordsRequest<T> {
      *                         specified in {@code newValuesMaps} taking its
      *                         place; "insert collisions" will result in the
      *                         collided-into record being updated with the
-     *                         values in {@code data}/{@code
+     *                         values in {@code data} / {@code
      *                         recordsToInsertStr} (if given).  If set to
      *                         {@link Options#FALSE FALSE}, the existing
      *                         collided-into record will remain unchanged,
@@ -563,7 +563,7 @@ public class UpdateRecordsRequest<T> {
      *         the record updated with values specified in {@link
      *         #getNewValuesMaps() newValuesMaps} taking its place; "insert
      *         collisions" will result in the collided-into record being
-     *         updated with the values in {@link #getData() data}/{@code
+     *         updated with the values in {@link #getData() data} / {@code
      *         recordsToInsertStr} (if given).  If set to {@link Options#FALSE
      *         FALSE}, the existing collided-into record will remain unchanged,
      *         while the update will be rejected and the error handled as
@@ -693,7 +693,7 @@ public class UpdateRecordsRequest<T> {
      *         the record updated with values specified in {@link
      *         #getNewValuesMaps() newValuesMaps} taking its place; "insert
      *         collisions" will result in the collided-into record being
-     *         updated with the values in {@link #getData() data}/{@code
+     *         updated with the values in {@link #getData() data} / {@code
      *         recordsToInsertStr} (if given).  If set to {@link Options#FALSE
      *         FALSE}, the existing collided-into record will remain unchanged,
      *         while the update will be rejected and the error handled as

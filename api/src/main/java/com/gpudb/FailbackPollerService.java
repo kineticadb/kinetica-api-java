@@ -1,11 +1,14 @@
 package com.gpudb;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.gpudb.GPUdbBase.FailbackOptions;
 import com.gpudb.protocol.InsertRecordsRandomRequest;
+import com.gpudb.protocol.ShowSystemStatusResponse;
 
 class FailbackPollerService {
 
@@ -86,18 +89,19 @@ class FailbackPollerService {
 
             try {
                 GPUdb db = new GPUdb(this.primaryURL, options);
-                // This request will always fail, but will fail in the expected
-                // way if the database is fully reachable
-                db.insertRecordsRandom(POLL_REQUEST);
-                GPUdbLogger.error(String.format("Failback check to primary cluster [%s] unexpectedly failed to throw an exception", this.primaryURL.toString()));
-            } catch (Exception e) {
-            	if (!e.getMessage().contains("table name may not be empty"))
-            	{
-            		GPUdbLogger.debug_with_info(String.format("Kinetica running on primary cluster at [%s], but connection did not succeed", this.primaryURL.toString()));
-            		kineticaRunning = false;
-            	} else {
-                    GPUdbLogger.info(String.format("Failback to primary cluster at [%s] succeeded", this.primaryURL));
+                Map<String, String> statusMap = db.showSystemStatus(new HashMap<>()).getStatusMap();
+                if (statusMap.containsKey("ha_status")) {
+                    String haStatus = statusMap.get("ha_status");
+                    if( haStatus.equals("drained")) {
+                        GPUdbLogger.info(String.format("Failback to primary cluster at [%s] succeeded", this.primaryURL));
+                    } else {
+                        GPUdbLogger.debug_with_info(String.format("Kinetica running on primary cluster at [%s], but connection did not succeed", this.primaryURL.toString()));
+                        kineticaRunning = false;
+                    }
                 }
+            } catch (GPUdbException e) {
+                GPUdbLogger.debug_with_info(String.format("Could not connect to Kinetica %s", e.getMessage()));
+                kineticaRunning = false;
             }
         } else {
             GPUdbLogger.debug_with_info(String.format("Kinetica is not running at : %s", this.primaryURL.toString()));

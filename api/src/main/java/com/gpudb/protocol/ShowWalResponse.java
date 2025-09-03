@@ -76,7 +76,7 @@ public class ShowWalResponse implements IndexedRecord {
     }
 
     /**
-     * List of current wal usage.
+     * List of current WAL usage.
      *
      * @return The current value of {@code sizes}.
      */
@@ -85,7 +85,7 @@ public class ShowWalResponse implements IndexedRecord {
     }
 
     /**
-     * List of current wal usage.
+     * List of current WAL usage.
      *
      * @param sizes  The new value for {@code sizes}.
      *
@@ -97,7 +97,7 @@ public class ShowWalResponse implements IndexedRecord {
     }
 
     /**
-     * List of wal capacities.
+     * List of WAL capacities.
      *
      * @return The current value of {@code capacities}.
      */
@@ -106,7 +106,7 @@ public class ShowWalResponse implements IndexedRecord {
     }
 
     /**
-     * List of wal capacities.
+     * List of WAL capacities.
      *
      * @param capacities  The new value for {@code capacities}.
      *
@@ -139,7 +139,7 @@ public class ShowWalResponse implements IndexedRecord {
     }
 
     /**
-     * List of table wal settings.
+     * List of table WAL settings.
      *
      * @return The current value of {@code settings}.
      */
@@ -148,7 +148,7 @@ public class ShowWalResponse implements IndexedRecord {
     }
 
     /**
-     * List of table wal settings.
+     * List of table WAL settings.
      *
      * @param settings  The new value for {@code settings}.
      *

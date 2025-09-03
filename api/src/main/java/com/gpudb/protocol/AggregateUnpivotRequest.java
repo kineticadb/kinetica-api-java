@@ -184,6 +184,12 @@ public class AggregateUnpivotRequest implements IndexedRecord {
         public static final String CHUNK_MAX_MEMORY = "chunk_max_memory";
 
         /**
+         * The default <a href="../../../../../../concepts/column_compression/"
+         * target="_top">compression codec</a> for the result table's columns.
+         */
+        public static final String COMPRESSION_CODEC = "compression_codec";
+
+        /**
          * The number of records to keep. The default value is ''.
          */
         public static final String LIMIT = "limit";
@@ -353,6 +359,11 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                         for the result table. Must be used in
      *                         combination with the {@link Options#RESULT_TABLE
      *                         RESULT_TABLE} option.
+     *                     <li>{@link Options#COMPRESSION_CODEC
+     *                         COMPRESSION_CODEC}: The default <a
+     *                         href="../../../../../../concepts/column_compression/"
+     *                         target="_top">compression codec</a> for the
+     *                         result table's columns.
      *                     <li>{@link Options#LIMIT LIMIT}: The number of
      *                         records to keep. The default value is ''.
      *                     <li>{@link Options#TTL TTL}: Sets the <a
@@ -511,6 +522,11 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                         for the result table. Must be used in
      *                         combination with the {@link Options#RESULT_TABLE
      *                         RESULT_TABLE} option.
+     *                     <li>{@link Options#COMPRESSION_CODEC
+     *                         COMPRESSION_CODEC}: The default <a
+     *                         href="../../../../../../concepts/column_compression/"
+     *                         target="_top">compression codec</a> for the
+     *                         result table's columns.
      *                     <li>{@link Options#LIMIT LIMIT}: The number of
      *                         records to keep. The default value is ''.
      *                     <li>{@link Options#TTL TTL}: Sets the <a
@@ -773,6 +789,10 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *         target maximum data size for all columns in a chunk to be used
      *         for the result table. Must be used in combination with the
      *         {@link Options#RESULT_TABLE RESULT_TABLE} option.
+     *     <li>{@link Options#COMPRESSION_CODEC COMPRESSION_CODEC}: The default
+     *         <a href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression codec</a> for the result table's
+     *         columns.
      *     <li>{@link Options#LIMIT LIMIT}: The number of records to keep. The
      *         default value is ''.
      *     <li>{@link Options#TTL TTL}: Sets the <a
@@ -874,6 +894,10 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *         target maximum data size for all columns in a chunk to be used
      *         for the result table. Must be used in combination with the
      *         {@link Options#RESULT_TABLE RESULT_TABLE} option.
+     *     <li>{@link Options#COMPRESSION_CODEC COMPRESSION_CODEC}: The default
+     *         <a href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression codec</a> for the result table's
+     *         columns.
      *     <li>{@link Options#LIMIT LIMIT}: The number of records to keep. The
      *         default value is ''.
      *     <li>{@link Options#TTL TTL}: Sets the <a

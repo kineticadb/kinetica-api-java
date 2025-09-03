@@ -18,7 +18,7 @@ import org.apache.avro.generic.IndexedRecord;
  * GPUdb.showSystemTiming}.
  * <p>
  * Returns the last 100 database requests along with the request timing and
- * internal job id. The admin tool uses it to present request timing
+ * internal job ID. The admin tool uses it to present request timing
  * information to the user.
  */
 public class ShowSystemTimingRequest implements IndexedRecord {

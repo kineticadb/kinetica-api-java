@@ -19,7 +19,7 @@ import org.apache.avro.generic.IndexedRecord;
  * GPUdb.solveGraph}.
  * <p>
  * Solves an existing graph for a type of problem (e.g., shortest path, page
- * rank, travelling salesman, etc.) using source nodes, destination nodes, and
+ * rank, traveling salesman, etc.) using source nodes, destination nodes, and
  * additional, optional weights and restrictions.
  * <p>
  * IMPORTANT: It's highly recommended that you review the <a
@@ -92,7 +92,7 @@ public class SolveGraphRequest implements IndexedRecord {
         /**
          * Solves for finding the minimum cost cumulative path for a round-trip
          * starting from the given source and visiting each given destination
-         * node once then returning to the source. Also known as the travelling
+         * node once then returning to the source. Also known as the traveling
          * salesman problem.
          */
         public static final String MULTIPLE_ROUTING = "MULTIPLE_ROUTING";
@@ -113,7 +113,7 @@ public class SolveGraphRequest implements IndexedRecord {
         /**
          * Solves for paths that would give costs between max and min solution
          * radia - Make sure to limit by the 'max_solution_targets' option. Min
-         * cost shoudl be &gt;= shortest_path cost.
+         * cost should be &gt;= shortest_path cost.
          */
         public static final String ALLPATHS = "ALLPATHS";
 
@@ -184,7 +184,7 @@ public class SolveGraphRequest implements IndexedRecord {
         public static final String UNIFORM_WEIGHTS = "uniform_weights";
 
         /**
-         * This will add an additonal weight over the edges labelled as 'left
+         * This will add an additional weight over the edges labeled as 'left
          * turn' if the 'add_turn' option parameter of the {@link
          * com.gpudb.GPUdb#createGraph(CreateGraphRequest) GPUdb.createGraph}
          * was invoked at graph creation. The default value is '0.0'.
@@ -192,7 +192,7 @@ public class SolveGraphRequest implements IndexedRecord {
         public static final String LEFT_TURN_PENALTY = "left_turn_penalty";
 
         /**
-         * This will add an additonal weight over the edges labelled as' right
+         * This will add an additional weight over the edges labeled as' right
          * turn' if the 'add_turn' option parameter of the {@link
          * com.gpudb.GPUdb#createGraph(CreateGraphRequest) GPUdb.createGraph}
          * was invoked at graph creation. The default value is '0.0'.
@@ -200,7 +200,7 @@ public class SolveGraphRequest implements IndexedRecord {
         public static final String RIGHT_TURN_PENALTY = "right_turn_penalty";
 
         /**
-         * This will add an additonal weight over the edges labelled as
+         * This will add an additional weight over the edges labeled as
          * 'intersection' if the 'add_turn' option parameter of the {@link
          * com.gpudb.GPUdb#createGraph(CreateGraphRequest) GPUdb.createGraph}
          * was invoked at graph creation. The default value is '0.0'.
@@ -208,7 +208,7 @@ public class SolveGraphRequest implements IndexedRecord {
         public static final String INTERSECTION_PENALTY = "intersection_penalty";
 
         /**
-         * This will add an additonal weight over the edges labelled as 'sharp
+         * This will add an additional weight over the edges labeled as 'sharp
          * turn' or 'u-turn' if the 'add_turn' option parameter of the {@link
          * com.gpudb.GPUdb#createGraph(CreateGraphRequest) GPUdb.createGraph}
          * was invoked at graph creation. The default value is '0.0'.
@@ -234,7 +234,7 @@ public class SolveGraphRequest implements IndexedRecord {
         public static final String MAX_NUM_COMBINATIONS = "max_num_combinations";
 
         /**
-         * If true then concatenated edge ids will be added as the EDGE path
+         * If true then concatenated edge IDs will be added as the EDGE path
          * column of the solution table for each source and target pair in
          * shortest path solves.
          * Supported values:
@@ -280,7 +280,7 @@ public class SolveGraphRequest implements IndexedRecord {
 
         /**
          * For {@link SolverType#PAGE_RANK PAGE_RANK} solvers only; Maximum
-         * percent relative threshold on the pagerank scores of each node
+         * percent relative threshold on the page rank scores of each node
          * between consecutive iterations to satisfy convergence. Default value
          * is 1 (one) percent. The default value is '1.0'.
          */
@@ -288,7 +288,7 @@ public class SolveGraphRequest implements IndexedRecord {
 
         /**
          * For {@link SolverType#PAGE_RANK PAGE_RANK} solvers only; Maximum
-         * number of pagerank iterations for satisfying convergence. Default
+         * number of page rank iterations for satisfying convergence. Default
          * value is 100. The default value is '100'.
          */
         public static final String MAX_ITERATIONS = "max_iterations";
@@ -450,7 +450,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *                            starting from the given source and visiting
      *                            each given destination node once then
      *                            returning to the source. Also known as the
-     *                            travelling salesman problem.
+     *                            traveling salesman problem.
      *                        <li>{@link SolverType#INVERSE_SHORTEST_PATH
      *                            INVERSE_SHORTEST_PATH}: Solves for finding
      *                            the optimal path cost for each destination
@@ -465,7 +465,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *                            for paths that would give costs between max
      *                            and min solution radia - Make sure to limit
      *                            by the 'max_solution_targets' option. Min
-     *                            cost shoudl be &gt;= shortest_path cost.
+     *                            cost should be &gt;= shortest_path cost.
      *                        <li>{@link SolverType#STATS_ALL STATS_ALL}:
      *                            Solves for graph statistics such as graph
      *                            diameter, longest pairs, vertex valences,
@@ -538,32 +538,32 @@ public class SolveGraphRequest implements IndexedRecord {
      *                         provided in {@code weightsOnEdges} will override
      *                         this value.
      *                     <li>{@link Options#LEFT_TURN_PENALTY
-     *                         LEFT_TURN_PENALTY}: This will add an additonal
-     *                         weight over the edges labelled as 'left turn' if
+     *                         LEFT_TURN_PENALTY}: This will add an additional
+     *                         weight over the edges labeled as 'left turn' if
      *                         the 'add_turn' option parameter of the {@link
      *                         com.gpudb.GPUdb#createGraph(CreateGraphRequest)
      *                         GPUdb.createGraph} was invoked at graph
      *                         creation. The default value is '0.0'.
      *                     <li>{@link Options#RIGHT_TURN_PENALTY
-     *                         RIGHT_TURN_PENALTY}: This will add an additonal
-     *                         weight over the edges labelled as' right turn'
-     *                         if the 'add_turn' option parameter of the {@link
+     *                         RIGHT_TURN_PENALTY}: This will add an additional
+     *                         weight over the edges labeled as' right turn' if
+     *                         the 'add_turn' option parameter of the {@link
      *                         com.gpudb.GPUdb#createGraph(CreateGraphRequest)
      *                         GPUdb.createGraph} was invoked at graph
      *                         creation. The default value is '0.0'.
      *                     <li>{@link Options#INTERSECTION_PENALTY
      *                         INTERSECTION_PENALTY}: This will add an
-     *                         additonal weight over the edges labelled as
+     *                         additional weight over the edges labeled as
      *                         'intersection' if the 'add_turn' option
      *                         parameter of the {@link
      *                         com.gpudb.GPUdb#createGraph(CreateGraphRequest)
      *                         GPUdb.createGraph} was invoked at graph
      *                         creation. The default value is '0.0'.
      *                     <li>{@link Options#SHARP_TURN_PENALTY
-     *                         SHARP_TURN_PENALTY}: This will add an additonal
-     *                         weight over the edges labelled as 'sharp turn'
-     *                         or 'u-turn' if the 'add_turn' option parameter
-     *                         of the {@link
+     *                         SHARP_TURN_PENALTY}: This will add an additional
+     *                         weight over the edges labeled as 'sharp turn' or
+     *                         'u-turn' if the 'add_turn' option parameter of
+     *                         the {@link
      *                         com.gpudb.GPUdb#createGraph(CreateGraphRequest)
      *                         GPUdb.createGraph} was invoked at graph
      *                         creation. The default value is '0.0'.
@@ -586,7 +586,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *                         value is '2000000'.
      *                     <li>{@link Options#OUTPUT_EDGE_PATH
      *                         OUTPUT_EDGE_PATH}: If true then concatenated
-     *                         edge ids will be added as the EDGE path column
+     *                         edge IDs will be added as the EDGE path column
      *                         of the solution table for each source and target
      *                         pair in shortest path solves.
      *                         Supported values:
@@ -617,13 +617,13 @@ public class SolveGraphRequest implements IndexedRecord {
      *                     <li>{@link Options#CONVERGENCE_LIMIT
      *                         CONVERGENCE_LIMIT}: For {@link
      *                         SolverType#PAGE_RANK PAGE_RANK} solvers only;
-     *                         Maximum percent relative threshold on the
-     *                         pagerank scores of each node between consecutive
+     *                         Maximum percent relative threshold on the page
+     *                         rank scores of each node between consecutive
      *                         iterations to satisfy convergence. Default value
      *                         is 1 (one) percent. The default value is '1.0'.
      *                     <li>{@link Options#MAX_ITERATIONS MAX_ITERATIONS}:
      *                         For {@link SolverType#PAGE_RANK PAGE_RANK}
-     *                         solvers only; Maximum number of pagerank
+     *                         solvers only; Maximum number of page rank
      *                         iterations for satisfying convergence. Default
      *                         value is 100. The default value is '100'.
      *                     <li>{@link Options#MAX_RUNS MAX_RUNS}: For all
@@ -824,7 +824,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *         finding the minimum cost cumulative path for a round-trip
      *         starting from the given source and visiting each given
      *         destination node once then returning to the source. Also known
-     *         as the travelling salesman problem.
+     *         as the traveling salesman problem.
      *     <li>{@link SolverType#INVERSE_SHORTEST_PATH INVERSE_SHORTEST_PATH}:
      *         Solves for finding the optimal path cost for each destination
      *         node to route to the source node. Also known as inverse Dijkstra
@@ -834,7 +834,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *         (backbone) asset nodes.
      *     <li>{@link SolverType#ALLPATHS ALLPATHS}: Solves for paths that
      *         would give costs between max and min solution radia - Make sure
-     *         to limit by the 'max_solution_targets' option. Min cost shoudl
+     *         to limit by the 'max_solution_targets' option. Min cost should
      *         be &gt;= shortest_path cost.
      *     <li>{@link SolverType#STATS_ALL STATS_ALL}: Solves for graph
      *         statistics such as graph diameter, longest pairs, vertex
@@ -874,7 +874,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *         finding the minimum cost cumulative path for a round-trip
      *         starting from the given source and visiting each given
      *         destination node once then returning to the source. Also known
-     *         as the travelling salesman problem.
+     *         as the traveling salesman problem.
      *     <li>{@link SolverType#INVERSE_SHORTEST_PATH INVERSE_SHORTEST_PATH}:
      *         Solves for finding the optimal path cost for each destination
      *         node to route to the source node. Also known as inverse Dijkstra
@@ -884,7 +884,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *         (backbone) asset nodes.
      *     <li>{@link SolverType#ALLPATHS ALLPATHS}: Solves for paths that
      *         would give costs between max and min solution radia - Make sure
-     *         to limit by the 'max_solution_targets' option. Min cost shoudl
+     *         to limit by the 'max_solution_targets' option. Min cost should
      *         be &gt;= shortest_path cost.
      *     <li>{@link SolverType#STATS_ALL STATS_ALL}: Solves for graph
      *         statistics such as graph diameter, longest pairs, vertex
@@ -1023,25 +1023,25 @@ public class SolveGraphRequest implements IndexedRecord {
      *         weights provided in {@link #getWeightsOnEdges() weightsOnEdges}
      *         will override this value.
      *     <li>{@link Options#LEFT_TURN_PENALTY LEFT_TURN_PENALTY}: This will
-     *         add an additonal weight over the edges labelled as 'left turn'
+     *         add an additional weight over the edges labeled as 'left turn'
      *         if the 'add_turn' option parameter of the {@link
      *         com.gpudb.GPUdb#createGraph(CreateGraphRequest)
      *         GPUdb.createGraph} was invoked at graph creation. The default
      *         value is '0.0'.
      *     <li>{@link Options#RIGHT_TURN_PENALTY RIGHT_TURN_PENALTY}: This will
-     *         add an additonal weight over the edges labelled as' right turn'
+     *         add an additional weight over the edges labeled as' right turn'
      *         if the 'add_turn' option parameter of the {@link
      *         com.gpudb.GPUdb#createGraph(CreateGraphRequest)
      *         GPUdb.createGraph} was invoked at graph creation. The default
      *         value is '0.0'.
      *     <li>{@link Options#INTERSECTION_PENALTY INTERSECTION_PENALTY}: This
-     *         will add an additonal weight over the edges labelled as
+     *         will add an additional weight over the edges labeled as
      *         'intersection' if the 'add_turn' option parameter of the {@link
      *         com.gpudb.GPUdb#createGraph(CreateGraphRequest)
      *         GPUdb.createGraph} was invoked at graph creation. The default
      *         value is '0.0'.
      *     <li>{@link Options#SHARP_TURN_PENALTY SHARP_TURN_PENALTY}: This will
-     *         add an additonal weight over the edges labelled as 'sharp turn'
+     *         add an additional weight over the edges labeled as 'sharp turn'
      *         or 'u-turn' if the 'add_turn' option parameter of the {@link
      *         com.gpudb.GPUdb#createGraph(CreateGraphRequest)
      *         GPUdb.createGraph} was invoked at graph creation. The default
@@ -1060,7 +1060,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *         value, it can potentially speed up the solver. The default value
      *         is '2000000'.
      *     <li>{@link Options#OUTPUT_EDGE_PATH OUTPUT_EDGE_PATH}: If true then
-     *         concatenated edge ids will be added as the EDGE path column of
+     *         concatenated edge IDs will be added as the EDGE path column of
      *         the solution table for each source and target pair in shortest
      *         path solves.
      *         Supported values:
@@ -1087,13 +1087,13 @@ public class SolveGraphRequest implements IndexedRecord {
      *         corresponding graph.
      *     <li>{@link Options#CONVERGENCE_LIMIT CONVERGENCE_LIMIT}: For {@link
      *         SolverType#PAGE_RANK PAGE_RANK} solvers only; Maximum percent
-     *         relative threshold on the pagerank scores of each node between
+     *         relative threshold on the page rank scores of each node between
      *         consecutive iterations to satisfy convergence. Default value is
      *         1 (one) percent. The default value is '1.0'.
      *     <li>{@link Options#MAX_ITERATIONS MAX_ITERATIONS}: For {@link
      *         SolverType#PAGE_RANK PAGE_RANK} solvers only; Maximum number of
-     *         pagerank iterations for satisfying convergence. Default value is
-     *         100. The default value is '100'.
+     *         page rank iterations for satisfying convergence. Default value
+     *         is 100. The default value is '100'.
      *     <li>{@link Options#MAX_RUNS MAX_RUNS}: For all {@link
      *         SolverType#CENTRALITY CENTRALITY} solvers only; Sets the maximum
      *         number of shortest path runs; maximum possible value is the
@@ -1172,25 +1172,25 @@ public class SolveGraphRequest implements IndexedRecord {
      *         weights provided in {@link #getWeightsOnEdges() weightsOnEdges}
      *         will override this value.
      *     <li>{@link Options#LEFT_TURN_PENALTY LEFT_TURN_PENALTY}: This will
-     *         add an additonal weight over the edges labelled as 'left turn'
+     *         add an additional weight over the edges labeled as 'left turn'
      *         if the 'add_turn' option parameter of the {@link
      *         com.gpudb.GPUdb#createGraph(CreateGraphRequest)
      *         GPUdb.createGraph} was invoked at graph creation. The default
      *         value is '0.0'.
      *     <li>{@link Options#RIGHT_TURN_PENALTY RIGHT_TURN_PENALTY}: This will
-     *         add an additonal weight over the edges labelled as' right turn'
+     *         add an additional weight over the edges labeled as' right turn'
      *         if the 'add_turn' option parameter of the {@link
      *         com.gpudb.GPUdb#createGraph(CreateGraphRequest)
      *         GPUdb.createGraph} was invoked at graph creation. The default
      *         value is '0.0'.
      *     <li>{@link Options#INTERSECTION_PENALTY INTERSECTION_PENALTY}: This
-     *         will add an additonal weight over the edges labelled as
+     *         will add an additional weight over the edges labeled as
      *         'intersection' if the 'add_turn' option parameter of the {@link
      *         com.gpudb.GPUdb#createGraph(CreateGraphRequest)
      *         GPUdb.createGraph} was invoked at graph creation. The default
      *         value is '0.0'.
      *     <li>{@link Options#SHARP_TURN_PENALTY SHARP_TURN_PENALTY}: This will
-     *         add an additonal weight over the edges labelled as 'sharp turn'
+     *         add an additional weight over the edges labeled as 'sharp turn'
      *         or 'u-turn' if the 'add_turn' option parameter of the {@link
      *         com.gpudb.GPUdb#createGraph(CreateGraphRequest)
      *         GPUdb.createGraph} was invoked at graph creation. The default
@@ -1209,7 +1209,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *         value, it can potentially speed up the solver. The default value
      *         is '2000000'.
      *     <li>{@link Options#OUTPUT_EDGE_PATH OUTPUT_EDGE_PATH}: If true then
-     *         concatenated edge ids will be added as the EDGE path column of
+     *         concatenated edge IDs will be added as the EDGE path column of
      *         the solution table for each source and target pair in shortest
      *         path solves.
      *         Supported values:
@@ -1236,13 +1236,13 @@ public class SolveGraphRequest implements IndexedRecord {
      *         corresponding graph.
      *     <li>{@link Options#CONVERGENCE_LIMIT CONVERGENCE_LIMIT}: For {@link
      *         SolverType#PAGE_RANK PAGE_RANK} solvers only; Maximum percent
-     *         relative threshold on the pagerank scores of each node between
+     *         relative threshold on the page rank scores of each node between
      *         consecutive iterations to satisfy convergence. Default value is
      *         1 (one) percent. The default value is '1.0'.
      *     <li>{@link Options#MAX_ITERATIONS MAX_ITERATIONS}: For {@link
      *         SolverType#PAGE_RANK PAGE_RANK} solvers only; Maximum number of
-     *         pagerank iterations for satisfying convergence. Default value is
-     *         100. The default value is '100'.
+     *         page rank iterations for satisfying convergence. Default value
+     *         is 100. The default value is '100'.
      *     <li>{@link Options#MAX_RUNS MAX_RUNS}: For all {@link
      *         SolverType#CENTRALITY CENTRALITY} solvers only; Sets the maximum
      *         number of shortest path runs; maximum possible value is the

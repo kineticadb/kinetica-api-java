@@ -27,7 +27,7 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#showDirectories(ShowDirectoriesRequest)
  * GPUdb.showDirectories}. The user must have write permission on the
  * directory. Nested directories are permitted in file name paths. Directories
- * are deliniated with the directory separator of '/'.  For example, given the
+ * are delineated with the directory separator of '/'.  For example, given the
  * file path '/a/b/c/d.txt', 'a' must be a KiFS directory.
  * <p>
  * These characters are allowed in file name paths: letters, numbers, spaces,

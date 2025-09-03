@@ -3,26 +3,27 @@ package com.gpudb.filesystem.common;
 import com.gpudb.GPUdb;
 import com.gpudb.GPUdbException;
 import com.gpudb.GPUdbLogger;
-//import com.gpudb.filesystem.download.MultiPartDownloadInfo;
 import com.gpudb.filesystem.download.DownloadOptions;
 import com.gpudb.filesystem.download.MultiPartDownloadInfo;
 import com.gpudb.filesystem.upload.MultiPartUploadInfo;
 import com.gpudb.filesystem.upload.UploadOptions;
 import com.gpudb.protocol.DownloadFilesResponse;
 import com.gpudb.protocol.UploadFilesRequest;
-import com.gpudb.protocol.UploadFilesResponse;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+
+
 /**
  * This is an internal class and not meant to be used by the end users of the
- * filesystem API. The consequences of using this class directly in client code
- * is not guaranteed and maybe undesirable.
+ * {@code filesystem} API. The consequences of using this class directly in
+ * client code is not guaranteed and maybe undesirable.
 
  * This class is only used for multi-part upload and download and an instance
  * of this class is created only by {@link com.gpudb.filesystem.upload.FileUploader}
@@ -40,21 +41,14 @@ public class IoTask implements Callable<Result> {
 
     private final OpMode opMode;
 
-    /**
-     * This is the identifier for the
-     * {@link com.gpudb.filesystem.upload.UploadIoJob} or
-     * {@link com.gpudb.filesystem.download.DownloadIoJob}
-     * that created this task.
-     */
-    private final String jobId;
-
     private final UploadOptions uploadOptions;
 
+    // Not used yet by the endpoint
+    @SuppressWarnings("unused")
     private final DownloadOptions downloadOptions;
 
     /**
-     * This field is actually an identifier for the part number for a
-     * multi-part upload/download. It has been named
+     * Identifier for the sequential part number for a multi-part upload.
      */
     private final long taskNumber;
 
@@ -74,40 +68,69 @@ public class IoTask implements Callable<Result> {
     private MultiPartDownloadInfo multiPartDownloadInfo;
 
     /**
-     * This is the actual data to be uploaded/downloaded for this part of the
-     * multi-part upload/download.
+     * This is the data to be uploaded for this part of the multi-part upload.
      */
     private final ByteBuffer dataBytes;
 
     /**
-     * Constructor
-     * @param opMode - Identifies whether this task is an upload/download
-     * @param jobId - Identifies the upload/download job that created this task
-     * @param fileName - String - Name of the file to be uploaded/downloaded
-     * @param uploadOptions
+     * Constructs a task for uploading a part of a multi-part upload.
+     * 
+     * @param db  The {@link GPUdb} instance used to access KiFS.
+     * @param fileName  Name of the file to be uploaded.
+     * @param multiPartUploadInfo  Configuration information about this part of
+     *        the upload as well as the overall upload itself.
+     * @param options  Options to use during the upload.
+     * @param taskNumber  Sequence number of this part of the overall upload.
+     * @param dataBytes  Data to upload for this part, in a binary format.
      */
     public IoTask(GPUdb db,
-                  OpMode opMode,
-                  String jobId,
                   String fileName,
-                  UploadOptions uploadOptions,
-                  DownloadOptions downloadOptions,
+                  MultiPartUploadInfo multiPartUploadInfo,
+                  UploadOptions options,
                   long taskNumber,
                   ByteBuffer dataBytes) {
         this.db = db;
-        this.opMode = opMode;
-        this.jobId = jobId;
+        this.opMode = OpMode.UPLOAD;
         this.fileName = fileName;
-        this.uploadOptions = uploadOptions;
-        this.downloadOptions = downloadOptions;
+        this.multiPartUploadInfo = multiPartUploadInfo;
+        this.multiPartDownloadInfo = null;
+        this.uploadOptions = options;
+        this.downloadOptions = null;
         this.taskNumber = taskNumber;
         this.dataBytes = dataBytes;
     }
 
     /**
+     * Constructs a task for downloading a part of a multi-part download.
+     * 
+     * @param db  The {@link GPUdb} instance used to access KiFS.
+     * @param fileName  Name of the file to be downloaded.
+     * @param multiPartDownloadInfo  Configuration information about this part
+     *        of the download as well as the overall download itself.
+     * @param options  Options to use during the download (reserved for
+     *        future use).
+     */
+    public IoTask(GPUdb db,
+                  String fileName,
+                  MultiPartDownloadInfo multiPartDownloadInfo,
+                  DownloadOptions options) {
+        this.db = db;
+        this.opMode = OpMode.DOWNLOAD;
+        this.fileName = fileName;
+        this.multiPartUploadInfo = null;
+        this.multiPartDownloadInfo = multiPartDownloadInfo;
+        this.uploadOptions = null;
+        this.downloadOptions = options;
+        this.taskNumber = 0;
+        this.dataBytes = null;
+    }
+
+
+    /**
      * This method is called automatically the thread in which the current
      * instance of this class runs.
-     * @return - {@link Result} - The result of the operation (Upload/download)
+     * 
+     * @return  The {@link Result} of the upload/download operation.
      */
     @Override
     public Result call() {
@@ -115,7 +138,7 @@ public class IoTask implements Callable<Result> {
         Result result = null;
 
         try {
-            if (opMode == OpMode.UPLOAD) {
+            if (this.opMode == OpMode.UPLOAD) {
                 result = upload();
             }
             else {
@@ -123,34 +146,34 @@ public class IoTask implements Callable<Result> {
             }
         } catch (GPUdbException gpe) {
             GPUdbLogger.error( gpe.getMessage() );
+            result = new Result();
+            result.setSuccessful(false);
+            result.setFileName( this.fileName );
+            result.setOpMode( this.opMode );
+            result.setUploadInfo( this.multiPartUploadInfo );
+            result.setMultiPart(true);
+            result.setException(gpe);
         }
         return result;
     }
 
-    public void setMultiPartUploadInfo(MultiPartUploadInfo multiPartUploadInfo) {
-        this.multiPartUploadInfo = multiPartUploadInfo;
-    }
-
-    public void setMultiPartDownloadInfo(MultiPartDownloadInfo multiPartDownloadInfo) {
-        this.multiPartDownloadInfo = multiPartDownloadInfo;
-    }
-
     public MultiPartUploadInfo getMultiPartUploadInfo() {
-        return multiPartUploadInfo;
+        return this.multiPartUploadInfo;
     }
 
     public MultiPartDownloadInfo getMultiPartDownloadInfo() {
-        return multiPartDownloadInfo;
+        return this.multiPartDownloadInfo;
     }
 
+
     /**
-     * This method handles the different stages of the multi-part upload
-     *
+     * Uploads a part of a multi-part upload, first configuring the upload
+     * request accordingly.
      */
     private Result upload() throws GPUdbException {
         Result result;
 
-        switch ( multiPartUploadInfo.getPartOperation() ) {
+        switch ( this.multiPartUploadInfo.getPartOperation() ) {
             // There could be four different multi-part operation values;
             // 'init', 'complete', 'upload_part' and 'cancel'.
             // For 'init' and 'complete', data should not be sent and the only
@@ -158,27 +181,28 @@ public class IoTask implements Callable<Result> {
             // Hence the treatment of these two options are the same and the
             // code to handle the cases is the same but the values differ.
             case INIT:
+            case CANCEL:
             case COMPLETE: {
                 Map<String, String> options = new HashMap<>();
-                options.put( UploadFilesRequest.Options.MULTIPART_OPERATION, multiPartUploadInfo.getPartOperation().getValue() );
-                options.put( UploadFilesRequest.Options.MULTIPART_UPLOAD_UUID , multiPartUploadInfo.getUuid() );
+                options.put( UploadFilesRequest.Options.MULTIPART_OPERATION, this.multiPartUploadInfo.getPartOperation().getValue() );
+                options.put( UploadFilesRequest.Options.MULTIPART_UPLOAD_UUID , this.multiPartUploadInfo.getUuid() );
 
-                result = upload(options, fileName, null);
+                result = upload(options);
 
                 break;
             }
-            // Right now, since we are not handling cancelling multi-part
+            // Right now, since we are not handling canceling multi-part
             // downloads, the only default case is 'upload_part'. This case
             // needs actual data to be sent across for each part of the file
             // that is uploaded.
             default: {
                 //Part upload with data
                 Map<String, String> options = new HashMap<>();
-                options.put( UploadFilesRequest.Options.MULTIPART_OPERATION , multiPartUploadInfo.getPartOperation().getValue());
-                options.put( UploadFilesRequest.Options.MULTIPART_UPLOAD_UUID , multiPartUploadInfo.getUuid() );
-                options.put( UploadFilesRequest.Options.MULTIPART_UPLOAD_PART_NUMBER , String.valueOf( taskNumber ) );
+                options.put( UploadFilesRequest.Options.MULTIPART_OPERATION , this.multiPartUploadInfo.getPartOperation().getValue());
+                options.put( UploadFilesRequest.Options.MULTIPART_UPLOAD_UUID , this.multiPartUploadInfo.getUuid() );
+                options.put( UploadFilesRequest.Options.MULTIPART_UPLOAD_PART_NUMBER , String.valueOf( this.taskNumber ) );
 
-                result = upload(options, fileName, dataBytes);
+                result = upload(options);
 
                 break;
             }
@@ -186,69 +210,68 @@ public class IoTask implements Callable<Result> {
         return result;
     }
 
+
     /**
      * This method calls the actual GPUdb endpoint for uploading a part of the
-     * multi-part upload being handled by the current instance of this class
+     * multi-part upload being handled by the current instance of this class.
      *
-     * @param options - Map<String, String> - Options which are passed to the
-     *                GPUdb endpoint
-     * @param fileName - String - Name of the file to be uploaded/downloaded
-     * @param dataBytes - ByteBuffer - The data bytes
-     * @return - {@link Result} - The result of the upload operation
-     * @throws GPUdbException - thrown if the endpoint throws an exception.
+     * @param options  Multi-part options for the upload endpoint.
+     * @return  The {@link Result} of the upload operation.
+     * @throws GPUdbException  If an error occurs at the endpoint.
      *
      * @see Result
      * @see MultiPartUploadInfo
      */
-    private Result upload(Map<String, String> options,
-                          String fileName,
-                          ByteBuffer dataBytes) throws GPUdbException {
-        UploadFilesResponse ufResp;
+    private Result upload(Map<String, String> options) throws GPUdbException {
 
-        if( dataBytes == null ) {
-            // This case indicates that the multi part operation is either
-            // 'init' or 'complete'. There is no data to be sent but the
-            // endpoint expects an empty list to be sent in instead of a null.
-            if( uploadOptions.getTtl() > 0 ) {
-                options.put( "ttl", String.valueOf( uploadOptions.getTtl() ) );
-            }
+    	List<ByteBuffer> data = null;
 
-            ufResp = db.uploadFiles( Collections.singletonList( fileName ), new ArrayList<ByteBuffer>(), options );
+    	if ( this.dataBytes == null ) {
+            if ( this.uploadOptions.getTtl() > 0 )
+                options.put( "ttl", String.valueOf( this.uploadOptions.getTtl() ) );
+
+            // This case indicates that the multi part operation is a command
+            // one. There is no data to be sent, but the endpoint expects an
+            // empty data list to be sent in instead of a null.
+            data = new ArrayList<>();
         } else {
             // This is the case for actual part file upload and the actual
             // data is being passed in.
-            ufResp = db.uploadFiles(Collections.singletonList( fileName ), Collections.singletonList( dataBytes ), options);
+            data = Collections.singletonList( this.dataBytes );
         }
+
+        this.db.uploadFiles(Collections.singletonList( this.fileName ), data, options);
 
         Result result = new Result();
         result.setSuccessful(true);
-        result.setFileName( fileName );
-        result.setOpMode( opMode );
-        result.setUploadInfo( multiPartUploadInfo );
+        result.setFileName( this.fileName );
+        result.setOpMode( this.opMode );
+        result.setUploadInfo( this.multiPartUploadInfo );
         result.setMultiPart(true);
 
         return result;
     }
 
     /**
-     *
+     * Downloads a part of a multi-part download, first configuring the download
+     * request accordingly.
      */
     private Result download() throws GPUdbException {
 
         Result downloadResult = new Result();
 
-        DownloadFilesResponse downloadFilesResponse = db.downloadFiles(
-                Collections.singletonList( fileName ),
-                Collections.singletonList( multiPartDownloadInfo.getReadOffset() ),
-                Collections.singletonList( multiPartDownloadInfo.getReadLength() ),
-                new HashMap<String, String>() );
+        DownloadFilesResponse downloadFilesResponse = this.db.downloadFiles(
+                Collections.singletonList( this.fileName ),
+                Collections.singletonList( this.multiPartDownloadInfo.getReadOffset() ),
+                Collections.singletonList( this.multiPartDownloadInfo.getReadLength() ),
+                new HashMap<>() );
 
-        multiPartDownloadInfo.setData( downloadFilesResponse.getFileData().get( 0 ));
+        this.multiPartDownloadInfo.setData( downloadFilesResponse.getFileData().get( 0 ));
 
         downloadResult.setSuccessful(true);
-        downloadResult.setFileName( fileName );
-        downloadResult.setOpMode( opMode );
-        downloadResult.setDownloadInfo( multiPartDownloadInfo );
+        downloadResult.setFileName( this.fileName );
+        downloadResult.setOpMode( this.opMode );
+        downloadResult.setDownloadInfo( this.multiPartDownloadInfo );
         downloadResult.setMultiPart(true);
 
         return downloadResult;

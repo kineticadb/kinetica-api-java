@@ -111,9 +111,8 @@ public class CreateUnionRequest implements IndexedRecord {
         public static final String COLLECTION_NAME = "collection_name";
 
         /**
-         * If {@link Options#MERGE_VIEWS MERGE_VIEWS}, then this operation will
-         * merge the provided views. All {@link #getTableNames() tableNames}
-         * must be views from the same underlying base table.
+         * The mode describes what rows of the tables being unioned will be
+         * retained.
          * Supported values:
          * <ul>
          *     <li>{@link Options#UNION_ALL UNION_ALL}: Retains all rows from
@@ -135,17 +134,6 @@ public class CreateUnionRequest implements IndexedRecord {
          *     <li>{@link Options#INTERSECT_ALL INTERSECT_ALL}: Retains all
          *         rows(including duplicates) that appear in both of the
          *         specified tables (only works on 2 tables).
-         *     <li>{@link Options#MERGE_VIEWS MERGE_VIEWS}: Merge two or more
-         *         views (or views of views) of the same base data set into a
-         *         new view. If this mode is selected {@link
-         *         #getInputColumnNames() inputColumnNames} AND {@link
-         *         #getOutputColumnNames() outputColumnNames} must be empty.
-         *         The resulting view would match the results of a SQL OR
-         *         operation, e.g., if filter 1 creates a view using the
-         *         expression 'x = 20' and filter 2 creates a view using the
-         *         expression 'x &lt;= 10', then the merge views operation
-         *         creates a new view using the expression 'x = 20 OR x &lt;=
-         *         10'.
          * </ul>
          * The default value is {@link Options#UNION_ALL UNION_ALL}.
          */
@@ -192,17 +180,10 @@ public class CreateUnionRequest implements IndexedRecord {
         public static final String INTERSECT_ALL = "intersect_all";
 
         /**
-         * Merge two or more views (or views of views) of the same base data
-         * set into a new view. If this mode is selected {@link
-         * #getInputColumnNames() inputColumnNames} AND {@link
-         * #getOutputColumnNames() outputColumnNames} must be empty. The
-         * resulting view would match the results of a SQL OR operation, e.g.,
-         * if filter 1 creates a view using the expression 'x = 20' and filter
-         * 2 creates a view using the expression 'x &lt;= 10', then the merge
-         * views operation creates a new view using the expression 'x = 20 OR x
-         * &lt;= 10'.
+         * When true use 128 bit hash for union-distinct, except, except_all,
+         * intersect and intersect_all modes. Otherwise use 64 bit hash.
          */
-        public static final String MERGE_VIEWS = "merge_views";
+        public static final String LONG_HASH = "long_hash";
 
         /**
          * Indicates the number of records per chunk to be used for this output
@@ -277,6 +258,19 @@ public class CreateUnionRequest implements IndexedRecord {
          */
         public static final String STRATEGY_DEFINITION = "strategy_definition";
 
+        /**
+         * The default <a href="../../../../../../concepts/column_compression/"
+         * target="_top">compression codec</a> for this table's columns.
+         */
+        public static final String COMPRESSION_CODEC = "compression_codec";
+
+        /**
+         * Return a count of 0 for the union table response to avoid the cost
+         * of counting; optimization needed for many chunk virtual_union's. The
+         * default value is 'false'.
+         */
+        public static final String NO_COUNT = "no_count";
+
         private Options() {  }
     }
 
@@ -346,11 +340,9 @@ public class CreateUnionRequest implements IndexedRecord {
      *                         table. If the schema provided is non-existent,
      *                         it will be automatically created. The default
      *                         value is ''.
-     *                     <li>{@link Options#MODE MODE}: If {@link
-     *                         Options#MERGE_VIEWS MERGE_VIEWS}, then this
-     *                         operation will merge the provided views. All
-     *                         {@code tableNames} must be views from the same
-     *                         underlying base table.
+     *                     <li>{@link Options#MODE MODE}: The mode describes
+     *                         what rows of the tables being unioned will be
+     *                         retained.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#UNION_ALL UNION_ALL}:
@@ -381,23 +373,13 @@ public class CreateUnionRequest implements IndexedRecord {
      *                                 rows(including duplicates) that appear
      *                                 in both of the specified tables (only
      *                                 works on 2 tables).
-     *                             <li>{@link Options#MERGE_VIEWS MERGE_VIEWS}:
-     *                                 Merge two or more views (or views of
-     *                                 views) of the same base data set into a
-     *                                 new view. If this mode is selected
-     *                                 {@code inputColumnNames} AND {@code
-     *                                 outputColumnNames} must be empty. The
-     *                                 resulting view would match the results
-     *                                 of a SQL OR operation, e.g., if filter 1
-     *                                 creates a view using the expression 'x =
-     *                                 20' and filter 2 creates a view using
-     *                                 the expression 'x &lt;= 10', then the
-     *                                 merge views operation creates a new view
-     *                                 using the expression 'x = 20 OR x &lt;=
-     *                                 10'.
      *                         </ul>
      *                         The default value is {@link Options#UNION_ALL
      *                         UNION_ALL}.
+     *                     <li>{@link Options#LONG_HASH LONG_HASH}: When true
+     *                         use 128 bit hash for union-distinct, except,
+     *                         except_all, intersect and intersect_all modes.
+     *                         Otherwise use 64 bit hash.
      *                     <li>{@link Options#CHUNK_SIZE CHUNK_SIZE}: Indicates
      *                         the number of records per chunk to be used for
      *                         this output table.
@@ -453,6 +435,16 @@ public class CreateUnionRequest implements IndexedRecord {
      *                         href="../../../../../../rm/concepts/#tier-strategies"
      *                         target="_top">tier strategy</a> for the table
      *                         and its columns.
+     *                     <li>{@link Options#COMPRESSION_CODEC
+     *                         COMPRESSION_CODEC}: The default <a
+     *                         href="../../../../../../concepts/column_compression/"
+     *                         target="_top">compression codec</a> for this
+     *                         table's columns.
+     *                     <li>{@link Options#NO_COUNT NO_COUNT}: Return a
+     *                         count of 0 for the union table response to avoid
+     *                         the cost of counting; optimization needed for
+     *                         many chunk virtual_union's. The default value is
+     *                         'false'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -592,10 +584,8 @@ public class CreateUnionRequest implements IndexedRecord {
      *         of the schema for the output table. If the schema provided is
      *         non-existent, it will be automatically created. The default
      *         value is ''.
-     *     <li>{@link Options#MODE MODE}: If {@link Options#MERGE_VIEWS
-     *         MERGE_VIEWS}, then this operation will merge the provided views.
-     *         All {@link #getTableNames() tableNames} must be views from the
-     *         same underlying base table.
+     *     <li>{@link Options#MODE MODE}: The mode describes what rows of the
+     *         tables being unioned will be retained.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#UNION_ALL UNION_ALL}: Retains all rows
@@ -617,19 +607,11 @@ public class CreateUnionRequest implements IndexedRecord {
      *             <li>{@link Options#INTERSECT_ALL INTERSECT_ALL}: Retains all
      *                 rows(including duplicates) that appear in both of the
      *                 specified tables (only works on 2 tables).
-     *             <li>{@link Options#MERGE_VIEWS MERGE_VIEWS}: Merge two or
-     *                 more views (or views of views) of the same base data set
-     *                 into a new view. If this mode is selected {@link
-     *                 #getInputColumnNames() inputColumnNames} AND {@link
-     *                 #getOutputColumnNames() outputColumnNames} must be
-     *                 empty. The resulting view would match the results of a
-     *                 SQL OR operation, e.g., if filter 1 creates a view using
-     *                 the expression 'x = 20' and filter 2 creates a view
-     *                 using the expression 'x &lt;= 10', then the merge views
-     *                 operation creates a new view using the expression 'x =
-     *                 20 OR x &lt;= 10'.
      *         </ul>
      *         The default value is {@link Options#UNION_ALL UNION_ALL}.
+     *     <li>{@link Options#LONG_HASH LONG_HASH}: When true use 128 bit hash
+     *         for union-distinct, except, except_all, intersect and
+     *         intersect_all modes. Otherwise use 64 bit hash.
      *     <li>{@link Options#CHUNK_SIZE CHUNK_SIZE}: Indicates the number of
      *         records per chunk to be used for this output table.
      *     <li>{@link Options#CHUNK_COLUMN_MAX_MEMORY CHUNK_COLUMN_MAX_MEMORY}:
@@ -672,6 +654,13 @@ public class CreateUnionRequest implements IndexedRecord {
      *     <li>{@link Options#STRATEGY_DEFINITION STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
+     *     <li>{@link Options#COMPRESSION_CODEC COMPRESSION_CODEC}: The default
+     *         <a href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression codec</a> for this table's columns.
+     *     <li>{@link Options#NO_COUNT NO_COUNT}: Return a count of 0 for the
+     *         union table response to avoid the cost of counting; optimization
+     *         needed for many chunk virtual_union's. The default value is
+     *         'false'.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -707,10 +696,8 @@ public class CreateUnionRequest implements IndexedRecord {
      *         of the schema for the output table. If the schema provided is
      *         non-existent, it will be automatically created. The default
      *         value is ''.
-     *     <li>{@link Options#MODE MODE}: If {@link Options#MERGE_VIEWS
-     *         MERGE_VIEWS}, then this operation will merge the provided views.
-     *         All {@link #getTableNames() tableNames} must be views from the
-     *         same underlying base table.
+     *     <li>{@link Options#MODE MODE}: The mode describes what rows of the
+     *         tables being unioned will be retained.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#UNION_ALL UNION_ALL}: Retains all rows
@@ -732,19 +719,11 @@ public class CreateUnionRequest implements IndexedRecord {
      *             <li>{@link Options#INTERSECT_ALL INTERSECT_ALL}: Retains all
      *                 rows(including duplicates) that appear in both of the
      *                 specified tables (only works on 2 tables).
-     *             <li>{@link Options#MERGE_VIEWS MERGE_VIEWS}: Merge two or
-     *                 more views (or views of views) of the same base data set
-     *                 into a new view. If this mode is selected {@link
-     *                 #getInputColumnNames() inputColumnNames} AND {@link
-     *                 #getOutputColumnNames() outputColumnNames} must be
-     *                 empty. The resulting view would match the results of a
-     *                 SQL OR operation, e.g., if filter 1 creates a view using
-     *                 the expression 'x = 20' and filter 2 creates a view
-     *                 using the expression 'x &lt;= 10', then the merge views
-     *                 operation creates a new view using the expression 'x =
-     *                 20 OR x &lt;= 10'.
      *         </ul>
      *         The default value is {@link Options#UNION_ALL UNION_ALL}.
+     *     <li>{@link Options#LONG_HASH LONG_HASH}: When true use 128 bit hash
+     *         for union-distinct, except, except_all, intersect and
+     *         intersect_all modes. Otherwise use 64 bit hash.
      *     <li>{@link Options#CHUNK_SIZE CHUNK_SIZE}: Indicates the number of
      *         records per chunk to be used for this output table.
      *     <li>{@link Options#CHUNK_COLUMN_MAX_MEMORY CHUNK_COLUMN_MAX_MEMORY}:
@@ -787,6 +766,13 @@ public class CreateUnionRequest implements IndexedRecord {
      *     <li>{@link Options#STRATEGY_DEFINITION STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
+     *     <li>{@link Options#COMPRESSION_CODEC COMPRESSION_CODEC}: The default
+     *         <a href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression codec</a> for this table's columns.
+     *     <li>{@link Options#NO_COUNT NO_COUNT}: Return a count of 0 for the
+     *         union table response to avoid the cost of counting; optimization
+     *         needed for many chunk virtual_union's. The default value is
+     *         'false'.
      * </ul>
      * The default value is an empty {@link Map}.
      *

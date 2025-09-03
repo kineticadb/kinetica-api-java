@@ -66,18 +66,6 @@ public class CreateJobRequest implements IndexedRecord {
      */
     public static final class Options {
         /**
-         * Supported values:
-         * <ul>
-         *     <li>{@link Options#TRUE TRUE}
-         *     <li>{@link Options#FALSE FALSE}
-         * </ul>
-         */
-        public static final String REMOVE_JOB_ON_COMPLETE = "remove_job_on_complete";
-
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
-
-        /**
          * Tag to use for submitted job. The same tag could be used on backup
          * cluster to retrieve response for the job. Tags can use letter,
          * numbers, '_' and '-'
@@ -136,13 +124,6 @@ public class CreateJobRequest implements IndexedRecord {
      *                 JSON}.
      * @param options  Optional parameters.
      *                 <ul>
-     *                     <li>{@link Options#REMOVE_JOB_ON_COMPLETE
-     *                         REMOVE_JOB_ON_COMPLETE}:
-     *                         Supported values:
-     *                         <ul>
-     *                             <li>{@link Options#TRUE TRUE}
-     *                             <li>{@link Options#FALSE FALSE}
-     *                         </ul>
      *                     <li>{@link Options#JOB_TAG JOB_TAG}: Tag to use for
      *                         submitted job. The same tag could be used on
      *                         backup cluster to retrieve response for the job.
@@ -281,12 +262,6 @@ public class CreateJobRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#REMOVE_JOB_ON_COMPLETE REMOVE_JOB_ON_COMPLETE}:
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
-     *         </ul>
      *     <li>{@link Options#JOB_TAG JOB_TAG}: Tag to use for submitted job.
      *         The same tag could be used on backup cluster to retrieve
      *         response for the job. Tags can use letter, numbers, '_' and '-'
@@ -302,12 +277,6 @@ public class CreateJobRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#REMOVE_JOB_ON_COMPLETE REMOVE_JOB_ON_COMPLETE}:
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
-     *         </ul>
      *     <li>{@link Options#JOB_TAG JOB_TAG}: Tag to use for submitted job.
      *         The same tag could be used on backup cluster to retrieve
      *         response for the job. Tags can use letter, numbers, '_' and '-'

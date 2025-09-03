@@ -96,7 +96,7 @@ public class HasRoleRequest implements IndexedRecord {
     /**
      * Constructs a HasRoleRequest object with the specified parameters.
      *
-     * @param principal  Name of the user for which role membersih is being
+     * @param principal  Name of the user for which role membership is being
      *                   checked. Must be an existing user. If blank, will use
      *                   the current user. The default value is ''.
      * @param role  Name of role to check for membership.
@@ -142,7 +142,7 @@ public class HasRoleRequest implements IndexedRecord {
     }
 
     /**
-     * Name of the user for which role membersih is being checked. Must be an
+     * Name of the user for which role membership is being checked. Must be an
      * existing user. If blank, will use the current user. The default value is
      * ''.
      *
@@ -153,7 +153,7 @@ public class HasRoleRequest implements IndexedRecord {
     }
 
     /**
-     * Name of the user for which role membersih is being checked. Must be an
+     * Name of the user for which role membership is being checked. Must be an
      * existing user. If blank, will use the current user. The default value is
      * ''.
      *

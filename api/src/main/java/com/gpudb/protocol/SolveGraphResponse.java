@@ -70,7 +70,7 @@ public class SolveGraphResponse implements IndexedRecord {
     }
 
     /**
-     * Cost or Pagerank (based on solver type) for each destination node
+     * Cost or page rank (based on solver type) for each destination node
      * requested. Only populated if 'export_solve_results' option is set to
      * true.
      *
@@ -81,7 +81,7 @@ public class SolveGraphResponse implements IndexedRecord {
     }
 
     /**
-     * Cost or Pagerank (based on solver type) for each destination node
+     * Cost or page rank (based on solver type) for each destination node
      * requested. Only populated if 'export_solve_results' option is set to
      * true.
      *

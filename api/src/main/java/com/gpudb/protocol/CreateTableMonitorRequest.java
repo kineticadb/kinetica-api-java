@@ -137,6 +137,34 @@ public class CreateTableMonitorRequest implements IndexedRecord {
         public static final String EXPRESSION = "expression";
 
         /**
+         * A comma-separated list of tables (optionally with aliases) to
+         * include in the join. The monitored table {@link #getTableName()
+         * tableName} must be included, representing only the newly inserted
+         * rows (deltas) since the last notification. Other tables can be any
+         * existing tables or views. Aliases can be used with the 'table_name
+         * as alias' syntax.
+         */
+        public static final String JOIN_TABLE_NAMES = "join_table_names";
+
+        /**
+         * A comma-separated list of columns or expressions to include from the
+         * joined tables. Column references can use table names or aliases
+         * defined in 'join_table_names'. Each column can optionally be aliased
+         * using 'as'. The selected columns will also appear in the
+         * notification output.
+         */
+        public static final String JOIN_COLUMN_NAMES = "join_column_names";
+
+        /**
+         * Optional filter or join expressions to apply when combining the
+         * tables. Expressions are standard SQL-style conditions and can
+         * reference any table or alias listed in 'join_table_names'. This
+         * corresponds to the WHERE clause of the underlying join, and can
+         * include conditions to filter the delta rows.
+         */
+        public static final String JOIN_EXPRESSIONS = "join_expressions";
+
+        /**
          * Method controlling when the table monitor reports changes to the
          * {@link #getTableName() tableName}.
          * Supported values:
@@ -245,6 +273,31 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *                         TIMESTAMP).
      *                     <li>{@link Options#EXPRESSION EXPRESSION}: Filter
      *                         expression to limit records for notification
+     *                     <li>{@link Options#JOIN_TABLE_NAMES
+     *                         JOIN_TABLE_NAMES}: A comma-separated list of
+     *                         tables (optionally with aliases) to include in
+     *                         the join. The monitored table {@code tableName}
+     *                         must be included, representing only the newly
+     *                         inserted rows (deltas) since the last
+     *                         notification. Other tables can be any existing
+     *                         tables or views. Aliases can be used with the
+     *                         'table_name as alias' syntax.
+     *                     <li>{@link Options#JOIN_COLUMN_NAMES
+     *                         JOIN_COLUMN_NAMES}: A comma-separated list of
+     *                         columns or expressions to include from the
+     *                         joined tables. Column references can use table
+     *                         names or aliases defined in 'join_table_names'.
+     *                         Each column can optionally be aliased using
+     *                         'as'. The selected columns will also appear in
+     *                         the notification output.
+     *                     <li>{@link Options#JOIN_EXPRESSIONS
+     *                         JOIN_EXPRESSIONS}: Optional filter or join
+     *                         expressions to apply when combining the tables.
+     *                         Expressions are standard SQL-style conditions
+     *                         and can reference any table or alias listed in
+     *                         'join_table_names'. This corresponds to the
+     *                         WHERE clause of the underlying join, and can
+     *                         include conditions to filter the delta rows.
      *                     <li>{@link Options#REFRESH_METHOD REFRESH_METHOD}:
      *                         Method controlling when the table monitor
      *                         reports changes to the {@code tableName}.
@@ -341,6 +394,25 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *         TIMESTAMP).
      *     <li>{@link Options#EXPRESSION EXPRESSION}: Filter expression to
      *         limit records for notification
+     *     <li>{@link Options#JOIN_TABLE_NAMES JOIN_TABLE_NAMES}: A
+     *         comma-separated list of tables (optionally with aliases) to
+     *         include in the join. The monitored table {@link #getTableName()
+     *         tableName} must be included, representing only the newly
+     *         inserted rows (deltas) since the last notification. Other tables
+     *         can be any existing tables or views. Aliases can be used with
+     *         the 'table_name as alias' syntax.
+     *     <li>{@link Options#JOIN_COLUMN_NAMES JOIN_COLUMN_NAMES}: A
+     *         comma-separated list of columns or expressions to include from
+     *         the joined tables. Column references can use table names or
+     *         aliases defined in 'join_table_names'. Each column can
+     *         optionally be aliased using 'as'. The selected columns will also
+     *         appear in the notification output.
+     *     <li>{@link Options#JOIN_EXPRESSIONS JOIN_EXPRESSIONS}: Optional
+     *         filter or join expressions to apply when combining the tables.
+     *         Expressions are standard SQL-style conditions and can reference
+     *         any table or alias listed in 'join_table_names'. This
+     *         corresponds to the WHERE clause of the underlying join, and can
+     *         include conditions to filter the delta rows.
      *     <li>{@link Options#REFRESH_METHOD REFRESH_METHOD}: Method
      *         controlling when the table monitor reports changes to the {@link
      *         #getTableName() tableName}.
@@ -406,6 +478,25 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *         TIMESTAMP).
      *     <li>{@link Options#EXPRESSION EXPRESSION}: Filter expression to
      *         limit records for notification
+     *     <li>{@link Options#JOIN_TABLE_NAMES JOIN_TABLE_NAMES}: A
+     *         comma-separated list of tables (optionally with aliases) to
+     *         include in the join. The monitored table {@link #getTableName()
+     *         tableName} must be included, representing only the newly
+     *         inserted rows (deltas) since the last notification. Other tables
+     *         can be any existing tables or views. Aliases can be used with
+     *         the 'table_name as alias' syntax.
+     *     <li>{@link Options#JOIN_COLUMN_NAMES JOIN_COLUMN_NAMES}: A
+     *         comma-separated list of columns or expressions to include from
+     *         the joined tables. Column references can use table names or
+     *         aliases defined in 'join_table_names'. Each column can
+     *         optionally be aliased using 'as'. The selected columns will also
+     *         appear in the notification output.
+     *     <li>{@link Options#JOIN_EXPRESSIONS JOIN_EXPRESSIONS}: Optional
+     *         filter or join expressions to apply when combining the tables.
+     *         Expressions are standard SQL-style conditions and can reference
+     *         any table or alias listed in 'join_table_names'. This
+     *         corresponds to the WHERE clause of the underlying join, and can
+     *         include conditions to filter the delta rows.
      *     <li>{@link Options#REFRESH_METHOD REFRESH_METHOD}: Method
      *         controlling when the table monitor reports changes to the {@link
      *         #getTableName() tableName}.

@@ -268,6 +268,12 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          */
         public static final String STRATEGY_DEFINITION = "strategy_definition";
 
+        /**
+         * The default <a href="../../../../../../concepts/column_compression/"
+         * target="_top">compression codec</a> for this table's columns.
+         */
+        public static final String COMPRESSION_CODEC = "compression_codec";
+
         private CreateTableOptions() {  }
     }
 
@@ -279,44 +285,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * Optional parameters.
      */
     public static final class Options {
-        /**
-         * Optional number of bytes to skip when reading an avro record.
-         */
-        public static final String AVRO_HEADER_BYTES = "avro_header_bytes";
-
-        /**
-         * Optional number of avro records, if data includes only records.
-         */
-        public static final String AVRO_NUM_RECORDS = "avro_num_records";
-
-        /**
-         * Optional string representing avro schema, for insert records in avro
-         * format, that does not include is schema.
-         */
-        public static final String AVRO_SCHEMA = "avro_schema";
-
-        /**
-         * When user provides 'avro_schema', avro data is assumed to be
-         * schemaless, unless specified. Default is 'true' when given
-         * avro_schema. Igonred when avro_schema is not given.
-         * Supported values:
-         * <ul>
-         *     <li>{@link Options#TRUE TRUE}
-         *     <li>{@link Options#FALSE FALSE}
-         * </ul>
-         */
-        public static final String AVRO_SCHEMALESS = "avro_schemaless";
-
-        /**
-         * Upsert new records when primary keys match existing records
-         */
-        public static final String TRUE = "true";
-
-        /**
-         * Reject new records when primary keys match existing records
-         */
-        public static final String FALSE = "false";
-
         /**
          * Optional name of a table to which records that were rejected are
          * written.  The bad-record-table has the following columns:
@@ -558,8 +526,18 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String FLATTEN_COLUMNS = "flatten_columns";
 
         /**
-         * Comma separated list of gdal conf options, for the specific requets:
-         * key=value. The default value is ''.
+         * Upsert new records when primary keys match existing records
+         */
+        public static final String TRUE = "true";
+
+        /**
+         * Reject new records when primary keys match existing records
+         */
+        public static final String FALSE = "false";
+
+        /**
+         * Comma separated list of gdal conf options, for the specific
+         * requests: key=value. The default value is ''.
          */
         public static final String GDAL_CONFIGURATION_OPTIONS = "gdal_configuration_options";
 
@@ -764,9 +742,11 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          */
         public static final String MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE = "max_consecutive_invalid_schema_failure";
 
-        public static final String SCHEMA_REGISTRY_SCHEMA_ID = "schema_registry_schema_id";
+        /**
+         * Name of the Avro schema in the schema registry to use when reading
+         * Avro records.
+         */
         public static final String SCHEMA_REGISTRY_SCHEMA_NAME = "schema_registry_schema_name";
-        public static final String SCHEMA_REGISTRY_SCHEMA_VERSION = "schema_registry_schema_version";
 
         /**
          * Optional: comma separated list of column names, to set as primary
@@ -775,7 +755,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String SHARD_KEYS = "shard_keys";
 
         /**
-         * Skip number of lines from begining of file.
+         * Skip a number of lines from the beginning of the file.
          */
         public static final String SKIP_LINES = "skip_lines";
 
@@ -896,7 +876,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
 
         /**
          * Add 'text_search' property to internally inferenced string columns.
-         * Comma seperated list of column names or '*' for all columns. To add
+         * Comma separated list of column names or '*' for all columns. To add
          * text_search property only to string columns of minimum size, set
          * also the option 'text_search_min_column_length'
          */
@@ -1253,30 +1233,16 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                                    href="../../../../../../rm/concepts/#tier-strategies"
      *                                    target="_top">tier strategy</a> for
      *                                    the table and its columns.
+     *                                <li>{@link
+     *                                    CreateTableOptions#COMPRESSION_CODEC
+     *                                    COMPRESSION_CODEC}: The default <a
+     *                                    href="../../../../../../concepts/column_compression/"
+     *                                    target="_top">compression codec</a>
+     *                                    for this table's columns.
      *                            </ul>
      *                            The default value is an empty {@link Map}.
      * @param options  Optional parameters.
      *                 <ul>
-     *                     <li>{@link Options#AVRO_HEADER_BYTES
-     *                         AVRO_HEADER_BYTES}: Optional number of bytes to
-     *                         skip when reading an avro record.
-     *                     <li>{@link Options#AVRO_NUM_RECORDS
-     *                         AVRO_NUM_RECORDS}: Optional number of avro
-     *                         records, if data includes only records.
-     *                     <li>{@link Options#AVRO_SCHEMA AVRO_SCHEMA}:
-     *                         Optional string representing avro schema, for
-     *                         insert records in avro format, that does not
-     *                         include is schema.
-     *                     <li>{@link Options#AVRO_SCHEMALESS AVRO_SCHEMALESS}:
-     *                         When user provides 'avro_schema', avro data is
-     *                         assumed to be schemaless, unless specified.
-     *                         Default is 'true' when given avro_schema.
-     *                         Igonred when avro_schema is not given.
-     *                         Supported values:
-     *                         <ul>
-     *                             <li>{@link Options#TRUE TRUE}
-     *                             <li>{@link Options#FALSE FALSE}
-     *                         </ul>
      *                     <li>{@link Options#BAD_RECORD_TABLE_NAME
      *                         BAD_RECORD_TABLE_NAME}: Optional name of a table
      *                         to which records that were rejected are written.
@@ -1456,7 +1422,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                     <li>{@link Options#GDAL_CONFIGURATION_OPTIONS
      *                         GDAL_CONFIGURATION_OPTIONS}: Comma separated
      *                         list of gdal conf options, for the specific
-     *                         requets: key=value. The default value is ''.
+     *                         requests: key=value. The default value is ''.
      *                     <li>{@link Options#IGNORE_EXISTING_PK
      *                         IGNORE_EXISTING_PK}: Specifies the record
      *                         collision error-suppression policy for inserting
@@ -1607,18 +1573,16 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE}: Max
      *                         records to skip due to schema related errors,
      *                         before failing
-     *                     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_ID
-     *                         SCHEMA_REGISTRY_SCHEMA_ID}
      *                     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_NAME
-     *                         SCHEMA_REGISTRY_SCHEMA_NAME}
-     *                     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_VERSION
-     *                         SCHEMA_REGISTRY_SCHEMA_VERSION}
+     *                         SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro
+     *                         schema in the schema registry to use when
+     *                         reading Avro records.
      *                     <li>{@link Options#SHARD_KEYS SHARD_KEYS}: Optional:
      *                         comma separated list of column names, to set as
      *                         primary keys, when not specified in the type.
      *                         The default value is ''.
-     *                     <li>{@link Options#SKIP_LINES SKIP_LINES}: Skip
-     *                         number of lines from begining of file.
+     *                     <li>{@link Options#SKIP_LINES SKIP_LINES}: Skip a
+     *                         number of lines from the beginning of the file.
      *                     <li>{@link Options#SUBSCRIBE SUBSCRIBE}:
      *                         Continuously poll the data source to check for
      *                         new data and load it into the table.
@@ -1720,7 +1684,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                     <li>{@link Options#TEXT_SEARCH_COLUMNS
      *                         TEXT_SEARCH_COLUMNS}: Add 'text_search' property
      *                         to internally inferenced string columns. Comma
-     *                         seperated list of column names or '*' for all
+     *                         separated list of column names or '*' for all
      *                         columns. To add text_search property only to
      *                         string columns of minimum size, set also the
      *                         option 'text_search_min_column_length'
@@ -2043,6 +2007,10 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
+     *     <li>{@link CreateTableOptions#COMPRESSION_CODEC COMPRESSION_CODEC}:
+     *         The default <a
+     *         href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression codec</a> for this table's columns.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -2185,6 +2153,10 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
+     *     <li>{@link CreateTableOptions#COMPRESSION_CODEC COMPRESSION_CODEC}:
+     *         The default <a
+     *         href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression codec</a> for this table's columns.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -2200,22 +2172,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#AVRO_HEADER_BYTES AVRO_HEADER_BYTES}: Optional
-     *         number of bytes to skip when reading an avro record.
-     *     <li>{@link Options#AVRO_NUM_RECORDS AVRO_NUM_RECORDS}: Optional
-     *         number of avro records, if data includes only records.
-     *     <li>{@link Options#AVRO_SCHEMA AVRO_SCHEMA}: Optional string
-     *         representing avro schema, for insert records in avro format,
-     *         that does not include is schema.
-     *     <li>{@link Options#AVRO_SCHEMALESS AVRO_SCHEMALESS}: When user
-     *         provides 'avro_schema', avro data is assumed to be schemaless,
-     *         unless specified. Default is 'true' when given avro_schema.
-     *         Igonred when avro_schema is not given.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
-     *         </ul>
      *     <li>{@link Options#BAD_RECORD_TABLE_NAME BAD_RECORD_TABLE_NAME}:
      *         Optional name of a table to which records that were rejected are
      *         written.  The bad-record-table has the following columns:
@@ -2350,7 +2306,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#GDAL_CONFIGURATION_OPTIONS
      *         GDAL_CONFIGURATION_OPTIONS}: Comma separated list of gdal conf
-     *         options, for the specific requets: key=value. The default value
+     *         options, for the specific requests: key=value. The default value
      *         is ''.
      *     <li>{@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}: Specifies
      *         the record collision error-suppression policy for inserting into
@@ -2464,17 +2420,14 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *     <li>{@link Options#MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE
      *         MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE}: Max records to skip due
      *         to schema related errors, before failing
-     *     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_ID
-     *         SCHEMA_REGISTRY_SCHEMA_ID}
      *     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_NAME
-     *         SCHEMA_REGISTRY_SCHEMA_NAME}
-     *     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_VERSION
-     *         SCHEMA_REGISTRY_SCHEMA_VERSION}
+     *         SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro schema in the
+     *         schema registry to use when reading Avro records.
      *     <li>{@link Options#SHARD_KEYS SHARD_KEYS}: Optional: comma separated
      *         list of column names, to set as primary keys, when not specified
      *         in the type. The default value is ''.
-     *     <li>{@link Options#SKIP_LINES SKIP_LINES}: Skip number of lines from
-     *         begining of file.
+     *     <li>{@link Options#SKIP_LINES SKIP_LINES}: Skip a number of lines
+     *         from the beginning of the file.
      *     <li>{@link Options#SUBSCRIBE SUBSCRIBE}: Continuously poll the data
      *         source to check for new data and load it into the table.
      *         Supported values:
@@ -2552,7 +2505,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         FILE_TYPE} only. The default value is '"'.
      *     <li>{@link Options#TEXT_SEARCH_COLUMNS TEXT_SEARCH_COLUMNS}: Add
      *         'text_search' property to internally inferenced string columns.
-     *         Comma seperated list of column names or '*' for all columns. To
+     *         Comma separated list of column names or '*' for all columns. To
      *         add text_search property only to string columns of minimum size,
      *         set also the option 'text_search_min_column_length'
      *     <li>{@link Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
@@ -2623,22 +2576,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#AVRO_HEADER_BYTES AVRO_HEADER_BYTES}: Optional
-     *         number of bytes to skip when reading an avro record.
-     *     <li>{@link Options#AVRO_NUM_RECORDS AVRO_NUM_RECORDS}: Optional
-     *         number of avro records, if data includes only records.
-     *     <li>{@link Options#AVRO_SCHEMA AVRO_SCHEMA}: Optional string
-     *         representing avro schema, for insert records in avro format,
-     *         that does not include is schema.
-     *     <li>{@link Options#AVRO_SCHEMALESS AVRO_SCHEMALESS}: When user
-     *         provides 'avro_schema', avro data is assumed to be schemaless,
-     *         unless specified. Default is 'true' when given avro_schema.
-     *         Igonred when avro_schema is not given.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
-     *         </ul>
      *     <li>{@link Options#BAD_RECORD_TABLE_NAME BAD_RECORD_TABLE_NAME}:
      *         Optional name of a table to which records that were rejected are
      *         written.  The bad-record-table has the following columns:
@@ -2773,7 +2710,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#GDAL_CONFIGURATION_OPTIONS
      *         GDAL_CONFIGURATION_OPTIONS}: Comma separated list of gdal conf
-     *         options, for the specific requets: key=value. The default value
+     *         options, for the specific requests: key=value. The default value
      *         is ''.
      *     <li>{@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}: Specifies
      *         the record collision error-suppression policy for inserting into
@@ -2887,17 +2824,14 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *     <li>{@link Options#MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE
      *         MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE}: Max records to skip due
      *         to schema related errors, before failing
-     *     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_ID
-     *         SCHEMA_REGISTRY_SCHEMA_ID}
      *     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_NAME
-     *         SCHEMA_REGISTRY_SCHEMA_NAME}
-     *     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_VERSION
-     *         SCHEMA_REGISTRY_SCHEMA_VERSION}
+     *         SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro schema in the
+     *         schema registry to use when reading Avro records.
      *     <li>{@link Options#SHARD_KEYS SHARD_KEYS}: Optional: comma separated
      *         list of column names, to set as primary keys, when not specified
      *         in the type. The default value is ''.
-     *     <li>{@link Options#SKIP_LINES SKIP_LINES}: Skip number of lines from
-     *         begining of file.
+     *     <li>{@link Options#SKIP_LINES SKIP_LINES}: Skip a number of lines
+     *         from the beginning of the file.
      *     <li>{@link Options#SUBSCRIBE SUBSCRIBE}: Continuously poll the data
      *         source to check for new data and load it into the table.
      *         Supported values:
@@ -2975,7 +2909,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         FILE_TYPE} only. The default value is '"'.
      *     <li>{@link Options#TEXT_SEARCH_COLUMNS TEXT_SEARCH_COLUMNS}: Add
      *         'text_search' property to internally inferenced string columns.
-     *         Comma seperated list of column names or '*' for all columns. To
+     *         Comma separated list of column names or '*' for all columns. To
      *         add text_search property only to string columns of minimum size,
      *         set also the option 'text_search_min_column_length'
      *     <li>{@link Options#TEXT_SEARCH_MIN_COLUMN_LENGTH

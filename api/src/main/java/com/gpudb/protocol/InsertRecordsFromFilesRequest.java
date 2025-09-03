@@ -287,6 +287,12 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          */
         public static final String STRATEGY_DEFINITION = "strategy_definition";
 
+        /**
+         * The default <a href="../../../../../../concepts/column_compression/"
+         * target="_top">compression codec</a> for this table's columns.
+         */
+        public static final String COMPRESSION_CODEC = "compression_codec";
+
         private CreateTableOptions() {  }
     }
 
@@ -556,8 +562,8 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * Comma separated list of gdal conf options, for the specific requets:
-         * key=value
+         * Comma separated list of gdal conf options, for the specific
+         * requests: key=value
          */
         public static final String GDAL_CONFIGURATION_OPTIONS = "gdal_configuration_options";
 
@@ -826,7 +832,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String SHARD_KEYS = "shard_keys";
 
         /**
-         * Skip number of lines from begining of file.
+         * Skip a number of lines from the beginning of the file.
          */
         public static final String SKIP_LINES = "skip_lines";
 
@@ -963,7 +969,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
 
         /**
          * Add 'text_search' property to internally inferenced string columns.
-         * Comma seperated list of column names or '*' for all columns. To add
+         * Comma separated list of column names or '*' for all columns. To add
          * 'text_search' property only to string columns greater than or equal
          * to a minimum size, also set the {@link
          * Options#TEXT_SEARCH_MIN_COLUMN_LENGTH TEXT_SEARCH_MIN_COLUMN_LENGTH}
@@ -1091,7 +1097,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                   target="_top">table naming criteria</a>.
      * @param filepaths  A list of file paths from which data will be sourced;
      *                   For paths in <a href="../../../../../../tools/kifs/"
-     *                   target="_top">KiFS</a>, use the uri prefix of kifs://
+     *                   target="_top">KiFS</a>, use the URI prefix of kifs://
      *                   followed by the path to a file or directory. File
      *                   matching by prefix is supported, e.g. kifs://dir/file
      *                   would match dir/file_1 and dir/file_2. When prefix
@@ -1341,6 +1347,12 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                                    href="../../../../../../rm/concepts/#tier-strategies"
      *                                    target="_top">tier strategy</a> for
      *                                    the table and its columns.
+     *                                <li>{@link
+     *                                    CreateTableOptions#COMPRESSION_CODEC
+     *                                    COMPRESSION_CODEC}: The default <a
+     *                                    href="../../../../../../concepts/column_compression/"
+     *                                    target="_top">compression codec</a>
+     *                                    for this table's columns.
      *                            </ul>
      *                            The default value is an empty {@link Map}.
      * @param options  Optional parameters.
@@ -1534,7 +1546,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                     <li>{@link Options#GDAL_CONFIGURATION_OPTIONS
      *                         GDAL_CONFIGURATION_OPTIONS}: Comma separated
      *                         list of gdal conf options, for the specific
-     *                         requets: key=value
+     *                         requests: key=value
      *                     <li>{@link Options#IGNORE_EXISTING_PK
      *                         IGNORE_EXISTING_PK}: Specifies the record
      *                         collision error-suppression policy for inserting
@@ -1732,8 +1744,8 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                     <li>{@link Options#SHARD_KEYS SHARD_KEYS}: Comma
      *                         separated list of column names to set as shard
      *                         keys, when not specified in the type.
-     *                     <li>{@link Options#SKIP_LINES SKIP_LINES}: Skip
-     *                         number of lines from begining of file.
+     *                     <li>{@link Options#SKIP_LINES SKIP_LINES}: Skip a
+     *                         number of lines from the beginning of the file.
      *                     <li>{@link Options#START_OFFSETS START_OFFSETS}:
      *                         Starting offsets by partition to fetch from
      *                         kafka. A comma separated list of
@@ -1839,7 +1851,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                     <li>{@link Options#TEXT_SEARCH_COLUMNS
      *                         TEXT_SEARCH_COLUMNS}: Add 'text_search' property
      *                         to internally inferenced string columns. Comma
-     *                         seperated list of column names or '*' for all
+     *                         separated list of column names or '*' for all
      *                         columns. To add 'text_search' property only to
      *                         string columns greater than or equal to a
      *                         minimum size, also set the {@link
@@ -1972,7 +1984,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * A list of file paths from which data will be sourced;
      * <p>
      * For paths in <a href="../../../../../../tools/kifs/"
-     * target="_top">KiFS</a>, use the uri prefix of kifs:// followed by the
+     * target="_top">KiFS</a>, use the URI prefix of kifs:// followed by the
      * path to a file or directory. File matching by prefix is supported,
      * e.g.&nbsp;kifs://dir/file would match dir/file_1 and dir/file_2. When
      * prefix matching is used, the path must start with a full, valid KiFS
@@ -2007,7 +2019,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * A list of file paths from which data will be sourced;
      * <p>
      * For paths in <a href="../../../../../../tools/kifs/"
-     * target="_top">KiFS</a>, use the uri prefix of kifs:// followed by the
+     * target="_top">KiFS</a>, use the URI prefix of kifs:// followed by the
      * path to a file or directory. File matching by prefix is supported,
      * e.g.&nbsp;kifs://dir/file would match dir/file_1 and dir/file_2. When
      * prefix matching is used, the path must start with a full, valid KiFS
@@ -2195,6 +2207,10 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
+     *     <li>{@link CreateTableOptions#COMPRESSION_CODEC COMPRESSION_CODEC}:
+     *         The default <a
+     *         href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression codec</a> for this table's columns.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -2337,6 +2353,10 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
+     *     <li>{@link CreateTableOptions#COMPRESSION_CODEC COMPRESSION_CODEC}:
+     *         The default <a
+     *         href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression codec</a> for this table's columns.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -2492,7 +2512,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#GDAL_CONFIGURATION_OPTIONS
      *         GDAL_CONFIGURATION_OPTIONS}: Comma separated list of gdal conf
-     *         options, for the specific requets: key=value
+     *         options, for the specific requests: key=value
      *     <li>{@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}: Specifies
      *         the record collision error-suppression policy for inserting into
      *         a table with a <a
@@ -2645,8 +2665,8 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *     <li>{@link Options#SHARD_KEYS SHARD_KEYS}: Comma separated list of
      *         column names to set as shard keys, when not specified in the
      *         type.
-     *     <li>{@link Options#SKIP_LINES SKIP_LINES}: Skip number of lines from
-     *         begining of file.
+     *     <li>{@link Options#SKIP_LINES SKIP_LINES}: Skip a number of lines
+     *         from the beginning of the file.
      *     <li>{@link Options#START_OFFSETS START_OFFSETS}: Starting offsets by
      *         partition to fetch from kafka. A comma separated list of
      *         partition:offset pairs.
@@ -2728,7 +2748,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         FILE_TYPE} only. The default value is '"'.
      *     <li>{@link Options#TEXT_SEARCH_COLUMNS TEXT_SEARCH_COLUMNS}: Add
      *         'text_search' property to internally inferenced string columns.
-     *         Comma seperated list of column names or '*' for all columns. To
+     *         Comma separated list of column names or '*' for all columns. To
      *         add 'text_search' property only to string columns greater than
      *         or equal to a minimum size, also set the {@link
      *         Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
@@ -2943,7 +2963,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#GDAL_CONFIGURATION_OPTIONS
      *         GDAL_CONFIGURATION_OPTIONS}: Comma separated list of gdal conf
-     *         options, for the specific requets: key=value
+     *         options, for the specific requests: key=value
      *     <li>{@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}: Specifies
      *         the record collision error-suppression policy for inserting into
      *         a table with a <a
@@ -3096,8 +3116,8 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *     <li>{@link Options#SHARD_KEYS SHARD_KEYS}: Comma separated list of
      *         column names to set as shard keys, when not specified in the
      *         type.
-     *     <li>{@link Options#SKIP_LINES SKIP_LINES}: Skip number of lines from
-     *         begining of file.
+     *     <li>{@link Options#SKIP_LINES SKIP_LINES}: Skip a number of lines
+     *         from the beginning of the file.
      *     <li>{@link Options#START_OFFSETS START_OFFSETS}: Starting offsets by
      *         partition to fetch from kafka. A comma separated list of
      *         partition:offset pairs.
@@ -3179,7 +3199,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         FILE_TYPE} only. The default value is '"'.
      *     <li>{@link Options#TEXT_SEARCH_COLUMNS TEXT_SEARCH_COLUMNS}: Add
      *         'text_search' property to internally inferenced string columns.
-     *         Comma seperated list of column names or '*' for all columns. To
+     *         Comma separated list of column names or '*' for all columns. To
      *         add 'text_search' property only to string columns greater than
      *         or equal to a minimum size, also set the {@link
      *         Options#TEXT_SEARCH_MIN_COLUMN_LENGTH

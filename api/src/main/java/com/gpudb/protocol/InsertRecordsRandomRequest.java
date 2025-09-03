@@ -121,14 +121,14 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
          *         value. If a max value is specified for a given column the
          *         data is randomly generated between min and max and decimated
          *         down to the interval. If no max is provided the data is
-         *         linerally generated starting at the minimum value (instead
-         *         of generating random data). For non-decimated string-type
+         *         linearly generated starting at the minimum value (instead of
+         *         generating random data). For non-decimated string-type
          *         columns the interval value is ignored. Instead the values
          *         are generated following the pattern:
          *         'attrname_creationIndex#', i.e. the column name suffixed
          *         with an underscore and a running counter (starting at 0).
-         *         For string types with limited size (eg char4) the prefix is
-         *         dropped. No nulls will be generated for nullable columns.
+         *         For string types with limited size (e.g. char4) the prefix
+         *         is dropped. No nulls will be generated for nullable columns.
          *     <li>{@link Options#NULL_PERCENTAGE NULL_PERCENTAGE}: If
          *         specified, then generate the given percentage of the count
          *         as nulls for all nullable columns.  This option will be
@@ -163,14 +163,14 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
          * If specified, generate values for all columns evenly spaced with the
          * given interval value. If a max value is specified for a given column
          * the data is randomly generated between min and max and decimated
-         * down to the interval. If no max is provided the data is linerally
+         * down to the interval. If no max is provided the data is linearly
          * generated starting at the minimum value (instead of generating
          * random data). For non-decimated string-type columns the interval
          * value is ignored. Instead the values are generated following the
          * pattern: 'attrname_creationIndex#', i.e.&nbsp;the column name
          * suffixed with an underscore and a running counter (starting at 0).
-         * For string types with limited size (eg char4) the prefix is dropped.
-         * No nulls will be generated for nullable columns.
+         * For string types with limited size (e.g.&nbsp;char4) the prefix is
+         * dropped. No nulls will be generated for nullable columns.
          */
         public static final String INTERVAL = "interval";
 
@@ -231,14 +231,14 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
          *         value. If a max value is specified for a given column the
          *         data is randomly generated between min and max and decimated
          *         down to the interval. If no max is provided the data is
-         *         linerally generated starting at the minimum value (instead
-         *         of generating random data). For non-decimated string-type
+         *         linearly generated starting at the minimum value (instead of
+         *         generating random data). For non-decimated string-type
          *         columns the interval value is ignored. Instead the values
          *         are generated following the pattern:
          *         'attrname_creationIndex#', i.e. the column name suffixed
          *         with an underscore and a running counter (starting at 0).
-         *         For string types with limited size (eg char4) the prefix is
-         *         dropped. No nulls will be generated for nullable columns.
+         *         For string types with limited size (e.g. char4) the prefix
+         *         is dropped. No nulls will be generated for nullable columns.
          *     <li>{@link Options#NULL_PERCENTAGE NULL_PERCENTAGE}: If
          *         specified and if this column is nullable, then generate the
          *         given percentage of the count as nulls.  This option will
@@ -385,7 +385,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                                 specified for a given column the data is
      *                                 randomly generated between min and max
      *                                 and decimated down to the interval. If
-     *                                 no max is provided the data is linerally
+     *                                 no max is provided the data is linearly
      *                                 generated starting at the minimum value
      *                                 (instead of generating random data). For
      *                                 non-decimated string-type columns the
@@ -395,7 +395,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                                 the column name suffixed with an
      *                                 underscore and a running counter
      *                                 (starting at 0). For string types with
-     *                                 limited size (eg char4) the prefix is
+     *                                 limited size (e.g. char4) the prefix is
      *                                 dropped. No nulls will be generated for
      *                                 nullable columns.
      *                             <li>{@link Options#NULL_PERCENTAGE
@@ -475,7 +475,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                                 specified for a given column the data is
      *                                 randomly generated between min and max
      *                                 and decimated down to the interval. If
-     *                                 no max is provided the data is linerally
+     *                                 no max is provided the data is linearly
      *                                 generated starting at the minimum value
      *                                 (instead of generating random data). For
      *                                 non-decimated string-type columns the
@@ -485,7 +485,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                                 the column name suffixed with an
      *                                 underscore and a running counter
      *                                 (starting at 0). For string types with
-     *                                 limited size (eg char4) the prefix is
+     *                                 limited size (e.g. char4) the prefix is
      *                                 dropped. No nulls will be generated for
      *                                 nullable columns.
      *                             <li>{@link Options#NULL_PERCENTAGE
@@ -650,15 +650,15 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                 given interval value. If a max value is specified for a
      *                 given column the data is randomly generated between min
      *                 and max and decimated down to the interval. If no max is
-     *                 provided the data is linerally generated starting at the
+     *                 provided the data is linearly generated starting at the
      *                 minimum value (instead of generating random data). For
      *                 non-decimated string-type columns the interval value is
      *                 ignored. Instead the values are generated following the
      *                 pattern: 'attrname_creationIndex#', i.e. the column name
      *                 suffixed with an underscore and a running counter
-     *                 (starting at 0). For string types with limited size (eg
-     *                 char4) the prefix is dropped. No nulls will be generated
-     *                 for nullable columns.
+     *                 (starting at 0). For string types with limited size
+     *                 (e.g. char4) the prefix is dropped. No nulls will be
+     *                 generated for nullable columns.
      *             <li>{@link Options#NULL_PERCENTAGE NULL_PERCENTAGE}: If
      *                 specified, then generate the given percentage of the
      *                 count as nulls for all nullable columns.  This option
@@ -714,15 +714,15 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                 given interval value. If a max value is specified for a
      *                 given column the data is randomly generated between min
      *                 and max and decimated down to the interval. If no max is
-     *                 provided the data is linerally generated starting at the
+     *                 provided the data is linearly generated starting at the
      *                 minimum value (instead of generating random data). For
      *                 non-decimated string-type columns the interval value is
      *                 ignored. Instead the values are generated following the
      *                 pattern: 'attrname_creationIndex#', i.e. the column name
      *                 suffixed with an underscore and a running counter
-     *                 (starting at 0). For string types with limited size (eg
-     *                 char4) the prefix is dropped. No nulls will be generated
-     *                 for nullable columns.
+     *                 (starting at 0). For string types with limited size
+     *                 (e.g. char4) the prefix is dropped. No nulls will be
+     *                 generated for nullable columns.
      *             <li>{@link Options#NULL_PERCENTAGE NULL_PERCENTAGE}: If
      *                 specified and if this column is nullable, then generate
      *                 the given percentage of the count as nulls.  This option
@@ -826,15 +826,15 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                 given interval value. If a max value is specified for a
      *                 given column the data is randomly generated between min
      *                 and max and decimated down to the interval. If no max is
-     *                 provided the data is linerally generated starting at the
+     *                 provided the data is linearly generated starting at the
      *                 minimum value (instead of generating random data). For
      *                 non-decimated string-type columns the interval value is
      *                 ignored. Instead the values are generated following the
      *                 pattern: 'attrname_creationIndex#', i.e. the column name
      *                 suffixed with an underscore and a running counter
-     *                 (starting at 0). For string types with limited size (eg
-     *                 char4) the prefix is dropped. No nulls will be generated
-     *                 for nullable columns.
+     *                 (starting at 0). For string types with limited size
+     *                 (e.g. char4) the prefix is dropped. No nulls will be
+     *                 generated for nullable columns.
      *             <li>{@link Options#NULL_PERCENTAGE NULL_PERCENTAGE}: If
      *                 specified, then generate the given percentage of the
      *                 count as nulls for all nullable columns.  This option
@@ -890,15 +890,15 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                 given interval value. If a max value is specified for a
      *                 given column the data is randomly generated between min
      *                 and max and decimated down to the interval. If no max is
-     *                 provided the data is linerally generated starting at the
+     *                 provided the data is linearly generated starting at the
      *                 minimum value (instead of generating random data). For
      *                 non-decimated string-type columns the interval value is
      *                 ignored. Instead the values are generated following the
      *                 pattern: 'attrname_creationIndex#', i.e. the column name
      *                 suffixed with an underscore and a running counter
-     *                 (starting at 0). For string types with limited size (eg
-     *                 char4) the prefix is dropped. No nulls will be generated
-     *                 for nullable columns.
+     *                 (starting at 0). For string types with limited size
+     *                 (e.g. char4) the prefix is dropped. No nulls will be
+     *                 generated for nullable columns.
      *             <li>{@link Options#NULL_PERCENTAGE NULL_PERCENTAGE}: If
      *                 specified and if this column is nullable, then generate
      *                 the given percentage of the count as nulls.  This option

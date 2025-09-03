@@ -29,6 +29,9 @@ public class ShowTableMonitorsResponse implements IndexedRecord {
                 .name("events").type().array().items().stringType().noDefault()
                 .name("increasingColumns").type().array().items().stringType().noDefault()
                 .name("filterExpressions").type().array().items().stringType().noDefault()
+                .name("joinTableNames").type().array().items().stringType().noDefault()
+                .name("joinColumnNames").type().array().items().stringType().noDefault()
+                .name("joinExpressions").type().array().items().stringType().noDefault()
                 .name("refreshMethod").type().array().items().stringType().noDefault()
                 .name("refreshPeriod").type().array().items().stringType().noDefault()
                 .name("refreshStartTime").type().array().items().stringType().noDefault()
@@ -101,6 +104,9 @@ public class ShowTableMonitorsResponse implements IndexedRecord {
     private List<String> events;
     private List<String> increasingColumns;
     private List<String> filterExpressions;
+    private List<String> joinTableNames;
+    private List<String> joinColumnNames;
+    private List<String> joinExpressions;
     private List<String> refreshMethod;
     private List<String> refreshPeriod;
     private List<String> refreshStartTime;
@@ -224,6 +230,69 @@ public class ShowTableMonitorsResponse implements IndexedRecord {
      */
     public ShowTableMonitorsResponse setFilterExpressions(List<String> filterExpressions) {
         this.filterExpressions = (filterExpressions == null) ? new ArrayList<String>() : filterExpressions;
+        return this;
+    }
+
+    /**
+     * List of join_table_names.
+     *
+     * @return The current value of {@code joinTableNames}.
+     */
+    public List<String> getJoinTableNames() {
+        return joinTableNames;
+    }
+
+    /**
+     * List of join_table_names.
+     *
+     * @param joinTableNames  The new value for {@code joinTableNames}.
+     *
+     * @return {@code this} to mimic the builder pattern.
+     */
+    public ShowTableMonitorsResponse setJoinTableNames(List<String> joinTableNames) {
+        this.joinTableNames = (joinTableNames == null) ? new ArrayList<String>() : joinTableNames;
+        return this;
+    }
+
+    /**
+     * List of join_column_names
+     *
+     * @return The current value of {@code joinColumnNames}.
+     */
+    public List<String> getJoinColumnNames() {
+        return joinColumnNames;
+    }
+
+    /**
+     * List of join_column_names
+     *
+     * @param joinColumnNames  The new value for {@code joinColumnNames}.
+     *
+     * @return {@code this} to mimic the builder pattern.
+     */
+    public ShowTableMonitorsResponse setJoinColumnNames(List<String> joinColumnNames) {
+        this.joinColumnNames = (joinColumnNames == null) ? new ArrayList<String>() : joinColumnNames;
+        return this;
+    }
+
+    /**
+     * List of join expressions.
+     *
+     * @return The current value of {@code joinExpressions}.
+     */
+    public List<String> getJoinExpressions() {
+        return joinExpressions;
+    }
+
+    /**
+     * List of join expressions.
+     *
+     * @param joinExpressions  The new value for {@code joinExpressions}.
+     *
+     * @return {@code this} to mimic the builder pattern.
+     */
+    public ShowTableMonitorsResponse setJoinExpressions(List<String> joinExpressions) {
+        this.joinExpressions = (joinExpressions == null) ? new ArrayList<String>() : joinExpressions;
         return this;
     }
 
@@ -447,21 +516,30 @@ public class ShowTableMonitorsResponse implements IndexedRecord {
                 return this.filterExpressions;
 
             case 5:
-                return this.refreshMethod;
+                return this.joinTableNames;
 
             case 6:
-                return this.refreshPeriod;
+                return this.joinColumnNames;
 
             case 7:
-                return this.refreshStartTime;
+                return this.joinExpressions;
 
             case 8:
-                return this.datasinkNames;
+                return this.refreshMethod;
 
             case 9:
-                return this.additionalInfo;
+                return this.refreshPeriod;
 
             case 10:
+                return this.refreshStartTime;
+
+            case 11:
+                return this.datasinkNames;
+
+            case 12:
+                return this.additionalInfo;
+
+            case 13:
                 return this.info;
 
             default:
@@ -503,26 +581,38 @@ public class ShowTableMonitorsResponse implements IndexedRecord {
                 break;
 
             case 5:
-                this.refreshMethod = (List<String>)value;
+                this.joinTableNames = (List<String>)value;
                 break;
 
             case 6:
-                this.refreshPeriod = (List<String>)value;
+                this.joinColumnNames = (List<String>)value;
                 break;
 
             case 7:
-                this.refreshStartTime = (List<String>)value;
+                this.joinExpressions = (List<String>)value;
                 break;
 
             case 8:
-                this.datasinkNames = (List<String>)value;
+                this.refreshMethod = (List<String>)value;
                 break;
 
             case 9:
-                this.additionalInfo = (List<Map<String, String>>)value;
+                this.refreshPeriod = (List<String>)value;
                 break;
 
             case 10:
+                this.refreshStartTime = (List<String>)value;
+                break;
+
+            case 11:
+                this.datasinkNames = (List<String>)value;
+                break;
+
+            case 12:
+                this.additionalInfo = (List<Map<String, String>>)value;
+                break;
+
+            case 13:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -548,6 +638,9 @@ public class ShowTableMonitorsResponse implements IndexedRecord {
                  && this.events.equals( that.events )
                  && this.increasingColumns.equals( that.increasingColumns )
                  && this.filterExpressions.equals( that.filterExpressions )
+                 && this.joinTableNames.equals( that.joinTableNames )
+                 && this.joinColumnNames.equals( that.joinColumnNames )
+                 && this.joinExpressions.equals( that.joinExpressions )
                  && this.refreshMethod.equals( that.refreshMethod )
                  && this.refreshPeriod.equals( that.refreshPeriod )
                  && this.refreshStartTime.equals( that.refreshStartTime )
@@ -580,6 +673,18 @@ public class ShowTableMonitorsResponse implements IndexedRecord {
         builder.append( gd.toString( "filterExpressions" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.filterExpressions ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "joinTableNames" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.joinTableNames ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "joinColumnNames" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.joinColumnNames ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "joinExpressions" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.joinExpressions ) );
         builder.append( ", " );
         builder.append( gd.toString( "refreshMethod" ) );
         builder.append( ": " );
@@ -617,6 +722,9 @@ public class ShowTableMonitorsResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.events.hashCode();
         hashCode = (31 * hashCode) + this.increasingColumns.hashCode();
         hashCode = (31 * hashCode) + this.filterExpressions.hashCode();
+        hashCode = (31 * hashCode) + this.joinTableNames.hashCode();
+        hashCode = (31 * hashCode) + this.joinColumnNames.hashCode();
+        hashCode = (31 * hashCode) + this.joinExpressions.hashCode();
         hashCode = (31 * hashCode) + this.refreshMethod.hashCode();
         hashCode = (31 * hashCode) + this.refreshPeriod.hashCode();
         hashCode = (31 * hashCode) + this.refreshStartTime.hashCode();

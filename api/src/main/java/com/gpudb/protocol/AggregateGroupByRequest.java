@@ -179,7 +179,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String EXPRESSION = "expression";
 
         /**
-         * evaluate the filter expression during group-by chunk processing.
+         * evaluate the group-by during last JoinedSet filter plan step.
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}
@@ -187,7 +187,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
-        public static final String CHUNKED_EXPRESSION_EVALUATION = "chunked_expression_evaluation";
+        public static final String PIPELINED_EXPRESSION_EVALUATION = "pipelined_expression_evaluation";
 
         /**
          * Filter expression to apply to the aggregated results.
@@ -270,6 +270,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String STRATEGY_DEFINITION = "strategy_definition";
 
         /**
+         * The default <a href="../../../../../../concepts/column_compression/"
+         * target="_top">compression codec</a> for the result table's columns.
+         */
+        public static final String COMPRESSION_CODEC = "compression_codec";
+
+        /**
          * The name of a table used to store the results, in
          * [schema_name.]table_name format, using standard <a
          * href="../../../../../../concepts/tables/#table-name-resolution"
@@ -327,6 +333,19 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String RESULT_TABLE_GENERATE_PK = "result_table_generate_pk";
 
         /**
+         * If {@link Options#TRUE TRUE} then set a soft primary key for the
+         * result table. Must be used in combination with the {@link
+         * Options#RESULT_TABLE RESULT_TABLE} option.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String RESULT_TABLE_GENERATE_SOFT_PK = "result_table_generate_soft_pk";
+
+        /**
          * Sets the <a href="../../../../../../concepts/ttl/"
          * target="_top">TTL</a> of the table specified in {@link
          * Options#RESULT_TABLE RESULT_TABLE}.
@@ -380,10 +399,10 @@ public class AggregateGroupByRequest implements IndexedRecord {
 
         /**
          * Customize the grouping attribute sets to compute the aggregates.
-         * These sets can include ROLLUP or CUBE operartors. The attribute sets
-         * should be enclosed in paranthesis and can include composite
+         * These sets can include ROLLUP or CUBE operators. The attribute sets
+         * should be enclosed in parentheses and can include composite
          * attributes. All attributes specified in the grouping sets must
-         * present in the groupby attributes.
+         * present in the group-by attributes.
          */
         public static final String GROUPING_SETS = "grouping_sets";
 
@@ -491,10 +510,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                     <li>{@link Options#EXPRESSION EXPRESSION}: Filter
      *                         expression to apply to the table prior to
      *                         computing the aggregate group by.
-     *                     <li>{@link Options#CHUNKED_EXPRESSION_EVALUATION
-     *                         CHUNKED_EXPRESSION_EVALUATION}: evaluate the
-     *                         filter expression during group-by chunk
-     *                         processing.
+     *                     <li>{@link Options#PIPELINED_EXPRESSION_EVALUATION
+     *                         PIPELINED_EXPRESSION_EVALUATION}: evaluate the
+     *                         group-by during last JoinedSet filter plan step.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
@@ -553,6 +571,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         href="../../../../../../rm/concepts/#tier-strategies"
      *                         target="_top">tier strategy</a> for the table
      *                         and its columns.
+     *                     <li>{@link Options#COMPRESSION_CODEC
+     *                         COMPRESSION_CODEC}: The default <a
+     *                         href="../../../../../../concepts/column_compression/"
+     *                         target="_top">compression codec</a> for the
+     *                         result table's columns.
      *                     <li>{@link Options#RESULT_TABLE RESULT_TABLE}: The
      *                         name of a table used to store the results, in
      *                         [schema_name.]table_name format, using standard
@@ -610,6 +633,19 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#RESULT_TABLE_GENERATE_SOFT_PK
+     *                         RESULT_TABLE_GENERATE_SOFT_PK}: If {@link
+     *                         Options#TRUE TRUE} then set a soft primary key
+     *                         for the result table. Must be used in
+     *                         combination with the {@link Options#RESULT_TABLE
+     *                         RESULT_TABLE} option.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                     <li>{@link Options#TTL TTL}: Sets the <a
      *                         href="../../../../../../concepts/ttl/"
      *                         target="_top">TTL</a> of the table specified in
@@ -647,11 +683,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                     <li>{@link Options#GROUPING_SETS GROUPING_SETS}:
      *                         Customize the grouping attribute sets to compute
      *                         the aggregates. These sets can include ROLLUP or
-     *                         CUBE operartors. The attribute sets should be
-     *                         enclosed in paranthesis and can include
+     *                         CUBE operators. The attribute sets should be
+     *                         enclosed in parentheses and can include
      *                         composite attributes. All attributes specified
-     *                         in the grouping sets must present in the groupby
-     *                         attributes.
+     *                         in the grouping sets must present in the
+     *                         group-by attributes.
      *                     <li>{@link Options#ROLLUP ROLLUP}: This option is
      *                         used to specify the multilevel aggregates.
      *                     <li>{@link Options#CUBE CUBE}: This option is used
@@ -750,10 +786,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                     <li>{@link Options#EXPRESSION EXPRESSION}: Filter
      *                         expression to apply to the table prior to
      *                         computing the aggregate group by.
-     *                     <li>{@link Options#CHUNKED_EXPRESSION_EVALUATION
-     *                         CHUNKED_EXPRESSION_EVALUATION}: evaluate the
-     *                         filter expression during group-by chunk
-     *                         processing.
+     *                     <li>{@link Options#PIPELINED_EXPRESSION_EVALUATION
+     *                         PIPELINED_EXPRESSION_EVALUATION}: evaluate the
+     *                         group-by during last JoinedSet filter plan step.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
@@ -812,6 +847,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         href="../../../../../../rm/concepts/#tier-strategies"
      *                         target="_top">tier strategy</a> for the table
      *                         and its columns.
+     *                     <li>{@link Options#COMPRESSION_CODEC
+     *                         COMPRESSION_CODEC}: The default <a
+     *                         href="../../../../../../concepts/column_compression/"
+     *                         target="_top">compression codec</a> for the
+     *                         result table's columns.
      *                     <li>{@link Options#RESULT_TABLE RESULT_TABLE}: The
      *                         name of a table used to store the results, in
      *                         [schema_name.]table_name format, using standard
@@ -869,6 +909,19 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#RESULT_TABLE_GENERATE_SOFT_PK
+     *                         RESULT_TABLE_GENERATE_SOFT_PK}: If {@link
+     *                         Options#TRUE TRUE} then set a soft primary key
+     *                         for the result table. Must be used in
+     *                         combination with the {@link Options#RESULT_TABLE
+     *                         RESULT_TABLE} option.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                     <li>{@link Options#TTL TTL}: Sets the <a
      *                         href="../../../../../../concepts/ttl/"
      *                         target="_top">TTL</a> of the table specified in
@@ -906,11 +959,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                     <li>{@link Options#GROUPING_SETS GROUPING_SETS}:
      *                         Customize the grouping attribute sets to compute
      *                         the aggregates. These sets can include ROLLUP or
-     *                         CUBE operartors. The attribute sets should be
-     *                         enclosed in paranthesis and can include
+     *                         CUBE operators. The attribute sets should be
+     *                         enclosed in parentheses and can include
      *                         composite attributes. All attributes specified
-     *                         in the grouping sets must present in the groupby
-     *                         attributes.
+     *                         in the grouping sets must present in the
+     *                         group-by attributes.
      *                     <li>{@link Options#ROLLUP ROLLUP}: This option is
      *                         used to specify the multilevel aggregates.
      *                     <li>{@link Options#CUBE CUBE}: This option is used
@@ -1119,9 +1172,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         non-existent, it will be automatically created.
      *     <li>{@link Options#EXPRESSION EXPRESSION}: Filter expression to
      *         apply to the table prior to computing the aggregate group by.
-     *     <li>{@link Options#CHUNKED_EXPRESSION_EVALUATION
-     *         CHUNKED_EXPRESSION_EVALUATION}: evaluate the filter expression
-     *         during group-by chunk processing.
+     *     <li>{@link Options#PIPELINED_EXPRESSION_EVALUATION
+     *         PIPELINED_EXPRESSION_EVALUATION}: evaluate the group-by during
+     *         last JoinedSet filter plan step.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
@@ -1164,6 +1217,10 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *     <li>{@link Options#STRATEGY_DEFINITION STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
+     *     <li>{@link Options#COMPRESSION_CODEC COMPRESSION_CODEC}: The default
+     *         <a href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression codec</a> for the result table's
+     *         columns.
      *     <li>{@link Options#RESULT_TABLE RESULT_TABLE}: The name of a table
      *         used to store the results, in [schema_name.]table_name format,
      *         using standard <a
@@ -1209,6 +1266,17 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#RESULT_TABLE_GENERATE_SOFT_PK
+     *         RESULT_TABLE_GENERATE_SOFT_PK}: If {@link Options#TRUE TRUE}
+     *         then set a soft primary key for the result table. Must be used
+     *         in combination with the {@link Options#RESULT_TABLE
+     *         RESULT_TABLE} option.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#TTL TTL}: Sets the <a
      *         href="../../../../../../concepts/ttl/" target="_top">TTL</a> of
      *         the table specified in {@link Options#RESULT_TABLE
@@ -1238,10 +1306,10 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         the values from the pivot_column.
      *     <li>{@link Options#GROUPING_SETS GROUPING_SETS}: Customize the
      *         grouping attribute sets to compute the aggregates. These sets
-     *         can include ROLLUP or CUBE operartors. The attribute sets should
-     *         be enclosed in paranthesis and can include composite attributes.
+     *         can include ROLLUP or CUBE operators. The attribute sets should
+     *         be enclosed in parentheses and can include composite attributes.
      *         All attributes specified in the grouping sets must present in
-     *         the groupby attributes.
+     *         the group-by attributes.
      *     <li>{@link Options#ROLLUP ROLLUP}: This option is used to specify
      *         the multilevel aggregates.
      *     <li>{@link Options#CUBE CUBE}: This option is used to specify the
@@ -1290,9 +1358,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         non-existent, it will be automatically created.
      *     <li>{@link Options#EXPRESSION EXPRESSION}: Filter expression to
      *         apply to the table prior to computing the aggregate group by.
-     *     <li>{@link Options#CHUNKED_EXPRESSION_EVALUATION
-     *         CHUNKED_EXPRESSION_EVALUATION}: evaluate the filter expression
-     *         during group-by chunk processing.
+     *     <li>{@link Options#PIPELINED_EXPRESSION_EVALUATION
+     *         PIPELINED_EXPRESSION_EVALUATION}: evaluate the group-by during
+     *         last JoinedSet filter plan step.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
@@ -1335,6 +1403,10 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *     <li>{@link Options#STRATEGY_DEFINITION STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
+     *     <li>{@link Options#COMPRESSION_CODEC COMPRESSION_CODEC}: The default
+     *         <a href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression codec</a> for the result table's
+     *         columns.
      *     <li>{@link Options#RESULT_TABLE RESULT_TABLE}: The name of a table
      *         used to store the results, in [schema_name.]table_name format,
      *         using standard <a
@@ -1380,6 +1452,17 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#RESULT_TABLE_GENERATE_SOFT_PK
+     *         RESULT_TABLE_GENERATE_SOFT_PK}: If {@link Options#TRUE TRUE}
+     *         then set a soft primary key for the result table. Must be used
+     *         in combination with the {@link Options#RESULT_TABLE
+     *         RESULT_TABLE} option.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#TTL TTL}: Sets the <a
      *         href="../../../../../../concepts/ttl/" target="_top">TTL</a> of
      *         the table specified in {@link Options#RESULT_TABLE
@@ -1409,10 +1492,10 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         the values from the pivot_column.
      *     <li>{@link Options#GROUPING_SETS GROUPING_SETS}: Customize the
      *         grouping attribute sets to compute the aggregates. These sets
-     *         can include ROLLUP or CUBE operartors. The attribute sets should
-     *         be enclosed in paranthesis and can include composite attributes.
+     *         can include ROLLUP or CUBE operators. The attribute sets should
+     *         be enclosed in parentheses and can include composite attributes.
      *         All attributes specified in the grouping sets must present in
-     *         the groupby attributes.
+     *         the group-by attributes.
      *     <li>{@link Options#ROLLUP ROLLUP}: This option is used to specify
      *         the multilevel aggregates.
      *     <li>{@link Options#CUBE CUBE}: This option is used to specify the

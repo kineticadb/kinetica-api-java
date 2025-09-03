@@ -5,9 +5,7 @@
  */
 package com.gpudb.protocol;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
@@ -16,17 +14,17 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of results returned by {@link
- * com.gpudb.GPUdb#showSystemTiming(ShowSystemTimingRequest)
- * GPUdb.showSystemTiming}.
+ * com.gpudb.GPUdb#alterBackup(AlterBackupRequest) GPUdb.alterBackup}.
  */
-public class ShowSystemTimingResponse implements IndexedRecord {
+public class AlterBackupResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("ShowSystemTimingResponse")
+            .record("AlterBackupResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("endpoints").type().array().items().stringType().noDefault()
-                .name("timeInMs").type().array().items().floatType().noDefault()
-                .name("jobids").type().array().items().stringType().noDefault()
+                .name("backupName").type().stringType().noDefault()
+                .name("backupId").type().longType().noDefault()
+                .name("totalBytes").type().longType().noDefault()
+                .name("totalNumberOfRecords").type().longType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -40,77 +38,102 @@ public class ShowSystemTimingResponse implements IndexedRecord {
         return schema$;
     }
 
-    private List<String> endpoints;
-    private List<Float> timeInMs;
-    private List<String> jobids;
+    private String backupName;
+    private long backupId;
+    private long totalBytes;
+    private long totalNumberOfRecords;
     private Map<String, String> info;
 
     /**
-     * Constructs a ShowSystemTimingResponse object with default parameters.
+     * Constructs an AlterBackupResponse object with default parameters.
      */
-    public ShowSystemTimingResponse() {
+    public AlterBackupResponse() {
     }
 
     /**
-     * List of recently called endpoints, most recent first.
+     * Value of {@link com.gpudb.protocol.AlterBackupRequest#getBackupName()
+     * backupName}.
      *
-     * @return The current value of {@code endpoints}.
+     * @return The current value of {@code backupName}.
      */
-    public List<String> getEndpoints() {
-        return endpoints;
+    public String getBackupName() {
+        return backupName;
     }
 
     /**
-     * List of recently called endpoints, most recent first.
+     * Value of {@link com.gpudb.protocol.AlterBackupRequest#getBackupName()
+     * backupName}.
      *
-     * @param endpoints  The new value for {@code endpoints}.
+     * @param backupName  The new value for {@code backupName}.
      *
      * @return {@code this} to mimic the builder pattern.
      */
-    public ShowSystemTimingResponse setEndpoints(List<String> endpoints) {
-        this.endpoints = (endpoints == null) ? new ArrayList<String>() : endpoints;
+    public AlterBackupResponse setBackupName(String backupName) {
+        this.backupName = (backupName == null) ? "" : backupName;
         return this;
     }
 
     /**
-     * List of time (in ms) of the recent requests.
+     * Backup ID.
      *
-     * @return The current value of {@code timeInMs}.
+     * @return The current value of {@code backupId}.
      */
-    public List<Float> getTimeInMs() {
-        return timeInMs;
+    public long getBackupId() {
+        return backupId;
     }
 
     /**
-     * List of time (in ms) of the recent requests.
+     * Backup ID.
      *
-     * @param timeInMs  The new value for {@code timeInMs}.
+     * @param backupId  The new value for {@code backupId}.
      *
      * @return {@code this} to mimic the builder pattern.
      */
-    public ShowSystemTimingResponse setTimeInMs(List<Float> timeInMs) {
-        this.timeInMs = (timeInMs == null) ? new ArrayList<Float>() : timeInMs;
+    public AlterBackupResponse setBackupId(long backupId) {
+        this.backupId = backupId;
         return this;
     }
 
     /**
-     * List of the internal job IDs for the recent requests.
+     * Total size of files affected by alter operation
      *
-     * @return The current value of {@code jobids}.
+     * @return The current value of {@code totalBytes}.
      */
-    public List<String> getJobids() {
-        return jobids;
+    public long getTotalBytes() {
+        return totalBytes;
     }
 
     /**
-     * List of the internal job IDs for the recent requests.
+     * Total size of files affected by alter operation
      *
-     * @param jobids  The new value for {@code jobids}.
+     * @param totalBytes  The new value for {@code totalBytes}.
      *
      * @return {@code this} to mimic the builder pattern.
      */
-    public ShowSystemTimingResponse setJobids(List<String> jobids) {
-        this.jobids = (jobids == null) ? new ArrayList<String>() : jobids;
+    public AlterBackupResponse setTotalBytes(long totalBytes) {
+        this.totalBytes = totalBytes;
+        return this;
+    }
+
+    /**
+     * Total number of records affected alter operation
+     *
+     * @return The current value of {@code totalNumberOfRecords}.
+     */
+    public long getTotalNumberOfRecords() {
+        return totalNumberOfRecords;
+    }
+
+    /**
+     * Total number of records affected alter operation
+     *
+     * @param totalNumberOfRecords  The new value for {@code
+     *                              totalNumberOfRecords}.
+     *
+     * @return {@code this} to mimic the builder pattern.
+     */
+    public AlterBackupResponse setTotalNumberOfRecords(long totalNumberOfRecords) {
+        this.totalNumberOfRecords = totalNumberOfRecords;
         return this;
     }
 
@@ -130,7 +153,7 @@ public class ShowSystemTimingResponse implements IndexedRecord {
      *
      * @return {@code this} to mimic the builder pattern.
      */
-    public ShowSystemTimingResponse setInfo(Map<String, String> info) {
+    public AlterBackupResponse setInfo(Map<String, String> info) {
         this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
         return this;
     }
@@ -160,15 +183,18 @@ public class ShowSystemTimingResponse implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.endpoints;
+                return this.backupName;
 
             case 1:
-                return this.timeInMs;
+                return this.backupId;
 
             case 2:
-                return this.jobids;
+                return this.totalBytes;
 
             case 3:
+                return this.totalNumberOfRecords;
+
+            case 4:
                 return this.info;
 
             default:
@@ -190,18 +216,22 @@ public class ShowSystemTimingResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.endpoints = (List<String>)value;
+                this.backupName = (String)value;
                 break;
 
             case 1:
-                this.timeInMs = (List<Float>)value;
+                this.backupId = (Long)value;
                 break;
 
             case 2:
-                this.jobids = (List<String>)value;
+                this.totalBytes = (Long)value;
                 break;
 
             case 3:
+                this.totalNumberOfRecords = (Long)value;
+                break;
+
+            case 4:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -220,11 +250,12 @@ public class ShowSystemTimingResponse implements IndexedRecord {
             return false;
         }
 
-        ShowSystemTimingResponse that = (ShowSystemTimingResponse)obj;
+        AlterBackupResponse that = (AlterBackupResponse)obj;
 
-        return ( this.endpoints.equals( that.endpoints )
-                 && this.timeInMs.equals( that.timeInMs )
-                 && this.jobids.equals( that.jobids )
+        return ( this.backupName.equals( that.backupName )
+                 && ( this.backupId == that.backupId )
+                 && ( this.totalBytes == that.totalBytes )
+                 && ( this.totalNumberOfRecords == that.totalNumberOfRecords )
                  && this.info.equals( that.info ) );
     }
 
@@ -233,17 +264,21 @@ public class ShowSystemTimingResponse implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "endpoints" ) );
+        builder.append( gd.toString( "backupName" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.endpoints ) );
+        builder.append( gd.toString( this.backupName ) );
         builder.append( ", " );
-        builder.append( gd.toString( "timeInMs" ) );
+        builder.append( gd.toString( "backupId" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.timeInMs ) );
+        builder.append( gd.toString( this.backupId ) );
         builder.append( ", " );
-        builder.append( gd.toString( "jobids" ) );
+        builder.append( gd.toString( "totalBytes" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.jobids ) );
+        builder.append( gd.toString( this.totalBytes ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "totalNumberOfRecords" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.totalNumberOfRecords ) );
         builder.append( ", " );
         builder.append( gd.toString( "info" ) );
         builder.append( ": " );
@@ -256,9 +291,10 @@ public class ShowSystemTimingResponse implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.endpoints.hashCode();
-        hashCode = (31 * hashCode) + this.timeInMs.hashCode();
-        hashCode = (31 * hashCode) + this.jobids.hashCode();
+        hashCode = (31 * hashCode) + this.backupName.hashCode();
+        hashCode = (31 * hashCode) + ((Long)this.backupId).hashCode();
+        hashCode = (31 * hashCode) + ((Long)this.totalBytes).hashCode();
+        hashCode = (31 * hashCode) + ((Long)this.totalNumberOfRecords).hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }

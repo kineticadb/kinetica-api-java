@@ -18,34 +18,9 @@ public final class ColumnProperty {
     /**
      * Valid only for select 'string' columns. Enables full text search--see <a
      * href="../../../../../concepts/full_text_search/" target="_top">Full Text
-     * Search</a> for details and applicable string column types. Can be set
-     * independently of {@link #DATA} and {@link #STORE_ONLY}.
+     * Search</a> for details and applicable string column types.
      */
     public static final String TEXT_SEARCH = "text_search";
-
-    /**
-     * Persist the column value but do not make it available to queries
-     * (e.g.&nbsp;{@link com.gpudb.GPUdb#filter(FilterRequest)
-     * GPUdb.filter})-i.e.&nbsp;it is mutually exclusive to the {@link #DATA}
-     * property. Any 'bytes' type column must have a {@link #STORE_ONLY}
-     * property. This property reduces system memory usage.
-     */
-    public static final String STORE_ONLY = "store_only";
-
-    /**
-     * Works in conjunction with the {@link #DATA} property for string columns.
-     * This property reduces system disk usage by disabling reverse string
-     * lookups. Queries like {@link com.gpudb.GPUdb#filter(FilterRequest)
-     * GPUdb.filter}, {@link com.gpudb.GPUdb#filterByList(FilterByListRequest)
-     * GPUdb.filterByList}, and {@link
-     * com.gpudb.GPUdb#filterByValue(FilterByValueRequest) GPUdb.filterByValue}
-     * work as usual but {@link
-     * com.gpudb.GPUdb#aggregateUnique(AggregateUniqueRequest)
-     * GPUdb.aggregateUnique} and {@link
-     * com.gpudb.GPUdb#aggregateGroupBy(AggregateGroupByRequest)
-     * GPUdb.aggregateGroupBy} are not allowed on columns with this property.
-     */
-    public static final String DISK_OPTIMIZED = "disk_optimized";
 
     /**
      * Valid only for 'long' columns. Indicates that this field represents a
@@ -249,18 +224,28 @@ public final class ColumnProperty {
      * This property indicates that this column is nullable.  However, setting
      * this property is insufficient for making the column nullable.  The user
      * must declare the type of the column as a union between its regular type
-     * and 'null' in the avro schema for the record type in {@link
+     * and 'null' in the Avro schema for the record type in {@link
      * com.gpudb.protocol.CreateTypeRequest#getTypeDefinition()
      * typeDefinition}.  For example, if a column is of type integer and is
-     * nullable, then the entry for the column in the avro schema must be:
+     * nullable, then the entry for the column in the Avro schema must be:
      * ['int', 'null'].
      * <p>
      * The C++, C#, Java, and Python APIs have built-in convenience for
-     * bypassing setting the avro schema by hand.  For those languages, one can
-     * use this property as usual and not have to worry about the avro schema
+     * bypassing setting the Avro schema by hand.  For those languages, one can
+     * use this property as usual and not have to worry about the Avro schema
      * for the record.
      */
     public static final String NULLABLE = "nullable";
+
+    /**
+     * This property indicates that this column should be <a
+     * href="../../../../../concepts/column_compression/"
+     * target="_top">compressed</a> with the given codec and optional level;
+     * e.g., 'compress(snappy)' for Snappy compression and 'compress(zstd(7))'
+     * for zstd level 7 compression.  This property is primarily used in order
+     * to save disk space.
+     */
+    public static final String COMPRESS = "compress";
 
     /**
      * This property indicates that this column should be <a

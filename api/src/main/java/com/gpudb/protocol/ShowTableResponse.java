@@ -290,11 +290,6 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String ATTRIBUTE_INDEXES = "attribute_indexes";
 
         /**
-         * No longer supported. The default value is ''.
-         */
-        public static final String COMPRESSED_COLUMNS = "compressed_columns";
-
-        /**
          * JSON-encoded string representing a map of column name to information
          * including memory usage if the {@link
          * com.gpudb.protocol.ShowTableRequest.Options#GET_COLUMN_INFO
@@ -369,9 +364,9 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String REFRESH_METHOD = "refresh_method";
 
         /**
-         * For materialized view with periodic refresh_method the current
-         * intial datetime string that periodic refreshes began. The default
-         * value is ''.
+         * For materialized view with periodic refresh_method the initial
+         * datetime string that periodic refreshes began. The default value is
+         * ''.
          */
         public static final String REFRESH_START_TIME = "refresh_start_time";
 
@@ -388,7 +383,7 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String REFRESH_PERIOD = "refresh_period";
 
         /**
-         * For materialized view the a datatime string indicating the last time
+         * For materialized view the datetime string indicating the last time
          * the view was refreshed. The default value is ''.
          */
         public static final String LAST_REFRESH_TIME = "last_refresh_time";
@@ -440,6 +435,73 @@ public class ShowTableResponse implements IndexedRecord {
          * value is ''.
          */
         public static final String NULL_MODIFYING_COLUMNS = "null_modifying_columns";
+
+        /**
+         * Default <a href="../../../../../../concepts/column_compression/"
+         * target="_top">compression codec</a> for the table. The default value
+         * is ''.
+         */
+        public static final String COMPRESSION_CODEC = "compression_codec";
+
+        /**
+         * User that created this table or view. The default value is ''.
+         */
+        public static final String CREATED_BY = "created_by";
+
+        /**
+         * Time (UTC) when this table or view was created. The default value is
+         * ''.
+         */
+        public static final String CREATED_TIME = "created_time";
+
+        /**
+         * User that last read this table or view. The default value is ''.
+         */
+        public static final String LAST_READ_BY = "last_read_by";
+
+        /**
+         * Time (UTC) when this table or view was last read. The default value
+         * is ''.
+         */
+        public static final String LAST_READ_TIME = "last_read_time";
+
+        /**
+         * Count of times this table or view was read. The default value is ''.
+         */
+        public static final String READ_COUNT = "read_count";
+
+        /**
+         * User that last wrote to this table. The default value is ''.
+         */
+        public static final String LAST_WRITE_BY = "last_write_by";
+
+        /**
+         * Time (UTC) when this table was last written. The default value is
+         * ''.
+         */
+        public static final String LAST_WRITE_TIME = "last_write_time";
+
+        /**
+         * Count of times this table was written. The default value is ''.
+         */
+        public static final String WRITE_COUNT = "write_count";
+
+        /**
+         * User that last altered this table or view. The default value is ''.
+         */
+        public static final String LAST_ALTER_BY = "last_alter_by";
+
+        /**
+         * Time (UTC) when this table or view was last altered. The default
+         * value is ''.
+         */
+        public static final String LAST_ALTER_TIME = "last_alter_time";
+
+        /**
+         * Count of times this table or view was altered. The default value is
+         * ''.
+         */
+        public static final String ALTER_COUNT = "alter_count";
 
         private AdditionalInfo() {  }
     }
@@ -599,7 +661,7 @@ public class ShowTableResponse implements IndexedRecord {
     }
 
     /**
-     * Type ids of the respective tables in {@link #getTableNames()
+     * Type IDs of the respective tables in {@link #getTableNames()
      * tableNames}.
      *
      * @return The current value of {@code typeIds}.
@@ -609,7 +671,7 @@ public class ShowTableResponse implements IndexedRecord {
     }
 
     /**
-     * Type ids of the respective tables in {@link #getTableNames()
+     * Type IDs of the respective tables in {@link #getTableNames()
      * tableNames}.
      *
      * @param typeIds  The new value for {@code typeIds}.
@@ -796,8 +858,6 @@ public class ShowTableResponse implements IndexedRecord {
      *         and the comma-delimited index option(s) using the form:
      *         &lt;index_type&gt;@&lt;column_list&gt;@&lt;column_options&gt;.
      *         Not present for schemas. The default value is ''.
-     *     <li>{@link AdditionalInfo#COMPRESSED_COLUMNS COMPRESSED_COLUMNS}: No
-     *         longer supported. The default value is ''.
      *     <li>{@link AdditionalInfo#COLUMN_INFO COLUMN_INFO}: JSON-encoded
      *         string representing a map of column name to information
      *         including memory usage if the {@link
@@ -834,9 +894,9 @@ public class ShowTableResponse implements IndexedRecord {
      *         materialized view current refresh_method - one of manual,
      *         periodic, on_change. The default value is ''.
      *     <li>{@link AdditionalInfo#REFRESH_START_TIME REFRESH_START_TIME}:
-     *         For materialized view with periodic refresh_method the current
-     *         intial datetime string that periodic refreshes began. The
-     *         default value is ''.
+     *         For materialized view with periodic refresh_method the initial
+     *         datetime string that periodic refreshes began. The default value
+     *         is ''.
      *     <li>{@link AdditionalInfo#REFRESH_STOP_TIME REFRESH_STOP_TIME}: Time
      *         at which the periodic view refresh stops. The default value is
      *         ''.
@@ -844,7 +904,7 @@ public class ShowTableResponse implements IndexedRecord {
      *         materialized view with periodic refresh_method the current
      *         refresh period in seconds. The default value is ''.
      *     <li>{@link AdditionalInfo#LAST_REFRESH_TIME LAST_REFRESH_TIME}: For
-     *         materialized view the a datatime string indicating the last time
+     *         materialized view the datetime string indicating the last time
      *         the view was refreshed. The default value is ''.
      *     <li>{@link AdditionalInfo#NEXT_REFRESH_TIME NEXT_REFRESH_TIME}: For
      *         materialized view with periodic refresh_method a datetime string
@@ -875,6 +935,33 @@ public class ShowTableResponse implements IndexedRecord {
      *     <li>{@link AdditionalInfo#NULL_MODIFYING_COLUMNS
      *         NULL_MODIFYING_COLUMNS}: Comma-separated list of null modifying
      *         column names. The default value is ''.
+     *     <li>{@link AdditionalInfo#COMPRESSION_CODEC COMPRESSION_CODEC}:
+     *         Default <a href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression codec</a> for the table. The default
+     *         value is ''.
+     *     <li>{@link AdditionalInfo#CREATED_BY CREATED_BY}: User that created
+     *         this table or view. The default value is ''.
+     *     <li>{@link AdditionalInfo#CREATED_TIME CREATED_TIME}: Time (UTC)
+     *         when this table or view was created. The default value is ''.
+     *     <li>{@link AdditionalInfo#LAST_READ_BY LAST_READ_BY}: User that last
+     *         read this table or view. The default value is ''.
+     *     <li>{@link AdditionalInfo#LAST_READ_TIME LAST_READ_TIME}: Time (UTC)
+     *         when this table or view was last read. The default value is ''.
+     *     <li>{@link AdditionalInfo#READ_COUNT READ_COUNT}: Count of times
+     *         this table or view was read. The default value is ''.
+     *     <li>{@link AdditionalInfo#LAST_WRITE_BY LAST_WRITE_BY}: User that
+     *         last wrote to this table. The default value is ''.
+     *     <li>{@link AdditionalInfo#LAST_WRITE_TIME LAST_WRITE_TIME}: Time
+     *         (UTC) when this table was last written. The default value is ''.
+     *     <li>{@link AdditionalInfo#WRITE_COUNT WRITE_COUNT}: Count of times
+     *         this table was written. The default value is ''.
+     *     <li>{@link AdditionalInfo#LAST_ALTER_BY LAST_ALTER_BY}: User that
+     *         last altered this table or view. The default value is ''.
+     *     <li>{@link AdditionalInfo#LAST_ALTER_TIME LAST_ALTER_TIME}: Time
+     *         (UTC) when this table or view was last altered. The default
+     *         value is ''.
+     *     <li>{@link AdditionalInfo#ALTER_COUNT ALTER_COUNT}: Count of times
+     *         this table or view was altered. The default value is ''.
      * </ul>
      *
      * @return The current value of {@code additionalInfo}.
@@ -989,8 +1076,6 @@ public class ShowTableResponse implements IndexedRecord {
      *         and the comma-delimited index option(s) using the form:
      *         &lt;index_type&gt;@&lt;column_list&gt;@&lt;column_options&gt;.
      *         Not present for schemas. The default value is ''.
-     *     <li>{@link AdditionalInfo#COMPRESSED_COLUMNS COMPRESSED_COLUMNS}: No
-     *         longer supported. The default value is ''.
      *     <li>{@link AdditionalInfo#COLUMN_INFO COLUMN_INFO}: JSON-encoded
      *         string representing a map of column name to information
      *         including memory usage if the {@link
@@ -1027,9 +1112,9 @@ public class ShowTableResponse implements IndexedRecord {
      *         materialized view current refresh_method - one of manual,
      *         periodic, on_change. The default value is ''.
      *     <li>{@link AdditionalInfo#REFRESH_START_TIME REFRESH_START_TIME}:
-     *         For materialized view with periodic refresh_method the current
-     *         intial datetime string that periodic refreshes began. The
-     *         default value is ''.
+     *         For materialized view with periodic refresh_method the initial
+     *         datetime string that periodic refreshes began. The default value
+     *         is ''.
      *     <li>{@link AdditionalInfo#REFRESH_STOP_TIME REFRESH_STOP_TIME}: Time
      *         at which the periodic view refresh stops. The default value is
      *         ''.
@@ -1037,7 +1122,7 @@ public class ShowTableResponse implements IndexedRecord {
      *         materialized view with periodic refresh_method the current
      *         refresh period in seconds. The default value is ''.
      *     <li>{@link AdditionalInfo#LAST_REFRESH_TIME LAST_REFRESH_TIME}: For
-     *         materialized view the a datatime string indicating the last time
+     *         materialized view the datetime string indicating the last time
      *         the view was refreshed. The default value is ''.
      *     <li>{@link AdditionalInfo#NEXT_REFRESH_TIME NEXT_REFRESH_TIME}: For
      *         materialized view with periodic refresh_method a datetime string
@@ -1068,6 +1153,33 @@ public class ShowTableResponse implements IndexedRecord {
      *     <li>{@link AdditionalInfo#NULL_MODIFYING_COLUMNS
      *         NULL_MODIFYING_COLUMNS}: Comma-separated list of null modifying
      *         column names. The default value is ''.
+     *     <li>{@link AdditionalInfo#COMPRESSION_CODEC COMPRESSION_CODEC}:
+     *         Default <a href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression codec</a> for the table. The default
+     *         value is ''.
+     *     <li>{@link AdditionalInfo#CREATED_BY CREATED_BY}: User that created
+     *         this table or view. The default value is ''.
+     *     <li>{@link AdditionalInfo#CREATED_TIME CREATED_TIME}: Time (UTC)
+     *         when this table or view was created. The default value is ''.
+     *     <li>{@link AdditionalInfo#LAST_READ_BY LAST_READ_BY}: User that last
+     *         read this table or view. The default value is ''.
+     *     <li>{@link AdditionalInfo#LAST_READ_TIME LAST_READ_TIME}: Time (UTC)
+     *         when this table or view was last read. The default value is ''.
+     *     <li>{@link AdditionalInfo#READ_COUNT READ_COUNT}: Count of times
+     *         this table or view was read. The default value is ''.
+     *     <li>{@link AdditionalInfo#LAST_WRITE_BY LAST_WRITE_BY}: User that
+     *         last wrote to this table. The default value is ''.
+     *     <li>{@link AdditionalInfo#LAST_WRITE_TIME LAST_WRITE_TIME}: Time
+     *         (UTC) when this table was last written. The default value is ''.
+     *     <li>{@link AdditionalInfo#WRITE_COUNT WRITE_COUNT}: Count of times
+     *         this table was written. The default value is ''.
+     *     <li>{@link AdditionalInfo#LAST_ALTER_BY LAST_ALTER_BY}: User that
+     *         last altered this table or view. The default value is ''.
+     *     <li>{@link AdditionalInfo#LAST_ALTER_TIME LAST_ALTER_TIME}: Time
+     *         (UTC) when this table or view was last altered. The default
+     *         value is ''.
+     *     <li>{@link AdditionalInfo#ALTER_COUNT ALTER_COUNT}: Count of times
+     *         this table or view was altered. The default value is ''.
      * </ul>
      *
      * @param additionalInfo  The new value for {@code additionalInfo}.

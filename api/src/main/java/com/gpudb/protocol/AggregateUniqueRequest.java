@@ -244,6 +244,12 @@ public class AggregateUniqueRequest implements IndexedRecord {
         public static final String CHUNK_MAX_MEMORY = "chunk_max_memory";
 
         /**
+         * The default <a href="../../../../../../concepts/column_compression/"
+         * target="_top">compression codec</a> for the result table's columns.
+         */
+        public static final String COMPRESSION_CODEC = "compression_codec";
+
+        /**
          * ID of view of which the result table will be a member. The default
          * value is ''.
          */
@@ -423,6 +429,11 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                         for the result table. Must be used in
      *                         combination with the {@link Options#RESULT_TABLE
      *                         RESULT_TABLE} option.
+     *                     <li>{@link Options#COMPRESSION_CODEC
+     *                         COMPRESSION_CODEC}: The default <a
+     *                         href="../../../../../../concepts/column_compression/"
+     *                         target="_top">compression codec</a> for the
+     *                         result table's columns.
      *                     <li>{@link Options#VIEW_ID VIEW_ID}: ID of view of
      *                         which the result table will be a member. The
      *                         default value is ''.
@@ -601,6 +612,11 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                         for the result table. Must be used in
      *                         combination with the {@link Options#RESULT_TABLE
      *                         RESULT_TABLE} option.
+     *                     <li>{@link Options#COMPRESSION_CODEC
+     *                         COMPRESSION_CODEC}: The default <a
+     *                         href="../../../../../../concepts/column_compression/"
+     *                         target="_top">compression codec</a> for the
+     *                         result table's columns.
      *                     <li>{@link Options#VIEW_ID VIEW_ID}: ID of view of
      *                         which the result table will be a member. The
      *                         default value is ''.
@@ -870,6 +886,10 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *         target maximum data size for all columns in a chunk to be used
      *         for the result table. Must be used in combination with the
      *         {@link Options#RESULT_TABLE RESULT_TABLE} option.
+     *     <li>{@link Options#COMPRESSION_CODEC COMPRESSION_CODEC}: The default
+     *         <a href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression codec</a> for the result table's
+     *         columns.
      *     <li>{@link Options#VIEW_ID VIEW_ID}: ID of view of which the result
      *         table will be a member. The default value is ''.
      * </ul>
@@ -980,6 +1000,10 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *         target maximum data size for all columns in a chunk to be used
      *         for the result table. Must be used in combination with the
      *         {@link Options#RESULT_TABLE RESULT_TABLE} option.
+     *     <li>{@link Options#COMPRESSION_CODEC COMPRESSION_CODEC}: The default
+     *         <a href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression codec</a> for the result table's
+     *         columns.
      *     <li>{@link Options#VIEW_ID VIEW_ID}: ID of view of which the result
      *         table will be a member. The default value is ''.
      * </ul>
