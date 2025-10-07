@@ -155,6 +155,12 @@ public class CreateJoinTableRequest implements IndexedRecord {
         public static final String MIN_VIRTUAL_CHUNK_SIZE = "min_virtual_chunk_size";
 
         /**
+         * materialize virtual chunks with only non-deleted values. The default
+         * value is 'false'.
+         */
+        public static final String ENABLE_SPARSE_VIRTUAL_CHUNKING = "enable_sparse_virtual_chunking";
+
+        /**
          * Allow using the lazy result store to cache computation of one side
          * of a multichunk equi-join.  Reduces computation but also reduces
          * parallelism to the number of chunks on the other side of the
@@ -305,6 +311,10 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                         records per virtual-chunk. When set, enables
      *                         virtual chunking. Defaults to chunk_size if
      *                         virtual chunking otherwise enabled.
+     *                     <li>{@link Options#ENABLE_SPARSE_VIRTUAL_CHUNKING
+     *                         ENABLE_SPARSE_VIRTUAL_CHUNKING}: materialize
+     *                         virtual chunks with only non-deleted values. The
+     *                         default value is 'false'.
      *                     <li>{@link
      *                         Options#ENABLE_EQUI_JOIN_LAZY_RESULT_STORE
      *                         ENABLE_EQUI_JOIN_LAZY_RESULT_STORE}: Allow using
@@ -522,6 +532,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         Minimum number of records per virtual-chunk. When set, enables
      *         virtual chunking. Defaults to chunk_size if virtual chunking
      *         otherwise enabled.
+     *     <li>{@link Options#ENABLE_SPARSE_VIRTUAL_CHUNKING
+     *         ENABLE_SPARSE_VIRTUAL_CHUNKING}: materialize virtual chunks with
+     *         only non-deleted values. The default value is 'false'.
      *     <li>{@link Options#ENABLE_EQUI_JOIN_LAZY_RESULT_STORE
      *         ENABLE_EQUI_JOIN_LAZY_RESULT_STORE}: Allow using the lazy result
      *         store to cache computation of one side of a multichunk
@@ -607,6 +620,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         Minimum number of records per virtual-chunk. When set, enables
      *         virtual chunking. Defaults to chunk_size if virtual chunking
      *         otherwise enabled.
+     *     <li>{@link Options#ENABLE_SPARSE_VIRTUAL_CHUNKING
+     *         ENABLE_SPARSE_VIRTUAL_CHUNKING}: materialize virtual chunks with
+     *         only non-deleted values. The default value is 'false'.
      *     <li>{@link Options#ENABLE_EQUI_JOIN_LAZY_RESULT_STORE
      *         ENABLE_EQUI_JOIN_LAZY_RESULT_STORE}: Allow using the lazy result
      *         store to cache computation of one side of a multichunk

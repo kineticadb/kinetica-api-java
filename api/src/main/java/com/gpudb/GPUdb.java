@@ -2651,6 +2651,16 @@ public class GPUdb extends GPUdbBase {
      *                         when calculating the bin values (values are
      *                         summed).  The column must be a numerical type
      *                         (int, double, long, float).
+     *                     <li>{@link
+     *                         com.gpudb.protocol.AggregateHistogramRequest.Options#START
+     *                         START}: The start parameter for char types.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.AggregateHistogramRequest.Options#END
+     *                         END}: The end parameter for char types.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.AggregateHistogramRequest.Options#INTERVAL
+     *                         INTERVAL}: The interval parameter for char
+     *                         types.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      *
@@ -9056,6 +9066,11 @@ public class GPUdb extends GPUdbBase {
      *                         virtual chunking. Defaults to chunk_size if
      *                         virtual chunking otherwise enabled.
      *                     <li>{@link
+     *                         com.gpudb.protocol.CreateJoinTableRequest.Options#ENABLE_SPARSE_VIRTUAL_CHUNKING
+     *                         ENABLE_SPARSE_VIRTUAL_CHUNKING}: materialize
+     *                         virtual chunks with only non-deleted values. The
+     *                         default value is 'false'.
+     *                     <li>{@link
      *                         com.gpudb.protocol.CreateJoinTableRequest.Options#ENABLE_EQUI_JOIN_LAZY_RESULT_STORE
      *                         ENABLE_EQUI_JOIN_LAZY_RESULT_STORE}: Allow using
      *                         the lazy result store to cache computation of
@@ -14164,6 +14179,29 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * See <a href="../../../../../sql/" target="_top">SQL Support</a> for the
      * complete set of supported SQL commands.
+     * <p>
+     * When a caller wants all the results from a large query (e.g., more than
+     * <a href="../../../../../config/#config-main-general"
+     * target="_top">max_get_records_size</a> records), they can make multiple
+     * calls to this endpoint using the {@link
+     * com.gpudb.protocol.ExecuteSqlRequest#getOffset() offset} and {@link
+     * com.gpudb.protocol.ExecuteSqlRequest#getLimit() limit} parameters to
+     * page through the results.  Normally, this will execute the {@link
+     * com.gpudb.protocol.ExecuteSqlRequest#getStatement() statement} query
+     * each time. To avoid re-executing the query each time and to keep the
+     * results in the same order, the caller should specify a {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE PAGING_TABLE}
+     * name to hold the results of the query between calls and specify the
+     * {@link com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE
+     * PAGING_TABLE} on subsequent calls. When this is done, the caller should
+     * clear the paging table and any other tables in the {@link
+     * com.gpudb.protocol.ExecuteSqlResponse.Info#RESULT_TABLE_LIST
+     * RESULT_TABLE_LIST} (both returned in the response) when they are done
+     * paging through the results.  {@link
+     * com.gpudb.protocol.ExecuteSqlResponse#getPagingTable() pagingTable} (and
+     * {@link com.gpudb.protocol.ExecuteSqlResponse.Info#RESULT_TABLE_LIST
+     * RESULT_TABLE_LIST}) will be empty if no paging table was created (e.g.,
+     * when all the query results were returned in the first call).
      *
      * @param request  {@link ExecuteSqlRequest Request} object containing the
      *                 parameters for the operation.
@@ -14184,6 +14222,29 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * See <a href="../../../../../sql/" target="_top">SQL Support</a> for the
      * complete set of supported SQL commands.
+     * <p>
+     * When a caller wants all the results from a large query (e.g., more than
+     * <a href="../../../../../config/#config-main-general"
+     * target="_top">max_get_records_size</a> records), they can make multiple
+     * calls to this endpoint using the {@link
+     * com.gpudb.protocol.ExecuteSqlRequest#getOffset() offset} and {@link
+     * com.gpudb.protocol.ExecuteSqlRequest#getLimit() limit} parameters to
+     * page through the results.  Normally, this will execute the {@link
+     * com.gpudb.protocol.ExecuteSqlRequest#getStatement() statement} query
+     * each time. To avoid re-executing the query each time and to keep the
+     * results in the same order, the caller should specify a {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE PAGING_TABLE}
+     * name to hold the results of the query between calls and specify the
+     * {@link com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE
+     * PAGING_TABLE} on subsequent calls. When this is done, the caller should
+     * clear the paging table and any other tables in the {@link
+     * com.gpudb.protocol.ExecuteSqlResponse.Info#RESULT_TABLE_LIST
+     * RESULT_TABLE_LIST} (both returned in the response) when they are done
+     * paging through the results.  {@link
+     * com.gpudb.protocol.ExecuteSqlResponse#getPagingTable() pagingTable} (and
+     * {@link com.gpudb.protocol.ExecuteSqlResponse.Info#RESULT_TABLE_LIST
+     * RESULT_TABLE_LIST}) will be empty if no paging table was created (e.g.,
+     * when all the query results were returned in the first call).
      *
      * @param request  {@link ExecuteSqlRequest Request} object containing the
      *                 parameters for the operation.
@@ -14215,6 +14276,27 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * See <a href="../../../../../sql/" target="_top">SQL Support</a> for the
      * complete set of supported SQL commands.
+     * <p>
+     * When a caller wants all the results from a large query (e.g., more than
+     * <a href="../../../../../config/#config-main-general"
+     * target="_top">max_get_records_size</a> records), they can make multiple
+     * calls to this endpoint using the {@code offset} and {@code limit}
+     * parameters to page through the results.  Normally, this will execute the
+     * {@code statement} query each time. To avoid re-executing the query each
+     * time and to keep the results in the same order, the caller should
+     * specify a {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE PAGING_TABLE}
+     * name to hold the results of the query between calls and specify the
+     * {@link com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE
+     * PAGING_TABLE} on subsequent calls. When this is done, the caller should
+     * clear the paging table and any other tables in the {@link
+     * com.gpudb.protocol.ExecuteSqlResponse.Info#RESULT_TABLE_LIST
+     * RESULT_TABLE_LIST} (both returned in the response) when they are done
+     * paging through the results.  {@link
+     * com.gpudb.protocol.ExecuteSqlResponse#getPagingTable() pagingTable} (and
+     * {@link com.gpudb.protocol.ExecuteSqlResponse.Info#RESULT_TABLE_LIST
+     * RESULT_TABLE_LIST}) will be empty if no paging table was created (e.g.,
+     * when all the query results were returned in the first call).
      *
      * @param statement  SQL statement (query, DML, or DDL) to be executed
      * @param offset  A positive integer indicating the number of initial
@@ -14368,18 +14450,41 @@ public class GPUdb extends GPUdbBase {
      *                         FALSE}.
      *                     <li>{@link
      *                         com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE
-     *                         PAGING_TABLE}: When empty or the specified
-     *                         paging table not exists, the system will create
-     *                         a paging table and return when query output has
-     *                         more records than the user asked. If the paging
-     *                         table exists in the system, the records from the
-     *                         paging table are returned without evaluating the
-     *                         query.
+     *                         PAGING_TABLE}: When specified (or {@link
+     *                         com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE_TTL
+     *                         PAGING_TABLE_TTL} is set), the system will
+     *                         create a paging table to hold the results of the
+     *                         query, when the output has more records than are
+     *                         in the response (i.e., when {@link
+     *                         com.gpudb.protocol.ExecuteSqlResponse#getHasMoreRecords()
+     *                         hasMoreRecords} is {@link
+     *                         com.gpudb.protocol.ExecuteSqlResponse.HasMoreRecords#TRUE
+     *                         TRUE}). If the specified paging table exists,
+     *                         the records from the paging table are returned
+     *                         without re-evaluating the query.  It is the
+     *                         caller's responsibility to clear the {@link
+     *                         com.gpudb.protocol.ExecuteSqlResponse#getPagingTable()
+     *                         pagingTable} and other tables in the {@link
+     *                         com.gpudb.protocol.ExecuteSqlResponse.Info#RESULT_TABLE_LIST
+     *                         RESULT_TABLE_LIST} (both returned in the
+     *                         response) when they are done with this query.
      *                     <li>{@link
      *                         com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE_TTL
      *                         PAGING_TABLE_TTL}: Sets the <a
      *                         href="../../../../../concepts/ttl/"
-     *                         target="_top">TTL</a> of the paging table.
+     *                         target="_top">TTL</a> of the paging table.  -1
+     *                         indicates no timeout.  Setting this option will
+     *                         cause a paging table to be generated when
+     *                         needed. The {@link
+     *                         com.gpudb.protocol.ExecuteSqlResponse#getPagingTable()
+     *                         pagingTable} and other tables in the {@link
+     *                         com.gpudb.protocol.ExecuteSqlResponse.Info#RESULT_TABLE_LIST
+     *                         RESULT_TABLE_LIST} (both returned in the
+     *                         response) will be automatically cleared after
+     *                         the TTL expires, if set to a positive number.
+     *                         However, it is still recommended that the caller
+     *                         clear these tables when they are done with this
+     *                         query.
      *                     <li>{@link
      *                         com.gpudb.protocol.ExecuteSqlRequest.Options#PARALLEL_EXECUTION
      *                         PARALLEL_EXECUTION}: If {@link

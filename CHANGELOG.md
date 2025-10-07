@@ -2,6 +2,13 @@
 
 ## Version 7.2
 
+### Version 7.2.3.1 - 2025-10-07
+
+#### Changed
+-   Switched retry handler to retry on higher-level `SocketException` instead of
+    lower-level `ConnectException` & `NoRouteToHostException`
+
+
 ### Version 7.2.3.0 - 2025-09-03
 
 #### Fixed
@@ -9,6 +16,19 @@
 
 #### Notes
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
+### Version 7.2.2.15 - 2025-10-07
+
+#### Changed
+-   Switched retry handler to retry on higher-level `SocketException` instead of
+    lower-level `ConnectException` & `NoRouteToHostException`
+
+
+### Version 7.2.2.14 - 2025-09-03
+
+#### Fixed
+-   Handling of multi-part KiFS upload that is too big for the target directory.
 
 
 ### Version 7.2.2.13 - 2025-08-24

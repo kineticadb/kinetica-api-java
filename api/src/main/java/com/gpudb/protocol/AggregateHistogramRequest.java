@@ -69,6 +69,21 @@ public class AggregateHistogramRequest implements IndexedRecord {
          */
         public static final String VALUE_COLUMN = "value_column";
 
+        /**
+         * The start parameter for char types.
+         */
+        public static final String START = "start";
+
+        /**
+         * The end parameter for char types.
+         */
+        public static final String END = "end";
+
+        /**
+         * The interval parameter for char types.
+         */
+        public static final String INTERVAL = "interval";
+
         private Options() {  }
     }
 
@@ -110,6 +125,12 @@ public class AggregateHistogramRequest implements IndexedRecord {
      *                         name of the column to use when calculating the
      *                         bin values (values are summed).  The column must
      *                         be a numerical type (int, double, long, float).
+     *                     <li>{@link Options#START START}: The start parameter
+     *                         for char types.
+     *                     <li>{@link Options#END END}: The end parameter for
+     *                         char types.
+     *                     <li>{@link Options#INTERVAL INTERVAL}: The interval
+     *                         parameter for char types.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -242,6 +263,10 @@ public class AggregateHistogramRequest implements IndexedRecord {
      *         column to use when calculating the bin values (values are
      *         summed).  The column must be a numerical type (int, double,
      *         long, float).
+     *     <li>{@link Options#START START}: The start parameter for char types.
+     *     <li>{@link Options#END END}: The end parameter for char types.
+     *     <li>{@link Options#INTERVAL INTERVAL}: The interval parameter for
+     *         char types.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -258,6 +283,10 @@ public class AggregateHistogramRequest implements IndexedRecord {
      *         column to use when calculating the bin values (values are
      *         summed).  The column must be a numerical type (int, double,
      *         long, float).
+     *     <li>{@link Options#START START}: The start parameter for char types.
+     *     <li>{@link Options#END END}: The end parameter for char types.
+     *     <li>{@link Options#INTERVAL INTERVAL}: The interval parameter for
+     *         char types.
      * </ul>
      * The default value is an empty {@link Map}.
      *

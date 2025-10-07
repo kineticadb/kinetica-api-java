@@ -2923,10 +2923,9 @@ public abstract class GPUdbBase {
                     return
                         e instanceof NoHttpResponseException ||
                         e instanceof SocketTimeoutException  ||
-                        e instanceof ConnectException ||
+                        e instanceof SocketException ||
                         e instanceof UnknownHostException ||
-                        e instanceof ConnectionClosedException ||
-                        e instanceof NoRouteToHostException;
+                        e instanceof ConnectionClosedException;
                 }
 
                 @Override

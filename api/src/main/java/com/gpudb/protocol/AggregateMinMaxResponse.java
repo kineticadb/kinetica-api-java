@@ -37,6 +37,30 @@ public class AggregateMinMaxResponse implements IndexedRecord {
         return schema$;
     }
 
+    /**
+     * A set of string constants for the {@link AggregateMinMaxResponse}
+     * parameter {@link #getInfo() info}.
+     * <p>
+     * Additional information.
+     */
+    public static final class Info {
+        /**
+         * The minimum value of {@link
+         * com.gpudb.protocol.AggregateMinMaxRequest#getColumnName()
+         * columnName} when it is a char type
+         */
+        public static final String MIN_STRING = "min_string";
+
+        /**
+         * The maximum value of {@link
+         * com.gpudb.protocol.AggregateMinMaxRequest#getColumnName()
+         * columnName} when it is a char type
+         */
+        public static final String MAX_STRING = "max_string";
+
+        private Info() {  }
+    }
+
     private double min;
     private double max;
     private Map<String, String> info;
@@ -95,6 +119,15 @@ public class AggregateMinMaxResponse implements IndexedRecord {
 
     /**
      * Additional information.
+     * <ul>
+     *     <li>{@link Info#MIN_STRING MIN_STRING}: The minimum value of {@link
+     *         com.gpudb.protocol.AggregateMinMaxRequest#getColumnName()
+     *         columnName} when it is a char type
+     *     <li>{@link Info#MAX_STRING MAX_STRING}: The maximum value of {@link
+     *         com.gpudb.protocol.AggregateMinMaxRequest#getColumnName()
+     *         columnName} when it is a char type
+     * </ul>
+     * The default value is an empty {@link Map}.
      *
      * @return The current value of {@code info}.
      */
@@ -104,6 +137,15 @@ public class AggregateMinMaxResponse implements IndexedRecord {
 
     /**
      * Additional information.
+     * <ul>
+     *     <li>{@link Info#MIN_STRING MIN_STRING}: The minimum value of {@link
+     *         com.gpudb.protocol.AggregateMinMaxRequest#getColumnName()
+     *         columnName} when it is a char type
+     *     <li>{@link Info#MAX_STRING MAX_STRING}: The maximum value of {@link
+     *         com.gpudb.protocol.AggregateMinMaxRequest#getColumnName()
+     *         columnName} when it is a char type
+     * </ul>
+     * The default value is an empty {@link Map}.
      *
      * @param info  The new value for {@code info}.
      *

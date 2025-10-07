@@ -23,6 +23,25 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * See <a href="../../../../../../sql/" target="_top">SQL Support</a> for the
  * complete set of supported SQL commands.
+ * <p>
+ * When a caller wants all the results from a large query (e.g., more than <a
+ * href="../../../../../../config/#config-main-general"
+ * target="_top">max_get_records_size</a> records), they can make multiple
+ * calls to this endpoint using the {@link #getOffset() offset} and {@link
+ * #getLimit() limit} parameters to page through the results.  Normally, this
+ * will execute the {@link #getStatement() statement} query each time. To avoid
+ * re-executing the query each time and to keep the results in the same order,
+ * the caller should specify a {@link Options#PAGING_TABLE PAGING_TABLE} name
+ * to hold the results of the query between calls and specify the {@link
+ * Options#PAGING_TABLE PAGING_TABLE} on subsequent calls. When this is done,
+ * the caller should clear the paging table and any other tables in the {@link
+ * com.gpudb.protocol.ExecuteSqlResponse.Info#RESULT_TABLE_LIST
+ * RESULT_TABLE_LIST} (both returned in the response) when they are done paging
+ * through the results.  {@link
+ * com.gpudb.protocol.ExecuteSqlResponse#getPagingTable() pagingTable} (and
+ * {@link com.gpudb.protocol.ExecuteSqlResponse.Info#RESULT_TABLE_LIST
+ * RESULT_TABLE_LIST}) will be empty if no paging table was created (e.g., when
+ * all the query results were returned in the first call).
  */
 public class ExecuteSqlRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -152,17 +171,36 @@ public class ExecuteSqlRequest implements IndexedRecord {
         public static final String LATE_MATERIALIZATION = "late_materialization";
 
         /**
-         * When empty or the specified paging table not exists, the system will
-         * create a paging table and return when query output has more records
-         * than the user asked. If the paging table exists in the system, the
-         * records from the paging table are returned without evaluating the
-         * query.
+         * When specified (or {@link Options#PAGING_TABLE_TTL PAGING_TABLE_TTL}
+         * is set), the system will create a paging table to hold the results
+         * of the query, when the output has more records than are in the
+         * response (i.e., when {@link
+         * com.gpudb.protocol.ExecuteSqlResponse#getHasMoreRecords()
+         * hasMoreRecords} is {@link
+         * com.gpudb.protocol.ExecuteSqlResponse.HasMoreRecords#TRUE TRUE}). If
+         * the specified paging table exists, the records from the paging table
+         * are returned without re-evaluating the query.  It is the caller's
+         * responsibility to clear the {@link
+         * com.gpudb.protocol.ExecuteSqlResponse#getPagingTable() pagingTable}
+         * and other tables in the {@link
+         * com.gpudb.protocol.ExecuteSqlResponse.Info#RESULT_TABLE_LIST
+         * RESULT_TABLE_LIST} (both returned in the response) when they are
+         * done with this query.
          */
         public static final String PAGING_TABLE = "paging_table";
 
         /**
          * Sets the <a href="../../../../../../concepts/ttl/"
-         * target="_top">TTL</a> of the paging table.
+         * target="_top">TTL</a> of the paging table.  -1 indicates no timeout.
+         * Setting this option will cause a paging table to be generated when
+         * needed. The {@link
+         * com.gpudb.protocol.ExecuteSqlResponse#getPagingTable() pagingTable}
+         * and other tables in the {@link
+         * com.gpudb.protocol.ExecuteSqlResponse.Info#RESULT_TABLE_LIST
+         * RESULT_TABLE_LIST} (both returned in the response) will be
+         * automatically cleared after the TTL expires, if set to a positive
+         * number. However, it is still recommended that the caller clear these
+         * tables when they are done with this query.
          */
         public static final String PAGING_TABLE_TTL = "paging_table_ttl";
 
@@ -450,16 +488,39 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
      *                     <li>{@link Options#PAGING_TABLE PAGING_TABLE}: When
-     *                         empty or the specified paging table not exists,
-     *                         the system will create a paging table and return
-     *                         when query output has more records than the user
-     *                         asked. If the paging table exists in the system,
+     *                         specified (or {@link Options#PAGING_TABLE_TTL
+     *                         PAGING_TABLE_TTL} is set), the system will
+     *                         create a paging table to hold the results of the
+     *                         query, when the output has more records than are
+     *                         in the response (i.e., when {@link
+     *                         com.gpudb.protocol.ExecuteSqlResponse#getHasMoreRecords()
+     *                         hasMoreRecords} is {@link
+     *                         com.gpudb.protocol.ExecuteSqlResponse.HasMoreRecords#TRUE
+     *                         TRUE}). If the specified paging table exists,
      *                         the records from the paging table are returned
-     *                         without evaluating the query.
+     *                         without re-evaluating the query.  It is the
+     *                         caller's responsibility to clear the {@link
+     *                         com.gpudb.protocol.ExecuteSqlResponse#getPagingTable()
+     *                         pagingTable} and other tables in the {@link
+     *                         com.gpudb.protocol.ExecuteSqlResponse.Info#RESULT_TABLE_LIST
+     *                         RESULT_TABLE_LIST} (both returned in the
+     *                         response) when they are done with this query.
      *                     <li>{@link Options#PAGING_TABLE_TTL
      *                         PAGING_TABLE_TTL}: Sets the <a
      *                         href="../../../../../../concepts/ttl/"
-     *                         target="_top">TTL</a> of the paging table.
+     *                         target="_top">TTL</a> of the paging table.  -1
+     *                         indicates no timeout.  Setting this option will
+     *                         cause a paging table to be generated when
+     *                         needed. The {@link
+     *                         com.gpudb.protocol.ExecuteSqlResponse#getPagingTable()
+     *                         pagingTable} and other tables in the {@link
+     *                         com.gpudb.protocol.ExecuteSqlResponse.Info#RESULT_TABLE_LIST
+     *                         RESULT_TABLE_LIST} (both returned in the
+     *                         response) will be automatically cleared after
+     *                         the TTL expires, if set to a positive number.
+     *                         However, it is still recommended that the caller
+     *                         clear these tables when they are done with this
+     *                         query.
      *                     <li>{@link Options#PARALLEL_EXECUTION
      *                         PARALLEL_EXECUTION}: If {@link Options#FALSE
      *                         FALSE}, disables the parallel step execution of
@@ -727,16 +788,39 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
      *                     <li>{@link Options#PAGING_TABLE PAGING_TABLE}: When
-     *                         empty or the specified paging table not exists,
-     *                         the system will create a paging table and return
-     *                         when query output has more records than the user
-     *                         asked. If the paging table exists in the system,
+     *                         specified (or {@link Options#PAGING_TABLE_TTL
+     *                         PAGING_TABLE_TTL} is set), the system will
+     *                         create a paging table to hold the results of the
+     *                         query, when the output has more records than are
+     *                         in the response (i.e., when {@link
+     *                         com.gpudb.protocol.ExecuteSqlResponse#getHasMoreRecords()
+     *                         hasMoreRecords} is {@link
+     *                         com.gpudb.protocol.ExecuteSqlResponse.HasMoreRecords#TRUE
+     *                         TRUE}). If the specified paging table exists,
      *                         the records from the paging table are returned
-     *                         without evaluating the query.
+     *                         without re-evaluating the query.  It is the
+     *                         caller's responsibility to clear the {@link
+     *                         com.gpudb.protocol.ExecuteSqlResponse#getPagingTable()
+     *                         pagingTable} and other tables in the {@link
+     *                         com.gpudb.protocol.ExecuteSqlResponse.Info#RESULT_TABLE_LIST
+     *                         RESULT_TABLE_LIST} (both returned in the
+     *                         response) when they are done with this query.
      *                     <li>{@link Options#PAGING_TABLE_TTL
      *                         PAGING_TABLE_TTL}: Sets the <a
      *                         href="../../../../../../concepts/ttl/"
-     *                         target="_top">TTL</a> of the paging table.
+     *                         target="_top">TTL</a> of the paging table.  -1
+     *                         indicates no timeout.  Setting this option will
+     *                         cause a paging table to be generated when
+     *                         needed. The {@link
+     *                         com.gpudb.protocol.ExecuteSqlResponse#getPagingTable()
+     *                         pagingTable} and other tables in the {@link
+     *                         com.gpudb.protocol.ExecuteSqlResponse.Info#RESULT_TABLE_LIST
+     *                         RESULT_TABLE_LIST} (both returned in the
+     *                         response) will be automatically cleared after
+     *                         the TTL expires, if set to a positive number.
+     *                         However, it is still recommended that the caller
+     *                         clear these tables when they are done with this
+     *                         query.
      *                     <li>{@link Options#PARALLEL_EXECUTION
      *                         PARALLEL_EXECUTION}: If {@link Options#FALSE
      *                         FALSE}, disables the parallel step execution of
@@ -1119,15 +1203,33 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#PAGING_TABLE PAGING_TABLE}: When empty or the
-     *         specified paging table not exists, the system will create a
-     *         paging table and return when query output has more records than
-     *         the user asked. If the paging table exists in the system, the
-     *         records from the paging table are returned without evaluating
-     *         the query.
+     *     <li>{@link Options#PAGING_TABLE PAGING_TABLE}: When specified (or
+     *         {@link Options#PAGING_TABLE_TTL PAGING_TABLE_TTL} is set), the
+     *         system will create a paging table to hold the results of the
+     *         query, when the output has more records than are in the response
+     *         (i.e., when {@link
+     *         com.gpudb.protocol.ExecuteSqlResponse#getHasMoreRecords()
+     *         hasMoreRecords} is {@link
+     *         com.gpudb.protocol.ExecuteSqlResponse.HasMoreRecords#TRUE
+     *         TRUE}). If the specified paging table exists, the records from
+     *         the paging table are returned without re-evaluating the query.
+     *         It is the caller's responsibility to clear the {@link
+     *         com.gpudb.protocol.ExecuteSqlResponse#getPagingTable()
+     *         pagingTable} and other tables in the {@link
+     *         com.gpudb.protocol.ExecuteSqlResponse.Info#RESULT_TABLE_LIST
+     *         RESULT_TABLE_LIST} (both returned in the response) when they are
+     *         done with this query.
      *     <li>{@link Options#PAGING_TABLE_TTL PAGING_TABLE_TTL}: Sets the <a
      *         href="../../../../../../concepts/ttl/" target="_top">TTL</a> of
-     *         the paging table.
+     *         the paging table.  -1 indicates no timeout.  Setting this option
+     *         will cause a paging table to be generated when needed. The
+     *         {@link com.gpudb.protocol.ExecuteSqlResponse#getPagingTable()
+     *         pagingTable} and other tables in the {@link
+     *         com.gpudb.protocol.ExecuteSqlResponse.Info#RESULT_TABLE_LIST
+     *         RESULT_TABLE_LIST} (both returned in the response) will be
+     *         automatically cleared after the TTL expires, if set to a
+     *         positive number. However, it is still recommended that the
+     *         caller clear these tables when they are done with this query.
      *     <li>{@link Options#PARALLEL_EXECUTION PARALLEL_EXECUTION}: If {@link
      *         Options#FALSE FALSE}, disables the parallel step execution of
      *         the given query.
@@ -1319,15 +1421,33 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#PAGING_TABLE PAGING_TABLE}: When empty or the
-     *         specified paging table not exists, the system will create a
-     *         paging table and return when query output has more records than
-     *         the user asked. If the paging table exists in the system, the
-     *         records from the paging table are returned without evaluating
-     *         the query.
+     *     <li>{@link Options#PAGING_TABLE PAGING_TABLE}: When specified (or
+     *         {@link Options#PAGING_TABLE_TTL PAGING_TABLE_TTL} is set), the
+     *         system will create a paging table to hold the results of the
+     *         query, when the output has more records than are in the response
+     *         (i.e., when {@link
+     *         com.gpudb.protocol.ExecuteSqlResponse#getHasMoreRecords()
+     *         hasMoreRecords} is {@link
+     *         com.gpudb.protocol.ExecuteSqlResponse.HasMoreRecords#TRUE
+     *         TRUE}). If the specified paging table exists, the records from
+     *         the paging table are returned without re-evaluating the query.
+     *         It is the caller's responsibility to clear the {@link
+     *         com.gpudb.protocol.ExecuteSqlResponse#getPagingTable()
+     *         pagingTable} and other tables in the {@link
+     *         com.gpudb.protocol.ExecuteSqlResponse.Info#RESULT_TABLE_LIST
+     *         RESULT_TABLE_LIST} (both returned in the response) when they are
+     *         done with this query.
      *     <li>{@link Options#PAGING_TABLE_TTL PAGING_TABLE_TTL}: Sets the <a
      *         href="../../../../../../concepts/ttl/" target="_top">TTL</a> of
-     *         the paging table.
+     *         the paging table.  -1 indicates no timeout.  Setting this option
+     *         will cause a paging table to be generated when needed. The
+     *         {@link com.gpudb.protocol.ExecuteSqlResponse#getPagingTable()
+     *         pagingTable} and other tables in the {@link
+     *         com.gpudb.protocol.ExecuteSqlResponse.Info#RESULT_TABLE_LIST
+     *         RESULT_TABLE_LIST} (both returned in the response) will be
+     *         automatically cleared after the TTL expires, if set to a
+     *         positive number. However, it is still recommended that the
+     *         caller clear these tables when they are done with this query.
      *     <li>{@link Options#PARALLEL_EXECUTION PARALLEL_EXECUTION}: If {@link
      *         Options#FALSE FALSE}, disables the parallel step execution of
      *         the given query.

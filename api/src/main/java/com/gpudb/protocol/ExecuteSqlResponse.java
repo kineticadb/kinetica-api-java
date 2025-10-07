@@ -39,9 +39,16 @@ public class ExecuteSqlResponse {
      */
     public static final class Info {
         /**
-         * Number of records in the final table
+         * Number of records without final limits applied
          */
         public static final String COUNT = "count";
+
+        /**
+         * List of tables, comma-separated, in addition to the {@link
+         * #getPagingTable() pagingTable}, created as result of the query.
+         * These should be cleared by the caller when they are done querying.
+         */
+        public static final String RESULT_TABLE_LIST = "result_table_list";
 
         private Info() {  }
     }
@@ -158,7 +165,9 @@ public class ExecuteSqlResponse {
     /**
      * Name of the table that has the result records of the query. Valid, when
      * {@link #getHasMoreRecords() hasMoreRecords} is {@link
-     * HasMoreRecords#TRUE TRUE}
+     * HasMoreRecords#TRUE TRUE}.  The caller should clear this and all tables
+     * in {@link Info#RESULT_TABLE_LIST RESULT_TABLE_LIST} when they are done
+     * querying.
      *
      * @return The current value of {@code pagingTable}.
      */
@@ -169,7 +178,9 @@ public class ExecuteSqlResponse {
     /**
      * Name of the table that has the result records of the query. Valid, when
      * {@link #getHasMoreRecords() hasMoreRecords} is {@link
-     * HasMoreRecords#TRUE TRUE}
+     * HasMoreRecords#TRUE TRUE}.  The caller should clear this and all tables
+     * in {@link Info#RESULT_TABLE_LIST RESULT_TABLE_LIST} when they are done
+     * querying.
      *
      * @param pagingTable  The new value for {@code pagingTable}.
      *
@@ -183,7 +194,13 @@ public class ExecuteSqlResponse {
     /**
      * Additional information.
      * <ul>
-     *     <li>{@link Info#COUNT COUNT}: Number of records in the final table
+     *     <li>{@link Info#COUNT COUNT}: Number of records without final limits
+     *         applied
+     *     <li>{@link Info#RESULT_TABLE_LIST RESULT_TABLE_LIST}: List of
+     *         tables, comma-separated, in addition to the {@link
+     *         #getPagingTable() pagingTable}, created as result of the query.
+     *         These should be cleared by the caller when they are done
+     *         querying.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -196,7 +213,13 @@ public class ExecuteSqlResponse {
     /**
      * Additional information.
      * <ul>
-     *     <li>{@link Info#COUNT COUNT}: Number of records in the final table
+     *     <li>{@link Info#COUNT COUNT}: Number of records without final limits
+     *         applied
+     *     <li>{@link Info#RESULT_TABLE_LIST RESULT_TABLE_LIST}: List of
+     *         tables, comma-separated, in addition to the {@link
+     *         #getPagingTable() pagingTable}, created as result of the query.
+     *         These should be cleared by the caller when they are done
+     *         querying.
      * </ul>
      * The default value is an empty {@link Map}.
      *
