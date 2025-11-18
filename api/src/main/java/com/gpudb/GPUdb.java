@@ -1260,6 +1260,7 @@ public class GPUdb extends GPUdbBase {
      *
      * @param tableNames  List of tables to query. An asterisk returns all
      *                    tables.
+     * @param tableTypes  internal: type_id per table.
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link
@@ -1280,6 +1281,10 @@ public class GPUdb extends GPUdbBase {
      *                                 REPLAY_WAL}: Manually invokes
      *                                 write-ahead log (WAL) replay on the
      *                                 table
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.AdminRepairTableRequest.Options#ALTER_TABLE
+     *                                 ALTER_TABLE}: Reset columns modification
+     *                                 after incomplete alter column.
      *                         </ul>
      *                     <li>{@link
      *                         com.gpudb.protocol.AdminRepairTableRequest.Options#VERIFY_ALL
@@ -1309,8 +1314,8 @@ public class GPUdb extends GPUdbBase {
      *
      * @throws GPUdbException  if an error occurs during the operation.
      */
-    public AdminRepairTableResponse adminRepairTable(List<String> tableNames, Map<String, String> options) throws GPUdbException {
-        AdminRepairTableRequest actualRequest_ = new AdminRepairTableRequest(tableNames, options);
+    public AdminRepairTableResponse adminRepairTable(List<String> tableNames, Map<String, String> tableTypes, Map<String, String> options) throws GPUdbException {
+        AdminRepairTableRequest actualRequest_ = new AdminRepairTableRequest(tableNames, tableTypes, options);
         AdminRepairTableResponse actualResponse_ = new AdminRepairTableResponse();
         submitRequest("/admin/repair/table", actualRequest_, actualResponse_, false);
         return actualResponse_;
@@ -4034,8 +4039,12 @@ public class GPUdb extends GPUdbBase {
     }
 
     /**
-     * Alters an existing database backup containing a current snapshot of
-     * existing objects.
+     * Alters an existing database <a
+     * href="../../../../../admin/backup_restore/#database-backup"
+     * target="_top">backup</a>, accessible via the <a
+     * href="../../../../../concepts/data_sinks/" target="_top">data sink</a>
+     * specified by {@link
+     * com.gpudb.protocol.AlterBackupRequest#getDatasinkName() datasinkName}.
      *
      * @param request  {@link AlterBackupRequest Request} object containing the
      *                 parameters for the operation.
@@ -4052,51 +4061,60 @@ public class GPUdb extends GPUdbBase {
     }
 
     /**
-     * Alters an existing database backup containing a current snapshot of
-     * existing objects.
+     * Alters an existing database <a
+     * href="../../../../../admin/backup_restore/#database-backup"
+     * target="_top">backup</a>, accessible via the <a
+     * href="../../../../../concepts/data_sinks/" target="_top">data sink</a>
+     * specified by {@code datasinkName}.
      *
-     * @param backupName  Name of the backup object to be altered
+     * @param backupName  Name of the backup to be altered.
      * @param action  Operation to be applied.
      *                Supported values:
      *                <ul>
      *                    <li>{@link
      *                        com.gpudb.protocol.AlterBackupRequest.Action#CHECKSUM
-     *                        CHECKSUM}: Calculate checksum for backup files
+     *                        CHECKSUM}: Calculate checksum for backed-up
+     *                        files.
      *                    <li>{@link
      *                        com.gpudb.protocol.AlterBackupRequest.Action#DDL_ONLY
-     *                        DDL_ONLY}: Only save the DDL, do not backup table
-     *                        data
+     *                        DDL_ONLY}: Whether or not to only save DDL and
+     *                        not back up table data, when taking future
+     *                        snapshots; set {@code value} to 'true' or 'false'
+     *                        for DDL only or DDL and table data, respectively.
      *                    <li>{@link
      *                        com.gpudb.protocol.AlterBackupRequest.Action#MAX_INCREMENTAL_BACKUPS_TO_KEEP
      *                        MAX_INCREMENTAL_BACKUPS_TO_KEEP}: Maximum number
-     *                        of incremental backups to keep
+     *                        of incremental snapshots to keep, when taking
+     *                        future snapshots; set {@code value} to the number
+     *                        of snapshots to keep.
      *                    <li>{@link
      *                        com.gpudb.protocol.AlterBackupRequest.Action#MERGE
-     *                        MERGE}: Merges all backup instances and creates a
-     *                        single full backup
+     *                        MERGE}: Merges all snapshots within a backup and
+     *                        creates a single full snapshot.
      *                    <li>{@link
      *                        com.gpudb.protocol.AlterBackupRequest.Action#PURGE
-     *                        PURGE}: Purges backup instances
+     *                        PURGE}: Deletes a snapshot from a backup; set
+     *                        {@code value} to the snapshot ID to purge.
      *                </ul>
-     * @param value  Action specific argument.
-     * @param datasinkName  Datasink where backup will be stored.
+     * @param value  Value of the modification, depending on {@code action}.
+     * @param datasinkName  Data sink through which the backup is accessible.
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link
      *                         com.gpudb.protocol.AlterBackupRequest.Options#COMMENT
-     *                         COMMENT}: Comments to store with the new backup
-     *                         instance
+     *                         COMMENT}: Comments to store with the backup.
      *                     <li>{@link
      *                         com.gpudb.protocol.AlterBackupRequest.Options#DRY_RUN
-     *                         DRY_RUN}: Dry run of backup changes.
+     *                         DRY_RUN}: Whether or not to perform a dry run of
+     *                         a backup alteration.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
-     *                                 com.gpudb.protocol.AlterBackupRequest.Options#FALSE
-     *                                 FALSE}
-     *                             <li>{@link
      *                                 com.gpudb.protocol.AlterBackupRequest.Options#TRUE
      *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.AlterBackupRequest.Options#FALSE
+     *                                 FALSE}
      *                         </ul>
      *                         The default value is {@link
      *                         com.gpudb.protocol.AlterBackupRequest.Options#FALSE
@@ -7489,8 +7507,13 @@ public class GPUdb extends GPUdbBase {
     }
 
     /**
-     * Creates a database backup containing a current snapshot of existing
-     * objects.
+     * Creates a database <a
+     * href="../../../../../admin/backup_restore/#database-backup"
+     * target="_top">backup</a>, containing a snapshot of existing objects, at
+     * the remote file store accessible via the <a
+     * href="../../../../../concepts/data_sinks/" target="_top">data sink</a>
+     * specified by {@link
+     * com.gpudb.protocol.CreateBackupRequest#getDatasinkName() datasinkName}.
      *
      * @param request  {@link CreateBackupRequest Request} object containing
      *                 the parameters for the operation.
@@ -7507,118 +7530,157 @@ public class GPUdb extends GPUdbBase {
     }
 
     /**
-     * Creates a database backup containing a current snapshot of existing
-     * objects.
+     * Creates a database <a
+     * href="../../../../../admin/backup_restore/#database-backup"
+     * target="_top">backup</a>, containing a snapshot of existing objects, at
+     * the remote file store accessible via the <a
+     * href="../../../../../concepts/data_sinks/" target="_top">data sink</a>
+     * specified by {@code datasinkName}.
      *
-     * @param backupName  Name for this backup object. If the backup object
-     *                    already exists, only an incremental or differential
-     *                    backup can be made, unless recreate is specified
-     * @param backupType  Type of backup to create.
+     * @param backupName  Name for this backup. If the backup already exists,
+     *                    only an incremental or differential backup can be
+     *                    made, unless {@link
+     *                    com.gpudb.protocol.CreateBackupRequest.Options#RECREATE
+     *                    RECREATE} is set to {@link
+     *                    com.gpudb.protocol.CreateBackupRequest.Options#TRUE
+     *                    TRUE}.
+     * @param backupType  Type of snapshot to create.
      *                    Supported values:
      *                    <ul>
      *                        <li>{@link
      *                            com.gpudb.protocol.CreateBackupRequest.BackupType#INCREMENTAL
-     *                            INCREMENTAL}
+     *                            INCREMENTAL}: Snapshot of changes in the
+     *                            database objects & data since the last
+     *                            snapshot of any kind.
      *                        <li>{@link
      *                            com.gpudb.protocol.CreateBackupRequest.BackupType#DIFFERENTIAL
-     *                            DIFFERENTIAL}
+     *                            DIFFERENTIAL}: Snapshot of changes in the
+     *                            database objects & data since the last full
+     *                            snapshot.
      *                        <li>{@link
      *                            com.gpudb.protocol.CreateBackupRequest.BackupType#FULL
-     *                            FULL}
+     *                            FULL}: Snapshot of the given database objects
+     *                            and data.
      *                    </ul>
-     * @param backupObjectsMap  Map of objects to be captured in the backup.
-     *                          Error if empty and creating full backup. Error
-     *                          if non-empty when creating an incremental or
-     *                          differential backup.
+     * @param backupObjectsMap  Map of objects to be captured in the backup;
+     *                          must be specified when creating a full snapshot
+     *                          and left unspecified when creating an
+     *                          incremental or differential snapshot.
      *                          <ul>
      *                              <li>{@link
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#ALL
-     *                                  ALL}: All object types in a schema
-     *                                  (excludes permissions, system
-     *                                  configuration, host secret key, KiFS
-     *                                  directories and user defined functions)
+     *                                  ALL}: All object types and data
+     *                                  contained in the given <a
+     *                                  href="../../../../../concepts/schemas/"
+     *                                  target="_top">schemas(s)</a>.
      *                              <li>{@link
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#TABLE
-     *                                  TABLE}: Database Table
+     *                                  TABLE}: <a
+     *                                  href="../../../../../concepts/tables/"
+     *                                  target="_top">Tables(s)</a> and <a
+     *                                  href="../../../../../sql/ddl/#create-view"
+     *                                  target="_top">SQL view(s)</a>.
      *                              <li>{@link
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#CREDENTIAL
-     *                                  CREDENTIAL}: Credential
+     *                                  CREDENTIAL}: <a
+     *                                  href="../../../../../concepts/credentials/"
+     *                                  target="_top">Credential(s)</a>.
      *                              <li>{@link
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#CONTEXT
-     *                                  CONTEXT}: Context
+     *                                  CONTEXT}: <a
+     *                                  href="../../../../../sql-gpt/concepts/#sql-gpt-context"
+     *                                  target="_top">Context(s)</a>.
      *                              <li>{@link
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#DATASINK
-     *                                  DATASINK}: Data Sink
+     *                                  DATASINK}: <a
+     *                                  href="../../../../../concepts/data_sinks/"
+     *                                  target="_top">Data sink(s)</a>.
      *                              <li>{@link
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#DATASOURCE
-     *                                  DATASOURCE}: Data Source
+     *                                  DATASOURCE}: <a
+     *                                  href="../../../../../concepts/data_sources/"
+     *                                  target="_top">Data source(s)</a>.
      *                              <li>{@link
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#STORED_PROCEDURE
-     *                                  STORED_PROCEDURE}: SQL Procedure
+     *                                  STORED_PROCEDURE}: <a
+     *                                  href="../../../../../sql/procedure/"
+     *                                  target="_top">SQL procedure(s)</a>.
      *                              <li>{@link
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#MONITOR
-     *                                  MONITOR}: Table Monitor (Stream)
+     *                                  MONITOR}: <a
+     *                                  href="../../../../../concepts/table_monitors/"
+     *                                  target="_top">Table monitor(s)</a> / <a
+     *                                  href="../../../../../sql/ddl/#create-stream"
+     *                                  target="_top">SQL stream(s)</a>.
      *                              <li>{@link
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#USER
-     *                                  USER}: User (internal and external) and
-     *                                  associated permissions
+     *                                  USER}: <a
+     *                                  href="../../../../../security/sec_concepts/#security-concepts-users"
+     *                                  target="_top">User(s)</a> (internal and
+     *                                  external) and associated permissions.
      *                              <li>{@link
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#ROLE
-     *                                  ROLE}: Role, role members (roles or
-     *                                  users, recursively) and associated
-     *                                  permissions
+     *                                  ROLE}: <a
+     *                                  href="../../../../../security/sec_concepts/#roles"
+     *                                  target="_top">Role(s)</a>, role members
+     *                                  (roles or users, recursively), and
+     *                                  associated permissions.
      *                              <li>{@link
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#CONFIGURATION
      *                                  CONFIGURATION}: If {@link
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#TRUE
-     *                                  TRUE}, backup the database
-     *                                  configuration file.
+     *                                  TRUE}, backup the database <a
+     *                                  href="../../../../../config/"
+     *                                  target="_top">configuration file</a>.
      *                                  Supported values:
      *                                  <ul>
      *                                      <li>{@link
-     *                                          com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#FALSE
-     *                                          FALSE}
-     *                                      <li>{@link
      *                                          com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#TRUE
      *                                          TRUE}
+     *                                      <li>{@link
+     *                                          com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#FALSE
+     *                                          FALSE}
      *                                  </ul>
      *                                  The default value is {@link
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#FALSE
      *                                  FALSE}.
      *                          </ul>
-     * @param datasinkName  Datasink where backup will be stored.
+     * @param datasinkName  Data sink through which the backup will be stored.
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateBackupRequest.Options#COMMENT
-     *                         COMMENT}: Comments to store with this backup
+     *                         COMMENT}: Comments to store with this backup.
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateBackupRequest.Options#CHECKSUM
-     *                         CHECKSUM}: Calculate checksum for backup files.
+     *                         CHECKSUM}: Whether or not to calculate checksums
+     *                         for backup files.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
-     *                                 com.gpudb.protocol.CreateBackupRequest.Options#FALSE
-     *                                 FALSE}
-     *                             <li>{@link
      *                                 com.gpudb.protocol.CreateBackupRequest.Options#TRUE
      *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateBackupRequest.Options#FALSE
+     *                                 FALSE}
      *                         </ul>
      *                         The default value is {@link
-     *                         com.gpudb.protocol.CreateBackupRequest.Options#TRUE
-     *                         TRUE}.
+     *                         com.gpudb.protocol.CreateBackupRequest.Options#FALSE
+     *                         FALSE}.
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateBackupRequest.Options#DDL_ONLY
-     *                         DDL_ONLY}: Only save the DDL, do not backup
-     *                         table data.
+     *                         DDL_ONLY}: Whether or not, for tables, to only
+     *                         backup DDL and not table data.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateBackupRequest.Options#TRUE
-     *                                 TRUE}
+     *                                 TRUE}: For tables, only back up DDL, not
+     *                                 data.
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateBackupRequest.Options#FALSE
-     *                                 FALSE}
+     *                                 FALSE}: For tables, back up DDL and
+     *                                 data.
      *                         </ul>
      *                         The default value is {@link
      *                         com.gpudb.protocol.CreateBackupRequest.Options#FALSE
@@ -7626,55 +7688,56 @@ public class GPUdb extends GPUdbBase {
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateBackupRequest.Options#MAX_INCREMENTAL_BACKUPS_TO_KEEP
      *                         MAX_INCREMENTAL_BACKUPS_TO_KEEP}: Maximum number
-     *                         of incremental backups to keep. The default
+     *                         of incremental snapshots to keep. The default
      *                         value is '-1'.
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateBackupRequest.Options#DELETE_INTERMEDIATE_BACKUPS
-     *                         DELETE_INTERMEDIATE_BACKUPS}: When the backup
-     *                         type is differential, delete any intermediate
-     *                         incremental or differential backups. This
-     *                         overrides {@link
-     *                         com.gpudb.protocol.CreateBackupRequest.Options#MAX_INCREMENTAL_BACKUPS_TO_KEEP
-     *                         MAX_INCREMENTAL_BACKUPS_TO_KEEP}.
+     *                         DELETE_INTERMEDIATE_BACKUPS}: Whether or not to
+     *                         delete any intermediate snapshots when the
+     *                         {@code backupType} is set to {@link
+     *                         com.gpudb.protocol.CreateBackupRequest.BackupType#DIFFERENTIAL
+     *                         DIFFERENTIAL}.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
-     *                                 com.gpudb.protocol.CreateBackupRequest.Options#FALSE
-     *                                 FALSE}
-     *                             <li>{@link
      *                                 com.gpudb.protocol.CreateBackupRequest.Options#TRUE
      *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateBackupRequest.Options#FALSE
+     *                                 FALSE}
      *                         </ul>
      *                         The default value is {@link
      *                         com.gpudb.protocol.CreateBackupRequest.Options#FALSE
      *                         FALSE}.
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateBackupRequest.Options#RECREATE
-     *                         RECREATE}: Replace the existing backup object
-     *                         with a new full backup if it already exists.
+     *                         RECREATE}: Whether or not to replace an existing
+     *                         backup object with a new backup with a full
+     *                         snapshot, if one already exists.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
-     *                                 com.gpudb.protocol.CreateBackupRequest.Options#FALSE
-     *                                 FALSE}
-     *                             <li>{@link
      *                                 com.gpudb.protocol.CreateBackupRequest.Options#TRUE
      *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateBackupRequest.Options#FALSE
+     *                                 FALSE}
      *                         </ul>
      *                         The default value is {@link
      *                         com.gpudb.protocol.CreateBackupRequest.Options#FALSE
      *                         FALSE}.
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateBackupRequest.Options#DRY_RUN
-     *                         DRY_RUN}: Dry run of backup.
+     *                         DRY_RUN}: Whether or not to perform a dry run of
+     *                         a backup operation.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
-     *                                 com.gpudb.protocol.CreateBackupRequest.Options#FALSE
-     *                                 FALSE}
-     *                             <li>{@link
      *                                 com.gpudb.protocol.CreateBackupRequest.Options#TRUE
      *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateBackupRequest.Options#FALSE
+     *                                 FALSE}
      *                         </ul>
      *                         The default value is {@link
      *                         com.gpudb.protocol.CreateBackupRequest.Options#FALSE
@@ -9003,22 +9066,6 @@ public class GPUdb extends GPUdbBase {
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateJoinTableRequest.Options#MAX_QUERY_DIMENSIONS
      *                         MAX_QUERY_DIMENSIONS}: No longer used.
-     *                     <li>{@link
-     *                         com.gpudb.protocol.CreateJoinTableRequest.Options#OPTIMIZE_LOOKUPS
-     *                         OPTIMIZE_LOOKUPS}: Use more memory to speed up
-     *                         the joining of tables.
-     *                         Supported values:
-     *                         <ul>
-     *                             <li>{@link
-     *                                 com.gpudb.protocol.CreateJoinTableRequest.Options#TRUE
-     *                                 TRUE}
-     *                             <li>{@link
-     *                                 com.gpudb.protocol.CreateJoinTableRequest.Options#FALSE
-     *                                 FALSE}
-     *                         </ul>
-     *                         The default value is {@link
-     *                         com.gpudb.protocol.CreateJoinTableRequest.Options#FALSE
-     *                         FALSE}.
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateJoinTableRequest.Options#STRATEGY_DEFINITION
      *                         STRATEGY_DEFINITION}: The <a
@@ -11547,6 +11594,24 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_SEARCH_COLUMNS
      *                         TEXT_SEARCH_COLUMNS} has a value.
      *                     <li>{@link
+     *                         com.gpudb.protocol.CreateTableExternalRequest.Options#TRIM_SPACE
+     *                         TRIM_SPACE}: If set to {@link
+     *                         com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE
+     *                         TRUE}, remove leading or trailing space from
+     *                         fields.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link
      *                         com.gpudb.protocol.CreateTableExternalRequest.Options#TRUNCATE_STRINGS
      *                         TRUNCATE_STRINGS}: If set to {@link
      *                         com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE
@@ -13660,6 +13725,114 @@ public class GPUdb extends GPUdbBase {
         DownloadFilesRequest actualRequest_ = new DownloadFilesRequest(fileNames, readOffsets, readLengths, options);
         DownloadFilesResponse actualResponse_ = new DownloadFilesResponse();
         submitRequest("/download/files", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+    /**
+     * Deletes one or more existing database <a
+     * href="../../../../../admin/backup_restore/#database-backup"
+     * target="_top">backups</a> and contained snapshots, accessible via the <a
+     * href="../../../../../concepts/data_sinks/" target="_top">data sink</a>
+     * specified by {@link
+     * com.gpudb.protocol.DropBackupRequest#getDatasinkName() datasinkName}.
+     *
+     * @param request  {@link DropBackupRequest Request} object containing the
+     *                 parameters for the operation.
+     *
+     * @return {@link DropBackupResponse Response} object containing the
+     *         results of the operation.
+     *
+     * @throws GPUdbException  if an error occurs during the operation.
+     */
+    public DropBackupResponse dropBackup(DropBackupRequest request) throws GPUdbException {
+        DropBackupResponse actualResponse_ = new DropBackupResponse();
+        submitRequest("/drop/backup", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+    /**
+     * Deletes one or more existing database <a
+     * href="../../../../../admin/backup_restore/#database-backup"
+     * target="_top">backups</a> and contained snapshots, accessible via the <a
+     * href="../../../../../concepts/data_sinks/" target="_top">data sink</a>
+     * specified by {@code datasinkName}.
+     *
+     * @param backupName  Name of the backup to be deleted. An empty string or
+     *                    '*' will delete all existing backups. Any text
+     *                    followed by a '*' will delete backups whose name
+     *                    starts with that text.  When deleting multiple
+     *                    backups, {@link
+     *                    com.gpudb.protocol.DropBackupRequest.Options#DELETE_ALL_BACKUPS
+     *                    DELETE_ALL_BACKUPS} must be set to {@link
+     *                    com.gpudb.protocol.DropBackupRequest.Options#TRUE
+     *                    TRUE}.
+     * @param datasinkName  Data sink through which the backup is accessible.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                     <li>{@link
+     *                         com.gpudb.protocol.DropBackupRequest.Options#DRY_RUN
+     *                         DRY_RUN}: Whether or not to perform a dry run of
+     *                         a backup deletion.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.DropBackupRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.DropBackupRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.DropBackupRequest.Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.DropBackupRequest.Options#DELETE_ALL_BACKUPS
+     *                         DELETE_ALL_BACKUPS}: Allow multiple backups to
+     *                         be deleted if {@link
+     *                         com.gpudb.protocol.DropBackupRequest.Options#TRUE
+     *                         TRUE} and multiple backup names are found
+     *                         matching {@code backupName}.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.DropBackupRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.DropBackupRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.DropBackupRequest.Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.DropBackupRequest.Options#NO_ERROR_IF_NOT_EXISTS
+     *                         NO_ERROR_IF_NOT_EXISTS}: Whether or not to
+     *                         suppress the error if the specified backup does
+     *                         not exist.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.DropBackupRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.DropBackupRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.DropBackupRequest.Options#FALSE
+     *                         FALSE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     *
+     * @return {@link DropBackupResponse Response} object containing the
+     *         results of the operation.
+     *
+     * @throws GPUdbException  if an error occurs during the operation.
+     */
+    public DropBackupResponse dropBackup(String backupName, String datasinkName, Map<String, String> options) throws GPUdbException {
+        DropBackupRequest actualRequest_ = new DropBackupRequest(backupName, datasinkName, options);
+        DropBackupResponse actualResponse_ = new DropBackupResponse();
+        submitRequest("/drop/backup", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -18273,6 +18446,9 @@ public class GPUdb extends GPUdbBase {
      *                            com.gpudb.protocol.GrantPermissionRequest.Permission#INSERT
      *                            INSERT}: Insert access to tables.
      *                        <li>{@link
+     *                            com.gpudb.protocol.GrantPermissionRequest.Permission#MONITOR
+     *                            MONITOR}: Monitor logs and statistics.
+     *                        <li>{@link
      *                            com.gpudb.protocol.GrantPermissionRequest.Permission#READ
      *                            READ}: Ability to read, list and use the
      *                            object.
@@ -18819,6 +18995,9 @@ public class GPUdb extends GPUdbBase {
      *                        <li>{@link
      *                            com.gpudb.protocol.HasPermissionRequest.Permission#INSERT
      *                            INSERT}: Insert access to tables.
+     *                        <li>{@link
+     *                            com.gpudb.protocol.HasPermissionRequest.Permission#MONITOR
+     *                            MONITOR}: Monitor logs and statistics.
      *                        <li>{@link
      *                            com.gpudb.protocol.HasPermissionRequest.Permission#READ
      *                            READ}: Ability to read, list and use the
@@ -20778,6 +20957,24 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_COLUMNS
      *                         TEXT_SEARCH_COLUMNS} has a value.
      *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRIM_SPACE
+     *                         TRIM_SPACE}: If set to {@link
+     *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE
+     *                         TRUE}, remove leading or trailing space from
+     *                         fields.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUNCATE_STRINGS
      *                         TRUNCATE_STRINGS}: If set to {@link
      *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE
@@ -21750,6 +21947,24 @@ public class GPUdb extends GPUdbBase {
      *                         TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum
      *                         column size. Used only when
      *                         'text_search_columns' has a value.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRIM_SPACE
+     *                         TRIM_SPACE}: If set to {@link
+     *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUE
+     *                         TRUE}, remove leading or trailing space from
+     *                         fields.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *                         FALSE}.
      *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUNCATE_STRINGS
      *                         TRUNCATE_STRINGS}: If set to {@link
@@ -24508,8 +24723,13 @@ public class GPUdb extends GPUdbBase {
     }
 
     /**
-     * Restores objects from a backup instance.
-     * Response from a backup restoration operation.
+     * Restores database objects from a <a
+     * href="../../../../../admin/backup_restore/#database-backup"
+     * target="_top">backup</a> accessible via the <a
+     * href="../../../../../concepts/data_sources/" target="_top">data
+     * source</a> specified by {@link
+     * com.gpudb.protocol.RestoreBackupRequest#getDatasourceName()
+     * datasourceName}.
      *
      * @param request  {@link RestoreBackupRequest Request} object containing
      *                 the parameters for the operation.
@@ -24526,130 +24746,205 @@ public class GPUdb extends GPUdbBase {
     }
 
     /**
-     * Restores objects from a backup instance.
-     * Response from a backup restoration operation.
+     * Restores database objects from a <a
+     * href="../../../../../admin/backup_restore/#database-backup"
+     * target="_top">backup</a> accessible via the <a
+     * href="../../../../../concepts/data_sources/" target="_top">data
+     * source</a> specified by {@code datasourceName}.
      *
-     * @param backupName  Name of the backup object, which must refer to a
-     *                    currently existing backup. The default value is ''.
-     * @param restoreObjectsMap  Map of objects to be restored from the backup.
-     *                           Error if empty.
+     * @param backupName  Name of the backup to restore from, which must refer
+     *                    to an existing backup. The default value is ''.
+     * @param restoreObjectsMap  Map of database objects to be restored from
+     *                           the backup.
      *                           <ul>
      *                               <li>{@link
      *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#ALL
-     *                                   ALL}: All object types in a schema
-     *                                   (excludes permissions, system
-     *                                   configuration, host secret key, KiFS
-     *                                   directories and user defined
-     *                                   functions)
+     *                                   ALL}: All object types and data
+     *                                   contained in the given <a
+     *                                   href="../../../../../concepts/schemas/"
+     *                                   target="_top">schemas(s)</a>.
      *                               <li>{@link
      *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#TABLE
-     *                                   TABLE}: Database Table
+     *                                   TABLE}: <a
+     *                                   href="../../../../../concepts/tables/"
+     *                                   target="_top">Tables(s)</a> and <a
+     *                                   href="../../../../../sql/ddl/#create-view"
+     *                                   target="_top">SQL view(s)</a>.
      *                               <li>{@link
      *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#CREDENTIAL
-     *                                   CREDENTIAL}: Credential
+     *                                   CREDENTIAL}: <a
+     *                                   href="../../../../../concepts/credentials/"
+     *                                   target="_top">Credential(s)</a>.
      *                               <li>{@link
      *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#CONTEXT
-     *                                   CONTEXT}: Context
+     *                                   CONTEXT}: <a
+     *                                   href="../../../../../sql-gpt/concepts/#sql-gpt-context"
+     *                                   target="_top">Context(s)</a>.
      *                               <li>{@link
      *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#DATASINK
-     *                                   DATASINK}: Data Sink
+     *                                   DATASINK}: <a
+     *                                   href="../../../../../concepts/data_sinks/"
+     *                                   target="_top">Data sink(s)</a>.
      *                               <li>{@link
      *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#DATASOURCE
-     *                                   DATASOURCE}: Data Source
+     *                                   DATASOURCE}: <a
+     *                                   href="../../../../../concepts/data_sources/"
+     *                                   target="_top">Data source(s)</a>.
      *                               <li>{@link
      *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#STORED_PROCEDURE
-     *                                   STORED_PROCEDURE}: SQL Procedure
+     *                                   STORED_PROCEDURE}: <a
+     *                                   href="../../../../../sql/procedure/"
+     *                                   target="_top">SQL procedure(s)</a>.
      *                               <li>{@link
      *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#MONITOR
-     *                                   MONITOR}: Table Monitor (Stream)
+     *                                   MONITOR}: <a
+     *                                   href="../../../../../concepts/table_monitors/"
+     *                                   target="_top">Table monitor(s)</a> /
+     *                                   <a
+     *                                   href="../../../../../sql/ddl/#create-stream"
+     *                                   target="_top">SQL stream(s)</a>.
      *                               <li>{@link
      *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#USER
-     *                                   USER}: User (internal and external)
-     *                                   and associated permissions
+     *                                   USER}: <a
+     *                                   href="../../../../../security/sec_concepts/#security-concepts-users"
+     *                                   target="_top">User(s)</a> (internal
+     *                                   and external) and associated
+     *                                   permissions.
      *                               <li>{@link
      *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#ROLE
-     *                                   ROLE}: Role, role members (roles or
-     *                                   users, recursively) and associated
-     *                                   permissions
+     *                                   ROLE}: <a
+     *                                   href="../../../../../security/sec_concepts/#roles"
+     *                                   target="_top">Role(s)</a>, role
+     *                                   members (roles or users, recursively),
+     *                                   and associated permissions.
      *                               <li>{@link
      *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#CONFIGURATION
      *                                   CONFIGURATION}: If {@link
      *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#TRUE
-     *                                   TRUE}, restore the database
-     *                                   configuration file.
+     *                                   TRUE}, restore the database <a
+     *                                   href="../../../../../config/"
+     *                                   target="_top">configuration file</a>.
      *                                   Supported values:
      *                                   <ul>
      *                                       <li>{@link
-     *                                           com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#FALSE
-     *                                           FALSE}
-     *                                       <li>{@link
      *                                           com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#TRUE
      *                                           TRUE}
+     *                                       <li>{@link
+     *                                           com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#FALSE
+     *                                           FALSE}
      *                                   </ul>
      *                                   The default value is {@link
      *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#FALSE
      *                                   FALSE}.
      *                           </ul>
-     * @param datasourceName  Datasource where backup is located.
+     * @param datasourceName  Data source through which the backup will be
+     *                        restored.
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link
      *                         com.gpudb.protocol.RestoreBackupRequest.Options#BACKUP_ID
-     *                         BACKUP_ID}: Backup instance ID to restore. Leave
-     *                         empty to restore the most recent backup
-     *                         instance. The default value is ''.
+     *                         BACKUP_ID}: ID of the snapshot to restore. Leave
+     *                         empty to restore the most recent snapshot in the
+     *                         backup. The default value is ''.
      *                     <li>{@link
      *                         com.gpudb.protocol.RestoreBackupRequest.Options#RESTORE_POLICY
-     *                         RESTORE_POLICY}: Behavior to apply when
-     *                         restoring objects that already exist.
+     *                         RESTORE_POLICY}: Behavior to apply when any
+     *                         database object to restore already exists.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
      *                                 com.gpudb.protocol.RestoreBackupRequest.Options#NONE
      *                                 NONE}: If an object to be restored
-     *                                 currently exists with the same name,
-     *                                 abort and return error
+     *                                 already exists with the same name, abort
+     *                                 and return error.
      *                             <li>{@link
      *                                 com.gpudb.protocol.RestoreBackupRequest.Options#REPLACE
      *                                 REPLACE}: If an object to be restored
-     *                                 currently exists with the same name,
-     *                                 replace it with the backup version
+     *                                 already exists with the same name,
+     *                                 replace it with the backup version.
      *                             <li>{@link
      *                                 com.gpudb.protocol.RestoreBackupRequest.Options#RENAME
      *                                 RENAME}: If an object to be restored
-     *                                 currently exists with the same name,
-     *                                 rename the original version
+     *                                 already exists with the same name, move
+     *                                 that existing one to the schema
+     *                                 specified by {@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#RENAMED_OBJECTS_SCHEMA
+     *                                 RENAMED_OBJECTS_SCHEMA}.
      *                         </ul>
      *                         The default value is {@link
      *                         com.gpudb.protocol.RestoreBackupRequest.Options#NONE
      *                         NONE}.
      *                     <li>{@link
      *                         com.gpudb.protocol.RestoreBackupRequest.Options#RENAMED_OBJECTS_SCHEMA
-     *                         RENAMED_OBJECTS_SCHEMA}: If the restore policy
-     *                         is rename, optionally use this schema for
-     *                         renamed objects instead of a default generated
-     *                         one. The default value is ''.
+     *                         RENAMED_OBJECTS_SCHEMA}: If the {@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#RESTORE_POLICY
+     *                         RESTORE_POLICY} is {@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#RENAME
+     *                         RENAME}, use this schema for relocated existing
+     *                         objects instead of the default generated one.
+     *                         The default value is ''.
      *                     <li>{@link
      *                         com.gpudb.protocol.RestoreBackupRequest.Options#CREATE_SCHEMA_IF_NOT_EXIST
-     *                         CREATE_SCHEMA_IF_NOT_EXIST}: Create the schema
-     *                         for an object to be restored if it does not
-     *                         currently exist. Error otherwise.
+     *                         CREATE_SCHEMA_IF_NOT_EXIST}: Behavior to apply
+     *                         when the schema containing any database object
+     *                         to restore does not already exist.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
-     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
-     *                                 FALSE}
-     *                             <li>{@link
      *                                 com.gpudb.protocol.RestoreBackupRequest.Options#TRUE
-     *                                 TRUE}
+     *                                 TRUE}: If the schema containing any
+     *                                 restored object does not exist, create
+     *                                 it automatically.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
+     *                                 FALSE}: If the schema containing any
+     *                                 restored object does not exist, return
+     *                                 an error.
      *                         </ul>
      *                         The default value is {@link
      *                         com.gpudb.protocol.RestoreBackupRequest.Options#TRUE
      *                         TRUE}.
      *                     <li>{@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#REINGEST
+     *                         REINGEST}: Behavior to apply when restoring
+     *                         table data.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#TRUE
+     *                                 TRUE}: Restore table data by
+     *                                 re-ingesting it.  This is the default
+     *                                 behavior if the cluster topology differs
+     *                                 from that of the contained backup.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
+     *                                 FALSE}: Restore the persisted data files
+     *                                 directly.
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link
      *                         com.gpudb.protocol.RestoreBackupRequest.Options#DDL_ONLY
-     *                         DDL_ONLY}: Only recreates the objects from their
-     *                         DDL, do not restore table data.
+     *                         DDL_ONLY}: Behavior to apply when restoring
+     *                         tables.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#TRUE
+     *                                 TRUE}: Restore table DDL, but do not
+     *                                 restore data.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
+     *                                 FALSE}: Restore tables and their data.
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#CHECKSUM
+     *                         CHECKSUM}: Whether or not to verify checksums
+     *                         for backup files when restoring.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
@@ -24663,23 +24958,9 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
      *                         FALSE}.
      *                     <li>{@link
-     *                         com.gpudb.protocol.RestoreBackupRequest.Options#CHECKSUM
-     *                         CHECKSUM}: Verify checksum for backup files.
-     *                         Supported values:
-     *                         <ul>
-     *                             <li>{@link
-     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
-     *                                 FALSE}
-     *                             <li>{@link
-     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#TRUE
-     *                                 TRUE}
-     *                         </ul>
-     *                         The default value is {@link
-     *                         com.gpudb.protocol.RestoreBackupRequest.Options#TRUE
-     *                         TRUE}.
-     *                     <li>{@link
      *                         com.gpudb.protocol.RestoreBackupRequest.Options#DRY_RUN
-     *                         DRY_RUN}: Does a dry-run restoration operation.
+     *                         DRY_RUN}: Whether or not to perform a dry run of
+     *                         the restoration operation.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
@@ -24797,6 +25078,9 @@ public class GPUdb extends GPUdbBase {
      *                        <li>{@link
      *                            com.gpudb.protocol.RevokePermissionRequest.Permission#INSERT
      *                            INSERT}: Insert access to tables.
+     *                        <li>{@link
+     *                            com.gpudb.protocol.RevokePermissionRequest.Permission#MONITOR
+     *                            MONITOR}: Monitor logs and statistics.
      *                        <li>{@link
      *                            com.gpudb.protocol.RevokePermissionRequest.Permission#READ
      *                            READ}: Ability to read, list and use the
@@ -25225,8 +25509,13 @@ public class GPUdb extends GPUdbBase {
     }
 
     /**
-     * Shows information about a backup
-     * Returns detailed information about one or more backup instances.
+     * Shows information about one or more <a
+     * href="../../../../../admin/backup_restore/#database-backup"
+     * target="_top">backups</a> accessible via the <a
+     * href="../../../../../concepts/data_sources/" target="_top">data
+     * source</a> specified by {@link
+     * com.gpudb.protocol.ShowBackupRequest#getDatasourceName()
+     * datasourceName}.
      *
      * @param request  {@link ShowBackupRequest Request} object containing the
      *                 parameters for the operation.
@@ -25243,48 +25532,52 @@ public class GPUdb extends GPUdbBase {
     }
 
     /**
-     * Shows information about a backup
-     * Returns detailed information about one or more backup instances.
+     * Shows information about one or more <a
+     * href="../../../../../admin/backup_restore/#database-backup"
+     * target="_top">backups</a> accessible via the <a
+     * href="../../../../../concepts/data_sources/" target="_top">data
+     * source</a> specified by {@code datasourceName}.
      *
-     * @param backupName  Name of the backup object. An empty string or '*'
-     *                    will return all existing backups. The default value
-     *                    is ''.
-     * @param datasourceName  Datasource where backup is located.
+     * @param backupName  Name of the backup. An empty string or '*' will show
+     *                    all existing backups. Any text followed by a '*' will
+     *                    show backups whose name starts with that text. The
+     *                    default value is ''.
+     * @param datasourceName  Data source through which the backup is
+     *                        accessible.
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link
      *                         com.gpudb.protocol.ShowBackupRequest.Options#BACKUP_ID
-     *                         BACKUP_ID}: Backup instance ID to show. Leave
+     *                         BACKUP_ID}: ID of the snapshot to show. Leave
      *                         empty to show information from the most recent
-     *                         backup instance in the container. The default
-     *                         value is ''.
+     *                         snapshot in the backup. The default value is ''.
      *                     <li>{@link
      *                         com.gpudb.protocol.ShowBackupRequest.Options#SHOW_CONTENTS
-     *                         SHOW_CONTENTS}: Shows the contents of the
-     *                         specified backup_id.
+     *                         SHOW_CONTENTS}: Show the contents of the
+     *                         backed-up snapshots.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
      *                                 com.gpudb.protocol.ShowBackupRequest.Options#NONE
-     *                                 NONE}: No backup contents
+     *                                 NONE}: Don't show snapshot contents.
      *                             <li>{@link
      *                                 com.gpudb.protocol.ShowBackupRequest.Options#OBJECT_NAMES
-     *                                 OBJECT_NAMES}: Object names only
+     *                                 OBJECT_NAMES}: Show backed-up object
+     *                                 names, and for tables, sizing detail.
      *                             <li>{@link
      *                                 com.gpudb.protocol.ShowBackupRequest.Options#OBJECT_FILES
-     *                                 OBJECT_FILES}: Object names and files
+     *                                 OBJECT_FILES}: Show backed-up object
+     *                                 names, and for tables, sizing detail and
+     *                                 associated files.
      *                         </ul>
      *                         The default value is {@link
      *                         com.gpudb.protocol.ShowBackupRequest.Options#NONE
      *                         NONE}.
      *                     <li>{@link
      *                         com.gpudb.protocol.ShowBackupRequest.Options#NO_ERROR_IF_NOT_EXISTS
-     *                         NO_ERROR_IF_NOT_EXISTS}: If {@link
-     *                         com.gpudb.protocol.ShowBackupRequest.Options#FALSE
-     *                         FALSE} will return an error if the provided
-     *                         {@code backupName} does not exist. If {@link
-     *                         com.gpudb.protocol.ShowBackupRequest.Options#TRUE
-     *                         TRUE} then it will return an empty result.
+     *                         NO_ERROR_IF_NOT_EXISTS}: Whether or not to
+     *                         suppress the error if the specified backup does
+     *                         not exist.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link

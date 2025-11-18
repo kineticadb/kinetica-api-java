@@ -2,6 +2,19 @@
 
 ## Version 7.2
 
+### Version 7.2.3.2 - 2025-11-18
+
+#### Added
+-   Complete support for 12-byte `DECIMAL` data type
+
+#### Fixed
+-   Preservation of HA failover order in user-given URLs
+-   Check of HA queue draining status on fail-back
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
 ### Version 7.2.3.1 - 2025-10-07
 
 #### Changed
@@ -16,6 +29,12 @@
 
 #### Notes
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
+### Version 7.2.2.16 - 2025-11-12
+
+#### Fixed
+-   Preservation of HA failover order in user-given URLs
 
 
 ### Version 7.2.2.15 - 2025-10-07

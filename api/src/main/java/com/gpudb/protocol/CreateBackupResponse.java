@@ -78,7 +78,7 @@ public class CreateBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Backup ID.
+     * ID of the snapshot created.
      *
      * @return The current value of {@code backupId}.
      */
@@ -87,7 +87,7 @@ public class CreateBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Backup ID.
+     * ID of the snapshot created.
      *
      * @param backupId  The new value for {@code backupId}.
      *
@@ -99,7 +99,7 @@ public class CreateBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Total size of all files copied for this snapshot
+     * Total size of all files copied for this snapshot.
      *
      * @return The current value of {@code copiedBytes}.
      */
@@ -108,7 +108,7 @@ public class CreateBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Total size of all files copied for this snapshot
+     * Total size of all files copied for this snapshot.
      *
      * @param copiedBytes  The new value for {@code copiedBytes}.
      *
@@ -120,7 +120,7 @@ public class CreateBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Total number of files copied for this snapshot
+     * Total number of files copied for this snapshot.
      *
      * @return The current value of {@code copiedFiles}.
      */
@@ -129,7 +129,7 @@ public class CreateBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Total number of files copied for this snapshot
+     * Total number of files copied for this snapshot.
      *
      * @param copiedFiles  The new value for {@code copiedFiles}.
      *
@@ -141,7 +141,7 @@ public class CreateBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Total number of records in all files copied for this snapshot
+     * Total number of records in all files copied for this snapshot.
      *
      * @return The current value of {@code copiedRecords}.
      */
@@ -150,7 +150,7 @@ public class CreateBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Total number of records in all files copied for this snapshot
+     * Total number of records in all files copied for this snapshot.
      *
      * @param copiedRecords  The new value for {@code copiedRecords}.
      *
@@ -162,7 +162,7 @@ public class CreateBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Total number of records that can be restored from this snapshot
+     * Total number of records that can be restored from this snapshot.
      *
      * @return The current value of {@code totalNumberOfRecords}.
      */
@@ -171,7 +171,7 @@ public class CreateBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Total number of records that can be restored from this snapshot
+     * Total number of records that can be restored from this snapshot.
      *
      * @param totalNumberOfRecords  The new value for {@code
      *                              totalNumberOfRecords}.

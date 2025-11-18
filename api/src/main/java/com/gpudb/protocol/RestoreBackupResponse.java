@@ -59,7 +59,8 @@ public class RestoreBackupResponse implements IndexedRecord {
     }
 
     /**
-     * The backup name
+     * Value of {@link com.gpudb.protocol.RestoreBackupRequest#getBackupName()
+     * backupName}.
      *
      * @return The current value of {@code backupName}.
      */
@@ -68,7 +69,8 @@ public class RestoreBackupResponse implements IndexedRecord {
     }
 
     /**
-     * The backup name
+     * Value of {@link com.gpudb.protocol.RestoreBackupRequest#getBackupName()
+     * backupName}.
      *
      * @param backupName  The new value for {@code backupName}.
      *
@@ -80,7 +82,7 @@ public class RestoreBackupResponse implements IndexedRecord {
     }
 
     /**
-     * The backup ID that was restored
+     * ID of the snapshot that was restored.
      *
      * @return The current value of {@code backupId}.
      */
@@ -89,7 +91,7 @@ public class RestoreBackupResponse implements IndexedRecord {
     }
 
     /**
-     * The backup ID that was restored
+     * ID of the snapshot that was restored.
      *
      * @param backupId  The new value for {@code backupId}.
      *
@@ -101,7 +103,7 @@ public class RestoreBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Total size of data restored from backup
+     * Total size of data restored from backup.
      *
      * @return The current value of {@code restoredBytes}.
      */
@@ -110,7 +112,7 @@ public class RestoreBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Total size of data restored from backup
+     * Total size of data restored from backup.
      *
      * @param restoredBytes  The new value for {@code restoredBytes}.
      *
@@ -122,7 +124,7 @@ public class RestoreBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Total number of files restored from backup
+     * Total number of files restored from backup.
      *
      * @return The current value of {@code restoredFiles}.
      */
@@ -131,7 +133,7 @@ public class RestoreBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Total number of files restored from backup
+     * Total number of files restored from backup.
      *
      * @param restoredFiles  The new value for {@code restoredFiles}.
      *
@@ -143,7 +145,7 @@ public class RestoreBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Total number of records restored from backup
+     * Total number of records restored from backup.
      *
      * @return The current value of {@code restoredRecords}.
      */
@@ -152,7 +154,7 @@ public class RestoreBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Total number of records restored from backup
+     * Total number of records restored from backup.
      *
      * @param restoredRecords  The new value for {@code restoredRecords}.
      *
@@ -164,7 +166,8 @@ public class RestoreBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Objects that were successfully restored and their associated types.
+     * Database objects that were successfully restored and their associated
+     * types.
      *
      * @return The current value of {@code restoredObjects}.
      */
@@ -173,7 +176,8 @@ public class RestoreBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Objects that were successfully restored and their associated types.
+     * Database objects that were successfully restored and their associated
+     * types.
      *
      * @param restoredObjects  The new value for {@code restoredObjects}.
      *
@@ -185,8 +189,8 @@ public class RestoreBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Original and new names of objects that were successfully restored and
-     * their associated types.
+     * Original and new names of database objects that were successfully
+     * restored and their associated types.
      *
      * @return The current value of {@code renamedObjects}.
      */
@@ -195,8 +199,8 @@ public class RestoreBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Original and new names of objects that were successfully restored and
-     * their associated types.
+     * Original and new names of database objects that were successfully
+     * restored and their associated types.
      *
      * @param renamedObjects  The new value for {@code renamedObjects}.
      *
@@ -208,7 +212,7 @@ public class RestoreBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Objects that failed to be restored and their associated types.
+     * Database objects that failed to be restored and their associated types.
      *
      * @return The current value of {@code failedObjects}.
      */
@@ -217,7 +221,7 @@ public class RestoreBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Objects that failed to be restored and their associated types.
+     * Database objects that failed to be restored and their associated types.
      *
      * @param failedObjects  The new value for {@code failedObjects}.
      *

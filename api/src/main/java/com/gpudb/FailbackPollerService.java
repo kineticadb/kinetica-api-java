@@ -2,15 +2,17 @@ package com.gpudb;
 
 import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.gpudb.GPUdbBase.FailbackOptions;
-import com.gpudb.protocol.InsertRecordsRandomRequest;
-import com.gpudb.protocol.ShowSystemStatusResponse;
 
 class FailbackPollerService {
+
+    private static final String HA_STATUS_KEY = "ha_status";
+    private static final String HA_STATUS_DRAINED_KEY = "drained";
+    private static final String HA_STATUS_DRAINED_VALUE_DRAINING = "draining";
 
     static final int DEFAULT_TERMINATION_TIMEOUT = 5;  // Value in secs
     private final GPUdbBase gpudb;
@@ -19,7 +21,8 @@ class FailbackPollerService {
     private volatile boolean isRunning = false;
     private Thread pollerThread;
     private final Object lock = new Object(); // To synchronize start/stop/restart operations
-	private static final InsertRecordsRandomRequest POLL_REQUEST = new InsertRecordsRandomRequest().setTableName("").setCount(1);
+
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
     public FailbackPollerService(GPUdbBase gpUdbBase, FailbackOptions options) {
         this(gpUdbBase, options.getPollingInterval(), TimeUnit.SECONDS);
@@ -87,24 +90,27 @@ class FailbackPollerService {
             options.setPassword(this.gpudb.getPassword());
             options.setBypassSslCertCheck(this.gpudb.getBypassSslCertCheck());
 
+            // Reset running flag for HA queue draining check
+            kineticaRunning = false;
+            
             try {
                 GPUdb db = new GPUdb(this.primaryURL, options);
-                Map<String, String> statusMap = db.showSystemStatus(new HashMap<>()).getStatusMap();
-                if (statusMap.containsKey("ha_status")) {
-                    String haStatus = statusMap.get("ha_status");
-                    if( haStatus.equals("drained")) {
+                String statusJsonString = db.showSystemStatus(new HashMap<>()).getStatusMap().get(HA_STATUS_KEY);
+                try {
+                    if (HA_STATUS_DRAINED_VALUE_DRAINING.equals(JSON_MAPPER.readTree( statusJsonString ).get(HA_STATUS_DRAINED_KEY).textValue()))
+                        GPUdbLogger.debug_with_info(String.format("Kinetica running on primary cluster at [%s], but HA queues are still draining", this.primaryURL.toString()));
+                    else {
                         GPUdbLogger.info(String.format("Failback to primary cluster at [%s] succeeded", this.primaryURL));
-                    } else {
-                        GPUdbLogger.debug_with_info(String.format("Kinetica running on primary cluster at [%s], but connection did not succeed", this.primaryURL.toString()));
-                        kineticaRunning = false;
+                        kineticaRunning = true;
                     }
+                } catch ( Exception ex ) {
+                    GPUdbLogger.warn(String.format("Could not parse system status block [%s] for URL: [%s]", statusJsonString, this.primaryURL.toString()));
                 }
             } catch (GPUdbException e) {
-                GPUdbLogger.debug_with_info(String.format("Could not connect to Kinetica %s", e.getMessage()));
-                kineticaRunning = false;
+                GPUdbLogger.debug_with_info(String.format("Could not connect to Kinetica: %s", e.getMessage()));
             }
         } else {
-            GPUdbLogger.debug_with_info(String.format("Kinetica is not running at : %s", this.primaryURL.toString()));
+            GPUdbLogger.debug_with_info(String.format("Kinetica is not running at URL: [%s]", this.primaryURL.toString()));
         }
         return kineticaRunning;
     }
@@ -131,11 +137,11 @@ class FailbackPollerService {
             
             // Interrupt the thread to wake it up if it's sleeping
             if (this.pollerThread != null) {
-            	this.pollerThread.interrupt();
+                this.pollerThread.interrupt();
                 
                 // Give the thread some time to terminate naturally
                 try {
-                	this.pollerThread.join(TimeUnit.SECONDS.toMillis(DEFAULT_TERMINATION_TIMEOUT));
+                    this.pollerThread.join(TimeUnit.SECONDS.toMillis(DEFAULT_TERMINATION_TIMEOUT));
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }

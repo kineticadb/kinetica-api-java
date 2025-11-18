@@ -2,6 +2,7 @@ package com.gpudb;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
@@ -19,37 +20,36 @@ import java.util.regex.Pattern;
 final class RecordKey {
     private static final Pattern DATE_REGEX = Pattern.compile("\\A(\\d{4})-(\\d{2})-(\\d{2})$");
     private static final Pattern DATETIME_REGEX = Pattern.compile("\\A(\\d{4})-(\\d{2})-(\\d{2}) (\\d{1,2}):(\\d{2}):(\\d{2})(?:\\.(\\d{3}))?$");
-    private static final Pattern DECIMAL_REGEX = Pattern.compile("\\A\\s*[+-]?(\\d+(\\.\\d{0,4})?|\\.\\d{1,4})$");
     private static final Date MIN_DATE = new Date(Long.MIN_VALUE);
     private static final Pattern IPV4_REGEX = Pattern.compile("\\A(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$");
     private static final Pattern TIME_REGEX = Pattern.compile("\\A(\\d{1,2}):(\\d{2}):(\\d{2})(?:\\.(\\d{3}))?$");
     private static final Pattern UUID_REGEX = Pattern.compile("\\A([0-9a-fA-F]{8})-?([0-9a-fA-F]{4})-?([0-9a-fA-F]{4})-?([0-9a-fA-F]{4})-?([0-9a-fA-F]{4})([0-9a-fA-F]{8})$"); // Final group of 12 split into two sections 123e4567-e89b-12d3-a456-426614174000
     private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
-
+    
     private final ByteBuffer buffer;
     private int hashCode;
     private long routingHash;
     private boolean isValid;
 
     public RecordKey(int size) {
-        buffer = ByteBuffer.allocate(size);
-        buffer.order(ByteOrder.LITTLE_ENDIAN);
-        isValid = true;
+        this.buffer = ByteBuffer.allocate(size);
+        this.buffer.order(ByteOrder.LITTLE_ENDIAN);
+        this.isValid = true;
     }
 
     public void addBoolean(Boolean value) {
         if (value == null) {
-            buffer.put((byte)0);
+            this.buffer.put((byte)0);
             return;
         }
 
-        buffer.put((byte)(value ? 1 : 0));
+        this.buffer.put((byte)(value ? 1 : 0));
     }
 
     public void addChar(String value, int length) {
         if (value == null) {
             for (int i = 0; i < length; i++) {
-                buffer.put((byte)0);
+                this.buffer.put((byte)0);
             }
 
             return;
@@ -63,25 +63,25 @@ final class RecordKey {
         }
 
         for (int i = length; i > count; i--) {
-            buffer.put((byte)0);
+            this.buffer.put((byte)0);
         }
 
         for (int i = count - 1; i >= 0; i--) {
-            buffer.put(bytes[i]);
+            this.buffer.put(bytes[i]);
         }
     }
 
     public void addDate(String value) {
         if (value == null) {
-            buffer.putInt(0);
+            this.buffer.putInt(0);
             return;
         }
 
         Matcher matcher = DATE_REGEX.matcher(value);
 
         if (!matcher.matches()) {
-            buffer.putInt(0);
-            isValid = false;
+            this.buffer.putInt(0);
+            this.isValid = false;
             return;
         }
 
@@ -98,18 +98,18 @@ final class RecordKey {
             calendar.setGregorianChange(MIN_DATE);
             calendar.set(year, month - 1, day);
         } catch (Exception ex) {
-            buffer.putInt(0);
-            isValid = false;
+            this.buffer.putInt(0);
+            this.isValid = false;
             return;
         }
 
         if (year < 1000 || year > 2900) {
-            buffer.putInt(0);
-            isValid = false;
+            this.buffer.putInt(0);
+            this.isValid = false;
             return;
         }
 
-        buffer.putInt(((year - 1900) << 21)
+        this.buffer.putInt(((year - 1900) << 21)
                 | (month << 17)
                 | (day << 12)
                 | (calendar.get(Calendar.DAY_OF_YEAR) << 3)
@@ -118,15 +118,15 @@ final class RecordKey {
 
     public void addDateTime(String value) {
         if (value == null) {
-            buffer.putLong(0);
+            this.buffer.putLong(0);
             return;
         }
 
         Matcher matcher = DATETIME_REGEX.matcher(value);
 
         if (!matcher.matches()) {
-            buffer.putLong(0);
-            isValid = false;
+            this.buffer.putLong(0);
+            this.isValid = false;
             return;
         }
 
@@ -157,18 +157,18 @@ final class RecordKey {
             calendar.setGregorianChange(MIN_DATE);
             calendar.set(year, month - 1, day, hour, minute, second);
         } catch (Exception ex) {
-            buffer.putLong(0);
-            isValid = false;
+            this.buffer.putLong(0);
+            this.isValid = false;
             return;
         }
 
         if (year < 1000 || year > 2900) {
-            buffer.putLong(0);
-            isValid = false;
+            this.buffer.putLong(0);
+            this.isValid = false;
             return;
         }
 
-        buffer.putLong(((long)(year - 1900) << 53)
+        this.buffer.putLong(((long)(year - 1900) << 53)
                 | ((long)month << 49)
                 | ((long)day << 44)
                 | ((long)hour << 39)
@@ -179,90 +179,166 @@ final class RecordKey {
                 | (calendar.get(Calendar.DAY_OF_WEEK) << 5));
     }
 
-    public void addDecimal(String value) {
-        if (value == null) {
-            buffer.putLong(0l);
-            return;
+    /**
+     * Add a decimal number to the buffer (can be null)--eight or twelve bytes.
+     * Supports decimal(precision, scale). Dynamically determines whether to use
+     * 8 or 12 bytes. Raises an error if value cannot fit in either.
+     *
+     * @param val String representation of decimal value (can be null)
+     * @param precision Total number of digits
+     * @param scale Number of digits after the decimal point
+     * @throws IllegalArgumentException If value cannot fit in 8 or 12 bytes
+     */
+    public void addDecimal(String val, int precision, int scale) {
+        // Validate precision
+        if (precision < 1) {
+            throw new IllegalArgumentException(
+                    String.format("Precision must be a positive integer, got %d", precision));
         }
 
-        Matcher matcher = DECIMAL_REGEX.matcher(value);
-
-        if (!matcher.matches()) {
-            buffer.putLong(0l);
-            isValid = false;
-            return;
+        // Validate scale
+        if (scale < 0 || scale > precision) {
+            throw new IllegalArgumentException(
+                    String.format("Scale must be an integer between 0 and %d, got %d",
+                            precision, scale));
         }
 
-        try {
-            int i = 0;
+        this.buffer.order(ByteOrder.LITTLE_ENDIAN);
 
-            while (i < value.length() && Character.isWhitespace(value.charAt(i))) {
-                i++;
+         // Parse decimal value
+        BigInteger decimalValue = parseDecimalValue(val, precision, scale);
+
+        if (decimalValue == null)
+            decimalValue = BigInteger.ZERO;
+
+        // Determine packing size based on column precision
+        if (precision <= Type.Column.DECIMAL8_MAX_PRECISION) {
+            // Value needs 8 bytes
+            this.buffer.putLong(decimalValue.longValue());
+        } else {
+            // Value needs 12 bytes
+            if (decimalValue.compareTo(BigInteger.ZERO) < 0) {
+                // Negative value - convert to 96-bit two's complement
+                decimalValue = BigInteger.ONE.shiftLeft(96).add(decimalValue);
             }
 
-            buffer.putLong(new BigDecimal(value.substring(i)).movePointRight(4).setScale(0, BigDecimal.ROUND_UNNECESSARY).longValueExact());
-        } catch (Exception ex) {
-            buffer.putLong(0l);
-            isValid = false;
+            long lowPart = decimalValue.and(new BigInteger("FFFFFFFFFFFFFFFF", 16)).longValue();
+            int highPart = decimalValue.shiftRight(64).and(new BigInteger("FFFFFFFF", 16)).intValue();
+
+            this.buffer.putLong(lowPart);
+            this.buffer.putInt(highPart);
         }
+    }
+
+    /**
+     * Parse a decimal value string into a BigInteger scaled by the given scale.
+     *
+     * @param val String representation of the decimal
+     * @param precision Total number of digits
+     * @param scale Number of digits after decimal point
+     * @return BigInteger representation scaled by 10^scale, or null if invalid
+     */
+    private static BigInteger parseDecimalValue(String val, int precision, int scale) {
+        BigInteger unscaled = null;
+        
+        if (val != null) {
+            try {
+                BigDecimal decimal = new BigDecimal(val);
+    
+                // Convert to unscaled value (BigInteger)
+                unscaled = decimal.setScale(scale, RoundingMode.HALF_UP).unscaledValue();
+    
+                // Validate precision doesn't exceed specified precision
+                int totalDigits = unscaled.abs().toString().length();
+                if (totalDigits > precision && !isSupportedLegacyValue(decimal, precision, scale))
+                    unscaled = null;
+
+            } catch (NumberFormatException | ArithmeticException e) {}
+        }
+        return unscaled;
+    }
+
+    /**
+     * Determine whether the given decimal is a value that fits in the default
+     * decimal storage size prior to the release of the 12-byte decimal;
+     * ultimately, these are decimals with 19 digits that can still fit in 
+     * 8 bytes.
+     *
+     * @param decimal BigDecimal representation of the value to check
+     * @param precision Total number of digits, as per the column type
+     * @param scale Number of digits after decimal point, as per the column type
+     * @return boolean Whether this decimal fits in the default legacy decimal
+     *         storage size
+     */
+    private static boolean isSupportedLegacyValue(BigDecimal decimal, int precision, int scale) {
+        return
+                precision == Type.Column.DEFAULT_DECIMAL_PRECISION &&
+                scale == Type.Column.DEFAULT_DECIMAL_SCALE &&
+                decimal.compareTo(Type.Column.DEFAULT_DECIMAL_MIN) >= 0 &&
+                decimal.compareTo(Type.Column.DEFAULT_DECIMAL_MAX) <= 0;
+    }
+
+
+    public void addDecimal(String value) {
+        addDecimal(value, Type.Column.DEFAULT_DECIMAL_PRECISION, Type.Column.DEFAULT_DECIMAL_SCALE);
     }
 
     public void addDouble(Double value) {
         if (value == null) {
-            buffer.putDouble(0.0);
+            this.buffer.putDouble(0.0);
             return;
         }
 
-        buffer.putDouble(value);
+        this.buffer.putDouble(value);
     }
 
     public void addFloat(Float value) {
         if (value == null) {
-            buffer.putFloat(0.0f);
+            this.buffer.putFloat(0.0f);
             return;
         }
 
-        buffer.putFloat(value);
+        this.buffer.putFloat(value);
     }
 
     public void addInt(Integer value) {
         if (value == null) {
-            buffer.putInt(0);
+            this.buffer.putInt(0);
             return;
         }
 
-        buffer.putInt(value);
+        this.buffer.putInt(value);
     }
 
     public void addInt8(Integer value) {
         if (value == null) {
-            buffer.put((byte)0);
+            this.buffer.put((byte)0);
             return;
         }
 
-        buffer.put((byte)(int)value);
+        this.buffer.put((byte)(int)value);
     }
 
     public void addInt16(Integer value) {
         if (value == null) {
-            buffer.putShort((short)0);
+            this.buffer.putShort((short)0);
             return;
         }
 
-        buffer.putShort((short)(int)value);
+        this.buffer.putShort((short)(int)value);
     }
 
     public void addIPv4(String value) {
         if (value == null) {
-            buffer.putInt(0);
+            this.buffer.putInt(0);
             return;
         }
 
         Matcher matcher = IPV4_REGEX.matcher(value);
 
         if (!matcher.matches()) {
-            buffer.putInt(0);
-            isValid = false;
+            this.buffer.putInt(0);
+            this.isValid = false;
             return;
         }
 
@@ -277,18 +353,18 @@ final class RecordKey {
             c = Integer.parseInt(matcher.group(3));
             d = Integer.parseInt(matcher.group(4));
         } catch (Exception ex) {
-            buffer.putInt(0);
-            isValid = false;
+            this.buffer.putInt(0);
+            this.isValid = false;
             return;
         }
 
         if (a > 255 || b > 255 || c > 255 || d > 255) {
-            buffer.putInt(0);
-            isValid = false;
+            this.buffer.putInt(0);
+            this.isValid = false;
             return;
         }
 
-        buffer.putInt((a << 24)
+        this.buffer.putInt((a << 24)
                 | (b << 16)
                 | (c << 8)
                 | d);
@@ -296,36 +372,36 @@ final class RecordKey {
 
     public void addLong(Long value) {
         if (value == null) {
-            buffer.putLong(0l);
+            this.buffer.putLong(0l);
             return;
         }
 
-        buffer.putLong(value);
+        this.buffer.putLong(value);
     }
 
     public void addString(String value) {
         if (value == null) {
-            buffer.putLong(0l);
+            this.buffer.putLong(0l);
             return;
         }
 
         MurmurHash3.LongPair murmur = new MurmurHash3.LongPair();
         byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
         MurmurHash3.murmurhash3_x64_128(bytes, 0, bytes.length, 10, murmur);
-        buffer.putLong(murmur.val1);
+        this.buffer.putLong(murmur.val1);
     }
 
     public void addTime(String value) {
         if (value == null) {
-            buffer.putInt(0);
+            this.buffer.putInt(0);
             return;
         }
 
         Matcher matcher = TIME_REGEX.matcher(value);
 
         if (!matcher.matches()) {
-            buffer.putInt(0);
-            isValid = false;
+            this.buffer.putInt(0);
+            this.isValid = false;
             return;
         }
 
@@ -345,18 +421,18 @@ final class RecordKey {
                 millisecond = 0;
             }
         } catch (Exception ex) {
-            buffer.putInt(0);
-            isValid = false;
+            this.buffer.putInt(0);
+            this.isValid = false;
             return;
         }
 
         if (hour > 23 || minute > 59 || second > 59) {
-            buffer.putInt(0);
-            isValid = false;
+            this.buffer.putInt(0);
+            this.isValid = false;
             return;
         }
 
-        buffer.putInt((hour << 26)
+        this.buffer.putInt((hour << 26)
                 | (minute << 20)
                 | (second << 14)
                 | (millisecond << 4));
@@ -364,14 +440,14 @@ final class RecordKey {
 
     public void addTimestamp(Long value) {
         if (value == null) {
-            buffer.putLong(0l);
+            this.buffer.putLong(0l);
             return;
         }
 
         GregorianCalendar calendar = new GregorianCalendar(UTC);
         calendar.setGregorianChange(MIN_DATE);
         calendar.setTimeInMillis(value);
-        buffer.putLong(((long)(calendar.get(Calendar.YEAR) - 1900) << 53)
+        this.buffer.putLong(((long)(calendar.get(Calendar.YEAR) - 1900) << 53)
                 | ((long)(calendar.get(Calendar.MONTH) + 1) << 49)
                 | ((long)calendar.get(Calendar.DAY_OF_MONTH) << 44)
                 | ((long)calendar.get(Calendar.HOUR_OF_DAY) << 39)
@@ -409,7 +485,7 @@ final class RecordKey {
     
     public void addUlong(String value) throws GPUdbException {
         if (value == null) {
-            buffer.putLong(0l);
+            this.buffer.putLong(0l);
             return;
         }
 
@@ -436,27 +512,27 @@ final class RecordKey {
         // Put in the unsigned long (which is in a big endian order)
         // while skipping any extra byte for the sign bit
         for (int i = (byte_count-1); i >= min_index; --i ) {
-            buffer.put( ulong_bytes[ i ] );
+            this.buffer.put( ulong_bytes[ i ] );
         }
         // Need to pad with zeroes if less than size of a long
         for (int i = byte_count; i < ulong_size; ++i ) {
-            buffer.put( (byte)0 );
+            this.buffer.put( (byte)0 );
         }
     }
     
     public void addUuid(String value) {
         if (value == null) {
-            buffer.putLong(0);
-            buffer.putLong(0);
+            this.buffer.putLong(0);
+            this.buffer.putLong(0);
             return;
         }
 
         Matcher matcher = UUID_REGEX.matcher(value);
 
         if (!matcher.matches()) {
-            buffer.putLong(0);
-            buffer.putLong(0);
-            isValid = false;
+            this.buffer.putLong(0);
+            this.buffer.putLong(0);
+            this.isValid = false;
             return;
         }
 
@@ -465,31 +541,31 @@ final class RecordKey {
             for (int p = 0; p < 6; ++p)
                 parts[p] = Long.parseLong(matcher.group(p + 1), 16);
         } catch (Exception ex) {
-            buffer.putLong(0);
-            buffer.putLong(0);
-            isValid = false;
+            this.buffer.putLong(0);
+            this.buffer.putLong(0);
+            this.isValid = false;
             return;
         }
 
         // See: uuid_string_to_int128_t()
-        buffer.putInt((int)parts[5]); // Last 8 hex digits of last group
-        buffer.putShort((short)parts[4]); // First 4 hex digits of last group
-        buffer.putShort((short)parts[3]); // Fourth group, 4 hex digits
-        buffer.putShort((short)parts[2]); // Third group, 4 hex digits
-        buffer.putShort((short)parts[1]); // Second group, 4 hex digits
-        buffer.putInt((int)parts[0]); // First 8 hex digits
+        this.buffer.putInt((int)parts[5]); // Last 8 hex digits of last group
+        this.buffer.putShort((short)parts[4]); // First 4 hex digits of last group
+        this.buffer.putShort((short)parts[3]); // Fourth group, 4 hex digits
+        this.buffer.putShort((short)parts[2]); // Third group, 4 hex digits
+        this.buffer.putShort((short)parts[1]); // Second group, 4 hex digits
+        this.buffer.putInt((int)parts[0]); // First 8 hex digits
     }
 
     public void computeHashes() {
         MurmurHash3.LongPair murmur = new MurmurHash3.LongPair();
-        MurmurHash3.murmurhash3_x64_128(buffer.array(), 0, buffer.capacity(), 10, murmur);
-        routingHash = murmur.val1;
-        hashCode = (int)(routingHash ^ (routingHash >>> 32));
-        buffer.rewind();
+        MurmurHash3.murmurhash3_x64_128(this.buffer.array(), 0, this.buffer.capacity(), 10, murmur);
+        this.routingHash = murmur.val1;
+        this.hashCode = (int)(this.routingHash ^ (this.routingHash >>> 32));
+        this.buffer.rewind();
     }
 
     public boolean isValid() {
-        return isValid;
+        return this.isValid;
     }
 
     @Override
@@ -507,11 +583,11 @@ final class RecordKey {
 
     @Override
     public int hashCode() {
-        return hashCode;
+        return this.hashCode;
     }
 
     public int route(List<Integer> routingTable) {
-        int index = Math.abs( (int) (routingHash % routingTable.size()) );
+        int index = Math.abs( (int) (this.routingHash % routingTable.size()) );
         return routingTable.get( index ) - 1;
     }
 }

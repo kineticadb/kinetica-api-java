@@ -28,6 +28,7 @@ public class AdminRepairTableRequest implements IndexedRecord {
             .namespace("com.gpudb")
             .fields()
                 .name("tableNames").type().array().items().stringType().noDefault()
+                .name("tableTypes").type().map().values().stringType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -58,6 +59,8 @@ public class AdminRepairTableRequest implements IndexedRecord {
          *         corrupted chunks to the shortest column
          *     <li>{@link Options#REPLAY_WAL REPLAY_WAL}: Manually invokes
          *         write-ahead log (WAL) replay on the table
+         *     <li>{@link Options#ALTER_TABLE ALTER_TABLE}: Reset columns
+         *         modification after incomplete alter column.
          * </ul>
          */
         public static final String REPAIR_POLICY = "repair_policy";
@@ -76,6 +79,11 @@ public class AdminRepairTableRequest implements IndexedRecord {
          * Manually invokes write-ahead log (WAL) replay on the table
          */
         public static final String REPLAY_WAL = "replay_wal";
+
+        /**
+         * Reset columns modification after incomplete alter column.
+         */
+        public static final String ALTER_TABLE = "alter_table";
 
         /**
          * If {@link Options#FALSE FALSE} only table chunk data already known
@@ -97,6 +105,7 @@ public class AdminRepairTableRequest implements IndexedRecord {
     }
 
     private List<String> tableNames;
+    private Map<String, String> tableTypes;
     private Map<String, String> options;
 
     /**
@@ -104,6 +113,7 @@ public class AdminRepairTableRequest implements IndexedRecord {
      */
     public AdminRepairTableRequest() {
         tableNames = new ArrayList<>();
+        tableTypes = new LinkedHashMap<>();
         options = new LinkedHashMap<>();
     }
 
@@ -113,6 +123,7 @@ public class AdminRepairTableRequest implements IndexedRecord {
      *
      * @param tableNames  List of tables to query. An asterisk returns all
      *                    tables.
+     * @param tableTypes  internal: type_id per table.
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link Options#REPAIR_POLICY REPAIR_POLICY}:
@@ -128,6 +139,9 @@ public class AdminRepairTableRequest implements IndexedRecord {
      *                             <li>{@link Options#REPLAY_WAL REPLAY_WAL}:
      *                                 Manually invokes write-ahead log (WAL)
      *                                 replay on the table
+     *                             <li>{@link Options#ALTER_TABLE ALTER_TABLE}:
+     *                                 Reset columns modification after
+     *                                 incomplete alter column.
      *                         </ul>
      *                     <li>{@link Options#VERIFY_ALL VERIFY_ALL}: If {@link
      *                         Options#FALSE FALSE} only table chunk data
@@ -144,8 +158,9 @@ public class AdminRepairTableRequest implements IndexedRecord {
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
-    public AdminRepairTableRequest(List<String> tableNames, Map<String, String> options) {
+    public AdminRepairTableRequest(List<String> tableNames, Map<String, String> tableTypes, Map<String, String> options) {
         this.tableNames = (tableNames == null) ? new ArrayList<String>() : tableNames;
+        this.tableTypes = (tableTypes == null) ? new LinkedHashMap<String, String>() : tableTypes;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
@@ -171,6 +186,27 @@ public class AdminRepairTableRequest implements IndexedRecord {
     }
 
     /**
+     * internal: type_id per table.
+     *
+     * @return The current value of {@code tableTypes}.
+     */
+    public Map<String, String> getTableTypes() {
+        return tableTypes;
+    }
+
+    /**
+     * internal: type_id per table.
+     *
+     * @param tableTypes  The new value for {@code tableTypes}.
+     *
+     * @return {@code this} to mimic the builder pattern.
+     */
+    public AdminRepairTableRequest setTableTypes(Map<String, String> tableTypes) {
+        this.tableTypes = (tableTypes == null) ? new LinkedHashMap<String, String>() : tableTypes;
+        return this;
+    }
+
+    /**
      * Optional parameters.
      * <ul>
      *     <li>{@link Options#REPAIR_POLICY REPAIR_POLICY}: Corrective action
@@ -183,6 +219,8 @@ public class AdminRepairTableRequest implements IndexedRecord {
      *                 corrupted chunks to the shortest column
      *             <li>{@link Options#REPLAY_WAL REPLAY_WAL}: Manually invokes
      *                 write-ahead log (WAL) replay on the table
+     *             <li>{@link Options#ALTER_TABLE ALTER_TABLE}: Reset columns
+     *                 modification after incomplete alter column.
      *         </ul>
      *     <li>{@link Options#VERIFY_ALL VERIFY_ALL}: If {@link Options#FALSE
      *         FALSE} only table chunk data already known to be corrupted will
@@ -216,6 +254,8 @@ public class AdminRepairTableRequest implements IndexedRecord {
      *                 corrupted chunks to the shortest column
      *             <li>{@link Options#REPLAY_WAL REPLAY_WAL}: Manually invokes
      *                 write-ahead log (WAL) replay on the table
+     *             <li>{@link Options#ALTER_TABLE ALTER_TABLE}: Reset columns
+     *                 modification after incomplete alter column.
      *         </ul>
      *     <li>{@link Options#VERIFY_ALL VERIFY_ALL}: If {@link Options#FALSE
      *         FALSE} only table chunk data already known to be corrupted will
@@ -267,6 +307,9 @@ public class AdminRepairTableRequest implements IndexedRecord {
                 return this.tableNames;
 
             case 1:
+                return this.tableTypes;
+
+            case 2:
                 return this.options;
 
             default:
@@ -292,6 +335,10 @@ public class AdminRepairTableRequest implements IndexedRecord {
                 break;
 
             case 1:
+                this.tableTypes = (Map<String, String>)value;
+                break;
+
+            case 2:
                 this.options = (Map<String, String>)value;
                 break;
 
@@ -313,6 +360,7 @@ public class AdminRepairTableRequest implements IndexedRecord {
         AdminRepairTableRequest that = (AdminRepairTableRequest)obj;
 
         return ( this.tableNames.equals( that.tableNames )
+                 && this.tableTypes.equals( that.tableTypes )
                  && this.options.equals( that.options ) );
     }
 
@@ -324,6 +372,10 @@ public class AdminRepairTableRequest implements IndexedRecord {
         builder.append( gd.toString( "tableNames" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.tableNames ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "tableTypes" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.tableTypes ) );
         builder.append( ", " );
         builder.append( gd.toString( "options" ) );
         builder.append( ": " );
@@ -337,6 +389,7 @@ public class AdminRepairTableRequest implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.tableNames.hashCode();
+        hashCode = (31 * hashCode) + this.tableTypes.hashCode();
         hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }

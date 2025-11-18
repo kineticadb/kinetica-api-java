@@ -13,22 +13,22 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#showBackup(ShowBackupRequest)
- * GPUdb.showBackup}.
+ * A set of parameters for {@link com.gpudb.GPUdb#dropBackup(DropBackupRequest)
+ * GPUdb.dropBackup}.
  * <p>
- * Shows information about one or more <a
+ * Deletes one or more existing database <a
  * href="../../../../../../admin/backup_restore/#database-backup"
- * target="_top">backups</a> accessible via the <a
- * href="../../../../../../concepts/data_sources/" target="_top">data
- * source</a> specified by {@link #getDatasourceName() datasourceName}.
+ * target="_top">backups</a> and contained snapshots, accessible via the <a
+ * href="../../../../../../concepts/data_sinks/" target="_top">data sink</a>
+ * specified by {@link #getDatasinkName() datasinkName}.
  */
-public class ShowBackupRequest implements IndexedRecord {
+public class DropBackupRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("ShowBackupRequest")
+            .record("DropBackupRequest")
             .namespace("com.gpudb")
             .fields()
                 .name("backupName").type().stringType().noDefault()
-                .name("datasourceName").type().stringType().noDefault()
+                .name("datasinkName").type().stringType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -43,48 +43,38 @@ public class ShowBackupRequest implements IndexedRecord {
     }
 
     /**
-     * A set of string constants for the {@link ShowBackupRequest} parameter
+     * A set of string constants for the {@link DropBackupRequest} parameter
      * {@link #getOptions() options}.
      * <p>
      * Optional parameters.
      */
     public static final class Options {
         /**
-         * ID of the snapshot to show. Leave empty to show information from the
-         * most recent snapshot in the backup. The default value is ''.
-         */
-        public static final String BACKUP_ID = "backup_id";
-
-        /**
-         * Show the contents of the backed-up snapshots.
+         * Whether or not to perform a dry run of a backup deletion.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#NONE NONE}: Don't show snapshot contents.
-         *     <li>{@link Options#OBJECT_NAMES OBJECT_NAMES}: Show backed-up
-         *         object names, and for tables, sizing detail.
-         *     <li>{@link Options#OBJECT_FILES OBJECT_FILES}: Show backed-up
-         *         object names, and for tables, sizing detail and associated
-         *         files.
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
          * </ul>
-         * The default value is {@link Options#NONE NONE}.
+         * The default value is {@link Options#FALSE FALSE}.
          */
-        public static final String SHOW_CONTENTS = "show_contents";
+        public static final String DRY_RUN = "dry_run";
+
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
 
         /**
-         * Don't show snapshot contents.
+         * Allow multiple backups to be deleted if {@link Options#TRUE TRUE}
+         * and multiple backup names are found matching {@link #getBackupName()
+         * backupName}.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
          */
-        public static final String NONE = "none";
-
-        /**
-         * Show backed-up object names, and for tables, sizing detail.
-         */
-        public static final String OBJECT_NAMES = "object_names";
-
-        /**
-         * Show backed-up object names, and for tables, sizing detail and
-         * associated files.
-         */
-        public static final String OBJECT_FILES = "object_files";
+        public static final String DELETE_ALL_BACKUPS = "delete_all_backups";
 
         /**
          * Whether or not to suppress the error if the specified backup does
@@ -98,55 +88,56 @@ public class ShowBackupRequest implements IndexedRecord {
          */
         public static final String NO_ERROR_IF_NOT_EXISTS = "no_error_if_not_exists";
 
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
-
         private Options() {  }
     }
 
     private String backupName;
-    private String datasourceName;
+    private String datasinkName;
     private Map<String, String> options;
 
     /**
-     * Constructs a ShowBackupRequest object with default parameters.
+     * Constructs a DropBackupRequest object with default parameters.
      */
-    public ShowBackupRequest() {
+    public DropBackupRequest() {
         backupName = "";
-        datasourceName = "";
+        datasinkName = "";
         options = new LinkedHashMap<>();
     }
 
     /**
-     * Constructs a ShowBackupRequest object with the specified parameters.
+     * Constructs a DropBackupRequest object with the specified parameters.
      *
-     * @param backupName  Name of the backup. An empty string or '*' will show
-     *                    all existing backups. Any text followed by a '*' will
-     *                    show backups whose name starts with that text. The
-     *                    default value is ''.
-     * @param datasourceName  Data source through which the backup is
-     *                        accessible.
+     * @param backupName  Name of the backup to be deleted. An empty string or
+     *                    '*' will delete all existing backups. Any text
+     *                    followed by a '*' will delete backups whose name
+     *                    starts with that text.  When deleting multiple
+     *                    backups, {@link Options#DELETE_ALL_BACKUPS
+     *                    DELETE_ALL_BACKUPS} must be set to {@link
+     *                    Options#TRUE TRUE}.
+     * @param datasinkName  Data sink through which the backup is accessible.
      * @param options  Optional parameters.
      *                 <ul>
-     *                     <li>{@link Options#BACKUP_ID BACKUP_ID}: ID of the
-     *                         snapshot to show. Leave empty to show
-     *                         information from the most recent snapshot in the
-     *                         backup. The default value is ''.
-     *                     <li>{@link Options#SHOW_CONTENTS SHOW_CONTENTS}:
-     *                         Show the contents of the backed-up snapshots.
+     *                     <li>{@link Options#DRY_RUN DRY_RUN}: Whether or not
+     *                         to perform a dry run of a backup deletion.
      *                         Supported values:
      *                         <ul>
-     *                             <li>{@link Options#NONE NONE}: Don't show
-     *                                 snapshot contents.
-     *                             <li>{@link Options#OBJECT_NAMES
-     *                                 OBJECT_NAMES}: Show backed-up object
-     *                                 names, and for tables, sizing detail.
-     *                             <li>{@link Options#OBJECT_FILES
-     *                                 OBJECT_FILES}: Show backed-up object
-     *                                 names, and for tables, sizing detail and
-     *                                 associated files.
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
      *                         </ul>
-     *                         The default value is {@link Options#NONE NONE}.
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link Options#DELETE_ALL_BACKUPS
+     *                         DELETE_ALL_BACKUPS}: Allow multiple backups to
+     *                         be deleted if {@link Options#TRUE TRUE} and
+     *                         multiple backup names are found matching {@code
+     *                         backupName}.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                     <li>{@link Options#NO_ERROR_IF_NOT_EXISTS
      *                         NO_ERROR_IF_NOT_EXISTS}: Whether or not to
      *                         suppress the error if the specified backup does
@@ -161,16 +152,18 @@ public class ShowBackupRequest implements IndexedRecord {
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
-    public ShowBackupRequest(String backupName, String datasourceName, Map<String, String> options) {
+    public DropBackupRequest(String backupName, String datasinkName, Map<String, String> options) {
         this.backupName = (backupName == null) ? "" : backupName;
-        this.datasourceName = (datasourceName == null) ? "" : datasourceName;
+        this.datasinkName = (datasinkName == null) ? "" : datasinkName;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
     /**
-     * Name of the backup. An empty string or '*' will show all existing
-     * backups. Any text followed by a '*' will show backups whose name starts
-     * with that text. The default value is ''.
+     * Name of the backup to be deleted. An empty string or '*' will delete all
+     * existing backups. Any text followed by a '*' will delete backups whose
+     * name starts with that text.  When deleting multiple backups, {@link
+     * Options#DELETE_ALL_BACKUPS DELETE_ALL_BACKUPS} must be set to {@link
+     * Options#TRUE TRUE}.
      *
      * @return The current value of {@code backupName}.
      */
@@ -179,58 +172,63 @@ public class ShowBackupRequest implements IndexedRecord {
     }
 
     /**
-     * Name of the backup. An empty string or '*' will show all existing
-     * backups. Any text followed by a '*' will show backups whose name starts
-     * with that text. The default value is ''.
+     * Name of the backup to be deleted. An empty string or '*' will delete all
+     * existing backups. Any text followed by a '*' will delete backups whose
+     * name starts with that text.  When deleting multiple backups, {@link
+     * Options#DELETE_ALL_BACKUPS DELETE_ALL_BACKUPS} must be set to {@link
+     * Options#TRUE TRUE}.
      *
      * @param backupName  The new value for {@code backupName}.
      *
      * @return {@code this} to mimic the builder pattern.
      */
-    public ShowBackupRequest setBackupName(String backupName) {
+    public DropBackupRequest setBackupName(String backupName) {
         this.backupName = (backupName == null) ? "" : backupName;
         return this;
     }
 
     /**
-     * Data source through which the backup is accessible.
+     * Data sink through which the backup is accessible.
      *
-     * @return The current value of {@code datasourceName}.
+     * @return The current value of {@code datasinkName}.
      */
-    public String getDatasourceName() {
-        return datasourceName;
+    public String getDatasinkName() {
+        return datasinkName;
     }
 
     /**
-     * Data source through which the backup is accessible.
+     * Data sink through which the backup is accessible.
      *
-     * @param datasourceName  The new value for {@code datasourceName}.
+     * @param datasinkName  The new value for {@code datasinkName}.
      *
      * @return {@code this} to mimic the builder pattern.
      */
-    public ShowBackupRequest setDatasourceName(String datasourceName) {
-        this.datasourceName = (datasourceName == null) ? "" : datasourceName;
+    public DropBackupRequest setDatasinkName(String datasinkName) {
+        this.datasinkName = (datasinkName == null) ? "" : datasinkName;
         return this;
     }
 
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#BACKUP_ID BACKUP_ID}: ID of the snapshot to show.
-     *         Leave empty to show information from the most recent snapshot in
-     *         the backup. The default value is ''.
-     *     <li>{@link Options#SHOW_CONTENTS SHOW_CONTENTS}: Show the contents
-     *         of the backed-up snapshots.
+     *     <li>{@link Options#DRY_RUN DRY_RUN}: Whether or not to perform a dry
+     *         run of a backup deletion.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#NONE NONE}: Don't show snapshot contents.
-     *             <li>{@link Options#OBJECT_NAMES OBJECT_NAMES}: Show
-     *                 backed-up object names, and for tables, sizing detail.
-     *             <li>{@link Options#OBJECT_FILES OBJECT_FILES}: Show
-     *                 backed-up object names, and for tables, sizing detail
-     *                 and associated files.
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
      *         </ul>
-     *         The default value is {@link Options#NONE NONE}.
+     *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#DELETE_ALL_BACKUPS DELETE_ALL_BACKUPS}: Allow
+     *         multiple backups to be deleted if {@link Options#TRUE TRUE} and
+     *         multiple backup names are found matching {@link #getBackupName()
+     *         backupName}.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#NO_ERROR_IF_NOT_EXISTS NO_ERROR_IF_NOT_EXISTS}:
      *         Whether or not to suppress the error if the specified backup
      *         does not exist.
@@ -252,21 +250,24 @@ public class ShowBackupRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#BACKUP_ID BACKUP_ID}: ID of the snapshot to show.
-     *         Leave empty to show information from the most recent snapshot in
-     *         the backup. The default value is ''.
-     *     <li>{@link Options#SHOW_CONTENTS SHOW_CONTENTS}: Show the contents
-     *         of the backed-up snapshots.
+     *     <li>{@link Options#DRY_RUN DRY_RUN}: Whether or not to perform a dry
+     *         run of a backup deletion.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#NONE NONE}: Don't show snapshot contents.
-     *             <li>{@link Options#OBJECT_NAMES OBJECT_NAMES}: Show
-     *                 backed-up object names, and for tables, sizing detail.
-     *             <li>{@link Options#OBJECT_FILES OBJECT_FILES}: Show
-     *                 backed-up object names, and for tables, sizing detail
-     *                 and associated files.
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
      *         </ul>
-     *         The default value is {@link Options#NONE NONE}.
+     *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#DELETE_ALL_BACKUPS DELETE_ALL_BACKUPS}: Allow
+     *         multiple backups to be deleted if {@link Options#TRUE TRUE} and
+     *         multiple backup names are found matching {@link #getBackupName()
+     *         backupName}.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#NO_ERROR_IF_NOT_EXISTS NO_ERROR_IF_NOT_EXISTS}:
      *         Whether or not to suppress the error if the specified backup
      *         does not exist.
@@ -283,7 +284,7 @@ public class ShowBackupRequest implements IndexedRecord {
      *
      * @return {@code this} to mimic the builder pattern.
      */
-    public ShowBackupRequest setOptions(Map<String, String> options) {
+    public DropBackupRequest setOptions(Map<String, String> options) {
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
         return this;
     }
@@ -316,7 +317,7 @@ public class ShowBackupRequest implements IndexedRecord {
                 return this.backupName;
 
             case 1:
-                return this.datasourceName;
+                return this.datasinkName;
 
             case 2:
                 return this.options;
@@ -344,7 +345,7 @@ public class ShowBackupRequest implements IndexedRecord {
                 break;
 
             case 1:
-                this.datasourceName = (String)value;
+                this.datasinkName = (String)value;
                 break;
 
             case 2:
@@ -366,10 +367,10 @@ public class ShowBackupRequest implements IndexedRecord {
             return false;
         }
 
-        ShowBackupRequest that = (ShowBackupRequest)obj;
+        DropBackupRequest that = (DropBackupRequest)obj;
 
         return ( this.backupName.equals( that.backupName )
-                 && this.datasourceName.equals( that.datasourceName )
+                 && this.datasinkName.equals( that.datasinkName )
                  && this.options.equals( that.options ) );
     }
 
@@ -382,9 +383,9 @@ public class ShowBackupRequest implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.backupName ) );
         builder.append( ", " );
-        builder.append( gd.toString( "datasourceName" ) );
+        builder.append( gd.toString( "datasinkName" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.datasourceName ) );
+        builder.append( gd.toString( this.datasinkName ) );
         builder.append( ", " );
         builder.append( gd.toString( "options" ) );
         builder.append( ": " );
@@ -398,7 +399,7 @@ public class ShowBackupRequest implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.backupName.hashCode();
-        hashCode = (31 * hashCode) + this.datasourceName.hashCode();
+        hashCode = (31 * hashCode) + this.datasinkName.hashCode();
         hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }

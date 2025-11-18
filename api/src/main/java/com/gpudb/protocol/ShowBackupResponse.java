@@ -78,7 +78,7 @@ public class ShowBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Backup description
+     * Details about the overall backup(s).
      *
      * @return The current value of {@code backupDescription}.
      */
@@ -87,7 +87,7 @@ public class ShowBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Backup description
+     * Details about the overall backup(s).
      *
      * @param backupDescription  The new value for {@code backupDescription}.
      *
@@ -99,7 +99,7 @@ public class ShowBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Backup instances in this backup
+     * Details about the individual snapshots contained within the backup(s).
      *
      * @return The current value of {@code backupIds}.
      */
@@ -108,7 +108,7 @@ public class ShowBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Backup instances in this backup
+     * Details about the individual snapshots contained within the backup(s).
      *
      * @param backupIds  The new value for {@code backupIds}.
      *
@@ -120,7 +120,14 @@ public class ShowBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Backup contents
+     * When {@link com.gpudb.protocol.ShowBackupRequest.Options#SHOW_CONTENTS
+     * SHOW_CONTENTS} is {@link
+     * com.gpudb.protocol.ShowBackupRequest.Options#OBJECT_NAMES OBJECT_NAMES},
+     * the names of the backed-up objects as well as sizing detail of any
+     * backed-up tables; when {@link
+     * com.gpudb.protocol.ShowBackupRequest.Options#OBJECT_FILES OBJECT_FILES},
+     * the names of the backed-up objects as well as sizing detail and
+     * associated data files of any backed-up tables.
      *
      * @return The current value of {@code backupContents}.
      */
@@ -129,7 +136,14 @@ public class ShowBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Backup contents
+     * When {@link com.gpudb.protocol.ShowBackupRequest.Options#SHOW_CONTENTS
+     * SHOW_CONTENTS} is {@link
+     * com.gpudb.protocol.ShowBackupRequest.Options#OBJECT_NAMES OBJECT_NAMES},
+     * the names of the backed-up objects as well as sizing detail of any
+     * backed-up tables; when {@link
+     * com.gpudb.protocol.ShowBackupRequest.Options#OBJECT_FILES OBJECT_FILES},
+     * the names of the backed-up objects as well as sizing detail and
+     * associated data files of any backed-up tables.
      *
      * @param backupContents  The new value for {@code backupContents}.
      *
@@ -141,7 +155,8 @@ public class ShowBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Backup instances that have been deleted from this backup object
+     * IDs of any snapshots that have been deleted from the containing
+     * backup(s).
      *
      * @return The current value of {@code deletedBackupIds}.
      */
@@ -150,7 +165,8 @@ public class ShowBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Backup instances that have been deleted from this backup object
+     * IDs of any snapshots that have been deleted from the containing
+     * backup(s).
      *
      * @param deletedBackupIds  The new value for {@code deletedBackupIds}.
      *

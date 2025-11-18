@@ -149,6 +149,11 @@ public class RevokePermissionRequest implements IndexedRecord {
         public static final String INSERT = "insert";
 
         /**
+         * Monitor logs and statistics.
+         */
+        public static final String MONITOR = "monitor";
+
+        /**
          * Ability to read, list and use the object.
          */
         public static final String READ = "read";
@@ -260,6 +265,8 @@ public class RevokePermissionRequest implements IndexedRecord {
      *                            to Execute the Procedure object.
      *                        <li>{@link Permission#INSERT INSERT}: Insert
      *                            access to tables.
+     *                        <li>{@link Permission#MONITOR MONITOR}: Monitor
+     *                            logs and statistics.
      *                        <li>{@link Permission#READ READ}: Ability to
      *                            read, list and use the object.
      *                        <li>{@link Permission#SEND_ALERT SEND_ALERT}:
@@ -399,6 +406,7 @@ public class RevokePermissionRequest implements IndexedRecord {
      *     <li>{@link Permission#EXECUTE EXECUTE}: Ability to Execute the
      *         Procedure object.
      *     <li>{@link Permission#INSERT INSERT}: Insert access to tables.
+     *     <li>{@link Permission#MONITOR MONITOR}: Monitor logs and statistics.
      *     <li>{@link Permission#READ READ}: Ability to read, list and use the
      *         object.
      *     <li>{@link Permission#SEND_ALERT SEND_ALERT}: Ability to send system
@@ -430,6 +438,7 @@ public class RevokePermissionRequest implements IndexedRecord {
      *     <li>{@link Permission#EXECUTE EXECUTE}: Ability to Execute the
      *         Procedure object.
      *     <li>{@link Permission#INSERT INSERT}: Insert access to tables.
+     *     <li>{@link Permission#MONITOR MONITOR}: Monitor logs and statistics.
      *     <li>{@link Permission#READ READ}: Ability to read, list and use the
      *         object.
      *     <li>{@link Permission#SEND_ALERT SEND_ALERT}: Ability to send system

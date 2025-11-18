@@ -1,8 +1,12 @@
 package com.gpudb;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.avro.generic.IndexedRecord;
+import org.apache.commons.lang3.tuple.Pair;
 
 final class RecordKeyBuilder<T> {
 
@@ -10,6 +14,7 @@ final class RecordKeyBuilder<T> {
     private final List<Integer> columns;
     private final List<String> columnNames;
     private final List<Type.Column.ColumnType> columnTypes;
+    private final Map<Integer, Pair<Integer, Integer>> decimalSizes = new HashMap<>();
     private final int bufferSize;
     private final boolean hasPrimaryKey;
 
@@ -71,6 +76,7 @@ final class RecordKeyBuilder<T> {
             if ((pkColumns.isEmpty() || skColumns.isEmpty()) && columnProps.contains(ColumnProperty.PRIMARY_KEY))
                 pkColumns.add(i);
         }
+        int nonShardedColumns = typeColumns.size() - skColumns.size();
 
         // If no explicit shard key is defined, assume the PK is the SK
         this.columns = (!skColumns.isEmpty()) ? skColumns : pkColumns;
@@ -84,7 +90,7 @@ final class RecordKeyBuilder<T> {
 
         int size = 0;
 
-        for (int i : columns) {
+        for (int i : this.columns) {
             Type.Column column = typeColumns.get(i);
             this.columnNames.add( column.getName() );
 
@@ -112,7 +118,6 @@ final class RecordKeyBuilder<T> {
 
                 case CHAR8:
                 case DATETIME:
-                case DECIMAL:
                 case DOUBLE:
                 case LONG:
                 case STRING:
@@ -120,7 +125,11 @@ final class RecordKeyBuilder<T> {
                 case ULONG:
                     size += 8;
                     break;
-
+                case DECIMAL:
+                    int precision = column.getDecimalPrecision();
+                    this.decimalSizes.putIfAbsent(i - nonShardedColumns, Pair.of(precision, column.getDecimalScale()));
+                    size += precision > 18 ? 12 : 8;
+                    break;
                 case CHAR16:
                 case UUID:
                     size += 16;
@@ -158,14 +167,11 @@ final class RecordKeyBuilder<T> {
     }
 
     private void addValue(RecordKey key, int column, Object value) throws GPUdbException {
-        switch (columnTypes.get(column)) {
+        Type.Column.ColumnType columnType = this.columnTypes.get(column);
+        switch (columnType) {
             case BOOLEAN:
-                if (value instanceof Boolean)
-                    key.addBoolean((Boolean)value);
-                else if (value instanceof Number)
-                    key.addBoolean(((Number) value).intValue() != 0);
-                else
-                    key.addBoolean(Boolean.parseBoolean(value.toString()));
+                Boolean b = Type.Column.convertBooleanValue(value);
+                key.addBoolean(b);
                 break;
 
             case CHAR1:
@@ -213,7 +219,12 @@ final class RecordKeyBuilder<T> {
                 break;
 
             case DECIMAL:
-                key.addDecimal((String)value);
+                // Convert the value to String if it is not already a String
+                //Allow Double, Float or BigDecimal
+                int precision = this.decimalSizes.get(column).getLeft();
+                int scale = this.decimalSizes.get(column).getRight();
+                String convertedValue = Type.Column.convertDecimalValue(value, scale);
+                key.addDecimal(convertedValue, precision, scale);
                 break;
 
             case DOUBLE:
@@ -273,7 +284,7 @@ final class RecordKeyBuilder<T> {
             default:
                 throw new IllegalArgumentException(
                         "Cannot use column <" + column + "> as a key; " +
-                        "type/property <" + columnTypes.get(column) + ">"
+                        "type/property <" + this.columnTypes.get(column) + ">"
                 );
             }
     }
@@ -285,7 +296,7 @@ final class RecordKeyBuilder<T> {
 
         IndexedRecord indexedRecord;
 
-        if (typeObjectMap == null) {
+        if (this.typeObjectMap == null) {
             indexedRecord = (IndexedRecord)object;
         } else {
             indexedRecord = null;
@@ -293,11 +304,11 @@ final class RecordKeyBuilder<T> {
 
         RecordKey key = new RecordKey(this.bufferSize);
 
-        for (int i = 0; i < columns.size(); i++) {
+        for (int i = 0; i < this.columns.size(); i++) {
             if (indexedRecord != null) {
-                addValue(key, i, indexedRecord.get(columns.get(i)));
+                addValue(key, i, indexedRecord.get(this.columns.get(i)));
             } else {
-                addValue(key, i, typeObjectMap.get(object, columns.get(i)));
+                addValue(key, i, this.typeObjectMap.get(object, this.columns.get(i)));
             }
         }
 
@@ -321,13 +332,13 @@ final class RecordKeyBuilder<T> {
             return null;
         }
 
-        if (columns.size() != values.size()) {
+        if (this.columns.size() != values.size()) {
             throw new IllegalArgumentException("Incorrect number of key values specified.");
         }
 
         RecordKey key = new RecordKey(this.bufferSize);
 
-        for (int i = 0; i < columns.size(); i++) {
+        for (int i = 0; i < this.columns.size(); i++) {
             addValue(key, i, values.get(i));
         }
 
@@ -351,16 +362,16 @@ final class RecordKeyBuilder<T> {
             return null;
         }
 
-        if (columns.size() != values.size()) {
+        if (this.columns.size() != values.size()) {
             throw new IllegalArgumentException(
                     "Incorrect number of key values specified: " +
-                    "need <" + columns.size() + ">, got <" + values.size() + ">"
+                    "need <" + this.columns.size() + ">, got <" + values.size() + ">"
             );
         }
 
         StringBuilder result = new StringBuilder();
 
-        for (int i = 0; i < columns.size(); i++) {
+        for (int i = 0; i < this.columns.size(); i++) {
             if (result.length() > 0) {
                 result.append(" and ");
             }
@@ -368,15 +379,15 @@ final class RecordKeyBuilder<T> {
             Object value = values.get(i);
             if (value == null) {
                 result.append("is_null(");
-                result.append(columnNames.get(i));
+                result.append(this.columnNames.get(i));
                 result.append(")");
                 continue;
             }
 
-            result.append(columnNames.get(i));
+            result.append(this.columnNames.get(i));
             result.append(" = ");
 
-            switch (columnTypes.get(i)) {
+            switch (this.columnTypes.get(i)) {
                 case ARRAY:
                 case CHAR1:
                 case CHAR2:
@@ -441,6 +452,11 @@ final class RecordKeyBuilder<T> {
                 case TIMESTAMP:
                     result.append(Long.toString((Long)value));
                     break;
+                default:
+                    throw new IllegalArgumentException(
+                            "Cannot use column <" + this.columnNames.get(i) + "> as a key; " +
+                            "type/property <" + this.columnTypes.get(i) + ">"
+                    );
             }
         }
 
@@ -448,11 +464,11 @@ final class RecordKeyBuilder<T> {
     }
 
     public boolean hasKey() {
-        return !columns.isEmpty();
+        return !this.columns.isEmpty();
     }
 
     public boolean hasPrimaryKey() {
-        return hasPrimaryKey;
+        return this.hasPrimaryKey;
     }
 
     public boolean hasSameKey(RecordKeyBuilder<T> other) {

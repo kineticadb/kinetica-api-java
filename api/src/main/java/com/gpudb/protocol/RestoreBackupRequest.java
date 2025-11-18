@@ -16,8 +16,11 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#restoreBackup(RestoreBackupRequest) GPUdb.restoreBackup}.
  * <p>
- * Restores objects from a backup instance.
- * Response from a backup restoration operation.
+ * Restores database objects from a <a
+ * href="../../../../../../admin/backup_restore/#database-backup"
+ * target="_top">backup</a> accessible via the <a
+ * href="../../../../../../concepts/data_sources/" target="_top">data
+ * source</a> specified by {@link #getDatasourceName() datasourceName}.
  */
 public class RestoreBackupRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -44,76 +47,92 @@ public class RestoreBackupRequest implements IndexedRecord {
      * A set of string constants for the {@link RestoreBackupRequest} parameter
      * {@link #getRestoreObjectsMap() restoreObjectsMap}.
      * <p>
-     * Map of objects to be restored from the backup. Error if empty.
+     * Map of database objects to be restored from the backup.
      */
     public static final class RestoreObjectsMap {
         /**
-         * All object types in a schema (excludes permissions, system
-         * configuration, host secret key, KiFS directories and user defined
-         * functions)
+         * All object types and data contained in the given <a
+         * href="../../../../../../concepts/schemas/"
+         * target="_top">schemas(s)</a>.
          */
         public static final String ALL = "all";
 
         /**
-         * Database Table
+         * <a href="../../../../../../concepts/tables/"
+         * target="_top">Tables(s)</a> and <a
+         * href="../../../../../../sql/ddl/#create-view" target="_top">SQL
+         * view(s)</a>.
          */
         public static final String TABLE = "table";
 
         /**
-         * Credential
+         * <a href="../../../../../../concepts/credentials/"
+         * target="_top">Credential(s)</a>.
          */
         public static final String CREDENTIAL = "credential";
 
         /**
-         * Context
+         * <a href="../../../../../../sql-gpt/concepts/#sql-gpt-context"
+         * target="_top">Context(s)</a>.
          */
         public static final String CONTEXT = "context";
 
         /**
-         * Data Sink
+         * <a href="../../../../../../concepts/data_sinks/" target="_top">Data
+         * sink(s)</a>.
          */
         public static final String DATASINK = "datasink";
 
         /**
-         * Data Source
+         * <a href="../../../../../../concepts/data_sources/"
+         * target="_top">Data source(s)</a>.
          */
         public static final String DATASOURCE = "datasource";
 
         /**
-         * SQL Procedure
+         * <a href="../../../../../../sql/procedure/" target="_top">SQL
+         * procedure(s)</a>.
          */
         public static final String STORED_PROCEDURE = "stored_procedure";
 
         /**
-         * Table Monitor (Stream)
+         * <a href="../../../../../../concepts/table_monitors/"
+         * target="_top">Table monitor(s)</a> / <a
+         * href="../../../../../../sql/ddl/#create-stream" target="_top">SQL
+         * stream(s)</a>.
          */
         public static final String MONITOR = "monitor";
 
         /**
-         * User (internal and external) and associated permissions
+         * <a
+         * href="../../../../../../security/sec_concepts/#security-concepts-users"
+         * target="_top">User(s)</a> (internal and external) and associated
+         * permissions.
          */
         public static final String USER = "user";
 
         /**
-         * Role, role members (roles or users, recursively) and associated
-         * permissions
+         * <a href="../../../../../../security/sec_concepts/#roles"
+         * target="_top">Role(s)</a>, role members (roles or users,
+         * recursively), and associated permissions.
          */
         public static final String ROLE = "role";
 
         /**
-         * If {@link RestoreObjectsMap#TRUE TRUE}, restore the database
-         * configuration file.
+         * If {@link RestoreObjectsMap#TRUE TRUE}, restore the database <a
+         * href="../../../../../../config/" target="_top">configuration
+         * file</a>.
          * Supported values:
          * <ul>
-         *     <li>{@link RestoreObjectsMap#FALSE FALSE}
          *     <li>{@link RestoreObjectsMap#TRUE TRUE}
+         *     <li>{@link RestoreObjectsMap#FALSE FALSE}
          * </ul>
          * The default value is {@link RestoreObjectsMap#FALSE FALSE}.
          */
         public static final String CONFIGURATION = "configuration";
 
-        public static final String FALSE = "false";
         public static final String TRUE = "true";
+        public static final String FALSE = "false";
 
         private RestoreObjectsMap() {  }
     }
@@ -126,71 +145,102 @@ public class RestoreBackupRequest implements IndexedRecord {
      */
     public static final class Options {
         /**
-         * Backup instance ID to restore. Leave empty to restore the most
-         * recent backup instance. The default value is ''.
+         * ID of the snapshot to restore. Leave empty to restore the most
+         * recent snapshot in the backup. The default value is ''.
          */
         public static final String BACKUP_ID = "backup_id";
 
         /**
-         * Behavior to apply when restoring objects that already exist.
+         * Behavior to apply when any database object to restore already
+         * exists.
          * Supported values:
          * <ul>
          *     <li>{@link Options#NONE NONE}: If an object to be restored
-         *         currently exists with the same name, abort and return error
+         *         already exists with the same name, abort and return error.
          *     <li>{@link Options#REPLACE REPLACE}: If an object to be restored
-         *         currently exists with the same name, replace it with the
-         *         backup version
+         *         already exists with the same name, replace it with the
+         *         backup version.
          *     <li>{@link Options#RENAME RENAME}: If an object to be restored
-         *         currently exists with the same name, rename the original
-         *         version
+         *         already exists with the same name, move that existing one to
+         *         the schema specified by {@link
+         *         Options#RENAMED_OBJECTS_SCHEMA RENAMED_OBJECTS_SCHEMA}.
          * </ul>
          * The default value is {@link Options#NONE NONE}.
          */
         public static final String RESTORE_POLICY = "restore_policy";
 
         /**
-         * If an object to be restored currently exists with the same name,
-         * abort and return error
+         * If an object to be restored already exists with the same name, abort
+         * and return error.
          */
         public static final String NONE = "none";
 
         /**
-         * If an object to be restored currently exists with the same name,
-         * replace it with the backup version
+         * If an object to be restored already exists with the same name,
+         * replace it with the backup version.
          */
         public static final String REPLACE = "replace";
 
         /**
-         * If an object to be restored currently exists with the same name,
-         * rename the original version
+         * If an object to be restored already exists with the same name, move
+         * that existing one to the schema specified by {@link
+         * Options#RENAMED_OBJECTS_SCHEMA RENAMED_OBJECTS_SCHEMA}.
          */
         public static final String RENAME = "rename";
 
         /**
-         * If the restore policy is rename, optionally use this schema for
-         * renamed objects instead of a default generated one. The default
-         * value is ''.
+         * If the {@link Options#RESTORE_POLICY RESTORE_POLICY} is {@link
+         * Options#RENAME RENAME}, use this schema for relocated existing
+         * objects instead of the default generated one. The default value is
+         * ''.
          */
         public static final String RENAMED_OBJECTS_SCHEMA = "renamed_objects_schema";
 
         /**
-         * Create the schema for an object to be restored if it does not
-         * currently exist. Error otherwise.
+         * Behavior to apply when the schema containing any database object to
+         * restore does not already exist.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#FALSE FALSE}
-         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#TRUE TRUE}: If the schema containing any
+         *         restored object does not exist, create it automatically.
+         *     <li>{@link Options#FALSE FALSE}: If the schema containing any
+         *         restored object does not exist, return an error.
          * </ul>
          * The default value is {@link Options#TRUE TRUE}.
          */
         public static final String CREATE_SCHEMA_IF_NOT_EXIST = "create_schema_if_not_exist";
 
-        public static final String FALSE = "false";
         public static final String TRUE = "true";
+        public static final String FALSE = "false";
 
         /**
-         * Only recreates the objects from their DDL, do not restore table
-         * data.
+         * Behavior to apply when restoring table data.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}: Restore table data by
+         *         re-ingesting it.  This is the default behavior if the
+         *         cluster topology differs from that of the contained backup.
+         *     <li>{@link Options#FALSE FALSE}: Restore the persisted data
+         *         files directly.
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String REINGEST = "reingest";
+
+        /**
+         * Behavior to apply when restoring tables.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}: Restore table DDL, but do not
+         *         restore data.
+         *     <li>{@link Options#FALSE FALSE}: Restore tables and their data.
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String DDL_ONLY = "ddl_only";
+
+        /**
+         * Whether or not to verify checksums for backup files when restoring.
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}
@@ -198,21 +248,10 @@ public class RestoreBackupRequest implements IndexedRecord {
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
-        public static final String DDL_ONLY = "ddl_only";
-
-        /**
-         * Verify checksum for backup files.
-         * Supported values:
-         * <ul>
-         *     <li>{@link Options#FALSE FALSE}
-         *     <li>{@link Options#TRUE TRUE}
-         * </ul>
-         * The default value is {@link Options#TRUE TRUE}.
-         */
         public static final String CHECKSUM = "checksum";
 
         /**
-         * Does a dry-run restoration operation.
+         * Whether or not to perform a dry run of the restoration operation.
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}
@@ -243,95 +282,154 @@ public class RestoreBackupRequest implements IndexedRecord {
     /**
      * Constructs a RestoreBackupRequest object with the specified parameters.
      *
-     * @param backupName  Name of the backup object, which must refer to a
-     *                    currently existing backup. The default value is ''.
-     * @param restoreObjectsMap  Map of objects to be restored from the backup.
-     *                           Error if empty.
+     * @param backupName  Name of the backup to restore from, which must refer
+     *                    to an existing backup. The default value is ''.
+     * @param restoreObjectsMap  Map of database objects to be restored from
+     *                           the backup.
      *                           <ul>
      *                               <li>{@link RestoreObjectsMap#ALL ALL}: All
-     *                                   object types in a schema (excludes
-     *                                   permissions, system configuration,
-     *                                   host secret key, KiFS directories and
-     *                                   user defined functions)
+     *                                   object types and data contained in the
+     *                                   given <a
+     *                                   href="../../../../../../concepts/schemas/"
+     *                                   target="_top">schemas(s)</a>.
      *                               <li>{@link RestoreObjectsMap#TABLE TABLE}:
-     *                                   Database Table
+     *                                   <a
+     *                                   href="../../../../../../concepts/tables/"
+     *                                   target="_top">Tables(s)</a> and <a
+     *                                   href="../../../../../../sql/ddl/#create-view"
+     *                                   target="_top">SQL view(s)</a>.
      *                               <li>{@link RestoreObjectsMap#CREDENTIAL
-     *                                   CREDENTIAL}: Credential
+     *                                   CREDENTIAL}: <a
+     *                                   href="../../../../../../concepts/credentials/"
+     *                                   target="_top">Credential(s)</a>.
      *                               <li>{@link RestoreObjectsMap#CONTEXT
-     *                                   CONTEXT}: Context
+     *                                   CONTEXT}: <a
+     *                                   href="../../../../../../sql-gpt/concepts/#sql-gpt-context"
+     *                                   target="_top">Context(s)</a>.
      *                               <li>{@link RestoreObjectsMap#DATASINK
-     *                                   DATASINK}: Data Sink
+     *                                   DATASINK}: <a
+     *                                   href="../../../../../../concepts/data_sinks/"
+     *                                   target="_top">Data sink(s)</a>.
      *                               <li>{@link RestoreObjectsMap#DATASOURCE
-     *                                   DATASOURCE}: Data Source
+     *                                   DATASOURCE}: <a
+     *                                   href="../../../../../../concepts/data_sources/"
+     *                                   target="_top">Data source(s)</a>.
      *                               <li>{@link
      *                                   RestoreObjectsMap#STORED_PROCEDURE
-     *                                   STORED_PROCEDURE}: SQL Procedure
+     *                                   STORED_PROCEDURE}: <a
+     *                                   href="../../../../../../sql/procedure/"
+     *                                   target="_top">SQL procedure(s)</a>.
      *                               <li>{@link RestoreObjectsMap#MONITOR
-     *                                   MONITOR}: Table Monitor (Stream)
+     *                                   MONITOR}: <a
+     *                                   href="../../../../../../concepts/table_monitors/"
+     *                                   target="_top">Table monitor(s)</a> /
+     *                                   <a
+     *                                   href="../../../../../../sql/ddl/#create-stream"
+     *                                   target="_top">SQL stream(s)</a>.
      *                               <li>{@link RestoreObjectsMap#USER USER}:
-     *                                   User (internal and external) and
-     *                                   associated permissions
+     *                                   <a
+     *                                   href="../../../../../../security/sec_concepts/#security-concepts-users"
+     *                                   target="_top">User(s)</a> (internal
+     *                                   and external) and associated
+     *                                   permissions.
      *                               <li>{@link RestoreObjectsMap#ROLE ROLE}:
-     *                                   Role, role members (roles or users,
-     *                                   recursively) and associated
-     *                                   permissions
+     *                                   <a
+     *                                   href="../../../../../../security/sec_concepts/#roles"
+     *                                   target="_top">Role(s)</a>, role
+     *                                   members (roles or users, recursively),
+     *                                   and associated permissions.
      *                               <li>{@link RestoreObjectsMap#CONFIGURATION
      *                                   CONFIGURATION}: If {@link
      *                                   RestoreObjectsMap#TRUE TRUE}, restore
-     *                                   the database configuration file.
+     *                                   the database <a
+     *                                   href="../../../../../../config/"
+     *                                   target="_top">configuration file</a>.
      *                                   Supported values:
      *                                   <ul>
-     *                                       <li>{@link RestoreObjectsMap#FALSE
-     *                                           FALSE}
      *                                       <li>{@link RestoreObjectsMap#TRUE
      *                                           TRUE}
+     *                                       <li>{@link RestoreObjectsMap#FALSE
+     *                                           FALSE}
      *                                   </ul>
      *                                   The default value is {@link
      *                                   RestoreObjectsMap#FALSE FALSE}.
      *                           </ul>
-     * @param datasourceName  Datasource where backup is located.
+     * @param datasourceName  Data source through which the backup will be
+     *                        restored.
      * @param options  Optional parameters.
      *                 <ul>
-     *                     <li>{@link Options#BACKUP_ID BACKUP_ID}: Backup
-     *                         instance ID to restore. Leave empty to restore
-     *                         the most recent backup instance. The default
+     *                     <li>{@link Options#BACKUP_ID BACKUP_ID}: ID of the
+     *                         snapshot to restore. Leave empty to restore the
+     *                         most recent snapshot in the backup. The default
      *                         value is ''.
      *                     <li>{@link Options#RESTORE_POLICY RESTORE_POLICY}:
-     *                         Behavior to apply when restoring objects that
-     *                         already exist.
+     *                         Behavior to apply when any database object to
+     *                         restore already exists.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#NONE NONE}: If an object
-     *                                 to be restored currently exists with the
-     *                                 same name, abort and return error
+     *                                 to be restored already exists with the
+     *                                 same name, abort and return error.
      *                             <li>{@link Options#REPLACE REPLACE}: If an
-     *                                 object to be restored currently exists
+     *                                 object to be restored already exists
      *                                 with the same name, replace it with the
-     *                                 backup version
+     *                                 backup version.
      *                             <li>{@link Options#RENAME RENAME}: If an
-     *                                 object to be restored currently exists
-     *                                 with the same name, rename the original
-     *                                 version
+     *                                 object to be restored already exists
+     *                                 with the same name, move that existing
+     *                                 one to the schema specified by {@link
+     *                                 Options#RENAMED_OBJECTS_SCHEMA
+     *                                 RENAMED_OBJECTS_SCHEMA}.
      *                         </ul>
      *                         The default value is {@link Options#NONE NONE}.
      *                     <li>{@link Options#RENAMED_OBJECTS_SCHEMA
-     *                         RENAMED_OBJECTS_SCHEMA}: If the restore policy
-     *                         is rename, optionally use this schema for
-     *                         renamed objects instead of a default generated
-     *                         one. The default value is ''.
+     *                         RENAMED_OBJECTS_SCHEMA}: If the {@link
+     *                         Options#RESTORE_POLICY RESTORE_POLICY} is {@link
+     *                         Options#RENAME RENAME}, use this schema for
+     *                         relocated existing objects instead of the
+     *                         default generated one. The default value is ''.
      *                     <li>{@link Options#CREATE_SCHEMA_IF_NOT_EXIST
-     *                         CREATE_SCHEMA_IF_NOT_EXIST}: Create the schema
-     *                         for an object to be restored if it does not
-     *                         currently exist. Error otherwise.
+     *                         CREATE_SCHEMA_IF_NOT_EXIST}: Behavior to apply
+     *                         when the schema containing any database object
+     *                         to restore does not already exist.
      *                         Supported values:
      *                         <ul>
-     *                             <li>{@link Options#FALSE FALSE}
-     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#TRUE TRUE}: If the schema
+     *                                 containing any restored object does not
+     *                                 exist, create it automatically.
+     *                             <li>{@link Options#FALSE FALSE}: If the
+     *                                 schema containing any restored object
+     *                                 does not exist, return an error.
      *                         </ul>
      *                         The default value is {@link Options#TRUE TRUE}.
-     *                     <li>{@link Options#DDL_ONLY DDL_ONLY}: Only
-     *                         recreates the objects from their DDL, do not
-     *                         restore table data.
+     *                     <li>{@link Options#REINGEST REINGEST}: Behavior to
+     *                         apply when restoring table data.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}: Restore table
+     *                                 data by re-ingesting it.  This is the
+     *                                 default behavior if the cluster topology
+     *                                 differs from that of the contained
+     *                                 backup.
+     *                             <li>{@link Options#FALSE FALSE}: Restore the
+     *                                 persisted data files directly.
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link Options#DDL_ONLY DDL_ONLY}: Behavior to
+     *                         apply when restoring tables.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}: Restore table
+     *                                 DDL, but do not restore data.
+     *                             <li>{@link Options#FALSE FALSE}: Restore
+     *                                 tables and their data.
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link Options#CHECKSUM CHECKSUM}: Whether or
+     *                         not to verify checksums for backup files when
+     *                         restoring.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
@@ -339,16 +437,9 @@ public class RestoreBackupRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
-     *                     <li>{@link Options#CHECKSUM CHECKSUM}: Verify
-     *                         checksum for backup files.
-     *                         Supported values:
-     *                         <ul>
-     *                             <li>{@link Options#FALSE FALSE}
-     *                             <li>{@link Options#TRUE TRUE}
-     *                         </ul>
-     *                         The default value is {@link Options#TRUE TRUE}.
-     *                     <li>{@link Options#DRY_RUN DRY_RUN}: Does a dry-run
-     *                         restoration operation.
+     *                     <li>{@link Options#DRY_RUN DRY_RUN}: Whether or not
+     *                         to perform a dry run of the restoration
+     *                         operation.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
@@ -367,7 +458,7 @@ public class RestoreBackupRequest implements IndexedRecord {
     }
 
     /**
-     * Name of the backup object, which must refer to a currently existing
+     * Name of the backup to restore from, which must refer to an existing
      * backup. The default value is ''.
      *
      * @return The current value of {@code backupName}.
@@ -377,7 +468,7 @@ public class RestoreBackupRequest implements IndexedRecord {
     }
 
     /**
-     * Name of the backup object, which must refer to a currently existing
+     * Name of the backup to restore from, which must refer to an existing
      * backup. The default value is ''.
      *
      * @param backupName  The new value for {@code backupName}.
@@ -390,31 +481,53 @@ public class RestoreBackupRequest implements IndexedRecord {
     }
 
     /**
-     * Map of objects to be restored from the backup. Error if empty.
+     * Map of database objects to be restored from the backup.
      * <ul>
-     *     <li>{@link RestoreObjectsMap#ALL ALL}: All object types in a schema
-     *         (excludes permissions, system configuration, host secret key,
-     *         KiFS directories and user defined functions)
-     *     <li>{@link RestoreObjectsMap#TABLE TABLE}: Database Table
-     *     <li>{@link RestoreObjectsMap#CREDENTIAL CREDENTIAL}: Credential
-     *     <li>{@link RestoreObjectsMap#CONTEXT CONTEXT}: Context
-     *     <li>{@link RestoreObjectsMap#DATASINK DATASINK}: Data Sink
-     *     <li>{@link RestoreObjectsMap#DATASOURCE DATASOURCE}: Data Source
-     *     <li>{@link RestoreObjectsMap#STORED_PROCEDURE STORED_PROCEDURE}: SQL
-     *         Procedure
-     *     <li>{@link RestoreObjectsMap#MONITOR MONITOR}: Table Monitor
-     *         (Stream)
-     *     <li>{@link RestoreObjectsMap#USER USER}: User (internal and
-     *         external) and associated permissions
-     *     <li>{@link RestoreObjectsMap#ROLE ROLE}: Role, role members (roles
-     *         or users, recursively) and associated permissions
+     *     <li>{@link RestoreObjectsMap#ALL ALL}: All object types and data
+     *         contained in the given <a
+     *         href="../../../../../../concepts/schemas/"
+     *         target="_top">schemas(s)</a>.
+     *     <li>{@link RestoreObjectsMap#TABLE TABLE}: <a
+     *         href="../../../../../../concepts/tables/"
+     *         target="_top">Tables(s)</a> and <a
+     *         href="../../../../../../sql/ddl/#create-view" target="_top">SQL
+     *         view(s)</a>.
+     *     <li>{@link RestoreObjectsMap#CREDENTIAL CREDENTIAL}: <a
+     *         href="../../../../../../concepts/credentials/"
+     *         target="_top">Credential(s)</a>.
+     *     <li>{@link RestoreObjectsMap#CONTEXT CONTEXT}: <a
+     *         href="../../../../../../sql-gpt/concepts/#sql-gpt-context"
+     *         target="_top">Context(s)</a>.
+     *     <li>{@link RestoreObjectsMap#DATASINK DATASINK}: <a
+     *         href="../../../../../../concepts/data_sinks/" target="_top">Data
+     *         sink(s)</a>.
+     *     <li>{@link RestoreObjectsMap#DATASOURCE DATASOURCE}: <a
+     *         href="../../../../../../concepts/data_sources/"
+     *         target="_top">Data source(s)</a>.
+     *     <li>{@link RestoreObjectsMap#STORED_PROCEDURE STORED_PROCEDURE}: <a
+     *         href="../../../../../../sql/procedure/" target="_top">SQL
+     *         procedure(s)</a>.
+     *     <li>{@link RestoreObjectsMap#MONITOR MONITOR}: <a
+     *         href="../../../../../../concepts/table_monitors/"
+     *         target="_top">Table monitor(s)</a> / <a
+     *         href="../../../../../../sql/ddl/#create-stream"
+     *         target="_top">SQL stream(s)</a>.
+     *     <li>{@link RestoreObjectsMap#USER USER}: <a
+     *         href="../../../../../../security/sec_concepts/#security-concepts-users"
+     *         target="_top">User(s)</a> (internal and external) and associated
+     *         permissions.
+     *     <li>{@link RestoreObjectsMap#ROLE ROLE}: <a
+     *         href="../../../../../../security/sec_concepts/#roles"
+     *         target="_top">Role(s)</a>, role members (roles or users,
+     *         recursively), and associated permissions.
      *     <li>{@link RestoreObjectsMap#CONFIGURATION CONFIGURATION}: If {@link
-     *         RestoreObjectsMap#TRUE TRUE}, restore the database configuration
-     *         file.
+     *         RestoreObjectsMap#TRUE TRUE}, restore the database <a
+     *         href="../../../../../../config/" target="_top">configuration
+     *         file</a>.
      *         Supported values:
      *         <ul>
-     *             <li>{@link RestoreObjectsMap#FALSE FALSE}
      *             <li>{@link RestoreObjectsMap#TRUE TRUE}
+     *             <li>{@link RestoreObjectsMap#FALSE FALSE}
      *         </ul>
      *         The default value is {@link RestoreObjectsMap#FALSE FALSE}.
      * </ul>
@@ -426,31 +539,53 @@ public class RestoreBackupRequest implements IndexedRecord {
     }
 
     /**
-     * Map of objects to be restored from the backup. Error if empty.
+     * Map of database objects to be restored from the backup.
      * <ul>
-     *     <li>{@link RestoreObjectsMap#ALL ALL}: All object types in a schema
-     *         (excludes permissions, system configuration, host secret key,
-     *         KiFS directories and user defined functions)
-     *     <li>{@link RestoreObjectsMap#TABLE TABLE}: Database Table
-     *     <li>{@link RestoreObjectsMap#CREDENTIAL CREDENTIAL}: Credential
-     *     <li>{@link RestoreObjectsMap#CONTEXT CONTEXT}: Context
-     *     <li>{@link RestoreObjectsMap#DATASINK DATASINK}: Data Sink
-     *     <li>{@link RestoreObjectsMap#DATASOURCE DATASOURCE}: Data Source
-     *     <li>{@link RestoreObjectsMap#STORED_PROCEDURE STORED_PROCEDURE}: SQL
-     *         Procedure
-     *     <li>{@link RestoreObjectsMap#MONITOR MONITOR}: Table Monitor
-     *         (Stream)
-     *     <li>{@link RestoreObjectsMap#USER USER}: User (internal and
-     *         external) and associated permissions
-     *     <li>{@link RestoreObjectsMap#ROLE ROLE}: Role, role members (roles
-     *         or users, recursively) and associated permissions
+     *     <li>{@link RestoreObjectsMap#ALL ALL}: All object types and data
+     *         contained in the given <a
+     *         href="../../../../../../concepts/schemas/"
+     *         target="_top">schemas(s)</a>.
+     *     <li>{@link RestoreObjectsMap#TABLE TABLE}: <a
+     *         href="../../../../../../concepts/tables/"
+     *         target="_top">Tables(s)</a> and <a
+     *         href="../../../../../../sql/ddl/#create-view" target="_top">SQL
+     *         view(s)</a>.
+     *     <li>{@link RestoreObjectsMap#CREDENTIAL CREDENTIAL}: <a
+     *         href="../../../../../../concepts/credentials/"
+     *         target="_top">Credential(s)</a>.
+     *     <li>{@link RestoreObjectsMap#CONTEXT CONTEXT}: <a
+     *         href="../../../../../../sql-gpt/concepts/#sql-gpt-context"
+     *         target="_top">Context(s)</a>.
+     *     <li>{@link RestoreObjectsMap#DATASINK DATASINK}: <a
+     *         href="../../../../../../concepts/data_sinks/" target="_top">Data
+     *         sink(s)</a>.
+     *     <li>{@link RestoreObjectsMap#DATASOURCE DATASOURCE}: <a
+     *         href="../../../../../../concepts/data_sources/"
+     *         target="_top">Data source(s)</a>.
+     *     <li>{@link RestoreObjectsMap#STORED_PROCEDURE STORED_PROCEDURE}: <a
+     *         href="../../../../../../sql/procedure/" target="_top">SQL
+     *         procedure(s)</a>.
+     *     <li>{@link RestoreObjectsMap#MONITOR MONITOR}: <a
+     *         href="../../../../../../concepts/table_monitors/"
+     *         target="_top">Table monitor(s)</a> / <a
+     *         href="../../../../../../sql/ddl/#create-stream"
+     *         target="_top">SQL stream(s)</a>.
+     *     <li>{@link RestoreObjectsMap#USER USER}: <a
+     *         href="../../../../../../security/sec_concepts/#security-concepts-users"
+     *         target="_top">User(s)</a> (internal and external) and associated
+     *         permissions.
+     *     <li>{@link RestoreObjectsMap#ROLE ROLE}: <a
+     *         href="../../../../../../security/sec_concepts/#roles"
+     *         target="_top">Role(s)</a>, role members (roles or users,
+     *         recursively), and associated permissions.
      *     <li>{@link RestoreObjectsMap#CONFIGURATION CONFIGURATION}: If {@link
-     *         RestoreObjectsMap#TRUE TRUE}, restore the database configuration
-     *         file.
+     *         RestoreObjectsMap#TRUE TRUE}, restore the database <a
+     *         href="../../../../../../config/" target="_top">configuration
+     *         file</a>.
      *         Supported values:
      *         <ul>
-     *             <li>{@link RestoreObjectsMap#FALSE FALSE}
      *             <li>{@link RestoreObjectsMap#TRUE TRUE}
+     *             <li>{@link RestoreObjectsMap#FALSE FALSE}
      *         </ul>
      *         The default value is {@link RestoreObjectsMap#FALSE FALSE}.
      * </ul>
@@ -465,7 +600,7 @@ public class RestoreBackupRequest implements IndexedRecord {
     }
 
     /**
-     * Datasource where backup is located.
+     * Data source through which the backup will be restored.
      *
      * @return The current value of {@code datasourceName}.
      */
@@ -474,7 +609,7 @@ public class RestoreBackupRequest implements IndexedRecord {
     }
 
     /**
-     * Datasource where backup is located.
+     * Data source through which the backup will be restored.
      *
      * @param datasourceName  The new value for {@code datasourceName}.
      *
@@ -488,55 +623,74 @@ public class RestoreBackupRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#BACKUP_ID BACKUP_ID}: Backup instance ID to
-     *         restore. Leave empty to restore the most recent backup instance.
-     *         The default value is ''.
+     *     <li>{@link Options#BACKUP_ID BACKUP_ID}: ID of the snapshot to
+     *         restore. Leave empty to restore the most recent snapshot in the
+     *         backup. The default value is ''.
      *     <li>{@link Options#RESTORE_POLICY RESTORE_POLICY}: Behavior to apply
-     *         when restoring objects that already exist.
+     *         when any database object to restore already exists.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#NONE NONE}: If an object to be restored
-     *                 currently exists with the same name, abort and return
-     *                 error
+     *                 already exists with the same name, abort and return
+     *                 error.
      *             <li>{@link Options#REPLACE REPLACE}: If an object to be
-     *                 restored currently exists with the same name, replace it
-     *                 with the backup version
+     *                 restored already exists with the same name, replace it
+     *                 with the backup version.
      *             <li>{@link Options#RENAME RENAME}: If an object to be
-     *                 restored currently exists with the same name, rename the
-     *                 original version
+     *                 restored already exists with the same name, move that
+     *                 existing one to the schema specified by {@link
+     *                 Options#RENAMED_OBJECTS_SCHEMA RENAMED_OBJECTS_SCHEMA}.
      *         </ul>
      *         The default value is {@link Options#NONE NONE}.
      *     <li>{@link Options#RENAMED_OBJECTS_SCHEMA RENAMED_OBJECTS_SCHEMA}:
-     *         If the restore policy is rename, optionally use this schema for
-     *         renamed objects instead of a default generated one. The default
-     *         value is ''.
+     *         If the {@link Options#RESTORE_POLICY RESTORE_POLICY} is {@link
+     *         Options#RENAME RENAME}, use this schema for relocated existing
+     *         objects instead of the default generated one. The default value
+     *         is ''.
      *     <li>{@link Options#CREATE_SCHEMA_IF_NOT_EXIST
-     *         CREATE_SCHEMA_IF_NOT_EXIST}: Create the schema for an object to
-     *         be restored if it does not currently exist. Error otherwise.
+     *         CREATE_SCHEMA_IF_NOT_EXIST}: Behavior to apply when the schema
+     *         containing any database object to restore does not already
+     *         exist.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#FALSE FALSE}
-     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#TRUE TRUE}: If the schema containing any
+     *                 restored object does not exist, create it automatically.
+     *             <li>{@link Options#FALSE FALSE}: If the schema containing
+     *                 any restored object does not exist, return an error.
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
-     *     <li>{@link Options#DDL_ONLY DDL_ONLY}: Only recreates the objects
-     *         from their DDL, do not restore table data.
+     *     <li>{@link Options#REINGEST REINGEST}: Behavior to apply when
+     *         restoring table data.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}: Restore table data by
+     *                 re-ingesting it.  This is the default behavior if the
+     *                 cluster topology differs from that of the contained
+     *                 backup.
+     *             <li>{@link Options#FALSE FALSE}: Restore the persisted data
+     *                 files directly.
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#DDL_ONLY DDL_ONLY}: Behavior to apply when
+     *         restoring tables.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}: Restore table DDL, but do not
+     *                 restore data.
+     *             <li>{@link Options#FALSE FALSE}: Restore tables and their
+     *                 data.
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#CHECKSUM CHECKSUM}: Whether or not to verify
+     *         checksums for backup files when restoring.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#CHECKSUM CHECKSUM}: Verify checksum for backup
-     *         files.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link Options#FALSE FALSE}
-     *             <li>{@link Options#TRUE TRUE}
-     *         </ul>
-     *         The default value is {@link Options#TRUE TRUE}.
-     *     <li>{@link Options#DRY_RUN DRY_RUN}: Does a dry-run restoration
-     *         operation.
+     *     <li>{@link Options#DRY_RUN DRY_RUN}: Whether or not to perform a dry
+     *         run of the restoration operation.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
@@ -555,55 +709,74 @@ public class RestoreBackupRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#BACKUP_ID BACKUP_ID}: Backup instance ID to
-     *         restore. Leave empty to restore the most recent backup instance.
-     *         The default value is ''.
+     *     <li>{@link Options#BACKUP_ID BACKUP_ID}: ID of the snapshot to
+     *         restore. Leave empty to restore the most recent snapshot in the
+     *         backup. The default value is ''.
      *     <li>{@link Options#RESTORE_POLICY RESTORE_POLICY}: Behavior to apply
-     *         when restoring objects that already exist.
+     *         when any database object to restore already exists.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#NONE NONE}: If an object to be restored
-     *                 currently exists with the same name, abort and return
-     *                 error
+     *                 already exists with the same name, abort and return
+     *                 error.
      *             <li>{@link Options#REPLACE REPLACE}: If an object to be
-     *                 restored currently exists with the same name, replace it
-     *                 with the backup version
+     *                 restored already exists with the same name, replace it
+     *                 with the backup version.
      *             <li>{@link Options#RENAME RENAME}: If an object to be
-     *                 restored currently exists with the same name, rename the
-     *                 original version
+     *                 restored already exists with the same name, move that
+     *                 existing one to the schema specified by {@link
+     *                 Options#RENAMED_OBJECTS_SCHEMA RENAMED_OBJECTS_SCHEMA}.
      *         </ul>
      *         The default value is {@link Options#NONE NONE}.
      *     <li>{@link Options#RENAMED_OBJECTS_SCHEMA RENAMED_OBJECTS_SCHEMA}:
-     *         If the restore policy is rename, optionally use this schema for
-     *         renamed objects instead of a default generated one. The default
-     *         value is ''.
+     *         If the {@link Options#RESTORE_POLICY RESTORE_POLICY} is {@link
+     *         Options#RENAME RENAME}, use this schema for relocated existing
+     *         objects instead of the default generated one. The default value
+     *         is ''.
      *     <li>{@link Options#CREATE_SCHEMA_IF_NOT_EXIST
-     *         CREATE_SCHEMA_IF_NOT_EXIST}: Create the schema for an object to
-     *         be restored if it does not currently exist. Error otherwise.
+     *         CREATE_SCHEMA_IF_NOT_EXIST}: Behavior to apply when the schema
+     *         containing any database object to restore does not already
+     *         exist.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#FALSE FALSE}
-     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#TRUE TRUE}: If the schema containing any
+     *                 restored object does not exist, create it automatically.
+     *             <li>{@link Options#FALSE FALSE}: If the schema containing
+     *                 any restored object does not exist, return an error.
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
-     *     <li>{@link Options#DDL_ONLY DDL_ONLY}: Only recreates the objects
-     *         from their DDL, do not restore table data.
+     *     <li>{@link Options#REINGEST REINGEST}: Behavior to apply when
+     *         restoring table data.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}: Restore table data by
+     *                 re-ingesting it.  This is the default behavior if the
+     *                 cluster topology differs from that of the contained
+     *                 backup.
+     *             <li>{@link Options#FALSE FALSE}: Restore the persisted data
+     *                 files directly.
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#DDL_ONLY DDL_ONLY}: Behavior to apply when
+     *         restoring tables.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}: Restore table DDL, but do not
+     *                 restore data.
+     *             <li>{@link Options#FALSE FALSE}: Restore tables and their
+     *                 data.
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#CHECKSUM CHECKSUM}: Whether or not to verify
+     *         checksums for backup files when restoring.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#CHECKSUM CHECKSUM}: Verify checksum for backup
-     *         files.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link Options#FALSE FALSE}
-     *             <li>{@link Options#TRUE TRUE}
-     *         </ul>
-     *         The default value is {@link Options#TRUE TRUE}.
-     *     <li>{@link Options#DRY_RUN DRY_RUN}: Does a dry-run restoration
-     *         operation.
+     *     <li>{@link Options#DRY_RUN DRY_RUN}: Whether or not to perform a dry
+     *         run of the restoration operation.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}

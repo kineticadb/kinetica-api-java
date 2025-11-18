@@ -47,14 +47,14 @@ public class AggregateMinMaxResponse implements IndexedRecord {
         /**
          * The minimum value of {@link
          * com.gpudb.protocol.AggregateMinMaxRequest#getColumnName()
-         * columnName} when it is a char type
+         * columnName}, stored as a byte vector.
          */
         public static final String MIN_STRING = "min_string";
 
         /**
          * The maximum value of {@link
          * com.gpudb.protocol.AggregateMinMaxRequest#getColumnName()
-         * columnName} when it is a char type
+         * columnName}, stored as a byte vector
          */
         public static final String MAX_STRING = "max_string";
 
@@ -122,10 +122,10 @@ public class AggregateMinMaxResponse implements IndexedRecord {
      * <ul>
      *     <li>{@link Info#MIN_STRING MIN_STRING}: The minimum value of {@link
      *         com.gpudb.protocol.AggregateMinMaxRequest#getColumnName()
-     *         columnName} when it is a char type
+     *         columnName}, stored as a byte vector.
      *     <li>{@link Info#MAX_STRING MAX_STRING}: The maximum value of {@link
      *         com.gpudb.protocol.AggregateMinMaxRequest#getColumnName()
-     *         columnName} when it is a char type
+     *         columnName}, stored as a byte vector
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -140,10 +140,10 @@ public class AggregateMinMaxResponse implements IndexedRecord {
      * <ul>
      *     <li>{@link Info#MIN_STRING MIN_STRING}: The minimum value of {@link
      *         com.gpudb.protocol.AggregateMinMaxRequest#getColumnName()
-     *         columnName} when it is a char type
+     *         columnName}, stored as a byte vector.
      *     <li>{@link Info#MAX_STRING MAX_STRING}: The maximum value of {@link
      *         com.gpudb.protocol.AggregateMinMaxRequest#getColumnName()
-     *         columnName} when it is a char type
+     *         columnName}, stored as a byte vector
      * </ul>
      * The default value is an empty {@link Map}.
      *

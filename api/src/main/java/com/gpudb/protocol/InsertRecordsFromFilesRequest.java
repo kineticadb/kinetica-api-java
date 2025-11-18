@@ -984,6 +984,18 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String TEXT_SEARCH_MIN_COLUMN_LENGTH = "text_search_min_column_length";
 
         /**
+         * If set to {@link Options#TRUE TRUE}, remove leading or trailing
+         * space from fields.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String TRIM_SPACE = "trim_space";
+
+        /**
          * If set to {@link Options#TRUE TRUE}, truncate string values that are
          * longer than the column's type size.
          * Supported values:
@@ -1863,6 +1875,16 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                         'text_search' property to. Used only when {@link
      *                         Options#TEXT_SEARCH_COLUMNS TEXT_SEARCH_COLUMNS}
      *                         has a value.
+     *                     <li>{@link Options#TRIM_SPACE TRIM_SPACE}: If set to
+     *                         {@link Options#TRUE TRUE}, remove leading or
+     *                         trailing space from fields.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                     <li>{@link Options#TRUNCATE_STRINGS
      *                         TRUNCATE_STRINGS}: If set to {@link Options#TRUE
      *                         TRUE}, truncate string values that are longer
@@ -2758,6 +2780,15 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         strings to apply the 'text_search' property to. Used only when
      *         {@link Options#TEXT_SEARCH_COLUMNS TEXT_SEARCH_COLUMNS} has a
      *         value.
+     *     <li>{@link Options#TRIM_SPACE TRIM_SPACE}: If set to {@link
+     *         Options#TRUE TRUE}, remove leading or trailing space from
+     *         fields.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#TRUNCATE_STRINGS TRUNCATE_STRINGS}: If set to
      *         {@link Options#TRUE TRUE}, truncate string values that are
      *         longer than the column's type size.
@@ -3209,6 +3240,15 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         strings to apply the 'text_search' property to. Used only when
      *         {@link Options#TEXT_SEARCH_COLUMNS TEXT_SEARCH_COLUMNS} has a
      *         value.
+     *     <li>{@link Options#TRIM_SPACE TRIM_SPACE}: If set to {@link
+     *         Options#TRUE TRUE}, remove leading or trailing space from
+     *         fields.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#TRUNCATE_STRINGS TRUNCATE_STRINGS}: If set to
      *         {@link Options#TRUE TRUE}, truncate string values that are
      *         longer than the column's type size.

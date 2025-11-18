@@ -16,8 +16,11 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#alterBackup(AlterBackupRequest) GPUdb.alterBackup}.
  * <p>
- * Alters an existing database backup containing a current snapshot of existing
- * objects.
+ * Alters an existing database <a
+ * href="../../../../../../admin/backup_restore/#database-backup"
+ * target="_top">backup</a>, accessible via the <a
+ * href="../../../../../../concepts/data_sinks/" target="_top">data sink</a>
+ * specified by {@link #getDatasinkName() datasinkName}.
  */
 public class AlterBackupRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -45,31 +48,37 @@ public class AlterBackupRequest implements IndexedRecord {
      * A set of string constants for the {@link AlterBackupRequest} parameter
      * {@link #getAction() action}.
      * <p>
-     * Operation to be applied
+     * Operation to be applied.
      */
     public static final class Action {
         /**
-         * Calculate checksum for backup files
+         * Calculate checksum for backed-up files.
          */
         public static final String CHECKSUM = "checksum";
 
         /**
-         * Only save the DDL, do not backup table data
+         * Whether or not to only save DDL and not back up table data, when
+         * taking future snapshots; set {@link #getValue() value} to 'true' or
+         * 'false' for DDL only or DDL and table data, respectively.
          */
         public static final String DDL_ONLY = "ddl_only";
 
         /**
-         * Maximum number of incremental backups to keep
+         * Maximum number of incremental snapshots to keep, when taking future
+         * snapshots; set {@link #getValue() value} to the number of snapshots
+         * to keep.
          */
         public static final String MAX_INCREMENTAL_BACKUPS_TO_KEEP = "max_incremental_backups_to_keep";
 
         /**
-         * Merges all backup instances and creates a single full backup
+         * Merges all snapshots within a backup and creates a single full
+         * snapshot.
          */
         public static final String MERGE = "merge";
 
         /**
-         * Purges backup instances
+         * Deletes a snapshot from a backup; set {@link #getValue() value} to
+         * the snapshot ID to purge.
          */
         public static final String PURGE = "purge";
 
@@ -84,23 +93,23 @@ public class AlterBackupRequest implements IndexedRecord {
      */
     public static final class Options {
         /**
-         * Comments to store with the new backup instance
+         * Comments to store with the backup.
          */
         public static final String COMMENT = "comment";
 
         /**
-         * Dry run of backup changes.
+         * Whether or not to perform a dry run of a backup alteration.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#FALSE FALSE}
          *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
         public static final String DRY_RUN = "dry_run";
 
-        public static final String FALSE = "false";
         public static final String TRUE = "true";
+        public static final String FALSE = "false";
 
         private Options() {  }
     }
@@ -125,34 +134,41 @@ public class AlterBackupRequest implements IndexedRecord {
     /**
      * Constructs an AlterBackupRequest object with the specified parameters.
      *
-     * @param backupName  Name of the backup object to be altered
+     * @param backupName  Name of the backup to be altered.
      * @param action  Operation to be applied.
      *                Supported values:
      *                <ul>
      *                    <li>{@link Action#CHECKSUM CHECKSUM}: Calculate
-     *                        checksum for backup files
-     *                    <li>{@link Action#DDL_ONLY DDL_ONLY}: Only save the
-     *                        DDL, do not backup table data
+     *                        checksum for backed-up files.
+     *                    <li>{@link Action#DDL_ONLY DDL_ONLY}: Whether or not
+     *                        to only save DDL and not back up table data, when
+     *                        taking future snapshots; set {@code value} to
+     *                        'true' or 'false' for DDL only or DDL and table
+     *                        data, respectively.
      *                    <li>{@link Action#MAX_INCREMENTAL_BACKUPS_TO_KEEP
      *                        MAX_INCREMENTAL_BACKUPS_TO_KEEP}: Maximum number
-     *                        of incremental backups to keep
-     *                    <li>{@link Action#MERGE MERGE}: Merges all backup
-     *                        instances and creates a single full backup
-     *                    <li>{@link Action#PURGE PURGE}: Purges backup
-     *                        instances
+     *                        of incremental snapshots to keep, when taking
+     *                        future snapshots; set {@code value} to the number
+     *                        of snapshots to keep.
+     *                    <li>{@link Action#MERGE MERGE}: Merges all snapshots
+     *                        within a backup and creates a single full
+     *                        snapshot.
+     *                    <li>{@link Action#PURGE PURGE}: Deletes a snapshot
+     *                        from a backup; set {@code value} to the snapshot
+     *                        ID to purge.
      *                </ul>
-     * @param value  Action specific argument.
-     * @param datasinkName  Datasink where backup will be stored.
+     * @param value  Value of the modification, depending on {@code action}.
+     * @param datasinkName  Data sink through which the backup is accessible.
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link Options#COMMENT COMMENT}: Comments to
-     *                         store with the new backup instance
-     *                     <li>{@link Options#DRY_RUN DRY_RUN}: Dry run of
-     *                         backup changes.
+     *                         store with the backup.
+     *                     <li>{@link Options#DRY_RUN DRY_RUN}: Whether or not
+     *                         to perform a dry run of a backup alteration.
      *                         Supported values:
      *                         <ul>
-     *                             <li>{@link Options#FALSE FALSE}
      *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
@@ -168,7 +184,7 @@ public class AlterBackupRequest implements IndexedRecord {
     }
 
     /**
-     * Name of the backup object to be altered
+     * Name of the backup to be altered.
      *
      * @return The current value of {@code backupName}.
      */
@@ -177,7 +193,7 @@ public class AlterBackupRequest implements IndexedRecord {
     }
 
     /**
-     * Name of the backup object to be altered
+     * Name of the backup to be altered.
      *
      * @param backupName  The new value for {@code backupName}.
      *
@@ -192,16 +208,20 @@ public class AlterBackupRequest implements IndexedRecord {
      * Operation to be applied.
      * Supported values:
      * <ul>
-     *     <li>{@link Action#CHECKSUM CHECKSUM}: Calculate checksum for backup
-     *         files
-     *     <li>{@link Action#DDL_ONLY DDL_ONLY}: Only save the DDL, do not
-     *         backup table data
+     *     <li>{@link Action#CHECKSUM CHECKSUM}: Calculate checksum for
+     *         backed-up files.
+     *     <li>{@link Action#DDL_ONLY DDL_ONLY}: Whether or not to only save
+     *         DDL and not back up table data, when taking future snapshots;
+     *         set {@link #getValue() value} to 'true' or 'false' for DDL only
+     *         or DDL and table data, respectively.
      *     <li>{@link Action#MAX_INCREMENTAL_BACKUPS_TO_KEEP
      *         MAX_INCREMENTAL_BACKUPS_TO_KEEP}: Maximum number of incremental
-     *         backups to keep
-     *     <li>{@link Action#MERGE MERGE}: Merges all backup instances and
-     *         creates a single full backup
-     *     <li>{@link Action#PURGE PURGE}: Purges backup instances
+     *         snapshots to keep, when taking future snapshots; set {@link
+     *         #getValue() value} to the number of snapshots to keep.
+     *     <li>{@link Action#MERGE MERGE}: Merges all snapshots within a backup
+     *         and creates a single full snapshot.
+     *     <li>{@link Action#PURGE PURGE}: Deletes a snapshot from a backup;
+     *         set {@link #getValue() value} to the snapshot ID to purge.
      * </ul>
      *
      * @return The current value of {@code action}.
@@ -214,16 +234,20 @@ public class AlterBackupRequest implements IndexedRecord {
      * Operation to be applied.
      * Supported values:
      * <ul>
-     *     <li>{@link Action#CHECKSUM CHECKSUM}: Calculate checksum for backup
-     *         files
-     *     <li>{@link Action#DDL_ONLY DDL_ONLY}: Only save the DDL, do not
-     *         backup table data
+     *     <li>{@link Action#CHECKSUM CHECKSUM}: Calculate checksum for
+     *         backed-up files.
+     *     <li>{@link Action#DDL_ONLY DDL_ONLY}: Whether or not to only save
+     *         DDL and not back up table data, when taking future snapshots;
+     *         set {@link #getValue() value} to 'true' or 'false' for DDL only
+     *         or DDL and table data, respectively.
      *     <li>{@link Action#MAX_INCREMENTAL_BACKUPS_TO_KEEP
      *         MAX_INCREMENTAL_BACKUPS_TO_KEEP}: Maximum number of incremental
-     *         backups to keep
-     *     <li>{@link Action#MERGE MERGE}: Merges all backup instances and
-     *         creates a single full backup
-     *     <li>{@link Action#PURGE PURGE}: Purges backup instances
+     *         snapshots to keep, when taking future snapshots; set {@link
+     *         #getValue() value} to the number of snapshots to keep.
+     *     <li>{@link Action#MERGE MERGE}: Merges all snapshots within a backup
+     *         and creates a single full snapshot.
+     *     <li>{@link Action#PURGE PURGE}: Deletes a snapshot from a backup;
+     *         set {@link #getValue() value} to the snapshot ID to purge.
      * </ul>
      *
      * @param action  The new value for {@code action}.
@@ -236,7 +260,7 @@ public class AlterBackupRequest implements IndexedRecord {
     }
 
     /**
-     * Action specific argument.
+     * Value of the modification, depending on {@link #getAction() action}.
      *
      * @return The current value of {@code value}.
      */
@@ -245,7 +269,7 @@ public class AlterBackupRequest implements IndexedRecord {
     }
 
     /**
-     * Action specific argument.
+     * Value of the modification, depending on {@link #getAction() action}.
      *
      * @param value  The new value for {@code value}.
      *
@@ -257,7 +281,7 @@ public class AlterBackupRequest implements IndexedRecord {
     }
 
     /**
-     * Datasink where backup will be stored.
+     * Data sink through which the backup is accessible.
      *
      * @return The current value of {@code datasinkName}.
      */
@@ -266,7 +290,7 @@ public class AlterBackupRequest implements IndexedRecord {
     }
 
     /**
-     * Datasink where backup will be stored.
+     * Data sink through which the backup is accessible.
      *
      * @param datasinkName  The new value for {@code datasinkName}.
      *
@@ -280,13 +304,14 @@ public class AlterBackupRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#COMMENT COMMENT}: Comments to store with the new
-     *         backup instance
-     *     <li>{@link Options#DRY_RUN DRY_RUN}: Dry run of backup changes.
+     *     <li>{@link Options#COMMENT COMMENT}: Comments to store with the
+     *         backup.
+     *     <li>{@link Options#DRY_RUN DRY_RUN}: Whether or not to perform a dry
+     *         run of a backup alteration.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#FALSE FALSE}
      *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      * </ul>
@@ -301,13 +326,14 @@ public class AlterBackupRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#COMMENT COMMENT}: Comments to store with the new
-     *         backup instance
-     *     <li>{@link Options#DRY_RUN DRY_RUN}: Dry run of backup changes.
+     *     <li>{@link Options#COMMENT COMMENT}: Comments to store with the
+     *         backup.
+     *     <li>{@link Options#DRY_RUN DRY_RUN}: Whether or not to perform a dry
+     *         run of a backup alteration.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#FALSE FALSE}
      *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      * </ul>

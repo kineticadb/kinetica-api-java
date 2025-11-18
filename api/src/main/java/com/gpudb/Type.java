@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +18,9 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.Schema.Field;
@@ -41,8 +46,64 @@ public final class Type implements Serializable {
         private static final long serialVersionUID = 1L;
 
         /**
+         * Converts a value ({@link BigDecimal} | {@link Double} | {@link Float} | {@link String} | {@link Number})
+         * to a {@link String} value
+         *
+         * @param value - the value to convert
+         * @param scale - the decimal scale to use
+         * @return - a {@link String} value for the input decimal value suitably scaled
+         */
+        static String convertDecimalValue(Object value, int scale) {
+            String result = null;
+            BigDecimal bd;
+
+            if ( value instanceof String) {
+                result = (String) value;
+            } else if (value != null) {
+                if (value instanceof BigDecimal) {
+                    bd = (BigDecimal) value;
+                } else if (value instanceof Double) {
+                    bd = BigDecimal.valueOf((Double) value);
+                } else if (value instanceof Float) {
+                    bd = BigDecimal.valueOf((Float) value);
+                } else if (value instanceof Number) {
+                    // Handle primitive wrappers (double, float) and other Number types
+                    bd = new BigDecimal(value.toString());
+                } else {
+                    throw new IllegalArgumentException(
+                            "Unsupported type: " + value.getClass().getName() +
+                                    ". Expected Double, Float, or BigDecimal."
+                    );
+                }
+                bd = bd.setScale(scale, RoundingMode.UNNECESSARY);
+                result = bd.toPlainString().replaceAll("0+$", "");
+            }
+
+            return result;
+        }
+
+        /** Converts a ({@link Boolean} | {@link Number} etc) to a {#boolean} value
+         * @param value - the {@link Object} to boolean
+         * @return - a Boolean value
+         */
+        static Boolean convertBooleanValue(Object value) {
+            Boolean result = null;
+            if (value != null) {
+                if (value instanceof Boolean) {
+                    result = (Boolean) value;
+                } else if (value instanceof Number) {
+                    result = ((Number) value).intValue() != 0;
+                } else {
+                    result = Boolean.parseBoolean(value.toString());
+                }
+            }
+            return result;
+        }
+
+
+        /**
          * An enumeration of base types for column (excluding
-         * any property-related subtypes).  This is synonimous
+         * any property-related subtypes).  This is synonymous
          * to using the Class type for the column, but the enumeration
          * provides the ability to use switches instead of if statements
          * for checking which type the column is.
@@ -103,6 +164,12 @@ public final class Type implements Serializable {
             WKB
         }
 
+        public static final int DEFAULT_DECIMAL_PRECISION = 18;
+        public static final int DEFAULT_DECIMAL_SCALE = 4;
+        public static final BigDecimal DEFAULT_DECIMAL_MIN = new BigDecimal(Long.MIN_VALUE).movePointLeft(DEFAULT_DECIMAL_SCALE);
+        public static final BigDecimal DEFAULT_DECIMAL_MAX = new BigDecimal(Long.MAX_VALUE).movePointLeft(DEFAULT_DECIMAL_SCALE);
+        public static final int DECIMAL8_MAX_PRECISION = 18;
+        private static final Pattern decimalPattern = Pattern.compile(ColumnProperty.DECIMAL + "\\((\\d+),(\\d+)\\)");
 
         private transient String name;
         private transient Class<?> type;
@@ -110,6 +177,8 @@ public final class Type implements Serializable {
         private transient List<String> properties;
         private transient ColumnType columnType;
         private transient ColumnBaseType columnBaseType;
+        private transient int precision;
+        private transient int scale;
 
         /**
          * Creates a {@link Column} object with the specified metadata.
@@ -148,7 +217,7 @@ public final class Type implements Serializable {
         public Column(String name, Class<?> type, List<String> properties) {
             this.name = name;
             this.type = type;
-            this.properties = properties == null ? new ArrayList<String>() : new ArrayList<String>(properties);
+            this.properties = properties == null ? new ArrayList<>() : new ArrayList<>(properties);
             init();
         }
 
@@ -156,7 +225,7 @@ public final class Type implements Serializable {
             this.name = (String)stream.readObject();
             this.type = (Class<?>)stream.readObject();
             int propertyCount = stream.readInt();
-            this.properties = new ArrayList<String>(propertyCount);
+            this.properties = new ArrayList<>(propertyCount);
 
             for (int i = 0; i < propertyCount; i++) {
                 this.properties.add((String)stream.readObject());
@@ -166,27 +235,42 @@ public final class Type implements Serializable {
         }
 
         private void writeObject(ObjectOutputStream stream) throws IOException {
-            stream.writeObject(name);
-            stream.writeObject(type);
-            stream.writeInt(properties.size());
+            stream.writeObject(this.name);
+            stream.writeObject(this.type);
+            stream.writeInt(this.properties.size());
 
-            for (String property : properties) {
+            for (String property : this.properties) {
                 stream.writeObject(property);
             }
         }
 
+        private void setDecimalInfo(String propLower) {
+            /**
+             * Find precision and scale from a decimal(x,y) property.
+             */
+            Matcher matcher = decimalPattern.matcher(propLower);
+
+            if (matcher.matches()) {
+                this.precision = Integer.parseInt(matcher.group(1));
+                this.scale = Integer.parseInt(matcher.group(2));
+            } else {
+                this.precision = DEFAULT_DECIMAL_PRECISION;
+                this.scale = DEFAULT_DECIMAL_SCALE;
+            }
+        }
+
         private void init() {
-            if (name.isEmpty()) {
+            if (this.name.isEmpty()) {
                 throw new IllegalArgumentException("Name must not be empty.");
             }
 
-            if (type != ByteBuffer.class && type != Double.class
-                    && type != Float.class && type != Integer.class
-                    && type != Long.class && type != String.class) {
-                throw new IllegalArgumentException("Column " + name + " must be of type ByteBuffer, Double, Float, Integer, Long or String.");
+            if (this.type != ByteBuffer.class && this.type != Double.class
+                    && this.type != Float.class && this.type != Integer.class
+                    && this.type != Long.class && this.type != String.class) {
+                throw new IllegalArgumentException("Column " + this.name + " must be of type ByteBuffer, Double, Float, Integer, Long or String.");
             }
 
-            for (String property : properties) {
+            for (String property : this.properties) {
                 if (property == null) {
                     throw new IllegalArgumentException("Properties must not be null.");
                 }
@@ -195,94 +279,96 @@ public final class Type implements Serializable {
                     throw new IllegalArgumentException("Properties must not be empty.");
                 }
 
-                if (!isNullable && property.equals(ColumnProperty.NULLABLE)) {
-                    isNullable = true;
+                if (!this.isNullable && property.equals(ColumnProperty.NULLABLE)) {
+                    this.isNullable = true;
                 }
             }
 
-            properties = Collections.unmodifiableList(properties);
+            this.properties = Collections.unmodifiableList(this.properties);
 
             // Set the column type enumerations
             // --------------------------------
             // First the base types
-            if( type == Integer.class) {
-                columnType = ColumnType.INTEGER;
-                columnBaseType = ColumnBaseType.INTEGER;
-            } else if( type == Long.class) {
-                columnType = ColumnType.LONG;
-                columnBaseType = ColumnBaseType.LONG;
-            } else if( type == Double.class) {
-                columnType = ColumnType.DOUBLE;
-                columnBaseType = ColumnBaseType.DOUBLE;
-            } else if( type == Float.class) {
-                columnType = ColumnType.FLOAT;
-                columnBaseType = ColumnBaseType.FLOAT;
-            } else if( type == String.class ) {
-                columnType = ColumnType.STRING;
-                columnBaseType = ColumnBaseType.STRING;
-            } else if( type == ByteBuffer.class ) {
-                columnType = ColumnType.BYTES;
-                columnBaseType = ColumnBaseType.BYTES;
+            if( this.type == Integer.class) {
+                this.columnType = ColumnType.INTEGER;
+                this.columnBaseType = ColumnBaseType.INTEGER;
+            } else if( this.type == Long.class) {
+                this.columnType = ColumnType.LONG;
+                this.columnBaseType = ColumnBaseType.LONG;
+            } else if( this.type == Double.class) {
+                this.columnType = ColumnType.DOUBLE;
+                this.columnBaseType = ColumnBaseType.DOUBLE;
+            } else if( this.type == Float.class) {
+                this.columnType = ColumnType.FLOAT;
+                this.columnBaseType = ColumnBaseType.FLOAT;
+            } else if( this.type == String.class ) {
+                this.columnType = ColumnType.STRING;
+                this.columnBaseType = ColumnBaseType.STRING;
+            } else if( this.type == ByteBuffer.class ) {
+                this.columnType = ColumnType.BYTES;
+                this.columnBaseType = ColumnBaseType.BYTES;
             }
             // Then, any sub-type based on properties
-            if ( properties.contains( ColumnProperty.BOOLEAN ) ) {
-                columnType = ColumnType.BOOLEAN;
-            } else if ( properties.contains( ColumnProperty.INT8 ) ) {
-                columnType = ColumnType.INT8;
-            } else if ( properties.contains( ColumnProperty.INT16 ) ) {
-                columnType = ColumnType.INT16;
-            } else if ( properties.contains( ColumnProperty.TIMESTAMP ) ) {
-                columnType = ColumnType.TIMESTAMP;
-            } else if ( properties.contains( ColumnProperty.DECIMAL ) ) {
-                columnType = ColumnType.DECIMAL;
-            } else if ( properties.contains( ColumnProperty.DATE ) ) {
-                columnType = ColumnType.DATE;
-            } else if ( properties.contains( ColumnProperty.TIME ) ) {
-                columnType = ColumnType.TIME;
-            } else if ( properties.contains( ColumnProperty.DATETIME ) ) {
-                columnType = ColumnType.DATETIME;
-            } else if ( properties.contains( ColumnProperty.CHAR1 ) ) {
-                columnType = ColumnType.CHAR1;
-            } else if ( properties.contains( ColumnProperty.CHAR2 ) ) {
-                columnType = ColumnType.CHAR2;
-            } else if ( properties.contains( ColumnProperty.CHAR4 ) ) {
-                columnType = ColumnType.CHAR4;
-            } else if ( properties.contains( ColumnProperty.CHAR8 ) ) {
-                columnType = ColumnType.CHAR8;
-            } else if ( properties.contains( ColumnProperty.CHAR16 ) ) {
-                columnType = ColumnType.CHAR16;
-            } else if ( properties.contains( ColumnProperty.CHAR32 ) ) {
-                columnType = ColumnType.CHAR32;
-            } else if ( properties.contains( ColumnProperty.CHAR64 ) ) {
-                columnType = ColumnType.CHAR64;
-            } else if ( properties.contains( ColumnProperty.CHAR128 ) ) {
-                columnType = ColumnType.CHAR128;
-            } else if ( properties.contains( ColumnProperty.CHAR256 ) ) {
-                columnType = ColumnType.CHAR256;
-            } else if ( properties.contains( ColumnProperty.IPV4 ) ) {
-                columnType = ColumnType.IPV4;
-            } else if ( properties.contains( ColumnProperty.JSON ) ) {
-                columnType = ColumnType.JSON;
-            } else if ( properties.contains( ColumnProperty.ULONG ) ) {
-                columnType = ColumnType.ULONG;
-            } else if ( properties.contains( ColumnProperty.UUID ) ) {
-                columnType = ColumnType.UUID;
-            } else if ( properties.contains( ColumnProperty.WKT ) ) {
+            if ( this.properties.contains( ColumnProperty.BOOLEAN ) ) {
+                this.columnType = ColumnType.BOOLEAN;
+            } else if ( this.properties.contains( ColumnProperty.INT8 ) ) {
+                this.columnType = ColumnType.INT8;
+            } else if ( this.properties.contains( ColumnProperty.INT16 ) ) {
+                this.columnType = ColumnType.INT16;
+            } else if ( this.properties.contains( ColumnProperty.TIMESTAMP ) ) {
+                this.columnType = ColumnType.TIMESTAMP;
+            } else if ( this.properties.contains( ColumnProperty.DATE ) ) {
+                this.columnType = ColumnType.DATE;
+            } else if ( this.properties.contains( ColumnProperty.TIME ) ) {
+                this.columnType = ColumnType.TIME;
+            } else if ( this.properties.contains( ColumnProperty.DATETIME ) ) {
+                this.columnType = ColumnType.DATETIME;
+            } else if ( this.properties.contains( ColumnProperty.CHAR1 ) ) {
+                this.columnType = ColumnType.CHAR1;
+            } else if ( this.properties.contains( ColumnProperty.CHAR2 ) ) {
+                this.columnType = ColumnType.CHAR2;
+            } else if ( this.properties.contains( ColumnProperty.CHAR4 ) ) {
+                this.columnType = ColumnType.CHAR4;
+            } else if ( this.properties.contains( ColumnProperty.CHAR8 ) ) {
+                this.columnType = ColumnType.CHAR8;
+            } else if ( this.properties.contains( ColumnProperty.CHAR16 ) ) {
+                this.columnType = ColumnType.CHAR16;
+            } else if ( this.properties.contains( ColumnProperty.CHAR32 ) ) {
+                this.columnType = ColumnType.CHAR32;
+            } else if ( this.properties.contains( ColumnProperty.CHAR64 ) ) {
+                this.columnType = ColumnType.CHAR64;
+            } else if ( this.properties.contains( ColumnProperty.CHAR128 ) ) {
+                this.columnType = ColumnType.CHAR128;
+            } else if ( this.properties.contains( ColumnProperty.CHAR256 ) ) {
+                this.columnType = ColumnType.CHAR256;
+            } else if ( this.properties.contains( ColumnProperty.IPV4 ) ) {
+                this.columnType = ColumnType.IPV4;
+            } else if ( this.properties.contains( ColumnProperty.JSON ) ) {
+                this.columnType = ColumnType.JSON;
+            } else if ( this.properties.contains( ColumnProperty.ULONG ) ) {
+                this.columnType = ColumnType.ULONG;
+            } else if ( this.properties.contains( ColumnProperty.UUID ) ) {
+                this.columnType = ColumnType.UUID;
+            } else if ( this.properties.contains( ColumnProperty.WKT ) ) {
                 // Decide if it's WKT or WKB based on the base type
-                if ( columnType == ColumnType.STRING ) {
-                    columnType = ColumnType.WKT;
-                } else if ( columnType == ColumnType.BYTES ) {
-                    columnType = ColumnType.WKB;
+                if ( this.columnType == ColumnType.STRING ) {
+                    this.columnType = ColumnType.WKT;
+                } else if ( this.columnType == ColumnType.BYTES ) {
+                    this.columnType = ColumnType.WKB;
                 }
             } else {
                 // Need to look through the properties list for startsWith Array or Vector
-                for (String prop : properties)
+                for (String prop : this.properties)
                 {
                     if (prop.startsWith(ColumnProperty.ARRAY)) {
-                        columnType = ColumnType.ARRAY;
+                        this.columnType = ColumnType.ARRAY;
                         break;
                     } else if (prop.startsWith(ColumnProperty.VECTOR)) {
-                        columnType = ColumnType.VECTOR;
+                        this.columnType = ColumnType.VECTOR;
+                        break;
+                    } else if (prop.startsWith(ColumnProperty.DECIMAL)) {
+                        this.columnType = ColumnType.DECIMAL;
+                        setDecimalInfo(prop.toLowerCase());
                         break;
                     }
                 }
@@ -296,7 +382,7 @@ public final class Type implements Serializable {
          * @return  the name of the column
          */
         public String getName() {
-            return name;
+            return this.name;
         }
 
         /**
@@ -305,7 +391,7 @@ public final class Type implements Serializable {
          * @return  the Java data type of the column
          */
         public Class<?> getType() {
-            return type;
+            return this.type;
         }
 
         /**
@@ -323,7 +409,7 @@ public final class Type implements Serializable {
          * @return  the enumeration representing the *base* type of the column
          */
         public ColumnBaseType getColumnBaseType() {
-            return columnBaseType;
+            return this.columnBaseType;
         }
 
         /**
@@ -336,7 +422,19 @@ public final class Type implements Serializable {
          * @return  the enumeration representing the type of the column
          */
         public ColumnType getColumnType() {
-            return columnType;
+            return this.columnType;
+        }
+
+        public boolean isDecimal() {
+            return this.columnType == ColumnType.DECIMAL;
+        }
+
+        public int getDecimalPrecision() {
+            return this.precision;
+        }
+
+        public int getDecimalScale() {
+            return this.scale;
         }
 
         /**
@@ -345,7 +443,7 @@ public final class Type implements Serializable {
          * @return  whether the column is nullable
          */
         public boolean isNullable() {
-            return isNullable;
+            return this.isNullable;
         }
 
         /**
@@ -401,7 +499,7 @@ public final class Type implements Serializable {
                 }
             }
 
-            return null; //throw new GPUdbException("No array type found");
+            return null;
         }
 
         /**
@@ -412,7 +510,7 @@ public final class Type implements Serializable {
          * @see ColumnProperty
          */
         public List<String> getProperties() {
-            return properties;
+            return this.properties;
         }
 
         /**
@@ -463,7 +561,7 @@ public final class Type implements Serializable {
         public boolean hasProperty( String property ) {
             if (property == null)
                 return false;
-            return properties.contains( property );
+            return this.properties.contains( property );
         }
 
         @Override
@@ -485,7 +583,7 @@ public final class Type implements Serializable {
 
         @Override
         public int hashCode() {
-            return (name.hashCode() * 31 + type.hashCode()) * 31 + properties.hashCode();
+            return (this.name.hashCode() * 31 + this.type.hashCode()) * 31 + this.properties.hashCode();
         }
 
         @Override
@@ -493,12 +591,12 @@ public final class Type implements Serializable {
             GenericData gd = GenericData.get();
             StringBuilder builder = new StringBuilder();
             builder.append("{");
-            builder.append("\"name\":").append(gd.toString(name)).append(",");
-            builder.append("\"type\":\"").append(type.getSimpleName()).append("\",");
+            builder.append("\"name\":").append(gd.toString(this.name)).append(",");
+            builder.append("\"type\":\"").append(this.type.getSimpleName()).append("\",");
             builder.append("\"properties\":[");
             boolean output = false;
 
-            for (String property : properties) {
+            for (String property : this.properties) {
                 if (output) {
                     builder.append(",");
                 }
@@ -594,7 +692,7 @@ public final class Type implements Serializable {
 
         IndexedRecord data = Avro.decode(schema, encodedData);
 
-        // The schema string will have, in addtion to the dynamically generated records' type,
+        // The schema string will have, in addition to the dynamically generated records' type,
         // two more fields ('column_headers' and 'column_datatypes')
         int fieldCount = schema.getFields().size() - 2;
         // The field/expression names are stored in the second to last element
@@ -819,7 +917,7 @@ public final class Type implements Serializable {
      */
     public Type(String label, List<Column> columns) {
         this.label = label;
-        this.columns = columns == null ? new ArrayList<Column>() : new ArrayList<Column>(columns);
+        this.columns = columns == null ? new ArrayList<>() : new ArrayList<>(columns);
         init();
     }
 
@@ -836,33 +934,33 @@ public final class Type implements Serializable {
     }
 
     private void writeObject(ObjectOutputStream stream) throws IOException {
-        stream.writeObject(label);
-        stream.writeInt(columns.size());
+        stream.writeObject(this.label);
+        stream.writeInt(this.columns.size());
 
-        for (Column column : columns) {
+        for (Column column : this.columns) {
             stream.writeObject(column);
         }
     }
 
     private void init() {
-        if (columns.isEmpty()) {
+        if (this.columns.isEmpty()) {
             throw new IllegalArgumentException("At least one column must be specified.");
         }
 
-        columnMap = new HashMap<>();
+        this.columnMap = new HashMap<>();
 
-        for (int i = 0; i < columns.size(); i++) {
-            Column column = columns.get(i);
+        for (int i = 0; i < this.columns.size(); i++) {
+            Column column = this.columns.get(i);
             String columnName = column.getName();
 
-            if (columnMap.containsKey(columnName)) {
+            if (this.columnMap.containsKey(columnName)) {
                 throw new IllegalArgumentException("Duplicate column name " + columnName+ " specified.");
             }
 
-            columnMap.put(columnName, i);
+            this.columnMap.put(columnName, i);
         }
 
-        columns = Collections.unmodifiableList(columns);
+        this.columns = Collections.unmodifiableList(this.columns);
         createSchema();
     }
 
@@ -896,8 +994,8 @@ public final class Type implements Serializable {
      */
     public Type(String label, String typeSchema, Map<String, List<String>> properties) {
         this.label = label;
-        columns = new ArrayList<>();
-        columnMap = new HashMap<>();
+        this.columns = new ArrayList<>();
+        this.columnMap = new HashMap<>();
         JsonNode root;
 
         try {
@@ -914,7 +1012,7 @@ public final class Type implements Serializable {
 
         JsonNode fields = root.get("fields");
 
-        if (fields == null || !fields.isArray() || fields.size() == 0) {
+        if (fields == null || !fields.isArray() || fields.isEmpty()) {
             throw new IllegalArgumentException("Schema has no fields.");
         }
 
@@ -935,7 +1033,7 @@ public final class Type implements Serializable {
 
             String columnName = fieldName.textValue();
 
-            if (columnMap.containsKey(columnName)) {
+            if (this.columnMap.containsKey(columnName)) {
                  throw new IllegalArgumentException("Duplicate field name " + columnName + ".");
             }
 
@@ -1026,21 +1124,21 @@ public final class Type implements Serializable {
                 }
             }
 
-            columns.add(new Column(columnName, columnType, columnProperties));
-            columnMap.put(columnName, columns.size() - 1);
+            this.columns.add(new Column(columnName, columnType, columnProperties));
+            this.columnMap.put(columnName, this.columns.size() - 1);
         }
 
-        columns = Collections.unmodifiableList(columns);
+        this.columns = Collections.unmodifiableList(this.columns);
         createSchema();
     }
 
     private void createSchema() {
-        schema = Schema.createRecord("type_name", null, null, false);
+        this.schema = Schema.createRecord("type_name", null, null, false);
         List<Field> fields = new ArrayList<>();
         HashSet<String> fieldNames = new HashSet<>();
 
-        for (int i = 0; i < columns.size(); i++) {
-            Column column = columns.get(i);
+        for (int i = 0; i < this.columns.size(); i++) {
+            Column column = this.columns.get(i);
             String columnName = column.getName();
             StringBuilder fieldNameBuilder = new StringBuilder(columnName);
 
@@ -1059,7 +1157,7 @@ public final class Type implements Serializable {
 
             for (int n = 1; ; n++) {
                 fieldName = fieldNameBuilder.toString() + (n > 1 ? "_" + n : "");
-                Integer columnIndex = columnMap.get(fieldName);
+                Integer columnIndex = this.columnMap.get(fieldName);
 
                 if ((columnIndex == null || columnIndex == i)
                         && !fieldNames.contains(fieldName)) {
@@ -1095,7 +1193,7 @@ public final class Type implements Serializable {
             fieldNames.add(fieldName);
         }
 
-        schema.setFields(fields);
+        this.schema.setFields(fields);
     }
 
     /**
@@ -1105,7 +1203,7 @@ public final class Type implements Serializable {
      * @return  the label string
      */
     public String getLabel() {
-        return label;
+        return this.label;
     }
 
     /**
@@ -1114,7 +1212,7 @@ public final class Type implements Serializable {
      * @return  the list of columns that the type comprises
      */
     public List<Column> getColumns() {
-        return columns;
+        return this.columns;
     }
 
     /**
@@ -1126,7 +1224,7 @@ public final class Type implements Serializable {
      * @throws IndexOutOfBoundsException if the specified index is out of range
      */
     public Column getColumn(int index) {
-        return columns.get(index);
+        return this.columns.get(index);
     }
 
     /**
@@ -1137,8 +1235,8 @@ public final class Type implements Serializable {
      *              column exists
      */
     public Column getColumn(String name) {
-        Integer index = columnMap.get(name);
-        return index == null ? null : columns.get(index);
+        Integer index = this.columnMap.get(name);
+        return index == null ? null : this.columns.get(index);
     }
 
     /**
@@ -1147,7 +1245,7 @@ public final class Type implements Serializable {
      * @return  the number of columns
      */
     public int getColumnCount() {
-        return columns.size();
+        return this.columns.size();
     }
 
     /**
@@ -1158,7 +1256,7 @@ public final class Type implements Serializable {
      *              such column exists
      */
     public int getColumnIndex(String name) {
-        Integer result = columnMap.get(name);
+        Integer result = this.columnMap.get(name);
         return result == null ? -1 : result;
     }
 
@@ -1171,7 +1269,7 @@ public final class Type implements Serializable {
      * @throws IllegalArgumentException if column name does not exist
      */
     int getColumnIndexOrThrow(String name) throws IllegalArgumentException {
-        Integer result = columnMap.get(name);
+        Integer result = this.columnMap.get(name);
 
         if (result == null)
             throw new IllegalArgumentException("Field '" + name + "'' does not exist.");
@@ -1185,7 +1283,7 @@ public final class Type implements Serializable {
      * @return  the Avro record schema for the type
      */
     public Schema getSchema() {
-        return schema;
+        return this.schema;
     }
 
     /**
@@ -1215,7 +1313,7 @@ public final class Type implements Serializable {
         ArrayNode fields = MAPPER.createArrayNode();
         LinkedHashMap<String, List<String>> properties = new LinkedHashMap<>();
 
-        for (Column column : columns) {
+        for (Column column : this.columns) {
             ObjectNode field = MAPPER.createObjectNode();
             String columnName = column.getName();
             field.put("name", columnName);
@@ -1243,7 +1341,7 @@ public final class Type implements Serializable {
                 ArrayNode fieldArray = MAPPER.createArrayNode();
                 fieldArray.add(columnTypeString);
                 fieldArray.add("null");
-                field.put("type", fieldArray);
+                field.set("type", fieldArray);
             }
             else
             {
@@ -1259,8 +1357,8 @@ public final class Type implements Serializable {
             }
         }
 
-        root.put("fields", fields);
-        return gpudb.createType(root.toString(), label, properties, null).getTypeId();
+        root.set("fields", fields);
+        return gpudb.createType(root.toString(), this.label, properties, null).getTypeId();
     }
 
     @Override
@@ -1281,7 +1379,7 @@ public final class Type implements Serializable {
 
     @Override
     public int hashCode() {
-        return label.hashCode() * 31 + columns.hashCode();
+        return this.label.hashCode() * 31 + this.columns.hashCode();
     }
 
     @Override
@@ -1289,11 +1387,11 @@ public final class Type implements Serializable {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append("{");
-        builder.append("\"label\":").append(gd.toString(label)).append(",");
+        builder.append("\"label\":").append(gd.toString(this.label)).append(",");
         builder.append("\"columns\":[");
         boolean output = false;
 
-        for (Column column : columns) {
+        for (Column column : this.columns) {
             if (output) {
                 builder.append(",");
             }

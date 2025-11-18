@@ -92,17 +92,6 @@ public class CreateJoinTableRequest implements IndexedRecord {
         public static final String MAX_QUERY_DIMENSIONS = "max_query_dimensions";
 
         /**
-         * Use more memory to speed up the joining of tables.
-         * Supported values:
-         * <ul>
-         *     <li>{@link Options#TRUE TRUE}
-         *     <li>{@link Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link Options#FALSE FALSE}.
-         */
-        public static final String OPTIMIZE_LOOKUPS = "optimize_lookups";
-
-        /**
          * The <a href="../../../../../../rm/concepts/#tier-strategies"
          * target="_top">tier strategy</a> for the table and its columns.
          */
@@ -265,16 +254,6 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                         automatically created. The default value is ''.
      *                     <li>{@link Options#MAX_QUERY_DIMENSIONS
      *                         MAX_QUERY_DIMENSIONS}: No longer used.
-     *                     <li>{@link Options#OPTIMIZE_LOOKUPS
-     *                         OPTIMIZE_LOOKUPS}: Use more memory to speed up
-     *                         the joining of tables.
-     *                         Supported values:
-     *                         <ul>
-     *                             <li>{@link Options#TRUE TRUE}
-     *                             <li>{@link Options#FALSE FALSE}
-     *                         </ul>
-     *                         The default value is {@link Options#FALSE
-     *                         FALSE}.
      *                     <li>{@link Options#STRATEGY_DEFINITION
      *                         STRATEGY_DEFINITION}: The <a
      *                         href="../../../../../../rm/concepts/#tier-strategies"
@@ -496,14 +475,6 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         be automatically created. The default value is ''.
      *     <li>{@link Options#MAX_QUERY_DIMENSIONS MAX_QUERY_DIMENSIONS}: No
      *         longer used.
-     *     <li>{@link Options#OPTIMIZE_LOOKUPS OPTIMIZE_LOOKUPS}: Use more
-     *         memory to speed up the joining of tables.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#STRATEGY_DEFINITION STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
@@ -584,14 +555,6 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         be automatically created. The default value is ''.
      *     <li>{@link Options#MAX_QUERY_DIMENSIONS MAX_QUERY_DIMENSIONS}: No
      *         longer used.
-     *     <li>{@link Options#OPTIMIZE_LOOKUPS OPTIMIZE_LOOKUPS}: Use more
-     *         memory to speed up the joining of tables.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#STRATEGY_DEFINITION STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.

@@ -16,7 +16,12 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#createBackup(CreateBackupRequest) GPUdb.createBackup}.
  * <p>
- * Creates a database backup containing a current snapshot of existing objects.
+ * Creates a database <a
+ * href="../../../../../../admin/backup_restore/#database-backup"
+ * target="_top">backup</a>, containing a snapshot of existing objects, at the
+ * remote file store accessible via the <a
+ * href="../../../../../../concepts/data_sinks/" target="_top">data sink</a>
+ * specified by {@link #getDatasinkName() datasinkName}.
  */
 public class CreateBackupRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -44,11 +49,24 @@ public class CreateBackupRequest implements IndexedRecord {
      * A set of string constants for the {@link CreateBackupRequest} parameter
      * {@link #getBackupType() backupType}.
      * <p>
-     * Type of backup to create
+     * Type of snapshot to create.
      */
     public static final class BackupType {
+        /**
+         * Snapshot of changes in the database objects & data since the last
+         * snapshot of any kind.
+         */
         public static final String INCREMENTAL = "incremental";
+
+        /**
+         * Snapshot of changes in the database objects & data since the last
+         * full snapshot.
+         */
         public static final String DIFFERENTIAL = "differential";
+
+        /**
+         * Snapshot of the given database objects and data.
+         */
         public static final String FULL = "full";
 
         private BackupType() {  }
@@ -58,78 +76,94 @@ public class CreateBackupRequest implements IndexedRecord {
      * A set of string constants for the {@link CreateBackupRequest} parameter
      * {@link #getBackupObjectsMap() backupObjectsMap}.
      * <p>
-     * Map of objects to be captured in the backup. Error if empty and creating
-     * full backup. Error if non-empty when creating an incremental or
-     * differential backup.
+     * Map of objects to be captured in the backup; must be specified when
+     * creating a full snapshot and left unspecified when creating an
+     * incremental or differential snapshot.
      */
     public static final class BackupObjectsMap {
         /**
-         * All object types in a schema (excludes permissions, system
-         * configuration, host secret key, KiFS directories and user defined
-         * functions)
+         * All object types and data contained in the given <a
+         * href="../../../../../../concepts/schemas/"
+         * target="_top">schemas(s)</a>.
          */
         public static final String ALL = "all";
 
         /**
-         * Database Table
+         * <a href="../../../../../../concepts/tables/"
+         * target="_top">Tables(s)</a> and <a
+         * href="../../../../../../sql/ddl/#create-view" target="_top">SQL
+         * view(s)</a>.
          */
         public static final String TABLE = "table";
 
         /**
-         * Credential
+         * <a href="../../../../../../concepts/credentials/"
+         * target="_top">Credential(s)</a>.
          */
         public static final String CREDENTIAL = "credential";
 
         /**
-         * Context
+         * <a href="../../../../../../sql-gpt/concepts/#sql-gpt-context"
+         * target="_top">Context(s)</a>.
          */
         public static final String CONTEXT = "context";
 
         /**
-         * Data Sink
+         * <a href="../../../../../../concepts/data_sinks/" target="_top">Data
+         * sink(s)</a>.
          */
         public static final String DATASINK = "datasink";
 
         /**
-         * Data Source
+         * <a href="../../../../../../concepts/data_sources/"
+         * target="_top">Data source(s)</a>.
          */
         public static final String DATASOURCE = "datasource";
 
         /**
-         * SQL Procedure
+         * <a href="../../../../../../sql/procedure/" target="_top">SQL
+         * procedure(s)</a>.
          */
         public static final String STORED_PROCEDURE = "stored_procedure";
 
         /**
-         * Table Monitor (Stream)
+         * <a href="../../../../../../concepts/table_monitors/"
+         * target="_top">Table monitor(s)</a> / <a
+         * href="../../../../../../sql/ddl/#create-stream" target="_top">SQL
+         * stream(s)</a>.
          */
         public static final String MONITOR = "monitor";
 
         /**
-         * User (internal and external) and associated permissions
+         * <a
+         * href="../../../../../../security/sec_concepts/#security-concepts-users"
+         * target="_top">User(s)</a> (internal and external) and associated
+         * permissions.
          */
         public static final String USER = "user";
 
         /**
-         * Role, role members (roles or users, recursively) and associated
-         * permissions
+         * <a href="../../../../../../security/sec_concepts/#roles"
+         * target="_top">Role(s)</a>, role members (roles or users,
+         * recursively), and associated permissions.
          */
         public static final String ROLE = "role";
 
         /**
-         * If {@link BackupObjectsMap#TRUE TRUE}, backup the database
-         * configuration file.
+         * If {@link BackupObjectsMap#TRUE TRUE}, backup the database <a
+         * href="../../../../../../config/" target="_top">configuration
+         * file</a>.
          * Supported values:
          * <ul>
-         *     <li>{@link BackupObjectsMap#FALSE FALSE}
          *     <li>{@link BackupObjectsMap#TRUE TRUE}
+         *     <li>{@link BackupObjectsMap#FALSE FALSE}
          * </ul>
          * The default value is {@link BackupObjectsMap#FALSE FALSE}.
          */
         public static final String CONFIGURATION = "configuration";
 
-        public static final String FALSE = "false";
         public static final String TRUE = "true";
+        public static final String FALSE = "false";
 
         private BackupObjectsMap() {  }
     }
@@ -142,73 +176,74 @@ public class CreateBackupRequest implements IndexedRecord {
      */
     public static final class Options {
         /**
-         * Comments to store with this backup
+         * Comments to store with this backup.
          */
         public static final String COMMENT = "comment";
 
         /**
-         * Calculate checksum for backup files.
+         * Whether or not to calculate checksums for backup files.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#FALSE FALSE}
          *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
          * </ul>
-         * The default value is {@link Options#TRUE TRUE}.
+         * The default value is {@link Options#FALSE FALSE}.
          */
         public static final String CHECKSUM = "checksum";
 
-        public static final String FALSE = "false";
         public static final String TRUE = "true";
+        public static final String FALSE = "false";
 
         /**
-         * Only save the DDL, do not backup table data.
+         * Whether or not, for tables, to only backup DDL and not table data.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#TRUE TRUE}
-         *     <li>{@link Options#FALSE FALSE}
+         *     <li>{@link Options#TRUE TRUE}: For tables, only back up DDL, not
+         *         data.
+         *     <li>{@link Options#FALSE FALSE}: For tables, back up DDL and
+         *         data.
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
         public static final String DDL_ONLY = "ddl_only";
 
         /**
-         * Maximum number of incremental backups to keep. The default value is
-         * '-1'.
+         * Maximum number of incremental snapshots to keep. The default value
+         * is '-1'.
          */
         public static final String MAX_INCREMENTAL_BACKUPS_TO_KEEP = "max_incremental_backups_to_keep";
 
         /**
-         * When the backup type is differential, delete any intermediate
-         * incremental or differential backups. This overrides {@link
-         * Options#MAX_INCREMENTAL_BACKUPS_TO_KEEP
-         * MAX_INCREMENTAL_BACKUPS_TO_KEEP}.
+         * Whether or not to delete any intermediate snapshots when the {@link
+         * #getBackupType() backupType} is set to {@link
+         * BackupType#DIFFERENTIAL DIFFERENTIAL}.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#FALSE FALSE}
          *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
         public static final String DELETE_INTERMEDIATE_BACKUPS = "delete_intermediate_backups";
 
         /**
-         * Replace the existing backup object with a new full backup if it
-         * already exists.
+         * Whether or not to replace an existing backup object with a new
+         * backup with a full snapshot, if one already exists.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#FALSE FALSE}
          *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
         public static final String RECREATE = "recreate";
 
         /**
-         * Dry run of backup.
+         * Whether or not to perform a dry run of a backup operation.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#FALSE FALSE}
          *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
@@ -237,117 +272,149 @@ public class CreateBackupRequest implements IndexedRecord {
     /**
      * Constructs a CreateBackupRequest object with the specified parameters.
      *
-     * @param backupName  Name for this backup object. If the backup object
-     *                    already exists, only an incremental or differential
-     *                    backup can be made, unless recreate is specified
-     * @param backupType  Type of backup to create.
+     * @param backupName  Name for this backup. If the backup already exists,
+     *                    only an incremental or differential backup can be
+     *                    made, unless {@link Options#RECREATE RECREATE} is set
+     *                    to {@link Options#TRUE TRUE}.
+     * @param backupType  Type of snapshot to create.
      *                    Supported values:
      *                    <ul>
-     *                        <li>{@link BackupType#INCREMENTAL INCREMENTAL}
-     *                        <li>{@link BackupType#DIFFERENTIAL DIFFERENTIAL}
-     *                        <li>{@link BackupType#FULL FULL}
+     *                        <li>{@link BackupType#INCREMENTAL INCREMENTAL}:
+     *                            Snapshot of changes in the database objects &
+     *                            data since the last snapshot of any kind.
+     *                        <li>{@link BackupType#DIFFERENTIAL DIFFERENTIAL}:
+     *                            Snapshot of changes in the database objects &
+     *                            data since the last full snapshot.
+     *                        <li>{@link BackupType#FULL FULL}: Snapshot of the
+     *                            given database objects and data.
      *                    </ul>
-     * @param backupObjectsMap  Map of objects to be captured in the backup.
-     *                          Error if empty and creating full backup. Error
-     *                          if non-empty when creating an incremental or
-     *                          differential backup.
+     * @param backupObjectsMap  Map of objects to be captured in the backup;
+     *                          must be specified when creating a full snapshot
+     *                          and left unspecified when creating an
+     *                          incremental or differential snapshot.
      *                          <ul>
      *                              <li>{@link BackupObjectsMap#ALL ALL}: All
-     *                                  object types in a schema (excludes
-     *                                  permissions, system configuration, host
-     *                                  secret key, KiFS directories and user
-     *                                  defined functions)
+     *                                  object types and data contained in the
+     *                                  given <a
+     *                                  href="../../../../../../concepts/schemas/"
+     *                                  target="_top">schemas(s)</a>.
      *                              <li>{@link BackupObjectsMap#TABLE TABLE}:
-     *                                  Database Table
+     *                                  <a
+     *                                  href="../../../../../../concepts/tables/"
+     *                                  target="_top">Tables(s)</a> and <a
+     *                                  href="../../../../../../sql/ddl/#create-view"
+     *                                  target="_top">SQL view(s)</a>.
      *                              <li>{@link BackupObjectsMap#CREDENTIAL
-     *                                  CREDENTIAL}: Credential
+     *                                  CREDENTIAL}: <a
+     *                                  href="../../../../../../concepts/credentials/"
+     *                                  target="_top">Credential(s)</a>.
      *                              <li>{@link BackupObjectsMap#CONTEXT
-     *                                  CONTEXT}: Context
+     *                                  CONTEXT}: <a
+     *                                  href="../../../../../../sql-gpt/concepts/#sql-gpt-context"
+     *                                  target="_top">Context(s)</a>.
      *                              <li>{@link BackupObjectsMap#DATASINK
-     *                                  DATASINK}: Data Sink
+     *                                  DATASINK}: <a
+     *                                  href="../../../../../../concepts/data_sinks/"
+     *                                  target="_top">Data sink(s)</a>.
      *                              <li>{@link BackupObjectsMap#DATASOURCE
-     *                                  DATASOURCE}: Data Source
+     *                                  DATASOURCE}: <a
+     *                                  href="../../../../../../concepts/data_sources/"
+     *                                  target="_top">Data source(s)</a>.
      *                              <li>{@link
      *                                  BackupObjectsMap#STORED_PROCEDURE
-     *                                  STORED_PROCEDURE}: SQL Procedure
+     *                                  STORED_PROCEDURE}: <a
+     *                                  href="../../../../../../sql/procedure/"
+     *                                  target="_top">SQL procedure(s)</a>.
      *                              <li>{@link BackupObjectsMap#MONITOR
-     *                                  MONITOR}: Table Monitor (Stream)
-     *                              <li>{@link BackupObjectsMap#USER USER}:
-     *                                  User (internal and external) and
-     *                                  associated permissions
-     *                              <li>{@link BackupObjectsMap#ROLE ROLE}:
-     *                                  Role, role members (roles or users,
-     *                                  recursively) and associated permissions
+     *                                  MONITOR}: <a
+     *                                  href="../../../../../../concepts/table_monitors/"
+     *                                  target="_top">Table monitor(s)</a> / <a
+     *                                  href="../../../../../../sql/ddl/#create-stream"
+     *                                  target="_top">SQL stream(s)</a>.
+     *                              <li>{@link BackupObjectsMap#USER USER}: <a
+     *                                  href="../../../../../../security/sec_concepts/#security-concepts-users"
+     *                                  target="_top">User(s)</a> (internal and
+     *                                  external) and associated permissions.
+     *                              <li>{@link BackupObjectsMap#ROLE ROLE}: <a
+     *                                  href="../../../../../../security/sec_concepts/#roles"
+     *                                  target="_top">Role(s)</a>, role members
+     *                                  (roles or users, recursively), and
+     *                                  associated permissions.
      *                              <li>{@link BackupObjectsMap#CONFIGURATION
      *                                  CONFIGURATION}: If {@link
      *                                  BackupObjectsMap#TRUE TRUE}, backup the
-     *                                  database configuration file.
+     *                                  database <a
+     *                                  href="../../../../../../config/"
+     *                                  target="_top">configuration file</a>.
      *                                  Supported values:
      *                                  <ul>
-     *                                      <li>{@link BackupObjectsMap#FALSE
-     *                                          FALSE}
      *                                      <li>{@link BackupObjectsMap#TRUE
      *                                          TRUE}
+     *                                      <li>{@link BackupObjectsMap#FALSE
+     *                                          FALSE}
      *                                  </ul>
      *                                  The default value is {@link
      *                                  BackupObjectsMap#FALSE FALSE}.
      *                          </ul>
-     * @param datasinkName  Datasink where backup will be stored.
+     * @param datasinkName  Data sink through which the backup will be stored.
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link Options#COMMENT COMMENT}: Comments to
-     *                         store with this backup
-     *                     <li>{@link Options#CHECKSUM CHECKSUM}: Calculate
-     *                         checksum for backup files.
+     *                         store with this backup.
+     *                     <li>{@link Options#CHECKSUM CHECKSUM}: Whether or
+     *                         not to calculate checksums for backup files.
      *                         Supported values:
      *                         <ul>
-     *                             <li>{@link Options#FALSE FALSE}
      *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
      *                         </ul>
-     *                         The default value is {@link Options#TRUE TRUE}.
-     *                     <li>{@link Options#DDL_ONLY DDL_ONLY}: Only save the
-     *                         DDL, do not backup table data.
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link Options#DDL_ONLY DDL_ONLY}: Whether or
+     *                         not, for tables, to only backup DDL and not
+     *                         table data.
      *                         Supported values:
      *                         <ul>
-     *                             <li>{@link Options#TRUE TRUE}
-     *                             <li>{@link Options#FALSE FALSE}
+     *                             <li>{@link Options#TRUE TRUE}: For tables,
+     *                                 only back up DDL, not data.
+     *                             <li>{@link Options#FALSE FALSE}: For tables,
+     *                                 back up DDL and data.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
      *                     <li>{@link Options#MAX_INCREMENTAL_BACKUPS_TO_KEEP
      *                         MAX_INCREMENTAL_BACKUPS_TO_KEEP}: Maximum number
-     *                         of incremental backups to keep. The default
+     *                         of incremental snapshots to keep. The default
      *                         value is '-1'.
      *                     <li>{@link Options#DELETE_INTERMEDIATE_BACKUPS
-     *                         DELETE_INTERMEDIATE_BACKUPS}: When the backup
-     *                         type is differential, delete any intermediate
-     *                         incremental or differential backups. This
-     *                         overrides {@link
-     *                         Options#MAX_INCREMENTAL_BACKUPS_TO_KEEP
-     *                         MAX_INCREMENTAL_BACKUPS_TO_KEEP}.
+     *                         DELETE_INTERMEDIATE_BACKUPS}: Whether or not to
+     *                         delete any intermediate snapshots when the
+     *                         {@code backupType} is set to {@link
+     *                         BackupType#DIFFERENTIAL DIFFERENTIAL}.
      *                         Supported values:
      *                         <ul>
-     *                             <li>{@link Options#FALSE FALSE}
      *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
-     *                     <li>{@link Options#RECREATE RECREATE}: Replace the
-     *                         existing backup object with a new full backup if
-     *                         it already exists.
+     *                     <li>{@link Options#RECREATE RECREATE}: Whether or
+     *                         not to replace an existing backup object with a
+     *                         new backup with a full snapshot, if one already
+     *                         exists.
      *                         Supported values:
      *                         <ul>
-     *                             <li>{@link Options#FALSE FALSE}
      *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
-     *                     <li>{@link Options#DRY_RUN DRY_RUN}: Dry run of
-     *                         backup.
+     *                     <li>{@link Options#DRY_RUN DRY_RUN}: Whether or not
+     *                         to perform a dry run of a backup operation.
      *                         Supported values:
      *                         <ul>
-     *                             <li>{@link Options#FALSE FALSE}
      *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
@@ -363,9 +430,9 @@ public class CreateBackupRequest implements IndexedRecord {
     }
 
     /**
-     * Name for this backup object. If the backup object already exists, only
-     * an incremental or differential backup can be made, unless recreate is
-     * specified
+     * Name for this backup. If the backup already exists, only an incremental
+     * or differential backup can be made, unless {@link Options#RECREATE
+     * RECREATE} is set to {@link Options#TRUE TRUE}.
      *
      * @return The current value of {@code backupName}.
      */
@@ -374,9 +441,9 @@ public class CreateBackupRequest implements IndexedRecord {
     }
 
     /**
-     * Name for this backup object. If the backup object already exists, only
-     * an incremental or differential backup can be made, unless recreate is
-     * specified
+     * Name for this backup. If the backup already exists, only an incremental
+     * or differential backup can be made, unless {@link Options#RECREATE
+     * RECREATE} is set to {@link Options#TRUE TRUE}.
      *
      * @param backupName  The new value for {@code backupName}.
      *
@@ -388,12 +455,17 @@ public class CreateBackupRequest implements IndexedRecord {
     }
 
     /**
-     * Type of backup to create.
+     * Type of snapshot to create.
      * Supported values:
      * <ul>
-     *     <li>{@link BackupType#INCREMENTAL INCREMENTAL}
-     *     <li>{@link BackupType#DIFFERENTIAL DIFFERENTIAL}
-     *     <li>{@link BackupType#FULL FULL}
+     *     <li>{@link BackupType#INCREMENTAL INCREMENTAL}: Snapshot of changes
+     *         in the database objects & data since the last snapshot of any
+     *         kind.
+     *     <li>{@link BackupType#DIFFERENTIAL DIFFERENTIAL}: Snapshot of
+     *         changes in the database objects & data since the last full
+     *         snapshot.
+     *     <li>{@link BackupType#FULL FULL}: Snapshot of the given database
+     *         objects and data.
      * </ul>
      *
      * @return The current value of {@code backupType}.
@@ -403,12 +475,17 @@ public class CreateBackupRequest implements IndexedRecord {
     }
 
     /**
-     * Type of backup to create.
+     * Type of snapshot to create.
      * Supported values:
      * <ul>
-     *     <li>{@link BackupType#INCREMENTAL INCREMENTAL}
-     *     <li>{@link BackupType#DIFFERENTIAL DIFFERENTIAL}
-     *     <li>{@link BackupType#FULL FULL}
+     *     <li>{@link BackupType#INCREMENTAL INCREMENTAL}: Snapshot of changes
+     *         in the database objects & data since the last snapshot of any
+     *         kind.
+     *     <li>{@link BackupType#DIFFERENTIAL DIFFERENTIAL}: Snapshot of
+     *         changes in the database objects & data since the last full
+     *         snapshot.
+     *     <li>{@link BackupType#FULL FULL}: Snapshot of the given database
+     *         objects and data.
      * </ul>
      *
      * @param backupType  The new value for {@code backupType}.
@@ -421,32 +498,55 @@ public class CreateBackupRequest implements IndexedRecord {
     }
 
     /**
-     * Map of objects to be captured in the backup. Error if empty and creating
-     * full backup. Error if non-empty when creating an incremental or
-     * differential backup.
+     * Map of objects to be captured in the backup; must be specified when
+     * creating a full snapshot and left unspecified when creating an
+     * incremental or differential snapshot.
      * <ul>
-     *     <li>{@link BackupObjectsMap#ALL ALL}: All object types in a schema
-     *         (excludes permissions, system configuration, host secret key,
-     *         KiFS directories and user defined functions)
-     *     <li>{@link BackupObjectsMap#TABLE TABLE}: Database Table
-     *     <li>{@link BackupObjectsMap#CREDENTIAL CREDENTIAL}: Credential
-     *     <li>{@link BackupObjectsMap#CONTEXT CONTEXT}: Context
-     *     <li>{@link BackupObjectsMap#DATASINK DATASINK}: Data Sink
-     *     <li>{@link BackupObjectsMap#DATASOURCE DATASOURCE}: Data Source
-     *     <li>{@link BackupObjectsMap#STORED_PROCEDURE STORED_PROCEDURE}: SQL
-     *         Procedure
-     *     <li>{@link BackupObjectsMap#MONITOR MONITOR}: Table Monitor (Stream)
-     *     <li>{@link BackupObjectsMap#USER USER}: User (internal and external)
-     *         and associated permissions
-     *     <li>{@link BackupObjectsMap#ROLE ROLE}: Role, role members (roles or
-     *         users, recursively) and associated permissions
+     *     <li>{@link BackupObjectsMap#ALL ALL}: All object types and data
+     *         contained in the given <a
+     *         href="../../../../../../concepts/schemas/"
+     *         target="_top">schemas(s)</a>.
+     *     <li>{@link BackupObjectsMap#TABLE TABLE}: <a
+     *         href="../../../../../../concepts/tables/"
+     *         target="_top">Tables(s)</a> and <a
+     *         href="../../../../../../sql/ddl/#create-view" target="_top">SQL
+     *         view(s)</a>.
+     *     <li>{@link BackupObjectsMap#CREDENTIAL CREDENTIAL}: <a
+     *         href="../../../../../../concepts/credentials/"
+     *         target="_top">Credential(s)</a>.
+     *     <li>{@link BackupObjectsMap#CONTEXT CONTEXT}: <a
+     *         href="../../../../../../sql-gpt/concepts/#sql-gpt-context"
+     *         target="_top">Context(s)</a>.
+     *     <li>{@link BackupObjectsMap#DATASINK DATASINK}: <a
+     *         href="../../../../../../concepts/data_sinks/" target="_top">Data
+     *         sink(s)</a>.
+     *     <li>{@link BackupObjectsMap#DATASOURCE DATASOURCE}: <a
+     *         href="../../../../../../concepts/data_sources/"
+     *         target="_top">Data source(s)</a>.
+     *     <li>{@link BackupObjectsMap#STORED_PROCEDURE STORED_PROCEDURE}: <a
+     *         href="../../../../../../sql/procedure/" target="_top">SQL
+     *         procedure(s)</a>.
+     *     <li>{@link BackupObjectsMap#MONITOR MONITOR}: <a
+     *         href="../../../../../../concepts/table_monitors/"
+     *         target="_top">Table monitor(s)</a> / <a
+     *         href="../../../../../../sql/ddl/#create-stream"
+     *         target="_top">SQL stream(s)</a>.
+     *     <li>{@link BackupObjectsMap#USER USER}: <a
+     *         href="../../../../../../security/sec_concepts/#security-concepts-users"
+     *         target="_top">User(s)</a> (internal and external) and associated
+     *         permissions.
+     *     <li>{@link BackupObjectsMap#ROLE ROLE}: <a
+     *         href="../../../../../../security/sec_concepts/#roles"
+     *         target="_top">Role(s)</a>, role members (roles or users,
+     *         recursively), and associated permissions.
      *     <li>{@link BackupObjectsMap#CONFIGURATION CONFIGURATION}: If {@link
-     *         BackupObjectsMap#TRUE TRUE}, backup the database configuration
-     *         file.
+     *         BackupObjectsMap#TRUE TRUE}, backup the database <a
+     *         href="../../../../../../config/" target="_top">configuration
+     *         file</a>.
      *         Supported values:
      *         <ul>
-     *             <li>{@link BackupObjectsMap#FALSE FALSE}
      *             <li>{@link BackupObjectsMap#TRUE TRUE}
+     *             <li>{@link BackupObjectsMap#FALSE FALSE}
      *         </ul>
      *         The default value is {@link BackupObjectsMap#FALSE FALSE}.
      * </ul>
@@ -458,32 +558,55 @@ public class CreateBackupRequest implements IndexedRecord {
     }
 
     /**
-     * Map of objects to be captured in the backup. Error if empty and creating
-     * full backup. Error if non-empty when creating an incremental or
-     * differential backup.
+     * Map of objects to be captured in the backup; must be specified when
+     * creating a full snapshot and left unspecified when creating an
+     * incremental or differential snapshot.
      * <ul>
-     *     <li>{@link BackupObjectsMap#ALL ALL}: All object types in a schema
-     *         (excludes permissions, system configuration, host secret key,
-     *         KiFS directories and user defined functions)
-     *     <li>{@link BackupObjectsMap#TABLE TABLE}: Database Table
-     *     <li>{@link BackupObjectsMap#CREDENTIAL CREDENTIAL}: Credential
-     *     <li>{@link BackupObjectsMap#CONTEXT CONTEXT}: Context
-     *     <li>{@link BackupObjectsMap#DATASINK DATASINK}: Data Sink
-     *     <li>{@link BackupObjectsMap#DATASOURCE DATASOURCE}: Data Source
-     *     <li>{@link BackupObjectsMap#STORED_PROCEDURE STORED_PROCEDURE}: SQL
-     *         Procedure
-     *     <li>{@link BackupObjectsMap#MONITOR MONITOR}: Table Monitor (Stream)
-     *     <li>{@link BackupObjectsMap#USER USER}: User (internal and external)
-     *         and associated permissions
-     *     <li>{@link BackupObjectsMap#ROLE ROLE}: Role, role members (roles or
-     *         users, recursively) and associated permissions
+     *     <li>{@link BackupObjectsMap#ALL ALL}: All object types and data
+     *         contained in the given <a
+     *         href="../../../../../../concepts/schemas/"
+     *         target="_top">schemas(s)</a>.
+     *     <li>{@link BackupObjectsMap#TABLE TABLE}: <a
+     *         href="../../../../../../concepts/tables/"
+     *         target="_top">Tables(s)</a> and <a
+     *         href="../../../../../../sql/ddl/#create-view" target="_top">SQL
+     *         view(s)</a>.
+     *     <li>{@link BackupObjectsMap#CREDENTIAL CREDENTIAL}: <a
+     *         href="../../../../../../concepts/credentials/"
+     *         target="_top">Credential(s)</a>.
+     *     <li>{@link BackupObjectsMap#CONTEXT CONTEXT}: <a
+     *         href="../../../../../../sql-gpt/concepts/#sql-gpt-context"
+     *         target="_top">Context(s)</a>.
+     *     <li>{@link BackupObjectsMap#DATASINK DATASINK}: <a
+     *         href="../../../../../../concepts/data_sinks/" target="_top">Data
+     *         sink(s)</a>.
+     *     <li>{@link BackupObjectsMap#DATASOURCE DATASOURCE}: <a
+     *         href="../../../../../../concepts/data_sources/"
+     *         target="_top">Data source(s)</a>.
+     *     <li>{@link BackupObjectsMap#STORED_PROCEDURE STORED_PROCEDURE}: <a
+     *         href="../../../../../../sql/procedure/" target="_top">SQL
+     *         procedure(s)</a>.
+     *     <li>{@link BackupObjectsMap#MONITOR MONITOR}: <a
+     *         href="../../../../../../concepts/table_monitors/"
+     *         target="_top">Table monitor(s)</a> / <a
+     *         href="../../../../../../sql/ddl/#create-stream"
+     *         target="_top">SQL stream(s)</a>.
+     *     <li>{@link BackupObjectsMap#USER USER}: <a
+     *         href="../../../../../../security/sec_concepts/#security-concepts-users"
+     *         target="_top">User(s)</a> (internal and external) and associated
+     *         permissions.
+     *     <li>{@link BackupObjectsMap#ROLE ROLE}: <a
+     *         href="../../../../../../security/sec_concepts/#roles"
+     *         target="_top">Role(s)</a>, role members (roles or users,
+     *         recursively), and associated permissions.
      *     <li>{@link BackupObjectsMap#CONFIGURATION CONFIGURATION}: If {@link
-     *         BackupObjectsMap#TRUE TRUE}, backup the database configuration
-     *         file.
+     *         BackupObjectsMap#TRUE TRUE}, backup the database <a
+     *         href="../../../../../../config/" target="_top">configuration
+     *         file</a>.
      *         Supported values:
      *         <ul>
-     *             <li>{@link BackupObjectsMap#FALSE FALSE}
      *             <li>{@link BackupObjectsMap#TRUE TRUE}
+     *             <li>{@link BackupObjectsMap#FALSE FALSE}
      *         </ul>
      *         The default value is {@link BackupObjectsMap#FALSE FALSE}.
      * </ul>
@@ -498,7 +621,7 @@ public class CreateBackupRequest implements IndexedRecord {
     }
 
     /**
-     * Datasink where backup will be stored.
+     * Data sink through which the backup will be stored.
      *
      * @return The current value of {@code datasinkName}.
      */
@@ -507,7 +630,7 @@ public class CreateBackupRequest implements IndexedRecord {
     }
 
     /**
-     * Datasink where backup will be stored.
+     * Data sink through which the backup will be stored.
      *
      * @param datasinkName  The new value for {@code datasinkName}.
      *
@@ -522,51 +645,54 @@ public class CreateBackupRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *     <li>{@link Options#COMMENT COMMENT}: Comments to store with this
-     *         backup
-     *     <li>{@link Options#CHECKSUM CHECKSUM}: Calculate checksum for backup
-     *         files.
+     *         backup.
+     *     <li>{@link Options#CHECKSUM CHECKSUM}: Whether or not to calculate
+     *         checksums for backup files.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#FALSE FALSE}
      *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
      *         </ul>
-     *         The default value is {@link Options#TRUE TRUE}.
-     *     <li>{@link Options#DDL_ONLY DDL_ONLY}: Only save the DDL, do not
-     *         backup table data.
+     *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#DDL_ONLY DDL_ONLY}: Whether or not, for tables,
+     *         to only backup DDL and not table data.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
+     *             <li>{@link Options#TRUE TRUE}: For tables, only back up DDL,
+     *                 not data.
+     *             <li>{@link Options#FALSE FALSE}: For tables, back up DDL and
+     *                 data.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#MAX_INCREMENTAL_BACKUPS_TO_KEEP
      *         MAX_INCREMENTAL_BACKUPS_TO_KEEP}: Maximum number of incremental
-     *         backups to keep. The default value is '-1'.
+     *         snapshots to keep. The default value is '-1'.
      *     <li>{@link Options#DELETE_INTERMEDIATE_BACKUPS
-     *         DELETE_INTERMEDIATE_BACKUPS}: When the backup type is
-     *         differential, delete any intermediate incremental or
-     *         differential backups. This overrides {@link
-     *         Options#MAX_INCREMENTAL_BACKUPS_TO_KEEP
-     *         MAX_INCREMENTAL_BACKUPS_TO_KEEP}.
+     *         DELETE_INTERMEDIATE_BACKUPS}: Whether or not to delete any
+     *         intermediate snapshots when the {@link #getBackupType()
+     *         backupType} is set to {@link BackupType#DIFFERENTIAL
+     *         DIFFERENTIAL}.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#FALSE FALSE}
      *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#RECREATE RECREATE}: Replace the existing backup
-     *         object with a new full backup if it already exists.
+     *     <li>{@link Options#RECREATE RECREATE}: Whether or not to replace an
+     *         existing backup object with a new backup with a full snapshot,
+     *         if one already exists.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#FALSE FALSE}
      *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#DRY_RUN DRY_RUN}: Dry run of backup.
+     *     <li>{@link Options#DRY_RUN DRY_RUN}: Whether or not to perform a dry
+     *         run of a backup operation.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#FALSE FALSE}
      *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      * </ul>
@@ -582,51 +708,54 @@ public class CreateBackupRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *     <li>{@link Options#COMMENT COMMENT}: Comments to store with this
-     *         backup
-     *     <li>{@link Options#CHECKSUM CHECKSUM}: Calculate checksum for backup
-     *         files.
+     *         backup.
+     *     <li>{@link Options#CHECKSUM CHECKSUM}: Whether or not to calculate
+     *         checksums for backup files.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#FALSE FALSE}
      *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
      *         </ul>
-     *         The default value is {@link Options#TRUE TRUE}.
-     *     <li>{@link Options#DDL_ONLY DDL_ONLY}: Only save the DDL, do not
-     *         backup table data.
+     *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#DDL_ONLY DDL_ONLY}: Whether or not, for tables,
+     *         to only backup DDL and not table data.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
+     *             <li>{@link Options#TRUE TRUE}: For tables, only back up DDL,
+     *                 not data.
+     *             <li>{@link Options#FALSE FALSE}: For tables, back up DDL and
+     *                 data.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#MAX_INCREMENTAL_BACKUPS_TO_KEEP
      *         MAX_INCREMENTAL_BACKUPS_TO_KEEP}: Maximum number of incremental
-     *         backups to keep. The default value is '-1'.
+     *         snapshots to keep. The default value is '-1'.
      *     <li>{@link Options#DELETE_INTERMEDIATE_BACKUPS
-     *         DELETE_INTERMEDIATE_BACKUPS}: When the backup type is
-     *         differential, delete any intermediate incremental or
-     *         differential backups. This overrides {@link
-     *         Options#MAX_INCREMENTAL_BACKUPS_TO_KEEP
-     *         MAX_INCREMENTAL_BACKUPS_TO_KEEP}.
+     *         DELETE_INTERMEDIATE_BACKUPS}: Whether or not to delete any
+     *         intermediate snapshots when the {@link #getBackupType()
+     *         backupType} is set to {@link BackupType#DIFFERENTIAL
+     *         DIFFERENTIAL}.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#FALSE FALSE}
      *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#RECREATE RECREATE}: Replace the existing backup
-     *         object with a new full backup if it already exists.
+     *     <li>{@link Options#RECREATE RECREATE}: Whether or not to replace an
+     *         existing backup object with a new backup with a full snapshot,
+     *         if one already exists.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#FALSE FALSE}
      *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#DRY_RUN DRY_RUN}: Dry run of backup.
+     *     <li>{@link Options#DRY_RUN DRY_RUN}: Whether or not to perform a dry
+     *         run of a backup operation.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#FALSE FALSE}
      *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      * </ul>

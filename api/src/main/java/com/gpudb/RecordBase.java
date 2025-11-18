@@ -943,6 +943,19 @@ public abstract class RecordBase implements Record {
         putBytes(index, buff);
     }
 
+    public void putDecimal(String name, Object value) {
+        Type type = getType();
+        int index = getType().getColumnIndexOrThrow(name);
+        int scale = type.getColumn(index).getDecimalScale();
+        putDecimal(index, value, scale);
+
+    }
+
+    private void putDecimal(int index, Object value, int scale) {
+        String convertedValue = Type.Column.convertDecimalValue(value, scale);
+        put(index, convertedValue);
+    }
+
     @Override
     public Map<String, Object> getDataMap() {
         return new RecordMap();

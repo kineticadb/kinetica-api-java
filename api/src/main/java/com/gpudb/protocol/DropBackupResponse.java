@@ -5,7 +5,9 @@
  */
 package com.gpudb.protocol;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
@@ -14,17 +16,15 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of results returned by {@link
- * com.gpudb.GPUdb#alterBackup(AlterBackupRequest) GPUdb.alterBackup}.
+ * com.gpudb.GPUdb#dropBackup(DropBackupRequest) GPUdb.dropBackup}.
  */
-public class AlterBackupResponse implements IndexedRecord {
+public class DropBackupResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("AlterBackupResponse")
+            .record("DropBackupResponse")
             .namespace("com.gpudb")
             .fields()
                 .name("backupName").type().stringType().noDefault()
-                .name("backupId").type().longType().noDefault()
-                .name("totalBytes").type().longType().noDefault()
-                .name("totalNumberOfRecords").type().longType().noDefault()
+                .name("backupNames").type().array().items().stringType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -39,19 +39,17 @@ public class AlterBackupResponse implements IndexedRecord {
     }
 
     private String backupName;
-    private long backupId;
-    private long totalBytes;
-    private long totalNumberOfRecords;
+    private List<String> backupNames;
     private Map<String, String> info;
 
     /**
-     * Constructs an AlterBackupResponse object with default parameters.
+     * Constructs a DropBackupResponse object with default parameters.
      */
-    public AlterBackupResponse() {
+    public DropBackupResponse() {
     }
 
     /**
-     * Value of {@link com.gpudb.protocol.AlterBackupRequest#getBackupName()
+     * Value of {@link com.gpudb.protocol.DropBackupRequest#getBackupName()
      * backupName}.
      *
      * @return The current value of {@code backupName}.
@@ -61,79 +59,36 @@ public class AlterBackupResponse implements IndexedRecord {
     }
 
     /**
-     * Value of {@link com.gpudb.protocol.AlterBackupRequest#getBackupName()
+     * Value of {@link com.gpudb.protocol.DropBackupRequest#getBackupName()
      * backupName}.
      *
      * @param backupName  The new value for {@code backupName}.
      *
      * @return {@code this} to mimic the builder pattern.
      */
-    public AlterBackupResponse setBackupName(String backupName) {
+    public DropBackupResponse setBackupName(String backupName) {
         this.backupName = (backupName == null) ? "" : backupName;
         return this;
     }
 
     /**
-     * ID of the snapshot affected by the alter operation, if any.
+     * Names of backups that were deleted.
      *
-     * @return The current value of {@code backupId}.
+     * @return The current value of {@code backupNames}.
      */
-    public long getBackupId() {
-        return backupId;
+    public List<String> getBackupNames() {
+        return backupNames;
     }
 
     /**
-     * ID of the snapshot affected by the alter operation, if any.
+     * Names of backups that were deleted.
      *
-     * @param backupId  The new value for {@code backupId}.
+     * @param backupNames  The new value for {@code backupNames}.
      *
      * @return {@code this} to mimic the builder pattern.
      */
-    public AlterBackupResponse setBackupId(long backupId) {
-        this.backupId = backupId;
-        return this;
-    }
-
-    /**
-     * Total size of files affected by the alter operation.
-     *
-     * @return The current value of {@code totalBytes}.
-     */
-    public long getTotalBytes() {
-        return totalBytes;
-    }
-
-    /**
-     * Total size of files affected by the alter operation.
-     *
-     * @param totalBytes  The new value for {@code totalBytes}.
-     *
-     * @return {@code this} to mimic the builder pattern.
-     */
-    public AlterBackupResponse setTotalBytes(long totalBytes) {
-        this.totalBytes = totalBytes;
-        return this;
-    }
-
-    /**
-     * Total number of records affected by the alter operation.
-     *
-     * @return The current value of {@code totalNumberOfRecords}.
-     */
-    public long getTotalNumberOfRecords() {
-        return totalNumberOfRecords;
-    }
-
-    /**
-     * Total number of records affected by the alter operation.
-     *
-     * @param totalNumberOfRecords  The new value for {@code
-     *                              totalNumberOfRecords}.
-     *
-     * @return {@code this} to mimic the builder pattern.
-     */
-    public AlterBackupResponse setTotalNumberOfRecords(long totalNumberOfRecords) {
-        this.totalNumberOfRecords = totalNumberOfRecords;
+    public DropBackupResponse setBackupNames(List<String> backupNames) {
+        this.backupNames = (backupNames == null) ? new ArrayList<String>() : backupNames;
         return this;
     }
 
@@ -153,7 +108,7 @@ public class AlterBackupResponse implements IndexedRecord {
      *
      * @return {@code this} to mimic the builder pattern.
      */
-    public AlterBackupResponse setInfo(Map<String, String> info) {
+    public DropBackupResponse setInfo(Map<String, String> info) {
         this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
         return this;
     }
@@ -186,15 +141,9 @@ public class AlterBackupResponse implements IndexedRecord {
                 return this.backupName;
 
             case 1:
-                return this.backupId;
+                return this.backupNames;
 
             case 2:
-                return this.totalBytes;
-
-            case 3:
-                return this.totalNumberOfRecords;
-
-            case 4:
                 return this.info;
 
             default:
@@ -220,18 +169,10 @@ public class AlterBackupResponse implements IndexedRecord {
                 break;
 
             case 1:
-                this.backupId = (Long)value;
+                this.backupNames = (List<String>)value;
                 break;
 
             case 2:
-                this.totalBytes = (Long)value;
-                break;
-
-            case 3:
-                this.totalNumberOfRecords = (Long)value;
-                break;
-
-            case 4:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -250,12 +191,10 @@ public class AlterBackupResponse implements IndexedRecord {
             return false;
         }
 
-        AlterBackupResponse that = (AlterBackupResponse)obj;
+        DropBackupResponse that = (DropBackupResponse)obj;
 
         return ( this.backupName.equals( that.backupName )
-                 && ( this.backupId == that.backupId )
-                 && ( this.totalBytes == that.totalBytes )
-                 && ( this.totalNumberOfRecords == that.totalNumberOfRecords )
+                 && this.backupNames.equals( that.backupNames )
                  && this.info.equals( that.info ) );
     }
 
@@ -268,17 +207,9 @@ public class AlterBackupResponse implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.backupName ) );
         builder.append( ", " );
-        builder.append( gd.toString( "backupId" ) );
+        builder.append( gd.toString( "backupNames" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.backupId ) );
-        builder.append( ", " );
-        builder.append( gd.toString( "totalBytes" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.totalBytes ) );
-        builder.append( ", " );
-        builder.append( gd.toString( "totalNumberOfRecords" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.totalNumberOfRecords ) );
+        builder.append( gd.toString( this.backupNames ) );
         builder.append( ", " );
         builder.append( gd.toString( "info" ) );
         builder.append( ": " );
@@ -292,9 +223,7 @@ public class AlterBackupResponse implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.backupName.hashCode();
-        hashCode = (31 * hashCode) + ((Long)this.backupId).hashCode();
-        hashCode = (31 * hashCode) + ((Long)this.totalBytes).hashCode();
-        hashCode = (31 * hashCode) + ((Long)this.totalNumberOfRecords).hashCode();
+        hashCode = (31 * hashCode) + this.backupNames.hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }

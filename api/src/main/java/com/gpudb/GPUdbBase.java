@@ -162,9 +162,6 @@ public abstract class GPUdbBase {
     // The default port for host manager URLs
     private static final int DEFAULT_HOST_MANAGER_PORT = 9300;
 
-    // The default port for host manager URLs when using HTTPD
-    private static final int DEFAULT_HTTPD_HOST_MANAGER_PORT = 8082;
-
     // The number of times that the API will attempt to submit a host
     // manager endpoint request.  We need this in case the user chose
     // a bad host manager port.  We don't want to go into an infinite
@@ -1803,11 +1800,11 @@ public abstract class GPUdbBase {
 
         @Override
         public String toString() {
-            return "FailbackOptions [pollingInterval=" + pollingInterval + "]";
+            return "FailbackOptions [pollingInterval=" + this.pollingInterval + "]";
         }
 
         public long getPollingInterval() {
-            return pollingInterval;
+            return this.pollingInterval;
         }
 
         
@@ -2984,7 +2981,7 @@ public abstract class GPUdbBase {
 
     protected void removeProtectedHttpHeaders() {
         for( String key: PROTECTED_HEADERS ) {
-        	this.httpHeaders.remove(key);
+            this.httpHeaders.remove(key);
         }
     }
 
@@ -3637,7 +3634,7 @@ public abstract class GPUdbBase {
                 // Start the newly-created or previously-stopped poller;
                 //   skip if one is already active
                 if( !this.failbackPollerService.isRunning() ) {
-                	this.failbackPollerService.start();
+                    this.failbackPollerService.start();
                 }
             }
 
@@ -5015,7 +5012,7 @@ public abstract class GPUdbBase {
         // into a queue (so that we can add HA ring addresses as we get them
         // from servers and add them to the end of the queue while iterating
         // over it--other forms of collections don't allow for it)
-        ArrayDeque<URL> urlQueue = new ArrayDeque<>( new HashSet<>( urls ) );
+        ArrayDeque<URL> urlQueue = new ArrayDeque<>( urls.stream().distinct().collect(Collectors.toList()) );
 
         // If a fully qualified URL is given for the primary URL, process
         // that, too
@@ -6607,10 +6604,10 @@ public abstract class GPUdbBase {
                 throw new GPUdbException( errorMsg );
             } catch (Exception ex) {
                 // Trigger an HA failover at the caller level
-            	requestTime = System.currentTimeMillis() - requestTime;
+                requestTime = System.currentTimeMillis() - requestTime;
                 GPUdbLogger.error( ex, "Throwing exit exception after " + requestTime + "ms due to ");
 
-            	String errorMessage = "Error submitting endpoint <%s> request after <%d>ms due to: %s";
+                String errorMessage = "Error submitting endpoint <%s> request after <%d>ms due to: %s";
                 throw new GPUdbExitException(String.format(errorMessage, url.toString(), requestTime, ExceptionUtils.getRootCauseMessage(ex)));
             }
 
@@ -6710,7 +6707,7 @@ public abstract class GPUdbBase {
                             statusCode == HttpURLConnection.HTTP_UNAVAILABLE
                     ) {
                         GPUdbLogger.debug_with_info(
-                            "Throwing EXIT exception from " + url.toString() + "; response_code: " + statusCode + "; message: " + message
+                                "Throwing EXIT exception from " + url.toString() + "; response_code: " + statusCode + "; message: " + message
                         );
                         throw new GPUdbExitException("Cluster may be stopped or suspended: " + message);
                     }
@@ -6866,7 +6863,7 @@ public abstract class GPUdbBase {
                 throw new GPUdbException( errorMsg );
             } catch (Exception ex) {
                 // Trigger an HA failover at the caller level
-            	requestTime = System.currentTimeMillis() - requestTime;
+                requestTime = System.currentTimeMillis() - requestTime;
                 GPUdbLogger.error( ex, "Throwing exit exception after " + requestTime + "ms due to ");
 
                 String errorMessage = "Error submitting endpoint <%s> request after <%d>ms due to: %s";
@@ -7043,10 +7040,10 @@ public abstract class GPUdbBase {
                 throw new GPUdbException( errorMsg );
             } catch (Exception ex) {
                 // Trigger an HA failover at the caller level
-            	requestTime = System.currentTimeMillis() - requestTime;
+                requestTime = System.currentTimeMillis() - requestTime;
                 GPUdbLogger.error( ex, "Throwing exit exception after " + requestTime + "ms due to ");
 
-            	String errorMessage = "Error submitting endpoint <%s> request after <%d>ms due to: %s";
+                String errorMessage = "Error submitting endpoint <%s> request after <%d>ms due to: %s";
                 throw new GPUdbExitException(String.format(errorMessage, url.toString(), requestTime, ExceptionUtils.getRootCauseMessage(ex)));
             }
 
