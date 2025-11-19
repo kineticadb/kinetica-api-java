@@ -216,7 +216,7 @@ public class RecordRetriever<T> {
                              WorkerList workers,
                              Map<String, String> options ) throws GPUdbException {
 
-        haFailoverLock = new Object();
+        this.haFailoverLock = new Object();
 
         this.gpudb = gpudb;
         this.tableName = tableName;
@@ -366,7 +366,7 @@ public class RecordRetriever<T> {
      *
      * @throws GPUdbException if a successful failover could not be achieved.
      */
-    private synchronized boolean forceFailover(URL oldURL, int currCountClusterSwitches)
+    private synchronized boolean forceFailover(URL oldURL, int oldClusterSwitchCount)
         throws GPUdbException {
         GPUdbLogger.debug_with_info( "Forced failover begin..." );
         // The whole failover scenario needs to happen in a thread-safe
@@ -375,13 +375,14 @@ public class RecordRetriever<T> {
 
         // We'll need to know which URL we're using at the moment
         URL currURL = oldURL;
+        int currClusterSwitchCount = oldClusterSwitchCount;
 
         // Try to fail over as many times as there are clusters
         for (int i = 0; i < this.dbHARingSize; ++i) {
             // Try to switch to a new cluster
             try {
                 GPUdbLogger.debug_with_info( "Forced HA failover attempt #" + i );
-                this.gpudb.switchURL( currURL, currCountClusterSwitches );
+                this.gpudb.switchURL( currURL, currClusterSwitchCount );
             } catch (GPUdbBase.GPUdbHAUnavailableException ex ) {
                 // Have tried all clusters; back to square 1
                 throw ex;
@@ -391,8 +392,8 @@ public class RecordRetriever<T> {
             }
 
             // Update the reference points
-            currURL                  = this.gpudb.getURL();
-            currCountClusterSwitches = this.gpudb.getNumClusterSwitches();
+            currURL                = this.gpudb.getURL();
+            currClusterSwitchCount = this.gpudb.getNumClusterSwitches();
 
             // We did switch to a different cluster; now check the health
             // of the cluster, starting with the head node
@@ -426,7 +427,7 @@ public class RecordRetriever<T> {
             if ( isClusterHealthy ) {
                 // Save the healthy cluster's URL as the current head node URL
                 this.setCurrentHeadNodeURL( currURL );
-                this.setCurrentClusterSwitchCount( currCountClusterSwitches );
+                this.setCurrentClusterSwitchCount( currClusterSwitchCount );
                 GPUdbLogger.debug_with_info( "Did we actually switch the URL? "
                                              + didSwitchURL );
                 return didSwitchURL;
@@ -478,7 +479,7 @@ public class RecordRetriever<T> {
         try {
             // Get the latest shard mapping information; note that this endpoint
             // call might trigger an HA failover in the GPUdb object
-            AdminShowShardsResponse shardInfo = gpudb.adminShowShards(new AdminShowShardsRequest());
+            AdminShowShardsResponse shardInfo = this.gpudb.adminShowShards(new AdminShowShardsRequest());
 
             // Get the shard version
             long newShardVersion = shardInfo.getVersion();
@@ -524,10 +525,10 @@ public class RecordRetriever<T> {
                 GPUdbLogger.debug_with_info( "Had connection failure: "
                                              + ex.getMessage() );
                 return false;
-            } else {
-                // Unknown errors not handled here
-                throw ex;
             }
+
+            // Unknown errors not handled here
+            throw ex;
         }
 
         // If we get here, then we may have done a cluster failover during
@@ -603,7 +604,7 @@ public class RecordRetriever<T> {
      * @return  the GPUdb instance from which records will be retrieved
      */
     public GPUdb getGPUdb() {
-        return gpudb;
+        return this.gpudb;
     }
 
     /**
@@ -612,7 +613,7 @@ public class RecordRetriever<T> {
      * @return  the name of the table from which records will be retrieved
      */
     public String getTableName() {
-        return tableName;
+        return this.tableName;
     }
 
     /**
@@ -716,7 +717,7 @@ public class RecordRetriever<T> {
         boolean keyValuesSpecified = keyValues != null && !keyValues.isEmpty();
 
         if (offset < 1)
-            last_used_url = null;
+            this.last_used_url = null;
 
         if (!keyValuesSpecified) {
             // Use head rank if table is [randomly] sharded and no keys are given,
@@ -726,7 +727,7 @@ public class RecordRetriever<T> {
         } else {
             // Eliminate the case where key values are given, but the table has no
             //   key columns with which to associate them
-            if (!shardKeyBuilder.hasKey())
+            if (!this.shardKeyBuilder.hasKey())
                 throw new IllegalArgumentException(
                         "Cannot associate the specified keyValues with columns, " +
                         "as the table has no primary or shard key."
@@ -735,7 +736,7 @@ public class RecordRetriever<T> {
             // Since we have a keyed table, build the composite expression to be
             //   used for both sharded-with-PK/SK and replicated-with-PK tables;
             //   randomly-sharded & replicated-without-PK will only use expression
-            String keyExpression = shardKeyBuilder.buildExpression( keyValues );
+            String keyExpression = this.shardKeyBuilder.buildExpression( keyValues );
 
             // If the key expression exists, but the filter expression doesn't,
             //   use the key, otherwise if both exist, concatenate both
@@ -762,7 +763,7 @@ public class RecordRetriever<T> {
                 );
         }
 
-        GetRecordsRequest request = new GetRecordsRequest(tableName, offset, GPUdb.END_OF_SET,
+        GetRecordsRequest request = new GetRecordsRequest(this.tableName, offset, GPUdbBase.END_OF_SET,
             retrievalOptions);
         RawGetRecordsResponse response = new RawGetRecordsResponse();
         GetRecordsResponse<T> decodedResponse = new GetRecordsResponse<>();
@@ -775,7 +776,7 @@ public class RecordRetriever<T> {
             if (!doWorkerLookup) {
                 // Get from the head node
                 GPUdbLogger.debug_with_info( "Retrieving records from rank-0 with <" + compositeExpression + ">" );
-                response = gpudb.submitRequest("/get/records", request, response, false);
+                response = this.gpudb.submitRequest("/get/records", request, response, false);
             } else {
                 // Get the record(s) from a worker rank; whether from a random
                 // or a specific one depends on a few things
@@ -786,19 +787,19 @@ public class RecordRetriever<T> {
                 if ( this.isTableReplicated ) {
                     // For replicated tables, use the same worker for new pages (i.e., offset > 0)
                     // in case the data is in a different order on different workers
-                    if (last_used_url != null)
-                        url = last_used_url;
+                    if (this.last_used_url != null)
+                        url = this.last_used_url;
                     else {
                         url = this.workerUrls.get( ThreadLocalRandom.current().nextInt( this.workerUrls.size() ) );
-                        last_used_url = url; // Remember for next time
+                        this.last_used_url = url; // Remember for next time
                     }
                 } else {
                     // Not a replicated table; so calculate the shard to figure
                     // out which worker rank contains the requested records
                     RecordKey shardKey;
                     try {
-                        shardKey = shardKeyBuilder.build( keyValues );
-                    } catch (GPUdbException ex) {
+                        shardKey = this.shardKeyBuilder.build( keyValues );
+                    } catch (Exception ex) {
                         throw new GPUdbException( "Unable to calculate the shard value; please check data for unshardable values");
                     }
 
@@ -806,7 +807,7 @@ public class RecordRetriever<T> {
                 }
 
                 GPUdbLogger.debug_with_info( "Retrieving records from <" + url.toString() + "> with <" + compositeExpression + ">" );
-                response = gpudb.submitRequest(url, request, response, false);
+                response = this.gpudb.submitRequest(url, request, response, false);
             }
 
             // Check if shard re-balancing is under way at the server; if so,
@@ -820,10 +821,10 @@ public class RecordRetriever<T> {
             decodedResponse.setTypeSchema( response.getTypeSchema() );
 
             // Decode the actual response
-            if (typeObjectMap == null)
-                decodedResponse.setData( gpudb.<T>decode(type, response.getRecordsBinary()) );
+            if (this.typeObjectMap == null)
+                decodedResponse.setData( this.gpudb.<T>decode(this.type, response.getRecordsBinary()) );
             else
-                decodedResponse.setData( gpudb.<T>decode(typeObjectMap, response.getRecordsBinary()) );
+                decodedResponse.setData( this.gpudb.<T>decode(this.typeObjectMap, response.getRecordsBinary()) );
 
             decodedResponse.setTotalNumberOfRecords(response.getTotalNumberOfRecords());
             decodedResponse.setHasMoreRecords(response.getHasMoreRecords());
@@ -947,7 +948,7 @@ public class RecordRetriever<T> {
         boolean keyValuesSpecified = keyValues != null && !keyValues.isEmpty();
 
         if (offset < 1)
-            last_used_url = null;
+            this.last_used_url = null;
 
         if (!keyValuesSpecified)
         {
@@ -958,7 +959,7 @@ public class RecordRetriever<T> {
         } else {
             // Eliminate the case where key values are given, but the table has no
             //   key columns with which to associate them
-            if (!shardKeyBuilder.hasKey())
+            if (!this.shardKeyBuilder.hasKey())
                 throw new IllegalArgumentException(
                         "Cannot associate the specified keyValues with columns, " +
                         "as the table has no primary or shard key."
@@ -967,7 +968,7 @@ public class RecordRetriever<T> {
             // Since we have a keyed table, build the composite expression to be
             //   used for both sharded-with-PK/SK and replicated-with-PK tables;
             //   randomly-sharded & replicated-without-PK will only use expression
-            String keyExpression = shardKeyBuilder.buildExpression( keyValues );
+            String keyExpression = this.shardKeyBuilder.buildExpression( keyValues );
 
             // If the key expression exists, but the filter expression doesn't,
             //   use the key, otherwise if both exist, concatenate both
@@ -987,8 +988,8 @@ public class RecordRetriever<T> {
             retrievalOptions.put(GetRecordsRequest.Options.EXPRESSION, compositeExpression);
         }
 
-        GetRecordsByColumnRequest request = new GetRecordsByColumnRequest(tableName, columns,
-            offset, GPUdb.END_OF_SET, retrievalOptions);
+        GetRecordsByColumnRequest request = new GetRecordsByColumnRequest(this.tableName, columns,
+            offset, GPUdbBase.END_OF_SET, retrievalOptions);
         RawGetRecordsByColumnResponse response = new RawGetRecordsByColumnResponse();
         GetRecordsByColumnResponse decodedResponse = new GetRecordsByColumnResponse();
 
@@ -1000,7 +1001,7 @@ public class RecordRetriever<T> {
             if (!doWorkerLookup) {
                 // Get from the head node
                 GPUdbLogger.debug_with_info( "Retrieving records from rank-0 with <" + compositeExpression + ">" );
-                response = gpudb.submitRequest("/get/records/bycolumn", request, response, false);
+                response = this.gpudb.submitRequest("/get/records/bycolumn", request, response, false);
             } else {
                 // Get the record(s) from a worker rank; whether from a random
                 // or a specific one depends on a few things
@@ -1012,19 +1013,19 @@ public class RecordRetriever<T> {
                 {
                     // For replicated tables, use the same worker for new pages (i.e., offset > 0)
                     // in case the data is in a different order on different workers
-                    if (last_used_url != null)
-                        url = last_used_url;
+                    if (this.last_used_url != null)
+                        url = this.last_used_url;
                     else {
                         url = this.workerUrls.get( ThreadLocalRandom.current().nextInt( this.workerUrls.size() ) );
-                        last_used_url = url; // Remember for next time
+                        this.last_used_url = url; // Remember for next time
                     }
                 } else {
                     // Not a replicated table; so calculate the shard to figure
                     // out which worker rank contains the requested records
                     RecordKey shardKey;
                     try {
-                        shardKey = shardKeyBuilder.build( keyValues );
-                    } catch (GPUdbException ex) {
+                        shardKey = this.shardKeyBuilder.build( keyValues );
+                    } catch (Exception ex) {
                         throw new GPUdbException( "Unable to calculate the shard value; please check data for unshardable values");
                     }
 
@@ -1032,7 +1033,7 @@ public class RecordRetriever<T> {
                 }
 
                 GPUdbLogger.debug_with_info( "Retrieving records from <" + url + "/bycolumn> with <" + compositeExpression + ">" );
-                response = gpudb.submitRequest(GPUdbBase.appendPathToURL(url, "/bycolumn"), request, response, false);
+                response = this.gpudb.submitRequest(GPUdbBase.appendPathToURL(url, "/bycolumn"), request, response, false);
             }
 
             // Check if shard re-balancing is under way at the server; if so,

@@ -483,7 +483,7 @@ final class RecordKey {
         
     }
     
-    public void addUlong(String value) throws GPUdbException {
+    public void addUlong(String value) {
         if (value == null) {
             this.buffer.putLong(0l);
             return;
@@ -492,8 +492,8 @@ final class RecordKey {
         // Verify if this is a proper unsigned long value
         if ( !isUnsignedLong( value ) )
         {
-            throw new GPUdbException( "Unable to parse string value '" + value
-                                      + "' as an unsigned long" );
+            throw new IllegalArgumentException(
+                    String.format("Value must be a positive integer less than or equal to the maximum unsigned long value, got %s", value));
         }
 
         // Convert the string to an unsigned long value

@@ -2,6 +2,12 @@
 
 ## Version 7.2
 
+### Version 7.2.3.3 - 2025-11-19
+
+#### Fixed
+-   Fixed tracking of decimal precision/scale when building a shard key
+
+
 ### Version 7.2.3.2 - 2025-11-18
 
 #### Added

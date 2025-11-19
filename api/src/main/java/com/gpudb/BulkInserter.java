@@ -2399,7 +2399,7 @@ public class BulkInserter<T> implements AutoCloseable {
             //Handle GenericRecords or RecordObjects
             try {
                 shardKey = this.shardKeyBuilder.build(record);
-            } catch (GPUdbException ex) {
+            } catch (Exception ex) {
                 List<T> queuedRecord = new ArrayList<>();
                 queuedRecord.add(record);
                 throw new InsertException((URL) null, queuedRecord,

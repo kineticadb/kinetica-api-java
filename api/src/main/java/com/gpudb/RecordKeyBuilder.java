@@ -11,10 +11,36 @@ import org.apache.commons.lang3.tuple.Pair;
 final class RecordKeyBuilder<T> {
 
     private final TypeObjectMap<T> typeObjectMap;
-    private final List<Integer> columns;
-    private final List<String> columnNames;
-    private final List<Type.Column.ColumnType> columnTypes;
-    private final Map<Integer, Pair<Integer, Integer>> decimalSizes = new HashMap<>();
+
+    /**
+     * A list of indexes of the shard key columns within the source table, in
+     * the same order they appear in the table.
+     */
+    private final List<Integer> tableShardColumnIndexes;
+
+    /**
+     * A list of the names of the shard key columns, in the order they appear in
+     * the shard key.
+     */
+    private final List<String> shardColumnNames;
+
+    /**
+     * A list of the types of the shard key columns, in the order they appear in
+     * the shard key.
+     */
+    private final List<Type.Column.ColumnType> shardColumnTypes;
+
+    /**
+     * A map of the indexes of the decimal columns within the shard key to the
+     * precision/scale of those columns, in the order they appear in the shard
+     * key.
+     */
+    private final Map<Integer, Pair<Integer, Integer>> shardDecimalColumnSizeMap = new HashMap<>();
+
+    /**
+     * Size, in bytes, of the shard key buffer, to which packed values will be
+     * added when building the shard key.
+     */
     private final int bufferSize;
     private final boolean hasPrimaryKey;
 
@@ -57,10 +83,10 @@ final class RecordKeyBuilder<T> {
      */
     protected RecordKeyBuilder(Type type, TypeObjectMap<T> typeObjectMap) {
         this.typeObjectMap = typeObjectMap;
-        List<Integer> pkColumns = new ArrayList<>();
-        List<Integer> skColumns = new ArrayList<>();
-        this.columnNames = new ArrayList<>();
-        this.columnTypes = new ArrayList<>();
+        List<Integer> tablePkColumnIndexes = new ArrayList<>();
+        List<Integer> tableSkColumnIndexes = new ArrayList<>();
+        this.shardColumnNames = new ArrayList<>();
+        this.shardColumnTypes = new ArrayList<>();
 
         // Build a list of the PK & SK columns in the table
         List<Type.Column> typeColumns = type.getColumns();
@@ -72,27 +98,26 @@ final class RecordKeyBuilder<T> {
             //   list needs at least one column so that hasPrimaryKey can be set
             //   appropriately below by checking the PK list's non-emptiness
             if (columnProps.contains(ColumnProperty.SHARD_KEY))
-                skColumns.add(i);
-            if ((pkColumns.isEmpty() || skColumns.isEmpty()) && columnProps.contains(ColumnProperty.PRIMARY_KEY))
-                pkColumns.add(i);
+                tableSkColumnIndexes.add(i);
+            if ((tablePkColumnIndexes.isEmpty() || tableSkColumnIndexes.isEmpty()) && columnProps.contains(ColumnProperty.PRIMARY_KEY))
+                tablePkColumnIndexes.add(i);
         }
-        int nonShardedColumns = typeColumns.size() - skColumns.size();
 
         // If no explicit shard key is defined, assume the PK is the SK
-        this.columns = (!skColumns.isEmpty()) ? skColumns : pkColumns;
+        this.tableShardColumnIndexes = (!tableSkColumnIndexes.isEmpty()) ? tableSkColumnIndexes : tablePkColumnIndexes;
         
-        this.hasPrimaryKey = !pkColumns.isEmpty();
+        this.hasPrimaryKey = !tablePkColumnIndexes.isEmpty();
         
-        if (this.columns.isEmpty()) {
+        if (this.tableShardColumnIndexes.isEmpty()) {
             this.bufferSize = 0;
             return;
         }
 
         int size = 0;
 
-        for (int i : this.columns) {
-            Type.Column column = typeColumns.get(i);
-            this.columnNames.add( column.getName() );
+        for (int shardColumnIndex = 0; shardColumnIndex < this.tableShardColumnIndexes.size(); shardColumnIndex++) {
+            Type.Column column = typeColumns.get(this.tableShardColumnIndexes.get(shardColumnIndex));
+            this.shardColumnNames.add( column.getName() );
 
             Type.Column.ColumnType columnType = column.getColumnType();
             switch ( columnType ) {
@@ -127,7 +152,7 @@ final class RecordKeyBuilder<T> {
                     break;
                 case DECIMAL:
                     int precision = column.getDecimalPrecision();
-                    this.decimalSizes.putIfAbsent(i - nonShardedColumns, Pair.of(precision, column.getDecimalScale()));
+                    this.shardDecimalColumnSizeMap.putIfAbsent(shardColumnIndex, Pair.of(precision, column.getDecimalScale()));
                     size += precision > 18 ? 12 : 8;
                     break;
                 case CHAR16:
@@ -160,14 +185,24 @@ final class RecordKeyBuilder<T> {
                     );
             }
 
-            this.columnTypes.add( columnType );
+            this.shardColumnTypes.add( columnType );
         }
 
         this.bufferSize = size;
     }
 
-    private void addValue(RecordKey key, int column, Object value) throws GPUdbException {
-        Type.Column.ColumnType columnType = this.columnTypes.get(column);
+    /**
+     * Adds the given value to the given shard key at the given column index
+     * within the shard key
+     * 
+     * @param key Shard key to add the value to
+     * @param column Index of the column within the shard key to assign the
+     *        value to
+     * @param value The value to assign to the shard key at the given index
+     * @throws GPUdbException
+     */
+    private void addValue(RecordKey key, int column, Object value) {
+        Type.Column.ColumnType columnType = this.shardColumnTypes.get(column);
         switch (columnType) {
             case BOOLEAN:
                 Boolean b = Type.Column.convertBooleanValue(value);
@@ -221,8 +256,8 @@ final class RecordKeyBuilder<T> {
             case DECIMAL:
                 // Convert the value to String if it is not already a String
                 //Allow Double, Float or BigDecimal
-                int precision = this.decimalSizes.get(column).getLeft();
-                int scale = this.decimalSizes.get(column).getRight();
+                int precision = this.shardDecimalColumnSizeMap.get(column).getLeft();
+                int scale = this.shardDecimalColumnSizeMap.get(column).getRight();
                 String convertedValue = Type.Column.convertDecimalValue(value, scale);
                 key.addDecimal(convertedValue, precision, scale);
                 break;
@@ -284,12 +319,12 @@ final class RecordKeyBuilder<T> {
             default:
                 throw new IllegalArgumentException(
                         "Cannot use column <" + column + "> as a key; " +
-                        "type/property <" + this.columnTypes.get(column) + ">"
+                        "type/property <" + this.shardColumnTypes.get(column) + ">"
                 );
             }
     }
 
-    public RecordKey build(T object) throws GPUdbException {
+    public RecordKey build(T object) {
         if (this.bufferSize == 0) {
             return null;
         }
@@ -304,11 +339,11 @@ final class RecordKeyBuilder<T> {
 
         RecordKey key = new RecordKey(this.bufferSize);
 
-        for (int i = 0; i < this.columns.size(); i++) {
+        for (int i = 0; i < this.tableShardColumnIndexes.size(); i++) {
             if (indexedRecord != null) {
-                addValue(key, i, indexedRecord.get(this.columns.get(i)));
+                addValue(key, i, indexedRecord.get(this.tableShardColumnIndexes.get(i)));
             } else {
-                addValue(key, i, this.typeObjectMap.get(object, this.columns.get(i)));
+                addValue(key, i, this.typeObjectMap.get(object, this.tableShardColumnIndexes.get(i)));
             }
         }
 
@@ -327,18 +362,18 @@ final class RecordKeyBuilder<T> {
      * @return         a {@link RecordKey} instance for this table, which can be
      *                 used to determine the rank from which to request data
      */
-    public RecordKey build(List<Object> values) throws GPUdbException {
+    public RecordKey build(List<Object> values) {
         if (this.bufferSize == 0) {
             return null;
         }
 
-        if (this.columns.size() != values.size()) {
+        if (this.tableShardColumnIndexes.size() != values.size()) {
             throw new IllegalArgumentException("Incorrect number of key values specified.");
         }
 
         RecordKey key = new RecordKey(this.bufferSize);
 
-        for (int i = 0; i < this.columns.size(); i++) {
+        for (int i = 0; i < this.tableShardColumnIndexes.size(); i++) {
             addValue(key, i, values.get(i));
         }
 
@@ -362,16 +397,16 @@ final class RecordKeyBuilder<T> {
             return null;
         }
 
-        if (this.columns.size() != values.size()) {
+        if (this.tableShardColumnIndexes.size() != values.size()) {
             throw new IllegalArgumentException(
                     "Incorrect number of key values specified: " +
-                    "need <" + this.columns.size() + ">, got <" + values.size() + ">"
+                    "need <" + this.tableShardColumnIndexes.size() + ">, got <" + values.size() + ">"
             );
         }
 
         StringBuilder result = new StringBuilder();
 
-        for (int i = 0; i < this.columns.size(); i++) {
+        for (int i = 0; i < this.tableShardColumnIndexes.size(); i++) {
             if (result.length() > 0) {
                 result.append(" and ");
             }
@@ -379,15 +414,15 @@ final class RecordKeyBuilder<T> {
             Object value = values.get(i);
             if (value == null) {
                 result.append("is_null(");
-                result.append(this.columnNames.get(i));
+                result.append(this.shardColumnNames.get(i));
                 result.append(")");
                 continue;
             }
 
-            result.append(this.columnNames.get(i));
+            result.append(this.shardColumnNames.get(i));
             result.append(" = ");
 
-            switch (this.columnTypes.get(i)) {
+            switch (this.shardColumnTypes.get(i)) {
                 case ARRAY:
                 case CHAR1:
                 case CHAR2:
@@ -454,8 +489,8 @@ final class RecordKeyBuilder<T> {
                     break;
                 default:
                     throw new IllegalArgumentException(
-                            "Cannot use column <" + this.columnNames.get(i) + "> as a key; " +
-                            "type/property <" + this.columnTypes.get(i) + ">"
+                            "Cannot use column <" + this.shardColumnNames.get(i) + "> as a key; " +
+                            "type/property <" + this.shardColumnTypes.get(i) + ">"
                     );
             }
         }
@@ -464,7 +499,7 @@ final class RecordKeyBuilder<T> {
     }
 
     public boolean hasKey() {
-        return !this.columns.isEmpty();
+        return !this.tableShardColumnIndexes.isEmpty();
     }
 
     public boolean hasPrimaryKey() {
@@ -472,6 +507,6 @@ final class RecordKeyBuilder<T> {
     }
 
     public boolean hasSameKey(RecordKeyBuilder<T> other) {
-        return this.columns.equals(other.columns);
+        return this.tableShardColumnIndexes.equals(other.tableShardColumnIndexes);
     }
 }
