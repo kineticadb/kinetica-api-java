@@ -2425,13 +2425,11 @@ public class BulkInserter<T> implements AutoCloseable {
         }
 
         // Insert the record into the queue
-        synchronized (workerQueue) {
-            workerQueue.insert(record);
+        workerQueue.insert(record);
 
-            // Flush the queue if it is full
-            if (flushWhenFull && workerQueue.isQueueFull()) {
-                this.flush(workerQueue);
-            }
+        // Flush the queue if it is full
+        if (flushWhenFull && workerQueue.isQueueFull()) {
+            this.flush(workerQueue);
         }
 
     }   // end private insert( single record, flush when full flag )

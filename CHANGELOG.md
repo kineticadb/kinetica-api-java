@@ -2,6 +2,12 @@
 
 ## Version 7.2
 
+### Version 7.2.3.4 - 2025-11-21
+
+#### Changed
+-   Improved multi-threaded performance of multi-head ingest via `BulkInserter`
+
+
 ### Version 7.2.3.3 - 2025-11-19
 
 #### Fixed
