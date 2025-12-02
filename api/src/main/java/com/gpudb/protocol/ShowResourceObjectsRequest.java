@@ -73,6 +73,10 @@ public class ShowResourceObjectsRequest implements IndexedRecord {
          *     <li>{@link Options#PRIORITY PRIORITY}
          *     <li>{@link Options#TIER TIER}
          *     <li>{@link Options#EVICTABLE EVICTABLE}
+         *     <li>{@link Options#LOCKED LOCKED}
+         *     <li>{@link Options#PIN_COUNT PIN_COUNT}
+         *     <li>{@link Options#RAM_EVICTIONS RAM_EVICTIONS}
+         *     <li>{@link Options#PERSIST_EVICTIONS PERSIST_EVICTIONS}
          *     <li>{@link Options#OWNER_RESOURCE_GROUP OWNER_RESOURCE_GROUP}
          * </ul>
          */
@@ -83,6 +87,10 @@ public class ShowResourceObjectsRequest implements IndexedRecord {
         public static final String PRIORITY = "priority";
         public static final String TIER = "tier";
         public static final String EVICTABLE = "evictable";
+        public static final String LOCKED = "locked";
+        public static final String PIN_COUNT = "pin_count";
+        public static final String RAM_EVICTIONS = "ram_evictions";
+        public static final String PERSIST_EVICTIONS = "persist_evictions";
         public static final String OWNER_RESOURCE_GROUP = "owner_resource_group";
 
         /**
@@ -143,6 +151,12 @@ public class ShowResourceObjectsRequest implements IndexedRecord {
      *                             <li>{@link Options#PRIORITY PRIORITY}
      *                             <li>{@link Options#TIER TIER}
      *                             <li>{@link Options#EVICTABLE EVICTABLE}
+     *                             <li>{@link Options#LOCKED LOCKED}
+     *                             <li>{@link Options#PIN_COUNT PIN_COUNT}
+     *                             <li>{@link Options#RAM_EVICTIONS
+     *                                 RAM_EVICTIONS}
+     *                             <li>{@link Options#PERSIST_EVICTIONS
+     *                                 PERSIST_EVICTIONS}
      *                             <li>{@link Options#OWNER_RESOURCE_GROUP
      *                                 OWNER_RESOURCE_GROUP}
      *                         </ul>
@@ -187,6 +201,10 @@ public class ShowResourceObjectsRequest implements IndexedRecord {
      *             <li>{@link Options#PRIORITY PRIORITY}
      *             <li>{@link Options#TIER TIER}
      *             <li>{@link Options#EVICTABLE EVICTABLE}
+     *             <li>{@link Options#LOCKED LOCKED}
+     *             <li>{@link Options#PIN_COUNT PIN_COUNT}
+     *             <li>{@link Options#RAM_EVICTIONS RAM_EVICTIONS}
+     *             <li>{@link Options#PERSIST_EVICTIONS PERSIST_EVICTIONS}
      *             <li>{@link Options#OWNER_RESOURCE_GROUP
      *                 OWNER_RESOURCE_GROUP}
      *         </ul>
@@ -229,6 +247,10 @@ public class ShowResourceObjectsRequest implements IndexedRecord {
      *             <li>{@link Options#PRIORITY PRIORITY}
      *             <li>{@link Options#TIER TIER}
      *             <li>{@link Options#EVICTABLE EVICTABLE}
+     *             <li>{@link Options#LOCKED LOCKED}
+     *             <li>{@link Options#PIN_COUNT PIN_COUNT}
+     *             <li>{@link Options#RAM_EVICTIONS RAM_EVICTIONS}
+     *             <li>{@link Options#PERSIST_EVICTIONS PERSIST_EVICTIONS}
      *             <li>{@link Options#OWNER_RESOURCE_GROUP
      *                 OWNER_RESOURCE_GROUP}
      *         </ul>

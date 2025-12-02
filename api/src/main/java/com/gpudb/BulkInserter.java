@@ -35,6 +35,696 @@ public class BulkInserter<T> implements AutoCloseable {
     //Number of seconds to wait for the thread pools (scheduler and worker) to terminate
     private static final int DEFAULT_THREADPOOL_TERMINATION_TIMEOUT = 30; //In seconds
 
+    // Table members
+    private final GPUdb gpudb;
+    private final String tableName;
+    private final TypeObjectMap<T> typeObjectMap;
+    private final int batchSize;
+    private final Map<String, String> options;
+
+    // Ingest processing members
+    private final ExecutorService workerExecutorService;
+    private ScheduledExecutorService timedFlushExecutorService;
+    private boolean timedFlushExecutorServiceTerminated;
+    private FlushOptions flushOptions;
+    private GPUdbBase.JsonOptions jsonOptions;
+    private volatile int maxRetries;
+    private final boolean returnIndividualErrors;
+    private final AtomicLong countInserted = new AtomicLong();
+    private final AtomicLong countUpdated = new AtomicLong();
+    private List<InsertException> errorList = new ArrayList<>();
+    private List<InsertException> warningList = new ArrayList<>();
+    private final Object errorListLock = new Object();
+    private boolean simulateErrorMode = false; // Simulate returnIndividualErrors after an error
+
+    // Sharding members
+    private com.gpudb.WorkerList workerList;
+    private List<WorkerQueue<T>> workerQueues;
+    private final boolean multiHeadEnabled;
+    private final boolean useHeadNode;
+    private final RecordKeyBuilder<T> shardKeyBuilder;
+    private long shardVersion;
+    private MutableLong shardUpdateTime;
+    private List<Integer> routingTable;
+
+    // HA members
+    private final int dbHARingSize;
+    private int numClusterSwitches;
+    private URL currentHeadNodeURL;
+    private final Object haFailoverLock;
+
+
+    /**
+     * Creates a {@link BulkInserter} with the specified parameters.
+     * <br/>
+     * This constructor will attempt to automatically configure multi-head
+     * ingest, if available.
+     * <br/>
+     * It will also use default settings for the
+     * {@link GPUdb#insertRecords(String, List, Map)} call.  Details can be
+     * found at {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
+     * 
+     * @param gpudb        the {@link GPUdb} instance to insert records into
+     * @param tableName    name of the table to insert records into
+     * @param type         the {@link Type} of records being inserted
+     * @param batchSize    the number of records to insert into GPUdb at a time
+     *                     (records will queue until this number is reached);
+     *                     for multi-head ingest, this value is per worker
+     *
+     * @throws GPUdbException if a configuration error occurs
+     *
+     * @throws IllegalArgumentException if an invalid parameter is specified
+     *
+     * @see com.gpudb.protocol.InsertRecordsRequest.Options
+     */
+    public BulkInserter(GPUdb gpudb,
+                        String tableName,
+                        Type type,
+                        int batchSize) throws GPUdbException {
+        this(gpudb, tableName, type, null, batchSize, null, null, FlushOptions.defaultOptions(), GPUdbBase.JsonOptions.defaultOptions());
+    }
+
+    /**
+     * Creates a {@link BulkInserter} with the specified parameters.
+     * <br/>
+     * This constructor will attempt to automatically configure multi-head
+     * ingest, if available.
+     * 
+     * @param gpudb        the {@link GPUdb} instance to insert records into
+     * @param tableName    name of the table to insert records into
+     * @param type         the {@link Type} of records being inserted
+     * @param batchSize    the number of records to insert into GPUdb at a time
+     *                     (records will queue until this number is reached);
+     *                     for multi-head ingest, this value is per worker
+     * @param options      optional parameters to pass to GPUdb while inserting
+     *                     ({@code null} for no parameters)
+     *                     <br/>
+     *                     This is the same set of options as accepted by the
+     *                     {@link GPUdb#insertRecords(String, List, Map)} call.
+     *                     <br/>
+     *                     The details can be found at
+     *                     {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
+     *
+     * @throws GPUdbException if a configuration error occurs
+     *
+     * @throws IllegalArgumentException if an invalid parameter is specified
+     *
+     * @see com.gpudb.protocol.InsertRecordsRequest.Options
+     */
+    public BulkInserter(GPUdb gpudb,
+                        String tableName,
+                        Type type,
+                        int batchSize,
+                        Map<String, String> options) throws GPUdbException {
+        this(gpudb, tableName, type, null, batchSize, options, null, FlushOptions.defaultOptions(), GPUdbBase.JsonOptions.defaultOptions());
+    }
+
+    /**
+     * Creates a {@link BulkInserter} with the specified parameters.
+     *
+     * @param gpudb        the {@link GPUdb} instance to insert records into
+     * @param tableName    name of the table to insert records into
+     * @param type         the {@link Type} of records being inserted
+     * @param batchSize    the number of records to insert into GPUdb at a time
+     *                     (records will queue until this number is reached);
+     *                     for multi-head ingest, this value is per worker
+     * @param options      optional parameters to pass to GPUdb while inserting
+     *                     ({@code null} for no parameters)
+     *                     <br/>
+     *                     This is the same set of options as accepted by the
+     *                     {@link GPUdb#insertRecords(String, List, Map)} call.
+     *                     <br/>
+     *                     The details can be found at
+     *                     {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
+     * @param workers      worker list for multi-head ingest; use an empty worker
+     *                     list ({@code new WorkerList()}) to disable multi-head
+     *
+     * @throws GPUdbException if a configuration error occurs
+     *
+     * @throws IllegalArgumentException if an invalid parameter is specified
+     *
+     * @see com.gpudb.protocol.InsertRecordsRequest.Options
+     */
+    public BulkInserter(GPUdb gpudb,
+                        String tableName,
+                        Type type,
+                        int batchSize,
+                        Map<String, String> options,
+                        com.gpudb.WorkerList workers) throws GPUdbException {
+        this(gpudb, tableName, type, null, batchSize, options, workers, FlushOptions.defaultOptions(), GPUdbBase.JsonOptions.defaultOptions());
+    }
+
+    /**
+     * Creates a {@link BulkInserter} with the specified parameters.
+     *
+     * @param gpudb        the {@link GPUdb} instance to insert records into
+     * @param tableName    name of the table to insert records into
+     * @param type         the {@link Type} of records being inserted
+     * @param batchSize    the number of records to insert into GPUdb at a time
+     *                     (records will queue until this number is reached);
+     *                     for multi-head ingest, this value is per worker
+     * @param options      optional parameters to pass to GPUdb while inserting
+     *                     ({@code null} for no parameters)
+     *                     <br/>
+     *                     This is the same set of options as accepted by the
+     *                     {@link GPUdb#insertRecords(String, List, Map)} call.
+     *                     <br/>
+     *                     The details can be found at
+     *                     {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
+     * @param workers      worker list for multi-head ingest; use an empty worker
+     *                     list ({@code new WorkerList()}) to disable multi-head
+     * @param flushOptions {@link FlushOptions} to use for timed flush operation
+     *
+     * @throws GPUdbException if a configuration error occurs
+     *
+     * @throws IllegalArgumentException if an invalid parameter is specified
+     *
+     * @see com.gpudb.protocol.InsertRecordsRequest.Options
+     * @see FlushOptions
+     */
+    public BulkInserter(GPUdb gpudb,
+                        String tableName,
+                        Type type,
+                        int batchSize,
+                        Map<String, String> options,
+                        com.gpudb.WorkerList workers,
+                        FlushOptions flushOptions) throws GPUdbException {
+        this(gpudb, tableName, type, null, batchSize, options, workers, flushOptions, GPUdbBase.JsonOptions.defaultOptions());
+    }
+
+    /**
+     * Creates a {@link BulkInserter} with the specified parameters.
+     *
+     * @param gpudb        the {@link GPUdb} instance to insert records into
+     * @param tableName    name of the table to insert records into
+     * @param type         the {@link Type} of records being inserted
+     * @param batchSize    the number of records to insert into GPUdb at a time
+     *                     (records will queue until this number is reached);
+     *                     for multi-head ingest, this value is per worker
+     * @param options      optional parameters to pass to GPUdb while inserting
+     *                     ({@code null} for no parameters)
+     *                     <br/>
+     *                     This is the same set of options as accepted by the
+     *                     {@link GPUdb#insertRecords(String, List, Map)} call.
+     *                     <br/>
+     *                     The details can be found at
+     *                     {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
+     * @param workers      worker list for multi-head ingest; use an empty worker
+     *                     list ({@code new WorkerList()}) to disable multi-head
+     * @param jsonOptions  {@link GPUdbBase.JsonOptions} to use for JSON ingest
+     *
+     * @throws GPUdbException if a configuration error occurs
+     *
+     * @throws IllegalArgumentException if an invalid parameter is specified
+     *
+     * @see com.gpudb.protocol.InsertRecordsRequest.Options
+     * @see FlushOptions
+     * @see GPUdbBase.JsonOptions
+     */
+    public BulkInserter(GPUdb gpudb,
+                        String tableName,
+                        Type type,
+                        int batchSize,
+                        Map<String, String> options,
+                        com.gpudb.WorkerList workers,
+                        GPUdbBase.JsonOptions jsonOptions) throws GPUdbException {
+        this(gpudb, tableName, type, null, batchSize, options, workers, FlushOptions.defaultOptions(), jsonOptions);
+    }
+
+    /**
+     * Creates a {@link BulkInserter} with the specified parameters.
+     *
+     * @param gpudb        the {@link GPUdb} instance to insert records into
+     * @param tableName    name of the table to insert records into
+     * @param type         the {@link Type} of records being inserted
+     * @param batchSize    the number of records to insert into GPUdb at a time
+     *                     (records will queue until this number is reached);
+     *                     for multi-head ingest, this value is per worker
+     * @param options      optional parameters to pass to GPUdb while inserting
+     *                     ({@code null} for no parameters)
+     *                     <br/>
+     *                     This is the same set of options as accepted by the
+     *                     {@link GPUdb#insertRecords(String, List, Map)} call.
+     *                     <br/>
+     *                     The details can be found at
+     *                     {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
+     * @param workers      worker list for multi-head ingest; use an empty worker
+     *                     list ({@code new WorkerList()}) to disable multi-head
+     * @param flushOptions {@link FlushOptions} to use for timed flush operation
+     * @param jsonOptions  {@link GPUdbBase.JsonOptions} to use for JSON ingest
+     *
+     * @throws GPUdbException if a configuration error occurs
+     *
+     * @throws IllegalArgumentException if an invalid parameter is specified
+     *
+     * @see com.gpudb.protocol.InsertRecordsRequest.Options
+     * @see FlushOptions
+     * @see GPUdbBase.JsonOptions
+     */
+    public BulkInserter(GPUdb gpudb,
+                        String tableName,
+                        Type type,
+                        int batchSize,
+                        Map<String, String> options,
+                        com.gpudb.WorkerList workers,
+                        FlushOptions flushOptions,
+                        GPUdbBase.JsonOptions jsonOptions) throws GPUdbException {
+        this(gpudb, tableName, type, null, batchSize, options, workers, flushOptions, jsonOptions);
+    }
+
+
+    /**
+     * Creates a {@link BulkInserter} with the specified parameters.
+     * <br/>
+     * This constructor will attempt to automatically configure multi-head
+     * ingest, if available.
+     * <br/>
+     * It will also use default settings for the
+     * {@link GPUdb#insertRecords(String, List, Map)} call.  Details can be
+     * found at {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
+     * 
+     * @param gpudb         the {@link GPUdb} instance to insert records into
+     * @param tableName     name of the table to insert records into
+     * @param typeObjectMap the {@link TypeObjectMap} for the type of records
+     *                      being inserted
+     * @param batchSize     the number of records to insert into GPUdb at a time
+     *                      (records will queue until this number is reached);
+     *                      for multi-head ingest, this value is per worker
+     *
+     * @throws GPUdbException if a configuration error occurs
+     *
+     * @throws IllegalArgumentException if an invalid parameter is specified
+     *
+     * @see com.gpudb.protocol.InsertRecordsRequest.Options
+     */
+    public BulkInserter(GPUdb gpudb,
+                        String tableName,
+                        TypeObjectMap<T> typeObjectMap,
+                        int batchSize) throws GPUdbException {
+        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, batchSize, null, null, FlushOptions.defaultOptions(), GPUdbBase.JsonOptions.defaultOptions());
+    }
+
+    /**
+     * Creates a {@link BulkInserter} with the specified parameters.
+     * <br/>
+     * This constructor will attempt to automatically configure multi-head
+     * ingest, if available.
+     * 
+     * @param gpudb         the {@link GPUdb} instance to insert records into
+     * @param tableName     name of the table to insert records into
+     * @param typeObjectMap the {@link TypeObjectMap} for the type of records
+     *                      being inserted
+     * @param batchSize     the number of records to insert into GPUdb at a time
+     *                      (records will queue until this number is reached);
+     *                      for multi-head ingest, this value is per worker
+     * @param options       optional parameters to pass to GPUdb while inserting
+     *                      ({@code null} for no parameters)
+     *                      <br/>
+     *                      This is the same set of options as accepted by the
+     *                      {@link GPUdb#insertRecords(String, List, Map)} call.
+     *                      <br/>
+     *                      The details can be found at
+     *                      {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
+     *
+     * @throws GPUdbException if a configuration error occurs
+     *
+     * @throws IllegalArgumentException if an invalid parameter is specified
+     *
+     * @see com.gpudb.protocol.InsertRecordsRequest.Options
+     */
+    public BulkInserter(GPUdb gpudb,
+                        String tableName,
+                        TypeObjectMap<T> typeObjectMap,
+                        int batchSize,
+                        Map<String, String> options) throws GPUdbException {
+        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, batchSize, options, null, FlushOptions.defaultOptions(), GPUdbBase.JsonOptions.defaultOptions());
+    }
+
+    /**
+     * Creates a {@link BulkInserter} with the specified parameters.
+     *
+     * @param gpudb         the {@link GPUdb} instance to insert records into
+     * @param tableName     name of the table to insert records into
+     * @param typeObjectMap the {@link TypeObjectMap} for the type of records
+     *                      being inserted
+     * @param batchSize     the number of records to insert into GPUdb at a time
+     *                      (records will queue until this number is reached);
+     *                      for multi-head ingest, this value is per worker
+     * @param options       optional parameters to pass to GPUdb while inserting
+     *                      ({@code null} for no parameters)
+     *                      <br/>
+     *                      This is the same set of options as accepted by the
+     *                      {@link GPUdb#insertRecords(String, List, Map)} call.
+     *                      <br/>
+     *                      The details can be found at
+     *                      {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
+     * @param workers       worker list for multi-head ingest; use an empty worker
+     *                      list ({@code new WorkerList()}) to disable multi-head
+     *
+     * @throws GPUdbException if a configuration error occurs
+     *
+     * @throws IllegalArgumentException if an invalid parameter is specified
+     *
+     * @see com.gpudb.protocol.InsertRecordsRequest.Options
+     */
+    public BulkInserter(GPUdb gpudb,
+                        String tableName,
+                        TypeObjectMap<T> typeObjectMap,
+                        int batchSize,
+                        Map<String, String> options,
+                        com.gpudb.WorkerList workers) throws GPUdbException {
+        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, batchSize, options, workers, FlushOptions.defaultOptions(), GPUdbBase.JsonOptions.defaultOptions());
+    }
+
+    /**
+     * Creates a {@link BulkInserter} with the specified parameters.
+     *
+     * @param gpudb         the {@link GPUdb} instance to insert records into
+     * @param tableName     name of the table to insert records into
+     * @param typeObjectMap the {@link TypeObjectMap} for the type of records
+     *                      being inserted
+     * @param batchSize     the number of records to insert into GPUdb at a time
+     *                      (records will queue until this number is reached);
+     *                      for multi-head ingest, this value is per worker
+     * @param options       optional parameters to pass to GPUdb while inserting
+     *                      ({@code null} for no parameters)
+     *                      <br/>
+     *                      This is the same set of options as accepted by the
+     *                      {@link GPUdb#insertRecords(String, List, Map)} call.
+     *                      <br/>
+     *                      The details can be found at
+     *                      {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
+     * @param workers       worker list for multi-head ingest; use an empty worker
+     *                      list ({@code new WorkerList()}) to disable multi-head
+     * @param flushOptions  {@link FlushOptions} to use for timed flush operation
+     *
+     * @throws GPUdbException if a configuration error occurs
+     *
+     * @throws IllegalArgumentException if an invalid parameter is specified
+     *
+     * @see com.gpudb.protocol.InsertRecordsRequest.Options
+     * @see FlushOptions
+     * @see GPUdbBase.JsonOptions
+     */
+    public BulkInserter(GPUdb gpudb,
+                        String tableName,
+                        TypeObjectMap<T> typeObjectMap,
+                        int batchSize,
+                        Map<String, String> options,
+                        com.gpudb.WorkerList workers,
+                        FlushOptions flushOptions) throws GPUdbException {
+        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, batchSize, options, workers, flushOptions, GPUdbBase.JsonOptions.defaultOptions());
+    }
+
+    /**
+     * Creates a {@link BulkInserter} with the specified parameters.
+     *
+     * @param gpudb         the {@link GPUdb} instance to insert records into
+     * @param tableName     name of the table to insert records into
+     * @param typeObjectMap the {@link TypeObjectMap} for the type of records
+     *                      being inserted
+     * @param batchSize     the number of records to insert into GPUdb at a time
+     *                      (records will queue until this number is reached);
+     *                      for multi-head ingest, this value is per worker
+     * @param options       optional parameters to pass to GPUdb while inserting
+     *                      ({@code null} for no parameters)
+     *                      <br/>
+     *                      This is the same set of options as accepted by the
+     *                      {@link GPUdb#insertRecords(String, List, Map)} call.
+     *                      <br/>
+     *                      The details can be found at
+     *                      {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
+     * @param workers       worker list for multi-head ingest; use an empty worker
+     *                      list ({@code new WorkerList()}) to disable multi-head
+     * @param jsonOptions   {@link GPUdbBase.JsonOptions} to use for JSON ingest
+     *
+     * @throws GPUdbException if a configuration error occurs
+     *
+     * @throws IllegalArgumentException if an invalid parameter is specified
+     *
+     * @see com.gpudb.protocol.InsertRecordsRequest.Options
+     * @see FlushOptions
+     * @see GPUdbBase.JsonOptions
+     */
+    public BulkInserter(GPUdb gpudb,
+                        String tableName,
+                        TypeObjectMap<T> typeObjectMap,
+                        int batchSize,
+                        Map<String, String> options,
+                        com.gpudb.WorkerList workers,
+                        GPUdbBase.JsonOptions jsonOptions) throws GPUdbException {
+        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, batchSize, options, workers, FlushOptions.defaultOptions(), jsonOptions);
+    }
+
+    /**
+     * Creates a {@link BulkInserter} with the specified parameters.
+     *
+     * @param gpudb         the {@link GPUdb} instance to insert records into
+     * @param tableName     name of the table to insert records into
+     * @param typeObjectMap the {@link TypeObjectMap} for the type of records
+     *                      being inserted
+     * @param batchSize     the number of records to insert into GPUdb at a time
+     *                      (records will queue until this number is reached);
+     *                      for multi-head ingest, this value is per worker
+     * @param options       optional parameters to pass to GPUdb while inserting
+     *                      ({@code null} for no parameters)
+     *                      <br/>
+     *                      This is the same set of options as accepted by the
+     *                      {@link GPUdb#insertRecords(String, List, Map)} call.
+     *                      <br/>
+     *                      The details can be found at
+     *                      {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
+     * @param workers       worker list for multi-head ingest; use an empty worker
+     *                      list ({@code new WorkerList()}) to disable multi-head
+     * @param flushOptions  {@link FlushOptions} to use for timed flush operation
+     * @param jsonOptions   {@link GPUdbBase.JsonOptions} to use for JSON ingest
+     *
+     * @throws GPUdbException if a configuration error occurs
+     *
+     * @throws IllegalArgumentException if an invalid parameter is specified
+     *
+     * @see com.gpudb.protocol.InsertRecordsRequest.Options
+     * @see FlushOptions
+     * @see GPUdbBase.JsonOptions
+     */
+    public BulkInserter(GPUdb gpudb,
+                        String tableName,
+                        TypeObjectMap<T> typeObjectMap,
+                        int batchSize,
+                        Map<String, String> options,
+                        com.gpudb.WorkerList workers,
+                        FlushOptions flushOptions,
+                        GPUdbBase.JsonOptions jsonOptions) throws GPUdbException {
+        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, batchSize, options, workers, flushOptions, jsonOptions);
+    }
+
+
+    /**
+     * Creates a {@link BulkInserter} with the specified parameters.
+     *
+     * @param gpudb         the {@link GPUdb} instance to insert records into
+     * @param tableName     name of the table to insert records into
+     * @param type          the {@link Type} of records being inserted
+     * @param typeObjectMap the {@link TypeObjectMap} for the type of records
+     *                      being inserted
+     * @param batchSize     the number of records to insert into GPUdb at a time
+     *                      (records will queue until this number is reached);
+     *                      for multi-head ingest, this value is per worker
+     * @param options       optional parameters to pass to GPUdb while inserting
+     *                      ({@code null} for no parameters)
+     *                      <br/>
+     *                      This is the same set of options as accepted by the
+     *                      {@link GPUdb#insertRecords(String, List, Map)} call.
+     *                      <br/>
+     *                      The details can be found at
+     *                      {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
+     * @param workers       worker list for multi-head ingest; use an empty worker
+     *                      list ({@code new WorkerList()}) to disable multi-head
+     * @param flushOptions  {@link FlushOptions} to use for timed flush operation
+     * @param jsonOptions   {@link GPUdbBase.JsonOptions} to use for JSON ingest
+     *
+     * @throws GPUdbException if a configuration error occurs
+     *
+     * @throws IllegalArgumentException if an invalid parameter is specified
+     *
+     * @see com.gpudb.protocol.InsertRecordsRequest.Options
+     * @see FlushOptions
+     * @see GPUdbBase.JsonOptions
+     */
+    private BulkInserter(GPUdb gpudb,
+                         String tableName,
+                         Type type,
+                         TypeObjectMap<T> typeObjectMap,
+                         int batchSize,
+                         Map<String, String> options,
+                         com.gpudb.WorkerList workers,
+                         FlushOptions flushOptions,
+                         GPUdbBase.JsonOptions jsonOptions) throws GPUdbException {
+
+        final boolean hasPermissions = hasPermissionsForTable(gpudb, tableName, options);
+        if( !hasPermissions ) {
+            String errorMsg = String.format("User %s doesn't have requisite permissions on the table %s to use BulkInserter", gpudb.getUsername(), tableName);
+            GPUdbLogger.error(errorMsg);
+            throw new GPUdbException(errorMsg);
+        }
+
+        this.haFailoverLock = new Object();
+
+        this.gpudb = gpudb;
+        this.tableName = tableName;
+        this.typeObjectMap = typeObjectMap;
+        this.workerList    = workers;
+
+        // Validate the batch size
+        if (batchSize < 1) {
+            throw new IllegalArgumentException("Batch size must be greater than zero.");
+        }
+        this.batchSize = batchSize;
+
+        // By default, we will retry insertions once
+        this.maxRetries = DEFAULT_INSERTION_RETRY_COUNT;
+
+        if (options != null) {
+            this.options = Collections.unmodifiableMap(new HashMap<>(options));
+        } else {
+            this.options = null;
+        }
+
+        this.flushOptions = ( flushOptions == null ) ? FlushOptions.defaultOptions() : flushOptions;
+
+        // Default is to set JSON validation to false.
+        this.jsonOptions = (jsonOptions == null) ? GPUdbBase.JsonOptions.defaultOptions() : jsonOptions;
+
+        // Initialize the thread pool for workers based on the resources
+        // available on the system
+        // N threads = N CPU * U CPU * (1 + W/C)
+        // In this formula, NCPU is the number of cores, available through Runtime.getRuntime().availableProcessors()
+        // U CPU is the target CPU use (between 0 and 1).
+        // W/C is the ratio of wait time to compute time.
+        this.workerExecutorService = Executors.newFixedThreadPool( Runtime
+                .getRuntime()
+                .availableProcessors() );
+
+        // Initialize the shard version and update time
+        this.shardVersion = 0;
+        this.shardUpdateTime = new MutableLong();
+
+        // We need to know how many clusters are in the HA ring (for failover
+        // purposes)
+        this.dbHARingSize = gpudb.getHARingSize();
+
+        // Keep track of how many times the DB client has switched HA clusters
+        // in order to decide later if it's time to update the worker queues
+        this.numClusterSwitches = gpudb.getNumClusterSwitches();
+
+        // Keep track of which cluster we're using (helpful in knowing if an
+        // HA failover has happened)
+        this.currentHeadNodeURL = gpudb.getURL();
+
+        // Call /show/table to check table existence & replicated nature
+        List<String> tableDescriptions = null;
+        try {
+            tableDescriptions = gpudb.showTable(this.tableName, null).getTableDescriptions().get(0);
+        }
+        catch (GPUdbException ge) {
+            throw new GPUdbException( "Table '" + this.tableName + "' does not exist!" );
+        }
+        final boolean isReplicatedTable = tableDescriptions.contains(ShowTableResponse.TableDescriptions.REPLICATED);
+
+        // If no worker list is given, attempt to create one, by default
+        if (this.workerList == null) {
+            try {
+                this.workerList = new com.gpudb.WorkerList(this.gpudb);
+            }
+            catch (GPUdbException e) {
+                GPUdbLogger.info("Could not create default worker list for bulk ingest; using head node instead.");
+            }
+        }
+
+        // Set if multi-head I/O is turned on at the server and rank URLs are accessible
+        this.multiHeadEnabled = ( (this.workerList != null) && !this.workerList.isEmpty() );
+
+        // We should use the head node if multi-head is turned off at the server
+        // or if we're working with a replicated table
+        this.useHeadNode = ( !this.multiHeadEnabled || isReplicatedTable);
+
+        this.shardKeyBuilder = new RecordKeyBuilder<>(type, typeObjectMap);
+
+        this.workerQueues = new ArrayList<>();
+
+        try {
+
+            // If we have multiple workers, then use those (unless the table
+            // is replicated)
+            if ( !this.useHeadNode ) {
+
+                for (URL url : this.workerList) {
+                    if (url == null) {
+                        // Handle removed ranks
+                        this.workerQueues.add( null );
+                    } else {
+                        URL insertURL = GPUdbBase.appendPathToURL( url,
+                                                                   "/insert/records" );
+                        this.workerQueues.add(new WorkerQueue<>( this.gpudb,
+                                                                  insertURL,
+                                                                  this.tableName,
+                                                                  batchSize,
+                                                                  this.options,
+                                                                  this.jsonOptions,
+                                                                  this.typeObjectMap ) );
+                    }
+                }
+
+                // Update the worker queues, if needed
+                updateWorkerQueues( this.numClusterSwitches, false );
+            } else { // use the head node only for insertion
+                URL insertURL = null;
+                if (gpudb.getURLs().size() == 1) {
+                    insertURL = GPUdbBase.appendPathToURL( gpudb.getURL(),
+                                                           "/insert/records" );
+                }
+
+                this.workerQueues.add( new WorkerQueue<>( this.gpudb, insertURL,
+                                                           this.tableName,
+                                                           batchSize,
+                                                           this.options,
+                                                           this.jsonOptions,
+                                                           this.typeObjectMap ) );
+                this.routingTable = null;
+            }
+        } catch (MalformedURLException ex) {
+            throw new GPUdbException(ex.getMessage(), ex);
+        }
+
+        // If caller specified RETURN_INDIVIDUAL_ERRORS without ALLOW_PARTIAL_BATCH
+        // then we will need to do our own error handling
+        this.returnIndividualErrors = (options != null)
+                && options.containsKey(InsertRecordsRequest.Options.RETURN_INDIVIDUAL_ERRORS)
+                && options.get(InsertRecordsRequest.Options.RETURN_INDIVIDUAL_ERRORS)
+                            .equals(InsertRecordsRequest.Options.TRUE)
+                && (!options.containsKey(InsertRecordsRequest.Options.ALLOW_PARTIAL_BATCH)
+                    || !options.get(InsertRecordsRequest.Options.ALLOW_PARTIAL_BATCH)
+                            .equals(InsertRecordsRequest.Options.TRUE));
+
+        // Create the scheduler only if the flush interval has been set to a valid value by the user.
+        // The default value is -1 to indicate that automatic flush is not called for
+        if( this.flushOptions.getFlushInterval() > 0 ) {
+            GPUdbLogger.debug("Timed flush turned on, flush interval set to <" + this.flushOptions.getFlushInterval() + ">");
+            this.timedFlushExecutorService = Executors.newSingleThreadScheduledExecutor();
+            this.timedFlushExecutorService.scheduleWithFixedDelay(new TimedFlushTask(this),
+                    this.flushOptions.getFlushInterval(),
+                    this.flushOptions.getFlushInterval(),
+                    TimeUnit.SECONDS);
+            this.timedFlushExecutorServiceTerminated = false;
+        } else {
+            GPUdbLogger.debug("Timed flush turned off, flush interval set to negative value");
+            this.timedFlushExecutorService = null;
+            this.timedFlushExecutorServiceTerminated = true;
+        }
+    }
+
+
+
     /**
      * An exception that occurred during the insertion of records into GPUdb.
      */
@@ -44,13 +734,13 @@ public class BulkInserter<T> implements AutoCloseable {
         private final URL url;
         private final transient List<?> records;
 
-        private InsertException(URL url, List<?> records, String message, Throwable cause) {
+        InsertException(URL url, List<?> records, String message, Throwable cause) {
             super(message, cause);
             this.url = url;
             this.records = records;
         }
 
-        private InsertException(URL url, List<?> records, String message) {
+        InsertException(URL url, List<?> records, String message) {
             super(message);
             this.url = url;
             this.records = records;
@@ -69,7 +759,7 @@ public class BulkInserter<T> implements AutoCloseable {
          * @return  the URL
          */
         public URL getURL() {
-            return url;
+            return this.url;
         }
 
         /**
@@ -79,7 +769,7 @@ public class BulkInserter<T> implements AutoCloseable {
          * @return  the list of records
          */
         public List<?> getRecords() {
-            return records;
+            return this.records;
         }
     }
 
@@ -168,7 +858,7 @@ public class BulkInserter<T> implements AutoCloseable {
         }
 
         public boolean isFlushWhenFull() {
-            return flushWhenFull;
+            return this.flushWhenFull;
         }
 
         /**
@@ -180,7 +870,7 @@ public class BulkInserter<T> implements AutoCloseable {
         }
 
         public int getFlushInterval() {
-            return flushInterval;
+            return this.flushInterval;
         }
 
         /**
@@ -222,10 +912,10 @@ public class BulkInserter<T> implements AutoCloseable {
             final LocalDateTime startTime = LocalDateTime.now();
             GPUdbLogger.debug(String.format("Timed flush started at : %s", startTime));
             try {
-                if( thisInserter.getTimedFlushOptions().isFlushWhenFull())
-                    thisInserter.flushFullQueues( thisInserter.getMaxRetries() );
+                if( this.thisInserter.getTimedFlushOptions().isFlushWhenFull())
+                    this.thisInserter.flushFullQueues( this.thisInserter.getMaxRetries() );
                 else
-                    thisInserter.flush();
+                    this.thisInserter.flush();
                 final LocalDateTime endTime = LocalDateTime.now();
                 GPUdbLogger.debug(String.format("Timed flush completed in : %d seconds", Duration.between(startTime, endTime).getSeconds()));
             } catch (InsertException e) {
@@ -245,7 +935,7 @@ public class BulkInserter<T> implements AutoCloseable {
 
         // This is the same as the batchSize in BulkInserter class
         private final int capacity;
-        private List<T> queue;
+        List<T> queue;
         private final Object queueLock = new Object();
         private final TypeObjectMap<T> typeObjectMap;
         private final Map<String, String> options;
@@ -276,9 +966,9 @@ public class BulkInserter<T> implements AutoCloseable {
          * for new records.
          */
         public List<T> flush() {
-            synchronized (queueLock) {
-                List<T> oldQueue = queue;
-                queue = new ArrayList<>(capacity);
+            synchronized (this.queueLock) {
+                List<T> oldQueue = this.queue;
+                this.queue = new ArrayList<>(this.capacity);
                 return oldQueue;
             }
         }
@@ -287,8 +977,8 @@ public class BulkInserter<T> implements AutoCloseable {
          * Insert the given record into the queue.
          */
         public void insert(T record) {
-            synchronized (queueLock) {
-                queue.add(record);
+            synchronized (this.queueLock) {
+                this.queue.add(record);
             }
         }
 
@@ -300,9 +990,9 @@ public class BulkInserter<T> implements AutoCloseable {
          */
         private WorkerQueueInsertionResult<T> handleRecordObjects() {
             List<T> queuedRecords;
-            synchronized (queueLock) {
+            synchronized (this.queueLock) {
                 queuedRecords = this.queue;
-                this.queue = new ArrayList<>( capacity );
+                this.queue = new ArrayList<>( this.capacity );
             }
 
             // If nothing to insert, return a null object for the response
@@ -345,13 +1035,13 @@ public class BulkInserter<T> implements AutoCloseable {
                 }
                 request = new RawInsertRecordsRequest( this.tableName,
                                                        encodedRecords.getLeft(),
-                                                       options);
+                                                       this.options);
 
                 recordsFailedEncoding = new LinkedHashMap<>( encodedRecords.getRight() );
 
             } catch (GPUdbException ex) {
                 // Can't even attempt the insertion! Need to let the caller know.
-                return new WorkerQueueInsertionResult<>( url, this.gpudb.getURL(),
+                return new WorkerQueueInsertionResult<>( this.url, this.gpudb.getURL(),
                                                           null,
                                                           queuedRecords,
                                                           errors, warnings, false, false, false,
@@ -377,14 +1067,14 @@ public class BulkInserter<T> implements AutoCloseable {
             try {
                 final LocalDateTime startTime = LocalDateTime.now();
 
-                if (url == null) {
+                if (this.url == null) {
                     GPUdbLogger.debug_with_info( "Inserting " + queuedRecords.size()
                                                  + " records to rank-0" );
                     response = this.gpudb.submitRequest("/insert/records", request, response, true);
                 } else {
                     GPUdbLogger.debug_with_info( "Inserting " + queuedRecords.size()
                                                  + " records to rank at "
-                                                 + url.toString() );
+                                                 + this.url.toString() );
 
                     // // Note: The following debug is for developer debugging **ONLY**.
                     // //       NEVER have this checked in uncommented since it will
@@ -393,12 +1083,12 @@ public class BulkInserter<T> implements AutoCloseable {
                     //                              + Arrays.toString( queue.toArray() ) );
 
                     // Insert into the given worker rank
-                    response = this.gpudb.submitRequest(url, request, response, true);
+                    response = this.gpudb.submitRequest(this.url, request, response, true);
                 }
                 final LocalDateTime endTime = LocalDateTime.now();
 
                 GPUdbLogger.debug_with_info(String.format("Insertion to rank %s completed in %d seconds",
-                    (url == null ? "head rank" : url.toString()), Duration.between(startTime, endTime).getSeconds()
+                    (this.url == null ? "head rank" : this.url.toString()), Duration.between(startTime, endTime).getSeconds()
                 ));
 
                 Map<String, String> info = response.getInfo();
@@ -457,7 +1147,7 @@ public class BulkInserter<T> implements AutoCloseable {
             }
 
             // Package the response nicely with all relevant information
-            return new WorkerQueueInsertionResult<>( url, headRankURL, response,
+            return new WorkerQueueInsertionResult<>( this.url, headRankURL, response,
                                                     null,
                                                     failedRecords,
                                                     errors,
@@ -479,9 +1169,9 @@ public class BulkInserter<T> implements AutoCloseable {
          */
         private WorkerQueueInsertionResult<T> handleJsonRecords() {
             List<T> queuedRecords;
-            synchronized (queueLock) {
+            synchronized (this.queueLock) {
                 queuedRecords = this.queue;
-                this.queue = new ArrayList<>( capacity );
+                this.queue = new ArrayList<>( this.capacity );
             }
 
             // If nothing to insert, return a null object for the response
@@ -509,11 +1199,13 @@ public class BulkInserter<T> implements AutoCloseable {
 
             if( jsonPayload != null ) {
                 try {
-                    insertRecordsFromJsonResponse = (Map<String, Object>) gpudb.insertRecordsFromJson(jsonPayload,
-                                                                                                    tableName,
-                                                                                                    jsonOptions,
-                                                                                                    new LinkedHashMap<>(),
-                                                                                                    new HashMap<>());
+                    insertRecordsFromJsonResponse = this.gpudb.insertRecordsFromJson(
+                            jsonPayload,
+                            this.tableName,
+                            this.jsonOptions,
+                            new LinkedHashMap<>(),
+                            new HashMap<>()
+                    );
 
                     if (!(isSuccess = "OK".equalsIgnoreCase(insertRecordsFromJsonResponse.get("status").toString()))) {
                         failedRecords = queuedRecords;
@@ -543,7 +1235,10 @@ public class BulkInserter<T> implements AutoCloseable {
                 }
             }
 
-            return new WorkerQueueInsertionResult<>( url, headRankURL, insertRecordsFromJsonResponse,
+            return new WorkerQueueInsertionResult<>(
+                    this.url,
+                    headRankURL,
+                    insertRecordsFromJsonResponse,
                     failedRecords,
                     null,
                     null,
@@ -552,14 +1247,15 @@ public class BulkInserter<T> implements AutoCloseable {
                     doFailover,
                     0,
                     insertionAttemptTimestamp,
-                    exception );
+                    exception
+            );
         }
 
         /**
          * Returns if the queue is full (based on the capacity).
          */
         public boolean isQueueFull() {
-            return queue.size() >= capacity;
+            return this.queue.size() >= this.capacity;
         }
 
 
@@ -571,22 +1267,22 @@ public class BulkInserter<T> implements AutoCloseable {
          */
         @Override
         public WorkerQueueInsertionResult<T> call() throws Exception {
-            // Get the currently queued records (we shall try inserting them)
-            if(JsonUtils.<T>isListOfRecordBase(this.queue)) {
+
+            // Return the queued records of RecordBase type
+            if(JsonUtils.<T>isListOfRecordBase(this.queue))
                 return handleRecordObjects();
-            } else {
-                // Handle List of JSON records
-                return handleJsonRecords();
-            }
-        }  // end call
+
+            // Otherwise, return the queued JSON records
+            return handleJsonRecords();
+        }
 
         // Clear queue without sending
         public void clear() {
-            queue.clear();
+            this.queue.clear();
         }
 
         public URL getUrl() {
-            return url;
+            return this.url;
         }
     }   // end class WorkerQueue
 
@@ -669,6 +1365,10 @@ public class BulkInserter<T> implements AutoCloseable {
             this.insertionAttemptTimestamp = insertionAttemptTimestamp;
         }
 
+        public URL getHeadUrl() {
+            return this.headUrl;
+        }
+
         public URL getWorkerUrl() {
             return this.workerUrl;
         }
@@ -678,7 +1378,7 @@ public class BulkInserter<T> implements AutoCloseable {
         }
 
         public Map<String, Object> getInsertJsonResponse() {
-            return insertJsonResponse;
+            return this.insertJsonResponse;
         }
 
 
@@ -721,619 +1421,66 @@ public class BulkInserter<T> implements AutoCloseable {
     }  // end class WorkerQueueInsertionResult
 
 
-    // BulkInserter Members
-    private final Object haFailoverLock;
-    private final GPUdb gpudb;
-    private final String tableName;
-    private final TypeObjectMap<T> typeObjectMap;
-    private final int batchSize;
-    private final int dbHARingSize;
-    private final Map<String, String> options;
-    private final RecordKeyBuilder<T> shardKeyBuilder;
-    private final ExecutorService workerExecutorService;
-    private ScheduledExecutorService timedFlushExecutorService;
-    private boolean timedFlushExecutorServiceTerminated;
-
-    private FlushOptions flushOptions;
-
-    private GPUdbBase.JsonOptions jsonOptions;
-    private final boolean multiHeadEnabled;
-    private final boolean useHeadNode;
-    private final boolean returnIndividualErrors;
-    private boolean simulateErrorMode = false; // Simulate returnIndividualErrors after an error
-    private volatile int maxRetries;
-    private List<Integer> routingTable;
-    private long shardVersion;
-    private MutableLong shardUpdateTime;
-    private int numClusterSwitches;
-    private URL currentHeadNodeURL;
-    private com.gpudb.WorkerList workerList;
-    private List<WorkerQueue<T>> workerQueues;
-    private final AtomicLong countInserted = new AtomicLong();
-    private final AtomicLong countUpdated = new AtomicLong();
-    private List<InsertException> error_list = new ArrayList<>();
-    private List<InsertException> warning_list = new ArrayList<>();
-    private final Object error_list_lock = new Object();
-
     /**
-     * Creates a {@link BulkInserter} with the specified parameters.
-     *
-     * This constructor could be used to obtain an instance of the BulkInserter
-     * class when the API user chooses not to use the multi-head ingestion
-     * facility even if it is turned on, on the server.
-
-     * @param gpudb      the GPUdb instance to insert records into
-     * @param tableName  the table to insert records into
-     * @param type       the type of records being inserted
-     * @param batchSize  the number of records to insert into GPUdb at a time
-     *                   (records will queue until this number is reached)
-     * @param options    optional parameters to pass to GPUdb while inserting<br>
-     *                   This is the same set of options as accepted by the
-     *                   {@link GPUdb#insertRecords(String, List, Map)} call.<br>
-     *                   The details can be found at
-     *                   {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
-     *
-     * @throws GPUdbException if a configuration error occurs
-     *
-     * @throws IllegalArgumentException if an invalid parameter is specified
-     *
-     * @see com.gpudb.protocol.InsertRecordsRequest.Options
-     */
-    public BulkInserter(GPUdb gpudb,
-                        String tableName,
-                        Type type,
-                        int batchSize,
-                        Map<String, String> options) throws GPUdbException {
-        this(gpudb, tableName, type, null, batchSize, options, null, FlushOptions.defaultOptions(), GPUdbBase.JsonOptions.defaultOptions());
-    }
-
-    /**
-     * Creates a {@link BulkInserter} with the specified parameters.
-     *
-     * @param gpudb      the GPUdb instance to insert records into
-     * @param tableName  name of the table to insert records into
-     * @param type       the type of records being inserted
-     * @param batchSize  the number of records to insert into GPUdb at a time
-     *                   (records will queue until this number is reached); for
-     *                   multi-head ingest, this value is per worker
-     * @param options    optional parameters to pass to GPUdb while inserting
-     *                   ({@code null} for no parameters)<br>
-     *                   This is the same set of options as accepted by the
-     *                   {@link GPUdb#insertRecords(String, List, Map)} call.<br>
-     *                   The details can be found at
-     *                   {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
-     * @param workers    worker list for multi-head ingest ({@code null} to
-     *                   disable multi-head ingest)
-     *
-     * @throws GPUdbException if a configuration error occurs
-     *
-     * @throws IllegalArgumentException if an invalid parameter is specified
-     *
-     * @see com.gpudb.protocol.InsertRecordsRequest.Options
-     */
-    public BulkInserter(GPUdb gpudb,
-                        String tableName,
-                        Type type,
-                        int batchSize,
-                        Map<String, String> options,
-                        com.gpudb.WorkerList workers) throws GPUdbException {
-        this(gpudb, tableName, type, null, batchSize, options, workers, FlushOptions.defaultOptions(), GPUdbBase.JsonOptions.defaultOptions());
-    }
-
-    /**
-     * Creates a {@link BulkInserter} with the specified parameters.
-     *
-     * @param gpudb      the GPUdb instance to insert records into
-     * @param tableName  name of the table to insert records into
-     * @param type       the type of records being inserted
-     * @param batchSize  the number of records to insert into GPUdb at a time
-     *                   (records will queue until this number is reached); for
-     *                   multi-head ingest, this value is per worker
-     * @param options    optional parameters to pass to GPUdb while inserting
-     *                   ({@code null} for no parameters)<br>
-     *                   This is the same set of options as accepted by the
-     *                   {@link GPUdb#insertRecords(String, List, Map)} call.<br>
-     *                   The details can be found at
-     *                   {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
-     * @param workers    worker list for multi-head ingest ({@code null} to
-     *                   disable multi-head ingest)
-     * @param flushOptions - instance of {@link FlushOptions} class
-     *
-     * @throws GPUdbException if a configuration error occurs
-     *
-     * @throws IllegalArgumentException if an invalid parameter is specified
-     *
-     * @see com.gpudb.protocol.InsertRecordsRequest.Options
-     * @see FlushOptions
-     */
-    public BulkInserter(GPUdb gpudb,
-                        String tableName,
-                        Type type,
-                        int batchSize,
-                        Map<String, String> options,
-                        com.gpudb.WorkerList workers,
-                        FlushOptions flushOptions) throws GPUdbException {
-        this(gpudb, tableName, type, null, batchSize, options, workers, flushOptions, GPUdbBase.JsonOptions.defaultOptions());
-    }
-
-    /**
-     * Creates a {@link BulkInserter} with the specified parameters.
-     *
-     * @param gpudb      the GPUdb instance to insert records into
-     * @param tableName  name of the table to insert records into
-     * @param type       the type of records being inserted
-     * @param batchSize  the number of records to insert into GPUdb at a time
-     *                   (records will queue until this number is reached); for
-     *                   multi-head ingest, this value is per worker
-     * @param options    optional parameters to pass to GPUdb while inserting
-     *                   ({@code null} for no parameters)<br>
-     *                   This is the same set of options as accepted by the
-     *                   {@link GPUdb#insertRecords(String, List, Map)} call.<br>
-     *                   The details can be found at
-     *                   {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
-     * @param workers    worker list for multi-head ingest ({@code null} to
-     *                   disable multi-head ingest)
-     * @param jsonOptions - instance of {@link GPUdbBase.JsonOptions} class
-     *
-     * @throws GPUdbException if a configuration error occurs
-     *
-     * @throws IllegalArgumentException if an invalid parameter is specified
-     *
-     * @see com.gpudb.protocol.InsertRecordsRequest.Options
-     * @see FlushOptions
-     * @see GPUdbBase.JsonOptions
-     */
-    public BulkInserter(GPUdb gpudb,
-                        String tableName,
-                        Type type,
-                        int batchSize,
-                        Map<String, String> options,
-                        com.gpudb.WorkerList workers,
-                        GPUdbBase.JsonOptions jsonOptions) throws GPUdbException {
-        this(gpudb, tableName, type, null, batchSize, options, workers, FlushOptions.defaultOptions(), jsonOptions);
-    }
-
-    /**
-     * Creates a {@link BulkInserter} with the specified parameters.
-     *
-     * @param gpudb      the GPUdb instance to insert records into
-     * @param tableName  name of the table to insert records into
-     * @param type       the type of records being inserted
-     * @param batchSize  the number of records to insert into GPUdb at a time
-     *                   (records will queue until this number is reached); for
-     *                   multi-head ingest, this value is per worker
-     * @param options    optional parameters to pass to GPUdb while inserting
-     *                   ({@code null} for no parameters)<br>
-     *                   This is the same set of options as accepted by the
-     *                   {@link GPUdb#insertRecords(String, List, Map)} call.<br>
-     *                   The details can be found at
-     *                   {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
-     * @param workers    worker list for multi-head ingest ({@code null} to
-     *                   disable multi-head ingest)
-     * @param flushOptions - instance of {@link FlushOptions} class
-     * @param jsonOptions - instance of {@link GPUdbBase.JsonOptions} class
-     *
-     * @throws GPUdbException if a configuration error occurs
-     *
-     * @throws IllegalArgumentException if an invalid parameter is specified
-     *
-     * @see com.gpudb.protocol.InsertRecordsRequest.Options
-     * @see FlushOptions
-     * @see GPUdbBase.JsonOptions
-     */
-    public BulkInserter(GPUdb gpudb,
-                        String tableName,
-                        Type type,
-                        int batchSize,
-                        Map<String, String> options,
-                        com.gpudb.WorkerList workers,
-                        FlushOptions flushOptions,
-                        GPUdbBase.JsonOptions jsonOptions) throws GPUdbException {
-        this(gpudb, tableName, type, null, batchSize, options, workers, flushOptions, jsonOptions);
-    }
-
-    /**
-     * Creates a {@link BulkInserter} with the specified parameters.
-     *
-     * This constructor could be used to obtain an instance of the BulkInserter
-     * class when the API user chooses not to use the multi-head ingestion
-     * facility even if it is turned on, on the server.
-     *
-     * @param gpudb          the GPUdb instance to insert records into
-     * @param tableName      name of the table to insert records into
-     * @param typeObjectMap  type object map for the type of records being
-     *                       inserted
-     * @param batchSize      the number of records to insert into GPUdb at a
-     *                       time (records will queue until this number is
-     *                       reached)
-     * @param options        optional parameters to pass to GPUdb while
-     *                       inserting ({@code null} for no parameters)<br>
-     *                       This is the same set of options as accepted by the
-     *                       {@link GPUdb#insertRecords(String, List, Map)} call.<br>
-     *                       The details can be found at
-     *                       {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
-     *
-     * @throws GPUdbException if a configuration error occurs
-     *
-     * @throws IllegalArgumentException if an invalid parameter is specified
-     *
-     * @see com.gpudb.protocol.InsertRecordsRequest.Options
-     */
-    public BulkInserter(GPUdb gpudb,
-                        String tableName,
-                        TypeObjectMap<T> typeObjectMap,
-                        int batchSize,
-                        Map<String, String> options) throws GPUdbException {
-        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, batchSize, options, null, FlushOptions.defaultOptions(), GPUdbBase.JsonOptions.defaultOptions());
-    }
-
-    /**
-     * Creates a {@link BulkInserter} with the specified parameters.
-     *
-     * @param gpudb          the GPUdb instance to insert records into
-     * @param tableName      name of the table to insert records into
-     * @param typeObjectMap  type object map for the type of records being
-     *                       inserted
-     * @param batchSize      the number of records to insert into GPUdb at a
-     *                       time (records will queue until this number is
-     *                       reached); for multi-head ingest, this value is per
-     *                       worker
-     * @param options        optional parameters to pass to GPUdb while
-     *                       inserting ({@code null} for no parameters)<br>
-     *                       This is the same set of options as accepted by the
-     *                       {@link GPUdb#insertRecords(String, List, Map)} call.<br>
-     *                       The details can be found at
-     *                       {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
-     * @param workers        worker list for multi-head ingest ({@code null} to
-     *                       disable multi-head ingest)
-     *
-     * @throws GPUdbException if a configuration error occurs
-     *
-     * @throws IllegalArgumentException if an invalid parameter is specified
-     *
-     * @see com.gpudb.protocol.InsertRecordsRequest.Options
-     */
-    public BulkInserter(GPUdb gpudb,
-                        String tableName,
-                        TypeObjectMap<T> typeObjectMap,
-                        int batchSize,
-                        Map<String, String> options,
-                        com.gpudb.WorkerList workers) throws GPUdbException {
-        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, batchSize, options, workers, FlushOptions.defaultOptions(), GPUdbBase.JsonOptions.defaultOptions());
-    }
-
-    /**
-     * Creates a {@link BulkInserter} with the specified parameters.
-     *
-     * @param gpudb          the GPUdb instance to insert records into
-     * @param tableName      name of the table to insert records into
-     * @param typeObjectMap  type object map for the type of records being
-     *                       inserted
-     * @param batchSize      the number of records to insert into GPUdb at a
-     *                       time (records will queue until this number is
-     *                       reached); for multi-head ingest, this value is per
-     *                       worker
-     * @param options        optional parameters to pass to GPUdb while
-     *                       inserting ({@code null} for no parameters)<br>
-     *                       This is the same set of options as accepted by the
-     *                       {@link GPUdb#insertRecords(String, List, Map)} call.<br>
-     *                       The details can be found at
-     *                       {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
-     * @param workers        worker list for multi-head ingest ({@code null} to
-     *                       disable multi-head ingest)
-     * @param flushOptions - instance of timed flush options {@link FlushOptions}
-     *
-     * @throws GPUdbException if a configuration error occurs
-     *
-     * @throws IllegalArgumentException if an invalid parameter is specified
-     *
-     * @see com.gpudb.protocol.InsertRecordsRequest.Options
-     * @see FlushOptions
-     * @see GPUdbBase.JsonOptions
-     */
-    public BulkInserter(GPUdb gpudb,
-                        String tableName,
-                        TypeObjectMap<T> typeObjectMap,
-                        int batchSize,
-                        Map<String, String> options,
-                        com.gpudb.WorkerList workers,
-                        FlushOptions flushOptions) throws GPUdbException {
-        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, batchSize, options, workers, flushOptions, GPUdbBase.JsonOptions.defaultOptions());
-    }
-
-    /**
-     * Creates a {@link BulkInserter} with the specified parameters.
-     *
-     * @param gpudb          the GPUdb instance to insert records into
-     * @param tableName      name of the table to insert records into
-     * @param typeObjectMap  type object map for the type of records being
-     *                       inserted
-     * @param batchSize      the number of records to insert into GPUdb at a
-     *                       time (records will queue until this number is
-     *                       reached); for multi-head ingest, this value is per
-     *                       worker
-     * @param options        optional parameters to pass to GPUdb while
-     *                       inserting ({@code null} for no parameters)<br>
-     *                       This is the same set of options as accepted by the
-     *                       {@link GPUdb#insertRecords(String, List, Map)} call.<br>
-     *                       The details can be found at
-     *                       {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
-     * @param workers        worker list for multi-head ingest ({@code null} to
-     *                       disable multi-head ingest)
-     * @param jsonOptions -  instance of {@link GPUdbBase.JsonOptions} class
-     *
-     * @throws GPUdbException if a configuration error occurs
-     *
-     * @throws IllegalArgumentException if an invalid parameter is specified
-     *
-     * @see com.gpudb.protocol.InsertRecordsRequest.Options
-     * @see FlushOptions
-     * @see GPUdbBase.JsonOptions
-     */
-    public BulkInserter(GPUdb gpudb,
-                        String tableName,
-                        TypeObjectMap<T> typeObjectMap,
-                        int batchSize,
-                        Map<String, String> options,
-                        com.gpudb.WorkerList workers,
-                        GPUdbBase.JsonOptions jsonOptions) throws GPUdbException {
-        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, batchSize, options, workers, FlushOptions.defaultOptions(), jsonOptions);
-    }
-
-    /**
-     * Creates a {@link BulkInserter} with the specified parameters.
-     *
-     * @param gpudb          the GPUdb instance to insert records into
-     * @param tableName      name of the table to insert records into
-     * @param typeObjectMap  type object map for the type of records being
-     *                       inserted
-     * @param batchSize      the number of records to insert into GPUdb at a
-     *                       time (records will queue until this number is
-     *                       reached); for multi-head ingest, this value is per
-     *                       worker
-     * @param options        optional parameters to pass to GPUdb while
-     *                       inserting ({@code null} for no parameters)<br>
-     *                       This is the same set of options as accepted by the
-     *                       {@link GPUdb#insertRecords(String, List, Map)} call.<br>
-     *                       The details can be found at
-     *                       {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
-     * @param workers        worker list for multi-head ingest ({@code null} to
-     *                       disable multi-head ingest)
-     * @param flushOptions - instance of timed flush options {@link FlushOptions}
-     * @param jsonOptions -  instance of {@link GPUdbBase.JsonOptions} class
-     *
-     * @throws GPUdbException if a configuration error occurs
-     *
-     * @throws IllegalArgumentException if an invalid parameter is specified
-     *
-     * @see com.gpudb.protocol.InsertRecordsRequest.Options
-     * @see FlushOptions
-     * @see GPUdbBase.JsonOptions
-     */
-    public BulkInserter(GPUdb gpudb,
-                        String tableName,
-                        TypeObjectMap<T> typeObjectMap,
-                        int batchSize,
-                        Map<String, String> options,
-                        com.gpudb.WorkerList workers,
-                        FlushOptions flushOptions,
-                        GPUdbBase.JsonOptions jsonOptions) throws GPUdbException {
-        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, batchSize, options, workers, flushOptions, jsonOptions);
-    }
-
-    private BulkInserter(GPUdb gpudb,
-                         String tableName,
-                         Type type,
-                         TypeObjectMap<T> typeObjectMap,
-                         int batchSize,
-                         Map<String, String> options,
-                         com.gpudb.WorkerList workers,
-                         FlushOptions flushOptions,
-                         GPUdbBase.JsonOptions jsonOptions) throws GPUdbException {
-
-        boolean hasPermissions = hasPermissionsForTable(gpudb, tableName, options);
-        if( !hasPermissions ) {
-            String errorMsg = String.format("User %s doesn't have requisite permissions on the table %s to use BulkInserter", gpudb.getUsername(), tableName);
-            GPUdbLogger.error(errorMsg);
-            throw new GPUdbException(errorMsg);
-        }
-
-        haFailoverLock = new Object();
-
-        this.gpudb = gpudb;
-        this.tableName = tableName;
-        this.typeObjectMap = typeObjectMap;
-        this.workerList    = workers;
-        this.flushOptions = ( flushOptions == null ) ? FlushOptions.defaultOptions() : flushOptions;
-
-        // Default is to set JSON validation to false.
-        this.jsonOptions = (jsonOptions == null) ? GPUdbBase.JsonOptions.defaultOptions() : jsonOptions;
-
-        // Initialize the thread pool for workers based on the resources
-        // available on the system
-        // N threads = N CPU * U CPU * (1 + W/C)
-        // In this formula, NCPU is the number of cores, available through Runtime.getRuntime().availableProcessors()
-        // U CPU is the target CPU use (between 0 and 1).
-        // W/C is the ratio of wait time to compute time.
-        workerExecutorService = Executors.newFixedThreadPool( Runtime
-                .getRuntime()
-                .availableProcessors() );
-
-        // Initialize the shard version and update time
-        this.shardVersion = 0;
-        this.shardUpdateTime = new MutableLong();
-
-        // We need to know how many clusters are in the HA ring (for failover
-        // purposes)
-        this.dbHARingSize = gpudb.getHARingSize();
-
-        // Keep track of how many times the DB client has switched HA clusters
-        // in order to decide later if it's time to update the worker queues
-        this.numClusterSwitches = gpudb.getNumClusterSwitches();
-
-        // Keep track of which cluster we're using (helpful in knowing if an
-        // HA failover has happened)
-        this.currentHeadNodeURL = gpudb.getURL();
-
-        // Validate that the table exists
-        if ( !gpudb.hasTable( tableName, null ).getTableExists() ) {
-            throw new GPUdbException( "Table '" + tableName + "' does not exist!" );
-        }
-
-        // Check if it is a replicated table (if so, then can't do
-        // multi-head ingestion; will have to force rank-0 ingestion)
-        boolean isReplicatedTable = gpudb.showTable( tableName, null )
-                .getTableDescriptions()
-                .get( 0 )
-                .contains( ShowTableResponse.TableDescriptions.REPLICATED );
-
-        // Set if multi-head I/O is turned on at the server
-        this.multiHeadEnabled = ( this.workerList != null && !this.workerList.isEmpty() );
-
-        // We should use the head node if multi-head is turned off at the server
-        // or if we're working with a replicated table
-        this.useHeadNode = ( !this.multiHeadEnabled || isReplicatedTable);
-
-        // Validate the batch size
-        if (batchSize < 1) {
-            throw new IllegalArgumentException("Batch size must be greater than zero.");
-        }
-        this.batchSize = batchSize;
-
-        // By default, we will retry insertions once
-        this.maxRetries = DEFAULT_INSERTION_RETRY_COUNT;
-
-        if (options != null) {
-            this.options = Collections.unmodifiableMap(new HashMap<>(options));
-        } else {
-            this.options = null;
-        }
-
-        this.shardKeyBuilder = new RecordKeyBuilder<>(type, typeObjectMap);
-
-        // If caller specified RETURN_INDIVIDUAL_ERRORS without ALLOW_PARTIAL_BATCH
-        // then we will need to do our own error handling
-        this.returnIndividualErrors = (options != null)
-                && options.containsKey(InsertRecordsRequest.Options.RETURN_INDIVIDUAL_ERRORS)
-                && options.get(InsertRecordsRequest.Options.RETURN_INDIVIDUAL_ERRORS)
-                            .equals(InsertRecordsRequest.Options.TRUE)
-                && (!options.containsKey(InsertRecordsRequest.Options.ALLOW_PARTIAL_BATCH)
-                    || !options.get(InsertRecordsRequest.Options.ALLOW_PARTIAL_BATCH)
-                            .equals(InsertRecordsRequest.Options.TRUE));
-
-        this.workerQueues = new ArrayList<>();
-
-        try {
-
-            // If we have multiple workers, then use those (unless the table
-            // is replicated)
-            if ( !this.useHeadNode ) {
-
-                for (URL url : this.workerList) {
-                    if (url == null) {
-                        // Handle removed ranks
-                        this.workerQueues.add( null );
-                    } else {
-                        URL insertURL = GPUdbBase.appendPathToURL( url,
-                                                                   "/insert/records" );
-                        this.workerQueues.add(new WorkerQueue<>( this.gpudb,
-                                                                  insertURL,
-                                                                  this.tableName,
-                                                                  batchSize,
-                                                                  this.options,
-                                                                  this.jsonOptions,
-                                                                  this.typeObjectMap ) );
-                    }
-                }
-
-                // Update the worker queues, if needed
-                updateWorkerQueues( this.numClusterSwitches, false );
-            } else { // use the head node only for insertion
-                URL insertURL = null;
-                if (gpudb.getURLs().size() == 1) {
-                    insertURL = GPUdbBase.appendPathToURL( gpudb.getURL(),
-                                                           "/insert/records" );
-                }
-
-                this.workerQueues.add( new WorkerQueue<>( this.gpudb, insertURL,
-                                                           this.tableName,
-                                                           batchSize,
-                                                           this.options,
-                                                           this.jsonOptions,
-                                                           this.typeObjectMap ) );
-                routingTable = null;
-            }
-        } catch (MalformedURLException ex) {
-            throw new GPUdbException(ex.getMessage(), ex);
-        }
-
-        // Create the scheduler only if the flush interval has been set to a valid value by the user.
-        // The default value is -1 to indicate that automatic flush is not called for
-        if( this.flushOptions.getFlushInterval() > 0 ) {
-            GPUdbLogger.debug("Timed flush turned on, flush interval set to <" + this.flushOptions.getFlushInterval() + ">");
-            timedFlushExecutorService = Executors.newSingleThreadScheduledExecutor();
-            timedFlushExecutorService.scheduleWithFixedDelay(new TimedFlushTask(this),
-                    this.flushOptions.getFlushInterval(),
-                    this.flushOptions.getFlushInterval(),
-                    TimeUnit.SECONDS);
-            timedFlushExecutorServiceTerminated = false;
-        } else {
-            GPUdbLogger.debug("Timed flush turned off, flush interval set to negative value");
-            this.timedFlushExecutorService = null;
-            timedFlushExecutorServiceTerminated = true;
-        }
-    }
-
-    /**
-     * Returns the {@link FlushOptions} instance value, useful for debugging.
-     * @return - the {@link FlushOptions} instance
+     * Retrieves options governing the timed flush ingest scheme.
+     * 
+     * @return the timed flush options as a {@link FlushOptions} instance
      */
     public FlushOptions getTimedFlushOptions() {
-        return flushOptions;
+        return this.flushOptions;
     }
 
+    /**
+     * Retrieves options governing JSON ingest.
+     * 
+     * @return the JSON ingest options as a {@link GPUdbBase.JsonOptions} instance
+     */
     public GPUdbBase.JsonOptions getJsonOptions() {
-        return jsonOptions;
+        return this.jsonOptions;
     }
 
     /**
      * This method could potentially result in two different scenarios
-     * 1. It could start a timed flush thread if it was not already active
-     *    when the BulkInserter was created.
-     * 2. If the timed flush thread was already active then setting this to a
-     *    new value will first terminate the existing thread; set the options
-     *    to the new value and finally restart a new thread with the options
-     *    passed in. This case could result in a delay since the thread needs
-     *    to be cleaned up and restarted.
+     * <ol>
+     *   <li>
+     *     It could start a timed flush thread if it was not already active
+     *     when the BulkInserter was created.
+     *   </li>
+     *   <li>
+     *     If the timed flush thread was already active then setting this to a
+     *     new value will first terminate the existing thread; set the options
+     *     to the new value and finally restart a new thread with the options
+     *     passed in. This case could result in a delay since the thread needs
+     *     to be cleaned up and restarted.
+     *   </li>
+     * </ol>
      *
-     * @param flushOptions - an instance of the {@link FlushOptions} class
-     * @throws GPUdbException - in case an invalid timeout values is set in the
-     *                          flushOptions parameter.
+     * @param flushOptions {@link FlushOptions} to use for timed flush operation
+     * @throws GPUdbException in case an invalid timeout values is set in the
+     *                          {@code flushOptions} parameter.
      */
     public void setTimedFlushOptions(FlushOptions flushOptions) throws GPUdbException {
-        flushOptions = flushOptions == null ? FlushOptions.defaultOptions() : flushOptions;
+        this.flushOptions = (flushOptions == null) ? FlushOptions.defaultOptions() : flushOptions;
 
         // Timed flush already active, terminate first
-        if( timedFlushExecutorService != null && !timedFlushExecutorServiceTerminated) {
+        if( this.timedFlushExecutorService != null && !this.timedFlushExecutorServiceTerminated) {
             terminateTimedFlushExecutor();
             GPUdbLogger.debug_with_info("Timed flush executor service terminated ...");
         }
 
         // If valid flush interval has been passed in, re-create the timedFlush
         // service thread
-        if( flushOptions.getFlushInterval() > 0) {
-
-            this.flushOptions = flushOptions;
+        if( this.flushOptions.getFlushInterval() > 0) {
 
             // Restart with new FlushOptions value
-            timedFlushExecutorService = Executors.newSingleThreadScheduledExecutor();
-            timedFlushExecutorService.scheduleWithFixedDelay(new TimedFlushTask(this),
+            this.timedFlushExecutorService = Executors.newSingleThreadScheduledExecutor();
+            this.timedFlushExecutorService.scheduleWithFixedDelay(new TimedFlushTask(this),
                 this.flushOptions.getFlushInterval(),
                 this.flushOptions.getFlushInterval(),
                 TimeUnit.SECONDS);
 
             //reset the state to false after restart
-            timedFlushExecutorServiceTerminated = timedFlushExecutorService.isTerminated();
+            this.timedFlushExecutorServiceTerminated = this.timedFlushExecutorService.isTerminated();
             GPUdbLogger.debug("Timed flush restarted, flush interval set to <" + this.flushOptions.getFlushInterval() + ">");
         } else {
             GPUdbLogger.debug("Timed flush turned off, flush interval set to negative value");
@@ -1345,7 +1492,7 @@ public class BulkInserter<T> implements AutoCloseable {
      * This method could be used to set {@link GPUdbBase.JsonOptions} in case the user wants to
      * modify the defaults.
      *
-     * @param jsonOptions
+     * @param jsonOptions {@link GPUdbBase.JsonOptions} to use for JSON ingest
      *
      * @see GPUdbBase.JsonOptions
      */
@@ -1354,11 +1501,17 @@ public class BulkInserter<T> implements AutoCloseable {
     }
 
     /**
+     * Closes {@link BulkInserter} resources:
+     * <ol>
+     *   <li>Performs a final flush of any data yet to be ingested</li>
+     *   <li>Terminates the timed flush mechanism, if needed</li>
+     *   <li>Terminates the ingest executor service</li>
+     * </ol>
+     * <br/>
+     * 
      * This method will be called automatically if the {@link BulkInserter} class is used in a
      * try-with-resources block. If not used that way it is mandatory to call this method
-     * to initiate a smooth cleanup of the underlying resources. This method will terminate
-     * the internal scheduler threads and call flush so that all pending updates to the database
-     * are handled properly.
+     * to initiate a smooth cleanup of the underlying resources.
      *
      * <pre>
      *     try( BulkInserter inserter = new BulkInserter(...) ) {
@@ -1406,57 +1559,58 @@ public class BulkInserter<T> implements AutoCloseable {
 
     /**
      * Checks whether the user has the requisite permissions on the table to
-     * use BulkInserter. This method us used in the constructor and if the
-     * permissions are not found to be adequate then the constructor throws
+     * use {@link BulkInserter}. This method us used in the constructor and if
+     * the permissions are not found to be adequate then the constructor throws
      * an exception and bails out.
      *
-     * @param gpudb     - the GPUdb instance
-     * @param tableName - the name of the table for which the BulkInserter is being created
-     * @param options - The options to be passed to "/insert/records" endpoint.
-     * @return - true (in case the insert and optional update permissions exist) or false
-     * @throws GPUdbException - in case the {@link GPUdb#hasPermission(String, String, String, String, Map)}  call fails
+     * @param gpudb          the GPUdb instance to check access to the target table
+     * @param tableName      the name of the table for which the BulkInserter is being created
+     * @param insertOptions  the options to be passed to the
+     *                       {@link GPUdb#insertRecords(String, List, Map)} call
+     * @return {@code true} if the requisite permissions exist; {@code false} otherwise
+     * @throws GPUdbException if the {@link GPUdb#hasPermission(String, String, String, String, Map)} call fails
      */
-    private boolean hasPermissionsForTable(final GPUdb gpudb, final String tableName, Map<String, String> options) throws GPUdbException {
-        boolean insertPermissionOk = gpudb.hasPermission("", tableName, HasPermissionRequest.ObjectType.TABLE, HasPermissionRequest.Permission.INSERT, new HashMap<String, String>()).getHasPermission();
+    private static boolean hasPermissionsForTable(final GPUdb gpudb, final String tableName, Map<String, String> insertOptions) throws GPUdbException {
+        boolean insertPermissionOk = gpudb.hasPermission("", tableName, HasPermissionRequest.ObjectType.TABLE, HasPermissionRequest.Permission.INSERT, new HashMap<>()).getHasPermission();
         boolean updatePermissionOk = true;
 
         // If the user requests upserts, check update permission on the table
         //   Note: either options or the map value could be null
-        if (options != null) {
-            String updateOnExistingPk = options.get(InsertRecordsRequest.Options.UPDATE_ON_EXISTING_PK);
+        if (insertOptions != null) {
+            String updateOnExistingPk = insertOptions.get(InsertRecordsRequest.Options.UPDATE_ON_EXISTING_PK);
             if (InsertRecordsRequest.Options.TRUE.equalsIgnoreCase(updateOnExistingPk))
-                updatePermissionOk = gpudb.hasPermission("", tableName, HasPermissionRequest.ObjectType.TABLE, HasPermissionRequest.Permission.UPDATE, new HashMap<String, String>()).getHasPermission();
+                updatePermissionOk = gpudb.hasPermission("", tableName, HasPermissionRequest.ObjectType.TABLE, HasPermissionRequest.Permission.UPDATE, new HashMap<>()).getHasPermission();
         }
 
         return (insertPermissionOk && updatePermissionOk);
     }
 
     private void terminateTimedFlushExecutor() {
-        if( timedFlushExecutorService != null && !timedFlushExecutorService.isShutdown()) {
-            timedFlushExecutorService.shutdown();
+        if( this.timedFlushExecutorService != null && !this.timedFlushExecutorService.isShutdown()) {
+            this.timedFlushExecutorService.shutdown();
             try {
-                if (!timedFlushExecutorService.awaitTermination( DEFAULT_THREADPOOL_TERMINATION_TIMEOUT, TimeUnit.SECONDS)) {
-                    timedFlushExecutorService.shutdownNow();
+                if (!this.timedFlushExecutorService.awaitTermination( DEFAULT_THREADPOOL_TERMINATION_TIMEOUT, TimeUnit.SECONDS)) {
+                    this.timedFlushExecutorService.shutdownNow();
                 }
             } catch (InterruptedException e) {
-                timedFlushExecutorService.shutdownNow();
+                this.timedFlushExecutorService.shutdownNow();
                 Thread.currentThread().interrupt();
             }
             GPUdbLogger.debug_with_info("Terminated scheduler thread ...");
-            timedFlushExecutorServiceTerminated = timedFlushExecutorService.isTerminated();
-            timedFlushExecutorService = null;
+            this.timedFlushExecutorServiceTerminated = this.timedFlushExecutorService.isTerminated();
+            this.timedFlushExecutorService = null;
         }
     }
 
     private void terminateWorkerThreadPool() {
-        if( this.workerExecutorService != null && !workerExecutorService.isShutdown()) {
-            workerExecutorService.shutdown();
+        if( this.workerExecutorService != null && !this.workerExecutorService.isShutdown()) {
+            this.workerExecutorService.shutdown();
             try {
-                if (!workerExecutorService.awaitTermination( DEFAULT_THREADPOOL_TERMINATION_TIMEOUT, TimeUnit.SECONDS)) {
-                    workerExecutorService.shutdownNow();
+                if (!this.workerExecutorService.awaitTermination( DEFAULT_THREADPOOL_TERMINATION_TIMEOUT, TimeUnit.SECONDS)) {
+                    this.workerExecutorService.shutdownNow();
                 }
             } catch (InterruptedException e) {
-                workerExecutorService.shutdownNow();
+                this.workerExecutorService.shutdownNow();
                 Thread.currentThread().interrupt();
             }
             GPUdbLogger.debug_with_info("Terminated worker thread pool ...");
@@ -1500,22 +1654,29 @@ public class BulkInserter<T> implements AutoCloseable {
      *
      * @throws GPUdbException if a successful failover could not be achieved.
      */
-    private synchronized void forceFailover(URL currURL, int currCountClusterSwitches) throws GPUdbException {
+    private synchronized void forceFailover(URL oldURL, int oldClusterSwitchCount) throws GPUdbException {
 
+        // We'll need to know which URL we're using at the moment
+        URL currURL = oldURL;
+        int currClusterSwitchCount = oldClusterSwitchCount;
+
+        // Try to fail over as many times as there are clusters
         for (int i = 0; i < this.dbHARingSize; ++i) {
             // Try to switch to a new cluster
             try {
                 GPUdbLogger.debug_with_info( "Forced HA failover attempt #" + i );
-                this.gpudb.switchURL( currURL, currCountClusterSwitches );
-            } catch (GPUdbBase.GPUdbHAUnavailableException | GPUdbBase.GPUdbFailoverDisabledException ex ) {
+                this.gpudb.switchURL( currURL, currClusterSwitchCount );
+            } catch (GPUdbBase.GPUdbHAUnavailableException ex ) {
                 // Have tried all clusters; back to square 1
                 throw ex;
-            } // Failover is disabled
-
+            } catch (GPUdbBase.GPUdbFailoverDisabledException ex) {
+                // Failover is disabled
+                throw ex;
+            }
 
             // Update the reference points
-            currURL                  = this.gpudb.getURL();
-            currCountClusterSwitches = this.gpudb.getNumClusterSwitches();
+            currURL                = this.gpudb.getURL();
+            currClusterSwitchCount = this.gpudb.getNumClusterSwitches();
 
             // We did switch to a different cluster; now check the health
             // of the cluster, starting with the head node
@@ -1546,7 +1707,7 @@ public class BulkInserter<T> implements AutoCloseable {
             if ( isClusterHealthy ) {
                 // Save the healthy cluster's URL as the current head node URL
                 this.setCurrentHeadNodeURL( currURL );
-                this.setCurrentClusterSwitchCount( currCountClusterSwitches );
+                this.setCurrentClusterSwitchCount( currClusterSwitchCount );
                 return;
             }
         }   // end for loop
@@ -1594,7 +1755,7 @@ public class BulkInserter<T> implements AutoCloseable {
         try {
             // Get the latest shard mapping information; note that this endpoint
             // call might trigger an HA failover in the GPUdb object
-            AdminShowShardsResponse shardInfo = gpudb.adminShowShards(new AdminShowShardsRequest());
+            AdminShowShardsResponse shardInfo = this.gpudb.adminShowShards(new AdminShowShardsRequest());
 
             // Get the shard version
             long newShardVersion = shardInfo.getVersion();
@@ -1603,8 +1764,8 @@ public class BulkInserter<T> implements AutoCloseable {
             if (this.shardVersion == newShardVersion) {
                 // Also check if the database client has failed over to a
                 // different HA ring node
-                int _numClusterSwitches = this.gpudb.getNumClusterSwitches();
-                if ( countClusterSwitches == _numClusterSwitches ) {
+                int currNumClusterSwitches = this.gpudb.getNumClusterSwitches();
+                if ( countClusterSwitches == currNumClusterSwitches ) {
                     GPUdbLogger.debug_with_info( "# cluster switches and shard versions the same" );
 
                     if ( reconstructWorkerQueues )
@@ -1624,7 +1785,7 @@ public class BulkInserter<T> implements AutoCloseable {
                 }
 
                 // Update the HA ring node switch counter
-                this.setCurrentClusterSwitchCount( _numClusterSwitches );
+                this.setCurrentClusterSwitchCount( currNumClusterSwitches );
             }
 
             // Save the new shard version
@@ -1644,10 +1805,10 @@ public class BulkInserter<T> implements AutoCloseable {
                 GPUdbLogger.debug_with_info( "Had connection failure: "
                                              + ex.getMessage() );
                 return false;
-            } else {
-                // Unknown errors not handled here
-                throw ex;
             }
+            
+            // Unknown errors not handled here
+            throw ex;
         }
 
         // If we get here, then we may have done a cluster failover during
@@ -1704,9 +1865,9 @@ public class BulkInserter<T> implements AutoCloseable {
                 else {
                     // Add a queue for a currently active rank
                     URL insertURL = GPUdbBase.appendPathToURL( url, "/insert/records" );
-                    newWorkerQueues.add( new WorkerQueue<T>( this.gpudb, insertURL,
+                    newWorkerQueues.add( new WorkerQueue<>( this.gpudb, insertURL,
                                                              this.tableName,
-                                                             batchSize,
+                                                             this.batchSize,
                                                              this.options,
                                                              this.jsonOptions,
                                                              this.typeObjectMap ) );
@@ -1740,7 +1901,7 @@ public class BulkInserter<T> implements AutoCloseable {
      * @return  the GPUdb instance into which records will be inserted
      */
     public GPUdb getGPUdb() {
-        return gpudb;
+        return this.gpudb;
     }
 
     /**
@@ -1749,7 +1910,7 @@ public class BulkInserter<T> implements AutoCloseable {
      * @return  the name of the table into which records will be inserted
      */
     public String getTableName() {
-        return tableName;
+        return this.tableName;
     }
 
     /**
@@ -1759,7 +1920,7 @@ public class BulkInserter<T> implements AutoCloseable {
      * @return  the batch size
      */
     public int getBatchSize() {
-        return batchSize;
+        return this.batchSize;
     }
 
     /**
@@ -1772,11 +1933,11 @@ public class BulkInserter<T> implements AutoCloseable {
      * @see com.gpudb.protocol.InsertRecordsRequest.Options
      */
     public Map<String, String> getOptions() {
-        return options;
+        return this.options;
     }
 
-    public boolean isMultiHeadEnabled() throws GPUdbException {
-        return multiHeadEnabled;
+    public boolean isMultiHeadEnabled() {
+        return this.multiHeadEnabled;
     }
 
     /**
@@ -1789,7 +1950,7 @@ public class BulkInserter<T> implements AutoCloseable {
      * @see #setMaxRetries(int)
      */
     public int getMaxRetries() {
-        return maxRetries;
+        return this.maxRetries;
     }
 
     /**
@@ -1808,7 +1969,7 @@ public class BulkInserter<T> implements AutoCloseable {
             throw new IllegalArgumentException("Max retries must not be negative.");
         }
 
-        maxRetries = value;
+        this.maxRetries = value;
     }
 
     /**
@@ -1822,7 +1983,7 @@ public class BulkInserter<T> implements AutoCloseable {
      */
     @Deprecated
     public int getRetryCount() {
-        return maxRetries;
+        return this.maxRetries;
     }
 
     /**
@@ -1842,7 +2003,7 @@ public class BulkInserter<T> implements AutoCloseable {
             throw new IllegalArgumentException("Retry count must not be negative.");
         }
 
-        maxRetries = value;
+        this.maxRetries = value;
     }
 
     /**
@@ -1853,7 +2014,7 @@ public class BulkInserter<T> implements AutoCloseable {
      * @return  the number of records inserted
      */
     public long getCountInserted() {
-        return countInserted.get();
+        return this.countInserted.get();
     }
 
     /**
@@ -1863,7 +2024,7 @@ public class BulkInserter<T> implements AutoCloseable {
      * @return  the number of records updated
      */
     public long getCountUpdated() {
-        return countUpdated.get();
+        return this.countUpdated.get();
     }
 
     /**
@@ -1873,10 +2034,10 @@ public class BulkInserter<T> implements AutoCloseable {
      */
     public List<InsertException> getErrors()
     {
-        synchronized (error_list_lock)
+        synchronized (this.errorListLock)
         {
-            List<InsertException> copy = error_list; // Make a copy to return
-            error_list = new ArrayList<>(); // Make a new list for the future
+            List<InsertException> copy = this.errorList; // Make a copy to return
+            this.errorList = new ArrayList<>(); // Make a new list for the future
             return copy;
         }
     }
@@ -1888,10 +2049,10 @@ public class BulkInserter<T> implements AutoCloseable {
      */
     public List<InsertException> getWarnings()
     {
-        synchronized (error_list_lock)
+        synchronized (this.errorListLock)
         {
-            List<InsertException> copy = warning_list; // Make a copy to return
-            warning_list = new ArrayList<>(); // Make a new list for the future
+            List<InsertException> copy = this.warningList; // Make a copy to return
+            this.warningList = new ArrayList<>(); // Make a new list for the future
             return copy;
         }
     }
@@ -1940,9 +2101,9 @@ public class BulkInserter<T> implements AutoCloseable {
     private void flush( WorkerQueue<T> workerQueue ) throws InsertException {
         // Flush only the given single queue.  Also, we will retry based on user
         // configuration.
-        List<WorkerQueue<T>> workerQueues = new ArrayList<>();
-        workerQueues.add( workerQueue );
-        this.flushQueues( workerQueues, this.maxRetries, false );
+        List<WorkerQueue<T>> workerQueueToFlush = new ArrayList<>();
+        workerQueueToFlush.add( workerQueue );
+        this.flushQueues( workerQueueToFlush, this.maxRetries, false );
     }
 
 
@@ -1953,7 +2114,7 @@ public class BulkInserter<T> implements AutoCloseable {
      *
      * @throws InsertException if an error occurs while flushing
      */
-    private void flushFullQueues( int retryCount ) throws InsertException {
+    void flushFullQueues( int retryCount ) throws InsertException {
         List<WorkerQueue<T>> fullQueues = new ArrayList<>();
 
         for (WorkerQueue<T> workerQueue : this.workerQueues) {
@@ -1994,12 +2155,14 @@ public class BulkInserter<T> implements AutoCloseable {
      */
     private void flushQueues( List<WorkerQueue<T>> queues, int retryCount, boolean forcedFlush ) throws InsertException {
 
+        int currRetryCount = retryCount;
+
         GPUdbLogger.debug_with_info(String.format(
-                "Begin flushQueues; <%d> queues, <%d> retries left", queues.size(), retryCount
+                "Begin flushQueues; <%d> queues, <%d> retries left", queues.size(), currRetryCount
         ));
 
         // Let the user know that we ran out of retries
-        if ( ( retryCount < 0 ) || (queues.size() == 0) ) {
+        if ( ( currRetryCount < 0 ) || (queues.size() == 0) ) {
             // Retry count of 0 means try once but do no retry
             GPUdbLogger.debug_with_info( "Returning without further action" );
             return;
@@ -2021,7 +2184,7 @@ public class BulkInserter<T> implements AutoCloseable {
                 continue;
             }
 
-            if (simulateErrorMode) {
+            if (this.simulateErrorMode) {
                 workerQueue.clear();
                 continue;
             }
@@ -2056,11 +2219,11 @@ public class BulkInserter<T> implements AutoCloseable {
                     // Some error occurred in the task being executed
                     // Need to report
                     final URL url = queues.get(i).getUrl();
-                    GPUdbLogger.debug_with_info(String.format("Error in inserting data for queue with URL : %s : Error message # %s", url, ((ExecutionException) ex).getMessage()));
+                    GPUdbLogger.debug_with_info(String.format("Error in inserting data for queue with URL : %s : Error message # %s", url, ex.getMessage()));
                     workerExceptions.add(ex);
                 }
                 if( ex instanceof InterruptedException ) {
-                    GPUdbLogger.debug_with_info(String.format("Thread interrupted : %s", ((InterruptedException) ex).getMessage()));
+                    GPUdbLogger.debug_with_info(String.format("Thread interrupted : %s", ex.getMessage()));
                 }
                 continue;
             }
@@ -2075,10 +2238,10 @@ public class BulkInserter<T> implements AutoCloseable {
                 GPUdbLogger.debug_with_info( "Flush thread succeeded" );
                 // The insertion for this queue succeeded; aggregate the results
                 if( result.getInsertResponse() != null ) {
-                    countInserted.addAndGet(result
+                    this.countInserted.addAndGet(result
                             .getInsertResponse()
                             .getCountInserted());
-                    countUpdated.addAndGet(result
+                    this.countUpdated.addAndGet(result
                             .getInsertResponse()
                             .getCountUpdated());
 
@@ -2099,10 +2262,8 @@ public class BulkInserter<T> implements AutoCloseable {
                 if( insertJsonResponse != null ) {
                     @SuppressWarnings("unchecked")
                     Map<String, Object> responseData = (Map<String, Object>) insertJsonResponse.get("data");
-                    int countInserted = (Integer) responseData.get("count_inserted");
-                    this.countInserted.addAndGet(countInserted);
-                    int countUpdated = (Integer) responseData.get("count_updated");
-                    this.countUpdated.addAndGet(countUpdated);
+                    this.countInserted.addAndGet((Integer) responseData.get("count_inserted"));
+                    this.countUpdated.addAndGet((Integer) responseData.get("count_updated"));
                 }
             } else {
                 if (result.getInsertResponse() != null) {
@@ -2174,7 +2335,8 @@ public class BulkInserter<T> implements AutoCloseable {
                     }
 
                     // Save any exception encountered by the worker
-                    GPUdbLogger.debug_with_info(String.format("Saving <%s> ingest worker failure exception with <%d> failed records", workerFailedRecords.getClass(), workerFailedRecords.size()));
+                    if (workerFailedRecords != null)
+                        GPUdbLogger.debug_with_info(String.format("Saving <%s> ingest worker failure exception with <%d> failed records", workerFailedRecords.getClass(), workerFailedRecords.size()));
                     workerExceptions.add(result.getFailureException());
                 }
 
@@ -2185,10 +2347,9 @@ public class BulkInserter<T> implements AutoCloseable {
                         if( !exception.hadConnectionFailure() ) {
                             throw new InsertException(getCurrentHeadNodeURL(), result.getFailedRecords(), exception.getMessage());
                         }
-                        else {
-                            GPUdbLogger.debug_with_info("Setting retry to true");
-                            doRetryInsertion = true;
-                        }
+                        
+                        GPUdbLogger.debug_with_info("Setting retry to true");
+                        doRetryInsertion = true;
                     }
 
 
@@ -2198,14 +2359,13 @@ public class BulkInserter<T> implements AutoCloseable {
                     }
 
                     // Save any exception encountered by the worker
-                    GPUdbLogger.debug_with_info(String.format("Saving JSON ingest worker failure exception with <%d> failed records", workerFailedRecords.size()));
+                    if (workerFailedRecords != null)
+                        GPUdbLogger.debug_with_info(String.format("Saving JSON ingest worker failure exception with <%d> failed records", workerFailedRecords.size()));
                     workerExceptions.add(result.getFailureException());
                 }
             }
         }  // end loop handling results
 
-        // TODO: Figure out if this is the URL that should be passed via the
-        // insert exception
         URL currHeadUrl = getCurrentHeadNodeURL();
 
         // Concatenate all the error messages encountered by the workers, if any
@@ -2236,20 +2396,20 @@ public class BulkInserter<T> implements AutoCloseable {
         // This is the scenario where we are re-trying without attempting a
         // failover. We would recurse till the set retryCount becomes 0 and
         // subsequently attempt an HA failover.
-        if (doRetryInsertion && retryCount > 0) {
+        if (doRetryInsertion && currRetryCount > 0) {
             // We need to re-attempt inserting the records that did not get
             // ingested.
             GPUdbLogger.debug_with_info("Retry insertion");
 
             GPUdbLogger.debug_with_info("Decreasing retry count from: "
-                    + retryCount);
-            --retryCount;
-            GPUdbLogger.debug_with_info("retryCount: " + retryCount);
+                    + currRetryCount);
+            --currRetryCount;
+            GPUdbLogger.debug_with_info("retryCount: " + currRetryCount);
 
             // Retry insertion of the failed records (recursive call to our
             // private insertion with the retry count decreased to halt
             // the recursion as needed
-            boolean couldRetry = this.insert(failedRecords, retryCount);
+            boolean couldRetry = this.insert(failedRecords, currRetryCount);
 
             if (couldRetry) {
                 // If this is part of a user-initiated forced flush, then we
@@ -2257,7 +2417,7 @@ public class BulkInserter<T> implements AutoCloseable {
                 // may have been queued but not actually inserted).
                 if (forcedFlush) {
                     GPUdbLogger.debug_with_info("Before forced flush");
-                    this.flush(retryCount);
+                    this.flush(currRetryCount);
                     GPUdbLogger.debug_with_info("After forced flush");
                 }
                 return;
@@ -2267,7 +2427,7 @@ public class BulkInserter<T> implements AutoCloseable {
 
         // We ran out of chances to retry.  Let the user know this and
         // pass along the records that we could not insert.
-        if (doRetryInsertion && retryCount <= 0 && this.gpudb.getHARingSize() == 1) {
+        if (doRetryInsertion && currRetryCount <= 0 && this.gpudb.getHARingSize() == 1) {
             String message = ("Insertion failed; ran out of retries.  "
                     + "Original causes encountered by workers: "
                     + originalCauses);
@@ -2278,7 +2438,6 @@ public class BulkInserter<T> implements AutoCloseable {
         if (doFailover) {
             try {
                 // Switch to a different cluster in the HA ring, if any
-                // TODO: Check which head node url needs to be used here
                 GPUdbLogger.debug_with_info("Before calling forceFailover() "
                         + "with current head URL: "
                         + currHeadUrl);
@@ -2323,7 +2482,7 @@ public class BulkInserter<T> implements AutoCloseable {
         // value of the instance variable retryCount. This block will retry
         // insertion after an HA failover has taken place, so it will start with
         // original retryCount once more into the new cluster.
-        retryCount = this.maxRetries;
+        currRetryCount = this.maxRetries;
         if (doRetryInsertion) {
             // We need to re-attempt inserting the records that did not get
             // ingested.
@@ -2332,7 +2491,7 @@ public class BulkInserter<T> implements AutoCloseable {
             // Retry insertion of the failed records (recursive call to our
             // private insertion with the retry count decreased to halt
             // the recursion as needed
-            this.insert(failedRecords, retryCount);
+            this.insert(failedRecords, currRetryCount);
 
             GPUdbLogger.debug_with_info("Done retrying insertion into new cluster");
         }
@@ -2342,23 +2501,23 @@ public class BulkInserter<T> implements AutoCloseable {
         Map<Integer, Pair<String, T>> errors = result.getErrors();
         if (errors != null) {
             errors.forEach((key,entry) -> {
-                simulateErrorMode |= returnIndividualErrors;
+                this.simulateErrorMode |= this.returnIndividualErrors;
                 List<T> records = new ArrayList<>();
                 if (entry.getRight() != null)
                     records.add(entry.getRight());
-                synchronized (error_list_lock) {
+                synchronized (this.errorListLock) {
                     String message = entry.getLeft();
                     message = message.substring( message.indexOf(":") + 1);
-                    error_list.add(new InsertException(result.headUrl, records, message));
+                    this.errorList.add(new InsertException(result.getHeadUrl(), records, message));
                 }
             });
         }
 
         List<String> warnings = result.getWarnings();
         if (warnings != null) {
-            synchronized (error_list_lock) {
+            synchronized (this.errorListLock) {
                 warnings.forEach((entry) -> {
-                    warning_list.add(new InsertException(result.headUrl, null, entry));
+                    this.warningList.add(new InsertException(result.getHeadUrl(), null, entry));
                 });
             }
         }
@@ -2384,7 +2543,7 @@ public class BulkInserter<T> implements AutoCloseable {
         RecordKey shardKey = null;
 
         // Don't accept new records if there was an error thrown already with returnIndividualErrors
-        if (simulateErrorMode)
+        if (this.simulateErrorMode)
             return;
 
         WorkerQueue<T> workerQueue;
@@ -2392,9 +2551,9 @@ public class BulkInserter<T> implements AutoCloseable {
         if( record instanceof String ) {
             // Handle JSON records
             if (this.useHeadNode)
-                workerQueue = workerQueues.get(0);
+                workerQueue = this.workerQueues.get(0);
             else
-                workerQueue = workerQueues.get(routingTable.get(ThreadLocalRandom.current().nextInt(routingTable.size())) - 1);
+                workerQueue = this.workerQueues.get(this.routingTable.get(ThreadLocalRandom.current().nextInt(this.routingTable.size())) - 1);
         } else {
             //Handle GenericRecords or RecordObjects
             try {
@@ -2407,11 +2566,11 @@ public class BulkInserter<T> implements AutoCloseable {
             }
 
             if (this.useHeadNode) {
-                workerQueue = workerQueues.get(0);
+                workerQueue = this.workerQueues.get(0);
             } else if (shardKey == null) {
-                workerQueue = workerQueues.get(routingTable.get(ThreadLocalRandom.current().nextInt(routingTable.size())) - 1);
+                workerQueue = this.workerQueues.get(this.routingTable.get(ThreadLocalRandom.current().nextInt(this.routingTable.size())) - 1);
             } else {
-                workerQueue = workerQueues.get(shardKey.route(routingTable));
+                workerQueue = this.workerQueues.get(shardKey.route(this.routingTable));
             }
 
         }
@@ -2501,7 +2660,7 @@ public class BulkInserter<T> implements AutoCloseable {
     @SuppressWarnings("unchecked")
     private boolean insert(List<T> records, int retryCount ) throws InsertException {
         // Don't accept new records if there was an error thrown already with returnIndividualErrors
-        if (simulateErrorMode)
+        if (this.simulateErrorMode)
             return true;
 
         // Let the user know that we ran out of retries

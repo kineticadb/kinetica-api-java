@@ -361,6 +361,11 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String CANCEL_DATASOURCE_SUBSCRIPTION = "cancel_datasource_subscription";
 
         /**
+         * Permanently delete a cancelled data source subscription.
+         */
+        public static final String DROP_DATASOURCE_SUBSCRIPTION = "drop_datasource_subscription";
+
+        /**
          * Temporarily unsubscribe a data source that is loading continuously
          * as a stream. The data source can be Kafka / S3 / Azure.
          */
@@ -839,6 +844,9 @@ public class AlterTableRequest implements IndexedRecord {
      *                        unsubscribe a data source that is loading
      *                        continuously as a stream. The data source can be
      *                        Kafka / S3 / Azure.
+     *                    <li>{@link Action#DROP_DATASOURCE_SUBSCRIPTION
+     *                        DROP_DATASOURCE_SUBSCRIPTION}: Permanently delete
+     *                        a cancelled data source subscription.
      *                    <li>{@link Action#PAUSE_DATASOURCE_SUBSCRIPTION
      *                        PAUSE_DATASOURCE_SUBSCRIPTION}: Temporarily
      *                        unsubscribe a data source that is loading
@@ -1229,6 +1237,9 @@ public class AlterTableRequest implements IndexedRecord {
      *         CANCEL_DATASOURCE_SUBSCRIPTION}: Permanently unsubscribe a data
      *         source that is loading continuously as a stream. The data source
      *         can be Kafka / S3 / Azure.
+     *     <li>{@link Action#DROP_DATASOURCE_SUBSCRIPTION
+     *         DROP_DATASOURCE_SUBSCRIPTION}: Permanently delete a cancelled
+     *         data source subscription.
      *     <li>{@link Action#PAUSE_DATASOURCE_SUBSCRIPTION
      *         PAUSE_DATASOURCE_SUBSCRIPTION}: Temporarily unsubscribe a data
      *         source that is loading continuously as a stream. The data source
@@ -1453,6 +1464,9 @@ public class AlterTableRequest implements IndexedRecord {
      *         CANCEL_DATASOURCE_SUBSCRIPTION}: Permanently unsubscribe a data
      *         source that is loading continuously as a stream. The data source
      *         can be Kafka / S3 / Azure.
+     *     <li>{@link Action#DROP_DATASOURCE_SUBSCRIPTION
+     *         DROP_DATASOURCE_SUBSCRIPTION}: Permanently delete a cancelled
+     *         data source subscription.
      *     <li>{@link Action#PAUSE_DATASOURCE_SUBSCRIPTION
      *         PAUSE_DATASOURCE_SUBSCRIPTION}: Temporarily unsubscribe a data
      *         source that is loading continuously as a stream. The data source

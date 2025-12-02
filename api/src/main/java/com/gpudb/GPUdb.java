@@ -6136,6 +6136,10 @@ public class GPUdb extends GPUdbBase {
      *                        continuously as a stream. The data source can be
      *                        Kafka / S3 / Azure.
      *                    <li>{@link
+     *                        com.gpudb.protocol.AlterTableRequest.Action#DROP_DATASOURCE_SUBSCRIPTION
+     *                        DROP_DATASOURCE_SUBSCRIPTION}: Permanently delete
+     *                        a cancelled data source subscription.
+     *                    <li>{@link
      *                        com.gpudb.protocol.AlterTableRequest.Action#PAUSE_DATASOURCE_SUBSCRIPTION
      *                        PAUSE_DATASOURCE_SUBSCRIPTION}: Temporarily
      *                        unsubscribe a data source that is loading
@@ -23858,6 +23862,26 @@ public class GPUdb extends GPUdbBase {
      *                         flushing(inserting) to the output table. The
      *                         default value is '1000'.
      *                     <li>{@link
+     *                         com.gpudb.protocol.MatchGraphRequest.Options#MULTI_STEP
+     *                         MULTI_STEP}: For the {@link
+     *                         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_SUPPLY_DEMAND
+     *                         MATCH_SUPPLY_DEMAND} solver only. Runs multiple
+     *                         supply demand solver repeatedly in a multi step
+     *                         cycle by switching supplies to demands until it
+     *                         reaches the main hub supply.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link
      *                         com.gpudb.protocol.MatchGraphRequest.Options#CHARGING_CAPACITY
      *                         CHARGING_CAPACITY}: For the {@link
      *                         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_CHARGING_STATIONS
@@ -26236,6 +26260,18 @@ public class GPUdb extends GPUdbBase {
      *                             <li>{@link
      *                                 com.gpudb.protocol.ShowResourceObjectsRequest.Options#EVICTABLE
      *                                 EVICTABLE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.ShowResourceObjectsRequest.Options#LOCKED
+     *                                 LOCKED}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.ShowResourceObjectsRequest.Options#PIN_COUNT
+     *                                 PIN_COUNT}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.ShowResourceObjectsRequest.Options#RAM_EVICTIONS
+     *                                 RAM_EVICTIONS}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.ShowResourceObjectsRequest.Options#PERSIST_EVICTIONS
+     *                                 PERSIST_EVICTIONS}
      *                             <li>{@link
      *                                 com.gpudb.protocol.ShowResourceObjectsRequest.Options#OWNER_RESOURCE_GROUP
      *                                 OWNER_RESOURCE_GROUP}

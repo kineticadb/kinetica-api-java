@@ -29,32 +29,50 @@ import org.apache.commons.lang3.mutable.MutableLong;
  * @param <T>  the type of object being retrieved
  */
 public class RecordRetriever<T> {
-    private final Object haFailoverLock;
+
+    // Table members
     private final GPUdb gpudb;
     private final String tableName;
     private final Type type;
     private final TypeObjectMap<T> typeObjectMap;
-    private RecordKeyBuilder<T> shardKeyBuilder;
-    private final boolean isMultiHeadEnabled;
-    private boolean isWorkerLookupSupported;
-    private boolean isTableReplicated;
-    private final int dbHARingSize;
     private Map<String, String> options;
+    private boolean tableReplicated;
+
+    // Sharding members
+    private com.gpudb.WorkerList workerList;
+    private List<URL> workerUrls;
+    private final boolean multiHeadEnabled;
+    private boolean workerLookupSupported;
+    private final RecordKeyBuilder<T> shardKeyBuilder;
     private long shardVersion;
     private MutableLong shardUpdateTime;
+    private List<Integer> routingTable;
+    
+    // HA members
+    private final int dbHARingSize;
     private int numClusterSwitches;
     private URL currentHeadNodeURL;
-    private com.gpudb.WorkerList workerList;
-    private List<Integer> routingTable;
-    private List<URL> workerUrls;
-    private URL last_used_url;
+    private URL lastUsedUrl;
+    private final Object haFailoverLock;
+
 
     /**
      * Creates a {@link RecordRetriever} with the specified parameters.
+     * <br/>
+     * It will use default settings for the
+     * {@link GPUdb#getRecords(String, long, long, Map)} call supporting
+     * {@link #getByKey(List, String)} and the
+     * {@link GPUdb#getRecordsByColumn(String, List, long, long, Map)} call
+     * supporting {@link #getColumnsByKey(List, List, String)}.
+     * <br/>
+     * Details can be found at
+     * {@link com.gpudb.protocol.GetRecordsRequest.Options} and
+     * {@link com.gpudb.protocol.GetRecordsByColumnRequest.Options},
+     * respectively.
      *
-     * @param gpudb      the GPUdb instance to retrieve records from
+     * @param gpudb      the {@link GPUdb} instance to retrieve records from
      * @param tableName  the table to retrieve records from
-     * @param type       the type of records being retrieved
+     * @param type       the {@link Type} of records being retrieved
      *
      * @throws GPUdbException if a configuration error occurs
      *
@@ -68,10 +86,20 @@ public class RecordRetriever<T> {
     /**
      * Creates a {@link RecordRetriever} with the specified parameters.
      *
-     * @param gpudb      the GPUdb instance to retrieve records from
+     * @param gpudb      the {@link GPUdb} instance to retrieve records from
      * @param tableName  the table to retrieve records from
-     * @param type       the type of records being retrieved
+     * @param type       the {@link Type} of records being retrieved
      * @param options    optional parameters to pass to GPUdb while retrieving
+     *                   ({@code null} for no parameters)
+     *                   <br/>
+     *                   This is the same set of options as accepted by the
+     *                   {@link GPUdb#getRecords(String, long, long, Map)} and
+     *                   {@link GPUdb#getRecordsByColumn(String, List, long, long, Map)}
+     *                   calls.
+     *                   <br/>
+     *                   The details can be found at
+     *                   {@link com.gpudb.protocol.GetRecordsRequest.Options} and
+     *                   {@link com.gpudb.protocol.GetRecordsByColumnRequest.Options}.
      *
      * @throws GPUdbException if a configuration error occurs
      *
@@ -87,9 +115,9 @@ public class RecordRetriever<T> {
     /**
      * Creates a {@link RecordRetriever} with the specified parameters.
      *
-     * @param gpudb      the GPUdb instance to retrieve records from
+     * @param gpudb      the {@link GPUdb} instance to retrieve records from
      * @param tableName  the table to retrieve records from
-     * @param type       the type of records being retrieved
+     * @param type       the {@link Type} of records being retrieved
      * @param workers    worker list for multi-head retrieval ({@code null} to
      *                   disable multi-head retrieval)
      *
@@ -106,12 +134,22 @@ public class RecordRetriever<T> {
     /**
      * Creates a {@link RecordRetriever} with the specified parameters.
      *
-     * @param gpudb      the GPUdb instance to retrieve records from
+     * @param gpudb      the {@link GPUdb} instance to retrieve records from
      * @param tableName  the table to retrieve records from
-     * @param type       the type of records being retrieved
+     * @param type       the {@link Type} of records being retrieved
      * @param workers    worker list for multi-head retrieval ({@code null} to
      *                   disable multi-head retrieval)
      * @param options    optional parameters to pass to GPUdb while retrieving
+     *                   ({@code null} for no parameters)
+     *                   <br/>
+     *                   This is the same set of options as accepted by the
+     *                   {@link GPUdb#getRecords(String, long, long, Map)} and
+     *                   {@link GPUdb#getRecordsByColumn(String, List, long, long, Map)}
+     *                   calls.
+     *                   <br/>
+     *                   The details can be found at
+     *                   {@link com.gpudb.protocol.GetRecordsRequest.Options} and
+     *                   {@link com.gpudb.protocol.GetRecordsByColumnRequest.Options}.
      *
      * @throws GPUdbException if a configuration error occurs
      *
@@ -127,10 +165,10 @@ public class RecordRetriever<T> {
     /**
      * Creates a {@link RecordRetriever} with the specified parameters.
      *
-     * @param gpudb          the GPUdb instance to retrieve records from
+     * @param gpudb          the {@link GPUdb} instance to retrieve records from
      * @param tableName      the table to retrieve records from
-     * @param typeObjectMap  type object map for the type of records being
-     *                       retrieved
+     * @param typeObjectMap  the {@link TypeObjectMap} for the type of records
+     *                       being retrieved
      *
      * @throws GPUdbException if a configuration error occurs
      *
@@ -146,11 +184,21 @@ public class RecordRetriever<T> {
     /**
      * Creates a {@link RecordRetriever} with the specified parameters.
      *
-     * @param gpudb          the GPUdb instance to retrieve records from
+     * @param gpudb          the {@link GPUdb} instance to retrieve records from
      * @param tableName      the table to retrieve records from
-     * @param typeObjectMap  type object map for the type of records being
-     *                       retrieved
+     * @param typeObjectMap  the {@link TypeObjectMap} for the type of records
+     *                       being retrieved
      * @param options        optional parameters to pass to GPUdb while retrieving
+     *                       ({@code null} for no parameters)
+     *                       <br/>
+     *                       This is the same set of options as accepted by the
+     *                       {@link GPUdb#getRecords(String, long, long, Map)} and
+     *                       {@link GPUdb#getRecordsByColumn(String, List, long, long, Map)}
+     *                       calls.
+     *                       <br/>
+     *                       The details can be found at
+     *                       {@link com.gpudb.protocol.GetRecordsRequest.Options} and
+     *                       {@link com.gpudb.protocol.GetRecordsByColumnRequest.Options}.
      *
      * @throws GPUdbException if a configuration error occurs
      *
@@ -168,10 +216,10 @@ public class RecordRetriever<T> {
     /**
      * Creates a {@link RecordRetriever} with the specified parameters.
      *
-     * @param gpudb          the GPUdb instance to retrieve records from
+     * @param gpudb          the {@link GPUdb} instance to retrieve records from
      * @param tableName      the table to retrieve records from
-     * @param typeObjectMap  type object map for the type of records being
-     *                       retrieved
+     * @param typeObjectMap  the {@link TypeObjectMap} for the type of records
+     *                       being retrieved
      * @param workers        worker list for multi-head retrieval ({@code null}
      *                       to disable multi-head retrieval)
      *
@@ -189,13 +237,23 @@ public class RecordRetriever<T> {
     /**
      * Creates a {@link RecordRetriever} with the specified parameters.
      *
-     * @param gpudb          the GPUdb instance to retrieve records from
+     * @param gpudb          the {@link GPUdb} instance to retrieve records from
      * @param tableName      the table to retrieve records from
-     * @param typeObjectMap  type object map for the type of records being
-     *                       retrieved
+     * @param typeObjectMap  the {@link TypeObjectMap} for the type of records
+     *                       being retrieved
      * @param workers        worker list for multi-head retrieval ({@code null}
      *                       to disable multi-head retrieval)
      * @param options        optional parameters to pass to GPUdb while retrieving
+     *                       ({@code null} for no parameters)
+     *                       <br/>
+     *                       This is the same set of options as accepted by the
+     *                       {@link GPUdb#getRecords(String, long, long, Map)} and
+     *                       {@link GPUdb#getRecordsByColumn(String, List, long, long, Map)}
+     *                       calls.
+     *                       <br/>
+     *                       The details can be found at
+     *                       {@link com.gpudb.protocol.GetRecordsRequest.Options} and
+     *                       {@link com.gpudb.protocol.GetRecordsByColumnRequest.Options}.
      *
      * @throws GPUdbException if a configuration error occurs
      *
@@ -209,6 +267,32 @@ public class RecordRetriever<T> {
     }
 
 
+    /**
+     * Creates a {@link RecordRetriever} with the specified parameters.
+     *
+     * @param gpudb          the {@link GPUdb} instance to retrieve records from
+     * @param tableName      the table to retrieve records from
+     * @param type           the {@link Type} of records being retrieved
+     * @param typeObjectMap  the {@link TypeObjectMap} for the type of records
+     *                       being retrieved
+     * @param workers        worker list for multi-head retrieval ({@code null}
+     *                       to disable multi-head retrieval)
+     * @param options        optional parameters to pass to GPUdb while retrieving
+     *                       ({@code null} for no parameters)
+     *                       <br/>
+     *                       This is the same set of options as accepted by the
+     *                       {@link GPUdb#getRecords(String, long, long, Map)} and
+     *                       {@link GPUdb#getRecordsByColumn(String, List, long, long, Map)}
+     *                       calls.
+     *                       <br/>
+     *                       The details can be found at
+     *                       {@link com.gpudb.protocol.GetRecordsRequest.Options} and
+     *                       {@link com.gpudb.protocol.GetRecordsByColumnRequest.Options}.
+     *
+     * @throws GPUdbException if a configuration error occurs
+     *
+     * @throws IllegalArgumentException if an invalid parameter is specified
+     */
     private RecordRetriever( GPUdb gpudb,
                              String tableName,
                              Type type,
@@ -224,15 +308,16 @@ public class RecordRetriever<T> {
         this.typeObjectMap = typeObjectMap;
         this.workerList    = workers;
 
-        this.shardVersion = 0;
-        this.shardUpdateTime = new MutableLong();
-
         if (options != null) {
             this.options = new HashMap<>(options);
         } else {
             // We'll need to use at least the 'expressions' in the options
             this.options = new HashMap<>();
         }
+
+        // Initialize the shard version and update time
+        this.shardVersion = 0;
+        this.shardUpdateTime = new MutableLong();
 
         // We need to know how many clusters are in the HA ring (for failover
         // purposes)
@@ -246,18 +331,11 @@ public class RecordRetriever<T> {
         // HA failover has happened)
         this.currentHeadNodeURL = gpudb.getURL();
 
-        // Set if user has provided rank URLs
-        this.isMultiHeadEnabled = ( (this.workerList != null)
-                                    && !this.workerList.isEmpty() );
-
-        // If no rank URLs are provided, use the head rank
-        this.isWorkerLookupSupported = this.isMultiHeadEnabled;
-
         // Check if the table is replicated or not; in case we can't figure it
         // out, we will pretend it is not
         try {
             // Check whether 'replicated' is in one of the response fields
-            this.isTableReplicated = this.gpudb.showTable( this.tableName, null )
+            this.tableReplicated = this.gpudb.showTable( this.tableName, null )
                 .getTableDescriptions()
                 .get(0)
                 .contains( ShowTableResponse.TableDescriptions.REPLICATED );
@@ -267,36 +345,29 @@ public class RecordRetriever<T> {
             // object--quite possibly before creating the table.  So no worries.
         }
 
-        // For replicated tables, we might have to use the head node instead of
-        // a random worker, depended upon whether the database version supports
-        // it. So, we need to hard-code the versions that will have this change.
-        //
-        // Since isWorkerLookupSupported is true if MH is active (by this point
-        // in init), just set it to false if the server can't support it for
-        // replicated tables
-        if ( this.isTableReplicated ) {
-            // Check the server version
-            GPUdbBase.GPUdbVersion serverVersion = this.gpudb.getServerVersion();
-            if ( serverVersion == null ) {
-                // Use head rank only if the server is too old or broken to
-                // return its version number
-                GPUdbLogger.warn( "Server returned a null version" );
-                this.isWorkerLookupSupported = false;
+        // If no worker list is given, attempt to create one, by default
+        if (this.workerList == null) {
+            try {
+                this.workerList = new WorkerList(this.gpudb);
             }
-            else if ( serverVersion.isOlderThan( 7, 1, 3, 0 ) ) {
-                // Anything newer than 7.1.2.0 can handle replicated tables
-                // at the worker ranks for key lookup; [7.1.0.0, 7.1.2.0] can't.
-                this.isWorkerLookupSupported = false;
+            catch (GPUdbException e) {
+                GPUdbLogger.info("Could not create default worker list for record retrieval; using head node instead.");
             }
         }
+
+        // Set if multi-head I/O is turned on at the server and rank URLs are accessible
+        this.multiHeadEnabled = ( (this.workerList != null) && !this.workerList.isEmpty() );
+
+        // If no rank URLs are provided, use the head rank
+        this.workerLookupSupported = this.multiHeadEnabled;
 
         this.shardKeyBuilder = new RecordKeyBuilder<>(type, typeObjectMap);
 
         this.workerUrls = new ArrayList<>();
 
-        if ( this.isMultiHeadEnabled ) {
+        if ( this.multiHeadEnabled ) {
             try {
-                for (URL url : workers) {
+                for (URL url : this.workerList) {
                     if (url == null) {
                         // Handle removed ranks
                         this.workerUrls.add( null );
@@ -314,7 +385,7 @@ public class RecordRetriever<T> {
             // If ranks have not been assigned by updateWorkerQueues,
             // this is a randomly-sharded table; use head rank
             if (this.routingTable == null)
-                this.isWorkerLookupSupported = false;
+                this.workerLookupSupported = false;
         }
     }
 
@@ -366,8 +437,7 @@ public class RecordRetriever<T> {
      *
      * @throws GPUdbException if a successful failover could not be achieved.
      */
-    private synchronized boolean forceFailover(URL oldURL, int oldClusterSwitchCount)
-        throws GPUdbException {
+    private synchronized void forceFailover(URL oldURL, int oldClusterSwitchCount) throws GPUdbException {
         GPUdbLogger.debug_with_info( "Forced failover begin..." );
         // The whole failover scenario needs to happen in a thread-safe
         // manner; since this happens only upon failure, it's OK to
@@ -401,11 +471,8 @@ public class RecordRetriever<T> {
                 continue; // try the next cluster because this head node is down
             }
 
-            // Check if we switched the rank-0 URL
-            boolean didSwitchURL = !currURL.equals( oldURL );
-
             boolean isClusterHealthy = true;
-            if ( this.isMultiHeadEnabled ) {
+            if ( this.multiHeadEnabled ) {
                 // Obtain the worker rank addresses
                 com.gpudb.WorkerList workerRanks;
                 try {
@@ -428,11 +495,8 @@ public class RecordRetriever<T> {
                 // Save the healthy cluster's URL as the current head node URL
                 this.setCurrentHeadNodeURL( currURL );
                 this.setCurrentClusterSwitchCount( currClusterSwitchCount );
-                GPUdbLogger.debug_with_info( "Did we actually switch the URL? "
-                                             + didSwitchURL );
-                return didSwitchURL;
+                return;
             }
-            // else, this cluster is not healthy; try switching again
         }   // end for
 
         // If we get here, it means we've failed over across the whole HA ring at least
@@ -469,7 +533,7 @@ public class RecordRetriever<T> {
         // Flag for if the worker rank URLs need to be re-constructed when asked
         // for iff multi-head i/o is enabled and the caller asked for it.
         boolean reconstructWorkerURLS = ( doReconstructWorkerURLs
-                                          && this.isMultiHeadEnabled );
+                                          && this.multiHeadEnabled );
         GPUdbLogger.debug_with_info( "Reconstruct worker URLs?: "
                                      + reconstructWorkerURLS );
 
@@ -488,8 +552,8 @@ public class RecordRetriever<T> {
             if (this.shardVersion == newShardVersion) {
                 // Also check if the database client has failed over to a
                 // different HA ring node
-                int _numClusterSwitches = this.gpudb.getNumClusterSwitches();
-                if ( countClusterSwitches == _numClusterSwitches ) {
+                int currNumClusterSwitches = this.gpudb.getNumClusterSwitches();
+                if ( countClusterSwitches == currNumClusterSwitches ) {
                     GPUdbLogger.debug_with_info( "# cluster switches and shard versions the same" );
 
                     if ( reconstructWorkerURLS )
@@ -506,7 +570,7 @@ public class RecordRetriever<T> {
                 }
 
                 // Update the HA ring node switch counter
-                this.setCurrentClusterSwitchCount( _numClusterSwitches );
+                this.setCurrentClusterSwitchCount( currNumClusterSwitches );
             }
 
             // Save the new shard version and also when we're updating the mapping
@@ -623,7 +687,7 @@ public class RecordRetriever<T> {
      *          multi-head (the worker ranks) for key lookup (false value).
      */
     public boolean isUsingHeadRank() {
-        return !this.isWorkerLookupSupported;
+        return !this.workerLookupSupported;
     }
 
     /**
@@ -634,7 +698,7 @@ public class RecordRetriever<T> {
      *          where only an expression is supplied and the table is sharded.
      */
     public boolean isDoingWorkerLookup() {
-        return this.isWorkerLookupSupported;
+        return this.workerLookupSupported;
     }
 
     /**
@@ -680,17 +744,25 @@ public class RecordRetriever<T> {
      * Retrieves records with the given key values and filter expression from
      * the database using a direct-to-rank fast key lookup, if possible, and
      * falling back to a standard lookup via the head node, if not.
-     * 
+     * <br/>
      * This method operates in four modes, depending on the parameters passed:
-     * 
-     * * keyValues only - attempts a direct-to-rank lookup for records matching
-     *                    the given key values
-     * * keyValues & expression - attempts a direct-to-rank lookup for records
-     *                    matching the given key values, filtering them by the
-     *                    given expression
-     * * expression only - requests, via the head rank, all records in the table
-     *                    matching the given filter expression
-     * * neither - retrieves all records from the table via the head rank
+     * <ul>
+     *   <li> keyValues only -
+     *            attempts a direct-to-rank lookup for records
+     *            matching the given key values
+     *   </li>
+     *   <li> keyValues & expression -
+     *            attempts a direct-to-rank lookup for records matching the
+     *            given key values, filtering them by the given expression
+     *   </li>
+     *   <li> expression only -
+     *            requests, via the head rank, all records in the table matching
+     *            the given filter expression
+     *   </li>
+     *   <li> neither -
+     *            retrieves all records from the table via the head rank
+     *   </li>
+     * </ul>
      *
      * @param keyValues   the key values to use for the lookup; these must
      *                    correspond to either the explicit or implicit shard
@@ -709,20 +781,59 @@ public class RecordRetriever<T> {
         return getByKey(keyValues, expression, 0);
     }
 
+    /**
+     * Retrieves records with the given key values and filter expression from
+     * the database using a direct-to-rank fast key lookup, if possible, and
+     * falling back to a standard lookup via the head node, if not.  Returns
+     * records in the overall result set starting from the given {@code offset}.
+     * <br/>
+     * This method operates in four modes, depending on the parameters passed:
+     * <ul>
+     *   <li> keyValues only -
+     *            attempts a direct-to-rank lookup for records
+     *            matching the given key values
+     *   </li>
+     *   <li> keyValues & expression -
+     *            attempts a direct-to-rank lookup for records matching the
+     *            given key values, filtering them by the given expression
+     *   </li>
+     *   <li> expression only -
+     *            requests, via the head rank, all records in the table matching
+     *            the given filter expression
+     *   </li>
+     *   <li> neither -
+     *            retrieves all records from the table via the head rank
+     *   </li>
+     * </ul>
+     *
+     * @param keyValues   the key values to use for the lookup; these must
+     *                    correspond to either the explicit or implicit shard
+     *                    key for sharded tables or the primary key of
+     *                    replicated tables
+     * @param expression  a filter expression that will be applied to the data
+     *                    requested by the key values; if no key values are
+     *                    specified this filter will be applied to all of the
+     *                    data in the target table
+     * @param offset      offset of the record(s) within the result set to
+     *                    return
+     *
+     * @return            a {@link com.gpudb.protocol.GetRecordsResponse} with
+     *                    the requested records
+     */
     public GetRecordsResponse<T> getByKey(List<Object> keyValues, String expression,
         long offset) throws GPUdbException {
 
-        boolean doWorkerLookup = this.isWorkerLookupSupported;
+        boolean doWorkerLookup = this.workerLookupSupported;
         String compositeExpression = expression;
         boolean keyValuesSpecified = keyValues != null && !keyValues.isEmpty();
 
         if (offset < 1)
-            this.last_used_url = null;
+            this.lastUsedUrl = null;
 
         if (!keyValuesSpecified) {
             // Use head rank if table is [randomly] sharded and no keys are given,
             //   or if the table is replicated and no expression (or keys) is given.
-            if (!this.isTableReplicated || expression == null || expression.isEmpty())
+            if (!this.tableReplicated || expression == null || expression.isEmpty())
                 doWorkerLookup = false;
         } else {
             // Eliminate the case where key values are given, but the table has no
@@ -784,14 +895,14 @@ public class RecordRetriever<T> {
 
                 // If the table is replicated and it's determined that the
                 // server supports it, use random worker rank for lookups
-                if ( this.isTableReplicated ) {
+                if ( this.tableReplicated ) {
                     // For replicated tables, use the same worker for new pages (i.e., offset > 0)
                     // in case the data is in a different order on different workers
-                    if (this.last_used_url != null)
-                        url = this.last_used_url;
+                    if (this.lastUsedUrl != null)
+                        url = this.lastUsedUrl;
                     else {
                         url = this.workerUrls.get( ThreadLocalRandom.current().nextInt( this.workerUrls.size() ) );
-                        this.last_used_url = url; // Remember for next time
+                        this.lastUsedUrl = url; // Remember for next time
                     }
                 } else {
                     // Not a replicated table; so calculate the shard to figure
@@ -909,17 +1020,25 @@ public class RecordRetriever<T> {
      * Retrieves records with the given key values and filter expression from
      * the database using a direct-to-rank fast key lookup, if possible, and
      * falling back to a standard lookup via the head node, if not.
-     * 
+     * <br/>
      * This method operates in four modes, depending on the parameters passed:
-     * 
-     * * keyValues only - attempts a direct-to-rank lookup for records matching
-     *                    the given key values
-     * * keyValues & expression - attempts a direct-to-rank lookup for records
-     *                    matching the given key values, filtering them by the
-     *                    given expression
-     * * expression only - requests, via the head rank, all records in the table
-     *                    matching the given filter expression
-     * * neither - retrieves all records from the table via the head rank
+     * <ul>
+     *   <li> keyValues only -
+     *            attempts a direct-to-rank lookup for records
+     *            matching the given key values
+     *   </li>
+     *   <li> keyValues & expression -
+     *            attempts a direct-to-rank lookup for records matching the
+     *            given key values, filtering them by the given expression
+     *   </li>
+     *   <li> expression only -
+     *            requests, via the head rank, all records in the table matching
+     *            the given filter expression
+     *   </li>
+     *   <li> neither -
+     *            retrieves all records from the table via the head rank
+     *   </li>
+     * </ul>
      *
      * @param columns     The requested columns (which can include expressions)
      *                    being requested.  May use "*" for all columns.
@@ -940,21 +1059,62 @@ public class RecordRetriever<T> {
         return getColumnsByKey(columns, keyValues, expression, 0);
     }
 
+    /**
+     * Retrieves records with the given key values and filter expression from
+     * the database using a direct-to-rank fast key lookup, if possible, and
+     * falling back to a standard lookup via the head node, if not.  Returns
+     * records in the overall result set starting from the given {@code offset}.
+     * <br/>
+     * This method operates in four modes, depending on the parameters passed:
+     * <ul>
+     *   <li> keyValues only -
+     *            attempts a direct-to-rank lookup for records
+     *            matching the given key values
+     *   </li>
+     *   <li> keyValues & expression -
+     *            attempts a direct-to-rank lookup for records matching the
+     *            given key values, filtering them by the given expression
+     *   </li>
+     *   <li> expression only -
+     *            requests, via the head rank, all records in the table matching
+     *            the given filter expression
+     *   </li>
+     *   <li> neither -
+     *            retrieves all records from the table via the head rank
+     *   </li>
+     * </ul>
+     *
+     * @param columns     The requested columns (which can include expressions)
+     *                    being requested.  May use "*" for all columns.
+     * @param keyValues   the key values to use for the lookup; these must
+     *                    correspond to either the explicit or implicit shard
+     *                    key for sharded tables or the primary key of
+     *                    replicated tables
+     * @param expression  a filter expression that will be applied to the data
+     *                    requested by the key values; if no key values are
+     *                    specified this filter will be applied to all of the
+     *                    data in the target table
+     * @param offset      offset of the record(s) within the result set to
+     *                    return
+     *
+     * @return            a {@link com.gpudb.protocol.GetRecordsResponse} with
+     *                    the requested records
+     */
     public GetRecordsByColumnResponse getColumnsByKey(List<String> columns, List<Object> keyValues,
         String expression, long offset) throws GPUdbException {
 
-        boolean doWorkerLookup = this.isWorkerLookupSupported;
+        boolean doWorkerLookup = this.workerLookupSupported;
         String compositeExpression = expression;
         boolean keyValuesSpecified = keyValues != null && !keyValues.isEmpty();
 
         if (offset < 1)
-            this.last_used_url = null;
+            this.lastUsedUrl = null;
 
         if (!keyValuesSpecified)
         {
             // Use head rank if table is [randomly] sharded and no keys are given,
             //   or if the table is replicated and no expression (or keys) is given.
-            if (!this.isTableReplicated)
+            if (!this.tableReplicated)
                 doWorkerLookup = false;
         } else {
             // Eliminate the case where key values are given, but the table has no
@@ -1009,15 +1169,15 @@ public class RecordRetriever<T> {
 
                 // If the table is replicated and it's determined that the
                 // server supports it, use random worker rank for lookups
-                if ( this.isTableReplicated )
+                if ( this.tableReplicated )
                 {
                     // For replicated tables, use the same worker for new pages (i.e., offset > 0)
                     // in case the data is in a different order on different workers
-                    if (this.last_used_url != null)
-                        url = this.last_used_url;
+                    if (this.lastUsedUrl != null)
+                        url = this.lastUsedUrl;
                     else {
                         url = this.workerUrls.get( ThreadLocalRandom.current().nextInt( this.workerUrls.size() ) );
-                        this.last_used_url = url; // Remember for next time
+                        this.lastUsedUrl = url; // Remember for next time
                     }
                 } else {
                     // Not a replicated table; so calculate the shard to figure

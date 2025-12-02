@@ -75,7 +75,7 @@ public class WorkerList extends ArrayList<URL> {
         if (!gpudb.isAutoDiscoveryEnabled())
             return;
 
-        Map<String, String> systemProperties = gpudb.showSystemProperties(GPUdb.options()).getPropertyMap();
+        Map<String, String> systemProperties = gpudb.showSystemProperties(GPUdbBase.options()).getPropertyMap();
 
         String s = systemProperties.get("conf.enable_worker_http_servers");
 

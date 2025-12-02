@@ -2,26 +2,42 @@
 
 ## Version 7.2
 
+### Version 7.2.3.5 - 2025-12-02
+
+#### Added
+-   Automatic multi-head ingest via `BulkInserter`; no pre-creation of rank
+    `WorkerList` is necessary.
+-   Automatic multi-head lookup via `RecordRetriever`; no pre-creation of rank
+    `WorkerList` is necessary.
+-   Simplified `BulkInserter` constructors with automatic `WorkerList` creation.
+
+#### Changed
+-   Improved network overhead of `BulkInserter` construction.
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
 ### Version 7.2.3.4 - 2025-11-21
 
 #### Changed
--   Improved multi-threaded performance of multi-head ingest via `BulkInserter`
+-   Improved multi-threaded performance of multi-head ingest via `BulkInserter`.
 
 
 ### Version 7.2.3.3 - 2025-11-19
 
 #### Fixed
--   Fixed tracking of decimal precision/scale when building a shard key
+-   Fixed tracking of decimal precision/scale when building a shard key.
 
 
 ### Version 7.2.3.2 - 2025-11-18
 
 #### Added
--   Complete support for 12-byte `DECIMAL` data type
+-   Complete support for 12-byte `DECIMAL` data type.
 
 #### Fixed
--   Preservation of HA failover order in user-given URLs
--   Check of HA queue draining status on fail-back
+-   Preservation of HA failover order in user-given URLs.
+-   Check of HA queue draining status on fail-back.
 
 #### Notes
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
@@ -31,7 +47,7 @@
 
 #### Changed
 -   Switched retry handler to retry on higher-level `SocketException` instead of
-    lower-level `ConnectException` & `NoRouteToHostException`
+    lower-level `ConnectException` & `NoRouteToHostException`.
 
 
 ### Version 7.2.3.0 - 2025-09-03
@@ -46,14 +62,14 @@
 ### Version 7.2.2.16 - 2025-11-12
 
 #### Fixed
--   Preservation of HA failover order in user-given URLs
+-   Preservation of HA failover order in user-given URLs.
 
 
 ### Version 7.2.2.15 - 2025-10-07
 
 #### Changed
 -   Switched retry handler to retry on higher-level `SocketException` instead of
-    lower-level `ConnectException` & `NoRouteToHostException`
+    lower-level `ConnectException` & `NoRouteToHostException`.
 
 
 ### Version 7.2.2.14 - 2025-09-03
@@ -65,8 +81,8 @@
 ### Version 7.2.2.13 - 2025-08-24
 
 #### Changed
--   Improved forward-compatibility for new `DECIMAL` type
--   Upgraded Apache Commons Lang3 library to 3.18.0
+-   Improved forward-compatibility for new `DECIMAL` type.
+-   Upgraded Apache Commons Lang3 library to 3.18.0.
 
 
 ### Version 7.2.2.12 - 2025-08-18
@@ -130,7 +146,7 @@
 ### Version 7.2.2.8 - 2025-03-27
 
 #### Added
--   Retrying connections in case of HTTP 502 & 503 responses
+-   Retrying connections in case of HTTP 502 & 503 responses.
 
 #### Notes
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
@@ -139,11 +155,11 @@
 ### Version 7.2.2.7 - 2025-02-24
 
 #### Added
--   Support for parallel HA modes
--   More error types supported in retrying connections
+-   Support for parallel HA modes.
+-   More error types supported in retrying connections.
 
 #### Changed
--   Upgraded Logback library to 1.3.15
+-   Upgraded Logback library to 1.3.15.
 
 #### Notes
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
@@ -153,65 +169,65 @@
 
 #### Changed
 -   Switched read timeout on system status checks to the configured server
-    connection timeout
+    connection timeout.
 
 
 ### Version 7.2.2.5 - 2025-01-30
 
 #### Added
--   Improved error reporting on connection failures
+-   Improved error reporting on connection failures.
 
 #### Changed
 -   Switched retry handler to retry on `SocketTimeoutException` instead of
-    `ConnectTimeoutException`
+    `ConnectTimeoutException`.
 
 
 ### Version 7.2.2.4 - 2024-12-17
 
 #### Added
 -   Support for key lookups returning a subset of a table's columns with fewer
-    lookup restrictions via `RecordRetriever.getColumnsByKey()`
--   Support for key lookups returning records from a specified offset
+    lookup restrictions via `RecordRetriever.getColumnsByKey()`.
+-   Support for key lookups returning records from a specified offset.
 
 
 ### Version 7.2.2.3 - 2024-10-29
 
 #### Added
--   Failback to a primary cluster after failing over to a secondary cluster
+-   Failback to a primary cluster after failing over to a secondary cluster.
 
 #### Changed
--   Upgraded Avro library to 1.11.4
+-   Upgraded Avro library to 1.11.4.
 
 #### Fixed
--   Error message for bad URLs with auto-discovery disabled
--   Potential resource leaks upon connection errors
+-   Error message for bad URLs with auto-discovery disabled.
+-   Potential resource leaks upon connection errors.
 
 
 ### Version 7.2.2.2 - 2024-10-24
 
 #### Fixed
--   Issue with lookup up server version when auto-discovery is disabled
+-   Issue with lookup up server version when auto-discovery is disabled.
 
 
 ### Version 7.2.2.1 - 2024-10-22
 
 #### Changed
--   Modified server version extractor to handle all 5 version components
--   Made the full set of system properties for the active cluster available
+-   Modified server version extractor to handle all 5 version components.
+-   Made the full set of system properties for the active cluster available.
 
 
 ### Version 7.2.2.0 - 2024-10-15
 
 #### Changed
--   Modified POM for publishing to Maven Central Repository
--   Upgraded Jackson core library to 2.17.1
--   Downgraded Logback library to 1.3.14
--   Upgraded SLF4j library to 2.0.13
+-   Modified POM for publishing to Maven Central Repository.
+-   Upgraded Jackson core library to 2.17.1.
+-   Downgraded Logback library to 1.3.14.
+-   Upgraded SLF4j library to 2.0.13.
 
 #### Fixed
 -   Issue with dependent JDBC `fullshaded` driver terminating with no linked
-    Snappy library
--   JavaDoc generation warnings
+    Snappy library.
+-   JavaDoc generation warnings.
 
 #### Notes
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
@@ -220,19 +236,19 @@
 ### Version 7.2.1.0 - 2024-09-08
 
 #### Added
--   OAuth2 authentication support
+-   OAuth2 authentication support.
 
 #### Changed
--   Publishing to Maven Central Repository
+-   Publishing to Maven Central Repository.
 
 #### Fixed
--   Snappy error for `fullshaded` JDBC JAR
+-   Snappy error for `fullshaded` JDBC JAR.
 
 
 ### Version 7.2.0.5 - 2024-06-07
 
 #### Fixed
--   Out-of-memory error when downloading large files
+-   Out-of-memory error when downloading large files.
 
 #### Notes
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
@@ -241,10 +257,10 @@
 ### Version 7.2.0.4 - 2024-04-04
 
 #### Changed
--   Lowered default server connection timeout to 5 seconds
+-   Lowered default server connection timeout to 5 seconds.
 -   Made server connection timeout (user-specified or default) govern connection
-    timeouts in all cases of initially connecting to a server
--   Deprecated `isKineticaRunning()` in favor of `isSystemRunning()`
+    timeouts in all cases of initially connecting to a server.
+-   Deprecated `isKineticaRunning()` in favor of `isSystemRunning()`.
 
 #### Notes
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
@@ -253,10 +269,10 @@
 ### Version 7.2.0.3 - 2024-03-20
 
 #### Added
--   Support for unsigned long types and null values in arrays
+-   Support for unsigned long types and null values in arrays.
 
 #### Fixed
--   Concurrency issue with the use of `BulkInserter.insert(List)`
+-   Concurrency issue with the use of `BulkInserter.insert(List)`.
 
 #### Notes
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
@@ -266,8 +282,8 @@
 
 #### Changed
 -   Increased connection timeout from ~1 to 20 seconds to account for
-    connections over high-traffic and public networks
--   Upgraded Snappy library from 1.1.10.4 to 1.1.10.5
+    connections over high-traffic and public networks.
+-   Upgraded Snappy library from 1.1.10.4 to 1.1.10.5.
 
 #### Notes
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
@@ -276,14 +292,14 @@
 ### Version 7.2.0.1 - 2024-02-27
 
 #### Changed
--   Upgraded Apache HTTPClient5 library from 5.3 to 5.3.1
+-   Upgraded Apache HTTPClient5 library from 5.3 to 5.3.1.
 
 
 ### Version 7.2.0.0 - 2024-02-11
 
 #### Added
--   Support for Array, JSON and Vector data
--   `query()` & `execute()` methods for more easily running SQL statements
+-   Support for Array, JSON and Vector data.
+-   `query()` & `execute()` methods for more easily running SQL statements.
 
 #### Notes
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.

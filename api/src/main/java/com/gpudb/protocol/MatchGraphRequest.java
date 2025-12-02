@@ -569,6 +569,20 @@ public class MatchGraphRequest implements IndexedRecord {
         public static final String OUTPUT_BATCH_SIZE = "output_batch_size";
 
         /**
+         * For the {@link SolveMethod#MATCH_SUPPLY_DEMAND MATCH_SUPPLY_DEMAND}
+         * solver only. Runs multiple supply demand solver repeatedly in a
+         * multi step cycle by switching supplies to demands until it reaches
+         * the main hub supply.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String MULTI_STEP = "multi_step";
+
+        /**
          * For the {@link SolveMethod#MATCH_CHARGING_STATIONS
          * MATCH_CHARGING_STATIONS} solver only. This is the maximum
          * ev-charging capacity of a vehicle (distance in meters or time in
@@ -1210,6 +1224,19 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         only. Uses this value as the batch size of the
      *                         number of loops in flushing(inserting) to the
      *                         output table. The default value is '1000'.
+     *                     <li>{@link Options#MULTI_STEP MULTI_STEP}: For the
+     *                         {@link SolveMethod#MATCH_SUPPLY_DEMAND
+     *                         MATCH_SUPPLY_DEMAND} solver only. Runs multiple
+     *                         supply demand solver repeatedly in a multi step
+     *                         cycle by switching supplies to demands until it
+     *                         reaches the main hub supply.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                     <li>{@link Options#CHARGING_CAPACITY
      *                         CHARGING_CAPACITY}: For the {@link
      *                         SolveMethod#MATCH_CHARGING_STATIONS
@@ -1864,6 +1891,17 @@ public class MatchGraphRequest implements IndexedRecord {
      *         this value as the batch size of the number of loops in
      *         flushing(inserting) to the output table. The default value is
      *         '1000'.
+     *     <li>{@link Options#MULTI_STEP MULTI_STEP}: For the {@link
+     *         SolveMethod#MATCH_SUPPLY_DEMAND MATCH_SUPPLY_DEMAND} solver
+     *         only. Runs multiple supply demand solver repeatedly in a multi
+     *         step cycle by switching supplies to demands until it reaches the
+     *         main hub supply.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#CHARGING_CAPACITY CHARGING_CAPACITY}: For the
      *         {@link SolveMethod#MATCH_CHARGING_STATIONS
      *         MATCH_CHARGING_STATIONS} solver only. This is the maximum
@@ -2259,6 +2297,17 @@ public class MatchGraphRequest implements IndexedRecord {
      *         this value as the batch size of the number of loops in
      *         flushing(inserting) to the output table. The default value is
      *         '1000'.
+     *     <li>{@link Options#MULTI_STEP MULTI_STEP}: For the {@link
+     *         SolveMethod#MATCH_SUPPLY_DEMAND MATCH_SUPPLY_DEMAND} solver
+     *         only. Runs multiple supply demand solver repeatedly in a multi
+     *         step cycle by switching supplies to demands until it reaches the
+     *         main hub supply.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#CHARGING_CAPACITY CHARGING_CAPACITY}: For the
      *         {@link SolveMethod#MATCH_CHARGING_STATIONS
      *         MATCH_CHARGING_STATIONS} solver only. This is the maximum
