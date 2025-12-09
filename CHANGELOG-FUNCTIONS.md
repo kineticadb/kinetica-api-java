@@ -1,5 +1,9 @@
 # Kinetica REST API Changelog
 
+## Version 7.2.3.6
+##### Breaking Changes
+-   Removed ``/update/records/byseries`` endpoint
+
 ## Version 7.2.3.5
 #### Added
 -   Added support for sorting of all columns of ``ki_tiered_objects`` table

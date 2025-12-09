@@ -49,6 +49,11 @@ public class RevokePermissionRequest implements IndexedRecord {
      */
     public static final class ObjectType {
         /**
+         * Catalog
+         */
+        public static final String CATALOG = "catalog";
+
+        /**
          * Context
          */
         public static final String CONTEXT = "context";
@@ -227,6 +232,7 @@ public class RevokePermissionRequest implements IndexedRecord {
      * @param objectType  The type of object being revoked.
      *                    Supported values:
      *                    <ul>
+     *                        <li>{@link ObjectType#CATALOG CATALOG}: Catalog
      *                        <li>{@link ObjectType#CONTEXT CONTEXT}: Context
      *                        <li>{@link ObjectType#CREDENTIAL CREDENTIAL}:
      *                            Credential
@@ -345,6 +351,7 @@ public class RevokePermissionRequest implements IndexedRecord {
      * The type of object being revoked.
      * Supported values:
      * <ul>
+     *     <li>{@link ObjectType#CATALOG CATALOG}: Catalog
      *     <li>{@link ObjectType#CONTEXT CONTEXT}: Context
      *     <li>{@link ObjectType#CREDENTIAL CREDENTIAL}: Credential
      *     <li>{@link ObjectType#DATASINK DATASINK}: Data Sink
@@ -369,6 +376,7 @@ public class RevokePermissionRequest implements IndexedRecord {
      * The type of object being revoked.
      * Supported values:
      * <ul>
+     *     <li>{@link ObjectType#CATALOG CATALOG}: Catalog
      *     <li>{@link ObjectType#CONTEXT CONTEXT}: Context
      *     <li>{@link ObjectType#CREDENTIAL CREDENTIAL}: Credential
      *     <li>{@link ObjectType#DATASINK DATASINK}: Data Sink

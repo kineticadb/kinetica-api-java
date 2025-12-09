@@ -1705,6 +1705,15 @@ public abstract class GPUdbBase {
         }
 
         /**
+         * Gets the payload used in {@link #insertRecordsFromJson} requests.
+         *
+         * @return  the JSON payload
+         */
+        public String getPayload() {
+            return this.payload;
+        }
+
+        /**
          * Gets the size in bytes of the encoded failed request, or -1 if the
          * request was not yet encoded at the time of failure.
          *
@@ -1814,6 +1823,8 @@ public abstract class GPUdbBase {
      * A special exception indicating the server is shutting down
      */
     public static class GPUdbExitException extends GPUdbException {
+        private static final long serialVersionUID = 1L;
+
         /**
          * Creates a new {@link GPUdbExitException} with the specified message.
          *
@@ -1836,6 +1847,8 @@ public abstract class GPUdbBase {
     }
 
     public static final class GPUdbHAUnavailableException extends GPUdbException {
+        private static final long serialVersionUID = 1L;
+
         /**
          * Creates a new {@link GPUdbHAUnavailableException} with the specified message.
          *
@@ -1859,6 +1872,8 @@ public abstract class GPUdbBase {
 
 
     public static final class GPUdbFailoverDisabledException extends GPUdbException {
+        private static final long serialVersionUID = 1L;
+
         /**
          * Creates a new {@link GPUdbFailoverDisabledException} with the specified message.
          *
@@ -1882,6 +1897,8 @@ public abstract class GPUdbBase {
 
 
     public static final class GPUdbHostnameRegexFailureException extends GPUdbException {
+        private static final long serialVersionUID = 1L;
+
         /**
          * Creates a new {@link GPUdbHostnameRegexFailureException} with the specified message.
          *
@@ -1909,6 +1926,8 @@ public abstract class GPUdbBase {
      * Indicates that there is an authorization-related problem occurred.
      */
     public static class GPUdbUnauthorizedAccessException extends GPUdbException {
+        private static final long serialVersionUID = 1L;
+
         /**
          * Creates a new {@link GPUdbUnauthorizedAccessException} with the
          * specified message.
@@ -2156,6 +2175,7 @@ public abstract class GPUdbBase {
     private static final String DB_DRAINING_HAQ_ERROR_MESSAGE       = "Unavailable: Draining HA queue";
     private static final String DB_SYSTEM_LIMITED_ERROR_MESSAGE     = "system-limited-fatal";
     private static final String DB_EOF_FROM_SERVER_ERROR_MESSAGE    = "Unexpected end of file from server";
+    private static final String DB_QP_DOWN_ERROR_MESSAGE            = "Query planner is not running";
 
     // Endpoints
     private static final String ENDPOINT_SHOW_SYSTEM_STATUS     = "/show/system/status";
@@ -2856,6 +2876,7 @@ public abstract class GPUdbBase {
             .build();
 
         // Create a connection pool manager
+        @SuppressWarnings("resource")
         final PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(
                 connSocketFactoryRegistry,
                 PoolConcurrencyPolicy.LAX,
@@ -2962,6 +2983,7 @@ public abstract class GPUdbBase {
             this.serverVersion = parseServerVersion( sysProps );
         } catch ( GPUdbException ex ) {
             this.httpClient.close(CloseMode.GRACEFUL);
+            connectionManager.close();
             String msg = String.format("Connectivity check for <%s> failed: %s", this.getURL(), ex.getMessage());
             throw new GPUdbException( msg, ex );
         }
@@ -3602,7 +3624,7 @@ public abstract class GPUdbBase {
 
             // This thread is the first one here--select the next cluster to use
             // during this HA failover
-            while( !isKineticaRunning(getURL())) {
+            do {
                 this.selectNextCluster();
 
                 // If we've circled back, shuffle the indices again so that future
@@ -3619,8 +3641,9 @@ public abstract class GPUdbBase {
                     // Let the user know that we've circled back
                     throw new GPUdbHAUnavailableException("Circled back to original URL; no clusters available for fail-over among these: " + getURLs().toString());
                 }
-
             }
+            while(!isKineticaRunning(getURL()));
+
             // Haven't circled back to the old URL; so return the new one
             GPUdbLogger.warn("Switched to fail-over URL: " +  getURL());
 
@@ -3951,13 +3974,15 @@ public abstract class GPUdbBase {
      *             null, the active head node URL will be used
      */
     private Map<String, String> getSystemProperties( URL url ) throws GPUdbException {
-        // Call /show/system/properties at the given URL
+
+        URL targetUrl = (url == null) ? getURL() : url;
         ShowSystemPropertiesResponse response = null;
+
         try {
             if( url == null ){
                 // Get system properties for the current URL
-                // This will trigger failover and also failback if the primary URL cannot be connected to
-                GPUdbLogger.debug_with_info( "Getting system properties for URL: " + getURL());
+                // This will trigger failover and also failback if the properties cannot be retrieved
+                GPUdbLogger.debug_with_info( "Getting system properties for active head node URL: " + targetUrl);
                 response = submitRequest(
                     ENDPOINT_SHOW_SYSTEM_PROPERTIES,
                     new ShowSystemPropertiesRequest(),
@@ -3965,23 +3990,25 @@ public abstract class GPUdbBase {
                     false
                 );
             } else {
-                GPUdbLogger.debug_with_info( "Getting system properties for URL: " + url);
+                // Get system properties for the given URL, in initialization & fail-over scenarios
+                // This will not trigger fail-over and fail-back if the properties cannot be retrieved
+                GPUdbLogger.debug_with_info( "Getting system properties for target URL: " + targetUrl);
                 response = submitRequest(
-                        appendPathToURL( url, ENDPOINT_SHOW_SYSTEM_PROPERTIES ),
+                        appendPathToURL( targetUrl, ENDPOINT_SHOW_SYSTEM_PROPERTIES ),
                         new ShowSystemPropertiesRequest(),
                         new ShowSystemPropertiesResponse(),
                         false
                     );
             }
         } catch (MalformedURLException ex) {
-            throw new GPUdbException( "Error forming URL: " + url + " -- " + ex.getMessage(), ex );
+            throw new GPUdbException( "Error forming URL: " + targetUrl + " -- " + ex.getMessage(), ex );
         }
 
         // Get the property map from the response and return it
         if ( response == null )
-            throw new GPUdbException( "Could not get system properties for URL: " + url);
+            throw new GPUdbException( "Could not get system properties for URL: " + targetUrl);
 
-        GPUdbLogger.debug_with_info( "Got system properties for URL: " + url);
+        GPUdbLogger.debug_with_info( "Got system properties for URL: " + targetUrl);
         Map<String, String> systemProperties = response.getPropertyMap();
 
         // Is HTTPD being used (helps in figuring out the host manager URL
@@ -3990,7 +4017,7 @@ public abstract class GPUdbBase {
         // Figure out if we're using HTTPD
         if ( (isHttpEnabled != null)
             && (isHttpEnabled.compareToIgnoreCase( SYSTEM_PROPERTIES_RESPONSE_TRUE ) == 0 ) ) {
-            GPUdbLogger.debug_with_info( "Setting use httpd to true for URL: " + url);
+            GPUdbLogger.debug_with_info( "Setting use httpd to true for URL: " + targetUrl);
             this.useHttpd = true;
         }
 
@@ -4390,7 +4417,7 @@ public abstract class GPUdbBase {
 
     /**
      * This method is used to send a SQL query to Kinetica and read the records in the returned
-     * GPUdbSqlIterator object.  See {@link #query(String, Object, Map)} } to execute a SQL statement without reading
+     * GPUdbSqlIterator object.  See {@link #query(String, Object, Map)} to execute a SQL statement without reading
      * the resulting data.
      * 
      * @param sql - The SQL query to execute
@@ -5162,32 +5189,26 @@ public abstract class GPUdbBase {
             // it connects to using that cluster's known rank URLs
             if ( !isDiscoveredURL ) {
 
-                // Check if the user-given URL is in the server's list of rank URLs;
-                // if not, the connection may need to be handled differently
-                if ( !clusterInfo.doesClusterContainNode( url.getHost() ) ) {
-                    GPUdbLogger.debug_with_info( "Obtained cluster addresses do not contain user given URL: " + urlStr );
+                // Check if the server given head node address is reachable.
+                // If so, use that URL instead of the user-given one.
+                // If not, the user will not be able to use the server-known
+                // address for connecting normally.  The API will need to
+                // reprocess the user-given URLs with auto-discovery
+                // disabled, so that the user can issue database commands,
+                // but where multi-head operations will not be available.
+                if ( !isSystemRunning( clusterInfo.getActiveHeadNodeUrl() ) ) {
 
-                    // Check if the server given head node address is reachable.
-                    // If so, use that URL instead of the user-given one.
-                    // If not, the user will not be able to use the server-known
-                    // address for connecting normally.  The API will need to
-                    // reprocess the user-given URLs with auto-discovery
-                    // disabled, so that the user can issue database commands,
-                    // but where multi-head operations will not be available.
-                    if ( !isSystemRunning( clusterInfo.getActiveHeadNodeUrl() ) ) {
+                    GPUdbLogger.warn(String.format(
+                            "Disabling auto-discovery & multi-head operations--cluster reachable with user-given URL <%s> but not with server-known URL <%s>",
+                            urlStr, clusterInfo.getActiveHeadNodeUrl()));
 
-                        GPUdbLogger.warn(String.format(
-                                "Disabling auto-discovery & multi-head operations--cluster reachable with user-given URL <%s> but not with server-known URL <%s>",
-                                urlStr, clusterInfo.getActiveHeadNodeUrl()));
+                    // Disable auto-discovery and throw exception to reprocess user-given URLs
+                    this.disableAutoDiscovery = true;
 
-                        // Disable auto-discovery and throw exception to reprocess user-given URLs
-                        this.disableAutoDiscovery = true;
-
-                        throw new GPUdbException(String.format(
-                                "Could not connect to server-known head node address: %s (user given URL: %s)",
-                                clusterInfo.toString(), urlStr));
-                    }
-                }   // end if
+                    throw new GPUdbException(String.format(
+                            "Could not connect to server-known head node address: %s (user given URL: %s)",
+                            clusterInfo.toString(), urlStr));
+                }
 
                 GPUdbLogger.debug_with_info(String.format(
                         "Verified connectivity with user-given URL %s; adding index %s to user-given processed cluster list",
@@ -6548,7 +6569,8 @@ public abstract class GPUdbBase {
 
         int requestSize = -1;
         HttpPost              postRequest    = null;
-        HttpEntity            requestPacket  = null;
+        byte[]                encodedRequest = null;
+        ContentType           contentType    = null;
         HttpEntity            responseEntity = null;
         HttpHost              host           = null;
         ClassicHttpResponse   postResponse   = null;
@@ -6564,28 +6586,24 @@ public abstract class GPUdbBase {
 
             if (enableCompression && this.useSnappy) {
                 // Use snappy to compress the original request body
-                byte[] encodedRequest = Snappy.compress(Avro.encode(request).array());
+                encodedRequest = Snappy.compress(Avro.encode(request).array());
                 requestSize = encodedRequest.length;
                 postRequest.addHeader( HEADER_CONTENT_TYPE, "application/x-snappy" );
-
-                // Create the entity for the compressed request
-                requestPacket = new ByteArrayEntity( encodedRequest, ContentType.create("application/x-snappy")  );
+                contentType = ContentType.create("application/x-snappy");
             } else {
-                byte[] encodedRequest = Avro.encode(request).array();
+                encodedRequest = Avro.encode(request).array();
                 requestSize = encodedRequest.length;
                 postRequest.addHeader( HEADER_CONTENT_TYPE, "application/octet-stream" );
-
-                // Create the entity for the request
-                requestPacket = new ByteArrayEntity( encodedRequest, ContentType.APPLICATION_OCTET_STREAM  );
+                contentType = ContentType.APPLICATION_OCTET_STREAM;
             }
 
-            // Save the request into the http post object as a payload
-            postRequest.setEntity( requestPacket );
-
-            // Execute the request
-            try {
+            // Create the entity for the request and execute the request
+            try (HttpEntity requestPacket = new ByteArrayEntity(encodedRequest, contentType)) {
                 if (GPUdbLogger.isTraceEnabled())
                     GPUdbLogger.trace("Executing <" + request.toString() + ">");
+
+                // Save the request into the http post object as a payload
+                postRequest.setEntity( requestPacket );
 
                 requestTime = System.currentTimeMillis();
                 
@@ -6664,15 +6682,14 @@ public abstract class GPUdbBase {
                 throw new SubmitException( url, request, requestSize, errorMsg );
             }
 
-            InputStream inputStream = responseEntity.getContent();
-            if (inputStream == null) {
-                // Trigger an HA failover at the caller level
-                throw new GPUdbExitException("Server returned HTTP " + statusCode + " (" + responseMessage + "); returning EXIT exception");
-            }
-
-            try {
+            try (InputStream inputStream = responseEntity.getContent()) {
                 // Manually decode the RawGpudbResponse wrapper directly from
                 // the stream to avoid allocation of intermediate buffers
+
+                if (inputStream == null) {
+                    // Trigger an HA failover at the caller level
+                    throw new GPUdbExitException("Server returned HTTP " + statusCode + " (" + responseMessage + "); returning EXIT exception");
+                }
 
                 BinaryDecoder decoder = DecoderFactory.get().binaryDecoder(inputStream, null);
                 String status = decoder.readString();
@@ -6692,11 +6709,15 @@ public abstract class GPUdbBase {
                     if (
                             statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR ||
                             statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT ||
-                            message.contains( DB_EXITING_ERROR_MESSAGE ) ||
-                            message.contains( DB_CONNECTION_REFUSED_ERROR_MESSAGE ) ||
-                            message.contains( DB_CONNECTION_RESET_ERROR_MESSAGE ) ||
-                            message.contains( DB_SYSTEM_LIMITED_ERROR_MESSAGE ) ||
-                            message.contains( DB_OFFLINE_ERROR_MESSAGE )
+                            message != null &&
+                            (
+                                message.contains( DB_EXITING_ERROR_MESSAGE ) ||
+                                message.contains( DB_CONNECTION_REFUSED_ERROR_MESSAGE ) ||
+                                message.contains( DB_CONNECTION_RESET_ERROR_MESSAGE ) ||
+                                message.contains( DB_SYSTEM_LIMITED_ERROR_MESSAGE ) ||
+                                message.contains( DB_OFFLINE_ERROR_MESSAGE ) ||
+                                message.contains( DB_QP_DOWN_ERROR_MESSAGE )
+                            )
                     ) {
                         GPUdbLogger.debug_with_info(
                                 "Throwing EXIT exception from " + url.toString() + "; response_code: " + statusCode + "; message: " + message
@@ -6724,19 +6745,6 @@ public abstract class GPUdbBase {
                 // Decode data field
                 decoder.readInt();
                 return new Avro.DatumReader<T>(response.getSchema()).read(response, decoder);
-            } finally {
-                // Attempt to read any remaining data in the stream
-
-                try {
-                    inputStream.skip(Long.MAX_VALUE);
-                } catch (Exception ex) {
-                } finally {
-                    try {
-                        inputStream.close();
-                    } catch (IOException ex) {
-                        GPUdbLogger.error( ex.getMessage() );
-                    }
-                }
             }
         } catch (GPUdbExitException ex) {
             // An HA failover should be triggered
@@ -6769,13 +6777,6 @@ public abstract class GPUdbBase {
             if ( responseEntity != null ) {
                 EntityUtils.consumeQuietly( responseEntity );
             }
-
-            if ( requestPacket != null)
-                try {
-                    requestPacket.close();
-                } catch (IOException ex) {
-                    GPUdbLogger.error( ex.getMessage() );
-                }
 
             if ( responseEntity != null)
                 try {
@@ -6841,11 +6842,11 @@ public abstract class GPUdbBase {
             postRequest = initializeHttpPostRequest( url, responseTimeout );
             host = new HttpHost( url.getProtocol(), url.getHost(), url.getPort() );
 
-            // Save the payload into the http post object as a JSON payload
-            postRequest.setEntity( new StringEntity( payload, ContentType.APPLICATION_JSON ));
-
             // Execute the request
-            try {
+            try (StringEntity entity = new StringEntity( payload, ContentType.APPLICATION_JSON )) {
+                // Save the payload into the http post object as a JSON payload
+                postRequest.setEntity( entity);
+
                 requestTime = System.currentTimeMillis();
                 
                 postResponse = this.httpClient.executeOpen( host, postRequest, null );
@@ -7172,7 +7173,7 @@ public abstract class GPUdbBase {
                 byte[] buffer = new byte[1024];
                 int index = 0;
 
-                try (InputStream inputStream = connection.getResponseCode() < 400 ? connection.getInputStream() : connection.getErrorStream()) {
+                try (@SuppressWarnings("resource") InputStream inputStream = connection.getResponseCode() < 400 ? connection.getInputStream() : connection.getErrorStream()) {
                     if (inputStream == null) {
                         throw new IOException("Server returned HTTP " + connection.getResponseCode() + " (" + connection.getResponseMessage() + ").");
                     }
@@ -7251,7 +7252,7 @@ public abstract class GPUdbBase {
             byte[] buffer = new byte[1024];
             int index = 0;
 
-            try (InputStream inputStream = connection.getResponseCode() < 400 ? connection.getInputStream() : connection.getErrorStream()) {
+            try (@SuppressWarnings("resource") InputStream inputStream = connection.getResponseCode() < 400 ? connection.getInputStream() : connection.getErrorStream()) {
                 if (inputStream == null) {
                     throw new IOException("Server returned HTTP " + connection.getResponseCode() + " (" + connection.getResponseMessage() + ").");
                 }

@@ -97,6 +97,11 @@ public class CreateBackupRequest implements IndexedRecord {
         public static final String TABLE = "table";
 
         /**
+         * Catalog
+         */
+        public static final String CATALOG = "catalog";
+
+        /**
          * <a href="../../../../../../concepts/credentials/"
          * target="_top">Credential(s)</a>.
          */
@@ -304,6 +309,8 @@ public class CreateBackupRequest implements IndexedRecord {
      *                                  target="_top">Tables(s)</a> and <a
      *                                  href="../../../../../../sql/ddl/#create-view"
      *                                  target="_top">SQL view(s)</a>.
+     *                              <li>{@link BackupObjectsMap#CATALOG
+     *                                  CATALOG}: Catalog
      *                              <li>{@link BackupObjectsMap#CREDENTIAL
      *                                  CREDENTIAL}: <a
      *                                  href="../../../../../../concepts/credentials/"
@@ -511,6 +518,7 @@ public class CreateBackupRequest implements IndexedRecord {
      *         target="_top">Tables(s)</a> and <a
      *         href="../../../../../../sql/ddl/#create-view" target="_top">SQL
      *         view(s)</a>.
+     *     <li>{@link BackupObjectsMap#CATALOG CATALOG}: Catalog
      *     <li>{@link BackupObjectsMap#CREDENTIAL CREDENTIAL}: <a
      *         href="../../../../../../concepts/credentials/"
      *         target="_top">Credential(s)</a>.
@@ -571,6 +579,7 @@ public class CreateBackupRequest implements IndexedRecord {
      *         target="_top">Tables(s)</a> and <a
      *         href="../../../../../../sql/ddl/#create-view" target="_top">SQL
      *         view(s)</a>.
+     *     <li>{@link BackupObjectsMap#CATALOG CATALOG}: Catalog
      *     <li>{@link BackupObjectsMap#CREDENTIAL CREDENTIAL}: <a
      *         href="../../../../../../concepts/credentials/"
      *         target="_top">Credential(s)</a>.

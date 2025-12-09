@@ -13,17 +13,20 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 
 /**
- * A set of results returned by {@link
- * com.gpudb.GPUdb#updateRecordsBySeries(UpdateRecordsBySeriesRequest)
- * GPUdb.updateRecordsBySeries}.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#dropCatalog(DropCatalogRequest) GPUdb.dropCatalog}.
+ * <p>
+ * Drops an existing <a href="../../../../../../concepts/catalog/"
+ * target="_top">catalog</a>.  Any external tables that depend on the catalog
+ * must be dropped before it can be dropped.
  */
-public class UpdateRecordsBySeriesResponse implements IndexedRecord {
+public class DropCatalogRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("UpdateRecordsBySeriesResponse")
+            .record("DropCatalogRequest")
             .namespace("com.gpudb")
             .fields()
-                .name("count").type().intType().noDefault()
-                .name("info").type().map().values().stringType().noDefault()
+                .name("name").type().stringType().noDefault()
+                .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
     /**
@@ -36,51 +39,69 @@ public class UpdateRecordsBySeriesResponse implements IndexedRecord {
         return schema$;
     }
 
-    private int count;
-    private Map<String, String> info;
+    private String name;
+    private Map<String, String> options;
 
     /**
-     * Constructs an UpdateRecordsBySeriesResponse object with default
-     * parameters.
+     * Constructs a DropCatalogRequest object with default parameters.
      */
-    public UpdateRecordsBySeriesResponse() {
+    public DropCatalogRequest() {
+        name = "";
+        options = new LinkedHashMap<>();
     }
 
     /**
-     * @return The current value of {@code count}.
+     * Constructs a DropCatalogRequest object with the specified parameters.
+     *
+     * @param name  Name of the catalog to be dropped. Must be an existing
+     *              catalog.
+     * @param options  Optional parameters. The default value is an empty
+     *                 {@link Map}.
      */
-    public int getCount() {
-        return count;
+    public DropCatalogRequest(String name, Map<String, String> options) {
+        this.name = (name == null) ? "" : name;
+        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
     /**
-     * @param count  The new value for {@code count}.
+     * Name of the catalog to be dropped. Must be an existing catalog.
+     *
+     * @return The current value of {@code name}.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Name of the catalog to be dropped. Must be an existing catalog.
+     *
+     * @param name  The new value for {@code name}.
      *
      * @return {@code this} to mimic the builder pattern.
      */
-    public UpdateRecordsBySeriesResponse setCount(int count) {
-        this.count = count;
+    public DropCatalogRequest setName(String name) {
+        this.name = (name == null) ? "" : name;
         return this;
     }
 
     /**
-     * Additional information.
+     * Optional parameters. The default value is an empty {@link Map}.
      *
-     * @return The current value of {@code info}.
+     * @return The current value of {@code options}.
      */
-    public Map<String, String> getInfo() {
-        return info;
+    public Map<String, String> getOptions() {
+        return options;
     }
 
     /**
-     * Additional information.
+     * Optional parameters. The default value is an empty {@link Map}.
      *
-     * @param info  The new value for {@code info}.
+     * @param options  The new value for {@code options}.
      *
      * @return {@code this} to mimic the builder pattern.
      */
-    public UpdateRecordsBySeriesResponse setInfo(Map<String, String> info) {
-        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+    public DropCatalogRequest setOptions(Map<String, String> options) {
+        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
         return this;
     }
 
@@ -109,10 +130,10 @@ public class UpdateRecordsBySeriesResponse implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.count;
+                return this.name;
 
             case 1:
-                return this.info;
+                return this.options;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -133,11 +154,11 @@ public class UpdateRecordsBySeriesResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.count = (Integer)value;
+                this.name = (String)value;
                 break;
 
             case 1:
-                this.info = (Map<String, String>)value;
+                this.options = (Map<String, String>)value;
                 break;
 
             default:
@@ -155,10 +176,10 @@ public class UpdateRecordsBySeriesResponse implements IndexedRecord {
             return false;
         }
 
-        UpdateRecordsBySeriesResponse that = (UpdateRecordsBySeriesResponse)obj;
+        DropCatalogRequest that = (DropCatalogRequest)obj;
 
-        return ( ( this.count == that.count )
-                 && this.info.equals( that.info ) );
+        return ( this.name.equals( that.name )
+                 && this.options.equals( that.options ) );
     }
 
     @Override
@@ -166,13 +187,13 @@ public class UpdateRecordsBySeriesResponse implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "count" ) );
+        builder.append( gd.toString( "name" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.count ) );
+        builder.append( gd.toString( this.name ) );
         builder.append( ", " );
-        builder.append( gd.toString( "info" ) );
+        builder.append( gd.toString( "options" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.info ) );
+        builder.append( gd.toString( this.options ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -181,8 +202,8 @@ public class UpdateRecordsBySeriesResponse implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.count;
-        hashCode = (31 * hashCode) + this.info.hashCode();
+        hashCode = (31 * hashCode) + this.name.hashCode();
+        hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }
 }

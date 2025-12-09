@@ -49,6 +49,11 @@ public class HasPermissionRequest implements IndexedRecord {
      */
     public static final class ObjectType {
         /**
+         * External Catalog
+         */
+        public static final String CATALOG = "catalog";
+
+        /**
          * Context
          */
         public static final String CONTEXT = "context";
@@ -241,6 +246,8 @@ public class HasPermissionRequest implements IndexedRecord {
      * @param objectType  The type of object being checked.
      *                    Supported values:
      *                    <ul>
+     *                        <li>{@link ObjectType#CATALOG CATALOG}: External
+     *                            Catalog
      *                        <li>{@link ObjectType#CONTEXT CONTEXT}: Context
      *                        <li>{@link ObjectType#CREDENTIAL CREDENTIAL}:
      *                            Credential
@@ -375,6 +382,7 @@ public class HasPermissionRequest implements IndexedRecord {
      * The type of object being checked.
      * Supported values:
      * <ul>
+     *     <li>{@link ObjectType#CATALOG CATALOG}: External Catalog
      *     <li>{@link ObjectType#CONTEXT CONTEXT}: Context
      *     <li>{@link ObjectType#CREDENTIAL CREDENTIAL}: Credential
      *     <li>{@link ObjectType#DATASINK DATASINK}: Data Sink
@@ -399,6 +407,7 @@ public class HasPermissionRequest implements IndexedRecord {
      * The type of object being checked.
      * Supported values:
      * <ul>
+     *     <li>{@link ObjectType#CATALOG CATALOG}: External Catalog
      *     <li>{@link ObjectType#CONTEXT CONTEXT}: Context
      *     <li>{@link ObjectType#CREDENTIAL CREDENTIAL}: Credential
      *     <li>{@link ObjectType#DATASINK DATASINK}: Data Sink

@@ -81,7 +81,9 @@ class FailbackPollerService {
     // Method to do the actual polling
     private boolean poll() {
         boolean kineticaRunning = this.gpudb.isKineticaRunning(this.primaryURL); // Tests the availability of the primary URL
+        GPUdb db = null;
 
+        // If preliminary running test checks out, acquire a database connection
         if (kineticaRunning) {
             GPUdb.Options options = new GPUdb.Options();
             options.setDisableAutoDiscovery(true);
@@ -90,28 +92,52 @@ class FailbackPollerService {
             options.setPassword(this.gpudb.getPassword());
             options.setBypassSslCertCheck(this.gpudb.getBypassSslCertCheck());
 
-            // Reset running flag for HA queue draining check
-            kineticaRunning = false;
-            
             try {
-                GPUdb db = new GPUdb(this.primaryURL, options);
-                String statusJsonString = db.showSystemStatus(new HashMap<>()).getStatusMap().get(HA_STATUS_KEY);
-                try {
-                    if (HA_STATUS_DRAINED_VALUE_DRAINING.equals(JSON_MAPPER.readTree( statusJsonString ).get(HA_STATUS_DRAINED_KEY).textValue()))
-                        GPUdbLogger.debug_with_info(String.format("Kinetica running on primary cluster at [%s], but HA queues are still draining", this.primaryURL.toString()));
-                    else {
-                        GPUdbLogger.info(String.format("Failback to primary cluster at [%s] succeeded", this.primaryURL));
-                        kineticaRunning = true;
-                    }
-                } catch ( Exception ex ) {
-                    GPUdbLogger.warn(String.format("Could not parse system status block [%s] for URL: [%s]", statusJsonString, this.primaryURL.toString()));
-                }
-            } catch (GPUdbException e) {
+                db = new GPUdb(this.primaryURL, options);
+            } catch (Exception e) {
                 GPUdbLogger.debug_with_info(String.format("Could not connect to Kinetica: %s", e.getMessage()));
+                kineticaRunning = false;
             }
         } else {
             GPUdbLogger.debug_with_info(String.format("Kinetica is not running at URL: [%s]", this.primaryURL.toString()));
         }
+
+        // If database connection is successful, check draining status
+        if (kineticaRunning && db != null) {
+            String statusJsonString = null;
+            try {
+                statusJsonString = db.showSystemStatus(new HashMap<>()).getStatusMap().get(HA_STATUS_KEY);
+    
+                if (HA_STATUS_DRAINED_VALUE_DRAINING.equals(JSON_MAPPER.readTree( statusJsonString ).get(HA_STATUS_DRAINED_KEY).textValue())) {
+                    GPUdbLogger.debug_with_info(String.format("Kinetica running on primary cluster at [%s], but HA queues are still draining", this.primaryURL.toString()));
+                    kineticaRunning = false;
+                }
+            } catch ( Exception e ) {
+                GPUdbLogger.warn(String.format("Could not parse system status block [%s] for URL: [%s]", statusJsonString, this.primaryURL.toString()));
+                kineticaRunning = false;
+            }
+        }
+
+        // If draining status check is successful, issue query
+        if (kineticaRunning && db != null) {
+            long timeCheck = System.currentTimeMillis();
+            try (GPUdbSqlIterator<Record> si = db.query("SELECT " + timeCheck)) {
+                if (si.size() != 1) {
+                    GPUdbLogger.debug_with_info(String.format("Kinetica running on primary cluster at [%s], but query check failed to return expected result count--instead [%d]", this.primaryURL.toString(), si.size()));
+                    kineticaRunning = false;
+                } else if (si.iterator().next().getLong(0) != timeCheck) {
+                    GPUdbLogger.debug_with_info(String.format("Kinetica running on primary cluster at [%s], but query check failed to return expected result--instead [%d] != [%d]", this.primaryURL.toString(), si.iterator().next().getLong(0), timeCheck));
+                    kineticaRunning = false;
+                }
+            } catch ( Exception e ) {
+                GPUdbLogger.warn(String.format("Kinetica running on primary cluster at [%s], but query check failed: [%s]", this.primaryURL.toString(), e.getMessage()));
+                kineticaRunning = false;
+            }
+        }
+
+        if (kineticaRunning)
+            GPUdbLogger.info(String.format("Failback to primary cluster at [%s] succeeded", this.primaryURL));
+
         return kineticaRunning;
     }
 

@@ -7585,6 +7585,9 @@ public class GPUdb extends GPUdbBase {
      *                                  href="../../../../../sql/ddl/#create-view"
      *                                  target="_top">SQL view(s)</a>.
      *                              <li>{@link
+     *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#CATALOG
+     *                                  CATALOG}: Catalog
+     *                              <li>{@link
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#CREDENTIAL
      *                                  CREDENTIAL}: <a
      *                                  href="../../../../../concepts/credentials/"
@@ -7758,6 +7761,75 @@ public class GPUdb extends GPUdbBase {
         CreateBackupRequest actualRequest_ = new CreateBackupRequest(backupName, backupType, backupObjectsMap, datasinkName, options);
         CreateBackupResponse actualResponse_ = new CreateBackupResponse();
         submitRequest("/create/backup", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+    /**
+     * Creates a <a href="../../../../../concepts/catalog/"
+     * target="_top">catalog</a>, which contains the location and connection
+     * information for a deltalake catalog that is external to the database.
+     *
+     * @param request  {@link CreateCatalogRequest Request} object containing
+     *                 the parameters for the operation.
+     *
+     * @return {@link CreateCatalogResponse Response} object containing the
+     *         results of the operation.
+     *
+     * @throws GPUdbException  if an error occurs during the operation.
+     */
+    public CreateCatalogResponse createCatalog(CreateCatalogRequest request) throws GPUdbException {
+        CreateCatalogResponse actualResponse_ = new CreateCatalogResponse();
+        submitRequest("/create/catalog", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+    /**
+     * Creates a <a href="../../../../../concepts/catalog/"
+     * target="_top">catalog</a>, which contains the location and connection
+     * information for a deltalake catalog that is external to the database.
+     *
+     * @param name  Name of the catalog to be created.
+     * @param tableFormat  Table format (iceberg, hudi, deltalake)
+     * @param location  Location of the catalog in 'http[s]://[server[:port]]]'
+     *                  format.
+     * @param type  Type of the catalog (REST (unity, polaris, tabular),
+     *              nessie, hive, glue)
+     * @param credential  Name of the <a
+     *                    href="../../../../../concepts/credentials"
+     *                    target="_top">credential</a> object to be used in
+     *                    catalog
+     * @param datasource  Password for the remote system user; may be an empty
+     *                    string
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateCatalogRequest.Options#SKIP_VALIDATION
+     *                         SKIP_VALIDATION}: Bypass validation of
+     *                         connection to remote source.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateCatalogRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateCatalogRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.CreateCatalogRequest.Options#FALSE
+     *                         FALSE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     *
+     * @return {@link CreateCatalogResponse Response} object containing the
+     *         results of the operation.
+     *
+     * @throws GPUdbException  if an error occurs during the operation.
+     */
+    public CreateCatalogResponse createCatalog(String name, String tableFormat, String location, String type, String credential, String datasource, Map<String, String> options) throws GPUdbException {
+        CreateCatalogRequest actualRequest_ = new CreateCatalogRequest(name, tableFormat, location, type, credential, datasource, options);
+        CreateCatalogResponse actualResponse_ = new CreateCatalogResponse();
+        submitRequest("/create/catalog", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -11052,6 +11124,17 @@ public class GPUdb extends GPUdbBase {
      *                         "%m/%d/%Y %H:%M:%S" }' would be used to
      *                         interpret text as "05/04/2000 12:12:11"
      *                     <li>{@link
+     *                         com.gpudb.protocol.CreateTableExternalRequest.Options#DATALAKE_CATALOG
+     *                         DATALAKE_CATALOG}: Name of an existing
+     *                         datalake(iceberg) catalog used in loading files
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateTableExternalRequest.Options#DATALAKE_PATH
+     *                         DATALAKE_PATH}: Path of datalake(iceberg) object
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateTableExternalRequest.Options#DATALAKE_SNAPSHOT
+     *                         DATALAKE_SNAPSHOT}: Snapshot ID of
+     *                         datalake(iceberg) object
+     *                     <li>{@link
      *                         com.gpudb.protocol.CreateTableExternalRequest.Options#ERROR_HANDLING
      *                         ERROR_HANDLING}: Specifies how errors should be
      *                         handled upon insertion.
@@ -13837,6 +13920,47 @@ public class GPUdb extends GPUdbBase {
         DropBackupRequest actualRequest_ = new DropBackupRequest(backupName, datasinkName, options);
         DropBackupResponse actualResponse_ = new DropBackupResponse();
         submitRequest("/drop/backup", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+    /**
+     * Drops an existing <a href="../../../../../concepts/catalog/"
+     * target="_top">catalog</a>.  Any external tables that depend on the
+     * catalog must be dropped before it can be dropped.
+     *
+     * @param request  {@link DropCatalogRequest Request} object containing the
+     *                 parameters for the operation.
+     *
+     * @return {@link DropCatalogResponse Response} object containing the
+     *         results of the operation.
+     *
+     * @throws GPUdbException  if an error occurs during the operation.
+     */
+    public DropCatalogResponse dropCatalog(DropCatalogRequest request) throws GPUdbException {
+        DropCatalogResponse actualResponse_ = new DropCatalogResponse();
+        submitRequest("/drop/catalog", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+    /**
+     * Drops an existing <a href="../../../../../concepts/catalog/"
+     * target="_top">catalog</a>.  Any external tables that depend on the
+     * catalog must be dropped before it can be dropped.
+     *
+     * @param name  Name of the catalog to be dropped. Must be an existing
+     *              catalog.
+     * @param options  Optional parameters. The default value is an empty
+     *                 {@link Map}.
+     *
+     * @return {@link DropCatalogResponse Response} object containing the
+     *         results of the operation.
+     *
+     * @throws GPUdbException  if an error occurs during the operation.
+     */
+    public DropCatalogResponse dropCatalog(String name, Map<String, String> options) throws GPUdbException {
+        DropCatalogRequest actualRequest_ = new DropCatalogRequest(name, options);
+        DropCatalogResponse actualResponse_ = new DropCatalogResponse();
+        submitRequest("/drop/catalog", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -18388,6 +18512,9 @@ public class GPUdb extends GPUdbBase {
      *                    Supported values:
      *                    <ul>
      *                        <li>{@link
+     *                            com.gpudb.protocol.GrantPermissionRequest.ObjectType#CATALOG
+     *                            CATALOG}: Catalog
+     *                        <li>{@link
      *                            com.gpudb.protocol.GrantPermissionRequest.ObjectType#CONTEXT
      *                            CONTEXT}: Context
      *                        <li>{@link
@@ -18937,6 +19064,9 @@ public class GPUdb extends GPUdbBase {
      * @param objectType  The type of object being checked.
      *                    Supported values:
      *                    <ul>
+     *                        <li>{@link
+     *                            com.gpudb.protocol.HasPermissionRequest.ObjectType#CATALOG
+     *                            CATALOG}: External Catalog
      *                        <li>{@link
      *                            com.gpudb.protocol.HasPermissionRequest.ObjectType#CONTEXT
      *                            CONTEXT}: Context
@@ -25041,6 +25171,9 @@ public class GPUdb extends GPUdbBase {
      *                    Supported values:
      *                    <ul>
      *                        <li>{@link
+     *                            com.gpudb.protocol.RevokePermissionRequest.ObjectType#CATALOG
+     *                            CATALOG}: Catalog
+     *                        <li>{@link
      *                            com.gpudb.protocol.RevokePermissionRequest.ObjectType#CONTEXT
      *                            CONTEXT}: Context
      *                        <li>{@link
@@ -28626,66 +28759,6 @@ public class GPUdb extends GPUdbBase {
         RawUpdateRecordsRequest actualRequest_ = new RawUpdateRecordsRequest(tableName, expressions, newValuesMaps, this.encode( typeObjectMap, data ), null, null, options);
         UpdateRecordsResponse actualResponse_ = new UpdateRecordsResponse();
         submitRequest("/update/records", actualRequest_, actualResponse_, true);
-        return actualResponse_;
-    }
-
-    /**
-     * Updates the view specified by {@link
-     * com.gpudb.protocol.UpdateRecordsBySeriesRequest#getTableName()
-     * tableName} to include full series (track) information from the {@link
-     * com.gpudb.protocol.UpdateRecordsBySeriesRequest#getWorldTableName()
-     * worldTableName} for the series (tracks) present in the {@link
-     * com.gpudb.protocol.UpdateRecordsBySeriesRequest#getViewName() viewName}.
-     *
-     * @param request  {@link UpdateRecordsBySeriesRequest Request} object
-     *                 containing the parameters for the operation.
-     *
-     * @return {@link UpdateRecordsBySeriesResponse Response} object containing
-     *         the results of the operation.
-     *
-     * @throws GPUdbException  if an error occurs during the operation.
-     */
-    public UpdateRecordsBySeriesResponse updateRecordsBySeries(UpdateRecordsBySeriesRequest request) throws GPUdbException {
-        UpdateRecordsBySeriesResponse actualResponse_ = new UpdateRecordsBySeriesResponse();
-        submitRequest("/update/records/byseries", request, actualResponse_, false);
-        return actualResponse_;
-    }
-
-    /**
-     * Updates the view specified by {@code tableName} to include full series
-     * (track) information from the {@code worldTableName} for the series
-     * (tracks) present in the {@code viewName}.
-     *
-     * @param tableName  Name of the view on which the update operation will be
-     *                   performed, in [schema_name.]view_name format, using
-     *                   standard <a
-     *                   href="../../../../../concepts/tables/#table-name-resolution"
-     *                   target="_top">name resolution rules</a>.  Must be an
-     *                   existing view.
-     * @param worldTableName  Name of the table containing the complete series
-     *                        (track) information, in [schema_name.]table_name
-     *                        format, using standard <a
-     *                        href="../../../../../concepts/tables/#table-name-resolution"
-     *                        target="_top">name resolution rules</a>.
-     * @param viewName  Name of the view containing the series (tracks) which
-     *                  have to be updated, in [schema_name.]view_name format,
-     *                  using standard <a
-     *                  href="../../../../../concepts/tables/#table-name-resolution"
-     *                  target="_top">name resolution rules</a>. The default
-     *                  value is ''.
-     * @param reserved  The default value is an empty {@link List}.
-     * @param options  Optional parameters. The default value is an empty
-     *                 {@link Map}.
-     *
-     * @return {@link UpdateRecordsBySeriesResponse Response} object containing
-     *         the results of the operation.
-     *
-     * @throws GPUdbException  if an error occurs during the operation.
-     */
-    public UpdateRecordsBySeriesResponse updateRecordsBySeries(String tableName, String worldTableName, String viewName, List<String> reserved, Map<String, String> options) throws GPUdbException {
-        UpdateRecordsBySeriesRequest actualRequest_ = new UpdateRecordsBySeriesRequest(tableName, worldTableName, viewName, reserved, options);
-        UpdateRecordsBySeriesResponse actualResponse_ = new UpdateRecordsBySeriesResponse();
-        submitRequest("/update/records/byseries", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 

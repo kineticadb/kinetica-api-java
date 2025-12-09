@@ -444,6 +444,21 @@ public class CreateTableExternalRequest implements IndexedRecord {
         public static final String DEFAULT_COLUMN_FORMATS = "default_column_formats";
 
         /**
+         * Name of an existing datalake(iceberg) catalog used in loading files
+         */
+        public static final String DATALAKE_CATALOG = "datalake_catalog";
+
+        /**
+         * Path of datalake(iceberg) object
+         */
+        public static final String DATALAKE_PATH = "datalake_path";
+
+        /**
+         * Snapshot ID of datalake(iceberg) object
+         */
+        public static final String DATALAKE_SNAPSHOT = "datalake_snapshot";
+
+        /**
          * Specifies how errors should be handled upon insertion.
          * Supported values:
          * <ul>
@@ -1574,6 +1589,14 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         example, '{"datetime" : "%m/%d/%Y %H:%M:%S" }'
      *                         would be used to interpret text as "05/04/2000
      *                         12:12:11"
+     *                     <li>{@link Options#DATALAKE_CATALOG
+     *                         DATALAKE_CATALOG}: Name of an existing
+     *                         datalake(iceberg) catalog used in loading files
+     *                     <li>{@link Options#DATALAKE_PATH DATALAKE_PATH}:
+     *                         Path of datalake(iceberg) object
+     *                     <li>{@link Options#DATALAKE_SNAPSHOT
+     *                         DATALAKE_SNAPSHOT}: Snapshot ID of
+     *                         datalake(iceberg) object
      *                     <li>{@link Options#ERROR_HANDLING ERROR_HANDLING}:
      *                         Specifies how errors should be handled upon
      *                         insertion.
@@ -2615,6 +2638,12 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         annotation meet both the 'date' and 'time' control character
      *         requirements. For example, '{"datetime" : "%m/%d/%Y %H:%M:%S" }'
      *         would be used to interpret text as "05/04/2000 12:12:11"
+     *     <li>{@link Options#DATALAKE_CATALOG DATALAKE_CATALOG}: Name of an
+     *         existing datalake(iceberg) catalog used in loading files
+     *     <li>{@link Options#DATALAKE_PATH DATALAKE_PATH}: Path of
+     *         datalake(iceberg) object
+     *     <li>{@link Options#DATALAKE_SNAPSHOT DATALAKE_SNAPSHOT}: Snapshot ID
+     *         of datalake(iceberg) object
      *     <li>{@link Options#ERROR_HANDLING ERROR_HANDLING}: Specifies how
      *         errors should be handled upon insertion.
      *         Supported values:
@@ -3120,6 +3149,12 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         annotation meet both the 'date' and 'time' control character
      *         requirements. For example, '{"datetime" : "%m/%d/%Y %H:%M:%S" }'
      *         would be used to interpret text as "05/04/2000 12:12:11"
+     *     <li>{@link Options#DATALAKE_CATALOG DATALAKE_CATALOG}: Name of an
+     *         existing datalake(iceberg) catalog used in loading files
+     *     <li>{@link Options#DATALAKE_PATH DATALAKE_PATH}: Path of
+     *         datalake(iceberg) object
+     *     <li>{@link Options#DATALAKE_SNAPSHOT DATALAKE_SNAPSHOT}: Snapshot ID
+     *         of datalake(iceberg) object
      *     <li>{@link Options#ERROR_HANDLING ERROR_HANDLING}: Specifies how
      *         errors should be handled upon insertion.
      *         Supported values:
