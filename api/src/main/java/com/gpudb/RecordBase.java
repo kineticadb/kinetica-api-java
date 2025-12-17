@@ -515,7 +515,7 @@ public abstract class RecordBase implements Record {
 
      /**
      * For string columns with array property, parse the value parameter which may be a
-     * String, List<?>, int[], Integer[], long[], Long[], float[], Float[], double[], Double[].
+     * String, List&lt;&#63;&gt;, int[], Integer[], long[], Long[], float[], Float[], double[], Double[].
      * If the value is not of a relevant type, throw an error.
      *
      * @param name   The name of the column.
@@ -530,7 +530,7 @@ public abstract class RecordBase implements Record {
 
      /**
      * For string columns with array property, parse the value parameter which may be a
-     * String, List<?>, int[], Integer[], long[], Long[], float[], Float[], double[], Double[].
+     * String, List&lt;&#63;&gt;, int[], Integer[], long[], Long[], float[], Float[], double[], Double[].
      * If the value is not of a relevant type, throw an error.
      *
      * @param index  The index of the column.
@@ -842,7 +842,7 @@ public abstract class RecordBase implements Record {
 
      /**
      * For String columns with json property, parse the value parameter which may be a
-     * String, or Map<String, String>.
+     * String, or Map&lt;String, String&gt;.
      * If the column is not of a relevant type, throw an error.
      *
      * @param name   The name of the column.
@@ -857,7 +857,7 @@ public abstract class RecordBase implements Record {
 
      /**
      * For String columns with json property, parse the value parameter which may be a
-     * String, or Map<String, String>.
+     * String, or Map&lt;String, String&gt;.
      * If the column is not of a relevant type, throw an error.
      *
      * @param index  The index of the column.
@@ -874,7 +874,7 @@ public abstract class RecordBase implements Record {
 
      /**
      * For bytes columns with vector property, parse the value property which may be a
-     * string, float[], Float[] or List<Float>.
+     * string, float[], Float[] or List&lt;Float&gt;.
      * If the column is not of a relevant type, throw an error.
      *
      * @param name   The name of the column.
@@ -889,7 +889,7 @@ public abstract class RecordBase implements Record {
 
      /**
      * For bytes columns with vector property, parse the value parameter which may be a
-     * string, float[], Float[] or List<Float>.
+     * string, float[], Float[] or List&lt;Float&gt;.
      * If the column is not of a relevant type, throw an error.
      *
      * @param index  The index of the column.

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.gpudb</groupId>
     <artifactId>gpudb-api</artifactId>
-    <version>7.2.3.6</version>
+    <version>7.2.3.7</version>
     <packaging>jar</packaging>
     <name>Kinetica Java API</name>
     <description>Java-based client API for connecting to and managing a Kinetica database</description>
@@ -105,8 +105,8 @@
         </dependency>
     </dependencies>
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <target.build.dir>target</target.build.dir> <!-- override on cmd-line -->
     </properties>

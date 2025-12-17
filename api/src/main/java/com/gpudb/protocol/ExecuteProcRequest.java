@@ -23,7 +23,7 @@ import org.apache.avro.generic.IndexedRecord;
  * proc to complete before returning.
  * <p>
  * If the proc being executed is distributed, {@link #getInputTableNames()
- * inputTableNames} & {@link #getInputColumnNames() inputColumnNames} may be
+ * inputTableNames} and {@link #getInputColumnNames() inputColumnNames} may be
  * passed to the proc to use for reading data, and {@link
  * #getOutputTableNames() outputTableNames} may be passed to the proc to use
  * for writing data.

@@ -48,7 +48,7 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      * <p>
      * Optional map containing tier names and their respective attribute group
      * limits.  The only valid attribute limit that can be set is max_memory
-     * (in bytes) for the VRAM & RAM tiers.
+     * (in bytes) for the VRAM and RAM tiers.
      * <p>
      * For instance, to set max VRAM capacity to 1GB per rank per GPU and max
      * RAM capacity to 10GB per rank, use:
@@ -199,7 +199,7 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      * @param tierAttributes  Optional map containing tier names and their
      *                        respective attribute group limits.  The only
      *                        valid attribute limit that can be set is
-     *                        max_memory (in bytes) for the VRAM & RAM tiers.
+     *                        max_memory (in bytes) for the VRAM and RAM tiers.
      *                        For instance, to set max VRAM capacity to 1GB per
      *                        rank per GPU and max RAM capacity to 10GB per
      *                        rank, use:  {'VRAM':{'max_memory':'1000000000'},
@@ -326,7 +326,7 @@ public class AlterResourceGroupRequest implements IndexedRecord {
     /**
      * Optional map containing tier names and their respective attribute group
      * limits.  The only valid attribute limit that can be set is max_memory
-     * (in bytes) for the VRAM & RAM tiers.
+     * (in bytes) for the VRAM and RAM tiers.
      * <p>
      * For instance, to set max VRAM capacity to 1GB per rank per GPU and max
      * RAM capacity to 10GB per rank, use:
@@ -349,7 +349,7 @@ public class AlterResourceGroupRequest implements IndexedRecord {
     /**
      * Optional map containing tier names and their respective attribute group
      * limits.  The only valid attribute limit that can be set is max_memory
-     * (in bytes) for the VRAM & RAM tiers.
+     * (in bytes) for the VRAM and RAM tiers.
      * <p>
      * For instance, to set max VRAM capacity to 1GB per rank per GPU and max
      * RAM capacity to 10GB per rank, use:

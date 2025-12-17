@@ -326,7 +326,7 @@ public class FileOperation {
      * have a wildcard pattern.
      *
      * @param startingDirName  Local directory to start searching from
-     * @param localFileNames  Local file names & wildcard patterns to search for
+     * @param localFileNames  Local file names and wildcard patterns to search for
      * @return  Pair of lists; the first element is the list of local file
      *        names and the second a list of remote file names
      */
@@ -407,6 +407,7 @@ public class FileOperation {
      *        the files it contains; can also be used in file names to create
      *        "virtual" subdirectories.
      */
+    @Deprecated(since = "7.2.3", forRemoval = true)
     public static String getKifsPathSeparator() {
         return GPUdbFileHandler.KIFS_PATH_SEPARATOR;
     }

@@ -23,7 +23,7 @@ import org.apache.avro.generic.IndexedRecord;
  * graph. Isolines represent curves of equal cost, with cost typically
  * referring to the time or distance assigned as the weights of the underlying
  * graph. See <a href="../../../../../../graph_solver/network_graph_solver/"
- * target="_top">Graphs & Solvers</a> for more information on graphs.
+ * target="_top">Graphs and Solvers</a> for more information on graphs.
  */
 public class VisualizeIsochroneRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

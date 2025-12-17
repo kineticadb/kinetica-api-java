@@ -53,13 +53,13 @@ public class CreateBackupRequest implements IndexedRecord {
      */
     public static final class BackupType {
         /**
-         * Snapshot of changes in the database objects & data since the last
+         * Snapshot of changes in the database objects and data since the last
          * snapshot of any kind.
          */
         public static final String INCREMENTAL = "incremental";
 
         /**
-         * Snapshot of changes in the database objects & data since the last
+         * Snapshot of changes in the database objects and data since the last
          * full snapshot.
          */
         public static final String DIFFERENTIAL = "differential";
@@ -285,11 +285,11 @@ public class CreateBackupRequest implements IndexedRecord {
      *                    Supported values:
      *                    <ul>
      *                        <li>{@link BackupType#INCREMENTAL INCREMENTAL}:
-     *                            Snapshot of changes in the database objects &
-     *                            data since the last snapshot of any kind.
+     *                            Snapshot of changes in the database objects
+     *                            and data since the last snapshot of any kind.
      *                        <li>{@link BackupType#DIFFERENTIAL DIFFERENTIAL}:
-     *                            Snapshot of changes in the database objects &
-     *                            data since the last full snapshot.
+     *                            Snapshot of changes in the database objects
+     *                            and data since the last full snapshot.
      *                        <li>{@link BackupType#FULL FULL}: Snapshot of the
      *                            given database objects and data.
      *                    </ul>
@@ -466,10 +466,10 @@ public class CreateBackupRequest implements IndexedRecord {
      * Supported values:
      * <ul>
      *     <li>{@link BackupType#INCREMENTAL INCREMENTAL}: Snapshot of changes
-     *         in the database objects & data since the last snapshot of any
+     *         in the database objects and data since the last snapshot of any
      *         kind.
      *     <li>{@link BackupType#DIFFERENTIAL DIFFERENTIAL}: Snapshot of
-     *         changes in the database objects & data since the last full
+     *         changes in the database objects and data since the last full
      *         snapshot.
      *     <li>{@link BackupType#FULL FULL}: Snapshot of the given database
      *         objects and data.
@@ -486,10 +486,10 @@ public class CreateBackupRequest implements IndexedRecord {
      * Supported values:
      * <ul>
      *     <li>{@link BackupType#INCREMENTAL INCREMENTAL}: Snapshot of changes
-     *         in the database objects & data since the last snapshot of any
+     *         in the database objects and data since the last snapshot of any
      *         kind.
      *     <li>{@link BackupType#DIFFERENTIAL DIFFERENTIAL}: Snapshot of
-     *         changes in the database objects & data since the last full
+     *         changes in the database objects and data since the last full
      *         snapshot.
      *     <li>{@link BackupType#FULL FULL}: Snapshot of the given database
      *         objects and data.

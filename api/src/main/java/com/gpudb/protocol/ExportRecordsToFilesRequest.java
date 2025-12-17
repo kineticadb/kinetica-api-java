@@ -69,9 +69,9 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
 
         /**
          * For each source column specified, applies the column-property-bound
-         * format.  Currently supported column properties include date, time, &
-         * datetime. The parameter value must be formatted as a JSON string of
-         * maps of column names to maps of column properties to their
+         * format.  Currently supported column properties include date, time,
+         * and datetime. The parameter value must be formatted as a JSON string
+         * of maps of column names to maps of column properties to their
          * corresponding column formats, e.g., '{ "order_date" : { "date" :
          * "%Y.%m.%d" }, "order_time" : { "time" : "%H:%M:%S" } }'.
          * <p>
@@ -118,9 +118,9 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
 
         /**
          * Specifies the default format to use to write data.  Currently
-         * supported column properties include date, time, & datetime.  This
+         * supported column properties include date, time, and datetime.  This
          * default column-property-bound format can be overridden by specifying
-         * a column property & format for a given source column in {@link
+         * a column property and format for a given source column in {@link
          * Options#COLUMN_FORMATS COLUMN_FORMATS}. For each specified
          * annotation, the format will apply to all columns with that
          * annotation unless custom {@link Options#COLUMN_FORMATS
@@ -309,7 +309,7 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *                         For each source column specified, applies the
      *                         column-property-bound format.  Currently
      *                         supported column properties include date, time,
-     *                         & datetime. The parameter value must be
+     *                         and datetime. The parameter value must be
      *                         formatted as a JSON string of maps of column
      *                         names to maps of column properties to their
      *                         corresponding column formats, e.g., '{
@@ -350,28 +350,29 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *                         DEFAULT_COLUMN_FORMATS}: Specifies the default
      *                         format to use to write data.  Currently
      *                         supported column properties include date, time,
-     *                         & datetime.  This default column-property-bound
-     *                         format can be overridden by specifying a column
-     *                         property & format for a given source column in
-     *                         {@link Options#COLUMN_FORMATS COLUMN_FORMATS}.
-     *                         For each specified annotation, the format will
-     *                         apply to all columns with that annotation unless
-     *                         custom {@link Options#COLUMN_FORMATS
-     *                         COLUMN_FORMATS} for that annotation are
-     *                         specified.  The parameter value must be
-     *                         formatted as a JSON string that is a map of
-     *                         column properties to their respective column
-     *                         formats, e.g., '{ "date" : "%Y.%m.%d", "time" :
-     *                         "%H:%M:%S" }'.  Column formats are specified as
-     *                         a string of control characters and plain text.
-     *                         The supported control characters are 'Y', 'm',
-     *                         'd', 'H', 'M', 'S', and 's', which follow the
-     *                         Linux 'strptime()' specification, as well as
-     *                         's', which specifies seconds and fractional
-     *                         seconds (though the fractional component will be
-     *                         truncated past milliseconds).  Formats for the
-     *                         'date' annotation must include the 'Y', 'm', and
-     *                         'd' control characters. Formats for the 'time'
+     *                         and datetime.  This default
+     *                         column-property-bound format can be overridden
+     *                         by specifying a column property and format for a
+     *                         given source column in {@link
+     *                         Options#COLUMN_FORMATS COLUMN_FORMATS}. For each
+     *                         specified annotation, the format will apply to
+     *                         all columns with that annotation unless custom
+     *                         {@link Options#COLUMN_FORMATS COLUMN_FORMATS}
+     *                         for that annotation are specified.  The
+     *                         parameter value must be formatted as a JSON
+     *                         string that is a map of column properties to
+     *                         their respective column formats, e.g., '{ "date"
+     *                         : "%Y.%m.%d", "time" : "%H:%M:%S" }'.  Column
+     *                         formats are specified as a string of control
+     *                         characters and plain text. The supported control
+     *                         characters are 'Y', 'm', 'd', 'H', 'M', 'S', and
+     *                         's', which follow the Linux 'strptime()'
+     *                         specification, as well as 's', which specifies
+     *                         seconds and fractional seconds (though the
+     *                         fractional component will be truncated past
+     *                         milliseconds).  Formats for the 'date'
+     *                         annotation must include the 'Y', 'm', and 'd'
+     *                         control characters. Formats for the 'time'
      *                         annotation must include the 'H', 'M', and either
      *                         'S' or 's' (but not both) control characters.
      *                         Formats for the 'datetime' annotation meet both
@@ -533,7 +534,7 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *         exported as a batch. The default value is '1000000'.
      *     <li>{@link Options#COLUMN_FORMATS COLUMN_FORMATS}: For each source
      *         column specified, applies the column-property-bound format.
-     *         Currently supported column properties include date, time, &
+     *         Currently supported column properties include date, time, and
      *         datetime. The parameter value must be formatted as a JSON string
      *         of maps of column names to maps of column properties to their
      *         corresponding column formats, e.g., '{ "order_date" : { "date" :
@@ -565,12 +566,12 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *         GPUdb.createDatasink}.
      *     <li>{@link Options#DEFAULT_COLUMN_FORMATS DEFAULT_COLUMN_FORMATS}:
      *         Specifies the default format to use to write data.  Currently
-     *         supported column properties include date, time, & datetime.
+     *         supported column properties include date, time, and datetime.
      *         This default column-property-bound format can be overridden by
-     *         specifying a column property & format for a given source column
-     *         in {@link Options#COLUMN_FORMATS COLUMN_FORMATS}. For each
-     *         specified annotation, the format will apply to all columns with
-     *         that annotation unless custom {@link Options#COLUMN_FORMATS
+     *         specifying a column property and format for a given source
+     *         column in {@link Options#COLUMN_FORMATS COLUMN_FORMATS}. For
+     *         each specified annotation, the format will apply to all columns
+     *         with that annotation unless custom {@link Options#COLUMN_FORMATS
      *         COLUMN_FORMATS} for that annotation are specified.  The
      *         parameter value must be formatted as a JSON string that is a map
      *         of column properties to their respective column formats, e.g.,
@@ -675,7 +676,7 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *         exported as a batch. The default value is '1000000'.
      *     <li>{@link Options#COLUMN_FORMATS COLUMN_FORMATS}: For each source
      *         column specified, applies the column-property-bound format.
-     *         Currently supported column properties include date, time, &
+     *         Currently supported column properties include date, time, and
      *         datetime. The parameter value must be formatted as a JSON string
      *         of maps of column names to maps of column properties to their
      *         corresponding column formats, e.g., '{ "order_date" : { "date" :
@@ -707,12 +708,12 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      *         GPUdb.createDatasink}.
      *     <li>{@link Options#DEFAULT_COLUMN_FORMATS DEFAULT_COLUMN_FORMATS}:
      *         Specifies the default format to use to write data.  Currently
-     *         supported column properties include date, time, & datetime.
+     *         supported column properties include date, time, and datetime.
      *         This default column-property-bound format can be overridden by
-     *         specifying a column property & format for a given source column
-     *         in {@link Options#COLUMN_FORMATS COLUMN_FORMATS}. For each
-     *         specified annotation, the format will apply to all columns with
-     *         that annotation unless custom {@link Options#COLUMN_FORMATS
+     *         specifying a column property and format for a given source
+     *         column in {@link Options#COLUMN_FORMATS COLUMN_FORMATS}. For
+     *         each specified annotation, the format will apply to all columns
+     *         with that annotation unless custom {@link Options#COLUMN_FORMATS
      *         COLUMN_FORMATS} for that annotation are specified.  The
      *         parameter value must be formatted as a JSON string that is a map
      *         of column properties to their respective column formats, e.g.,

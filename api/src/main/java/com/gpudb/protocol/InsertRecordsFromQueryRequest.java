@@ -513,7 +513,7 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
          * any existing table record with primary key values that match those
          * of a record being inserted will remain unchanged, while the new
          * record will be rejected and the error handled as determined by
-         * {@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK} & {@link
+         * {@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK} and {@link
          * Options#ERROR_HANDLING ERROR_HANDLING}.  If the specified table does
          * not have a primary key, then this option has no effect.
          * Supported values:
@@ -970,10 +970,11 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                         those of a record being inserted will remain
      *                         unchanged, while the new record will be rejected
      *                         and the error handled as determined by {@link
-     *                         Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK} &
-     *                         {@link Options#ERROR_HANDLING ERROR_HANDLING}.
-     *                         If the specified table does not have a primary
-     *                         key, then this option has no effect.
+     *                         Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}
+     *                         and {@link Options#ERROR_HANDLING
+     *                         ERROR_HANDLING}.  If the specified table does
+     *                         not have a primary key, then this option has no
+     *                         effect.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Upsert new
@@ -1502,7 +1503,7 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         values that match those of a record being inserted will remain
      *         unchanged, while the new record will be rejected and the error
      *         handled as determined by {@link Options#IGNORE_EXISTING_PK
-     *         IGNORE_EXISTING_PK} & {@link Options#ERROR_HANDLING
+     *         IGNORE_EXISTING_PK} and {@link Options#ERROR_HANDLING
      *         ERROR_HANDLING}.  If the specified table does not have a primary
      *         key, then this option has no effect.
      *         Supported values:
@@ -1670,7 +1671,7 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         values that match those of a record being inserted will remain
      *         unchanged, while the new record will be rejected and the error
      *         handled as determined by {@link Options#IGNORE_EXISTING_PK
-     *         IGNORE_EXISTING_PK} & {@link Options#ERROR_HANDLING
+     *         IGNORE_EXISTING_PK} and {@link Options#ERROR_HANDLING
      *         ERROR_HANDLING}.  If the specified table does not have a primary
      *         key, then this option has no effect.
      *         Supported values:

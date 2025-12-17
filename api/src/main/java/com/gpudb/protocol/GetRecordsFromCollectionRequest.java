@@ -132,7 +132,7 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *               never exceed the server's own limit, defined by the <a
      *               href="../../../../../../config/#config-main-general"
      *               target="_top">max_get_records_size</a> parameter in the
-     *               server configuration. Use {@code offset} & {@code limit}
+     *               server configuration. Use {@code offset} and {@code limit}
      *               to request subsequent pages of results. The default value
      *               is -9999.
      * @param options  <ul>
@@ -182,7 +182,7 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *               never exceed the server's own limit, defined by the <a
      *               href="../../../../../../config/#config-main-general"
      *               target="_top">max_get_records_size</a> parameter in the
-     *               server configuration. Use {@code offset} & {@code limit}
+     *               server configuration. Use {@code offset} and {@code limit}
      *               to request subsequent pages of results. The default value
      *               is -9999.
      * @param encoding  Specifies the encoding for returned records; either
@@ -283,7 +283,7 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      * returned will never exceed the server's own limit, defined by the <a
      * href="../../../../../../config/#config-main-general"
      * target="_top">max_get_records_size</a> parameter in the server
-     * configuration. Use {@link #getOffset() offset} & {@link #getLimit()
+     * configuration. Use {@link #getOffset() offset} and {@link #getLimit()
      * limit} to request subsequent pages of results. The default value is
      * -9999.
      *
@@ -300,7 +300,7 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      * returned will never exceed the server's own limit, defined by the <a
      * href="../../../../../../config/#config-main-general"
      * target="_top">max_get_records_size</a> parameter in the server
-     * configuration. Use {@link #getOffset() offset} & {@link #getLimit()
+     * configuration. Use {@link #getOffset() offset} and {@link #getLimit()
      * limit} to request subsequent pages of results. The default value is
      * -9999.
      *

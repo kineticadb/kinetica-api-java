@@ -541,7 +541,7 @@ public class GPUdbFileHandler {
 
     /**
      * This method returns statistics about the given files and/or directories.
-     * Wildcards "?" & "*" can be used to represent one character and zero or
+     * Wildcards "?" and "*" can be used to represent one character and zero or
      * more characters, respectively.
      * 
      * @param remotePaths  List of KIFS files and/or directory names to report
@@ -591,6 +591,7 @@ public class GPUdbFileHandler {
      * @throws GPUdbException  If an error occurs looking up the directories.
      * @see #showDirectories(Set, Map)
      */
+    @Deprecated(since = "7.2.3", forRemoval = true)
     public List<KifsDirectoryInfo> showDirectories(Set<String> remoteDirNames) throws GPUdbException {
         return showDirectories(new ArrayList<>(remoteDirNames), new HashMap<>());
     }
@@ -608,6 +609,7 @@ public class GPUdbFileHandler {
      * @return  List of {@link KifsDirectoryInfo} objects, containing statistics
      *        about the given directories.
      */
+    @Deprecated(since = "7.2.3", forRemoval = true)
     public List<KifsDirectoryInfo> showDirectories(Set<String> remoteDirNames,
                                                    Map<String, String> showDirectoryOptions) throws GPUdbException {
         return showDirectories(new ArrayList<>(remoteDirNames), showDirectoryOptions);

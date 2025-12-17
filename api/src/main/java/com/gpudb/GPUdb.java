@@ -2239,7 +2239,7 @@ public class GPUdb extends GPUdbBase {
      *               server configuration. Use {@link
      *               com.gpudb.protocol.AggregateGroupByResponse#getHasMoreRecords()
      *               hasMoreRecords} to see if more records exist in the result
-     *               to be fetched, and {@code offset} & {@code limit} to
+     *               to be fetched, and {@code offset} and {@code limit} to
      *               request subsequent pages of results. The default value is
      *               -9999.
      * @param options  Optional parameters.
@@ -2996,15 +2996,15 @@ public class GPUdb extends GPUdbBase {
      * ADDITIONAL_COLUMN_NAMES}.  Values in these columns will be included in
      * the overall aggregate calculation--individual aggregates will not be
      * calculated per additional column.  For instance, requesting the {@link
-     * com.gpudb.protocol.AggregateStatisticsRequest.Stats#COUNT COUNT} &
+     * com.gpudb.protocol.AggregateStatisticsRequest.Stats#COUNT COUNT} and
      * {@link com.gpudb.protocol.AggregateStatisticsRequest.Stats#MEAN MEAN} of
      * {@link com.gpudb.protocol.AggregateStatisticsRequest#getColumnName()
      * columnName} x and {@link
      * com.gpudb.protocol.AggregateStatisticsRequest.Options#ADDITIONAL_COLUMN_NAMES
-     * ADDITIONAL_COLUMN_NAMES} y & z, where x holds the numbers 1-10, y holds
-     * 11-20, and z holds 21-30, would return the total number of x, y, & z
-     * values (30), and the single average value across all x, y, & z values
-     * (15.5).
+     * ADDITIONAL_COLUMN_NAMES} y and z, where x holds the numbers 1-10, y
+     * holds 11-20, and z holds 21-30, would return the total number of x, y,
+     * and z values (30), and the single average value across all x, y, and z
+     * values (15.5).
      * <p>
      * The response includes a list of key/value pairs of each statistic
      * requested and its corresponding value.
@@ -3084,14 +3084,14 @@ public class GPUdb extends GPUdbBase {
      * ADDITIONAL_COLUMN_NAMES}.  Values in these columns will be included in
      * the overall aggregate calculation--individual aggregates will not be
      * calculated per additional column.  For instance, requesting the {@link
-     * com.gpudb.protocol.AggregateStatisticsRequest.Stats#COUNT COUNT} &
+     * com.gpudb.protocol.AggregateStatisticsRequest.Stats#COUNT COUNT} and
      * {@link com.gpudb.protocol.AggregateStatisticsRequest.Stats#MEAN MEAN} of
      * {@code columnName} x and {@link
      * com.gpudb.protocol.AggregateStatisticsRequest.Options#ADDITIONAL_COLUMN_NAMES
-     * ADDITIONAL_COLUMN_NAMES} y & z, where x holds the numbers 1-10, y holds
-     * 11-20, and z holds 21-30, would return the total number of x, y, & z
-     * values (30), and the single average value across all x, y, & z values
-     * (15.5).
+     * ADDITIONAL_COLUMN_NAMES} y and z, where x holds the numbers 1-10, y
+     * holds 11-20, and z holds 21-30, would return the total number of x, y,
+     * and z values (30), and the single average value across all x, y, and z
+     * values (15.5).
      * <p>
      * The response includes a list of key/value pairs of each statistic
      * requested and its corresponding value.
@@ -3520,7 +3520,7 @@ public class GPUdb extends GPUdbBase {
      *               server configuration. Use {@link
      *               com.gpudb.protocol.AggregateUniqueResponse#getHasMoreRecords()
      *               hasMoreRecords} to see if more records exist in the result
-     *               to be fetched, and {@code offset} & {@code limit} to
+     *               to be fetched, and {@code offset} and {@code limit} to
      *               request subsequent pages of results. The default value is
      *               -9999.
      * @param options  Optional parameters.
@@ -5104,7 +5104,7 @@ public class GPUdb extends GPUdbBase {
      * @param tierAttributes  Optional map containing tier names and their
      *                        respective attribute group limits.  The only
      *                        valid attribute limit that can be set is
-     *                        max_memory (in bytes) for the VRAM & RAM tiers.
+     *                        max_memory (in bytes) for the VRAM and RAM tiers.
      *                        For instance, to set max VRAM capacity to 1GB per
      *                        rank per GPU and max RAM capacity to 10GB per
      *                        rank, use:  {'VRAM':{'max_memory':'1000000000'},
@@ -5594,7 +5594,7 @@ public class GPUdb extends GPUdbBase {
      *                                    TPS_PER_TOM}: Size of the worker rank
      *                                    data processing thread pool.  This
      *                                    includes operations such as inserts,
-     *                                    updates, & deletes on table data.
+     *                                    updates, and deletes on table data.
      *                                    Multi-head inserts are not affected
      *                                    by this limit. The minimum allowed
      *                                    value is '2'. The maximum allowed
@@ -7554,12 +7554,12 @@ public class GPUdb extends GPUdbBase {
      *                        <li>{@link
      *                            com.gpudb.protocol.CreateBackupRequest.BackupType#INCREMENTAL
      *                            INCREMENTAL}: Snapshot of changes in the
-     *                            database objects & data since the last
+     *                            database objects and data since the last
      *                            snapshot of any kind.
      *                        <li>{@link
      *                            com.gpudb.protocol.CreateBackupRequest.BackupType#DIFFERENTIAL
      *                            DIFFERENTIAL}: Snapshot of changes in the
-     *                            database objects & data since the last full
+     *                            database objects and data since the last full
      *                            snapshot.
      *                        <li>{@link
      *                            com.gpudb.protocol.CreateBackupRequest.BackupType#FULL
@@ -7765,8 +7765,7 @@ public class GPUdb extends GPUdbBase {
     }
 
     /**
-     * Creates a <a href="../../../../../concepts/catalog/"
-     * target="_top">catalog</a>, which contains the location and connection
+     * Creates a catalog, which contains the location and connection
      * information for a deltalake catalog that is external to the database.
      *
      * @param request  {@link CreateCatalogRequest Request} object containing
@@ -7784,8 +7783,7 @@ public class GPUdb extends GPUdbBase {
     }
 
     /**
-     * Creates a <a href="../../../../../concepts/catalog/"
-     * target="_top">catalog</a>, which contains the location and connection
+     * Creates a catalog, which contains the location and connection
      * information for a deltalake catalog that is external to the database.
      *
      * @param name  Name of the catalog to be created.
@@ -8652,7 +8650,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * IMPORTANT: It's highly recommended that you review the <a
      * href="../../../../../graph_solver/network_graph_solver/"
-     * target="_top">Graphs & Solvers</a> concepts documentation, the <a
+     * target="_top">Graphs and Solvers</a> concepts documentation, the <a
      * href="../../../../../guides/graph_rest_guide/" target="_top">Graph REST
      * Tutorial</a>, and/or some <a href="../../../../../guide-tags/graph/"
      * target="_top">graph examples</a> before using this endpoint.
@@ -8677,7 +8675,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * IMPORTANT: It's highly recommended that you review the <a
      * href="../../../../../graph_solver/network_graph_solver/"
-     * target="_top">Graphs & Solvers</a> concepts documentation, the <a
+     * target="_top">Graphs and Solvers</a> concepts documentation, the <a
      * href="../../../../../guides/graph_rest_guide/" target="_top">Graph REST
      * Tutorial</a>, and/or some <a href="../../../../../guide-tags/graph/"
      * target="_top">graph examples</a> before using this endpoint.
@@ -9982,7 +9980,7 @@ public class GPUdb extends GPUdbBase {
      * @param tierAttributes  Optional map containing tier names and their
      *                        respective attribute group limits.  The only
      *                        valid attribute limit that can be set is
-     *                        max_memory (in bytes) for the VRAM & RAM tiers.
+     *                        max_memory (in bytes) for the VRAM and RAM tiers.
      *                        For instance, to set max VRAM capacity to 1GB per
      *                        rank per GPU and max RAM capacity to 10GB per
      *                        rank, use:  {'VRAM':{'max_memory':'1000000000'},
@@ -11011,10 +11009,10 @@ public class GPUdb extends GPUdbBase {
      *                         mapping of one or more of its column properties
      *                         to an appropriate format for each property.
      *                         Currently supported column properties include
-     *                         date, time, & datetime. The parameter value must
-     *                         be formatted as a JSON string of maps of column
-     *                         names to maps of column properties to their
-     *                         corresponding column formats, e.g., '{
+     *                         date, time, and datetime. The parameter value
+     *                         must be formatted as a JSON string of maps of
+     *                         column names to maps of column properties to
+     *                         their corresponding column formats, e.g., '{
      *                         "order_date" : { "date" : "%Y.%m.%d" },
      *                         "order_time" : { "time" : "%H:%M:%S" } }'.  See
      *                         {@link
@@ -11092,9 +11090,9 @@ public class GPUdb extends GPUdbBase {
      *                         format to be applied to source data loaded into
      *                         columns with the corresponding column property.
      *                         Currently supported column properties include
-     *                         date, time, & datetime.  This default
+     *                         date, time, and datetime.  This default
      *                         column-property-bound format can be overridden
-     *                         by specifying a column property & format for a
+     *                         by specifying a column property and format for a
      *                         given target column in {@link
      *                         com.gpudb.protocol.CreateTableExternalRequest.Options#COLUMN_FORMATS
      *                         COLUMN_FORMATS}. For each specified annotation,
@@ -11592,13 +11590,13 @@ public class GPUdb extends GPUdbBase {
      *                         or 'v' preceded by an escape character will be
      *                         interpreted as the ASCII bell, backspace, form
      *                         feed, line feed, carriage return, horizontal
-     *                         tab, & vertical tab, respectively.  For example,
-     *                         the escape character followed by an 'n' will be
-     *                         interpreted as a newline within a field value.
-     *                         The escape character can also be used to escape
-     *                         the quoting character, and will be treated as an
-     *                         escape character whether it is within a quoted
-     *                         field value or not.  For {@link
+     *                         tab, and vertical tab, respectively.  For
+     *                         example, the escape character followed by an 'n'
+     *                         will be interpreted as a newline within a field
+     *                         value.  The escape character can also be used to
+     *                         escape the quoting character, and will be
+     *                         treated as an escape character whether it is
+     *                         within a quoted field value or not.  For {@link
      *                         com.gpudb.protocol.CreateTableExternalRequest.Options#DELIMITED_TEXT
      *                         DELIMITED_TEXT} {@link
      *                         com.gpudb.protocol.CreateTableExternalRequest.Options#FILE_TYPE
@@ -11746,7 +11744,7 @@ public class GPUdb extends GPUdbBase {
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateTableExternalRequest.Options#ACCURACY
      *                                 ACCURACY}: Scans data to get
-     *                                 exactly-typed & sized columns for all
+     *                                 exactly-typed and sized columns for all
      *                                 data scanned.
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateTableExternalRequest.Options#SPEED
@@ -11800,7 +11798,7 @@ public class GPUdb extends GPUdbBase {
      *                         record will be rejected and the error handled as
      *                         determined by {@link
      *                         com.gpudb.protocol.CreateTableExternalRequest.Options#IGNORE_EXISTING_PK
-     *                         IGNORE_EXISTING_PK} & {@link
+     *                         IGNORE_EXISTING_PK} and {@link
      *                         com.gpudb.protocol.CreateTableExternalRequest.Options#ERROR_HANDLING
      *                         ERROR_HANDLING}.  If the specified table does
      *                         not have a primary key, then this option has no
@@ -13924,8 +13922,7 @@ public class GPUdb extends GPUdbBase {
     }
 
     /**
-     * Drops an existing <a href="../../../../../concepts/catalog/"
-     * target="_top">catalog</a>.  Any external tables that depend on the
+     * Drops an existing catalog.  Any external tables that depend on the
      * catalog must be dropped before it can be dropped.
      *
      * @param request  {@link DropCatalogRequest Request} object containing the
@@ -13943,8 +13940,7 @@ public class GPUdb extends GPUdbBase {
     }
 
     /**
-     * Drops an existing <a href="../../../../../concepts/catalog/"
-     * target="_top">catalog</a>.  Any external tables that depend on the
+     * Drops an existing catalog.  Any external tables that depend on the
      * catalog must be dropped before it can be dropped.
      *
      * @param name  Name of the catalog to be dropped. Must be an existing
@@ -14314,7 +14310,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * If the proc being executed is distributed, {@link
      * com.gpudb.protocol.ExecuteProcRequest#getInputTableNames()
-     * inputTableNames} & {@link
+     * inputTableNames} and {@link
      * com.gpudb.protocol.ExecuteProcRequest#getInputColumnNames()
      * inputColumnNames} may be passed to the proc to use for reading data, and
      * {@link com.gpudb.protocol.ExecuteProcRequest#getOutputTableNames()
@@ -14341,7 +14337,7 @@ public class GPUdb extends GPUdbBase {
      * Executes a proc. This endpoint is asynchronous and does not wait for the
      * proc to complete before returning.
      * <p>
-     * If the proc being executed is distributed, {@code inputTableNames} &
+     * If the proc being executed is distributed, {@code inputTableNames} and
      * {@code inputColumnNames} may be passed to the proc to use for reading
      * data, and {@code outputTableNames} may be passed to the proc to use for
      * writing data.
@@ -14614,7 +14610,7 @@ public class GPUdb extends GPUdbBase {
      *               server configuration. Use {@link
      *               com.gpudb.protocol.ExecuteSqlResponse#getHasMoreRecords()
      *               hasMoreRecords} to see if more records exist in the result
-     *               to be fetched, and {@code offset} & {@code limit} to
+     *               to be fetched, and {@code offset} and {@code limit} to
      *               request subsequent pages of results. The default value is
      *               -9999.
      * @param requestSchemaStr  Avro schema of {@code data}. The default value
@@ -15171,7 +15167,7 @@ public class GPUdb extends GPUdbBase {
      *                         COLUMN_FORMATS}: For each source column
      *                         specified, applies the column-property-bound
      *                         format.  Currently supported column properties
-     *                         include date, time, & datetime. The parameter
+     *                         include date, time, and datetime. The parameter
      *                         value must be formatted as a JSON string of maps
      *                         of column names to maps of column properties to
      *                         their corresponding column formats, e.g., '{
@@ -15219,10 +15215,10 @@ public class GPUdb extends GPUdbBase {
      *                         DEFAULT_COLUMN_FORMATS}: Specifies the default
      *                         format to use to write data.  Currently
      *                         supported column properties include date, time,
-     *                         & datetime.  This default column-property-bound
-     *                         format can be overridden by specifying a column
-     *                         property & format for a given source column in
-     *                         {@link
+     *                         and datetime.  This default
+     *                         column-property-bound format can be overridden
+     *                         by specifying a column property and format for a
+     *                         given source column in {@link
      *                         com.gpudb.protocol.ExportRecordsToFilesRequest.Options#COLUMN_FORMATS
      *                         COLUMN_FORMATS}. For each specified annotation,
      *                         the format will apply to all columns with that
@@ -17455,7 +17451,7 @@ public class GPUdb extends GPUdbBase {
      *               server configuration. Use {@link
      *               com.gpudb.protocol.GetRecordsResponse#getHasMoreRecords()
      *               hasMoreRecords} to see if more records exist in the result
-     *               to be fetched, and {@code offset} & {@code limit} to
+     *               to be fetched, and {@code offset} and {@code limit} to
      *               request subsequent pages of results. The default value is
      *               -9999.
      * @param options  <ul>
@@ -17608,7 +17604,7 @@ public class GPUdb extends GPUdbBase {
      *               server configuration. Use {@link
      *               com.gpudb.protocol.GetRecordsResponse#getHasMoreRecords()
      *               hasMoreRecords} to see if more records exist in the result
-     *               to be fetched, and {@code offset} & {@code limit} to
+     *               to be fetched, and {@code offset} and {@code limit} to
      *               request subsequent pages of results. The default value is
      *               -9999.
      * @param options  <ul>
@@ -17840,7 +17836,7 @@ public class GPUdb extends GPUdbBase {
      *               server configuration. Use {@link
      *               com.gpudb.protocol.GetRecordsByColumnResponse#getHasMoreRecords()
      *               hasMoreRecords} to see if more records exist in the result
-     *               to be fetched, and {@code offset} & {@code limit} to
+     *               to be fetched, and {@code offset} and {@code limit} to
      *               request subsequent pages of results. The default value is
      *               -9999.
      * @param options  <ul>
@@ -18302,7 +18298,7 @@ public class GPUdb extends GPUdbBase {
      *               never exceed the server's own limit, defined by the <a
      *               href="../../../../../config/#config-main-general"
      *               target="_top">max_get_records_size</a> parameter in the
-     *               server configuration. Use {@code offset} & {@code limit}
+     *               server configuration. Use {@code offset} and {@code limit}
      *               to request subsequent pages of results. The default value
      *               is -9999.
      * @param options  <ul>
@@ -18423,7 +18419,7 @@ public class GPUdb extends GPUdbBase {
      *               never exceed the server's own limit, defined by the <a
      *               href="../../../../../config/#config-main-general"
      *               target="_top">max_get_records_size</a> parameter in the
-     *               server configuration. Use {@code offset} & {@code limit}
+     *               server configuration. Use {@code offset} and {@code limit}
      *               to request subsequent pages of results. The default value
      *               is -9999.
      * @param options  <ul>
@@ -19621,7 +19617,7 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.InsertRecordsRequest.Options#IGNORE_EXISTING_PK
      *                         IGNORE_EXISTING_PK}, {@link
      *                         com.gpudb.protocol.InsertRecordsRequest.Options#ALLOW_PARTIAL_BATCH
-     *                         ALLOW_PARTIAL_BATCH}, & {@link
+     *                         ALLOW_PARTIAL_BATCH}, and  {@link
      *                         com.gpudb.protocol.InsertRecordsRequest.Options#RETURN_INDIVIDUAL_ERRORS
      *                         RETURN_INDIVIDUAL_ERRORS}.  If the specified
      *                         table does not have a primary key, then this
@@ -19664,7 +19660,7 @@ public class GPUdb extends GPUdbBase {
      *                         will result in an error being reported, as
      *                         determined by {@link
      *                         com.gpudb.protocol.InsertRecordsRequest.Options#ALLOW_PARTIAL_BATCH
-     *                         ALLOW_PARTIAL_BATCH} & {@link
+     *                         ALLOW_PARTIAL_BATCH} and {@link
      *                         com.gpudb.protocol.InsertRecordsRequest.Options#RETURN_INDIVIDUAL_ERRORS
      *                         RETURN_INDIVIDUAL_ERRORS}.  If the specified
      *                         table does not have a primary key or if upsert
@@ -19870,7 +19866,7 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.InsertRecordsRequest.Options#IGNORE_EXISTING_PK
      *                         IGNORE_EXISTING_PK}, {@link
      *                         com.gpudb.protocol.InsertRecordsRequest.Options#ALLOW_PARTIAL_BATCH
-     *                         ALLOW_PARTIAL_BATCH}, & {@link
+     *                         ALLOW_PARTIAL_BATCH}, and  {@link
      *                         com.gpudb.protocol.InsertRecordsRequest.Options#RETURN_INDIVIDUAL_ERRORS
      *                         RETURN_INDIVIDUAL_ERRORS}.  If the specified
      *                         table does not have a primary key, then this
@@ -19913,7 +19909,7 @@ public class GPUdb extends GPUdbBase {
      *                         will result in an error being reported, as
      *                         determined by {@link
      *                         com.gpudb.protocol.InsertRecordsRequest.Options#ALLOW_PARTIAL_BATCH
-     *                         ALLOW_PARTIAL_BATCH} & {@link
+     *                         ALLOW_PARTIAL_BATCH} and {@link
      *                         com.gpudb.protocol.InsertRecordsRequest.Options#RETURN_INDIVIDUAL_ERRORS
      *                         RETURN_INDIVIDUAL_ERRORS}.  If the specified
      *                         table does not have a primary key or if upsert
@@ -20484,10 +20480,10 @@ public class GPUdb extends GPUdbBase {
      *                         mapping of one or more of its column properties
      *                         to an appropriate format for each property.
      *                         Currently supported column properties include
-     *                         date, time, & datetime. The parameter value must
-     *                         be formatted as a JSON string of maps of column
-     *                         names to maps of column properties to their
-     *                         corresponding column formats, e.g., '{
+     *                         date, time, and datetime. The parameter value
+     *                         must be formatted as a JSON string of maps of
+     *                         column names to maps of column properties to
+     *                         their corresponding column formats, e.g., '{
      *                         "order_date" : { "date" : "%Y.%m.%d" },
      *                         "order_time" : { "time" : "%H:%M:%S" } }'.  See
      *                         {@link
@@ -20565,9 +20561,9 @@ public class GPUdb extends GPUdbBase {
      *                         format to be applied to source data loaded into
      *                         columns with the corresponding column property.
      *                         Currently supported column properties include
-     *                         date, time, & datetime.  This default
+     *                         date, time, and datetime.  This default
      *                         column-property-bound format can be overridden
-     *                         by specifying a column property & format for a
+     *                         by specifying a column property and format for a
      *                         given target column in {@link
      *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COLUMN_FORMATS
      *                         COLUMN_FORMATS}. For each specified annotation,
@@ -21002,13 +20998,13 @@ public class GPUdb extends GPUdbBase {
      *                         or 'v' preceded by an escape character will be
      *                         interpreted as the ASCII bell, backspace, form
      *                         feed, line feed, carriage return, horizontal
-     *                         tab, & vertical tab, respectively.  For example,
-     *                         the escape character followed by an 'n' will be
-     *                         interpreted as a newline within a field value.
-     *                         The escape character can also be used to escape
-     *                         the quoting character, and will be treated as an
-     *                         escape character whether it is within a quoted
-     *                         field value or not.  For {@link
+     *                         tab, and vertical tab, respectively.  For
+     *                         example, the escape character followed by an 'n'
+     *                         will be interpreted as a newline within a field
+     *                         value.  The escape character can also be used to
+     *                         escape the quoting character, and will be
+     *                         treated as an escape character whether it is
+     *                         within a quoted field value or not.  For {@link
      *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
      *                         DELIMITED_TEXT} {@link
      *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FILE_TYPE
@@ -21156,7 +21152,7 @@ public class GPUdb extends GPUdbBase {
      *                             <li>{@link
      *                                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ACCURACY
      *                                 ACCURACY}: Scans data to get
-     *                                 exactly-typed & sized columns for all
+     *                                 exactly-typed and sized columns for all
      *                                 data scanned.
      *                             <li>{@link
      *                                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED
@@ -21188,7 +21184,7 @@ public class GPUdb extends GPUdbBase {
      *                         record will be rejected and the error handled as
      *                         determined by {@link
      *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#IGNORE_EXISTING_PK
-     *                         IGNORE_EXISTING_PK} & {@link
+     *                         IGNORE_EXISTING_PK} and {@link
      *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ERROR_HANDLING
      *                         ERROR_HANDLING}.  If the specified table does
      *                         not have a primary key, then this option has no
@@ -21547,10 +21543,10 @@ public class GPUdb extends GPUdbBase {
      *                         mapping of one or more of its column properties
      *                         to an appropriate format for each property.
      *                         Currently supported column properties include
-     *                         date, time, & datetime. The parameter value must
-     *                         be formatted as a JSON string of maps of column
-     *                         names to maps of column properties to their
-     *                         corresponding column formats, e.g., '{
+     *                         date, time, and datetime. The parameter value
+     *                         must be formatted as a JSON string of maps of
+     *                         column names to maps of column properties to
+     *                         their corresponding column formats, e.g., '{
      *                         "order_date" : { "date" : "%Y.%m.%d" },
      *                         "order_time" : { "time" : "%H:%M:%S" } }'.  See
      *                         {@link
@@ -21625,9 +21621,9 @@ public class GPUdb extends GPUdbBase {
      *                         format to be applied to source data loaded into
      *                         columns with the corresponding column property.
      *                         Currently supported column properties include
-     *                         date, time, & datetime.  This default
+     *                         date, time, and datetime.  This default
      *                         column-property-bound format can be overridden
-     *                         by specifying a column property & format for a
+     *                         by specifying a column property and format for a
      *                         given target column in {@link
      *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#COLUMN_FORMATS
      *                         COLUMN_FORMATS}. For each specified annotation,
@@ -21997,13 +21993,13 @@ public class GPUdb extends GPUdbBase {
      *                         or 'v' preceded by an escape character will be
      *                         interpreted as the ASCII bell, backspace, form
      *                         feed, line feed, carriage return, horizontal
-     *                         tab, & vertical tab, respectively.  For example,
-     *                         the escape character followed by an 'n' will be
-     *                         interpreted as a newline within a field value.
-     *                         The escape character can also be used to escape
-     *                         the quoting character, and will be treated as an
-     *                         escape character whether it is within a quoted
-     *                         field value or not.  For {@link
+     *                         tab, and vertical tab, respectively.  For
+     *                         example, the escape character followed by an 'n'
+     *                         will be interpreted as a newline within a field
+     *                         value.  The escape character can also be used to
+     *                         escape the quoting character, and will be
+     *                         treated as an escape character whether it is
+     *                         within a quoted field value or not.  For {@link
      *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DELIMITED_TEXT
      *                         DELIMITED_TEXT} {@link
      *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FILE_TYPE
@@ -22148,7 +22144,7 @@ public class GPUdb extends GPUdbBase {
      *                             <li>{@link
      *                                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#ACCURACY
      *                                 ACCURACY}: Scans data to get
-     *                                 exactly-typed & sized columns for all
+     *                                 exactly-typed and sized columns for all
      *                                 data scanned.
      *                             <li>{@link
      *                                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SPEED
@@ -22180,7 +22176,7 @@ public class GPUdb extends GPUdbBase {
      *                         record will be rejected and the error handled as
      *                         determined by {@link
      *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#IGNORE_EXISTING_PK
-     *                         IGNORE_EXISTING_PK} & {@link
+     *                         IGNORE_EXISTING_PK} and {@link
      *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#ERROR_HANDLING
      *                         ERROR_HANDLING}.  If the specified table does
      *                         not have a primary key, then this option has no
@@ -22737,7 +22733,7 @@ public class GPUdb extends GPUdbBase {
      *                         record will be rejected and the error handled as
      *                         determined by {@link
      *                         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#IGNORE_EXISTING_PK
-     *                         IGNORE_EXISTING_PK} & {@link
+     *                         IGNORE_EXISTING_PK} and {@link
      *                         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#ERROR_HANDLING
      *                         ERROR_HANDLING}.  If the specified table does
      *                         not have a primary key, then this option has no
@@ -23358,7 +23354,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * IMPORTANT: It's highly recommended that you review the <a
      * href="../../../../../graph_solver/network_graph_solver/"
-     * target="_top">Graphs & Solvers</a> concepts documentation, the <a
+     * target="_top">Graphs and Solvers</a> concepts documentation, the <a
      * href="../../../../../guides/graph_rest_guide/" target="_top">Graph REST
      * Tutorial</a>, and/or some <a
      * href="../../../../../guide-tags/graph---match/"
@@ -23385,7 +23381,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * IMPORTANT: It's highly recommended that you review the <a
      * href="../../../../../graph_solver/network_graph_solver/"
-     * target="_top">Graphs & Solvers</a> concepts documentation, the <a
+     * target="_top">Graphs and Solvers</a> concepts documentation, the <a
      * href="../../../../../guides/graph_rest_guide/" target="_top">Graph REST
      * Tutorial</a>, and/or some <a
      * href="../../../../../guide-tags/graph---match/"
@@ -24198,7 +24194,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * IMPORTANT: It's highly recommended that you review the <a
      * href="../../../../../graph_solver/network_graph_solver/"
-     * target="_top">Graphs & Solvers</a> concepts documentation, and <a
+     * target="_top">Graphs and Solvers</a> concepts documentation, and <a
      * href="../../../../../guides/graph_rest_guide/" target="_top">Graph REST
      * Tutorial</a> before using this endpoint.
      *
@@ -24222,7 +24218,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * IMPORTANT: It's highly recommended that you review the <a
      * href="../../../../../graph_solver/network_graph_solver/"
-     * target="_top">Graphs & Solvers</a> concepts documentation, and <a
+     * target="_top">Graphs and Solvers</a> concepts documentation, and <a
      * href="../../../../../guides/graph_rest_guide/" target="_top">Graph REST
      * Tutorial</a> before using this endpoint.
      *
@@ -24566,7 +24562,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * IMPORTANT: It's highly recommended that you review the <a
      * href="../../../../../graph_solver/network_graph_solver/"
-     * target="_top">Graphs & Solvers</a> concepts documentation, the <a
+     * target="_top">Graphs and Solvers</a> concepts documentation, the <a
      * href="../../../../../guides/graph_rest_guide/" target="_top">Graph REST
      * Tutorial</a>, and/or some <a
      * href="../../../../../guide-tags/graph---query"
@@ -24606,7 +24602,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * IMPORTANT: It's highly recommended that you review the <a
      * href="../../../../../graph_solver/network_graph_solver/"
-     * target="_top">Graphs & Solvers</a> concepts documentation, the <a
+     * target="_top">Graphs and Solvers</a> concepts documentation, the <a
      * href="../../../../../guides/graph_rest_guide/" target="_top">Graph REST
      * Tutorial</a>, and/or some <a
      * href="../../../../../guide-tags/graph---query"
@@ -24795,7 +24791,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * IMPORTANT: It's highly recommended that you review the <a
      * href="../../../../../graph_solver/network_graph_solver/"
-     * target="_top">Graphs & Solvers</a> concepts documentation, the <a
+     * target="_top">Graphs and Solvers</a> concepts documentation, the <a
      * href="../../../../../guides/graph_rest_guide/" target="_top">Graph REST
      * Tutorial</a>, and/or some <a href="../../../../../guide-tags/graph/"
      * target="_top">graph examples</a> before using this endpoint.
@@ -24819,7 +24815,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * IMPORTANT: It's highly recommended that you review the <a
      * href="../../../../../graph_solver/network_graph_solver/"
-     * target="_top">Graphs & Solvers</a> concepts documentation, the <a
+     * target="_top">Graphs and Solvers</a> concepts documentation, the <a
      * href="../../../../../guides/graph_rest_guide/" target="_top">Graph REST
      * Tutorial</a>, and/or some <a href="../../../../../guide-tags/graph/"
      * target="_top">graph examples</a> before using this endpoint.
@@ -27645,7 +27641,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * IMPORTANT: It's highly recommended that you review the <a
      * href="../../../../../graph_solver/network_graph_solver/"
-     * target="_top">Graphs & Solvers</a> concepts documentation, the <a
+     * target="_top">Graphs and Solvers</a> concepts documentation, the <a
      * href="../../../../../guides/graph_rest_guide/" target="_top">Graph REST
      * Tutorial</a>, and/or some <a
      * href="../../../../../guide-tags/graph---solve"
@@ -27672,7 +27668,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * IMPORTANT: It's highly recommended that you review the <a
      * href="../../../../../graph_solver/network_graph_solver/"
-     * target="_top">Graphs & Solvers</a> concepts documentation, the <a
+     * target="_top">Graphs and Solvers</a> concepts documentation, the <a
      * href="../../../../../guides/graph_rest_guide/" target="_top">Graph REST
      * Tutorial</a>, and/or some <a
      * href="../../../../../guide-tags/graph---solve"
@@ -29437,7 +29433,7 @@ public class GPUdb extends GPUdbBase {
      * typically referring to the time or distance assigned as the weights of
      * the underlying graph. See <a
      * href="../../../../../graph_solver/network_graph_solver/"
-     * target="_top">Graphs & Solvers</a> for more information on graphs.
+     * target="_top">Graphs and Solvers</a> for more information on graphs.
      *
      * @param request  {@link VisualizeIsochroneRequest Request} object
      *                 containing the parameters for the operation.
@@ -29459,7 +29455,7 @@ public class GPUdb extends GPUdbBase {
      * typically referring to the time or distance assigned as the weights of
      * the underlying graph. See <a
      * href="../../../../../graph_solver/network_graph_solver/"
-     * target="_top">Graphs & Solvers</a> for more information on graphs.
+     * target="_top">Graphs and Solvers</a> for more information on graphs.
      *
      * @param graphName  Name of the graph on which the isochrone is to be
      *                   computed.

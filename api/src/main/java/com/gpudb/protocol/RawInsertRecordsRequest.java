@@ -90,7 +90,7 @@ public class RawInsertRecordsRequest implements IndexedRecord {
          * of a record being inserted will remain unchanged, while the new
          * record will be rejected and the error handled as determined by
          * {@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}, {@link
-         * Options#ALLOW_PARTIAL_BATCH ALLOW_PARTIAL_BATCH}, & {@link
+         * Options#ALLOW_PARTIAL_BATCH ALLOW_PARTIAL_BATCH}, and {@link
          * Options#RETURN_INDIVIDUAL_ERRORS RETURN_INDIVIDUAL_ERRORS}.  If the
          * specified table does not have a primary key, then this option has no
          * effect.
@@ -121,7 +121,7 @@ public class RawInsertRecordsRequest implements IndexedRecord {
          * {@link Options#FALSE FALSE}, the rejection of any record for having
          * primary key values matching an existing record will result in an
          * error being reported, as determined by {@link
-         * Options#ALLOW_PARTIAL_BATCH ALLOW_PARTIAL_BATCH} & {@link
+         * Options#ALLOW_PARTIAL_BATCH ALLOW_PARTIAL_BATCH} and {@link
          * Options#RETURN_INDIVIDUAL_ERRORS RETURN_INDIVIDUAL_ERRORS}.  If the
          * specified table does not have a primary key or if upsert mode is in
          * effect ({@link Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK}
@@ -267,7 +267,7 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                         and the error handled as determined by {@link
      *                         Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK},
      *                         {@link Options#ALLOW_PARTIAL_BATCH
-     *                         ALLOW_PARTIAL_BATCH}, & {@link
+     *                         ALLOW_PARTIAL_BATCH}, and  {@link
      *                         Options#RETURN_INDIVIDUAL_ERRORS
      *                         RETURN_INDIVIDUAL_ERRORS}.  If the specified
      *                         table does not have a primary key, then this
@@ -301,7 +301,7 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                         primary key values matching an existing record
      *                         will result in an error being reported, as
      *                         determined by {@link Options#ALLOW_PARTIAL_BATCH
-     *                         ALLOW_PARTIAL_BATCH} & {@link
+     *                         ALLOW_PARTIAL_BATCH} and {@link
      *                         Options#RETURN_INDIVIDUAL_ERRORS
      *                         RETURN_INDIVIDUAL_ERRORS}.  If the specified
      *                         table does not have a primary key or if upsert
@@ -448,7 +448,7 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                         and the error handled as determined by {@link
      *                         Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK},
      *                         {@link Options#ALLOW_PARTIAL_BATCH
-     *                         ALLOW_PARTIAL_BATCH}, & {@link
+     *                         ALLOW_PARTIAL_BATCH}, and  {@link
      *                         Options#RETURN_INDIVIDUAL_ERRORS
      *                         RETURN_INDIVIDUAL_ERRORS}.  If the specified
      *                         table does not have a primary key, then this
@@ -482,7 +482,7 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                         primary key values matching an existing record
      *                         will result in an error being reported, as
      *                         determined by {@link Options#ALLOW_PARTIAL_BATCH
-     *                         ALLOW_PARTIAL_BATCH} & {@link
+     *                         ALLOW_PARTIAL_BATCH} and {@link
      *                         Options#RETURN_INDIVIDUAL_ERRORS
      *                         RETURN_INDIVIDUAL_ERRORS}.  If the specified
      *                         table does not have a primary key or if upsert
@@ -710,9 +710,10 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *         unchanged, while the new record will be rejected and the error
      *         handled as determined by {@link Options#IGNORE_EXISTING_PK
      *         IGNORE_EXISTING_PK}, {@link Options#ALLOW_PARTIAL_BATCH
-     *         ALLOW_PARTIAL_BATCH}, & {@link Options#RETURN_INDIVIDUAL_ERRORS
-     *         RETURN_INDIVIDUAL_ERRORS}.  If the specified table does not have
-     *         a primary key, then this option has no effect.
+     *         ALLOW_PARTIAL_BATCH}, and  {@link
+     *         Options#RETURN_INDIVIDUAL_ERRORS RETURN_INDIVIDUAL_ERRORS}.  If
+     *         the specified table does not have a primary key, then this
+     *         option has no effect.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Upsert new records when
@@ -735,7 +736,7 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *         FALSE}, the rejection of any record for having primary key
      *         values matching an existing record will result in an error being
      *         reported, as determined by {@link Options#ALLOW_PARTIAL_BATCH
-     *         ALLOW_PARTIAL_BATCH} & {@link Options#RETURN_INDIVIDUAL_ERRORS
+     *         ALLOW_PARTIAL_BATCH} and {@link Options#RETURN_INDIVIDUAL_ERRORS
      *         RETURN_INDIVIDUAL_ERRORS}.  If the specified table does not have
      *         a primary key or if upsert mode is in effect ({@link
      *         Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK} is {@link
@@ -832,9 +833,10 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *         unchanged, while the new record will be rejected and the error
      *         handled as determined by {@link Options#IGNORE_EXISTING_PK
      *         IGNORE_EXISTING_PK}, {@link Options#ALLOW_PARTIAL_BATCH
-     *         ALLOW_PARTIAL_BATCH}, & {@link Options#RETURN_INDIVIDUAL_ERRORS
-     *         RETURN_INDIVIDUAL_ERRORS}.  If the specified table does not have
-     *         a primary key, then this option has no effect.
+     *         ALLOW_PARTIAL_BATCH}, and  {@link
+     *         Options#RETURN_INDIVIDUAL_ERRORS RETURN_INDIVIDUAL_ERRORS}.  If
+     *         the specified table does not have a primary key, then this
+     *         option has no effect.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Upsert new records when
@@ -857,7 +859,7 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *         FALSE}, the rejection of any record for having primary key
      *         values matching an existing record will result in an error being
      *         reported, as determined by {@link Options#ALLOW_PARTIAL_BATCH
-     *         ALLOW_PARTIAL_BATCH} & {@link Options#RETURN_INDIVIDUAL_ERRORS
+     *         ALLOW_PARTIAL_BATCH} and {@link Options#RETURN_INDIVIDUAL_ERRORS
      *         RETURN_INDIVIDUAL_ERRORS}.  If the specified table does not have
      *         a primary key or if upsert mode is in effect ({@link
      *         Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK} is {@link

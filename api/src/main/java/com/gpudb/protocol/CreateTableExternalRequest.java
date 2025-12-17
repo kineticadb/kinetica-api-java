@@ -326,7 +326,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * format to the source data loaded into that column.  Each column
          * format will contain a mapping of one or more of its column
          * properties to an appropriate format for each property.  Currently
-         * supported column properties include date, time, & datetime. The
+         * supported column properties include date, time, and datetime. The
          * parameter value must be formatted as a JSON string of maps of column
          * names to maps of column properties to their corresponding column
          * formats, e.g., '{ "order_date" : { "date" : "%Y.%m.%d" },
@@ -416,9 +416,9 @@ public class CreateTableExternalRequest implements IndexedRecord {
         /**
          * Specifies the default format to be applied to source data loaded
          * into columns with the corresponding column property.  Currently
-         * supported column properties include date, time, & datetime.  This
+         * supported column properties include date, time, and datetime.  This
          * default column-property-bound format can be overridden by specifying
-         * a column property & format for a given target column in {@link
+         * a column property and format for a given target column in {@link
          * Options#COLUMN_FORMATS COLUMN_FORMATS}. For each specified
          * annotation, the format will apply to all columns with that
          * annotation unless a custom {@link Options#COLUMN_FORMATS
@@ -975,7 +975,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * <p>
          * An 'a', 'b', 'f', 'n', 'r', 't', or 'v' preceded by an escape
          * character will be interpreted as the ASCII bell, backspace, form
-         * feed, line feed, carriage return, horizontal tab, & vertical tab,
+         * feed, line feed, carriage return, horizontal tab, and vertical tab,
          * respectively.  For example, the escape character followed by an 'n'
          * will be interpreted as a newline within a field value.
          * <p>
@@ -1096,7 +1096,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#ACCURACY ACCURACY}: Scans data to get
-         *         exactly-typed & sized columns for all data scanned.
+         *         exactly-typed and sized columns for all data scanned.
          *     <li>{@link Options#SPEED SPEED}: Scans data and picks the widest
          *         possible column types so that 'all' values will fit with
          *         minimum data scanned
@@ -1106,7 +1106,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
         public static final String TYPE_INFERENCE_MODE = "type_inference_mode";
 
         /**
-         * Scans data to get exactly-typed & sized columns for all data
+         * Scans data to get exactly-typed and sized columns for all data
          * scanned.
          */
         public static final String ACCURACY = "accuracy";
@@ -1151,7 +1151,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * any existing table record with primary key values that match those
          * of a record being inserted will remain unchanged, while the new
          * record will be rejected and the error handled as determined by
-         * {@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK} & {@link
+         * {@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK} and {@link
          * Options#ERROR_HANDLING ERROR_HANDLING}.  If the specified table does
          * not have a primary key, then this option has no effect.
          * Supported values:
@@ -1492,7 +1492,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         will contain a mapping of one or more of its
      *                         column properties to an appropriate format for
      *                         each property.  Currently supported column
-     *                         properties include date, time, & datetime. The
+     *                         properties include date, time, and datetime. The
      *                         parameter value must be formatted as a JSON
      *                         string of maps of column names to maps of column
      *                         properties to their corresponding column
@@ -1559,9 +1559,9 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         format to be applied to source data loaded into
      *                         columns with the corresponding column property.
      *                         Currently supported column properties include
-     *                         date, time, & datetime.  This default
+     *                         date, time, and datetime.  This default
      *                         column-property-bound format can be overridden
-     *                         by specifying a column property & format for a
+     *                         by specifying a column property and format for a
      *                         given target column in {@link
      *                         Options#COLUMN_FORMATS COLUMN_FORMATS}. For each
      *                         specified annotation, the format will apply to
@@ -1944,13 +1944,13 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         or 'v' preceded by an escape character will be
      *                         interpreted as the ASCII bell, backspace, form
      *                         feed, line feed, carriage return, horizontal
-     *                         tab, & vertical tab, respectively.  For example,
-     *                         the escape character followed by an 'n' will be
-     *                         interpreted as a newline within a field value.
-     *                         The escape character can also be used to escape
-     *                         the quoting character, and will be treated as an
-     *                         escape character whether it is within a quoted
-     *                         field value or not.  For {@link
+     *                         tab, and vertical tab, respectively.  For
+     *                         example, the escape character followed by an 'n'
+     *                         will be interpreted as a newline within a field
+     *                         value.  The escape character can also be used to
+     *                         escape the quoting character, and will be
+     *                         treated as an escape character whether it is
+     *                         within a quoted field value or not.  For {@link
      *                         Options#DELIMITED_TEXT DELIMITED_TEXT} {@link
      *                         Options#FILE_TYPE FILE_TYPE} only.
      *                     <li>{@link Options#TEXT_HAS_HEADER TEXT_HAS_HEADER}:
@@ -2052,7 +2052,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#ACCURACY ACCURACY}: Scans
-     *                                 data to get exactly-typed & sized
+     *                                 data to get exactly-typed and sized
      *                                 columns for all data scanned.
      *                             <li>{@link Options#SPEED SPEED}: Scans data
      *                                 and picks the widest possible column
@@ -2092,10 +2092,11 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         those of a record being inserted will remain
      *                         unchanged, while the new record will be rejected
      *                         and the error handled as determined by {@link
-     *                         Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK} &
-     *                         {@link Options#ERROR_HANDLING ERROR_HANDLING}.
-     *                         If the specified table does not have a primary
-     *                         key, then this option has no effect.
+     *                         Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}
+     *                         and {@link Options#ERROR_HANDLING
+     *                         ERROR_HANDLING}.  If the specified table does
+     *                         not have a primary key, then this option has no
+     *                         effect.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Upsert new
@@ -2567,10 +2568,10 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         the source data loaded into that column.  Each column format
      *         will contain a mapping of one or more of its column properties
      *         to an appropriate format for each property.  Currently supported
-     *         column properties include date, time, & datetime. The parameter
-     *         value must be formatted as a JSON string of maps of column names
-     *         to maps of column properties to their corresponding column
-     *         formats, e.g., '{ "order_date" : { "date" : "%Y.%m.%d" },
+     *         column properties include date, time, and datetime. The
+     *         parameter value must be formatted as a JSON string of maps of
+     *         column names to maps of column properties to their corresponding
+     *         column formats, e.g., '{ "order_date" : { "date" : "%Y.%m.%d" },
      *         "order_time" : { "time" : "%H:%M:%S" } }'.  See {@link
      *         Options#DEFAULT_COLUMN_FORMATS DEFAULT_COLUMN_FORMATS} for valid
      *         format syntax.
@@ -2616,28 +2617,29 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *     <li>{@link Options#DEFAULT_COLUMN_FORMATS DEFAULT_COLUMN_FORMATS}:
      *         Specifies the default format to be applied to source data loaded
      *         into columns with the corresponding column property.  Currently
-     *         supported column properties include date, time, & datetime.
+     *         supported column properties include date, time, and datetime.
      *         This default column-property-bound format can be overridden by
-     *         specifying a column property & format for a given target column
-     *         in {@link Options#COLUMN_FORMATS COLUMN_FORMATS}. For each
-     *         specified annotation, the format will apply to all columns with
-     *         that annotation unless a custom {@link Options#COLUMN_FORMATS
-     *         COLUMN_FORMATS} for that annotation is specified.  The parameter
-     *         value must be formatted as a JSON string that is a map of column
-     *         properties to their respective column formats, e.g., '{ "date" :
-     *         "%Y.%m.%d", "time" : "%H:%M:%S" }'.  Column formats are
-     *         specified as a string of control characters and plain text. The
-     *         supported control characters are 'Y', 'm', 'd', 'H', 'M', 'S',
-     *         and 's', which follow the Linux 'strptime()' specification, as
-     *         well as 's', which specifies seconds and fractional seconds
-     *         (though the fractional component will be truncated past
-     *         milliseconds).  Formats for the 'date' annotation must include
-     *         the 'Y', 'm', and 'd' control characters. Formats for the 'time'
-     *         annotation must include the 'H', 'M', and either 'S' or 's' (but
-     *         not both) control characters. Formats for the 'datetime'
-     *         annotation meet both the 'date' and 'time' control character
-     *         requirements. For example, '{"datetime" : "%m/%d/%Y %H:%M:%S" }'
-     *         would be used to interpret text as "05/04/2000 12:12:11"
+     *         specifying a column property and format for a given target
+     *         column in {@link Options#COLUMN_FORMATS COLUMN_FORMATS}. For
+     *         each specified annotation, the format will apply to all columns
+     *         with that annotation unless a custom {@link
+     *         Options#COLUMN_FORMATS COLUMN_FORMATS} for that annotation is
+     *         specified.  The parameter value must be formatted as a JSON
+     *         string that is a map of column properties to their respective
+     *         column formats, e.g., '{ "date" : "%Y.%m.%d", "time" :
+     *         "%H:%M:%S" }'.  Column formats are specified as a string of
+     *         control characters and plain text. The supported control
+     *         characters are 'Y', 'm', 'd', 'H', 'M', 'S', and 's', which
+     *         follow the Linux 'strptime()' specification, as well as 's',
+     *         which specifies seconds and fractional seconds (though the
+     *         fractional component will be truncated past milliseconds).
+     *         Formats for the 'date' annotation must include the 'Y', 'm', and
+     *         'd' control characters. Formats for the 'time' annotation must
+     *         include the 'H', 'M', and either 'S' or 's' (but not both)
+     *         control characters. Formats for the 'datetime' annotation meet
+     *         both the 'date' and 'time' control character requirements. For
+     *         example, '{"datetime" : "%m/%d/%Y %H:%M:%S" }' would be used to
+     *         interpret text as "05/04/2000 12:12:11"
      *     <li>{@link Options#DATALAKE_CATALOG DATALAKE_CATALOG}: Name of an
      *         existing datalake(iceberg) catalog used in loading files
      *     <li>{@link Options#DATALAKE_PATH DATALAKE_PATH}: Path of
@@ -2912,8 +2914,8 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         in the source data.  An 'a', 'b', 'f', 'n', 'r', 't', or 'v'
      *         preceded by an escape character will be interpreted as the ASCII
      *         bell, backspace, form feed, line feed, carriage return,
-     *         horizontal tab, & vertical tab, respectively.  For example, the
-     *         escape character followed by an 'n' will be interpreted as a
+     *         horizontal tab, and vertical tab, respectively.  For example,
+     *         the escape character followed by an 'n' will be interpreted as a
      *         newline within a field value.  The escape character can also be
      *         used to escape the quoting character, and will be treated as an
      *         escape character whether it is within a quoted field value or
@@ -2999,7 +3001,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#ACCURACY ACCURACY}: Scans data to get
-     *                 exactly-typed & sized columns for all data scanned.
+     *                 exactly-typed and sized columns for all data scanned.
      *             <li>{@link Options#SPEED SPEED}: Scans data and picks the
      *                 widest possible column types so that 'all' values will
      *                 fit with minimum data scanned
@@ -3029,7 +3031,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         values that match those of a record being inserted will remain
      *         unchanged, while the new record will be rejected and the error
      *         handled as determined by {@link Options#IGNORE_EXISTING_PK
-     *         IGNORE_EXISTING_PK} & {@link Options#ERROR_HANDLING
+     *         IGNORE_EXISTING_PK} and {@link Options#ERROR_HANDLING
      *         ERROR_HANDLING}.  If the specified table does not have a primary
      *         key, then this option has no effect.
      *         Supported values:
@@ -3078,10 +3080,10 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         the source data loaded into that column.  Each column format
      *         will contain a mapping of one or more of its column properties
      *         to an appropriate format for each property.  Currently supported
-     *         column properties include date, time, & datetime. The parameter
-     *         value must be formatted as a JSON string of maps of column names
-     *         to maps of column properties to their corresponding column
-     *         formats, e.g., '{ "order_date" : { "date" : "%Y.%m.%d" },
+     *         column properties include date, time, and datetime. The
+     *         parameter value must be formatted as a JSON string of maps of
+     *         column names to maps of column properties to their corresponding
+     *         column formats, e.g., '{ "order_date" : { "date" : "%Y.%m.%d" },
      *         "order_time" : { "time" : "%H:%M:%S" } }'.  See {@link
      *         Options#DEFAULT_COLUMN_FORMATS DEFAULT_COLUMN_FORMATS} for valid
      *         format syntax.
@@ -3127,28 +3129,29 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *     <li>{@link Options#DEFAULT_COLUMN_FORMATS DEFAULT_COLUMN_FORMATS}:
      *         Specifies the default format to be applied to source data loaded
      *         into columns with the corresponding column property.  Currently
-     *         supported column properties include date, time, & datetime.
+     *         supported column properties include date, time, and datetime.
      *         This default column-property-bound format can be overridden by
-     *         specifying a column property & format for a given target column
-     *         in {@link Options#COLUMN_FORMATS COLUMN_FORMATS}. For each
-     *         specified annotation, the format will apply to all columns with
-     *         that annotation unless a custom {@link Options#COLUMN_FORMATS
-     *         COLUMN_FORMATS} for that annotation is specified.  The parameter
-     *         value must be formatted as a JSON string that is a map of column
-     *         properties to their respective column formats, e.g., '{ "date" :
-     *         "%Y.%m.%d", "time" : "%H:%M:%S" }'.  Column formats are
-     *         specified as a string of control characters and plain text. The
-     *         supported control characters are 'Y', 'm', 'd', 'H', 'M', 'S',
-     *         and 's', which follow the Linux 'strptime()' specification, as
-     *         well as 's', which specifies seconds and fractional seconds
-     *         (though the fractional component will be truncated past
-     *         milliseconds).  Formats for the 'date' annotation must include
-     *         the 'Y', 'm', and 'd' control characters. Formats for the 'time'
-     *         annotation must include the 'H', 'M', and either 'S' or 's' (but
-     *         not both) control characters. Formats for the 'datetime'
-     *         annotation meet both the 'date' and 'time' control character
-     *         requirements. For example, '{"datetime" : "%m/%d/%Y %H:%M:%S" }'
-     *         would be used to interpret text as "05/04/2000 12:12:11"
+     *         specifying a column property and format for a given target
+     *         column in {@link Options#COLUMN_FORMATS COLUMN_FORMATS}. For
+     *         each specified annotation, the format will apply to all columns
+     *         with that annotation unless a custom {@link
+     *         Options#COLUMN_FORMATS COLUMN_FORMATS} for that annotation is
+     *         specified.  The parameter value must be formatted as a JSON
+     *         string that is a map of column properties to their respective
+     *         column formats, e.g., '{ "date" : "%Y.%m.%d", "time" :
+     *         "%H:%M:%S" }'.  Column formats are specified as a string of
+     *         control characters and plain text. The supported control
+     *         characters are 'Y', 'm', 'd', 'H', 'M', 'S', and 's', which
+     *         follow the Linux 'strptime()' specification, as well as 's',
+     *         which specifies seconds and fractional seconds (though the
+     *         fractional component will be truncated past milliseconds).
+     *         Formats for the 'date' annotation must include the 'Y', 'm', and
+     *         'd' control characters. Formats for the 'time' annotation must
+     *         include the 'H', 'M', and either 'S' or 's' (but not both)
+     *         control characters. Formats for the 'datetime' annotation meet
+     *         both the 'date' and 'time' control character requirements. For
+     *         example, '{"datetime" : "%m/%d/%Y %H:%M:%S" }' would be used to
+     *         interpret text as "05/04/2000 12:12:11"
      *     <li>{@link Options#DATALAKE_CATALOG DATALAKE_CATALOG}: Name of an
      *         existing datalake(iceberg) catalog used in loading files
      *     <li>{@link Options#DATALAKE_PATH DATALAKE_PATH}: Path of
@@ -3423,8 +3426,8 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         in the source data.  An 'a', 'b', 'f', 'n', 'r', 't', or 'v'
      *         preceded by an escape character will be interpreted as the ASCII
      *         bell, backspace, form feed, line feed, carriage return,
-     *         horizontal tab, & vertical tab, respectively.  For example, the
-     *         escape character followed by an 'n' will be interpreted as a
+     *         horizontal tab, and vertical tab, respectively.  For example,
+     *         the escape character followed by an 'n' will be interpreted as a
      *         newline within a field value.  The escape character can also be
      *         used to escape the quoting character, and will be treated as an
      *         escape character whether it is within a quoted field value or
@@ -3510,7 +3513,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#ACCURACY ACCURACY}: Scans data to get
-     *                 exactly-typed & sized columns for all data scanned.
+     *                 exactly-typed and sized columns for all data scanned.
      *             <li>{@link Options#SPEED SPEED}: Scans data and picks the
      *                 widest possible column types so that 'all' values will
      *                 fit with minimum data scanned
@@ -3540,7 +3543,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         values that match those of a record being inserted will remain
      *         unchanged, while the new record will be rejected and the error
      *         handled as determined by {@link Options#IGNORE_EXISTING_PK
-     *         IGNORE_EXISTING_PK} & {@link Options#ERROR_HANDLING
+     *         IGNORE_EXISTING_PK} and {@link Options#ERROR_HANDLING
      *         ERROR_HANDLING}.  If the specified table does not have a primary
      *         key, then this option has no effect.
      *         Supported values:

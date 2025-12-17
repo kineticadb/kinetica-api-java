@@ -777,7 +777,7 @@ public class BulkInserter<T> implements AutoCloseable {
      * @deprecated This class has been superseded by {@link
      * com.gpudb.WorkerList com.gpudb.WorkerList}.
      */
-    @Deprecated
+    @Deprecated(since = "6.2.0", forRemoval = true)
     public static final class WorkerList extends com.gpudb.WorkerList {
         private static final long serialVersionUID = 1L;
 
@@ -785,6 +785,7 @@ public class BulkInserter<T> implements AutoCloseable {
          * @deprecated This class has been superseded by {@link
          * com.gpudb.WorkerList com.gpudb.WorkerList}.
          */
+        @Deprecated(since = "6.2.0", forRemoval = true)
         public WorkerList() {
             super();
         }
@@ -793,6 +794,7 @@ public class BulkInserter<T> implements AutoCloseable {
          * @deprecated This class has been superseded by {@link
          * com.gpudb.WorkerList com.gpudb.WorkerList}.
          */
+        @Deprecated(since = "6.2.0", forRemoval = true)
         public WorkerList(GPUdb gpudb) throws GPUdbException {
             super(gpudb);
         }
@@ -801,6 +803,7 @@ public class BulkInserter<T> implements AutoCloseable {
          * @deprecated This class has been superseded by {@link
          * com.gpudb.WorkerList com.gpudb.WorkerList}.
          */
+        @Deprecated(since = "6.2.0", forRemoval = true)
         public WorkerList(GPUdb gpudb, Pattern ipRegex) throws GPUdbException {
             super(gpudb, ipRegex);
         }
@@ -809,6 +812,7 @@ public class BulkInserter<T> implements AutoCloseable {
          * @deprecated This class has been superseded by {@link
          * com.gpudb.WorkerList com.gpudb.WorkerList}.
          */
+        @Deprecated(since = "6.2.0", forRemoval = true)
         public WorkerList(GPUdb gpudb, String ipPrefix) throws GPUdbException {
             super(gpudb, ipPrefix);
         }
@@ -936,6 +940,7 @@ public class BulkInserter<T> implements AutoCloseable {
         // This is the same as the batchSize in BulkInserter class
         private final int capacity;
         List<T> queue;
+        private final List<List<T>> recordBatches = new ArrayList<>();
         private final Object queueLock = new Object();
         private final TypeObjectMap<T> typeObjectMap;
         private final Map<String, String> options;
@@ -983,17 +988,14 @@ public class BulkInserter<T> implements AutoCloseable {
         }
 
         /**
-         * Handle the insertion of the list of {@link RecordObject} derivatives like {@link GenericRecord} or classes
-         * extending {@link RecordBase}.
+         * Handle the insertion of the list of {@link RecordObject} derivatives
+         * like {@link GenericRecord} or classes extending {@link RecordBase}.
+         * 
+         * @param queuedRecords  a batch of records to insert into the database
          *
          * @return - An instance of {@link WorkerQueueInsertionResult<T>}
          */
-        private WorkerQueueInsertionResult<T> handleRecordObjects() {
-            List<T> queuedRecords;
-            synchronized (this.queueLock) {
-                queuedRecords = this.queue;
-                this.queue = new ArrayList<>( this.capacity );
-            }
+        private WorkerQueueInsertionResult<T> handleRecordObjects(List<T> queuedRecords) {
 
             // If nothing to insert, return a null object for the response
             if ( queuedRecords.isEmpty() ) {
@@ -1165,14 +1167,11 @@ public class BulkInserter<T> implements AutoCloseable {
          * This method handles the insert of JSON records by using the method
          * {@link GPUdbBase#insertRecordsFromJson(String, String, GPUdbBase.JsonOptions, Map, Map)}
          *
+         * @param queuedRecords  a batch of records to insert into the database
+         *
          * @return - an instance of {@link WorkerQueueInsertionResult}
          */
-        private WorkerQueueInsertionResult<T> handleJsonRecords() {
-            List<T> queuedRecords;
-            synchronized (this.queueLock) {
-                queuedRecords = this.queue;
-                this.queue = new ArrayList<>( this.capacity );
-            }
+        private WorkerQueueInsertionResult<T> handleJsonRecords(List<T> queuedRecords) {
 
             // If nothing to insert, return a null object for the response
             if ( queuedRecords.isEmpty() ) {
@@ -1252,28 +1251,51 @@ public class BulkInserter<T> implements AutoCloseable {
         }
 
         /**
-         * Returns if the queue is full (based on the capacity).
+         * Adds queued records to the queue of records to insert, if any queued
+         * records exist in this queue.
+         * 
+         * @param queueOnlyIfFull only add this queue to the queue of records to
+         *        insert if it's full
+         * 
+         * @return whether this queue's records were queued for insert
          */
-        public boolean isQueueFull() {
-            return this.queue.size() >= this.capacity;
+        boolean queueQueue(boolean queueOnlyIfFull) {
+            boolean didQueueQueue = false;
+            synchronized (this.queueLock) {
+                if ((!queueOnlyIfFull && !this.queue.isEmpty()) || (this.queue.size() >= this.capacity)) {
+                    didQueueQueue = true;
+                    this.recordBatches.add(this.queue);
+                    this.queue = new ArrayList<>( this.capacity );
+                }
+            }
+            return didQueueQueue;
         }
 
-
         /**
-         * Inserts the records in the queue.  Returns a {@link
-         * WorkerQueueInsertionResult} object
-         * containing the result of the insertion, or null if no
+         * Inserts one set of records from the list of full record batches
+         * queued for ingest.  Returns a {@link WorkerQueueInsertionResult}
+         * object containing the result of the insertion, or null if no
          * insertion was attempted.
          */
         @Override
         public WorkerQueueInsertionResult<T> call() throws Exception {
 
+            List<T> queuedRecords = null;
+            synchronized (this.queueLock) {
+                if (!this.recordBatches.isEmpty()) {
+                    queuedRecords = this.recordBatches.remove(0);
+                }
+            }
+
+            if (queuedRecords == null)
+                return null;
+
             // Return the queued records of RecordBase type
-            if(JsonUtils.<T>isListOfRecordBase(this.queue))
-                return handleRecordObjects();
+            if(JsonUtils.<T>isListOfRecordBase(queuedRecords))
+                return handleRecordObjects(queuedRecords);
 
             // Otherwise, return the queued JSON records
-            return handleJsonRecords();
+            return handleJsonRecords(queuedRecords);
         }
 
         // Clear queue without sending
@@ -1525,7 +1547,7 @@ public class BulkInserter<T> implements AutoCloseable {
      * or
      *
      * <pre>
-     *     BulkInserter inserter = new BulkInserter<>(...)
+     *     BulkInserter inserter = new BulkInserter&lt;&gt;(...)
      *     // Invoke some methods on the inserter
      *     //Explicitly call close() method
      *     inserter.close();
@@ -1981,7 +2003,7 @@ public class BulkInserter<T> implements AutoCloseable {
      *
      * @see #setRetryCount(int)
      */
-    @Deprecated
+    @Deprecated(since = "7.1.10", forRemoval = true)
     public int getRetryCount() {
         return this.maxRetries;
     }
@@ -1997,7 +2019,7 @@ public class BulkInserter<T> implements AutoCloseable {
      *
      * @see #getRetryCount()
      */
-    @Deprecated
+    @Deprecated(since = "7.1.10", forRemoval = true)
     public void setRetryCount(int value) {
         if (value < 0) {
             throw new IllegalArgumentException("Retry count must not be negative.");
@@ -2087,11 +2109,23 @@ public class BulkInserter<T> implements AutoCloseable {
      * @throws InsertException if an error occurs while inserting
      */
     private void flush( int retryCount ) throws InsertException {
+        List<WorkerQueue<T>> queues = new ArrayList<>();
         // Flush all queues, regardless of how full they are.  Also, we will
         // retry based on user configuration.  Note the last parameter
         // lets the called method know that the user is forcing this flush;
         // this is important for recursive calls.
-        this.flushQueues( this.workerQueues, retryCount, true );
+        for (WorkerQueue<T> workerQueue : this.workerQueues) {
+
+            // Handle removed ranks
+            if ( workerQueue == null)
+                continue;
+
+            if (workerQueue.queueQueue(false)) {
+                GPUdbLogger.debug_with_info( "Adding non-empty queue for " + workerQueue.getUrl() );
+                queues.add( workerQueue );
+            }
+        }
+        this.flushQueues( queues, retryCount, true );
     }
 
 
@@ -2120,17 +2154,14 @@ public class BulkInserter<T> implements AutoCloseable {
         for (WorkerQueue<T> workerQueue : this.workerQueues) {
 
             // Handle removed ranks
-            if ( workerQueue == null) {
+            if ( workerQueue == null)
                 continue;
-            }
 
             // We will flush only full queues
-            if ( workerQueue.isQueueFull() ) {
-                GPUdbLogger.debug_with_info( "Adding full queue for "
-                                             + workerQueue.getUrl() );
+            if ( workerQueue.queueQueue(true) ) {
+                GPUdbLogger.debug_with_info( "Adding full queue for " + workerQueue.getUrl() );
                 fullQueues.add( workerQueue );
             }
-
         }
 
         GPUdbLogger.debug_with_info( "Before calling flushQueues()" );
@@ -2139,11 +2170,17 @@ public class BulkInserter<T> implements AutoCloseable {
 
 
     /**
-     * Flush only the queues that are already full.
+     * Flush record batches queued for insert on each of the given workers.
+     * There is an assumption that each of the WorkerQueues will have record
+     * batches queued for insert.
      *
      * If any queue encounters a failover scenario, trigger the failover
      * mechanism to re-establish connection with the server.  Then, re-insert
      * all records that we failed to insert.
+     * 
+     * NOTE:  This method is also responsible for switching the connections and
+     * queue configuration back to the primary cluster in the event of a
+     * fail-back scenario.
      *
      * @param queues      the queues that we need to flush
      * @param retryCount  the number of times we have left to retry inserting
@@ -2168,6 +2205,20 @@ public class BulkInserter<T> implements AutoCloseable {
             return;
         }
 
+        // Check if a fail-back has occurred, updating the cluster connections
+        // and config, if so
+        synchronized (this.haFailoverLock) {
+            if (this.currentHeadNodeURL != this.gpudb.getURL()) {
+                try {
+                    updateWorkerQueues(0);
+                }
+                catch (GPUdbException e)
+                {
+                    throw new InsertException(e.getMessage());
+                }
+            }
+        }
+
         // Create an execution completion service that will let each queue
         // work in an independent parallel thread.  We will consume the
         // result of the queues as they complete (in the order of completion).
@@ -2179,8 +2230,8 @@ public class BulkInserter<T> implements AutoCloseable {
         for (WorkerQueue<T> workerQueue : queues) {
 
             // Handle removed ranks
-            if ( (workerQueue == null) || workerQueue.queue.isEmpty() ) {
-                GPUdbLogger.debug_with_info( "Skipping null/empty worker queue" );
+            if (workerQueue == null) {
+                GPUdbLogger.debug_with_info( "Skipping null worker queue" );
                 continue;
             }
 
@@ -2587,7 +2638,7 @@ public class BulkInserter<T> implements AutoCloseable {
         workerQueue.insert(record);
 
         // Flush the queue if it is full
-        if (flushWhenFull && workerQueue.isQueueFull()) {
+        if (flushWhenFull && workerQueue.queueQueue(true)) {
             this.flush(workerQueue);
         }
 

@@ -751,7 +751,7 @@ public class RecordRetriever<T> {
      *            attempts a direct-to-rank lookup for records
      *            matching the given key values
      *   </li>
-     *   <li> keyValues & expression -
+     *   <li> keyValues and expression -
      *            attempts a direct-to-rank lookup for records matching the
      *            given key values, filtering them by the given expression
      *   </li>
@@ -793,7 +793,7 @@ public class RecordRetriever<T> {
      *            attempts a direct-to-rank lookup for records
      *            matching the given key values
      *   </li>
-     *   <li> keyValues & expression -
+     *   <li> keyValues and expression -
      *            attempts a direct-to-rank lookup for records matching the
      *            given key values, filtering them by the given expression
      *   </li>
@@ -1027,7 +1027,7 @@ public class RecordRetriever<T> {
      *            attempts a direct-to-rank lookup for records
      *            matching the given key values
      *   </li>
-     *   <li> keyValues & expression -
+     *   <li> keyValues and expression -
      *            attempts a direct-to-rank lookup for records matching the
      *            given key values, filtering them by the given expression
      *   </li>
@@ -1071,7 +1071,7 @@ public class RecordRetriever<T> {
      *            attempts a direct-to-rank lookup for records
      *            matching the given key values
      *   </li>
-     *   <li> keyValues & expression -
+     *   <li> keyValues and expression -
      *            attempts a direct-to-rank lookup for records matching the
      *            given key values, filtering them by the given expression
      *   </li>

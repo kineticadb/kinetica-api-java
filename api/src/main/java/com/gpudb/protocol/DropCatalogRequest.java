@@ -16,8 +16,7 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#dropCatalog(DropCatalogRequest) GPUdb.dropCatalog}.
  * <p>
- * Drops an existing <a href="../../../../../../concepts/catalog/"
- * target="_top">catalog</a>.  Any external tables that depend on the catalog
+ * Drops an existing catalog.  Any external tables that depend on the catalog
  * must be dropped before it can be dropped.
  */
 public class DropCatalogRequest implements IndexedRecord {

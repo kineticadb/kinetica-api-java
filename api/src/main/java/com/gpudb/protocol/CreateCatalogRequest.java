@@ -16,9 +16,8 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#createCatalog(CreateCatalogRequest) GPUdb.createCatalog}.
  * <p>
- * Creates a <a href="../../../../../../concepts/catalog/"
- * target="_top">catalog</a>, which contains the location and connection
- * information for a deltalake catalog that is external to the database.
+ * Creates a catalog, which contains the location and connection information
+ * for a deltalake catalog that is external to the database.
  */
 public class CreateCatalogRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

@@ -110,7 +110,7 @@ public class UploadIoJob {
      * @param uploadOptions  Options to use during the upload.
      * @param callback  {@link FileUploadListener} that can trigger events at
      *        various stages of the upload process.
-     * @return {@link Pair} of upload job ID & management object
+     * @return {@link Pair} of upload job ID and management object
      *
      * @throws GPUdbException
      */

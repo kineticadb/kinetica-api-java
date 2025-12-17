@@ -24,8 +24,9 @@ import com.gpudb.protocol.ExecuteSqlResponse;
  * 
  * Example usage, passing a database connection and a SQL statement to the
  * {@link GPUdbSqlIterator}:
- * 
- *     try (GPUdbSqlIterator<Record> iterator = new GPUdbSqlIterator<>(gpudb, sql);)
+ *
+ * <pre> 
+ *     try (GPUdbSqlIterator&lt;Record&gt; iterator = new GPUdbSqlIterator&lt;&gt;(gpudb, sql);)
  *     {
  *         for (Record record : iterator)
  *             System.out.println(record);
@@ -34,6 +35,7 @@ import com.gpudb.protocol.ExecuteSqlResponse;
  *     {
  *         System.err.println("Error in iteration: " + e.getMessage());
  *     }
+ * </pre>
  * 
  * Copyright (c) 2023 Kinetica DB Inc.
  */

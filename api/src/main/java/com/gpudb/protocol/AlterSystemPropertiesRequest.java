@@ -240,7 +240,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
 
         /**
          * Size of the worker rank data processing thread pool.  This includes
-         * operations such as inserts, updates, & deletes on table data.
+         * operations such as inserts, updates, and deletes on table data.
          * Multi-head inserts are not affected by this limit. The minimum
          * allowed value is '2'. The maximum allowed value is '8192'.
          */
@@ -595,7 +595,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    TPS_PER_TOM}: Size of the worker rank
      *                                    data processing thread pool.  This
      *                                    includes operations such as inserts,
-     *                                    updates, & deletes on table data.
+     *                                    updates, and deletes on table data.
      *                                    Multi-head inserts are not affected
      *                                    by this limit. The minimum allowed
      *                                    value is '2'. The maximum allowed
@@ -832,7 +832,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         allowed value is '8192'.
      *     <li>{@link PropertyUpdatesMap#TPS_PER_TOM TPS_PER_TOM}: Size of the
      *         worker rank data processing thread pool.  This includes
-     *         operations such as inserts, updates, & deletes on table data.
+     *         operations such as inserts, updates, and deletes on table data.
      *         Multi-head inserts are not affected by this limit. The minimum
      *         allowed value is '2'. The maximum allowed value is '8192'.
      *     <li>{@link PropertyUpdatesMap#BACKGROUND_WORKER_THREADS
@@ -1007,7 +1007,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         allowed value is '8192'.
      *     <li>{@link PropertyUpdatesMap#TPS_PER_TOM TPS_PER_TOM}: Size of the
      *         worker rank data processing thread pool.  This includes
-     *         operations such as inserts, updates, & deletes on table data.
+     *         operations such as inserts, updates, and deletes on table data.
      *         Multi-head inserts are not affected by this limit. The minimum
      *         allowed value is '2'. The maximum allowed value is '8192'.
      *     <li>{@link PropertyUpdatesMap#BACKGROUND_WORKER_THREADS

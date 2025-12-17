@@ -53,11 +53,12 @@ import org.apache.avro.generic.IndexedRecord;
  * Options#ADDITIONAL_COLUMN_NAMES ADDITIONAL_COLUMN_NAMES}.  Values in these
  * columns will be included in the overall aggregate calculation--individual
  * aggregates will not be calculated per additional column.  For instance,
- * requesting the {@link Stats#COUNT COUNT} & {@link Stats#MEAN MEAN} of {@link
- * #getColumnName() columnName} x and {@link Options#ADDITIONAL_COLUMN_NAMES
- * ADDITIONAL_COLUMN_NAMES} y & z, where x holds the numbers 1-10, y holds
- * 11-20, and z holds 21-30, would return the total number of x, y, & z values
- * (30), and the single average value across all x, y, & z values (15.5).
+ * requesting the {@link Stats#COUNT COUNT} and {@link Stats#MEAN MEAN} of
+ * {@link #getColumnName() columnName} x and {@link
+ * Options#ADDITIONAL_COLUMN_NAMES ADDITIONAL_COLUMN_NAMES} y and z, where x
+ * holds the numbers 1-10, y holds 11-20, and z holds 21-30, would return the
+ * total number of x, y, and z values (30), and the single average value across
+ * all x, y, and z values (15.5).
  * <p>
  * The response includes a list of key/value pairs of each statistic requested
  * and its corresponding value.

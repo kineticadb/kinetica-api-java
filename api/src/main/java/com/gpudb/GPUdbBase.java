@@ -198,6 +198,10 @@ public abstract class GPUdbBase {
 
     private static final long DEFAULT_FAILBACK_POLLING_INTERVAL = 5;
 
+    // Safeguard against Snappy not being able to compress data of sufficient size
+    private static final int MAX_SNAPPY_COMPRESSION_SIZE = (Integer.MAX_VALUE - 32) / 2 / 6;
+
+
     /**
      * A set of configurable options for the GPUdb API. May be passed into the
      * {@link GPUdb#GPUdb(String, GPUdbBase.Options) GPUdb constructor} to
@@ -578,6 +582,7 @@ public abstract class GPUdbBase {
          *
          * @see #setClusterReconnectCount(int)
          */
+        @Deprecated(since = "7.1.9", forRemoval = true)
         public static int getClusterReconnectCount() {
             return 0;
         }
@@ -618,6 +623,7 @@ public abstract class GPUdbBase {
          *
          * @see #setIntraClusterFailoverTimeout( long )
          */
+        @Deprecated(since = "7.1.9", forRemoval = true)
         public static long getIntraClusterFailoverTimeout() {
             return 0;
         }
@@ -1120,6 +1126,7 @@ public abstract class GPUdbBase {
          * @param value  the clusterReconnectCount value
          * @return       the current {@link Options} instance
          */
+        @Deprecated(since = "7.1.9", forRemoval = true)
         public Options setClusterReconnectCount(int value) {
             return this;
         }
@@ -1176,6 +1183,7 @@ public abstract class GPUdbBase {
          *
          * @see #getIntraClusterFailoverTimeout()
          */
+        @Deprecated(since = "7.1.9", forRemoval = true)
         public Options setIntraClusterFailoverTimeout(long value) {
             return this;
         }
@@ -2252,6 +2260,7 @@ public abstract class GPUdbBase {
          * @deprecated
          * Constructor for an active cluster
          */
+        @Deprecated(since = "7.1.9", forRemoval = true)
         protected ClusterAddressInfo( URL activeHeadNodeUrl,
                                       List<URL> workerRankUrls,
                                       Set<String> hostNames,
@@ -2272,6 +2281,7 @@ public abstract class GPUdbBase {
          * @deprecated
          * Constructor for intra-cluster failover-enabled systems
          */
+        @Deprecated(since = "7.1.9", forRemoval = true)
         protected ClusterAddressInfo( URL activeHeadNodeUrl,
                         List<URL> workerRankUrls,
                         Set<String> hostNames,
@@ -2352,7 +2362,7 @@ public abstract class GPUdbBase {
             return this.hostManagerUrl;
         }
 
-        @Deprecated
+        @Deprecated(since = "7.2.2", forRemoval = true)
         public boolean getIsPrimaryCluster() {
             return this.isPrimaryCluster;
         }
@@ -2361,6 +2371,7 @@ public abstract class GPUdbBase {
          * @deprecated
          * Get whether intra-cluster failover is enabled
          */
+        @Deprecated(since = "7.1.9", forRemoval = true)
         public static boolean getIsIntraClusterFailoverEnabled() {
             return false;
         }
@@ -2376,6 +2387,7 @@ public abstract class GPUdbBase {
          * @deprecated
          * Get whether intra-cluster failover is enabled
          */
+        @Deprecated(since = "7.1.9", forRemoval = true)
         public static boolean isIntraClusterFailoverEnabled() {
             return false;
         }
@@ -2442,6 +2454,7 @@ public abstract class GPUdbBase {
          * Set whether this cluster has intra-cluster failover enabled.
          * Return this object to be able to chain operations.
          */
+        @Deprecated(since = "7.1.9", forRemoval = true)
         public ClusterAddressInfo setIsIntraClusterFailoverEnabled( boolean value ) {
             return this;
         }
@@ -2580,6 +2593,7 @@ public abstract class GPUdbBase {
     private Pattern       hostnameRegex;
     private boolean       useHttpd = false;
     private boolean       useSnappy;
+    private boolean       didSnappyCompressionSizeWarning;
     private boolean       bypassSslCertCheck;
 
     private String trustStoreFilePath;
@@ -3256,6 +3270,32 @@ public abstract class GPUdbBase {
     }
 
     /**
+     * Determines whether the given number of bytes can be compressed with
+     * Snappy.
+     * 
+     * The assumption is that the caller is intending to Snappy compress data of
+     * this size, so if the size exceeds the limit, a warning will be logged
+     * that data larger than the configured max size for Snappy will be sent to
+     * the server uncompressed.
+     *
+     * @return  whether or not the given number of bytes is below the Snappy
+     *          limit for compression
+     *
+     * @see Options#setUseSnappy(boolean)
+     */
+    private boolean isSnappyCompressible(int requestSize) {
+        if (requestSize <= MAX_SNAPPY_COMPRESSION_SIZE)
+            return true;
+
+        if (!this.didSnappyCompressionSizeWarning) {
+            this.didSnappyCompressionSizeWarning = true;
+            GPUdbLogger.warn("Snappy compression enabled, but data exceeds compressible limit <" + MAX_SNAPPY_COMPRESSION_SIZE + ">.  Any data above the limit will be sent uncompressed.");
+        }
+
+        return false;
+    }
+
+    /**
      * Checks whether Snappy is available on the host system, if requested.
      * 
      * @param requestUseSnappy  whether the user (or default config) has
@@ -3475,7 +3515,8 @@ public abstract class GPUdbBase {
      * @param value  the host manager port number
      * @return       the current {@link GPUdbBase} instance
      */
-    @Deprecated public GPUdbBase setHostManagerPort(int value) throws IllegalArgumentException {
+    @Deprecated(since = "7.1.0", forRemoval = true)
+    public GPUdbBase setHostManagerPort(int value) throws IllegalArgumentException {
         return this;
     }
 
@@ -3839,7 +3880,7 @@ public abstract class GPUdbBase {
      *
      * @param url  the URL to which the connection needs to be made
      * @param connectionTimeout a positive integer representing the number of
-     *                milliseconds to use for connection & read timeouts
+     *                milliseconds to use for connection and read timeouts
      * @return     the initialized HTTP connection object
      */
     protected HttpURLConnection initializeHttpConnection( URL url, int connectionTimeout )
@@ -4391,7 +4432,7 @@ public abstract class GPUdbBase {
 
         String json = submitRequest(endpoint, false);
         TypeReference<HashMap<String,Object>> typeRef
-                = new TypeReference<HashMap<String,Object>>() {};
+                = new TypeReference<>() {};
         Map<String, Object> response = new HashMap<>();
         try {
             response = JSON_MAPPER.readValue(json.getBytes(StandardCharsets.UTF_8), typeRef);
@@ -6584,15 +6625,15 @@ public abstract class GPUdbBase {
             postRequest = initializeHttpPostRequest( url, responseTimeout );
             host = new HttpHost( url.getProtocol(), url.getHost(), url.getPort() );
 
-            if (enableCompression && this.useSnappy) {
+            encodedRequest = Avro.encode(request).array();
+            requestSize = encodedRequest.length;
+            if (enableCompression && this.useSnappy && isSnappyCompressible(requestSize)) {
                 // Use snappy to compress the original request body
-                encodedRequest = Snappy.compress(Avro.encode(request).array());
+                encodedRequest = Snappy.compress(encodedRequest);
                 requestSize = encodedRequest.length;
                 postRequest.addHeader( HEADER_CONTENT_TYPE, "application/x-snappy" );
                 contentType = ContentType.create("application/x-snappy");
             } else {
-                encodedRequest = Avro.encode(request).array();
-                requestSize = encodedRequest.length;
                 postRequest.addHeader( HEADER_CONTENT_TYPE, "application/octet-stream" );
                 contentType = ContentType.APPLICATION_OCTET_STREAM;
             }
@@ -6765,7 +6806,7 @@ public abstract class GPUdbBase {
             // Any network issue should trigger an HA failover
             throw new GPUdbExitException(ex.getMessage());
         } catch (Exception ex) {
-            GPUdbLogger.debug_with_info( "Caught Exception: " + ex.getMessage() );
+            GPUdbLogger.debug_with_info( "Caught " + ex.getClass() + ": " + ex.getMessage() );
             // Some sort of submission error
             throw new SubmitException(url, request, requestSize, ex.getMessage(), ex);
         } catch (UnsatisfiedLinkError ex) {
@@ -6883,7 +6924,7 @@ public abstract class GPUdbBase {
             String json = EntityUtils.toString(responseEntity, StandardCharsets.UTF_8);
 
             TypeReference<HashMap<String,Object>> typeRef
-                    = new TypeReference<HashMap<String,Object>>() {};
+                    = new TypeReference<>() {};
             Map<String, Object> response = JSON_MAPPER.readValue(json.getBytes(StandardCharsets.UTF_8), typeRef);
 
             if (GPUdbLogger.isTraceEnabled())
@@ -7234,7 +7275,7 @@ public abstract class GPUdbBase {
      *
      * @param url  the URL to which the connection needs to be made
      * @param connectionTimeout a positive integer representing the number of
-     *                milliseconds to use for connection & read timeouts
+     *                milliseconds to use for connection and read timeouts
      *
      * @return the ping response, or an empty string if it fails.
      */
@@ -7292,7 +7333,6 @@ public abstract class GPUdbBase {
      *
      * @return true if Kinetica is running, false otherwise.
      */
-    // @Deprecated
     public boolean isKineticaRunning(URL url) {
 
         // Use a super short timeout (0.5 second)

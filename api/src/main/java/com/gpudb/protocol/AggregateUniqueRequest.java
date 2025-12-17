@@ -301,7 +301,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *               server configuration. Use {@link
      *               com.gpudb.protocol.AggregateUniqueResponse#getHasMoreRecords()
      *               hasMoreRecords} to see if more records exist in the result
-     *               to be fetched, and {@code offset} & {@code limit} to
+     *               to be fetched, and {@code offset} and {@code limit} to
      *               request subsequent pages of results. The default value is
      *               -9999.
      * @param options  Optional parameters.
@@ -475,7 +475,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *               server configuration. Use {@link
      *               com.gpudb.protocol.AggregateUniqueResponse#getHasMoreRecords()
      *               hasMoreRecords} to see if more records exist in the result
-     *               to be fetched, and {@code offset} & {@code limit} to
+     *               to be fetched, and {@code offset} and {@code limit} to
      *               request subsequent pages of results. The default value is
      *               -9999.
      * @param encoding  Specifies the encoding for returned records.
@@ -719,8 +719,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * configuration. Use {@link
      * com.gpudb.protocol.AggregateUniqueResponse#getHasMoreRecords()
      * hasMoreRecords} to see if more records exist in the result to be
-     * fetched, and {@link #getOffset() offset} & {@link #getLimit() limit} to
-     * request subsequent pages of results. The default value is -9999.
+     * fetched, and {@link #getOffset() offset} and {@link #getLimit() limit}
+     * to request subsequent pages of results. The default value is -9999.
      *
      * @return The current value of {@code limit}.
      */
@@ -738,8 +738,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * configuration. Use {@link
      * com.gpudb.protocol.AggregateUniqueResponse#getHasMoreRecords()
      * hasMoreRecords} to see if more records exist in the result to be
-     * fetched, and {@link #getOffset() offset} & {@link #getLimit() limit} to
-     * request subsequent pages of results. The default value is -9999.
+     * fetched, and {@link #getOffset() offset} and {@link #getLimit() limit}
+     * to request subsequent pages of results. The default value is -9999.
      *
      * @param limit  The new value for {@code limit}.
      *

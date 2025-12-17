@@ -2,6 +2,21 @@
 
 ## Version 7.2
 
+### Version 7.2.3.7 - 2025-12-17
+
+#### Changed
+-   Upgraded compilation to Java 11.
+-   Reworked `BulkInserter` flush concurrency-handling scheme.
+-   Client fail-back will trigger `BulkInserter` fail-back immediately before
+    next insert.
+
+#### Fixed
+-   Issue with Snappy compression failing with large ingest payloads.
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
 ### Version 7.2.3.6 - 2025-12-08
 
 #### Changed
@@ -21,6 +36,7 @@
 -   Automatic multi-head lookup via `RecordRetriever`; no pre-creation of rank
     `WorkerList` is necessary.
 -   Simplified `BulkInserter` constructors with automatic `WorkerList` creation.
+-   Upgraded Avro library to 1.11.5.
 
 #### Changed
 -   Improved network overhead of `BulkInserter` construction.
