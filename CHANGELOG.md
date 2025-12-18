@@ -2,6 +2,13 @@
 
 ## Version 7.2
 
+### Version 7.2.3.8 - 2025-12-18
+
+#### Changed
+-   Upgraded Avro library to 1.12.1
+-   Swapped Snappy compression limit formula for constant
+
+
 ### Version 7.2.3.7 - 2025-12-17
 
 #### Changed

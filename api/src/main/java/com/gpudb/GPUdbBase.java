@@ -199,7 +199,7 @@ public abstract class GPUdbBase {
     private static final long DEFAULT_FAILBACK_POLLING_INTERVAL = 5;
 
     // Safeguard against Snappy not being able to compress data of sufficient size
-    private static final int MAX_SNAPPY_COMPRESSION_SIZE = (Integer.MAX_VALUE - 32) / 2 / 6;
+    private static final int MAX_SNAPPY_COMPRESSION_SIZE = 1840700241;
 
 
     /**
@@ -280,34 +280,67 @@ public abstract class GPUdbBase {
          * @return options as a String
          */
         public String toString() {
-            final StringBuilder s = new StringBuilder("{");
 
-            s.append("username: ").append(this.username).append(", ");
-            s.append("password: ").append(this.password == null ? "null" : "********").append(", ");
-            s.append("oauthToken: ").append(this.oauthToken == null ? "null" : "********").append(", ");
-            s.append("trustStoreFilePath: ").append(this.trustStoreFilePath).append(", ");
-            s.append("trustStorePassword: ").append(this.trustStorePassword == null ? "null" : "********").append(", ");
-            s.append("bypassSslCertCheck: ").append(this.bypassSslCertCheck).append(", ");
-            s.append("primaryUrl: ").append(this.primaryUrl).append(", ");
-            s.append("hostnameRegex: ").append(this.hostnameRegex).append(", ");
-            s.append("disableFailover: ").append(this.disableFailover).append(", ");
-            s.append("disableAutoDiscovery: ").append(this.disableAutoDiscovery).append(", ");
-            s.append("haFailoverOrder: ").append(this.haFailoverOrder).append(", ");
-            s.append("httpHeaders: ").append(this.httpHeaders).append(", ");
-            s.append("hmPort: ").append(this.hmPort).append(", ");
-            s.append("timeout: ").append(this.timeout).append(", ");
-            s.append("serverConnectionTimeout: ").append(this.serverConnectionTimeout).append(", ");
-            s.append("initialConnectionAttemptTimeout: ").append(this.initialConnectionAttemptTimeout).append(", ");
-            s.append("connectionInactivityValidationTimeout: ").append(this.connectionInactivityValidationTimeout).append(", ");
-            s.append("threadCount: ").append(this.threadCount).append(", ");
-            s.append("maxTotalConnections: ").append(this.maxTotalConnections).append(", ");
-            s.append("maxConnectionsPerHost: ").append(this.maxConnectionsPerHost).append(", ");
-            s.append("useSnappy: ").append(this.useSnappy);
-            s.append("failbackOptions: ").append(this.failbackOptions);
+            return
+            		String.join(
+		            		String.join(
+				                    ", ",
+				                    List.of(
+				                            toStringKeyValue("username",                              this.username,                              false),
+				                            toStringKeyValue("password",                              this.password,                              true),
+				                            toStringKeyValue("oauthToken",                            this.oauthToken,                            true),
+				                            toStringKeyValue("trustStoreFilePath",                    this.trustStoreFilePath,                    false),
+				                            toStringKeyValue("trustStorePassword",                    this.trustStorePassword,                    true),
+				                            toStringKeyValue("bypassSslCertCheck",                    this.bypassSslCertCheck,                    false),
+				                            toStringKeyValue("primaryUrl",                            this.primaryUrl,                            false),
+				                            toStringKeyValue("hostnameRegex",                         this.hostnameRegex,                         false),
+				                            toStringKeyValue("disableFailover",                       this.disableFailover,                       false),
+				                            toStringKeyValue("disableAutoDiscovery",                  this.disableAutoDiscovery,                  false),
+				                            toStringKeyValue("haFailoverOrder",                       this.haFailoverOrder,                       false),
+				                            toStringKeyValue("httpHeaders",                           this.httpHeaders,                           false),
+				                            toStringKeyValue("hmPort",                                this.hmPort,                                false),
+				                            toStringKeyValue("timeout",                               this.timeout,                               false),
+				                            toStringKeyValue("serverConnectionTimeout",               this.serverConnectionTimeout,               false),
+				                            toStringKeyValue("initialConnectionAttemptTimeout",       this.initialConnectionAttemptTimeout,       false),
+				                            toStringKeyValue("connectionInactivityValidationTimeout", this.connectionInactivityValidationTimeout, false),
+				                            toStringKeyValue("threadCount",                           this.threadCount,                           false),
+				                            toStringKeyValue("maxTotalConnections",                   this.maxTotalConnections,                   false),
+				                            toStringKeyValue("maxConnectionsPerHost",                 this.maxConnectionsPerHost,                 false),
+				                            toStringKeyValue("useSnappy",                             this.useSnappy,                             false),
+				                            toStringKeyValue("failbackOptions",                       this.failbackOptions,                       false)
+				                    )
+		                    ),
+				            "{",
+				            "}"
+				    );
+        }
+        
+        /**
+         * Returns an option's key/value pair in a format appropriate for use in
+         * {@link #toString()}
+         * 
+         * @param key  name of the option being converted to string
+         * @param value  value of the option being converted to string
+         * @param doMask  whether or not to mask the given string value
+         * 
+         * @return key/value pair as a String
+         */
+        private static String toStringKeyValue(String key, Object value, boolean doMask) {
 
-            s.append("}");
+        	String stringValue = null;
 
-            return s.toString();
+        	if (value instanceof String) {
+        		stringValue = (String)value;
+        		stringValue = stringValue.isEmpty() ? "\"\"" : doMask ? "<********>" : "\"" + stringValue + "\"";
+        	}
+        	else if (value instanceof Pattern) {
+        		stringValue = "\"" + value.toString() + "\"";
+        	}
+        	else if (value != null) {
+        		stringValue = value.toString();
+        	}
+        	
+        	return String.join(": ", key, stringValue);
         }
 
         /**

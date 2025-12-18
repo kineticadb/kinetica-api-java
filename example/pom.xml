@@ -10,7 +10,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <gpudb-api.version>7.2.3.7</gpudb-api.version>
+        <gpudb-api.version>7.2.3.8</gpudb-api.version>
     </properties>
 
     <dependencies>
