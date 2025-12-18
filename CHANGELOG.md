@@ -2,6 +2,12 @@
 
 ## Version 7.2
 
+### Version 7.2.3.9 - 2025-12-18
+
+#### Changed
+-   Reverted Avro library to 1.11.5
+
+
 ### Version 7.2.3.8 - 2025-12-18
 
 #### Changed
