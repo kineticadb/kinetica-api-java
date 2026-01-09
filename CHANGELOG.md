@@ -2,6 +2,12 @@
 
 ## Version 7.2
 
+### Version 7.2.3.10 - 2026-01-09
+
+#### Changed
+-   Improved glob support for uploading files via `GPUdbFileHandler`.
+
+
 ### Version 7.2.3.9 - 2025-12-18
 
 #### Changed

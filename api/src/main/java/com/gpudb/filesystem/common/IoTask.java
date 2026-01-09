@@ -38,12 +38,9 @@ import java.util.concurrent.Callable;
 public class IoTask implements Callable<Result> {
 
     private final GPUdb db;
-
     private final OpMode opMode;
-
     private final UploadOptions uploadOptions;
 
-    // Not used yet by the endpoint
     @SuppressWarnings("unused")
     private final DownloadOptions downloadOptions;
 
@@ -56,15 +53,7 @@ public class IoTask implements Callable<Result> {
      * Name of the file to upload/download.
      */
     private final String fileName;
-
-    /**
-     *
-     */
     private MultiPartUploadInfo multiPartUploadInfo;
-
-    /**
-     *
-     */
     private MultiPartDownloadInfo multiPartDownloadInfo;
 
     /**
@@ -127,17 +116,20 @@ public class IoTask implements Callable<Result> {
 
 
     /**
-     * This method is called automatically the thread in which the current
-     * instance of this class runs.
+     * Executes this upload/download task by a threaded service.
      * 
      * @return  The {@link Result} of the upload/download operation.
      */
     @Override
     public Result call() {
-
         Result result = null;
 
         try {
+            // FIX: Check for interruption status before starting heavy lifting
+            if (Thread.currentThread().isInterrupted()) {
+                throw new GPUdbException("Task interrupted before execution");
+            }
+
             if (this.opMode == OpMode.UPLOAD) {
                 result = upload();
             }
@@ -145,6 +137,7 @@ public class IoTask implements Callable<Result> {
                 result = download();
             }
         } catch (GPUdbException gpe) {
+            // Log logic remains, but now we respect interruption flow
             GPUdbLogger.error( gpe.getMessage() );
             result = new Result();
             result.setSuccessful(false);
@@ -172,38 +165,22 @@ public class IoTask implements Callable<Result> {
      */
     private Result upload() throws GPUdbException {
         Result result;
-
         switch ( this.multiPartUploadInfo.getPartOperation() ) {
-            // There could be four different multi-part operation values;
-            // 'init', 'complete', 'upload_part' and 'cancel'.
-            // For 'init' and 'complete', data should not be sent and the only
-            // discriminator is the value of the option 'multipart_operation'.
-            // Hence the treatment of these two options are the same and the
-            // code to handle the cases is the same but the values differ.
             case INIT:
             case CANCEL:
             case COMPLETE: {
                 Map<String, String> options = new HashMap<>();
                 options.put( UploadFilesRequest.Options.MULTIPART_OPERATION, this.multiPartUploadInfo.getPartOperation().getValue() );
                 options.put( UploadFilesRequest.Options.MULTIPART_UPLOAD_UUID , this.multiPartUploadInfo.getUuid() );
-
                 result = upload(options);
-
                 break;
             }
-            // Right now, since we are not handling canceling multi-part
-            // downloads, the only default case is 'upload_part'. This case
-            // needs actual data to be sent across for each part of the file
-            // that is uploaded.
             default: {
-                //Part upload with data
                 Map<String, String> options = new HashMap<>();
                 options.put( UploadFilesRequest.Options.MULTIPART_OPERATION , this.multiPartUploadInfo.getPartOperation().getValue());
                 options.put( UploadFilesRequest.Options.MULTIPART_UPLOAD_UUID , this.multiPartUploadInfo.getUuid() );
                 options.put( UploadFilesRequest.Options.MULTIPART_UPLOAD_PART_NUMBER , String.valueOf( this.taskNumber ) );
-
                 result = upload(options);
-
                 break;
             }
         }
@@ -223,10 +200,8 @@ public class IoTask implements Callable<Result> {
      * @see MultiPartUploadInfo
      */
     private Result upload(Map<String, String> options) throws GPUdbException {
-
-    	List<ByteBuffer> data = null;
-
-    	if ( this.dataBytes == null ) {
+        List<ByteBuffer> data = null;
+        if ( this.dataBytes == null ) {
             if ( this.uploadOptions.getTtl() > 0 )
                 options.put( "ttl", String.valueOf( this.uploadOptions.getTtl() ) );
 
@@ -239,16 +214,13 @@ public class IoTask implements Callable<Result> {
             // data is being passed in.
             data = Collections.singletonList( this.dataBytes );
         }
-
         this.db.uploadFiles(Collections.singletonList( this.fileName ), data, options);
-
         Result result = new Result();
         result.setSuccessful(true);
         result.setFileName( this.fileName );
         result.setOpMode( this.opMode );
         result.setUploadInfo( this.multiPartUploadInfo );
         result.setMultiPart(true);
-
         return result;
     }
 
@@ -257,24 +229,18 @@ public class IoTask implements Callable<Result> {
      * request accordingly.
      */
     private Result download() throws GPUdbException {
-
         Result downloadResult = new Result();
-
         DownloadFilesResponse downloadFilesResponse = this.db.downloadFiles(
                 Collections.singletonList( this.fileName ),
                 Collections.singletonList( this.multiPartDownloadInfo.getReadOffset() ),
                 Collections.singletonList( this.multiPartDownloadInfo.getReadLength() ),
                 new HashMap<>() );
-
         this.multiPartDownloadInfo.setData( downloadFilesResponse.getFileData().get( 0 ));
-
         downloadResult.setSuccessful(true);
         downloadResult.setFileName( this.fileName );
         downloadResult.setOpMode( this.opMode );
         downloadResult.setDownloadInfo( this.multiPartDownloadInfo );
         downloadResult.setMultiPart(true);
-
         return downloadResult;
     }
-
 }

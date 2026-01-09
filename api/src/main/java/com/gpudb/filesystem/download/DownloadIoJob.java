@@ -20,8 +20,12 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.*;
 
-/** This class models a an I/O operation of a specific
- * {@link OpMode} i.e., UPLOAD or DOWNLOAD. Different instances of this
+/**
+ * This is an internal class and not meant to be used by the end users of the
+ * {@code filesystem} API. The consequences of using this class directly in
+ * client code is not guaranteed and maybe undesirable.
+
+ * This class models a download {@link OpMode}. Different instances of this
  * class will be created for different operations and no instance of this
  * class will be shared.
  */
@@ -34,24 +38,12 @@ public class DownloadIoJob {
      */
     private final String jobId;
 
-    /**
-     *
-     */
     private final String downloadRemoteFileName;
-
-    /**
-     *
-     */
     private final String downloadLocalFileName;
-
-    /**
-     *
-     */
     private final DownloadOptions downloadOptions;
-
     private final List<Result> resultList;
-
     private final FileDownloadListener callback;
+
     /**
      * Fixed thread pool of size 1
      */
@@ -61,15 +53,17 @@ public class DownloadIoJob {
     private final GPUdbFileHandler.Options fileHandlerOptions;
 
     /**
-     * Constructor
+     * Constructs the member variables and the thread pool to execute
+     * background download jobs.
      *
-     * @param db - The {@link GPUdb} instance
-     * @param fileHandlerOptions
-     * @param remoteFileName - Name of the KIFS file to be downloaded
-     * @param localFileName - Name of the local file with directory
-     * @param kifsFileInfo - A {@link KifsFileInfo} object
-     * @param downloadOptions - A {@link DownloadOptions} object.
-     * @param callback - A {@link FileDownloadListener} implementation
+     * @param db  The {@link GPUdb} instance used to access KiFS.
+     * @param fileHandlerOptions  Options for setting up the files for download.
+     * @param remoteFileName  Name of the KIFS file to be downloaded
+     * @param localFileName  Fully-qualified name of the downloaded local file.
+     * @param kifsFileInfo  a {@link KifsFileInfo} object
+     * @param downloadOptions  options to use during the download.
+     * @param callback  a {@link FileDownloadListener} that can trigger events at
+     *        various stages of the download process.
      * @throws GPUdbException
      */
     private DownloadIoJob(GPUdb db,
@@ -92,7 +86,14 @@ public class DownloadIoJob {
         this.callback = callback;
 
         this.jobId = UUID.randomUUID().toString();
-        this.threadPool = Executors.newSingleThreadExecutor();
+
+        // FIX 3: Use Daemon threads to prevent JVM hangs
+        this.threadPool = Executors.newSingleThreadExecutor(r -> {
+            Thread t = new Thread(r);
+            t.setDaemon(true);
+            t.setName("Download-Worker-" + this.jobId);
+            return t;
+        });
 
         this.resultList = new ArrayList<>();
     }
@@ -106,17 +107,16 @@ public class DownloadIoJob {
     }
 
     /**
-     * Static helper method to create new instance of {@link DownloadIoJob}
+     * Creates a new job for downloading a file.
      *
-     * @param db - The {@link GPUdb} instance
-     * @param fileHandlerOptions
-     * @param remoteFileName - Name of the KIFS file to be downloaded
-     * @param localFileName - Name of the local file with directory
-     * @param kifsFileInfo - A {@link KifsFileInfo} object
-     * @param downloadOptions - A {@link DownloadOptions} object.
-     * @param callback - A {@link FileDownloadListener} implementation
-     *
-     * @return - A {@link Pair} of JobId and {@link DownloadIoJob} object.
+     * @param db  The {@link GPUdb} instance used to access KiFS.
+     * @param fileHandlerOptions  Options for setting up the files for download.
+     * @param remoteFileName  Name of the KIFS file to be downloaded
+     * @param localFileName  Fully-qualified name of the downloaded local file.
+     * @param kifsFileInfo  a {@link KifsFileInfo} object
+     * @param downloadOptions  options to use during the download.
+     * @param callback  a {@link FileDownloadListener} that can trigger events at
+     *        various stages of the download process.
      * @throws GPUdbException
      */
     public static Pair<String, DownloadIoJob> createNewJob(GPUdb db,
@@ -151,32 +151,61 @@ public class DownloadIoJob {
         return CompletableFuture.supplyAsync(task::call, getThreadPool());
     }
 
+    /**
+     * Handles the execution of the given download stage task, notifying any
+     * callback configured for this download.  Properly handles job cancellation
+     * and ensures job terminates early upon error.
+     * 
+     * @param out  the file channel to write the downloaded file to
+     * @param task  download task to execute and report on
+     */
     private void handleDownloadResult(FileChannel out, final IoTask task, String normalizedName) throws GPUdbException {
+        // Capture the future so we can cancel it if interrupted
+        CompletableFuture<Result> future = doDownload(task);
+
         try {
-            Result taskResult = doDownload(task).get();
+            Result taskResult = future.get();
+
+            // FIX 1: Fail Fast - Check if the inner task logic actually succeeded
+            if (!taskResult.isSuccessful()) {
+                String errorMsg = String.format("Could not complete download part #%s for file <%s>",
+                        task.getMultiPartDownloadInfo().getDownloadPartNumber(),
+                        taskResult.getFileName());
+
+                // If there is an exception attached to the result, append it
+                if (taskResult.getException() != null) {
+                    errorMsg += " : " + taskResult.getException().getMessage();
+                }
+
+                GPUdbLogger.error(errorMsg);
+                throw new GPUdbException(errorMsg);
+            }
+
             this.resultList.add( taskResult );
-            
+
             ByteBuffer data = taskResult.getDownloadInfo().getData();
             out.write(data);
-            taskResult.getDownloadInfo().setData(null);
+            taskResult.getDownloadInfo().setData(null); // Release memory
 
             if( this.callback != null )
                 this.callback.onPartDownload(taskResult);
 
         } catch (IOException | InterruptedException | ExecutionException e) {
-            throw new GPUdbException(String.format("Could not complete download part #%s : %s",task.getMultiPartDownloadInfo().getDownloadPartNumber(), e.getMessage()));
+            // FIX 2: If interrupted, cancel the running task to free the thread
+            if (e instanceof InterruptedException) {
+                future.cancel(true); // Interrupt the worker thread
+                Thread.currentThread().interrupt(); // Restore interrupt status
+            }
+
+            throw new GPUdbException(String.format("Could not complete download part #%s : %s",
+                    task.getMultiPartDownloadInfo().getDownloadPartNumber(), e.getMessage()));
         }
     }
 
     /**
-     * This method starts the job to download the multipart file by submitting
-     * different segments of the file according to the value returned by
-     * getFileSizeToSplit() method of GPUdbFileHandler.Options class.
-     * Each segment of the file is submitted as a new {@link IoTask} which is
-     * run in an independent thread
+     * Starts the job to download the multipart file by submitting
+     * different segments of the file for download in an independent thread.
      * @throws GPUdbException
-     *
-     * @see GPUdbFileHandler#getOptions()
      */
     public void start() throws GPUdbException {
 
@@ -193,28 +222,33 @@ public class DownloadIoJob {
         if( Files.notExists( normalizedPath ) || this.downloadOptions.isOverwriteExisting() ) {
 
             try ( FileChannel outChannel = FileChannel.open(normalizedPath, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING) ) {
-    
+
                 while( offset < sourceSize ) {
-    
+
+                    // Check for external interruption during the loop
+                    if (Thread.currentThread().isInterrupted()) {
+                        throw new GPUdbException("Download job interrupted");
+                    }
+
                     MultiPartDownloadInfo downloadInfo = new MultiPartDownloadInfo();
-    
+
                     downloadInfo.setReadOffset( offset );
                     downloadInfo.setReadLength( bytesPerSplit );
                     downloadInfo.setDownloadPartNumber( partNo );
                     downloadInfo.setTotalParts( totalParts );
-    
+
                     IoTask newTask = new IoTask(
                             this.db,
                             this.downloadRemoteFileName,
                             downloadInfo,
                             this.downloadOptions);
-    
+
                     handleDownloadResult(outChannel, newTask, normalizedPath.toString());
-    
+
                     offset += bytesPerSplit;
                     partNo++;
                 }
-    
+
             } catch (IOException e) {
                 GPUdbLogger.error( e.getMessage() );
                 throw new GPUdbException(e.getMessage());
@@ -223,18 +257,12 @@ public class DownloadIoJob {
     }
 
     /**
-     * This method is used to stop all the running {@link IoTask} instances
-     * by shutting down the thread pool running them after they're completed.
-     * Each completed {@link Future} object will return a {@link Result} object
-     * which can be examined to get the exact status of the background job.
-     *
-     * @see Result
-     * @see CompletionService
-     * @see FileDownloader - method terminateJobs().
-     *
-     * @return - List<Result> - A list of Result objects.
+     * This method is used to stop all the running {@link IoTask} instances.
      */
     public List<Result> stop() {
+        // FIX 4: Force immediate shutdown
+        this.threadPool.shutdownNow();
+
         GPUdbFileHandlerUtils.awaitTerminationAfterShutdown( this.threadPool,
                 GPUdbFileHandler.getDefaultThreadPoolTerminationTimeout() );
 

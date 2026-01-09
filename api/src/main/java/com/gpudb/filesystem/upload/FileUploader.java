@@ -82,7 +82,7 @@ public class FileUploader extends FileOperation {
      * be called.
      * 
      * @throws GPUdbException  If an error occurs transferring any batches of
-     *        non-multi-part designated files to the server.
+     *         non-multi-part designated files to the server.
      */
     private void uploadFullFiles() throws GPUdbException {
 
@@ -102,7 +102,7 @@ public class FileUploader extends FileOperation {
         int batches = this.fullFileBatchManager.getNumberOfBatches();
 
         if (batches == 0)
-        	return;
+            return;
 
         // Process the batches in a loop
         for( int n=0; n < batches; n++ ) {
@@ -126,7 +126,8 @@ public class FileUploader extends FileOperation {
                     remoteFileNames.add( batch.get( fileName ) );
 
                 } catch (IOException e) {
-                    throw new GPUdbException("Error reading source files", e);
+                    // Log error and continue to next file instead of aborting the whole batch
+                    GPUdbLogger.error("Error reading source file <" + fileName + ">, skipping: " + e.getMessage());
                 }
             }
 
@@ -199,7 +200,6 @@ public class FileUploader extends FileOperation {
         // For each file in the multi part list create an IoJob instance
         for (int i = 0, multiPartListSize = this.multiPartList.size(); i < multiPartListSize; i++) {
             String fileName = this.multiPartList.get(i);
-
             String remoteFileName = this.multiPartRemoteFileNames.get( i );
 
             Pair<String, UploadIoJob> idJobPair = UploadIoJob.createNewJob(
@@ -210,11 +210,15 @@ public class FileUploader extends FileOperation {
                     this.uploadOptions,
                     this.callback);
 
-            // start the job immediately
-            idJobPair.getValue().start();
-
-            // Wait for it to stop before processing the next file
-            idJobPair.getValue().stop();
+            try {
+                // Try to upload, but catch exception to prevent breaking the loop
+                idJobPair.getValue().start();
+            } catch (GPUdbException e) {
+                GPUdbLogger.error("Failed to upload multi-part file <" + fileName + ">: " + e.getMessage());
+            } finally {
+                // Wait for it to stop (clean up threads) before processing the next file
+                idJobPair.getValue().stop();
+            }
         }
     }
 

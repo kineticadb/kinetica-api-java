@@ -51,6 +51,22 @@ public class CreateCatalogRequest implements IndexedRecord {
      */
     public static final class Options {
         /**
+         * Use access delegation for object store.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#DATASOURCE_CREDENTIALS
+         *         DATASOURCE_CREDENTIALS}
+         *     <li>{@link Options#VENDED_CREDENTIALS VENDED_CREDENTIALS}
+         * </ul>
+         * The default value is {@link Options#DATASOURCE_CREDENTIALS
+         * DATASOURCE_CREDENTIALS}.
+         */
+        public static final String ACCESS_DELEGATION = "access_delegation";
+
+        public static final String DATASOURCE_CREDENTIALS = "datasource_credentials";
+        public static final String VENDED_CREDENTIALS = "vended_credentials";
+
+        /**
          * Bypass validation of connection to remote source.
          * Supported values:
          * <ul>
@@ -105,6 +121,19 @@ public class CreateCatalogRequest implements IndexedRecord {
      *                    string
      * @param options  Optional parameters.
      *                 <ul>
+     *                     <li>{@link Options#ACCESS_DELEGATION
+     *                         ACCESS_DELEGATION}: Use access delegation for
+     *                         object store.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#DATASOURCE_CREDENTIALS
+     *                                 DATASOURCE_CREDENTIALS}
+     *                             <li>{@link Options#VENDED_CREDENTIALS
+     *                                 VENDED_CREDENTIALS}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         Options#DATASOURCE_CREDENTIALS
+     *                         DATASOURCE_CREDENTIALS}.
      *                     <li>{@link Options#SKIP_VALIDATION SKIP_VALIDATION}:
      *                         Bypass validation of connection to remote
      *                         source.
@@ -259,6 +288,16 @@ public class CreateCatalogRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
+     *     <li>{@link Options#ACCESS_DELEGATION ACCESS_DELEGATION}: Use access
+     *         delegation for object store.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#DATASOURCE_CREDENTIALS
+     *                 DATASOURCE_CREDENTIALS}
+     *             <li>{@link Options#VENDED_CREDENTIALS VENDED_CREDENTIALS}
+     *         </ul>
+     *         The default value is {@link Options#DATASOURCE_CREDENTIALS
+     *         DATASOURCE_CREDENTIALS}.
      *     <li>{@link Options#SKIP_VALIDATION SKIP_VALIDATION}: Bypass
      *         validation of connection to remote source.
      *         Supported values:
@@ -279,6 +318,16 @@ public class CreateCatalogRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
+     *     <li>{@link Options#ACCESS_DELEGATION ACCESS_DELEGATION}: Use access
+     *         delegation for object store.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#DATASOURCE_CREDENTIALS
+     *                 DATASOURCE_CREDENTIALS}
+     *             <li>{@link Options#VENDED_CREDENTIALS VENDED_CREDENTIALS}
+     *         </ul>
+     *         The default value is {@link Options#DATASOURCE_CREDENTIALS
+     *         DATASOURCE_CREDENTIALS}.
      *     <li>{@link Options#SKIP_VALIDATION SKIP_VALIDATION}: Bypass
      *         validation of connection to remote source.
      *         Supported values:

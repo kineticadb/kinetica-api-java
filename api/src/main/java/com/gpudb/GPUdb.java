@@ -7801,6 +7801,22 @@ public class GPUdb extends GPUdbBase {
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link
+     *                         com.gpudb.protocol.CreateCatalogRequest.Options#ACCESS_DELEGATION
+     *                         ACCESS_DELEGATION}: Use access delegation for
+     *                         object store.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateCatalogRequest.Options#DATASOURCE_CREDENTIALS
+     *                                 DATASOURCE_CREDENTIALS}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateCatalogRequest.Options#VENDED_CREDENTIALS
+     *                                 VENDED_CREDENTIALS}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.CreateCatalogRequest.Options#DATASOURCE_CREDENTIALS
+     *                         DATASOURCE_CREDENTIALS}.
+     *                     <li>{@link
      *                         com.gpudb.protocol.CreateCatalogRequest.Options#SKIP_VALIDATION
      *                         SKIP_VALIDATION}: Bypass validation of
      *                         connection to remote source.
