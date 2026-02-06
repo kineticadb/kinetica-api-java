@@ -5394,7 +5394,7 @@ public abstract class GPUdbBase {
                     //       logic and may end up getting duplicates of the primary URL
     
                     // Move the primary URL to the front of the list
-                    Collections.swap( this.hostAddresses, 0, primaryIndex );
+                    this.hostAddresses.add(0, this.hostAddresses.remove(primaryIndex));
                 }
             }
             else {

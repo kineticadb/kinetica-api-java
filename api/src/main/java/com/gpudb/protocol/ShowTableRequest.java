@@ -136,6 +136,17 @@ public class ShowTableRequest implements IndexedRecord {
         public static final String GET_SIZES = "get_sizes";
 
         /**
+         * Include view dependents in the output.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String REFERENCING_MATERIALIZED_VIEWS = "referencing_materialized_views";
+
+        /**
          * If {@link Options#TRUE TRUE} then the response will not populate the
          * additional_info field.
          * Supported values:
@@ -277,6 +288,16 @@ public class ShowTableRequest implements IndexedRecord {
      *                         Options#TRUE TRUE} then the number of records in
      *                         each table, along with a cumulative count, will
      *                         be returned; blank, otherwise.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link Options#REFERENCING_MATERIALIZED_VIEWS
+     *                         REFERENCING_MATERIALIZED_VIEWS}: Include view
+     *                         dependents in the output.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
@@ -434,6 +455,15 @@ public class ShowTableRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#REFERENCING_MATERIALIZED_VIEWS
+     *         REFERENCING_MATERIALIZED_VIEWS}: Include view dependents in the
+     *         output.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#SKIP_ADDITIONAL_INFO SKIP_ADDITIONAL_INFO}: If
      *         {@link Options#TRUE TRUE} then the response will not populate
      *         the additional_info field.
@@ -539,6 +569,15 @@ public class ShowTableRequest implements IndexedRecord {
      *     <li>{@link Options#GET_SIZES GET_SIZES}: If {@link Options#TRUE
      *         TRUE} then the number of records in each table, along with a
      *         cumulative count, will be returned; blank, otherwise.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#REFERENCING_MATERIALIZED_VIEWS
+     *         REFERENCING_MATERIALIZED_VIEWS}: Include view dependents in the
+     *         output.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}

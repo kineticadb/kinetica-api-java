@@ -112,6 +112,25 @@ public class CreateTableMonitorRequest implements IndexedRecord {
         public static final String DATASINK_NAME = "datasink_name";
 
         /**
+         * Maximum number of consecutive failed notification attempts before
+         * suspending the stream. A value of -1 (default) disables
+         * auto-suspend. This value is by rank and not overall.
+         */
+        public static final String MAX_CONSECUTIVE_FAILURES = "max_consecutive_failures";
+
+        /**
+         * Name of a <a href="../../../../../../concepts/tables/"
+         * target="_top">table</a> to which failed stream notifications are
+         * written when the stream is suspended. The database will attempt to
+         * send notifications persisted in this table when the stream is
+         * resumed. The table has the following columns: rank (long), job_id
+         * (long), uuid (uuid), timestamp (timestamp), error_msg (string),
+         * payload (bytes). Leave the this option empty to disable persisting
+         * failed notification events.
+         */
+        public static final String FAILED_NOTIFICATIONS_TABLE_NAME = "failed_notifications_table_name";
+
+        /**
          * Destination for the output data in format
          * 'destination_type://path[:port]'. Supported destination types are
          * 'http', 'https' and 'kafka'.
@@ -257,6 +276,25 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *                         href="../../../../../../concepts/data_sinks/"
      *                         target="_top">data sink</a> to send change data
      *                         notifications to
+     *                     <li>{@link Options#MAX_CONSECUTIVE_FAILURES
+     *                         MAX_CONSECUTIVE_FAILURES}: Maximum number of
+     *                         consecutive failed notification attempts before
+     *                         suspending the stream.  A value of -1 (default)
+     *                         disables auto-suspend. This value is by rank and
+     *                         not overall.
+     *                     <li>{@link Options#FAILED_NOTIFICATIONS_TABLE_NAME
+     *                         FAILED_NOTIFICATIONS_TABLE_NAME}: Name of a <a
+     *                         href="../../../../../../concepts/tables/"
+     *                         target="_top">table</a> to which failed stream
+     *                         notifications are written when the stream is
+     *                         suspended.  The database will attempt to send
+     *                         notifications persisted in this table when the
+     *                         stream is resumed.  The table has the following
+     *                         columns: rank (long), job_id (long), uuid
+     *                         (uuid), timestamp (timestamp), error_msg
+     *                         (string), payload (bytes).  Leave the this
+     *                         option empty to disable persisting failed
+     *                         notification events.
      *                     <li>{@link Options#DESTINATION DESTINATION}:
      *                         Destination for the output data in format
      *                         'destination_type://path[:port]'. Supported
@@ -382,6 +420,21 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *     <li>{@link Options#DATASINK_NAME DATASINK_NAME}: Name of an existing
      *         <a href="../../../../../../concepts/data_sinks/"
      *         target="_top">data sink</a> to send change data notifications to
+     *     <li>{@link Options#MAX_CONSECUTIVE_FAILURES
+     *         MAX_CONSECUTIVE_FAILURES}: Maximum number of consecutive failed
+     *         notification attempts before suspending the stream.  A value of
+     *         -1 (default) disables auto-suspend. This value is by rank and
+     *         not overall.
+     *     <li>{@link Options#FAILED_NOTIFICATIONS_TABLE_NAME
+     *         FAILED_NOTIFICATIONS_TABLE_NAME}: Name of a <a
+     *         href="../../../../../../concepts/tables/"
+     *         target="_top">table</a> to which failed stream notifications are
+     *         written when the stream is suspended.  The database will attempt
+     *         to send notifications persisted in this table when the stream is
+     *         resumed.  The table has the following columns: rank (long),
+     *         job_id (long), uuid (uuid), timestamp (timestamp), error_msg
+     *         (string), payload (bytes).  Leave the this option empty to
+     *         disable persisting failed notification events.
      *     <li>{@link Options#DESTINATION DESTINATION}: Destination for the
      *         output data in format 'destination_type://path[:port]'.
      *         Supported destination types are 'http', 'https' and 'kafka'.
@@ -466,6 +519,21 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *     <li>{@link Options#DATASINK_NAME DATASINK_NAME}: Name of an existing
      *         <a href="../../../../../../concepts/data_sinks/"
      *         target="_top">data sink</a> to send change data notifications to
+     *     <li>{@link Options#MAX_CONSECUTIVE_FAILURES
+     *         MAX_CONSECUTIVE_FAILURES}: Maximum number of consecutive failed
+     *         notification attempts before suspending the stream.  A value of
+     *         -1 (default) disables auto-suspend. This value is by rank and
+     *         not overall.
+     *     <li>{@link Options#FAILED_NOTIFICATIONS_TABLE_NAME
+     *         FAILED_NOTIFICATIONS_TABLE_NAME}: Name of a <a
+     *         href="../../../../../../concepts/tables/"
+     *         target="_top">table</a> to which failed stream notifications are
+     *         written when the stream is suspended.  The database will attempt
+     *         to send notifications persisted in this table when the stream is
+     *         resumed.  The table has the following columns: rank (long),
+     *         job_id (long), uuid (uuid), timestamp (timestamp), error_msg
+     *         (string), payload (bytes).  Leave the this option empty to
+     *         disable persisting failed notification events.
      *     <li>{@link Options#DESTINATION DESTINATION}: Destination for the
      *         output data in format 'destination_type://path[:port]'.
      *         Supported destination types are 'http', 'https' and 'kafka'.

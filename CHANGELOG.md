@@ -2,6 +2,13 @@
 
 ## Version 7.2
 
+### Version 7.2.3.11 - 2026-02-05
+
+#### Changed
+-   Better maintained ordering of cluster failover sequence when primary URL is
+    specified in connection parameters
+
+
 ### Version 7.2.3.10 - 2026-01-09
 
 #### Changed
@@ -234,6 +241,7 @@
 -   Support for key lookups returning a subset of a table's columns with fewer
     lookup restrictions via `RecordRetriever.getColumnsByKey()`.
 -   Support for key lookups returning records from a specified offset.
+-   Report authorization error on HTTP 403 response; for deactivated users.
 
 
 ### Version 7.2.2.3 - 2024-10-29

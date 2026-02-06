@@ -36,6 +36,9 @@ public class ShowTableMonitorsResponse implements IndexedRecord {
                 .name("refreshPeriod").type().array().items().stringType().noDefault()
                 .name("refreshStartTime").type().array().items().stringType().noDefault()
                 .name("datasinkNames").type().array().items().stringType().noDefault()
+                .name("maxConsecutiveFailures").type().array().items().intType().noDefault()
+                .name("failedNotificationsTableNames").type().array().items().stringType().noDefault()
+                .name("statuses").type().array().items().stringType().noDefault()
                 .name("additionalInfo").type().array().items().map().values().stringType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
@@ -111,6 +114,9 @@ public class ShowTableMonitorsResponse implements IndexedRecord {
     private List<String> refreshPeriod;
     private List<String> refreshStartTime;
     private List<String> datasinkNames;
+    private List<Integer> maxConsecutiveFailures;
+    private List<String> failedNotificationsTableNames;
+    private List<String> statuses;
     private List<Map<String, String>> additionalInfo;
     private Map<String, String> info;
 
@@ -389,6 +395,75 @@ public class ShowTableMonitorsResponse implements IndexedRecord {
     }
 
     /**
+     * Maximum number of consecutive failures for the respective {@link
+     * #getMonitorIds() monitorIds} before stream is automatically suspended.
+     *
+     * @return The current value of {@code maxConsecutiveFailures}.
+     */
+    public List<Integer> getMaxConsecutiveFailures() {
+        return maxConsecutiveFailures;
+    }
+
+    /**
+     * Maximum number of consecutive failures for the respective {@link
+     * #getMonitorIds() monitorIds} before stream is automatically suspended.
+     *
+     * @param maxConsecutiveFailures  The new value for {@code
+     *                                maxConsecutiveFailures}.
+     *
+     * @return {@code this} to mimic the builder pattern.
+     */
+    public ShowTableMonitorsResponse setMaxConsecutiveFailures(List<Integer> maxConsecutiveFailures) {
+        this.maxConsecutiveFailures = (maxConsecutiveFailures == null) ? new ArrayList<Integer>() : maxConsecutiveFailures;
+        return this;
+    }
+
+    /**
+     * List of table names that will hold failed notification events when the
+     * respective {@link #getMonitorIds() monitorIds} is suspended.
+     *
+     * @return The current value of {@code failedNotificationsTableNames}.
+     */
+    public List<String> getFailedNotificationsTableNames() {
+        return failedNotificationsTableNames;
+    }
+
+    /**
+     * List of table names that will hold failed notification events when the
+     * respective {@link #getMonitorIds() monitorIds} is suspended.
+     *
+     * @param failedNotificationsTableNames  The new value for {@code
+     *                                       failedNotificationsTableNames}.
+     *
+     * @return {@code this} to mimic the builder pattern.
+     */
+    public ShowTableMonitorsResponse setFailedNotificationsTableNames(List<String> failedNotificationsTableNames) {
+        this.failedNotificationsTableNames = (failedNotificationsTableNames == null) ? new ArrayList<String>() : failedNotificationsTableNames;
+        return this;
+    }
+
+    /**
+     * Status of stream for the respective {@link #getMonitorIds() monitorIds}.
+     *
+     * @return The current value of {@code statuses}.
+     */
+    public List<String> getStatuses() {
+        return statuses;
+    }
+
+    /**
+     * Status of stream for the respective {@link #getMonitorIds() monitorIds}.
+     *
+     * @param statuses  The new value for {@code statuses}.
+     *
+     * @return {@code this} to mimic the builder pattern.
+     */
+    public ShowTableMonitorsResponse setStatuses(List<String> statuses) {
+        this.statuses = (statuses == null) ? new ArrayList<String>() : statuses;
+        return this;
+    }
+
+    /**
      * Additional information about the respective monitors in {@link
      * #getMonitorIds() monitorIds}.
      * <ul>
@@ -537,9 +612,18 @@ public class ShowTableMonitorsResponse implements IndexedRecord {
                 return this.datasinkNames;
 
             case 12:
-                return this.additionalInfo;
+                return this.maxConsecutiveFailures;
 
             case 13:
+                return this.failedNotificationsTableNames;
+
+            case 14:
+                return this.statuses;
+
+            case 15:
+                return this.additionalInfo;
+
+            case 16:
                 return this.info;
 
             default:
@@ -609,10 +693,22 @@ public class ShowTableMonitorsResponse implements IndexedRecord {
                 break;
 
             case 12:
-                this.additionalInfo = (List<Map<String, String>>)value;
+                this.maxConsecutiveFailures = (List<Integer>)value;
                 break;
 
             case 13:
+                this.failedNotificationsTableNames = (List<String>)value;
+                break;
+
+            case 14:
+                this.statuses = (List<String>)value;
+                break;
+
+            case 15:
+                this.additionalInfo = (List<Map<String, String>>)value;
+                break;
+
+            case 16:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -645,6 +741,9 @@ public class ShowTableMonitorsResponse implements IndexedRecord {
                  && this.refreshPeriod.equals( that.refreshPeriod )
                  && this.refreshStartTime.equals( that.refreshStartTime )
                  && this.datasinkNames.equals( that.datasinkNames )
+                 && this.maxConsecutiveFailures.equals( that.maxConsecutiveFailures )
+                 && this.failedNotificationsTableNames.equals( that.failedNotificationsTableNames )
+                 && this.statuses.equals( that.statuses )
                  && this.additionalInfo.equals( that.additionalInfo )
                  && this.info.equals( that.info ) );
     }
@@ -702,6 +801,18 @@ public class ShowTableMonitorsResponse implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.datasinkNames ) );
         builder.append( ", " );
+        builder.append( gd.toString( "maxConsecutiveFailures" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.maxConsecutiveFailures ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "failedNotificationsTableNames" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.failedNotificationsTableNames ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "statuses" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.statuses ) );
+        builder.append( ", " );
         builder.append( gd.toString( "additionalInfo" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.additionalInfo ) );
@@ -729,6 +840,9 @@ public class ShowTableMonitorsResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.refreshPeriod.hashCode();
         hashCode = (31 * hashCode) + this.refreshStartTime.hashCode();
         hashCode = (31 * hashCode) + this.datasinkNames.hashCode();
+        hashCode = (31 * hashCode) + this.maxConsecutiveFailures.hashCode();
+        hashCode = (31 * hashCode) + this.failedNotificationsTableNames.hashCode();
+        hashCode = (31 * hashCode) + this.statuses.hashCode();
         hashCode = (31 * hashCode) + this.additionalInfo.hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;

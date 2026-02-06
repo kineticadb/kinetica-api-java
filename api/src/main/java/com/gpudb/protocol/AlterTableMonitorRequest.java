@@ -57,7 +57,48 @@ public class AlterTableMonitorRequest implements IndexedRecord {
          */
         public static final String SCHEMA_NAME = "schema_name";
 
+        /**
+         * Updates the maximum number of consecutive failures before suspending
+         * the stream. A value of '-1' to disables auto-suspend. This value is
+         * by rank and not overall.
+         */
+        public static final String MAX_CONSECUTIVE_FAILURES = "max_consecutive_failures";
+
+        /**
+         * Updates the state of the monitor.
+         * Supported values:
+         * <ul>
+         *     <li>{@link MonitorUpdatesMap#RESUME RESUME}
+         *     <li>{@link MonitorUpdatesMap#SUSPEND SUSPEND}
+         * </ul>
+         * The default value is an empty {@link Map}.
+         */
+        public static final String NOTIFICATIONS = "notifications";
+
+        public static final String RESUME = "resume";
+        public static final String SUSPEND = "suspend";
+
         private MonitorUpdatesMap() {  }
+    }
+
+    /**
+     * A set of string constants for the {@link AlterTableMonitorRequest}
+     * parameter {@link #getOptions() options}.
+     * <p>
+     * Optional parameters.
+     */
+    public static final class Options {
+        /**
+         * [Developer option] Additional information about this update
+         */
+        public static final String REASON = "reason";
+
+        /**
+         * [Developer option] Log level
+         */
+        public static final String LOG_LEVEL = "log_level";
+
+        private Options() {  }
     }
 
     private String topicId;
@@ -92,8 +133,36 @@ public class AlterTableMonitorRequest implements IndexedRecord {
      *                                   MonitorUpdatesMap#SCHEMA_NAME
      *                                   SCHEMA_NAME} is empty, then the user's
      *                                   default schema will be used.
+     *                               <li>{@link
+     *                                   MonitorUpdatesMap#MAX_CONSECUTIVE_FAILURES
+     *                                   MAX_CONSECUTIVE_FAILURES}: Updates the
+     *                                   maximum number of consecutive failures
+     *                                   before suspending the stream.  A value
+     *                                   of '-1' to disables auto-suspend. This
+     *                                   value is by rank and not overall.
+     *                               <li>{@link MonitorUpdatesMap#NOTIFICATIONS
+     *                                   NOTIFICATIONS}: Updates the state of
+     *                                   the monitor.
+     *                                   Supported values:
+     *                                   <ul>
+     *                                       <li>{@link
+     *                                           MonitorUpdatesMap#RESUME
+     *                                           RESUME}
+     *                                       <li>{@link
+     *                                           MonitorUpdatesMap#SUSPEND
+     *                                           SUSPEND}
+     *                                   </ul>
+     *                                   The default value is an empty {@link
+     *                                   Map}.
      *                           </ul>
      * @param options  Optional parameters.
+     *                 <ul>
+     *                     <li>{@link Options#REASON REASON}: [Developer
+     *                         option] Additional information about this update
+     *                     <li>{@link Options#LOG_LEVEL LOG_LEVEL}: [Developer
+     *                         option] Log level
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      */
     public AlterTableMonitorRequest(String topicId, Map<String, String> monitorUpdatesMap, Map<String, String> options) {
         this.topicId = (topicId == null) ? "" : topicId;
@@ -135,6 +204,19 @@ public class AlterTableMonitorRequest implements IndexedRecord {
      *         SCHEMA_NAME} doesn't exist, an error will be thrown. If {@link
      *         MonitorUpdatesMap#SCHEMA_NAME SCHEMA_NAME} is empty, then the
      *         user's default schema will be used.
+     *     <li>{@link MonitorUpdatesMap#MAX_CONSECUTIVE_FAILURES
+     *         MAX_CONSECUTIVE_FAILURES}: Updates the maximum number of
+     *         consecutive failures before suspending the stream.  A value of
+     *         '-1' to disables auto-suspend. This value is by rank and not
+     *         overall.
+     *     <li>{@link MonitorUpdatesMap#NOTIFICATIONS NOTIFICATIONS}: Updates
+     *         the state of the monitor.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link MonitorUpdatesMap#RESUME RESUME}
+     *             <li>{@link MonitorUpdatesMap#SUSPEND SUSPEND}
+     *         </ul>
+     *         The default value is an empty {@link Map}.
      * </ul>
      *
      * @return The current value of {@code monitorUpdatesMap}.
@@ -152,6 +234,19 @@ public class AlterTableMonitorRequest implements IndexedRecord {
      *         SCHEMA_NAME} doesn't exist, an error will be thrown. If {@link
      *         MonitorUpdatesMap#SCHEMA_NAME SCHEMA_NAME} is empty, then the
      *         user's default schema will be used.
+     *     <li>{@link MonitorUpdatesMap#MAX_CONSECUTIVE_FAILURES
+     *         MAX_CONSECUTIVE_FAILURES}: Updates the maximum number of
+     *         consecutive failures before suspending the stream.  A value of
+     *         '-1' to disables auto-suspend. This value is by rank and not
+     *         overall.
+     *     <li>{@link MonitorUpdatesMap#NOTIFICATIONS NOTIFICATIONS}: Updates
+     *         the state of the monitor.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link MonitorUpdatesMap#RESUME RESUME}
+     *             <li>{@link MonitorUpdatesMap#SUSPEND SUSPEND}
+     *         </ul>
+     *         The default value is an empty {@link Map}.
      * </ul>
      *
      * @param monitorUpdatesMap  The new value for {@code monitorUpdatesMap}.
@@ -165,6 +260,13 @@ public class AlterTableMonitorRequest implements IndexedRecord {
 
     /**
      * Optional parameters.
+     * <ul>
+     *     <li>{@link Options#REASON REASON}: [Developer option] Additional
+     *         information about this update
+     *     <li>{@link Options#LOG_LEVEL LOG_LEVEL}: [Developer option] Log
+     *         level
+     * </ul>
+     * The default value is an empty {@link Map}.
      *
      * @return The current value of {@code options}.
      */
@@ -174,6 +276,13 @@ public class AlterTableMonitorRequest implements IndexedRecord {
 
     /**
      * Optional parameters.
+     * <ul>
+     *     <li>{@link Options#REASON REASON}: [Developer option] Additional
+     *         information about this update
+     *     <li>{@link Options#LOG_LEVEL LOG_LEVEL}: [Developer option] Log
+     *         level
+     * </ul>
+     * The default value is an empty {@link Map}.
      *
      * @param options  The new value for {@code options}.
      *

@@ -6534,8 +6534,40 @@ public class GPUdb extends GPUdbBase {
      *                                   com.gpudb.protocol.AlterTableMonitorRequest.MonitorUpdatesMap#SCHEMA_NAME
      *                                   SCHEMA_NAME} is empty, then the user's
      *                                   default schema will be used.
+     *                               <li>{@link
+     *                                   com.gpudb.protocol.AlterTableMonitorRequest.MonitorUpdatesMap#MAX_CONSECUTIVE_FAILURES
+     *                                   MAX_CONSECUTIVE_FAILURES}: Updates the
+     *                                   maximum number of consecutive failures
+     *                                   before suspending the stream.  A value
+     *                                   of '-1' to disables auto-suspend. This
+     *                                   value is by rank and not overall.
+     *                               <li>{@link
+     *                                   com.gpudb.protocol.AlterTableMonitorRequest.MonitorUpdatesMap#NOTIFICATIONS
+     *                                   NOTIFICATIONS}: Updates the state of
+     *                                   the monitor.
+     *                                   Supported values:
+     *                                   <ul>
+     *                                       <li>{@link
+     *                                           com.gpudb.protocol.AlterTableMonitorRequest.MonitorUpdatesMap#RESUME
+     *                                           RESUME}
+     *                                       <li>{@link
+     *                                           com.gpudb.protocol.AlterTableMonitorRequest.MonitorUpdatesMap#SUSPEND
+     *                                           SUSPEND}
+     *                                   </ul>
+     *                                   The default value is an empty {@link
+     *                                   Map}.
      *                           </ul>
      * @param options  Optional parameters.
+     *                 <ul>
+     *                     <li>{@link
+     *                         com.gpudb.protocol.AlterTableMonitorRequest.Options#REASON
+     *                         REASON}: [Developer option] Additional
+     *                         information about this update
+     *                     <li>{@link
+     *                         com.gpudb.protocol.AlterTableMonitorRequest.Options#LOG_LEVEL
+     *                         LOG_LEVEL}: [Developer option] Log level
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      *
      * @return {@link AlterTableMonitorResponse Response} object containing the
      *         results of the operation.
@@ -7584,9 +7616,6 @@ public class GPUdb extends GPUdbBase {
      *                                  target="_top">Tables(s)</a> and <a
      *                                  href="../../../../../sql/ddl/#create-view"
      *                                  target="_top">SQL view(s)</a>.
-     *                              <li>{@link
-     *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#CATALOG
-     *                                  CATALOG}: Catalog
      *                              <li>{@link
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#CREDENTIAL
      *                                  CREDENTIAL}: <a
@@ -11946,6 +11975,27 @@ public class GPUdb extends GPUdbBase {
      *                         href="../../../../../concepts/data_sinks/"
      *                         target="_top">data sink</a> to send change data
      *                         notifications to
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateTableMonitorRequest.Options#MAX_CONSECUTIVE_FAILURES
+     *                         MAX_CONSECUTIVE_FAILURES}: Maximum number of
+     *                         consecutive failed notification attempts before
+     *                         suspending the stream.  A value of -1 (default)
+     *                         disables auto-suspend. This value is by rank and
+     *                         not overall.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateTableMonitorRequest.Options#FAILED_NOTIFICATIONS_TABLE_NAME
+     *                         FAILED_NOTIFICATIONS_TABLE_NAME}: Name of a <a
+     *                         href="../../../../../concepts/tables/"
+     *                         target="_top">table</a> to which failed stream
+     *                         notifications are written when the stream is
+     *                         suspended.  The database will attempt to send
+     *                         notifications persisted in this table when the
+     *                         stream is resumed.  The table has the following
+     *                         columns: rank (long), job_id (long), uuid
+     *                         (uuid), timestamp (timestamp), error_msg
+     *                         (string), payload (bytes).  Leave the this
+     *                         option empty to disable persisting failed
+     *                         notification events.
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateTableMonitorRequest.Options#DESTINATION
      *                         DESTINATION}: Destination for the output data in
@@ -27157,6 +27207,22 @@ public class GPUdb extends GPUdbBase {
      *                         TRUE} then the number of records in each table,
      *                         along with a cumulative count, will be returned;
      *                         blank, otherwise.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.ShowTableRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.ShowTableRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.ShowTableRequest.Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.ShowTableRequest.Options#REFERENCING_MATERIALIZED_VIEWS
+     *                         REFERENCING_MATERIALIZED_VIEWS}: Include view
+     *                         dependents in the output.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
