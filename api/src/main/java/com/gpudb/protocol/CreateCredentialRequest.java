@@ -64,6 +64,7 @@ public class CreateCredentialRequest implements IndexedRecord {
         public static final String KAFKA = "kafka";
         public static final String NVIDIA_API_KEY = "nvidia_api_key";
         public static final String OPENAI_API_KEY = "openai_api_key";
+        public static final String REST = "rest";
 
         private Type() {  }
     }
@@ -113,6 +114,7 @@ public class CreateCredentialRequest implements IndexedRecord {
      *                  <li>{@link Type#KAFKA KAFKA}
      *                  <li>{@link Type#NVIDIA_API_KEY NVIDIA_API_KEY}
      *                  <li>{@link Type#OPENAI_API_KEY OPENAI_API_KEY}
+     *                  <li>{@link Type#REST REST}
      *              </ul>
      * @param identity  User of the credential to be created.
      * @param secret  Password of the credential to be created.
@@ -171,6 +173,7 @@ public class CreateCredentialRequest implements IndexedRecord {
      *     <li>{@link Type#KAFKA KAFKA}
      *     <li>{@link Type#NVIDIA_API_KEY NVIDIA_API_KEY}
      *     <li>{@link Type#OPENAI_API_KEY OPENAI_API_KEY}
+     *     <li>{@link Type#REST REST}
      * </ul>
      *
      * @return The current value of {@code type}.
@@ -198,6 +201,7 @@ public class CreateCredentialRequest implements IndexedRecord {
      *     <li>{@link Type#KAFKA KAFKA}
      *     <li>{@link Type#NVIDIA_API_KEY NVIDIA_API_KEY}
      *     <li>{@link Type#OPENAI_API_KEY OPENAI_API_KEY}
+     *     <li>{@link Type#REST REST}
      * </ul>
      *
      * @param type  The new value for {@code type}.

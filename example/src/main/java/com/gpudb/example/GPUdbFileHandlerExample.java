@@ -12,6 +12,7 @@ import com.gpudb.protocol.ShowFilesResponse;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This examples demonstrates how to use the GPUdbFileHandler class and its
@@ -82,7 +83,7 @@ public class GPUdbFileHandlerExample {
         @Override
         public void onMultiPartUploadComplete( List<Result> resultList ) {
             for ( Result result : resultList ) {
-                GPUdbLogger.info( "Uploaded multipart file part: <" + result.getUploadInfo() + ">" );
+                System.out.println( "Uploaded multipart file part: <" + result.getUploadInfo() + ">" );
             }
         }
 
@@ -105,7 +106,7 @@ public class GPUdbFileHandlerExample {
                     .append( result.getFileName() )
                     .append(">");
 
-            GPUdbLogger.info( builder.toString() );
+            System.out.println( builder.toString() );
         }
 
         /**
@@ -124,8 +125,8 @@ public class GPUdbFileHandlerExample {
 	            if (fileNames == null)
 	            	System.err.println("No filenames in result after upload");
 	            else
-		            for ( String fileName : fileNames )
-		                GPUdbLogger.info( "Uploaded file: <" + fileName + ">" );
+		            for ( String fileName : fileNames.stream().sorted().collect(Collectors.toList()) )
+		                System.out.println( "Uploaded file: <" + fileName + ">" );
         	}
         }
 
@@ -170,22 +171,30 @@ public class GPUdbFileHandlerExample {
      */
     public static void exampleUploadAndDownload(GPUdb db, String uploadDir, String downloadDir, String kifsDir) throws GPUdbException {
 
-        FileUploadObserver observer = new FileUploadObserver();
+    	FileUploadObserver observer = new FileUploadObserver();
 
         GPUdbFileHandler fh = new GPUdbFileHandler( db );
+
+        final boolean kifsDirPreExists = fh.kifsDirectoryExists(kifsDir);
+
+        if (!kifsDirPreExists)
+        	fh.createDirectory(kifsDir, false);
 
         List<String> localFileNames = Collections.singletonList( uploadDir + "/**" );
 
         fh.upload( localFileNames, kifsDir, null, observer );
 
         //Invoke 'showFiles' after upload and list the files uploaded
-        ShowFilesResponse resp = db.showFiles( Collections.singletonList( kifsDir ), new HashMap<String, String>());
+        ShowFilesResponse resp = db.showFiles( Collections.singletonList( kifsDir ), new HashMap<>());
 
-        for ( String fileName: resp.getFileNames() )
-            GPUdbLogger.info( "Found uploaded file for download: <" + fileName + ">" );
+        for ( String fileName: resp.getFileNames().stream().sorted().collect(Collectors.toList()) )
+            System.out.println( "Found uploaded file for download: <" + fileName + ">" );
 
         //Download the same files
         fh.download( resp.getFileNames(), downloadDir, null, null );
+        
+        if (!kifsDirPreExists)
+        	fh.deleteDirectory(kifsDir, true, false);
     }
     
     /**
@@ -223,6 +232,7 @@ public class GPUdbFileHandlerExample {
         GPUdb.Options options = new GPUdb.Options();
         options.setUsername(user);
         options.setPassword(pass);
+        options.setBypassSslCertCheck(true);
         GPUdb gpudb = new GPUdb( url, options );
 
         exampleUploadAndDownload( gpudb, uploadDir, downloadDir, kifsDir );

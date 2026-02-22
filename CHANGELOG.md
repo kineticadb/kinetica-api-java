@@ -2,6 +2,29 @@
 
 ## Version 7.2
 
+### Version 7.2.3.12 - 2026-02-20
+
+#### Added
+-   JSON record `BulkInserter` constructors; these replace the previous scheme
+    for JSON bulk ingest, which would require a table/record type parameter to
+    the existing `Type` based constructors
+
+#### Changed
+-   Reduced timeout for checking connectivity to server-known URLs that don't
+    match user-given ones
+-   Improved ingest performance by pre-determining JSON vs. non-JSON ingest mode
+-   Streamlined initial connection sequence when multi-head is disabled on the
+    server, as is the case with Developer Edition
+-   Streamlined auto-creation of worker lists by `BulkInserter`
+-   Properly applied hostname regular expression to `BulkInserter` worker ranks
+    during fail-over
+-   Default HA fail-over mode is now sequential
+-   Updated examples
+
+#### Fixed
+-   Error reporting in the file handling API
+
+
 ### Version 7.2.3.11 - 2026-02-05
 
 #### Changed

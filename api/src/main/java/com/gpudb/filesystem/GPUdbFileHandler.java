@@ -213,12 +213,16 @@ public class GPUdbFileHandler {
                        UploadOptions uploadOptions,
                        FileUploadListener callback) throws GPUdbException {
 
+        if( !kifsDirectoryExists(remoteDirName)) {
+            throw new GPUdbException("Remote directory does not exist");
+        }
+
         // Validates that explicit files exist.
         // Note: FileOperation.localFileExists now returns TRUE for Glob patterns
         // to allow the FileUploader to handle the resolution.
         final List<String> nonExistentFileNames = new ArrayList<>();
 
-        if( fileNames != null && fileNames.size() > 0 ) {
+        if( fileNames != null && !fileNames.isEmpty()) {
             for (String fileName : fileNames) {
                 if( fileName != null && !fileName.isEmpty() ) {
                     if ( !FileOperation.localFileExists( fileName ) ) {
@@ -232,7 +236,7 @@ public class GPUdbFileHandler {
             throw new GPUdbException( "List of local files to upload cannot be null or empty" );
         }
 
-        if( nonExistentFileNames.size() > 0 ) {
+        if(!nonExistentFileNames.isEmpty()) {
             throw new GPUdbException( String.format( "Input files [%s] not found (patterns must match valid Glob syntax)", nonExistentFileNames ) );
         }
 
@@ -282,7 +286,11 @@ public class GPUdbFileHandler {
                          DownloadOptions downloadOptions,
                          FileDownloadListener callback) throws GPUdbException {
 
-        if( fileNames!= null && fileNames.size() > 0 ) {
+        if( localDirName == null || localDirName.isEmpty() ) {
+            throw new GPUdbException("Local directory name is null or empty");
+        }
+
+        if( fileNames!= null && !fileNames.isEmpty()) {
             for ( String fileName: fileNames ) {
                 if( fileName == null || fileName.isEmpty() ) {
                     throw new GPUdbException( "KiFS file name cannot be null or empty" );

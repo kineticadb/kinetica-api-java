@@ -59,7 +59,7 @@ public class RestoreBackupRequest implements IndexedRecord {
 
         /**
          * <a href="../../../../../../concepts/tables/"
-         * target="_top">Tables(s)</a> and <a
+         * target="_top">Table(s)</a> and <a
          * href="../../../../../../sql/ddl/#create-view" target="_top">SQL
          * view(s)</a>.
          */
@@ -295,7 +295,7 @@ public class RestoreBackupRequest implements IndexedRecord {
      *                               <li>{@link RestoreObjectsMap#TABLE TABLE}:
      *                                   <a
      *                                   href="../../../../../../concepts/tables/"
-     *                                   target="_top">Tables(s)</a> and <a
+     *                                   target="_top">Table(s)</a> and <a
      *                                   href="../../../../../../sql/ddl/#create-view"
      *                                   target="_top">SQL view(s)</a>.
      *                               <li>{@link RestoreObjectsMap#CREDENTIAL
@@ -489,7 +489,7 @@ public class RestoreBackupRequest implements IndexedRecord {
      *         target="_top">schemas(s)</a>.
      *     <li>{@link RestoreObjectsMap#TABLE TABLE}: <a
      *         href="../../../../../../concepts/tables/"
-     *         target="_top">Tables(s)</a> and <a
+     *         target="_top">Table(s)</a> and <a
      *         href="../../../../../../sql/ddl/#create-view" target="_top">SQL
      *         view(s)</a>.
      *     <li>{@link RestoreObjectsMap#CREDENTIAL CREDENTIAL}: <a
@@ -547,7 +547,7 @@ public class RestoreBackupRequest implements IndexedRecord {
      *         target="_top">schemas(s)</a>.
      *     <li>{@link RestoreObjectsMap#TABLE TABLE}: <a
      *         href="../../../../../../concepts/tables/"
-     *         target="_top">Tables(s)</a> and <a
+     *         target="_top">Table(s)</a> and <a
      *         href="../../../../../../sql/ddl/#create-view" target="_top">SQL
      *         view(s)</a>.
      *     <li>{@link RestoreObjectsMap#CREDENTIAL CREDENTIAL}: <a

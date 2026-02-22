@@ -296,6 +296,40 @@ public class FileOperation {
 
         // Determine if we need to match against the Full Path or just the Name
         boolean matchFullPath = pattern.contains(File.separator) || pattern.contains("/");
+        String globPattern = getGlobPattern(pattern, matchFullPath, startPath);
+
+        @SuppressWarnings("resource")
+		final PathMatcher matcher = FileSystems.getDefault().getPathMatcher(globPattern);
+
+        // Max depth depends on recursive flag or if pattern contains **
+        int maxDepth = (this.recursive || pattern.contains("**")) ? Integer.MAX_VALUE : 1;
+
+        try (java.util.stream.Stream<Path> stream = Files.walk(startPath, maxDepth)) {
+            stream.filter(path -> !Files.isDirectory(path)) // Files only
+                .filter(path -> {
+                    // CRITICAL : Match against full path or filename depending on pattern type
+                    if (matchFullPath) {
+                        return matcher.matches(path.normalize().toAbsolutePath());
+                    }
+                    return matcher.matches(path.getFileName());
+                })
+                .forEach(path -> {
+                    localPaths.add(path.toString());
+
+                    // Calculate Remote Path: TargetDir + (File Relative to Start)
+                    Path relativePath = startPath.relativize(path);
+
+                    String remoteRelative = relativePath.toString().replace(File.separator, GPUdbFileHandler.KIFS_PATH_SEPARATOR);
+                    String remoteFull = ( this.dirName  != null && !this.dirName.isEmpty() ) ? this.dirName + GPUdbFileHandler.KIFS_PATH_SEPARATOR + remoteRelative : remoteRelative;
+
+                    remotePaths.add(remoteFull);
+                });
+        }
+
+        return Pair.of(localPaths, remotePaths);
+    }
+
+    private static String getGlobPattern(String pattern, boolean matchFullPath, Path startPath) {
         String globPattern;
 
         if (matchFullPath) {
@@ -311,36 +345,7 @@ public class FileOperation {
             // Simple pattern (e.g. *.csv) - match against filename only
             globPattern = "glob:" + pattern;
         }
-
-        @SuppressWarnings("resource")
-		final PathMatcher matcher = FileSystems.getDefault().getPathMatcher(globPattern);
-
-        // Max depth depends on recursive flag or if pattern contains **
-        int maxDepth = (this.recursive || pattern.contains("**")) ? Integer.MAX_VALUE : 1;
-
-        try (java.util.stream.Stream<Path> stream = Files.walk(startPath, maxDepth)) {
-            stream.filter(path -> !Files.isDirectory(path)) // Files only
-                    .filter(path -> {
-                        // CRITICAL FIX: Match against full path or filename depending on pattern type
-                        if (matchFullPath) {
-                            return matcher.matches(path.normalize().toAbsolutePath());
-                        }
-                        return matcher.matches(path.getFileName());
-                    })
-                    .forEach(path -> {
-                        localPaths.add(path.toString());
-
-                        // Calculate Remote Path: TargetDir + (File Relative to Start)
-                        Path relativePath = startPath.relativize(path);
-
-                        String remoteRelative = relativePath.toString().replace(File.separator, GPUdbFileHandler.KIFS_PATH_SEPARATOR);
-                        String remoteFull = this.dirName + GPUdbFileHandler.KIFS_PATH_SEPARATOR + remoteRelative;
-
-                        remotePaths.add(remoteFull);
-                    });
-        }
-
-        return Pair.of(localPaths, remotePaths);
+        return globPattern;
     }
 
     /**

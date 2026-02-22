@@ -356,6 +356,7 @@ public class CreateBackupRequest implements IndexedRecord {
      *                                  The default value is {@link
      *                                  BackupObjectsMap#FALSE FALSE}.
      *                          </ul>
+     *                          The default value is an empty {@link Map}.
      * @param datasinkName  Data sink through which the backup will be stored.
      * @param options  Optional parameters.
      *                 <ul>
@@ -550,6 +551,7 @@ public class CreateBackupRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link BackupObjectsMap#FALSE FALSE}.
      * </ul>
+     * The default value is an empty {@link Map}.
      *
      * @return The current value of {@code backupObjectsMap}.
      */
@@ -610,6 +612,7 @@ public class CreateBackupRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link BackupObjectsMap#FALSE FALSE}.
      * </ul>
+     * The default value is an empty {@link Map}.
      *
      * @param backupObjectsMap  The new value for {@code backupObjectsMap}.
      *

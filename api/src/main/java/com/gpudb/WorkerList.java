@@ -3,6 +3,7 @@ package com.gpudb;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -14,6 +15,7 @@ public class WorkerList extends ArrayList<URL> {
 
     private boolean isMultiHeadEnabled;
     private Pattern ipRegex;
+    private boolean isQueriedUrlList = false;
 
     /**
      * Creates an empty {@link WorkerList} that can be populated manually
@@ -23,6 +25,13 @@ public class WorkerList extends ArrayList<URL> {
      * data types.
      */
     public WorkerList() {
+    }
+
+    /**
+     * Creates a {@link WorkerList} populated with the given URLs.
+     */
+    public WorkerList(List<URL> urls) {
+        super(urls);
     }
 
     /**
@@ -69,6 +78,7 @@ public class WorkerList extends ArrayList<URL> {
      */
     public WorkerList(GPUdb gpudb, Pattern ipRegex) throws GPUdbException {
 
+        this.isQueriedUrlList = true;
         this.ipRegex = ipRegex;
 
         // Check if multi-head I/O is disabled on the connection
@@ -224,8 +234,10 @@ public class WorkerList extends ArrayList<URL> {
 
 
     /**
-     * @return  the IP regular expression used to create this worker list.
-     *
+     * Gets the regular expression used to filter this worker list, if one were
+     * specified during creation.
+     * 
+     * @return  the regular expression used to create this worker list.
      */
     public Pattern getIpRegex() {
         return this.ipRegex;
@@ -233,10 +245,24 @@ public class WorkerList extends ArrayList<URL> {
 
 
     /**
-     * return  a boolean indicating whether multi-head I/O is enabled at the
-     * server.
+     * Checks whether multi-head I/O is enabled in the server configuration.
+     * 
+     * @return  a boolean indicating whether multi-head I/O is enabled on the
+     *          server.
      */
     public boolean isMultiHeadEnabled() {
         return this.isMultiHeadEnabled;
+    }
+
+
+    /**
+     * Checks whether this worker list was created by querying the given server
+     * for the URLs, or instead, whether they were given explicitly.
+     * 
+     * @return  a boolean indicating whether this worker list was created via a
+     *          server query.
+     */
+    public boolean isQueriedUrlList() {
+        return this.isQueriedUrlList;
     }
 }

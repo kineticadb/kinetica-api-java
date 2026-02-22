@@ -13,18 +13,24 @@ import java.util.List;
 
 public class JsonUtils {
 
+    @SuppressWarnings("unused")
     public static boolean isValidJson(String jsonStr) {
         try {
-            JSONObject json = new JSONObject(jsonStr);
+            new JSONObject(jsonStr);
             return true;
         } catch( JSONException je ) {
             return false;
         }
     }
 
+    public static boolean isValidJson( List<String> list) {
+        return list.stream().allMatch(JsonUtils::isValidJson);
+    }
+
+    @SuppressWarnings("unused")
     public static boolean isValidJsonArray(String jsonStr) {
         try {
-            JSONArray json = new JSONArray(jsonStr);
+            new JSONArray(jsonStr);
             return true;
         } catch( JSONException je ) {
             return false;
@@ -32,22 +38,23 @@ public class JsonUtils {
     }
 
     public static <T> boolean isListOfStrings( List<T> list) {
-    	return
-    			list == null ||
-    			list.isEmpty() ||
-    			list.get(0) instanceof String;
+        return
+                list == null ||
+                list.isEmpty() ||
+                list.get(0) instanceof String;
     }
 
+    @Deprecated(since = "7.2.3", forRemoval = true)
     public static boolean isListOfValidJsonStrings( List<String> list) {
         return list.stream().allMatch(JsonUtils::isValidJson);
     }
 
     public static <T> boolean isListOfRecordBase( List<T> list) {
 
-    	return
-    			list == null ||
-    			list.isEmpty() ||
-    			list.get(0) instanceof RecordBase;
+        return
+                list == null ||
+                list.isEmpty() ||
+                list.get(0) instanceof RecordBase;
     }
 
     /**

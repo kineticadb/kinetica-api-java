@@ -131,7 +131,7 @@ public class FileUploader extends FileOperation {
                 }
             }
 
-            if( payloads.size() > 0 ) {
+            if(!payloads.isEmpty()) {
                 //Handle upload options here first
                 Map<String, String> options = new HashMap<>();
 
@@ -155,8 +155,8 @@ public class FileUploader extends FileOperation {
             } // End of processing files in each partition
 
             count++;
-            // Check if the value of count is has reached the size of the
-            // thread pool and if it has reached get the Results of the
+            // Check if the value of count has reached the size of the
+            // thread pool and if it has, get the Results of the
             // operations and reset the payloads list and count.
             if( count % this.fileHandlerOptions.getFullFileDispatcherThreadpoolSize() == 0 ) {
                 // Wait for the tasks to complete
@@ -180,10 +180,10 @@ public class FileUploader extends FileOperation {
     /**
      * This method uploads files which are candidates for multi-part uploads as
      * determined from their size.
-     * 
+     * <p>
      * This method first checks whether the KIFS directory exists or not and
      * creates it if it doesn't.
-     * 
+     * <p>
      * Then it creates a list of {@link UploadIoJob} instances, one for each
      * file, to be uploaded in parts.
      * 
@@ -196,6 +196,8 @@ public class FileUploader extends FileOperation {
      *        to the server.
      */
     private void uploadMultiPartFiles() throws GPUdbException {
+
+        Map<String, String> errors = new LinkedHashMap<>();
 
         // For each file in the multi part list create an IoJob instance
         for (int i = 0, multiPartListSize = this.multiPartList.size(); i < multiPartListSize; i++) {
@@ -214,11 +216,18 @@ public class FileUploader extends FileOperation {
                 // Try to upload, but catch exception to prevent breaking the loop
                 idJobPair.getValue().start();
             } catch (GPUdbException e) {
-                GPUdbLogger.error("Failed to upload multi-part file <" + fileName + ">: " + e.getMessage());
+                String errorMessage = String.format("Failed to upload multi-part file <%s>: %s", fileName, e.getMessage());
+                GPUdbLogger.error(errorMessage);
+                errors.put(fileName, errorMessage);
             } finally {
                 // Wait for it to stop (clean up threads) before processing the next file
                 idJobPair.getValue().stop();
             }
+        }
+
+        if( !errors.isEmpty() ) {
+            String errorMessages = String.join("\n", errors.values());
+            throw new GPUdbException(errorMessages);
         }
     }
 

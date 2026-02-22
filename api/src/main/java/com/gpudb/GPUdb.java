@@ -6134,7 +6134,7 @@ public class GPUdb extends GPUdbBase {
      *                        CANCEL_DATASOURCE_SUBSCRIPTION}: Permanently
      *                        unsubscribe a data source that is loading
      *                        continuously as a stream. The data source can be
-     *                        Kafka / S3 / Azure.
+     *                        Kafka / S3 / Azure / GCS.
      *                    <li>{@link
      *                        com.gpudb.protocol.AlterTableRequest.Action#DROP_DATASOURCE_SUBSCRIPTION
      *                        DROP_DATASOURCE_SUBSCRIPTION}: Permanently delete
@@ -6144,12 +6144,12 @@ public class GPUdb extends GPUdbBase {
      *                        PAUSE_DATASOURCE_SUBSCRIPTION}: Temporarily
      *                        unsubscribe a data source that is loading
      *                        continuously as a stream. The data source can be
-     *                        Kafka / S3 / Azure.
+     *                        Kafka / S3 / Azure / GCS.
      *                    <li>{@link
      *                        com.gpudb.protocol.AlterTableRequest.Action#RESUME_DATASOURCE_SUBSCRIPTION
      *                        RESUME_DATASOURCE_SUBSCRIPTION}: Resubscribe to a
      *                        paused data source subscription. The data source
-     *                        can be Kafka / S3 / Azure.
+     *                        can be Kafka / S3 / Azure / GCS.
      *                    <li>{@link
      *                        com.gpudb.protocol.AlterTableRequest.Action#CHANGE_OWNER
      *                        CHANGE_OWNER}: Change the owner resource group of
@@ -7681,6 +7681,7 @@ public class GPUdb extends GPUdbBase {
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#FALSE
      *                                  FALSE}.
      *                          </ul>
+     *                          The default value is an empty {@link Map}.
      * @param datasinkName  Data sink through which the backup will be stored.
      * @param options  Optional parameters.
      *                 <ul>
@@ -7963,6 +7964,9 @@ public class GPUdb extends GPUdbBase {
      *                  <li>{@link
      *                      com.gpudb.protocol.CreateCredentialRequest.Type#OPENAI_API_KEY
      *                      OPENAI_API_KEY}
+     *                  <li>{@link
+     *                      com.gpudb.protocol.CreateCredentialRequest.Type#REST
+     *                      REST}
      *              </ul>
      * @param identity  User of the credential to be created.
      * @param secret  Password of the credential to be created.
@@ -24983,7 +24987,7 @@ public class GPUdb extends GPUdbBase {
      *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#TABLE
      *                                   TABLE}: <a
      *                                   href="../../../../../concepts/tables/"
-     *                                   target="_top">Tables(s)</a> and <a
+     *                                   target="_top">Table(s)</a> and <a
      *                                   href="../../../../../sql/ddl/#create-view"
      *                                   target="_top">SQL view(s)</a>.
      *                               <li>{@link

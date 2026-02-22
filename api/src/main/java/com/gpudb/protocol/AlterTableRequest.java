@@ -356,7 +356,7 @@ public class AlterTableRequest implements IndexedRecord {
 
         /**
          * Permanently unsubscribe a data source that is loading continuously
-         * as a stream. The data source can be Kafka / S3 / Azure.
+         * as a stream. The data source can be Kafka / S3 / Azure / GCS.
          */
         public static final String CANCEL_DATASOURCE_SUBSCRIPTION = "cancel_datasource_subscription";
 
@@ -367,13 +367,13 @@ public class AlterTableRequest implements IndexedRecord {
 
         /**
          * Temporarily unsubscribe a data source that is loading continuously
-         * as a stream. The data source can be Kafka / S3 / Azure.
+         * as a stream. The data source can be Kafka / S3 / Azure / GCS.
          */
         public static final String PAUSE_DATASOURCE_SUBSCRIPTION = "pause_datasource_subscription";
 
         /**
          * Resubscribe to a paused data source subscription. The data source
-         * can be Kafka / S3 / Azure.
+         * can be Kafka / S3 / Azure / GCS.
          */
         public static final String RESUME_DATASOURCE_SUBSCRIPTION = "resume_datasource_subscription";
 
@@ -843,7 +843,7 @@ public class AlterTableRequest implements IndexedRecord {
      *                        CANCEL_DATASOURCE_SUBSCRIPTION}: Permanently
      *                        unsubscribe a data source that is loading
      *                        continuously as a stream. The data source can be
-     *                        Kafka / S3 / Azure.
+     *                        Kafka / S3 / Azure / GCS.
      *                    <li>{@link Action#DROP_DATASOURCE_SUBSCRIPTION
      *                        DROP_DATASOURCE_SUBSCRIPTION}: Permanently delete
      *                        a cancelled data source subscription.
@@ -851,11 +851,11 @@ public class AlterTableRequest implements IndexedRecord {
      *                        PAUSE_DATASOURCE_SUBSCRIPTION}: Temporarily
      *                        unsubscribe a data source that is loading
      *                        continuously as a stream. The data source can be
-     *                        Kafka / S3 / Azure.
+     *                        Kafka / S3 / Azure / GCS.
      *                    <li>{@link Action#RESUME_DATASOURCE_SUBSCRIPTION
      *                        RESUME_DATASOURCE_SUBSCRIPTION}: Resubscribe to a
      *                        paused data source subscription. The data source
-     *                        can be Kafka / S3 / Azure.
+     *                        can be Kafka / S3 / Azure / GCS.
      *                    <li>{@link Action#CHANGE_OWNER CHANGE_OWNER}: Change
      *                        the owner resource group of the table.
      *                    <li>{@link Action#SET_LOAD_VECTORS_POLICY
@@ -1236,17 +1236,18 @@ public class AlterTableRequest implements IndexedRecord {
      *     <li>{@link Action#CANCEL_DATASOURCE_SUBSCRIPTION
      *         CANCEL_DATASOURCE_SUBSCRIPTION}: Permanently unsubscribe a data
      *         source that is loading continuously as a stream. The data source
-     *         can be Kafka / S3 / Azure.
+     *         can be Kafka / S3 / Azure / GCS.
      *     <li>{@link Action#DROP_DATASOURCE_SUBSCRIPTION
      *         DROP_DATASOURCE_SUBSCRIPTION}: Permanently delete a cancelled
      *         data source subscription.
      *     <li>{@link Action#PAUSE_DATASOURCE_SUBSCRIPTION
      *         PAUSE_DATASOURCE_SUBSCRIPTION}: Temporarily unsubscribe a data
      *         source that is loading continuously as a stream. The data source
-     *         can be Kafka / S3 / Azure.
+     *         can be Kafka / S3 / Azure / GCS.
      *     <li>{@link Action#RESUME_DATASOURCE_SUBSCRIPTION
      *         RESUME_DATASOURCE_SUBSCRIPTION}: Resubscribe to a paused data
-     *         source subscription. The data source can be Kafka / S3 / Azure.
+     *         source subscription. The data source can be Kafka / S3 / Azure /
+     *         GCS.
      *     <li>{@link Action#CHANGE_OWNER CHANGE_OWNER}: Change the owner
      *         resource group of the table.
      *     <li>{@link Action#SET_LOAD_VECTORS_POLICY SET_LOAD_VECTORS_POLICY}:
@@ -1463,17 +1464,18 @@ public class AlterTableRequest implements IndexedRecord {
      *     <li>{@link Action#CANCEL_DATASOURCE_SUBSCRIPTION
      *         CANCEL_DATASOURCE_SUBSCRIPTION}: Permanently unsubscribe a data
      *         source that is loading continuously as a stream. The data source
-     *         can be Kafka / S3 / Azure.
+     *         can be Kafka / S3 / Azure / GCS.
      *     <li>{@link Action#DROP_DATASOURCE_SUBSCRIPTION
      *         DROP_DATASOURCE_SUBSCRIPTION}: Permanently delete a cancelled
      *         data source subscription.
      *     <li>{@link Action#PAUSE_DATASOURCE_SUBSCRIPTION
      *         PAUSE_DATASOURCE_SUBSCRIPTION}: Temporarily unsubscribe a data
      *         source that is loading continuously as a stream. The data source
-     *         can be Kafka / S3 / Azure.
+     *         can be Kafka / S3 / Azure / GCS.
      *     <li>{@link Action#RESUME_DATASOURCE_SUBSCRIPTION
      *         RESUME_DATASOURCE_SUBSCRIPTION}: Resubscribe to a paused data
-     *         source subscription. The data source can be Kafka / S3 / Azure.
+     *         source subscription. The data source can be Kafka / S3 / Azure /
+     *         GCS.
      *     <li>{@link Action#CHANGE_OWNER CHANGE_OWNER}: Change the owner
      *         resource group of the table.
      *     <li>{@link Action#SET_LOAD_VECTORS_POLICY SET_LOAD_VECTORS_POLICY}:
