@@ -150,20 +150,16 @@ public class CreateBackupRequest implements IndexedRecord {
         public static final String ROLE = "role";
 
         /**
-         * If {@link BackupObjectsMap#TRUE TRUE}, backup the database <a
-         * href="../../../../../../config/" target="_top">configuration
-         * file</a>.
-         * Supported values:
-         * <ul>
-         *     <li>{@link BackupObjectsMap#TRUE TRUE}
-         *     <li>{@link BackupObjectsMap#FALSE FALSE}
-         * </ul>
-         * The default value is {@link BackupObjectsMap#FALSE FALSE}.
+         * <a href="../../../../../../rm/concepts/#resource-groups"
+         * target="_top">Resource group(s)</a>.
          */
-        public static final String CONFIGURATION = "configuration";
+        public static final String RESOURCE_GROUP = "resource_group";
 
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
+        /**
+         * UDF Procedure(s)<a href="../../../../../../udf_overview"
+         * target="_top">None</a>.
+         */
+        public static final String USER_DEFINED_FUNCTION = "user_defined_function";
 
         private BackupObjectsMap() {  }
     }
@@ -340,21 +336,16 @@ public class CreateBackupRequest implements IndexedRecord {
      *                                  target="_top">Role(s)</a>, role members
      *                                  (roles or users, recursively), and
      *                                  associated permissions.
-     *                              <li>{@link BackupObjectsMap#CONFIGURATION
-     *                                  CONFIGURATION}: If {@link
-     *                                  BackupObjectsMap#TRUE TRUE}, backup the
-     *                                  database <a
-     *                                  href="../../../../../../config/"
-     *                                  target="_top">configuration file</a>.
-     *                                  Supported values:
-     *                                  <ul>
-     *                                      <li>{@link BackupObjectsMap#TRUE
-     *                                          TRUE}
-     *                                      <li>{@link BackupObjectsMap#FALSE
-     *                                          FALSE}
-     *                                  </ul>
-     *                                  The default value is {@link
-     *                                  BackupObjectsMap#FALSE FALSE}.
+     *                              <li>{@link BackupObjectsMap#RESOURCE_GROUP
+     *                                  RESOURCE_GROUP}: <a
+     *                                  href="../../../../../../rm/concepts/#resource-groups"
+     *                                  target="_top">Resource group(s)</a>.
+     *                              <li>{@link
+     *                                  BackupObjectsMap#USER_DEFINED_FUNCTION
+     *                                  USER_DEFINED_FUNCTION}: UDF
+     *                                  Procedure(s)<a
+     *                                  href="../../../../../../udf_overview"
+     *                                  target="_top">None</a>.
      *                          </ul>
      *                          The default value is an empty {@link Map}.
      * @param datasinkName  Data sink through which the backup will be stored.
@@ -540,16 +531,12 @@ public class CreateBackupRequest implements IndexedRecord {
      *         href="../../../../../../security/sec_concepts/#roles"
      *         target="_top">Role(s)</a>, role members (roles or users,
      *         recursively), and associated permissions.
-     *     <li>{@link BackupObjectsMap#CONFIGURATION CONFIGURATION}: If {@link
-     *         BackupObjectsMap#TRUE TRUE}, backup the database <a
-     *         href="../../../../../../config/" target="_top">configuration
-     *         file</a>.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link BackupObjectsMap#TRUE TRUE}
-     *             <li>{@link BackupObjectsMap#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link BackupObjectsMap#FALSE FALSE}.
+     *     <li>{@link BackupObjectsMap#RESOURCE_GROUP RESOURCE_GROUP}: <a
+     *         href="../../../../../../rm/concepts/#resource-groups"
+     *         target="_top">Resource group(s)</a>.
+     *     <li>{@link BackupObjectsMap#USER_DEFINED_FUNCTION
+     *         USER_DEFINED_FUNCTION}: UDF Procedure(s)<a
+     *         href="../../../../../../udf_overview" target="_top">None</a>.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -601,16 +588,12 @@ public class CreateBackupRequest implements IndexedRecord {
      *         href="../../../../../../security/sec_concepts/#roles"
      *         target="_top">Role(s)</a>, role members (roles or users,
      *         recursively), and associated permissions.
-     *     <li>{@link BackupObjectsMap#CONFIGURATION CONFIGURATION}: If {@link
-     *         BackupObjectsMap#TRUE TRUE}, backup the database <a
-     *         href="../../../../../../config/" target="_top">configuration
-     *         file</a>.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link BackupObjectsMap#TRUE TRUE}
-     *             <li>{@link BackupObjectsMap#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link BackupObjectsMap#FALSE FALSE}.
+     *     <li>{@link BackupObjectsMap#RESOURCE_GROUP RESOURCE_GROUP}: <a
+     *         href="../../../../../../rm/concepts/#resource-groups"
+     *         target="_top">Resource group(s)</a>.
+     *     <li>{@link BackupObjectsMap#USER_DEFINED_FUNCTION
+     *         USER_DEFINED_FUNCTION}: UDF Procedure(s)<a
+     *         href="../../../../../../udf_overview" target="_top">None</a>.
      * </ul>
      * The default value is an empty {@link Map}.
      *

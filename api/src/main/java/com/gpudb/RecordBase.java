@@ -32,6 +32,7 @@ import org.threeten.bp.temporal.TemporalAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gpudb.Type.Column.ColumnType;
 import com.gpudb.util.json.JsonUtils;
@@ -356,6 +357,62 @@ public abstract class RecordBase implements Record {
             return om.readValue(getString(index), Double[].class);
         case STRING:
             return om.readValue(getString(index), String[].class);
+        case BYTES:
+        {
+            // Array(bytes) elements may appear as:
+            // - JSON strings (from C++ writeBytes encoding: raw byte values as chars)
+            // - JSON integers (from expression evaluation or direct API insertion)
+            // - JSON null
+            // Use tree model to handle all formats.
+            JsonNode arrayNode = om.readTree(getString(index));
+            byte[][] result = new byte[arrayNode.size()][];
+            for (int i = 0; i < arrayNode.size(); i++)
+            {
+                JsonNode elem = arrayNode.get(i);
+                if (elem == null || elem.isNull())
+                {
+                    result[i] = null;
+                }
+                else if (elem.isTextual())
+                {
+                    // writeBytes encoding: each char represents a byte value
+                    String s = elem.asText();
+                    byte[] bytes = new byte[s.length()];
+                    for (int j = 0; j < s.length(); j++)
+                    {
+                        bytes[j] = (byte) s.charAt(j);
+                    }
+                    result[i] = bytes;
+                }
+                else if (elem.isNumber())
+                {
+                    // Integer element: convert to byte representation
+                    long val = elem.asLong();
+                    if (val == 0)
+                    {
+                        result[i] = new byte[]{0};
+                    }
+                    else
+                    {
+                        // Convert to minimal big-endian byte representation
+                        int numBytes = (Long.SIZE - Long.numberOfLeadingZeros(
+                            val < 0 ? ~val : val) + 8) / 8;
+                        byte[] bytes = new byte[numBytes];
+                        for (int j = numBytes - 1; j >= 0; j--)
+                        {
+                            bytes[j] = (byte)(val & 0xFF);
+                            val >>= 8;
+                        }
+                        result[i] = bytes;
+                    }
+                }
+                else
+                {
+                    result[i] = null;
+                }
+            }
+            return result;
+        }
         default:
             throw new GPUdbException("Unknown array type: " + array_type);
         }

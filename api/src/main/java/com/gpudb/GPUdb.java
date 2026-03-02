@@ -7662,24 +7662,16 @@ public class GPUdb extends GPUdbBase {
      *                                  (roles or users, recursively), and
      *                                  associated permissions.
      *                              <li>{@link
-     *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#CONFIGURATION
-     *                                  CONFIGURATION}: If {@link
-     *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#TRUE
-     *                                  TRUE}, backup the database <a
-     *                                  href="../../../../../config/"
-     *                                  target="_top">configuration file</a>.
-     *                                  Supported values:
-     *                                  <ul>
-     *                                      <li>{@link
-     *                                          com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#TRUE
-     *                                          TRUE}
-     *                                      <li>{@link
-     *                                          com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#FALSE
-     *                                          FALSE}
-     *                                  </ul>
-     *                                  The default value is {@link
-     *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#FALSE
-     *                                  FALSE}.
+     *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#RESOURCE_GROUP
+     *                                  RESOURCE_GROUP}: <a
+     *                                  href="../../../../../rm/concepts/#resource-groups"
+     *                                  target="_top">Resource group(s)</a>.
+     *                              <li>{@link
+     *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#USER_DEFINED_FUNCTION
+     *                                  USER_DEFINED_FUNCTION}: UDF
+     *                                  Procedure(s)<a
+     *                                  href="../../../../../udf_overview"
+     *                                  target="_top">None</a>.
      *                          </ul>
      *                          The default value is an empty {@link Map}.
      * @param datasinkName  Data sink through which the backup will be stored.
@@ -25038,24 +25030,16 @@ public class GPUdb extends GPUdbBase {
      *                                   members (roles or users, recursively),
      *                                   and associated permissions.
      *                               <li>{@link
-     *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#CONFIGURATION
-     *                                   CONFIGURATION}: If {@link
-     *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#TRUE
-     *                                   TRUE}, restore the database <a
-     *                                   href="../../../../../config/"
-     *                                   target="_top">configuration file</a>.
-     *                                   Supported values:
-     *                                   <ul>
-     *                                       <li>{@link
-     *                                           com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#TRUE
-     *                                           TRUE}
-     *                                       <li>{@link
-     *                                           com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#FALSE
-     *                                           FALSE}
-     *                                   </ul>
-     *                                   The default value is {@link
-     *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#FALSE
-     *                                   FALSE}.
+     *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#RESOURCE_GROUP
+     *                                   RESOURCE_GROUP}: <a
+     *                                   href="../../../../../rm/concepts/#resource-groups"
+     *                                   target="_top">Resource group(s)</a>.
+     *                               <li>{@link
+     *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#USER_DEFINED_FUNCTION
+     *                                   USER_DEFINED_FUNCTION}: UDF
+     *                                   Procedure(s)<a
+     *                                   href="../../../../../udf_overview"
+     *                                   target="_top">None</a>.
      *                           </ul>
      * @param datasourceName  Data source through which the backup will be
      *                        restored.
@@ -25089,7 +25073,8 @@ public class GPUdb extends GPUdbBase {
      *                                 that existing one to the schema
      *                                 specified by {@link
      *                                 com.gpudb.protocol.RestoreBackupRequest.Options#RENAMED_OBJECTS_SCHEMA
-     *                                 RENAMED_OBJECTS_SCHEMA}.
+     *                                 RENAMED_OBJECTS_SCHEMA}. This policy
+     *                                 does not apply to non-schema ojects.
      *                         </ul>
      *                         The default value is {@link
      *                         com.gpudb.protocol.RestoreBackupRequest.Options#NONE

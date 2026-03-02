@@ -119,20 +119,16 @@ public class RestoreBackupRequest implements IndexedRecord {
         public static final String ROLE = "role";
 
         /**
-         * If {@link RestoreObjectsMap#TRUE TRUE}, restore the database <a
-         * href="../../../../../../config/" target="_top">configuration
-         * file</a>.
-         * Supported values:
-         * <ul>
-         *     <li>{@link RestoreObjectsMap#TRUE TRUE}
-         *     <li>{@link RestoreObjectsMap#FALSE FALSE}
-         * </ul>
-         * The default value is {@link RestoreObjectsMap#FALSE FALSE}.
+         * <a href="../../../../../../rm/concepts/#resource-groups"
+         * target="_top">Resource group(s)</a>.
          */
-        public static final String CONFIGURATION = "configuration";
+        public static final String RESOURCE_GROUP = "resource_group";
 
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
+        /**
+         * UDF Procedure(s)<a href="../../../../../../udf_overview"
+         * target="_top">None</a>.
+         */
+        public static final String USER_DEFINED_FUNCTION = "user_defined_function";
 
         private RestoreObjectsMap() {  }
     }
@@ -163,7 +159,8 @@ public class RestoreBackupRequest implements IndexedRecord {
          *     <li>{@link Options#RENAME RENAME}: If an object to be restored
          *         already exists with the same name, move that existing one to
          *         the schema specified by {@link
-         *         Options#RENAMED_OBJECTS_SCHEMA RENAMED_OBJECTS_SCHEMA}.
+         *         Options#RENAMED_OBJECTS_SCHEMA RENAMED_OBJECTS_SCHEMA}. This
+         *         policy does not apply to non-schema ojects.
          * </ul>
          * The default value is {@link Options#NONE NONE}.
          */
@@ -184,7 +181,8 @@ public class RestoreBackupRequest implements IndexedRecord {
         /**
          * If an object to be restored already exists with the same name, move
          * that existing one to the schema specified by {@link
-         * Options#RENAMED_OBJECTS_SCHEMA RENAMED_OBJECTS_SCHEMA}.
+         * Options#RENAMED_OBJECTS_SCHEMA RENAMED_OBJECTS_SCHEMA}. This policy
+         * does not apply to non-schema ojects.
          */
         public static final String RENAME = "rename";
 
@@ -338,21 +336,17 @@ public class RestoreBackupRequest implements IndexedRecord {
      *                                   target="_top">Role(s)</a>, role
      *                                   members (roles or users, recursively),
      *                                   and associated permissions.
-     *                               <li>{@link RestoreObjectsMap#CONFIGURATION
-     *                                   CONFIGURATION}: If {@link
-     *                                   RestoreObjectsMap#TRUE TRUE}, restore
-     *                                   the database <a
-     *                                   href="../../../../../../config/"
-     *                                   target="_top">configuration file</a>.
-     *                                   Supported values:
-     *                                   <ul>
-     *                                       <li>{@link RestoreObjectsMap#TRUE
-     *                                           TRUE}
-     *                                       <li>{@link RestoreObjectsMap#FALSE
-     *                                           FALSE}
-     *                                   </ul>
-     *                                   The default value is {@link
-     *                                   RestoreObjectsMap#FALSE FALSE}.
+     *                               <li>{@link
+     *                                   RestoreObjectsMap#RESOURCE_GROUP
+     *                                   RESOURCE_GROUP}: <a
+     *                                   href="../../../../../../rm/concepts/#resource-groups"
+     *                                   target="_top">Resource group(s)</a>.
+     *                               <li>{@link
+     *                                   RestoreObjectsMap#USER_DEFINED_FUNCTION
+     *                                   USER_DEFINED_FUNCTION}: UDF
+     *                                   Procedure(s)<a
+     *                                   href="../../../../../../udf_overview"
+     *                                   target="_top">None</a>.
      *                           </ul>
      * @param datasourceName  Data source through which the backup will be
      *                        restored.
@@ -379,7 +373,8 @@ public class RestoreBackupRequest implements IndexedRecord {
      *                                 with the same name, move that existing
      *                                 one to the schema specified by {@link
      *                                 Options#RENAMED_OBJECTS_SCHEMA
-     *                                 RENAMED_OBJECTS_SCHEMA}.
+     *                                 RENAMED_OBJECTS_SCHEMA}. This policy
+     *                                 does not apply to non-schema ojects.
      *                         </ul>
      *                         The default value is {@link Options#NONE NONE}.
      *                     <li>{@link Options#RENAMED_OBJECTS_SCHEMA
@@ -520,16 +515,12 @@ public class RestoreBackupRequest implements IndexedRecord {
      *         href="../../../../../../security/sec_concepts/#roles"
      *         target="_top">Role(s)</a>, role members (roles or users,
      *         recursively), and associated permissions.
-     *     <li>{@link RestoreObjectsMap#CONFIGURATION CONFIGURATION}: If {@link
-     *         RestoreObjectsMap#TRUE TRUE}, restore the database <a
-     *         href="../../../../../../config/" target="_top">configuration
-     *         file</a>.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link RestoreObjectsMap#TRUE TRUE}
-     *             <li>{@link RestoreObjectsMap#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link RestoreObjectsMap#FALSE FALSE}.
+     *     <li>{@link RestoreObjectsMap#RESOURCE_GROUP RESOURCE_GROUP}: <a
+     *         href="../../../../../../rm/concepts/#resource-groups"
+     *         target="_top">Resource group(s)</a>.
+     *     <li>{@link RestoreObjectsMap#USER_DEFINED_FUNCTION
+     *         USER_DEFINED_FUNCTION}: UDF Procedure(s)<a
+     *         href="../../../../../../udf_overview" target="_top">None</a>.
      * </ul>
      *
      * @return The current value of {@code restoreObjectsMap}.
@@ -578,16 +569,12 @@ public class RestoreBackupRequest implements IndexedRecord {
      *         href="../../../../../../security/sec_concepts/#roles"
      *         target="_top">Role(s)</a>, role members (roles or users,
      *         recursively), and associated permissions.
-     *     <li>{@link RestoreObjectsMap#CONFIGURATION CONFIGURATION}: If {@link
-     *         RestoreObjectsMap#TRUE TRUE}, restore the database <a
-     *         href="../../../../../../config/" target="_top">configuration
-     *         file</a>.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link RestoreObjectsMap#TRUE TRUE}
-     *             <li>{@link RestoreObjectsMap#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link RestoreObjectsMap#FALSE FALSE}.
+     *     <li>{@link RestoreObjectsMap#RESOURCE_GROUP RESOURCE_GROUP}: <a
+     *         href="../../../../../../rm/concepts/#resource-groups"
+     *         target="_top">Resource group(s)</a>.
+     *     <li>{@link RestoreObjectsMap#USER_DEFINED_FUNCTION
+     *         USER_DEFINED_FUNCTION}: UDF Procedure(s)<a
+     *         href="../../../../../../udf_overview" target="_top">None</a>.
      * </ul>
      *
      * @param restoreObjectsMap  The new value for {@code restoreObjectsMap}.
@@ -640,6 +627,7 @@ public class RestoreBackupRequest implements IndexedRecord {
      *                 restored already exists with the same name, move that
      *                 existing one to the schema specified by {@link
      *                 Options#RENAMED_OBJECTS_SCHEMA RENAMED_OBJECTS_SCHEMA}.
+     *                 This policy does not apply to non-schema ojects.
      *         </ul>
      *         The default value is {@link Options#NONE NONE}.
      *     <li>{@link Options#RENAMED_OBJECTS_SCHEMA RENAMED_OBJECTS_SCHEMA}:
@@ -726,6 +714,7 @@ public class RestoreBackupRequest implements IndexedRecord {
      *                 restored already exists with the same name, move that
      *                 existing one to the schema specified by {@link
      *                 Options#RENAMED_OBJECTS_SCHEMA RENAMED_OBJECTS_SCHEMA}.
+     *                 This policy does not apply to non-schema ojects.
      *         </ul>
      *         The default value is {@link Options#NONE NONE}.
      *     <li>{@link Options#RENAMED_OBJECTS_SCHEMA RENAMED_OBJECTS_SCHEMA}:

@@ -5303,8 +5303,7 @@ public abstract class GPUdbBase {
             }
         }
 
-        String userGivenUrlsStr = Arrays.toString( urlQueue.toArray() );
-        GPUdbLogger.debug_with_info( "Consolidated list of " + urlQueue.size() + " URLs to process: " + userGivenUrlsStr );
+        GPUdbLogger.debug_with_info(String.format("Consolidated list of %d URLs to process: %s", urlQueue.size(), Arrays.toString( urlQueue.toArray() )));
 
         // We will store API-discovered URLs even if we cannot communicate with
         // any server at that address (it might be temporarily down)
@@ -5320,32 +5319,32 @@ public abstract class GPUdbBase {
         while ( !urlQueue.isEmpty() ) {
             URL url = urlQueue.remove();
             String urlStr = url.toString();
-            GPUdbLogger.debug_with_info( "Processing URL: " + urlStr);
-            GPUdbLogger.debug_with_info( "Remaining " + urlQueue.size() + " URL(s): " + Arrays.toString(urlQueue.toArray()) );
 
-            // We need to know down the road if this URL was discovered by the
-            // API or was given by the user.
-            if (numProcessedURLs >= numUserGivenURLs) {
-                GPUdbLogger.debug_with_info( "This URL is API-discovered");
+            // Figure out if this URL is user-given or discovered by the API
+            if (numProcessedURLs >= numUserGivenURLs)
                 isUserGivenUrl = false;
-            }
+
             ++numProcessedURLs;
+
+            GPUdbLogger.debug_with_info(String.format(
+            		"Processing %s URL: %s; remaining %d URL(s): %s",
+            		isUserGivenUrl ? "user-given" : "server-known", urlStr, urlQueue.size(), Arrays.toString(urlQueue.toArray())
+            ));
 
             // Skip processing this URL if the hostname/IP address is used in
             // any of the known (already registered) clusters
             int indexOfHostnameInRing = getIndexOfClusterContainingNode( url.getHost() );
             if ( indexOfHostnameInRing != -1 ) {
 
-                // Save the fact that this user given URL belongs to an existing
-                // cluster
+                // Save that this user given URL belongs to an existing cluster
                 if ( isUserGivenUrl ) {
-                    GPUdbLogger.debug_with_info(
-                            "Skipping user-given URL " + urlStr + " (already found); adding index "
-                            + indexOfHostnameInRing + " to user-given processed cluster list"
-                    );
+                    GPUdbLogger.debug_with_info(String.format(
+                            "Skipping URL %s (already found); adding index %d to user-given processed cluster list",
+                            urlStr, indexOfHostnameInRing
+                    ));
                     clusterIndicesOfUserGivenURLs.add( indexOfHostnameInRing );
                 } else {
-                    GPUdbLogger.debug_with_info("Skipping discovered URL " + urlStr + " (already found)" );
+                    GPUdbLogger.debug_with_info(String.format("Skipping URL %s (already found)", urlStr));
                 } // end if
 
                 continue;
@@ -5355,15 +5354,15 @@ public abstract class GPUdbBase {
             if ( this.disableAutoDiscovery ) {
 
                 if ( isUserGivenUrl ) {
-                    GPUdbLogger.debug_with_info(
-                            "Skipping connect verification of user-given URL " + urlStr + " (auto-discovery disabled); adding index "
-                            + this.hostAddresses.size() + " to user-given processed cluster list"
-                    );
+                    GPUdbLogger.debug_with_info(String.format(
+                            "Skipping connect verification of user-given URL %s (auto-discovery disabled); adding index %d to user-given processed cluster list",
+                            urlStr, this.hostAddresses.size()
+                    ));
 
                     // Mark this user-given URL as a valid cluster
                     clusterIndicesOfUserGivenURLs.add( this.hostAddresses.size() );
                 } else {
-                    GPUdbLogger.debug_with_info("Skipping connect verification of API-discovered URL " + urlStr + " (auto-discovery disabled)" );
+                    GPUdbLogger.debug_with_info(String.format("Skipping connect verification of server-known URL %s (auto-discovery disabled)", urlStr));
                 } // end if
 
                 // Create a cluster info object with just the given URL and the
@@ -5384,19 +5383,14 @@ public abstract class GPUdbBase {
                 ClusterAddressInfo clusterInfo = new ClusterAddressInfo(url, this.hostManagerPort);
                 this.hostAddresses.add( clusterInfo );
     
-                if ( isUserGivenUrl ) {
-                    GPUdbLogger.debug_with_info( String.format("Added non-running user-given URL: %s", urlStr) );
-                } else {
-                    // Create a cluster info object with just the given URL and the
-                    // host manager port in the option
-                    GPUdbLogger.debug_with_info( String.format("Added non-running cluster with API-discovered URL: %s", clusterInfo) );
-                }
+                GPUdbLogger.debug_with_info( String.format("Added non-running cluster with %s URL: %s", isUserGivenUrl ? "user-given" : "server-known", urlStr) );
+
                 continue;
             }
 
             // Get system properties of the cluster, if can't get it, skip
             // to the next one
-            Map<String, String> systemProperties;
+            Map<String, String> systemProperties = null;
             try {
                 systemProperties = getSystemProperties( url );
             } catch ( GPUdbException ex ) {
@@ -5410,8 +5404,9 @@ public abstract class GPUdbBase {
                     // host manager port in the option
                     ClusterAddressInfo clusterInfo = new ClusterAddressInfo(url, this.hostManagerPort);
                     this.hostAddresses.add( clusterInfo );
-                    GPUdbLogger.debug_with_info( "Added failed system properties lookup cluster with API-discovered URL: " + clusterInfo.toString() );
+                    GPUdbLogger.debug_with_info( "Added failed system properties lookup cluster with server-known URL: " + clusterInfo.toString() );
                 }
+
                 continue;
             }
 
@@ -5426,7 +5421,8 @@ public abstract class GPUdbBase {
                 URL clusterHeadNodeUrl = clusterInfo.getActiveHeadNodeUrl();
                 
                 if (!url.equals(clusterHeadNodeUrl)) {
-                    // Check if the server given head node address is reachable.
+
+                	// Check if the server given head node address is reachable.
                     // If so, use that URL instead of the user-given one.
                     // If not, the user will not be able to use the server-known
                     // address for connecting normally.  The API will need to
@@ -5437,19 +5433,22 @@ public abstract class GPUdbBase {
     
                         GPUdbLogger.warn(String.format(
                                 "Disabling auto-discovery & multi-head operations--cluster reachable with user-given URL <%s> but not with server-known URL <%s>",
-                                urlStr, clusterHeadNodeUrl));
+                                urlStr, clusterHeadNodeUrl
+                        ));
     
                         // Disable auto-discovery and throw exception to reprocess user-given URLs
                         this.disableAutoDiscovery = true;
     
                         throw new GPUdbException(String.format(
                                 "Could not connect to user-given URL %s via server-known head node URL %s",
-                                urlStr, clusterHeadNodeUrl));
+                                urlStr, clusterHeadNodeUrl
+                        ));
                     }
     
                     GPUdbLogger.debug_with_info(String.format(
                             "Verified connectivity with user-given URL %s at server-known URL %s; adding index %s to user-given processed cluster list",
-                            urlStr, clusterHeadNodeUrl, this.hostAddresses.size()));
+                            urlStr, clusterHeadNodeUrl, this.hostAddresses.size()
+                    ));
                 }
 
                 clusterIndicesOfUserGivenURLs.add( this.hostAddresses.size() );
@@ -5459,7 +5458,6 @@ public abstract class GPUdbBase {
             this.hostAddresses.add( clusterInfo );
 
             GPUdbLogger.debug_with_info(String.format("Added URL %s -> cluster %s", urlStr, clusterInfo.toString()));
-            GPUdbLogger.debug_with_info(String.format("URLs queue after processing this URL (size %s): %s", urlQueue.size(), Arrays.toString(urlQueue.toArray())));
 
             // Parse the HA ring head nodes in the properties and add them
             // to this queue (only if we haven't processed them already).
@@ -5469,19 +5467,20 @@ public abstract class GPUdbBase {
             for (URL haUrl : haRingHeadNodeURLs) {
                 if (getIndexOfClusterContainingNode(haUrl.getHost()) == -1) {
                     // We have not encountered this cluster yet; add it to the
-                    // list of URLs to process
+                    // queue of URLs to process
                     if( !urlQueue.contains(haUrl) ) {
                         urlQueue.add( haUrl );
-                        GPUdbLogger.debug_with_info( "HA ring head node URL " + haUrl.toString() + " not found in known clusters; adding to queue to process" );
+                        GPUdbLogger.debug_with_info(String.format("HA ring head node URL %s not found in known clusters; adding to queue to process", haUrl.toString()));
                     }
                 } else {
-                    GPUdbLogger.debug_with_info( "HA ring head node URL " + haUrl.toString() + " found in known clusters; skipping" );
+                    GPUdbLogger.debug_with_info(String.format("HA ring head node URL %s found in known clusters; skipping", haUrl.toString()));
                 }
             }
-            GPUdbLogger.debug_with_info(
-                    "URLs queue after processing this HA ring's head node URLs (size " + urlQueue.size() + "): "
-                    + Arrays.toString(urlQueue.toArray())
-            );
+
+            GPUdbLogger.debug_with_info(String.format(
+                    "URLs queue after processing this HA ring's head node URLs (size %d): ",
+                    urlQueue.size(), Arrays.toString(urlQueue.toArray())
+            ));
         }   // end while
 
         // Check that we have got at least one working URL
@@ -5496,19 +5495,16 @@ public abstract class GPUdbBase {
             // Mark the single cluster as the primary cluster
             this.hostAddresses.get( 0 ).setIsPrimaryCluster( true );
 
-            // Update the primary cluster head node hostname, as the original
-            // one may have been a worker node
-            final String originalPrimaryUrlHostname = this.primaryUrlHostname;
-            this.primaryUrlHostname = this.hostAddresses
-                .get( 0 )
-                .getActiveHeadNodeUrl()
-                .getHost();
+            // Update the primary cluster head node hostname
+            final String oldPrimaryUrl = this.options.getPrimaryUrl();
+            final URL newPrimaryUrl = this.hostAddresses.get(0).getActiveHeadNodeUrl();
+            this.primaryUrlHostname = newPrimaryUrl.getHost();
 
             // Also save it in the options for the future
-            this.options.setPrimaryUrl( this.primaryUrlHostname );
+            this.options.setPrimaryUrl( newPrimaryUrl.toString() );
             GPUdbLogger.debug_with_info(String.format(
-                    "Updated primary host name %s -> %s for single-cluster connection",
-                    originalPrimaryUrlHostname, this.primaryUrlHostname
+                    "Updated primary URL %s -> %s for single-cluster connection",
+                    oldPrimaryUrl, newPrimaryUrl
             ));
         } else {
             // If the user has not given any primary host AND all the user
@@ -5521,17 +5517,15 @@ public abstract class GPUdbBase {
                     int primaryIndex = clusterIndicesOfUserGivenURLs.get( 0 );
 
                     // Save the hostname of the newly identified primary cluster
-                    final String originalPrimaryUrlHostname = this.primaryUrlHostname;
-                    this.primaryUrlHostname = this.hostAddresses
-                        .get( primaryIndex )
-                        .getActiveHeadNodeUrl()
-                        .getHost();
+                    final String oldPrimaryUrl = this.options.getPrimaryUrl();
+                    final URL newPrimaryUrl = this.hostAddresses.get(primaryIndex).getActiveHeadNodeUrl();
+                    this.primaryUrlHostname = newPrimaryUrl.getHost();
 
                     // Also save it in the options
-                    this.options.setPrimaryUrl( this.primaryUrlHostname );
+                    this.options.setPrimaryUrl( newPrimaryUrl.toString() );
                     GPUdbLogger.debug_with_info(String.format(
                             "Updated primary host name %s -> %s for multi-cluster connection",
-                            originalPrimaryUrlHostname, this.primaryUrlHostname
+                            oldPrimaryUrl, newPrimaryUrl
                     ));
                 } else {
                     GPUdbLogger.debug_with_info( "Could not update primary host name for multi-cluster connection, as user-given URLs belong to different clusters" );
@@ -5566,10 +5560,7 @@ public abstract class GPUdbBase {
                 // Note that if no primary URL is specified by the user, then primaryIndex
                 // above would be -1; but we need not handle that case since it would be
                 // a no-op
-                GPUdbLogger.debug_with_info(String.format(
-                        "Designated primary cluster with host %s not found in cluster list.",
-                        this.primaryUrlHostname
-                ));
+                GPUdbLogger.debug_with_info(String.format("Designated primary cluster with host %s not found in cluster list.", this.primaryUrlHostname ));
             }
         }
 

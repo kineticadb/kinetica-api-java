@@ -25,6 +25,7 @@ import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
+import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.specific.SpecificDatumReader;
@@ -104,10 +105,21 @@ public final class Avro {
 
     /**
      * Avro reader for generic objects that uses String for string values.
+     * Uses a dedicated GenericData instance with fast reader disabled so that
+     * the findStringClass override is respected. Avro 1.12+ enables a
+     * FastReader by default that bypasses GenericDatumReader virtual methods,
+     * causing map keys to be UTF-8 instead of String.
      */
     static final class DatumReader<T> extends GenericDatumReader<T> {
+        private static final GenericData GENERIC_DATA;
+
+        static {
+            GENERIC_DATA = new GenericData();
+            GENERIC_DATA.setFastReaderEnabled(false);
+        }
+
         public DatumReader(Schema schema) {
-            super(schema);
+            super(schema, schema, GENERIC_DATA);
         }
 
         @Override

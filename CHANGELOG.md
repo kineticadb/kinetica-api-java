@@ -2,34 +2,47 @@
 
 ## Version 7.2
 
+### Version 7.2.3.13 - 2026.03.01
+
+#### Added
+-   Support for array of bytes data type.
+
+#### Changed
+-   Upgraded Avro library to 1.12.1.
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
 ### Version 7.2.3.12 - 2026-02-20
 
 #### Added
 -   JSON record `BulkInserter` constructors; these replace the previous scheme
     for JSON bulk ingest, which would require a table/record type parameter to
-    the existing `Type` based constructors
+    the existing `Type` based constructors.
 
 #### Changed
 -   Reduced timeout for checking connectivity to server-known URLs that don't
-    match user-given ones
--   Improved ingest performance by pre-determining JSON vs. non-JSON ingest mode
+    match user-given ones.
+-   Improved ingest performance by pre-determining JSON vs. non-JSON ingest
+    mode.
 -   Streamlined initial connection sequence when multi-head is disabled on the
-    server, as is the case with Developer Edition
--   Streamlined auto-creation of worker lists by `BulkInserter`
+    server, as is the case with Developer Edition.
+-   Streamlined auto-creation of worker lists by `BulkInserter`.
 -   Properly applied hostname regular expression to `BulkInserter` worker ranks
-    during fail-over
--   Default HA fail-over mode is now sequential
--   Updated examples
+    during fail-over.
+-   Default HA fail-over mode is now sequential.
+-   Updated examples.
 
 #### Fixed
--   Error reporting in the file handling API
+-   Error reporting in the file handling API.
 
 
 ### Version 7.2.3.11 - 2026-02-05
 
 #### Changed
 -   Better maintained ordering of cluster failover sequence when primary URL is
-    specified in connection parameters
+    specified in connection parameters.
 
 
 ### Version 7.2.3.10 - 2026-01-09
@@ -41,14 +54,14 @@
 ### Version 7.2.3.9 - 2025-12-18
 
 #### Changed
--   Reverted Avro library to 1.11.5
+-   Reverted Avro library to 1.11.5.
 
 
 ### Version 7.2.3.8 - 2025-12-18
 
 #### Changed
--   Upgraded Avro library to 1.12.1
--   Swapped Snappy compression limit formula for constant
+-   Upgraded Avro library to 1.12.1.
+-   Swapped Snappy compression limit formula for constant.
 
 
 ### Version 7.2.3.7 - 2025-12-17
