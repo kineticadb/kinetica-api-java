@@ -2,6 +2,12 @@
 
 ## Version 7.2
 
+### Version 7.2.3.14 - 2026.03.02
+
+#### Changed
+-   Upgraded Jackson libraries to 2.18.6.
+
+
 ### Version 7.2.3.13 - 2026.03.01
 
 #### Added
