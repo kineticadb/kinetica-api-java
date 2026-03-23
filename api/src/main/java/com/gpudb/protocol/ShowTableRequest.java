@@ -136,7 +136,8 @@ public class ShowTableRequest implements IndexedRecord {
         public static final String GET_SIZES = "get_sizes";
 
         /**
-         * Include view dependents in the output.
+         * Include materialized views using this table as a source in the
+         * output.
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}
@@ -296,8 +297,9 @@ public class ShowTableRequest implements IndexedRecord {
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
      *                     <li>{@link Options#REFERENCING_MATERIALIZED_VIEWS
-     *                         REFERENCING_MATERIALIZED_VIEWS}: Include view
-     *                         dependents in the output.
+     *                         REFERENCING_MATERIALIZED_VIEWS}: Include
+     *                         materialized views using this table as a source
+     *                         in the output.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
@@ -456,8 +458,8 @@ public class ShowTableRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#REFERENCING_MATERIALIZED_VIEWS
-     *         REFERENCING_MATERIALIZED_VIEWS}: Include view dependents in the
-     *         output.
+     *         REFERENCING_MATERIALIZED_VIEWS}: Include materialized views
+     *         using this table as a source in the output.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
@@ -576,8 +578,8 @@ public class ShowTableRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#REFERENCING_MATERIALIZED_VIEWS
-     *         REFERENCING_MATERIALIZED_VIEWS}: Include view dependents in the
-     *         output.
+     *         REFERENCING_MATERIALIZED_VIEWS}: Include materialized views
+     *         using this table as a source in the output.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}

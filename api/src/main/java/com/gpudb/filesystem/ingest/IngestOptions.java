@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gpudb.GPUdbException;
 import com.gpudb.GPUdbLogger;
-import com.gpudb.filesystem.utils.GPUdbFileHandlerUtils;
+import com.gpudb.filesystem.GPUdbFileHandlerUtils;
 import com.gpudb.protocol.InsertRecordsFromFilesRequest;
 import org.apache.commons.lang3.tuple.Pair;
 

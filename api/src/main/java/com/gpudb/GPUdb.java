@@ -1956,10 +1956,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * Any column(s) can be grouped on, and all column types except
      * unrestricted-length strings may be used for computing applicable
-     * aggregates; columns marked as <a
-     * href="../../../../../concepts/types/#data-handling"
-     * target="_top">store-only</a> are unable to be used in grouping or
-     * aggregation.
+     * aggregates.
      * <p>
      * The results can be paged via the {@link
      * com.gpudb.protocol.AggregateGroupByRequest#getOffset() offset} and
@@ -2052,10 +2049,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * Any column(s) can be grouped on, and all column types except
      * unrestricted-length strings may be used for computing applicable
-     * aggregates; columns marked as <a
-     * href="../../../../../concepts/types/#data-handling"
-     * target="_top">store-only</a> are unable to be used in grouping or
-     * aggregation.
+     * aggregates.
      * <p>
      * The results can be paged via the {@link
      * com.gpudb.protocol.AggregateGroupByRequest#getOffset() offset} and
@@ -2157,10 +2151,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * Any column(s) can be grouped on, and all column types except
      * unrestricted-length strings may be used for computing applicable
-     * aggregates; columns marked as <a
-     * href="../../../../../concepts/types/#data-handling"
-     * target="_top">store-only</a> are unable to be used in grouping or
-     * aggregation.
+     * aggregates.
      * <p>
      * The results can be paged via the {@code offset} and {@code limit}
      * parameters. For example, to get 10 groups with the largest counts the
@@ -3348,14 +3339,9 @@ public class GPUdb extends GPUdbBase {
      * com.gpudb.protocol.AggregateUniqueRequest#getOffset() offset} and {@link
      * com.gpudb.protocol.AggregateUniqueRequest#getLimit() limit} parameters.
      * <p>
-     * Columns marked as <a href="../../../../../concepts/types/#data-handling"
-     * target="_top">store-only</a> are unable to be used with this function.
      * <p>
-     * To get the first 10 unique values sorted in descending order {@link com.gpudb.protocol.AggregateUniqueRequest#getOptions() options} would be:
-     * <pre>
-     *
-     *     {"limit":"10","sort_order":"descending"}
-     * </pre>
+     * {"limit":"10","sort_order":"descending"}
+     * <p>
      * The response is returned as a dynamic schema. For details see: <a
      * href="../../../../../api/concepts/#dynamic-schemas"
      * target="_top">dynamic schemas documentation</a>.
@@ -3407,14 +3393,9 @@ public class GPUdb extends GPUdbBase {
      * com.gpudb.protocol.AggregateUniqueRequest#getOffset() offset} and {@link
      * com.gpudb.protocol.AggregateUniqueRequest#getLimit() limit} parameters.
      * <p>
-     * Columns marked as <a href="../../../../../concepts/types/#data-handling"
-     * target="_top">store-only</a> are unable to be used with this function.
      * <p>
-     * To get the first 10 unique values sorted in descending order {@link com.gpudb.protocol.AggregateUniqueRequest#getOptions() options} would be:
-     * <pre>
-     *
-     *     {"limit":"10","sort_order":"descending"}
-     * </pre>
+     * {"limit":"10","sort_order":"descending"}
+     * <p>
      * The response is returned as a dynamic schema. For details see: <a
      * href="../../../../../api/concepts/#dynamic-schemas"
      * target="_top">dynamic schemas documentation</a>.
@@ -3470,14 +3451,9 @@ public class GPUdb extends GPUdbBase {
      * in {@code jsonEncodedResponse}.  The results can be paged via {@code
      * offset} and {@code limit} parameters.
      * <p>
-     * Columns marked as <a href="../../../../../concepts/types/#data-handling"
-     * target="_top">store-only</a> are unable to be used with this function.
      * <p>
-     * To get the first 10 unique values sorted in descending order {@code options} would be:
-     * <pre>
-     *
-     *     {"limit":"10","sort_order":"descending"}
-     * </pre>
+     * {"limit":"10","sort_order":"descending"}
+     * <p>
      * The response is returned as a dynamic schema. For details see: <a
      * href="../../../../../api/concepts/#dynamic-schemas"
      * target="_top">dynamic schemas documentation</a>.
@@ -6557,17 +6533,8 @@ public class GPUdb extends GPUdbBase {
      *                                   The default value is an empty {@link
      *                                   Map}.
      *                           </ul>
-     * @param options  Optional parameters.
-     *                 <ul>
-     *                     <li>{@link
-     *                         com.gpudb.protocol.AlterTableMonitorRequest.Options#REASON
-     *                         REASON}: [Developer option] Additional
-     *                         information about this update
-     *                     <li>{@link
-     *                         com.gpudb.protocol.AlterTableMonitorRequest.Options#LOG_LEVEL
-     *                         LOG_LEVEL}: [Developer option] Log level
-     *                 </ul>
-     *                 The default value is an empty {@link Map}.
+     * @param options  Optional parameters. The default value is an empty
+     *                 {@link Map}.
      *
      * @return {@link AlterTableMonitorResponse Response} object containing the
      *         results of the operation.
@@ -7584,11 +7551,6 @@ public class GPUdb extends GPUdbBase {
      *                    Supported values:
      *                    <ul>
      *                        <li>{@link
-     *                            com.gpudb.protocol.CreateBackupRequest.BackupType#INCREMENTAL
-     *                            INCREMENTAL}: Snapshot of changes in the
-     *                            database objects and data since the last
-     *                            snapshot of any kind.
-     *                        <li>{@link
      *                            com.gpudb.protocol.CreateBackupRequest.BackupType#DIFFERENTIAL
      *                            DIFFERENTIAL}: Snapshot of changes in the
      *                            database objects and data since the last full
@@ -7597,6 +7559,11 @@ public class GPUdb extends GPUdbBase {
      *                            com.gpudb.protocol.CreateBackupRequest.BackupType#FULL
      *                            FULL}: Snapshot of the given database objects
      *                            and data.
+     *                        <li>{@link
+     *                            com.gpudb.protocol.CreateBackupRequest.BackupType#INCREMENTAL
+     *                            INCREMENTAL}: Snapshot of changes in the
+     *                            database objects and data since the last
+     *                            snapshot of any kind.
      *                    </ul>
      * @param backupObjectsMap  Map of objects to be captured in the backup;
      *                          must be specified when creating a full snapshot
@@ -7608,24 +7575,17 @@ public class GPUdb extends GPUdbBase {
      *                                  ALL}: All object types and data
      *                                  contained in the given <a
      *                                  href="../../../../../concepts/schemas/"
-     *                                  target="_top">schemas(s)</a>.
-     *                              <li>{@link
-     *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#TABLE
-     *                                  TABLE}: <a
-     *                                  href="../../../../../concepts/tables/"
-     *                                  target="_top">Tables(s)</a> and <a
-     *                                  href="../../../../../sql/ddl/#create-view"
-     *                                  target="_top">SQL view(s)</a>.
-     *                              <li>{@link
-     *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#CREDENTIAL
-     *                                  CREDENTIAL}: <a
-     *                                  href="../../../../../concepts/credentials/"
-     *                                  target="_top">Credential(s)</a>.
+     *                                  target="_top">schema(s)</a>.
      *                              <li>{@link
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#CONTEXT
      *                                  CONTEXT}: <a
      *                                  href="../../../../../sql-gpt/concepts/#sql-gpt-context"
      *                                  target="_top">Context(s)</a>.
+     *                              <li>{@link
+     *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#CREDENTIAL
+     *                                  CREDENTIAL}: <a
+     *                                  href="../../../../../concepts/credentials/"
+     *                                  target="_top">Credential(s)</a>.
      *                              <li>{@link
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#DATASINK
      *                                  DATASINK}: <a
@@ -7637,10 +7597,11 @@ public class GPUdb extends GPUdbBase {
      *                                  href="../../../../../concepts/data_sources/"
      *                                  target="_top">Data source(s)</a>.
      *                              <li>{@link
-     *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#STORED_PROCEDURE
-     *                                  STORED_PROCEDURE}: <a
-     *                                  href="../../../../../sql/procedure/"
-     *                                  target="_top">SQL procedure(s)</a>.
+     *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#FUNCTION_ENVIRONMENT
+     *                                  FUNCTION_ENVIRONMENT}: <a
+     *                                  href="../../../../../udf/python/writing/#udf-python-func-env"
+     *                                  target="_top">Python UDF function
+     *                                  environment(s)</a>.
      *                              <li>{@link
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#MONITOR
      *                                  MONITOR}: <a
@@ -7649,11 +7610,10 @@ public class GPUdb extends GPUdbBase {
      *                                  href="../../../../../sql/ddl/#create-stream"
      *                                  target="_top">SQL stream(s)</a>.
      *                              <li>{@link
-     *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#USER
-     *                                  USER}: <a
-     *                                  href="../../../../../security/sec_concepts/#security-concepts-users"
-     *                                  target="_top">User(s)</a> (internal and
-     *                                  external) and associated permissions.
+     *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#RESOURCE_GROUP
+     *                                  RESOURCE_GROUP}: <a
+     *                                  href="../../../../../rm/concepts/#resource-groups"
+     *                                  target="_top">Resource group(s)</a>.
      *                              <li>{@link
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#ROLE
      *                                  ROLE}: <a
@@ -7662,24 +7622,33 @@ public class GPUdb extends GPUdbBase {
      *                                  (roles or users, recursively), and
      *                                  associated permissions.
      *                              <li>{@link
-     *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#RESOURCE_GROUP
-     *                                  RESOURCE_GROUP}: <a
-     *                                  href="../../../../../rm/concepts/#resource-groups"
-     *                                  target="_top">Resource group(s)</a>.
+     *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#STORED_PROCEDURE
+     *                                  STORED_PROCEDURE}: <a
+     *                                  href="../../../../../sql/procedure/"
+     *                                  target="_top">SQL procedure(s)</a>.
+     *                              <li>{@link
+     *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#TABLE
+     *                                  TABLE}: <a
+     *                                  href="../../../../../concepts/tables/"
+     *                                  target="_top">Table(s)</a> and <a
+     *                                  href="../../../../../sql/ddl/#create-view"
+     *                                  target="_top">SQL view(s)</a>.
+     *                              <li>{@link
+     *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#USER
+     *                                  USER}: <a
+     *                                  href="../../../../../security/sec_concepts/#security-concepts-users"
+     *                                  target="_top">User(s)</a> (internal and
+     *                                  external) and associated permissions.
      *                              <li>{@link
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#USER_DEFINED_FUNCTION
-     *                                  USER_DEFINED_FUNCTION}: UDF
-     *                                  Procedure(s)<a
+     *                                  USER_DEFINED_FUNCTION}: <a
      *                                  href="../../../../../udf_overview"
-     *                                  target="_top">None</a>.
+     *                                  target="_top">UDF(s)</a>.
      *                          </ul>
      *                          The default value is an empty {@link Map}.
      * @param datasinkName  Data sink through which the backup will be stored.
      * @param options  Optional parameters.
      *                 <ul>
-     *                     <li>{@link
-     *                         com.gpudb.protocol.CreateBackupRequest.Options#COMMENT
-     *                         COMMENT}: Comments to store with this backup.
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateBackupRequest.Options#CHECKSUM
      *                         CHECKSUM}: Whether or not to calculate checksums
@@ -7696,6 +7665,9 @@ public class GPUdb extends GPUdbBase {
      *                         The default value is {@link
      *                         com.gpudb.protocol.CreateBackupRequest.Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateBackupRequest.Options#COMMENT
+     *                         COMMENT}: Comments to store with this backup.
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateBackupRequest.Options#DDL_ONLY
      *                         DDL_ONLY}: Whether or not, for tables, to only
@@ -7714,11 +7686,6 @@ public class GPUdb extends GPUdbBase {
      *                         The default value is {@link
      *                         com.gpudb.protocol.CreateBackupRequest.Options#FALSE
      *                         FALSE}.
-     *                     <li>{@link
-     *                         com.gpudb.protocol.CreateBackupRequest.Options#MAX_INCREMENTAL_BACKUPS_TO_KEEP
-     *                         MAX_INCREMENTAL_BACKUPS_TO_KEEP}: Maximum number
-     *                         of incremental snapshots to keep. The default
-     *                         value is '-1'.
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateBackupRequest.Options#DELETE_INTERMEDIATE_BACKUPS
      *                         DELETE_INTERMEDIATE_BACKUPS}: Whether or not to
@@ -7739,10 +7706,9 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.CreateBackupRequest.Options#FALSE
      *                         FALSE}.
      *                     <li>{@link
-     *                         com.gpudb.protocol.CreateBackupRequest.Options#RECREATE
-     *                         RECREATE}: Whether or not to replace an existing
-     *                         backup object with a new backup with a full
-     *                         snapshot, if one already exists.
+     *                         com.gpudb.protocol.CreateBackupRequest.Options#DRY_RUN
+     *                         DRY_RUN}: Whether or not to perform a dry run of
+     *                         a backup operation.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
@@ -7756,9 +7722,15 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.CreateBackupRequest.Options#FALSE
      *                         FALSE}.
      *                     <li>{@link
-     *                         com.gpudb.protocol.CreateBackupRequest.Options#DRY_RUN
-     *                         DRY_RUN}: Whether or not to perform a dry run of
-     *                         a backup operation.
+     *                         com.gpudb.protocol.CreateBackupRequest.Options#MAX_INCREMENTAL_BACKUPS_TO_KEEP
+     *                         MAX_INCREMENTAL_BACKUPS_TO_KEEP}: Maximum number
+     *                         of incremental snapshots to keep. The default
+     *                         value is '-1'.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateBackupRequest.Options#RECREATE
+     *                         RECREATE}: Whether or not to replace an existing
+     *                         backup object with a new backup with a full
+     *                         snapshot, if one already exists.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
@@ -11989,9 +11961,9 @@ public class GPUdb extends GPUdbBase {
      *                         stream is resumed.  The table has the following
      *                         columns: rank (long), job_id (long), uuid
      *                         (uuid), timestamp (timestamp), error_msg
-     *                         (string), payload (bytes).  Leave the this
-     *                         option empty to disable persisting failed
-     *                         notification events.
+     *                         (string), payload (bytes).  Leave this option
+     *                         empty to disable persisting failed notification
+     *                         events.
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateTableMonitorRequest.Options#DESTINATION
      *                         DESTINATION}: Destination for the output data in
@@ -12680,14 +12652,14 @@ public class GPUdb extends GPUdbBase {
      * The following merges are supported:
      * <p>
      * UNION (DISTINCT/ALL) - For data set union details and examples, see <a
-     * href="../../../../../concepts/unions/" target="_top">Union</a>.  For
+     * href="../../../../../concepts/unions/" target="_top">Union</a>. For
      * limitations, see <a
      * href="../../../../../concepts/unions/#limitations-and-cautions"
      * target="_top">Union Limitations and Cautions</a>.
      * <p>
      * INTERSECT (DISTINCT/ALL) - For data set intersection details and
      * examples, see <a href="../../../../../concepts/intersect/"
-     * target="_top">Intersect</a>.  For limitations, see <a
+     * target="_top">Intersect</a>. For limitations, see <a
      * href="../../../../../concepts/intersect/#limitations"
      * target="_top">Intersect Limitations</a>.
      * <p>
@@ -12696,15 +12668,6 @@ public class GPUdb extends GPUdbBase {
      * For limitations, see <a
      * href="../../../../../concepts/except/#limitations" target="_top">Except
      * Limitations</a>.
-     * <p>
-     * MERGE VIEWS - For a given set of <a
-     * href="../../../../../concepts/filtered_views/" target="_top">filtered
-     * views</a> on a single table, creates a single filtered view containing
-     * all of the unique records across all of the given filtered data sets.
-     * <p>
-     * Non-charN 'string' and 'bytes' column types cannot be merged, nor can
-     * columns marked as <a href="../../../../../concepts/types/#data-handling"
-     * target="_top">store-only</a>.
      *
      * @param request  {@link CreateUnionRequest Request} object containing the
      *                 parameters for the operation.
@@ -12727,14 +12690,14 @@ public class GPUdb extends GPUdbBase {
      * The following merges are supported:
      * <p>
      * UNION (DISTINCT/ALL) - For data set union details and examples, see <a
-     * href="../../../../../concepts/unions/" target="_top">Union</a>.  For
+     * href="../../../../../concepts/unions/" target="_top">Union</a>. For
      * limitations, see <a
      * href="../../../../../concepts/unions/#limitations-and-cautions"
      * target="_top">Union Limitations and Cautions</a>.
      * <p>
      * INTERSECT (DISTINCT/ALL) - For data set intersection details and
      * examples, see <a href="../../../../../concepts/intersect/"
-     * target="_top">Intersect</a>.  For limitations, see <a
+     * target="_top">Intersect</a>. For limitations, see <a
      * href="../../../../../concepts/intersect/#limitations"
      * target="_top">Intersect Limitations</a>.
      * <p>
@@ -12743,15 +12706,6 @@ public class GPUdb extends GPUdbBase {
      * For limitations, see <a
      * href="../../../../../concepts/except/#limitations" target="_top">Except
      * Limitations</a>.
-     * <p>
-     * MERGE VIEWS - For a given set of <a
-     * href="../../../../../concepts/filtered_views/" target="_top">filtered
-     * views</a> on a single table, creates a single filtered view containing
-     * all of the unique records across all of the given filtered data sets.
-     * <p>
-     * Non-charN 'string' and 'bytes' column types cannot be merged, nor can
-     * columns marked as <a href="../../../../../concepts/types/#data-handling"
-     * target="_top">store-only</a>.
      *
      * @param tableName  Name of the table to be created, in
      *                   [schema_name.]table_name format, using standard <a
@@ -12855,12 +12809,6 @@ public class GPUdb extends GPUdbBase {
      *                         The default value is {@link
      *                         com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL
      *                         UNION_ALL}.
-     *                     <li>{@link
-     *                         com.gpudb.protocol.CreateUnionRequest.Options#LONG_HASH
-     *                         LONG_HASH}: When true use 128 bit hash for
-     *                         union-distinct, except, except_all, intersect
-     *                         and intersect_all modes. Otherwise use 64 bit
-     *                         hash.
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateUnionRequest.Options#CHUNK_SIZE
      *                         CHUNK_SIZE}: Indicates the number of records per
@@ -23550,6 +23498,11 @@ public class GPUdb extends GPUdbBase {
      *                             com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_ISOCHRONE
      *                             MATCH_ISOCHRONE}: Solves for isochrones for
      *                             a set of input sources
+     *                         <li>{@link
+     *                             com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_ROUTE_DETOUR
+     *                             MATCH_ROUTE_DETOUR}: Computes detour costs
+     *                             for nearby stations at a mark point along
+     *                             each source-target route.
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -24093,6 +24046,40 @@ public class GPUdb extends GPUdbBase {
      *                         MATCH_CHARGING_STATIONS} solver only. This is
      *                         the penalty for full charging. The default value
      *                         is '30000.0'.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.MatchGraphRequest.Options#DETOUR_MARK_COST
+     *                         DETOUR_MARK_COST}: For the {@link
+     *                         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_ROUTE_DETOUR
+     *                         MATCH_ROUTE_DETOUR} solver only. Cost along the
+     *                         route at which to search for nearby stations If
+     *                         zero, it solves along the trip sliding the 3
+     *                         SSSP cycle kernel by radius amount. The default
+     *                         value is '3600.0'.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.MatchGraphRequest.Options#DETOUR_REENTRY_FACTOR
+     *                         DETOUR_REENTRY_FACTOR}: For the {@link
+     *                         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_ROUTE_DETOUR
+     *                         MATCH_ROUTE_DETOUR} solver only. Multiplier on
+     *                         detour_mark_cost to determine the reentry point
+     *                         on the route (default 1.2 means 20% further
+     *                         along). The default value is '1.2'.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.MatchGraphRequest.Options#DETOUR_SEARCH_RADIUS
+     *                         DETOUR_SEARCH_RADIUS}: For the {@link
+     *                         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_ROUTE_DETOUR
+     *                         MATCH_ROUTE_DETOUR} solver only. Search radius
+     *                         around the mark point for finding nearby
+     *                         prospective stations (e.g. cafes, pit stops, EV
+     *                         charging stations). The default value is
+     *                         '600.0'.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.MatchGraphRequest.Options#DETOUR_SEARCH_LIMIT
+     *                         DETOUR_SEARCH_LIMIT}: For the {@link
+     *                         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_ROUTE_DETOUR
+     *                         MATCH_ROUTE_DETOUR} solver only. Maximum number
+     *                         of nearby stations to consider within the search
+     *                         radius around the mark point. The default value
+     *                         is '10'.
      *                     <li>{@link
      *                         com.gpudb.protocol.MatchGraphRequest.Options#MAX_HOPS
      *                         MAX_HOPS}: For the {@link
@@ -24974,24 +24961,17 @@ public class GPUdb extends GPUdbBase {
      *                                   ALL}: All object types and data
      *                                   contained in the given <a
      *                                   href="../../../../../concepts/schemas/"
-     *                                   target="_top">schemas(s)</a>.
-     *                               <li>{@link
-     *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#TABLE
-     *                                   TABLE}: <a
-     *                                   href="../../../../../concepts/tables/"
-     *                                   target="_top">Table(s)</a> and <a
-     *                                   href="../../../../../sql/ddl/#create-view"
-     *                                   target="_top">SQL view(s)</a>.
-     *                               <li>{@link
-     *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#CREDENTIAL
-     *                                   CREDENTIAL}: <a
-     *                                   href="../../../../../concepts/credentials/"
-     *                                   target="_top">Credential(s)</a>.
+     *                                   target="_top">schema(s)</a>.
      *                               <li>{@link
      *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#CONTEXT
      *                                   CONTEXT}: <a
      *                                   href="../../../../../sql-gpt/concepts/#sql-gpt-context"
      *                                   target="_top">Context(s)</a>.
+     *                               <li>{@link
+     *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#CREDENTIAL
+     *                                   CREDENTIAL}: <a
+     *                                   href="../../../../../concepts/credentials/"
+     *                                   target="_top">Credential(s)</a>.
      *                               <li>{@link
      *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#DATASINK
      *                                   DATASINK}: <a
@@ -25003,10 +24983,11 @@ public class GPUdb extends GPUdbBase {
      *                                   href="../../../../../concepts/data_sources/"
      *                                   target="_top">Data source(s)</a>.
      *                               <li>{@link
-     *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#STORED_PROCEDURE
-     *                                   STORED_PROCEDURE}: <a
-     *                                   href="../../../../../sql/procedure/"
-     *                                   target="_top">SQL procedure(s)</a>.
+     *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#FUNCTION_ENVIRONMENT
+     *                                   FUNCTION_ENVIRONMENT}: <a
+     *                                   href="../../../../../udf/python/writing/#udf-python-func-env"
+     *                                   target="_top">Python UDF function
+     *                                   environment(s)</a>.
      *                               <li>{@link
      *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#MONITOR
      *                                   MONITOR}: <a
@@ -25016,12 +24997,10 @@ public class GPUdb extends GPUdbBase {
      *                                   href="../../../../../sql/ddl/#create-stream"
      *                                   target="_top">SQL stream(s)</a>.
      *                               <li>{@link
-     *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#USER
-     *                                   USER}: <a
-     *                                   href="../../../../../security/sec_concepts/#security-concepts-users"
-     *                                   target="_top">User(s)</a> (internal
-     *                                   and external) and associated
-     *                                   permissions.
+     *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#RESOURCE_GROUP
+     *                                   RESOURCE_GROUP}: <a
+     *                                   href="../../../../../rm/concepts/#resource-groups"
+     *                                   target="_top">Resource group(s)</a>.
      *                               <li>{@link
      *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#ROLE
      *                                   ROLE}: <a
@@ -25030,16 +25009,29 @@ public class GPUdb extends GPUdbBase {
      *                                   members (roles or users, recursively),
      *                                   and associated permissions.
      *                               <li>{@link
-     *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#RESOURCE_GROUP
-     *                                   RESOURCE_GROUP}: <a
-     *                                   href="../../../../../rm/concepts/#resource-groups"
-     *                                   target="_top">Resource group(s)</a>.
+     *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#STORED_PROCEDURE
+     *                                   STORED_PROCEDURE}: <a
+     *                                   href="../../../../../sql/procedure/"
+     *                                   target="_top">SQL procedure(s)</a>.
+     *                               <li>{@link
+     *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#TABLE
+     *                                   TABLE}: <a
+     *                                   href="../../../../../concepts/tables/"
+     *                                   target="_top">Table(s)</a> and <a
+     *                                   href="../../../../../sql/ddl/#create-view"
+     *                                   target="_top">SQL view(s)</a>.
+     *                               <li>{@link
+     *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#USER
+     *                                   USER}: <a
+     *                                   href="../../../../../security/sec_concepts/#security-concepts-users"
+     *                                   target="_top">User(s)</a> (internal
+     *                                   and external) and associated
+     *                                   permissions.
      *                               <li>{@link
      *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#USER_DEFINED_FUNCTION
-     *                                   USER_DEFINED_FUNCTION}: UDF
-     *                                   Procedure(s)<a
+     *                                   USER_DEFINED_FUNCTION}: <a
      *                                   href="../../../../../udf_overview"
-     *                                   target="_top">None</a>.
+     *                                   target="_top">UDF(s)</a>.
      *                           </ul>
      * @param datasourceName  Data source through which the backup will be
      *                        restored.
@@ -25050,6 +25042,105 @@ public class GPUdb extends GPUdbBase {
      *                         BACKUP_ID}: ID of the snapshot to restore. Leave
      *                         empty to restore the most recent snapshot in the
      *                         backup. The default value is ''.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#CHECKSUM
+     *                         CHECKSUM}: Whether or not to verify checksums
+     *                         for backup files when restoring.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#CREATE_SCHEMA_IF_NOT_EXIST
+     *                         CREATE_SCHEMA_IF_NOT_EXIST}: Behavior to apply
+     *                         when the schema containing any database object
+     *                         to restore does not already exist.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#TRUE
+     *                                 TRUE}: If the schema containing any
+     *                                 restored object does not exist, create
+     *                                 it automatically.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
+     *                                 FALSE}: If the schema containing any
+     *                                 restored object does not exist, return
+     *                                 an error.
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#TRUE
+     *                         TRUE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#DDL_ONLY
+     *                         DDL_ONLY}: Behavior to apply when restoring
+     *                         tables.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#TRUE
+     *                                 TRUE}: Restore table DDL, but do not
+     *                                 restore data.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
+     *                                 FALSE}: Restore tables and their data.
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#DRY_RUN
+     *                         DRY_RUN}: Whether or not to perform a dry run of
+     *                         the restoration operation.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#REINGEST
+     *                         REINGEST}: Behavior to apply when restoring
+     *                         table data.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#TRUE
+     *                                 TRUE}: Restore table data by
+     *                                 re-ingesting it.  This is the default
+     *                                 behavior if the cluster topology differs
+     *                                 from that of the contained backup.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
+     *                                 FALSE}: Restore the persisted data files
+     *                                 directly.
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#RENAMED_OBJECTS_SCHEMA
+     *                         RENAMED_OBJECTS_SCHEMA}: If the {@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#RESTORE_POLICY
+     *                         RESTORE_POLICY} is {@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#RENAME
+     *                         RENAME}, use this schema for relocated existing
+     *                         objects instead of the default generated one.
+     *                         The default value is ''.
      *                     <li>{@link
      *                         com.gpudb.protocol.RestoreBackupRequest.Options#RESTORE_POLICY
      *                         RESTORE_POLICY}: Behavior to apply when any
@@ -25074,110 +25165,11 @@ public class GPUdb extends GPUdbBase {
      *                                 specified by {@link
      *                                 com.gpudb.protocol.RestoreBackupRequest.Options#RENAMED_OBJECTS_SCHEMA
      *                                 RENAMED_OBJECTS_SCHEMA}. This policy
-     *                                 does not apply to non-schema ojects.
+     *                                 does not apply to non-schema objects.
      *                         </ul>
      *                         The default value is {@link
      *                         com.gpudb.protocol.RestoreBackupRequest.Options#NONE
      *                         NONE}.
-     *                     <li>{@link
-     *                         com.gpudb.protocol.RestoreBackupRequest.Options#RENAMED_OBJECTS_SCHEMA
-     *                         RENAMED_OBJECTS_SCHEMA}: If the {@link
-     *                         com.gpudb.protocol.RestoreBackupRequest.Options#RESTORE_POLICY
-     *                         RESTORE_POLICY} is {@link
-     *                         com.gpudb.protocol.RestoreBackupRequest.Options#RENAME
-     *                         RENAME}, use this schema for relocated existing
-     *                         objects instead of the default generated one.
-     *                         The default value is ''.
-     *                     <li>{@link
-     *                         com.gpudb.protocol.RestoreBackupRequest.Options#CREATE_SCHEMA_IF_NOT_EXIST
-     *                         CREATE_SCHEMA_IF_NOT_EXIST}: Behavior to apply
-     *                         when the schema containing any database object
-     *                         to restore does not already exist.
-     *                         Supported values:
-     *                         <ul>
-     *                             <li>{@link
-     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#TRUE
-     *                                 TRUE}: If the schema containing any
-     *                                 restored object does not exist, create
-     *                                 it automatically.
-     *                             <li>{@link
-     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
-     *                                 FALSE}: If the schema containing any
-     *                                 restored object does not exist, return
-     *                                 an error.
-     *                         </ul>
-     *                         The default value is {@link
-     *                         com.gpudb.protocol.RestoreBackupRequest.Options#TRUE
-     *                         TRUE}.
-     *                     <li>{@link
-     *                         com.gpudb.protocol.RestoreBackupRequest.Options#REINGEST
-     *                         REINGEST}: Behavior to apply when restoring
-     *                         table data.
-     *                         Supported values:
-     *                         <ul>
-     *                             <li>{@link
-     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#TRUE
-     *                                 TRUE}: Restore table data by
-     *                                 re-ingesting it.  This is the default
-     *                                 behavior if the cluster topology differs
-     *                                 from that of the contained backup.
-     *                             <li>{@link
-     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
-     *                                 FALSE}: Restore the persisted data files
-     *                                 directly.
-     *                         </ul>
-     *                         The default value is {@link
-     *                         com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
-     *                         FALSE}.
-     *                     <li>{@link
-     *                         com.gpudb.protocol.RestoreBackupRequest.Options#DDL_ONLY
-     *                         DDL_ONLY}: Behavior to apply when restoring
-     *                         tables.
-     *                         Supported values:
-     *                         <ul>
-     *                             <li>{@link
-     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#TRUE
-     *                                 TRUE}: Restore table DDL, but do not
-     *                                 restore data.
-     *                             <li>{@link
-     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
-     *                                 FALSE}: Restore tables and their data.
-     *                         </ul>
-     *                         The default value is {@link
-     *                         com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
-     *                         FALSE}.
-     *                     <li>{@link
-     *                         com.gpudb.protocol.RestoreBackupRequest.Options#CHECKSUM
-     *                         CHECKSUM}: Whether or not to verify checksums
-     *                         for backup files when restoring.
-     *                         Supported values:
-     *                         <ul>
-     *                             <li>{@link
-     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#TRUE
-     *                                 TRUE}
-     *                             <li>{@link
-     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
-     *                                 FALSE}
-     *                         </ul>
-     *                         The default value is {@link
-     *                         com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
-     *                         FALSE}.
-     *                     <li>{@link
-     *                         com.gpudb.protocol.RestoreBackupRequest.Options#DRY_RUN
-     *                         DRY_RUN}: Whether or not to perform a dry run of
-     *                         the restoration operation.
-     *                         Supported values:
-     *                         <ul>
-     *                             <li>{@link
-     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#TRUE
-     *                                 TRUE}
-     *                             <li>{@link
-     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
-     *                                 FALSE}
-     *                         </ul>
-     *                         The default value is {@link
-     *                         com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
-     *                         FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      *
@@ -27210,8 +27202,9 @@ public class GPUdb extends GPUdbBase {
      *                         FALSE}.
      *                     <li>{@link
      *                         com.gpudb.protocol.ShowTableRequest.Options#REFERENCING_MATERIALIZED_VIEWS
-     *                         REFERENCING_MATERIALIZED_VIEWS}: Include view
-     *                         dependents in the output.
+     *                         REFERENCING_MATERIALIZED_VIEWS}: Include
+     *                         materialized views using this table as a source
+     *                         in the output.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link

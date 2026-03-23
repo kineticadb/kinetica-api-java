@@ -24,30 +24,21 @@ import org.apache.avro.generic.IndexedRecord;
  * The following merges are supported:
  * <p>
  * UNION (DISTINCT/ALL) - For data set union details and examples, see <a
- * href="../../../../../../concepts/unions/" target="_top">Union</a>.  For
+ * href="../../../../../../concepts/unions/" target="_top">Union</a>. For
  * limitations, see <a
  * href="../../../../../../concepts/unions/#limitations-and-cautions"
  * target="_top">Union Limitations and Cautions</a>.
  * <p>
  * INTERSECT (DISTINCT/ALL) - For data set intersection details and examples,
  * see <a href="../../../../../../concepts/intersect/"
- * target="_top">Intersect</a>.  For limitations, see <a
+ * target="_top">Intersect</a>. For limitations, see <a
  * href="../../../../../../concepts/intersect/#limitations"
  * target="_top">Intersect Limitations</a>.
  * <p>
  * EXCEPT (DISTINCT/ALL) - For data set subtraction details and examples, see
- * <a href="../../../../../../concepts/except/" target="_top">Except</a>.  For
+ * <a href="../../../../../../concepts/except/" target="_top">Except</a>. For
  * limitations, see <a href="../../../../../../concepts/except/#limitations"
  * target="_top">Except Limitations</a>.
- * <p>
- * MERGE VIEWS - For a given set of <a
- * href="../../../../../../concepts/filtered_views/" target="_top">filtered
- * views</a> on a single table, creates a single filtered view containing all
- * of the unique records across all of the given filtered data sets.
- * <p>
- * Non-charN 'string' and 'bytes' column types cannot be merged, nor can
- * columns marked as <a href="../../../../../../concepts/types/#data-handling"
- * target="_top">store-only</a>.
  */
 public class CreateUnionRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -178,12 +169,6 @@ public class CreateUnionRequest implements IndexedRecord {
          * specified tables (only works on 2 tables).
          */
         public static final String INTERSECT_ALL = "intersect_all";
-
-        /**
-         * When true use 128 bit hash for union-distinct, except, except_all,
-         * intersect and intersect_all modes. Otherwise use 64 bit hash.
-         */
-        public static final String LONG_HASH = "long_hash";
 
         /**
          * Indicates the number of records per chunk to be used for this output
@@ -376,10 +361,6 @@ public class CreateUnionRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#UNION_ALL
      *                         UNION_ALL}.
-     *                     <li>{@link Options#LONG_HASH LONG_HASH}: When true
-     *                         use 128 bit hash for union-distinct, except,
-     *                         except_all, intersect and intersect_all modes.
-     *                         Otherwise use 64 bit hash.
      *                     <li>{@link Options#CHUNK_SIZE CHUNK_SIZE}: Indicates
      *                         the number of records per chunk to be used for
      *                         this output table.
@@ -609,9 +590,6 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 specified tables (only works on 2 tables).
      *         </ul>
      *         The default value is {@link Options#UNION_ALL UNION_ALL}.
-     *     <li>{@link Options#LONG_HASH LONG_HASH}: When true use 128 bit hash
-     *         for union-distinct, except, except_all, intersect and
-     *         intersect_all modes. Otherwise use 64 bit hash.
      *     <li>{@link Options#CHUNK_SIZE CHUNK_SIZE}: Indicates the number of
      *         records per chunk to be used for this output table.
      *     <li>{@link Options#CHUNK_COLUMN_MAX_MEMORY CHUNK_COLUMN_MAX_MEMORY}:
@@ -721,9 +699,6 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 specified tables (only works on 2 tables).
      *         </ul>
      *         The default value is {@link Options#UNION_ALL UNION_ALL}.
-     *     <li>{@link Options#LONG_HASH LONG_HASH}: When true use 128 bit hash
-     *         for union-distinct, except, except_all, intersect and
-     *         intersect_all modes. Otherwise use 64 bit hash.
      *     <li>{@link Options#CHUNK_SIZE CHUNK_SIZE}: Indicates the number of
      *         records per chunk to be used for this output table.
      *     <li>{@link Options#CHUNK_COLUMN_MAX_MEMORY CHUNK_COLUMN_MAX_MEMORY}:

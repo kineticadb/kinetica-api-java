@@ -1,13 +1,11 @@
-package com.gpudb.filesystem.upload;
+package com.gpudb.filesystem;
 
 import com.gpudb.GPUdb;
 import com.gpudb.GPUdbException;
 import com.gpudb.GPUdbLogger;
-import com.gpudb.filesystem.GPUdbFileHandler;
-import com.gpudb.filesystem.common.IoTask;
-import com.gpudb.filesystem.common.OpMode;
 import com.gpudb.filesystem.common.Result;
-import com.gpudb.filesystem.utils.GPUdbFileHandlerUtils;
+import com.gpudb.filesystem.upload.FileUploadListener;
+import com.gpudb.filesystem.upload.UploadOptions;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
@@ -26,7 +24,7 @@ import java.util.concurrent.*;
  * {@code filesystem} API. The consequences of using this class directly in
  * client code is not guaranteed and maybe undesirable.
 
- * This class models an upload {@link OpMode}. Different instances of this
+ * This class models an upload operation. Different instances of this
  * class will be created for different operations and no instance of this
  * class will be shared. This class handles only multi part upload. It uses
  * a single threaded thread pool internally with an unbounded queue which is
@@ -36,7 +34,7 @@ import java.util.concurrent.*;
  * multiple large files to be uploaded each such file will be handled by a
  * new instance of this class.
  */
-public class UploadIoJob {
+class UploadIoJob {
 
     private final GPUdb db;
 
@@ -109,12 +107,12 @@ public class UploadIoJob {
      *
      * @throws GPUdbException
      */
-    public static Pair<String, UploadIoJob> createNewJob(GPUdb db,
-                                                         GPUdbFileHandler.Options fileHandlerOptions,
-                                                         String localFileName,
-                                                         String remoteFileName,
-                                                         UploadOptions uploadOptions,
-                                                         FileUploadListener callback) throws GPUdbException {
+    static Pair<String, UploadIoJob> createNewJob(GPUdb db,
+                                                  GPUdbFileHandler.Options fileHandlerOptions,
+                                                  String localFileName,
+                                                  String remoteFileName,
+                                                  UploadOptions uploadOptions,
+                                                  FileUploadListener callback) throws GPUdbException {
         UploadIoJob newJob = new UploadIoJob(
                 db,
                 fileHandlerOptions,
@@ -127,11 +125,11 @@ public class UploadIoJob {
         return Pair.of( jobId, newJob );
     }
 
-    public String getJobId() {
+    String getJobId() {
         return this.jobId;
     }
 
-    public ExecutorService getThreadPool() {
+    ExecutorService getThreadPool() {
         return this.threadPool;
     }
 
@@ -143,7 +141,7 @@ public class UploadIoJob {
      * Handles the execution of the given upload stage task, notifying any
      * callback configured for this upload.  Properly handles job cancellation
      * and ensures job terminates early upon error.
-     * 
+     *
      * @param task upload task to execute and report on
      */
     private void handleUploadResult(final IoTask task) throws GPUdbException {
@@ -196,11 +194,11 @@ public class UploadIoJob {
 
     /**
      * Starts the job to upload the multipart file by submitting
-     * different stages of a {@link com.gpudb.filesystem.upload.MultiPartUploadInfo.MultiPartOperation}
+     * different stages of a {@link MultiPartUploadInfo.MultiPartOperation}
      * for execution. Each stage is modeled as an {@link IoTask} containing the
      * file resources necessary to complete that stage of the upload.
      */
-    public void start() throws GPUdbException {
+    void start() throws GPUdbException {
 
         IoTask finalTask = null;
 
@@ -305,7 +303,7 @@ public class UploadIoJob {
     /**
      * This method is used to stop all the running {@link IoTask} instances.
      */
-    public List<Result> stop() {
+    List<Result> stop() {
         GPUdbFileHandlerUtils.awaitTerminationAfterShutdown( this.threadPool, GPUdbFileHandler.getDefaultThreadPoolTerminationTimeout() );
         return this.resultList;
     }

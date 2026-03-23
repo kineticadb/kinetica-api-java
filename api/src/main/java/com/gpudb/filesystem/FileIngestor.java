@@ -1,10 +1,11 @@
-package com.gpudb.filesystem.ingest;
+package com.gpudb.filesystem;
 
 import com.gpudb.GPUdb;
 import com.gpudb.GPUdbException;
 import com.gpudb.GPUdbLogger;
-import com.gpudb.filesystem.GPUdbFileHandler;
-import com.gpudb.filesystem.upload.FileUploader;
+import com.gpudb.filesystem.ingest.IngestOptions;
+import com.gpudb.filesystem.ingest.IngestResult;
+import com.gpudb.filesystem.ingest.TableCreationOptions;
 import com.gpudb.filesystem.upload.UploadOptions;
 import com.gpudb.protocol.DeleteDirectoryRequest;
 import com.gpudb.protocol.InsertRecordsFromFilesResponse;
@@ -19,7 +20,7 @@ import java.util.*;
  * This class uses FileUploader class to upload files to server and then
  * uses insertRecordsFromFile method to ingest the uploaded file.
  */
-public class FileIngestor {
+class FileIngestor {
 
     private final GPUdb db;
 
@@ -45,11 +46,11 @@ public class FileIngestor {
      */
     private FileUploader fileUploader;
 
-    public FileIngestor(final GPUdb db,
-                        final String tableName,
-                        final List<String> fileNames,
-                        IngestOptions ingestOptions,
-                        TableCreationOptions createTableOptions) {
+    FileIngestor(final GPUdb db,
+                 final String tableName,
+                 final List<String> fileNames,
+                 IngestOptions ingestOptions,
+                 TableCreationOptions createTableOptions) {
         this.db = db;
         this.tableName = tableName;
         this.fileNames = fileNames;
@@ -57,19 +58,19 @@ public class FileIngestor {
         this.createTableOptions = createTableOptions == null ? new TableCreationOptions() : createTableOptions;
     }
 
-    public IngestOptions getIngestOptions() {
+    IngestOptions getIngestOptions() {
         return this.ingestOptions;
     }
 
-    public void setIngestOptions(IngestOptions ingestOptions) {
+    void setIngestOptions(IngestOptions ingestOptions) {
         this.ingestOptions = ingestOptions;
     }
 
-    public TableCreationOptions getCreateTableOptions() {
+    TableCreationOptions getCreateTableOptions() {
         return this.createTableOptions;
     }
 
-    public void setCreateTableOptions(TableCreationOptions createTableOptions) {
+    void setCreateTableOptions(TableCreationOptions createTableOptions) {
         this.createTableOptions = createTableOptions;
     }
 
@@ -83,7 +84,7 @@ public class FileIngestor {
      *
      * @return  An {@link IngestResult} object
      */
-    public IngestResult ingestFromFiles() {
+    IngestResult ingestFromFiles() {
         final String ingestStagingDir = UUID.randomUUID().toString();
         Set<String> filesUploaded = new HashSet<>();
 
@@ -150,7 +151,7 @@ public class FileIngestor {
     /**
      * This method converts an object of type {@link InsertRecordsFromFilesResponse}
      * to an object of type {@link IngestResult}.
-     * 
+     *
      * @param resp  The response object from a given insert records call.
      * @param ex  The exception object from a given insert records call.
      * @return  An object of type {@link IngestResult}, combining the two.

@@ -81,26 +81,6 @@ public class AlterTableMonitorRequest implements IndexedRecord {
         private MonitorUpdatesMap() {  }
     }
 
-    /**
-     * A set of string constants for the {@link AlterTableMonitorRequest}
-     * parameter {@link #getOptions() options}.
-     * <p>
-     * Optional parameters.
-     */
-    public static final class Options {
-        /**
-         * [Developer option] Additional information about this update
-         */
-        public static final String REASON = "reason";
-
-        /**
-         * [Developer option] Log level
-         */
-        public static final String LOG_LEVEL = "log_level";
-
-        private Options() {  }
-    }
-
     private String topicId;
     private Map<String, String> monitorUpdatesMap;
     private Map<String, String> options;
@@ -155,14 +135,8 @@ public class AlterTableMonitorRequest implements IndexedRecord {
      *                                   The default value is an empty {@link
      *                                   Map}.
      *                           </ul>
-     * @param options  Optional parameters.
-     *                 <ul>
-     *                     <li>{@link Options#REASON REASON}: [Developer
-     *                         option] Additional information about this update
-     *                     <li>{@link Options#LOG_LEVEL LOG_LEVEL}: [Developer
-     *                         option] Log level
-     *                 </ul>
-     *                 The default value is an empty {@link Map}.
+     * @param options  Optional parameters. The default value is an empty
+     *                 {@link Map}.
      */
     public AlterTableMonitorRequest(String topicId, Map<String, String> monitorUpdatesMap, Map<String, String> options) {
         this.topicId = (topicId == null) ? "" : topicId;
@@ -259,14 +233,7 @@ public class AlterTableMonitorRequest implements IndexedRecord {
     }
 
     /**
-     * Optional parameters.
-     * <ul>
-     *     <li>{@link Options#REASON REASON}: [Developer option] Additional
-     *         information about this update
-     *     <li>{@link Options#LOG_LEVEL LOG_LEVEL}: [Developer option] Log
-     *         level
-     * </ul>
-     * The default value is an empty {@link Map}.
+     * Optional parameters. The default value is an empty {@link Map}.
      *
      * @return The current value of {@code options}.
      */
@@ -275,14 +242,7 @@ public class AlterTableMonitorRequest implements IndexedRecord {
     }
 
     /**
-     * Optional parameters.
-     * <ul>
-     *     <li>{@link Options#REASON REASON}: [Developer option] Additional
-     *         information about this update
-     *     <li>{@link Options#LOG_LEVEL LOG_LEVEL}: [Developer option] Log
-     *         level
-     * </ul>
-     * The default value is an empty {@link Map}.
+     * Optional parameters. The default value is an empty {@link Map}.
      *
      * @param options  The new value for {@code options}.
      *

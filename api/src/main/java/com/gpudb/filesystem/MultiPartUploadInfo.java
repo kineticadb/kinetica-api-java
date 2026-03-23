@@ -1,17 +1,17 @@
-package com.gpudb.filesystem.upload;
+package com.gpudb.filesystem;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * This is an internal class and not meant to be used by the end users of the
- * {@code filesystem} API. The consequences of using this class directly in
- * client code is not guaranteed and maybe undesirable.
-
  * This class packages and mimics certain important attributes of a multi-part
  * upload operation. The attributes of this class are in one-one correspondence
  * to those specified in the {@link com.gpudb.GPUdb#uploadFiles(List, List, Map)}
  * endpoint.
+ *
+ * <p>This class is read-only for API consumers - instances are created internally
+ * and provided via Result callbacks. Users should not attempt to instantiate
+ * this class directly.</p>
  */
 public class MultiPartUploadInfo {
 
@@ -65,16 +65,16 @@ public class MultiPartUploadInfo {
     private String fileName;
 
     /**
-     * Default constructor
+     * Package-private constructor - prevents external instantiation.
      */
-    public MultiPartUploadInfo() {
+    MultiPartUploadInfo() {
     }
 
     public String getUuid() {
         return this.uuid;
     }
 
-    public void setUuid(String uuid) {
+    void setUuid(String uuid) {
         this.uuid = uuid;
     }
 
@@ -82,7 +82,7 @@ public class MultiPartUploadInfo {
         return this.partOperation;
     }
 
-    public void setPartOperation(MultiPartOperation partOperation) {
+    void setPartOperation(MultiPartOperation partOperation) {
         this.partOperation = partOperation;
     }
 
@@ -90,7 +90,7 @@ public class MultiPartUploadInfo {
         return this.uploadPartNumber;
     }
 
-    public void setUploadPartNumber(int uploadPartNumber) {
+    void setUploadPartNumber(int uploadPartNumber) {
         this.uploadPartNumber = uploadPartNumber;
     }
 
@@ -98,7 +98,7 @@ public class MultiPartUploadInfo {
         return this.totalParts;
     }
 
-    public void setTotalParts(long totalParts) {
+    void setTotalParts(long totalParts) {
         this.totalParts = totalParts;
     }
 
@@ -108,7 +108,7 @@ public class MultiPartUploadInfo {
         return this.fileName;
     }
 
-    public void setFileName(String fileName) {
+    void setFileName(String fileName) {
         this.fileName = fileName;
     }
 

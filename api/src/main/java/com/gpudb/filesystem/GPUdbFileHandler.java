@@ -3,18 +3,14 @@ package com.gpudb.filesystem;
 import com.gpudb.GPUdb;
 import com.gpudb.GPUdbException;
 import com.gpudb.GPUdbLogger;
-import com.gpudb.filesystem.common.FileOperation;
 import com.gpudb.filesystem.common.KifsDirectoryInfo;
 import com.gpudb.filesystem.common.KifsFileInfo;
 import com.gpudb.filesystem.download.DownloadOptions;
 import com.gpudb.filesystem.download.FileDownloadListener;
-import com.gpudb.filesystem.download.FileDownloader;
-import com.gpudb.filesystem.ingest.FileIngestor;
 import com.gpudb.filesystem.ingest.IngestOptions;
 import com.gpudb.filesystem.ingest.IngestResult;
 import com.gpudb.filesystem.ingest.TableCreationOptions;
 import com.gpudb.filesystem.upload.FileUploadListener;
-import com.gpudb.filesystem.upload.FileUploader;
 import com.gpudb.filesystem.upload.UploadOptions;
 import com.gpudb.protocol.*;
 
@@ -203,7 +199,8 @@ public class GPUdbFileHandler {
      * @param callback  An instance of {@link FileUploadListener}, which is used
      *        to report the upload progress.
      * @throws GPUdbException  If an error occurs uploading the file(s) to the
-     *         server.
+     *         server. The exception message contains all collected error messages
+     *         from failed uploads.
      *
      * @see FileUploadListener
      * @see UploadOptions

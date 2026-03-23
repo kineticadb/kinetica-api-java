@@ -1,14 +1,13 @@
-package com.gpudb.filesystem.download;
+package com.gpudb.filesystem;
 
 import com.gpudb.GPUdb;
 import com.gpudb.GPUdbException;
 import com.gpudb.GPUdbLogger;
-import com.gpudb.GPUdbRuntimeException;
-import com.gpudb.filesystem.GPUdbFileHandler;
-import com.gpudb.filesystem.common.FileOperation;
 import com.gpudb.filesystem.common.KifsFileInfo;
 import com.gpudb.filesystem.common.OpMode;
 import com.gpudb.filesystem.common.Result;
+import com.gpudb.filesystem.download.DownloadOptions;
+import com.gpudb.filesystem.download.FileDownloadListener;
 import com.gpudb.protocol.DownloadFilesResponse;
 import com.gpudb.protocol.ShowFilesResponse;
 
@@ -25,7 +24,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * This is an internal class and not meant to be used by the end users of the
@@ -50,7 +48,7 @@ import java.util.stream.IntStream;
  * single thread and multiple files are downloaded in different threads.
  *
  */
-public class FileDownloader extends FileOperation {
+class FileDownloader extends FileOperation {
 
     private final FileDownloadListener callback;
 
@@ -60,7 +58,7 @@ public class FileDownloader extends FileOperation {
     /**
      * Constructs a new {@link FileDownloader} manager for downloading a given
      * set of files from a given KiFS directory to a local directory.
-     * 
+     *
      * @param db  The {@link GPUdb} instance used to access KiFS.
      * @param fileNames  List of names of the KiFS files to download.
      * @param localDirName  Name of local directory to download to.
@@ -70,12 +68,12 @@ public class FileDownloader extends FileOperation {
      *        download manager to notify as the download job progresses.
      * @param fileHandlerOptions  Options for setting up the files for transfer.
      */
-    public FileDownloader(GPUdb db,
-                          final List<String> fileNames,
-                          final String localDirName,
-                          DownloadOptions options,
-                          FileDownloadListener callback,
-                          GPUdbFileHandler.Options fileHandlerOptions) throws GPUdbException {
+    FileDownloader(GPUdb db,
+                   final List<String> fileNames,
+                   final String localDirName,
+                   DownloadOptions options,
+                   FileDownloadListener callback,
+                   GPUdbFileHandler.Options fileHandlerOptions) throws GPUdbException {
         super(db, OpMode.DOWNLOAD, fileNames, localDirName, false, fileHandlerOptions);
 
         this.downloadOptions = options;
@@ -90,29 +88,30 @@ public class FileDownloader extends FileOperation {
      *
      * If a {@link #callback} object is available it will be invoked.
      *
-     * @throws GPUdbException  If an error occurs transferring any batches of
-     *        non-multi-part designated files from the server.
+     * @return A list of {@link Result} objects for all full file downloads (both successful and failed).
      */
-    private void downloadFullFiles() throws GPUdbException {
+    private List<Result> downloadFullFiles() {
 
-        if( this.dirName == null || this.dirName.trim().isEmpty() )
-            throw new GPUdbException("Name of local directory to save files cannot be null or empty");
+        List<Result> allResults = new ArrayList<>();
+
+        if( this.dirName == null || this.dirName.trim().isEmpty() ) {
+            Result result = new Result();
+            result.setSuccessful(false);
+            result.setErrorMessage("Name of local directory to save files cannot be null or empty");
+            result.setException(new GPUdbException(result.getErrorMessage()));
+            allResults.add(result);
+            return allResults;
+        }
 
         List<List<String>> batches = createBatches();
 
-        try {
-            IntStream.range(0, batches.size()).forEach(batchNum -> {
-                List<String> batch = batches.get( batchNum );
-                try {
-                    downloadFullFileBatch(batch);
-                } catch (GPUdbException e) {
-                    throw new GPUdbRuntimeException(e);
-                }
-            });
+        for (int batchNum = 0; batchNum < batches.size(); batchNum++) {
+            List<String> batch = batches.get(batchNum);
+            List<Result> batchResults = downloadFullFileBatch(batch);
+            allResults.addAll(batchResults);
         }
-        catch (GPUdbRuntimeException e) {
-            throw new GPUdbException("Error downloading file batch", e);
-        }
+
+        return allResults;
     }
 
 
@@ -120,37 +119,76 @@ public class FileDownloader extends FileOperation {
      * This method does the download for a batch files which are small enough to
      * be downloaded in one go. Right now the size threshold for such files have
      * been kept at 60 MB. In case a callback object {@link FileDownloadListener}
-     * has been specified, {@link FileDownloadListener#onFullFileDownload(Result)}
+     * has been specified, {@link FileDownloadListener#onFullFileDownload(List)}
      * will be called.
-     * 
-     * @throws GPUdbException  If an error occurs transferring any file in this
-     *        batch of non-multi-part designated files to the server.
+     *
+     * @return A list of {@link Result} objects for the batch download (both successful and failed).
      */
-    private void downloadFullFileBatch(List<String> fullFileBatch) throws GPUdbException {
-        
-        DownloadFilesResponse dfResp = this.db.downloadFiles(
-                fullFileBatch,
-                null,
-                null,
-                new HashMap<>());
+    private List<Result> downloadFullFileBatch(List<String> fullFileBatch) {
+
+        List<Result> results = new ArrayList<>();
+        List<String> successfulFiles = new ArrayList<>();
+
+        DownloadFilesResponse dfResp;
+        try {
+            dfResp = this.db.downloadFiles(
+                    fullFileBatch,
+                    null,
+                    null,
+                    new HashMap<>());
+        } catch (GPUdbException e) {
+            // If the batch download fails, create error results for all files in the batch
+            String errorMessage = String.format("Failed to download file batch: %s", e.getMessage());
+            GPUdbLogger.error(errorMessage);
+            for (String fileName : fullFileBatch) {
+                Result result = new Result();
+                result.setFileName(fileName);
+                result.setSuccessful(false);
+                result.setException(e);
+                result.setErrorMessage(errorMessage);
+                result.setOpMode(OpMode.DOWNLOAD);
+                results.add(result);
+            }
+            return results;
+        }
 
         int count = dfResp.getFileNames().size();
         for( int i = 0; i < count; i++ ) {
             String fileName = dfResp.getFileNames().get( i );
             ByteBuffer data = dfResp.getFileData().get( i );
 
-            saveFullFile( fileName, data );
+            Result result = new Result();
+            result.setFileName(fileName);
+            result.setOpMode(OpMode.DOWNLOAD);
+
+            try {
+                saveFullFile( fileName, data );
+                result.setSuccessful(true);
+                successfulFiles.add(fileName);
+            } catch (GPUdbException e) {
+                String errorMessage = String.format("Failed to save downloaded file <%s>: %s", fileName, e.getMessage());
+                GPUdbLogger.error(errorMessage);
+                result.setSuccessful(false);
+                result.setException(e);
+                result.setErrorMessage(errorMessage);
+            }
+
+            results.add(result);
         }
 
-        if( this.callback != null )
-            this.callback.onFullFileDownload( dfResp.getFileNames() );
+        // Notify callback about successful downloads
+        if( this.callback != null && !successfulFiles.isEmpty() ) {
+            this.callback.onFullFileDownload( successfulFiles );
+        }
+
+        return results;
     }
 
 
     /**
      * Splits files to download into subsets, each subset containing a group of
      * files that collectively fall under the configured split/batch size limit.
-     * 
+     *
      * @return  A list of lists of files to download, one outer-list for each
      *        inner-list batch of file names to download at once.
      */
@@ -176,30 +214,30 @@ public class FileDownloader extends FileOperation {
         }).collect(Collectors.toList());
 
         for( int i=0, s = this.fullFileList.size(); i < s; i++  ) {
-            
+
             String file = this.fullFileList.get(i);
-            
+
             long size = sizes.get(i);
             batch.add( file );
             sum += size;
-   
+
             if( sum > this.fileHandlerOptions.getFileSizeToSplit() ) {
                 // This must go into the next bucket as it overshoots the
                 // partitionSum value
                 batch.remove( file );
-   
+
                 // Re-adjust the index so that current value is re-read in the
                 // next iteration
                 i--;
             }
-   
+
             if( sum >= this.fileHandlerOptions.getFileSizeToSplit() ) {
                 batches.add( new ArrayList<>(batch) );
                 batch.clear();
                 sum = 0;
             }
         }
-        
+
         if( batch.size() > 0) { // We have an incomplete batch left, add it
             batches.add(batch);
         }
@@ -209,7 +247,7 @@ public class FileDownloader extends FileOperation {
         if( batches.size() == 0) {
             batches.add(this.fullFileList);
         }
-        
+
         return batches;
     }
 
@@ -230,7 +268,7 @@ public class FileDownloader extends FileOperation {
         String localPath = this.dirName + File.separator + fileName;
 
         Path normalizedPath = Paths.get( localPath ).normalize().toAbsolutePath();
-        
+
         GPUdbLogger.debug(String.format("Writing downloaded KiFS file <%s> to <%s>", fileName, normalizedPath.toString()));
 
         if( Files.notExists( normalizedPath) || this.downloadOptions.isOverwriteExisting() ) {
@@ -253,19 +291,20 @@ public class FileDownloader extends FileOperation {
     /**
      * This method downloads files which are candidates for multi-part downloads
      * as determined from their size.
-     * 
+     *
      * It creates a list of {@link DownloadIoJob} instances, one for each file,
      * to be downloaded in parts.
      *
-     * Once the jobs are created it calls the method {@link #executeJobs()}
-     * and finally the method {@link #terminateJobs()}
+     * Once the jobs are created it calls the method to execute jobs
+     * and finally the method to terminate jobs.
      *
-     * @see DownloadIoJob#createNewJob(GPUdb, GPUdbFileHandler.Options, String, String, String, KifsFileInfo, DownloadOptions, FileDownloadListener)
-     * 
-     * @throws GPUdbException  If an error occurs transferring any of the files
-     *        from the server.
+     * @return A list of {@link Result} objects for all multi-part downloads (both successful and failed).
+     *
+     * @see DownloadIoJob#createNewJob(GPUdb, GPUdbFileHandler.Options, String, String, KifsFileInfo, DownloadOptions, FileDownloadListener)
      */
-    private void downloadMultiPartFiles() throws GPUdbException {
+    private List<Result> downloadMultiPartFiles() {
+
+        List<Result> results = new ArrayList<>();
 
         // For each file in the multi part list create an IoJob instance
         for (String kifsFileName : this.multiPartList) {
@@ -273,23 +312,63 @@ public class FileDownloader extends FileOperation {
 
             String localFileName = this.dirName + File.separator + fileName;
 
-            List<KifsFileInfo> kifsFileInfos = getFileInfoFromServer(kifsFileName);
+            Result result = new Result();
+            result.setFileName(kifsFileName);
+            result.setMultiPart(true);
+            result.setOpMode(OpMode.DOWNLOAD);
 
-            Pair<String, DownloadIoJob> idJobPair = DownloadIoJob.createNewJob(
-                    this.db,
-                    this.fileHandlerOptions,
-                    kifsFileName,
-                    localFileName,
-                    kifsFileInfos.get(0),
-                    this.downloadOptions,
-                    this.callback);
+            List<KifsFileInfo> kifsFileInfos;
+            try {
+                kifsFileInfos = getFileInfoFromServer(kifsFileName);
+            } catch (GPUdbException e) {
+                String errorMessage = String.format("Failed to get file info for multi-part download <%s>: %s", kifsFileName, e.getMessage());
+                GPUdbLogger.error(errorMessage);
+                result.setSuccessful(false);
+                result.setException(e);
+                result.setErrorMessage(errorMessage);
+                results.add(result);
+                continue;
+            }
 
-            // start the job immediately
-            idJobPair.getValue().start();
+            Pair<String, DownloadIoJob> idJobPair;
+            try {
+                idJobPair = DownloadIoJob.createNewJob(
+                        this.db,
+                        this.fileHandlerOptions,
+                        kifsFileName,
+                        localFileName,
+                        kifsFileInfos.get(0),
+                        this.downloadOptions,
+                        this.callback);
+            } catch (GPUdbException e) {
+                String errorMessage = String.format("Failed to create download job for multi-part file <%s>: %s", kifsFileName, e.getMessage());
+                GPUdbLogger.error(errorMessage);
+                result.setSuccessful(false);
+                result.setException(e);
+                result.setErrorMessage(errorMessage);
+                results.add(result);
+                continue;
+            }
 
-            // Wait for it to stop before processing the next file
-            idJobPair.getValue().stop();
+            try {
+                // Try to download, but catch exception to prevent breaking the loop
+                idJobPair.getValue().start();
+                result.setSuccessful(true);
+            } catch (GPUdbException e) {
+                String errorMessage = String.format("Failed to download multi-part file <%s>: %s", kifsFileName, e.getMessage());
+                GPUdbLogger.error(errorMessage);
+                result.setSuccessful(false);
+                result.setException(e);
+                result.setErrorMessage(errorMessage);
+            } finally {
+                // Wait for it to stop (clean up threads) before processing the next file
+                idJobPair.getValue().stop();
+            }
+
+            results.add(result);
         }
+
+        return results;
     }
 
 
@@ -297,19 +376,34 @@ public class FileDownloader extends FileOperation {
      * This is the main download method which is to be called by the users of
      * this class. Internally depending whether there are files to be downloaded
      * one shot or in parts it will call the methods
-     * {@link #downloadFullFiles()} ()} and {@link #downloadMultiPartFiles()} ()}
-     * 
-     * @throws GPUdbException  If an error occurs transferring any of the files
-     *        from the server.
+     * {@link #downloadFullFiles()} and {@link #downloadMultiPartFiles()}
+     *
+     * @throws GPUdbException If any file downloads fail. The exception message contains
+     *         all collected error messages from failed downloads.
      */
-    public void download() throws GPUdbException {
+    void download() throws GPUdbException {
 
-        downloadMultiPartFiles();
+        List<Result> multiPartResults = downloadMultiPartFiles();
+        List<Result> allResults = new ArrayList<>(multiPartResults);
 
-        downloadFullFiles();
+        List<Result> fullFileResults = downloadFullFiles();
+        allResults.addAll(fullFileResults);
 
-        if( this.fullFileList.size() == 0 && this.multiPartList.size() == 0 )
+        if(this.fullFileList.isEmpty() && this.multiPartList.isEmpty())
             GPUdbLogger.warn( "No files found to download ..." );
+
+        // Collect all error messages from failed downloads
+        List<String> errorMessages = new ArrayList<>();
+        for (Result result : allResults) {
+            if (!result.isSuccessful()) {
+                errorMessages.add(result.getErrorMessage());
+            }
+        }
+
+        // If there were any errors, throw an exception with all collected error messages
+        if (!errorMessages.isEmpty()) {
+            throw new GPUdbException(String.join("\n", errorMessages));
+        }
     }
 
 }

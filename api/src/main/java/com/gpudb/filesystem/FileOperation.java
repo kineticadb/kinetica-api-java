@@ -1,10 +1,10 @@
-package com.gpudb.filesystem.common;
+package com.gpudb.filesystem;
 
 import com.gpudb.GPUdb;
 import com.gpudb.GPUdbException;
 import com.gpudb.GPUdbLogger;
-import com.gpudb.filesystem.GPUdbFileHandler;
-import com.gpudb.filesystem.ingest.FileIngestor;
+import com.gpudb.filesystem.common.KifsFileInfo;
+import com.gpudb.filesystem.common.OpMode;
 import com.gpudb.protocol.ShowFilesResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -20,13 +20,13 @@ import java.util.*;
  * {@code filesystem} API. The consequences of using this class directly in
  * client code is not guaranteed and maybe undesirable.
  *
- * <p>This is the base class from which the classes {@link com.gpudb.filesystem.upload.FileUploader}
- * and {@link com.gpudb.filesystem.download.FileDownloader} are derived.
+ * <p>This is the base class from which the classes {@link FileUploader}
+ * and {@link FileDownloader} are derived.
  * The purpose of this class is to model certain basic functions like
  * searching directories for specific file patterns, retrieving file attributes
  * and determining transfer strategies (single vs multi-part).
  */
-public class FileOperation {
+class FileOperation {
 
     protected final OpMode opMode;
     protected final GPUdb db;
@@ -72,7 +72,7 @@ public class FileOperation {
     /**
      * Constructs a new file operation instance, managing the transfer of a set
      * of files to a target directory.
-     * 
+     *
      * @param db  The {@link GPUdb} instance used to access KiFS.
      * @param opMode  Indicates whether this is an upload or download operation.
      * @param fileNames  List of source file names.
@@ -84,12 +84,12 @@ public class FileOperation {
      * @throws GPUdbException  propagates exceptions raised from various argument
      *         validations.
      */
-    public FileOperation(final GPUdb db,
-                         final OpMode opMode,
-                         final List<String> fileNames,
-                         final String dirName,
-                         boolean recursive,
-                         GPUdbFileHandler.Options fileHandlerOptions) throws GPUdbException {
+    FileOperation(final GPUdb db,
+                  final OpMode opMode,
+                  final List<String> fileNames,
+                  final String dirName,
+                  boolean recursive,
+                  GPUdbFileHandler.Options fileHandlerOptions) throws GPUdbException {
         this.db = db;
         this.opMode = opMode;
         this.fileNames = fileNames;
@@ -111,12 +111,12 @@ public class FileOperation {
      * This method returns the list of file names uploaded without the path
      * information. This used by the {@link FileIngestor#ingestFromFiles()}
      * method to prepare the list of file names to be passed on to the
-     * {@link GPUdb#insertRecordsFromFiles(InsertRecordsFromFilesRequest)}
+     * {@link GPUdb#insertRecordsFromFiles(com.gpudb.protocol.InsertRecordsFromFilesRequest)}
      * endpoint.
-     * 
+     *
      * @return  A set of file names without the path information.
      */
-    public Set<String> getNamesOfFilesUploaded() {
+    Set<String> getNamesOfFilesUploaded() {
         return this.namesOfFilesUploaded;
     }
 
@@ -350,7 +350,7 @@ public class FileOperation {
 
     /**
      * Checks the given string for the presence of glob characters.
-     * 
+     *
      * @param s String to check for glob characters.
      * @return  Whether or not glob characters exist in the given string.
      */
@@ -368,7 +368,7 @@ public class FileOperation {
      *        root of the file path, the second the full path without the file
      *        name and the third just the file name itself.
      */
-    public static List<Triple<String, String, String>> parseFileNames(List<String> fileNamesToParse) {
+    static List<Triple<String, String, String>> parseFileNames(List<String> fileNamesToParse) {
         List<Triple<String, String, String>> listOfRootPathFilenameTriples = new ArrayList<>();
 
         for (String rawPath : fileNamesToParse) {
@@ -429,12 +429,12 @@ public class FileOperation {
 
     /**
      * Checks if a local directory exists or not.
-     * 
+     *
      * @param localDirName  Name of the local directory to check for.
      * @return  True if the directory exists, and false if it doesn't exist or
      *        if the {@code localDirName} is null or empty.
      */
-    public static boolean localDirExists(final String localDirName) {
+    static boolean localDirExists(final String localDirName) {
         if (StringUtils.isBlank(localDirName)) return false;
         return Files.isDirectory(Paths.get(localDirName));
     }
@@ -446,7 +446,7 @@ public class FileOperation {
      * @param localFileName  Name of the file.
      * @return  True if the file exists, false otherwise.
      */
-    public static boolean localFileExists(final String localFileName) {
+    static boolean localFileExists(final String localFileName) {
         if (StringUtils.isBlank(localFileName)) return false;
 
         // If it looks like a pattern, assume true and let the resolver handle it
@@ -456,17 +456,17 @@ public class FileOperation {
         return Files.exists(Paths.get(localFileName));
     }
 
-    
+
     /**
      * Use {@link GPUdbFileHandler#KIFS_PATH_SEPARATOR} directly instead.
-     * 
+     *
      * @deprecated
      * @return  The separator character used by KiFS between a directory and
      *        the files it contains; can also be used in file names to create
      *        "virtual" subdirectories.
      */
     @Deprecated(since = "7.2.3", forRemoval = true)
-    public static String getKifsPathSeparator() {
+    static String getKifsPathSeparator() {
         return GPUdbFileHandler.KIFS_PATH_SEPARATOR;
     }
 

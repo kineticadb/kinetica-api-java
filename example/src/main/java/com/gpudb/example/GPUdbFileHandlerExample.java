@@ -208,9 +208,9 @@ public class GPUdbFileHandlerExample {
         String url = System.getProperty("url", "http://127.0.0.1:9191");
         String user = System.getProperty("user", "");
         String pass = System.getProperty("pass", "");
-        String uploadDir = System.getProperty("upload", "");
-        String downloadDir = System.getProperty("download", "");
-        String kifsDir = System.getProperty("kifs", "kifs_example-uploads");
+        String uploadDir = System.getProperty("upload", "./_kifs_example_downloaded_files");
+        String downloadDir = System.getProperty("download", "./_kifs_example_downloaded_files");
+        String kifsDir = System.getProperty("kifs", "~anonymous");
         String logLevel = System.getProperty("logLevel", "INFO");
 
         if ( uploadDir.isEmpty() ) {

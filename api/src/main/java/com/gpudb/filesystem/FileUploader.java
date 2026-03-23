@@ -1,12 +1,12 @@
-package com.gpudb.filesystem.upload;
+package com.gpudb.filesystem;
 
 import com.gpudb.GPUdb;
 import com.gpudb.GPUdbException;
 import com.gpudb.GPUdbLogger;
-import com.gpudb.filesystem.GPUdbFileHandler;
-import com.gpudb.filesystem.common.FileOperation;
 import com.gpudb.filesystem.common.OpMode;
 import com.gpudb.filesystem.common.Result;
+import com.gpudb.filesystem.upload.FileUploadListener;
+import com.gpudb.filesystem.upload.UploadOptions;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -38,7 +38,7 @@ import java.util.*;
  * The multiple parts of a single file are uploaded sequentially in a single
  * thread and multiple files are uploaded in different threads.
  */
-public class FileUploader extends FileOperation {
+class FileUploader extends FileOperation {
 
     private final FileUploadListener callback;
 
@@ -50,7 +50,7 @@ public class FileUploader extends FileOperation {
     /**
      * Constructs a new {@link FileUploader} manager for uploading a given set
      * of files to a given KiFS directory.
-     * 
+     *
      * @param db  The {@link GPUdb} instance used to access KiFS.
      * @param fileNames  List of names of the local files to upload.
      * @param remoteDirName  Name of KiFS directory to upload to.
@@ -60,12 +60,12 @@ public class FileUploader extends FileOperation {
      *        manager to notify as the upload job progresses.
      * @param fileHandlerOptions  Options for setting up the files for transfer.
      */
-    public FileUploader(final GPUdb db,
-                        final List<String> fileNames,
-                        final String remoteDirName,
-                        final UploadOptions options,
-                        final FileUploadListener callback,
-                        final GPUdbFileHandler.Options fileHandlerOptions) throws GPUdbException {
+    FileUploader(final GPUdb db,
+                 final List<String> fileNames,
+                 final String remoteDirName,
+                 final UploadOptions options,
+                 final FileUploadListener callback,
+                 final GPUdbFileHandler.Options fileHandlerOptions) throws GPUdbException {
 
         super( db, OpMode.UPLOAD, fileNames, remoteDirName, options.isRecursive(), fileHandlerOptions);
 
@@ -80,13 +80,15 @@ public class FileUploader extends FileOperation {
      * kept at 60 MB. In case a callback object {@link FileUploadListener} has
      * been specified, {@link FileUploadListener#onFullFileUpload(Result)} will
      * be called.
-     * 
-     * @throws GPUdbException  If an error occurs transferring any batches of
-     *         non-multi-part designated files to the server.
+     *
+     * @return A list of {@link Result} objects for all full file uploads (both successful and failed).
      */
-    private void uploadFullFiles() throws GPUdbException {
+    private List<Result> uploadFullFiles() {
 
         FullFileDispatcher fullFileDispatcher = new FullFileDispatcher( this.fileHandlerOptions, this.callback);
+
+        // Collect all results encountered during the upload process
+        List<Result> allResults = new ArrayList<>();
 
         // While iterating over the list of maps keep track of the count
         // Once the count reaches the thread pool size
@@ -102,7 +104,7 @@ public class FileUploader extends FileOperation {
         int batches = this.fullFileBatchManager.getNumberOfBatches();
 
         if (batches == 0)
-            return;
+            return allResults;
 
         // Process the batches in a loop
         for( int n=0; n < batches; n++ ) {
@@ -126,8 +128,21 @@ public class FileUploader extends FileOperation {
                     remoteFileNames.add( batch.get( fileName ) );
 
                 } catch (IOException e) {
-                    // Log error and continue to next file instead of aborting the whole batch
-                    GPUdbLogger.error("Error reading source file <" + fileName + ">, skipping: " + e.getMessage());
+                    // Log error and collect result, but continue to next file instead of aborting the whole batch
+                    String errorMessage = String.format("Failed to read source file <%s>: %s", fileName, e.getMessage());
+                    GPUdbLogger.error(errorMessage);
+
+                    Result result = new Result();
+                    result.setFileName(fileName);
+                    result.setSuccessful(false);
+                    result.setException(e);
+                    result.setErrorMessage(errorMessage);
+                    allResults.add(result);
+
+                    // Notify callback about the file read failure
+                    if (this.callback != null) {
+                        this.callback.onFullFileUpload(result);
+                    }
                 }
             }
 
@@ -159,8 +174,9 @@ public class FileUploader extends FileOperation {
             // thread pool and if it has, get the Results of the
             // operations and reset the payloads list and count.
             if( count % this.fileHandlerOptions.getFullFileDispatcherThreadpoolSize() == 0 ) {
-                // Wait for the tasks to complete
-                fullFileDispatcher.collect();
+                // Wait for the tasks to complete and collect results
+                List<Result> batchResults = fullFileDispatcher.collect();
+                allResults.addAll(batchResults);
                 count = 0;
                 payloads.clear();
             }
@@ -170,9 +186,12 @@ public class FileUploader extends FileOperation {
         // Wait for jobs to complete if the only batch is less than size of the
         // thread pool or if the size of the last batch is not a multiple of
         // the size of the thread pool.
-        fullFileDispatcher.collect();
+        List<Result> finalBatchResults = fullFileDispatcher.collect();
+        allResults.addAll(finalBatchResults);
 
         fullFileDispatcher.terminate();
+
+        return allResults;
 
     } //End uploadFullFiles method
 
@@ -186,49 +205,63 @@ public class FileUploader extends FileOperation {
      * <p>
      * Then it creates a list of {@link UploadIoJob} instances, one for each
      * file, to be uploaded in parts.
-     * 
-     * @throws GPUdbException  If an error occurs transferring any multi-part
-     *        designated files to the server.
-     * 
-     * @see UploadIoJob#createNewJob(GPUdb, GPUdbFileHandler.Options, OpMode, String, String, String, UploadOptions, FileUploadListener)
-     * 
-     * @throws GPUdbException  If an error occurs transferring any of the files
-     *        to the server.
+     *
+     * @return A list of {@link Result} objects for all multi-part uploads (both successful and failed).
+     *
+     * @see UploadIoJob#createNewJob(GPUdb, GPUdbFileHandler.Options, String, String, UploadOptions, FileUploadListener)
      */
-    private void uploadMultiPartFiles() throws GPUdbException {
+    private List<Result> uploadMultiPartFiles() {
 
-        Map<String, String> errors = new LinkedHashMap<>();
+        List<Result> results = new ArrayList<>();
 
         // For each file in the multi part list create an IoJob instance
         for (int i = 0, multiPartListSize = this.multiPartList.size(); i < multiPartListSize; i++) {
             String fileName = this.multiPartList.get(i);
             String remoteFileName = this.multiPartRemoteFileNames.get( i );
 
-            Pair<String, UploadIoJob> idJobPair = UploadIoJob.createNewJob(
-                    this.db,
-                    this.fileHandlerOptions,
-                    fileName,
-                    remoteFileName,
-                    this.uploadOptions,
-                    this.callback);
+            Result result = new Result();
+            result.setFileName(fileName);
+            result.setMultiPart(true);
+            result.setOpMode(OpMode.UPLOAD);
+
+            Pair<String, UploadIoJob> idJobPair;
+            try {
+                idJobPair = UploadIoJob.createNewJob(
+                        this.db,
+                        this.fileHandlerOptions,
+                        fileName,
+                        remoteFileName,
+                        this.uploadOptions,
+                        this.callback);
+            } catch (GPUdbException e) {
+                String errorMessage = String.format("Failed to create upload job for multi-part file <%s>: %s", fileName, e.getMessage());
+                GPUdbLogger.error(errorMessage);
+                result.setSuccessful(false);
+                result.setException(e);
+                result.setErrorMessage(errorMessage);
+                results.add(result);
+                continue;
+            }
 
             try {
                 // Try to upload, but catch exception to prevent breaking the loop
                 idJobPair.getValue().start();
+                result.setSuccessful(true);
             } catch (GPUdbException e) {
                 String errorMessage = String.format("Failed to upload multi-part file <%s>: %s", fileName, e.getMessage());
                 GPUdbLogger.error(errorMessage);
-                errors.put(fileName, errorMessage);
+                result.setSuccessful(false);
+                result.setException(e);
+                result.setErrorMessage(errorMessage);
             } finally {
                 // Wait for it to stop (clean up threads) before processing the next file
                 idJobPair.getValue().stop();
             }
+
+            results.add(result);
         }
 
-        if( !errors.isEmpty() ) {
-            String errorMessages = String.join("\n", errors.values());
-            throw new GPUdbException(errorMessages);
-        }
+        return results;
     }
 
 
@@ -237,34 +270,51 @@ public class FileUploader extends FileOperation {
      * this class. Internally depending whether there are files to be uploaded
      * one shot or in parts it will call the methods
      * {@link #uploadFullFiles()} and {@link #uploadMultiPartFiles()}
-     * 
-     * @throws GPUdbException  If an error occurs transferring any of the files
-     *        to the server.
+     *
+     * @throws GPUdbException If any file uploads fail. The exception message contains
+     *         all collected error messages from failed uploads.
      */
-    public void upload() throws GPUdbException {
+    void upload() throws GPUdbException {
 
-        uploadMultiPartFiles();
+        List<Result> allResults = new ArrayList<>();
 
-        uploadFullFiles();
+        List<Result> multiPartResults = uploadMultiPartFiles();
+        allResults.addAll(multiPartResults);
+
+        List<Result> fullFileResults = uploadFullFiles();
+        allResults.addAll(fullFileResults);
 
         if( this.fullFileBatchManager.getNumberOfBatches() == 0  && this.multiPartList.size() == 0 )
             GPUdbLogger.warn( "No files found to upload ..." );
+
+        // Collect all error messages from failed uploads
+        List<String> errorMessages = new ArrayList<>();
+        for (Result result : allResults) {
+            if (!result.isSuccessful()) {
+                errorMessages.add(result.getErrorMessage());
+            }
+        }
+
+        // If there were any errors, throw an exception with all collected error messages
+        if (!errorMessages.isEmpty()) {
+            throw new GPUdbException(String.join("\n", errorMessages));
+        }
     }
 
 
-    public UploadOptions getUploadOptions() {
+    UploadOptions getUploadOptions() {
         return this.uploadOptions;
     }
 
-    public void setUploadOptions(UploadOptions uploadOptions) {
+    void setUploadOptions(UploadOptions uploadOptions) {
         this.uploadOptions = uploadOptions;
     }
 
-    public int getRankForLocalDist() {
+    int getRankForLocalDist() {
         return this.rankForLocalDist;
     }
 
-    public void setRankForLocalDist(int rankForLocalDist) {
+    void setRankForLocalDist(int rankForLocalDist) {
         this.rankForLocalDist = rankForLocalDist;
     }
 }

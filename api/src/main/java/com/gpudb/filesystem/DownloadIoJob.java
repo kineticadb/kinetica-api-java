@@ -1,11 +1,12 @@
-package com.gpudb.filesystem.download;
+package com.gpudb.filesystem;
 
 import com.gpudb.GPUdb;
 import com.gpudb.GPUdbException;
 import com.gpudb.GPUdbLogger;
-import com.gpudb.filesystem.GPUdbFileHandler;
-import com.gpudb.filesystem.common.*;
-import com.gpudb.filesystem.utils.GPUdbFileHandlerUtils;
+import com.gpudb.filesystem.common.KifsFileInfo;
+import com.gpudb.filesystem.common.Result;
+import com.gpudb.filesystem.download.DownloadOptions;
+import com.gpudb.filesystem.download.FileDownloadListener;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
@@ -25,11 +26,11 @@ import java.util.concurrent.*;
  * {@code filesystem} API. The consequences of using this class directly in
  * client code is not guaranteed and maybe undesirable.
 
- * This class models a download {@link OpMode}. Different instances of this
+ * This class models a download operation. Different instances of this
  * class will be created for different operations and no instance of this
  * class will be shared.
  */
-public class DownloadIoJob {
+class DownloadIoJob {
 
     private final GPUdb db;
 
@@ -98,11 +99,11 @@ public class DownloadIoJob {
         this.resultList = new ArrayList<>();
     }
 
-    public String getDownloadFileName() {
+    String getDownloadFileName() {
         return this.downloadRemoteFileName;
     }
 
-    public String getDownloadLocalFileName() {
+    String getDownloadLocalFileName() {
         return this.downloadLocalFileName;
     }
 
@@ -119,13 +120,13 @@ public class DownloadIoJob {
      *        various stages of the download process.
      * @throws GPUdbException
      */
-    public static Pair<String, DownloadIoJob> createNewJob(GPUdb db,
-                                                           GPUdbFileHandler.Options fileHandlerOptions,
-                                                           String remoteFileName,
-                                                           String localFileName,
-                                                           KifsFileInfo kifsFileInfo,
-                                                           DownloadOptions downloadOptions,
-                                                           FileDownloadListener callback) throws GPUdbException {
+    static Pair<String, DownloadIoJob> createNewJob(GPUdb db,
+                                                    GPUdbFileHandler.Options fileHandlerOptions,
+                                                    String remoteFileName,
+                                                    String localFileName,
+                                                    KifsFileInfo kifsFileInfo,
+                                                    DownloadOptions downloadOptions,
+                                                    FileDownloadListener callback) throws GPUdbException {
         DownloadIoJob newJob = new DownloadIoJob(
                 db,
                 fileHandlerOptions,
@@ -139,11 +140,11 @@ public class DownloadIoJob {
         return Pair.of( jobId, newJob);
     }
 
-    public String getJobId() {
+    String getJobId() {
         return this.jobId;
     }
 
-    public ExecutorService getThreadPool() {
+    ExecutorService getThreadPool() {
         return this.threadPool;
     }
 
@@ -155,7 +156,7 @@ public class DownloadIoJob {
      * Handles the execution of the given download stage task, notifying any
      * callback configured for this download.  Properly handles job cancellation
      * and ensures job terminates early upon error.
-     * 
+     *
      * @param out  the file channel to write the downloaded file to
      * @param task  download task to execute and report on
      */
@@ -207,7 +208,7 @@ public class DownloadIoJob {
      * different segments of the file for download in an independent thread.
      * @throws GPUdbException
      */
-    public void start() throws GPUdbException {
+    void start() throws GPUdbException {
 
         final long sourceSize = this.kifsFileInfo.getFileSize();
         final long bytesPerSplit = this.fileHandlerOptions.getFileSizeToSplit();
@@ -220,6 +221,8 @@ public class DownloadIoJob {
         Path normalizedPath = Paths.get( this.downloadLocalFileName ).normalize().toAbsolutePath();
 
         if( Files.notExists( normalizedPath ) || this.downloadOptions.isOverwriteExisting() ) {
+
+            boolean downloadCompleted = false;
 
             try ( FileChannel outChannel = FileChannel.open(normalizedPath, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING) ) {
 
@@ -249,9 +252,24 @@ public class DownloadIoJob {
                     partNo++;
                 }
 
+                downloadCompleted = true;
+
             } catch (IOException e) {
                 GPUdbLogger.error( e.getMessage() );
                 throw new GPUdbException(e.getMessage());
+            } finally {
+                // If download did not complete successfully, clean up the partial file
+                if (!downloadCompleted) {
+                    try {
+                        if (Files.exists(normalizedPath)) {
+                            Files.delete(normalizedPath);
+                            GPUdbLogger.debug(String.format("Cleaned up partial download file: %s", normalizedPath));
+                        }
+                    } catch (IOException e) {
+                        // Log error but don't suppress original exception
+                        GPUdbLogger.error(String.format("Failed to clean up partial download file <%s>: %s", normalizedPath, e.getMessage()));
+                    }
+                }
             }
         }
     }
@@ -259,7 +277,7 @@ public class DownloadIoJob {
     /**
      * This method is used to stop all the running {@link IoTask} instances.
      */
-    public List<Result> stop() {
+    List<Result> stop() {
         // FIX 4: Force immediate shutdown
         this.threadPool.shutdownNow();
 

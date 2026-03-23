@@ -1,11 +1,11 @@
-package com.gpudb.filesystem.common;
+package com.gpudb.filesystem;
 
 import com.gpudb.GPUdb;
 import com.gpudb.GPUdbException;
 import com.gpudb.GPUdbLogger;
+import com.gpudb.filesystem.common.OpMode;
+import com.gpudb.filesystem.common.Result;
 import com.gpudb.filesystem.download.DownloadOptions;
-import com.gpudb.filesystem.download.MultiPartDownloadInfo;
-import com.gpudb.filesystem.upload.MultiPartUploadInfo;
 import com.gpudb.filesystem.upload.UploadOptions;
 import com.gpudb.protocol.DownloadFilesResponse;
 import com.gpudb.protocol.UploadFilesRequest;
@@ -26,8 +26,8 @@ import java.util.concurrent.Callable;
  * client code is not guaranteed and maybe undesirable.
 
  * This class is only used for multi-part upload and download and an instance
- * of this class is created only by {@link com.gpudb.filesystem.upload.FileUploader}
- * and {@link com.gpudb.filesystem.download.FileDownloader} classes.
+ * of this class is created only by {@link FileUploader}
+ * and {@link FileDownloader} classes.
  *
  * This class models a single background tasks running in a thread.
  * It implements the {@link Callable} interface and the overridden
@@ -35,7 +35,7 @@ import java.util.concurrent.Callable;
  * class. Depending on the value of the instance variable {@link #opMode} it
  * calls either the {@link #upload()} or the {@link #download()} method.
  */
-public class IoTask implements Callable<Result> {
+class IoTask implements Callable<Result> {
 
     private final GPUdb db;
     private final OpMode opMode;
@@ -63,7 +63,7 @@ public class IoTask implements Callable<Result> {
 
     /**
      * Constructs a task for uploading a part of a multi-part upload.
-     * 
+     *
      * @param db  The {@link GPUdb} instance used to access KiFS.
      * @param fileName  Name of the file to be uploaded.
      * @param multiPartUploadInfo  Configuration information about this part of
@@ -72,12 +72,12 @@ public class IoTask implements Callable<Result> {
      * @param taskNumber  Sequence number of this part of the overall upload.
      * @param dataBytes  Data to upload for this part, in a binary format.
      */
-    public IoTask(GPUdb db,
-                  String fileName,
-                  MultiPartUploadInfo multiPartUploadInfo,
-                  UploadOptions options,
-                  long taskNumber,
-                  ByteBuffer dataBytes) {
+    IoTask(GPUdb db,
+           String fileName,
+           MultiPartUploadInfo multiPartUploadInfo,
+           UploadOptions options,
+           long taskNumber,
+           ByteBuffer dataBytes) {
         this.db = db;
         this.opMode = OpMode.UPLOAD;
         this.fileName = fileName;
@@ -91,7 +91,7 @@ public class IoTask implements Callable<Result> {
 
     /**
      * Constructs a task for downloading a part of a multi-part download.
-     * 
+     *
      * @param db  The {@link GPUdb} instance used to access KiFS.
      * @param fileName  Name of the file to be downloaded.
      * @param multiPartDownloadInfo  Configuration information about this part
@@ -99,10 +99,10 @@ public class IoTask implements Callable<Result> {
      * @param options  Options to use during the download (reserved for
      *        future use).
      */
-    public IoTask(GPUdb db,
-                  String fileName,
-                  MultiPartDownloadInfo multiPartDownloadInfo,
-                  DownloadOptions options) {
+    IoTask(GPUdb db,
+           String fileName,
+           MultiPartDownloadInfo multiPartDownloadInfo,
+           DownloadOptions options) {
         this.db = db;
         this.opMode = OpMode.DOWNLOAD;
         this.fileName = fileName;
@@ -117,7 +117,7 @@ public class IoTask implements Callable<Result> {
 
     /**
      * Executes this upload/download task by a threaded service.
-     * 
+     *
      * @return  The {@link Result} of the upload/download operation.
      */
     @Override
@@ -150,11 +150,11 @@ public class IoTask implements Callable<Result> {
         return result;
     }
 
-    public MultiPartUploadInfo getMultiPartUploadInfo() {
+    MultiPartUploadInfo getMultiPartUploadInfo() {
         return this.multiPartUploadInfo;
     }
 
-    public MultiPartDownloadInfo getMultiPartDownloadInfo() {
+    MultiPartDownloadInfo getMultiPartDownloadInfo() {
         return this.multiPartDownloadInfo;
     }
 

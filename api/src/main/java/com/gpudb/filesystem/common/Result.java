@@ -1,8 +1,7 @@
 package com.gpudb.filesystem.common;
 
-import com.gpudb.filesystem.download.FileDownloader;
-import com.gpudb.filesystem.download.MultiPartDownloadInfo;
-import com.gpudb.filesystem.upload.MultiPartUploadInfo;
+import com.gpudb.filesystem.MultiPartDownloadInfo;
+import com.gpudb.filesystem.MultiPartUploadInfo;
 
 import java.util.Comparator;
 import java.util.List;
@@ -174,8 +173,8 @@ public class Result {
     /**
      * This is an implementation of the {@link Comparator} interface used to
      * sort the list of {@link Result} objects returned by background threads
-     * downloading parts of a file. This is used by the method
-     * {@link FileDownloader#downloadMultiPartFiles()}
+     * downloading parts of a file. This is used internally by the file
+     * download implementation.
      */
     public static class SortByDownloadPartNumber implements Comparator<Result> {
 

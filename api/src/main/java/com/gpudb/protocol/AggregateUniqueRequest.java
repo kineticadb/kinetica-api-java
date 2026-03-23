@@ -26,14 +26,9 @@ import org.apache.avro.generic.IndexedRecord;
  * in {@code jsonEncodedResponse}.  The results can be paged via {@link
  * #getOffset() offset} and {@link #getLimit() limit} parameters.
  * <p>
- * Columns marked as <a href="../../../../../../concepts/types/#data-handling"
- * target="_top">store-only</a> are unable to be used with this function.
  * <p>
- * To get the first 10 unique values sorted in descending order {@link #getOptions() options} would be:
- * <pre>
- *
- *     {"limit":"10","sort_order":"descending"}
- * </pre>
+ * {"limit":"10","sort_order":"descending"}
+ * <p>
  * The response is returned as a dynamic schema. For details see: <a
  * href="../../../../../../api/concepts/#dynamic-schemas" target="_top">dynamic
  * schemas documentation</a>.

@@ -30,10 +30,7 @@ import org.apache.avro.generic.IndexedRecord;
  * target="_top">Aggregation Limitations</a>.
  * <p>
  * Any column(s) can be grouped on, and all column types except
- * unrestricted-length strings may be used for computing applicable aggregates;
- * columns marked as <a href="../../../../../../concepts/types/#data-handling"
- * target="_top">store-only</a> are unable to be used in grouping or
- * aggregation.
+ * unrestricted-length strings may be used for computing applicable aggregates.
  * <p>
  * The results can be paged via the {@link #getOffset() offset} and {@link
  * #getLimit() limit} parameters. For example, to get 10 groups with the

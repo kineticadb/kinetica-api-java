@@ -1,11 +1,9 @@
-package com.gpudb.filesystem.upload;
+package com.gpudb.filesystem;
 
 import com.gpudb.GPUdb;
-import com.gpudb.GPUdbException;
 import com.gpudb.GPUdbLogger;
-import com.gpudb.filesystem.GPUdbFileHandler;
 import com.gpudb.filesystem.common.Result;
-import com.gpudb.filesystem.utils.GPUdbFileHandlerUtils;
+import com.gpudb.filesystem.upload.FileUploadListener;
 import com.gpudb.protocol.DownloadFilesResponse;
 
 import java.nio.ByteBuffer;
@@ -23,7 +21,7 @@ import java.util.concurrent.*;
  * using a thread pool of a certain configurable size. The default size for the
  * thread pool is configured in the class GPUdbFileHandler.Options
  */
-public class FullFileDispatcher {
+class FullFileDispatcher {
 
     /**
      * The callback if passed in, is used to notify the users when a complete
@@ -43,7 +41,7 @@ public class FullFileDispatcher {
      */
     private final List<FullFileUploadTask> taskList;
 
-    public FullFileDispatcher(GPUdbFileHandler.Options fileHandlerOptions, FileUploadListener callback) {
+    FullFileDispatcher(GPUdbFileHandler.Options fileHandlerOptions, FileUploadListener callback) {
         this.fileHandlerOptions = fileHandlerOptions;
         this.callback = callback;
 
@@ -71,7 +69,7 @@ public class FullFileDispatcher {
      *
      * @param task a {@link FullFileUploadTask} object
      */
-    public void submit( FullFileUploadTask task ) {
+    void submit( FullFileUploadTask task ) {
         jobExecutor.submit(task);
         taskList.add( task );
     }
@@ -80,14 +78,19 @@ public class FullFileDispatcher {
      * Wait for the tasks submitted to the thread pool and collect the
      * results {@link Result} using the futures accessed using the
      * {@link FullFileDispatcher#jobExecutor} object.
+     *
+     * @return A list of {@link Result} objects for all upload tasks (both successful and failed).
      */
-    public void collect() throws GPUdbException {
+    List<Result> collect() {
 
+        List<Result> results = new ArrayList<>();
         int countTasks = taskList.size();
 
         while( countTasks-- > 0 ) {
             try {
                 Result result = jobExecutor.take().get();
+                result.setSuccessful(true);
+                results.add(result);
 
                 if( callback != null ) {
                     callback.onFullFileUpload( result );
@@ -100,6 +103,7 @@ public class FullFileDispatcher {
                 result.setSuccessful( false );
                 result.setException( (Exception) cause );
                 result.setErrorMessage( cause.getMessage() );
+                results.add(result);
 
                 if( callback != null ) {
                     callback.onFullFileUpload( result );
@@ -117,13 +121,14 @@ public class FullFileDispatcher {
         }
 
         taskList.clear();
+        return results;
     }
 
     /**
      * This method is called to terminate the thread pool once an instance of
      * the class {@link FullFileDispatcher} has done its job.
      */
-    public void terminate() {
+    void terminate() {
         this.threadPool.shutdownNow();
         GPUdbFileHandlerUtils.awaitTerminationAfterShutdown( this.threadPool, GPUdbFileHandler.getDefaultThreadPoolTerminationTimeout() );
     }
@@ -132,7 +137,7 @@ public class FullFileDispatcher {
      * This class represents a task handling the upload of a bunch of full
      * file uploads.
      */
-    public static final class FullFileUploadTask implements Callable<Result> {
+    static final class FullFileUploadTask implements Callable<Result> {
 
         private final GPUdb db;
         private final List<String> remoteFileNames;
@@ -148,10 +153,10 @@ public class FullFileDispatcher {
          * @param payloads - The payloads for the files as ByteBuffers
          * @param options - Options passed to {@link GPUdb#uploadFiles(List, List, Map)}
          */
-        public FullFileUploadTask(GPUdb db,
-                                  List<String> remoteFileNames,
-                                  List<ByteBuffer> payloads,
-                                  Map<String, String> options) {
+        FullFileUploadTask(GPUdb db,
+                           List<String> remoteFileNames,
+                           List<ByteBuffer> payloads,
+                           Map<String, String> options) {
             this.db = db;
             this.remoteFileNames = remoteFileNames;
             this.payloads = payloads;
@@ -172,7 +177,7 @@ public class FullFileDispatcher {
      * This class represents a task handling the download of a bunch of full
      * file downloads.
      */
-    public static final class FullFileDownloadTask implements Callable<Result> {
+    static final class FullFileDownloadTask implements Callable<Result> {
 
         private final GPUdb db;
         private final List<String> remoteFileNames;
@@ -188,10 +193,10 @@ public class FullFileDispatcher {
          * @param payloads - The payloads for the files as ByteBuffers
          * @param options - Options passed to  {@link GPUdb#downloadFiles(List, List, List, Map)}
          */
-        public FullFileDownloadTask(GPUdb db,
-                                    List<String> remoteFileNames,
-                                    List<ByteBuffer> payloads,
-                                    Map<String, String> options) {
+        FullFileDownloadTask(GPUdb db,
+                             List<String> remoteFileNames,
+                             List<ByteBuffer> payloads,
+                             Map<String, String> options) {
             this.db = db;
             this.remoteFileNames = remoteFileNames;
             this.payloads = payloads;

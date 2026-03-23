@@ -2,6 +2,13 @@
 
 ## Version 7.2
 
+### Version 7.2.3.15 - 2026.03.22
+
+#### Changed
+-   Made error handling within the file handling API more consistent.
+-   Upgraded Logback library to 1.3.16.
+
+
 ### Version 7.2.3.14 - 2026.03.02
 
 #### Changed

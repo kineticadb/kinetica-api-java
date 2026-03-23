@@ -1,4 +1,4 @@
-package com.gpudb.filesystem.utils;
+package com.gpudb.filesystem;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -22,6 +22,9 @@ import java.util.concurrent.TimeUnit;
  * filesystem API. The consequences of using this class directly in client code
  * is not guaranteed and maybe undesirable.
  *
+ * <p><b>Note:</b> This class is public only because it is used by other public API
+ * classes within the filesystem package. External users should not use this class
+ * directly.</p>
  */
 public class GPUdbFileHandlerUtils {
     /**
@@ -30,7 +33,7 @@ public class GPUdbFileHandlerUtils {
      * @param byteBuffers list of ByteBuffer objects
      * @return merged ByteBuffer
      */
-    public static ByteBuffer merge( List<ByteBuffer> byteBuffers ) {
+    static ByteBuffer merge( List<ByteBuffer> byteBuffers ) {
         if ( byteBuffers == null || byteBuffers.size() == 0 ) {
             return ByteBuffer.allocate(0);
         } else if ( byteBuffers.size() == 1 ) {
@@ -57,8 +60,8 @@ public class GPUdbFileHandlerUtils {
      * Terminate a thread pool after waiting for a given vaue of 'timeout'
      * @param threadPool
      */
-    public static void awaitTerminationAfterShutdown(ExecutorService threadPool,
-                                                     long timeout) {
+    static void awaitTerminationAfterShutdown(ExecutorService threadPool,
+                                              long timeout) {
         threadPool.shutdown();
         try {
             if ( !threadPool.awaitTermination( timeout, TimeUnit.SECONDS ) ) {
@@ -90,17 +93,23 @@ public class GPUdbFileHandlerUtils {
         return StringUtils.join( stringList, separator );
     }
 
+    /**
+     * Creates and returns a Jackson ObjectMapper configured with custom serializers.
+     * This method is used by IngestOptions and TableCreationOptions for JSON serialization.
+     *
+     * @return configured ObjectMapper instance
+     */
     public static ObjectMapper getJacksonObjectMapper() {
         SimpleModule module = new SimpleModule("BooleanAsString", new Version(1, 0, 0, null, null, null));
 
-        module.addSerializer(Boolean.class,new BooleanSerializer());
-        module.addSerializer(boolean.class,new BooleanSerializer());
+        module.addSerializer(Boolean.class, new BooleanSerializer());
+        module.addSerializer(boolean.class, new BooleanSerializer());
 
-        module.addSerializer(Integer.class,new IntegerSerializer());
-        module.addSerializer(int.class,new IntegerSerializer());
+        module.addSerializer(Integer.class, new IntegerSerializer());
+        module.addSerializer(int.class, new IntegerSerializer());
 
-        module.addSerializer(Long.class,new LongSerializer());
-        module.addSerializer(long.class,new LongSerializer());
+        module.addSerializer(Long.class, new LongSerializer());
+        module.addSerializer(long.class, new LongSerializer());
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule( module );
@@ -108,28 +117,33 @@ public class GPUdbFileHandlerUtils {
         return mapper;
     }
 
+    /**
+     * Custom JSON serializer for Boolean values - serializes as string.
+     */
+    static class BooleanSerializer extends JsonSerializer<Boolean> {
+        @Override
+        public void serialize(Boolean value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonGenerationException {
+            jgen.writeString(value.toString());
+        }
+    }
 
-}
+    /**
+     * Custom JSON serializer for Long values - serializes as string.
+     */
+    static class LongSerializer extends JsonSerializer<Long> {
+        @Override
+        public void serialize(Long value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonGenerationException {
+            jgen.writeString(value.toString());
+        }
+    }
 
-class BooleanSerializer extends JsonSerializer<Boolean> {
-    @Override
-    public void serialize(Boolean value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonGenerationException {
-        jgen.writeString(value.toString());
+    /**
+     * Custom JSON serializer for Integer values - serializes as string.
+     */
+    static class IntegerSerializer extends JsonSerializer<Integer> {
+        @Override
+        public void serialize(Integer value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonGenerationException {
+            jgen.writeString(value.toString());
+        }
     }
 }
-
-class LongSerializer extends JsonSerializer<Long> {
-    @Override
-    public void serialize(Long value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonGenerationException {
-        jgen.writeString(value.toString());
-    }
-}
-
-class IntegerSerializer extends JsonSerializer<Integer> {
-    @Override
-    public void serialize(Integer value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonGenerationException {
-        jgen.writeString(value.toString());
-    }
-}
-
-

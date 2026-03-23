@@ -139,6 +139,12 @@ public class MatchGraphRequest implements IndexedRecord {
          */
         public static final String MATCH_ISOCHRONE = "match_isochrone";
 
+        /**
+         * Computes detour costs for nearby stations at a mark point along each
+         * source-target route.
+         */
+        public static final String MATCH_ROUTE_DETOUR = "match_route_detour";
+
         private SolveMethod() {  }
     }
 
@@ -607,6 +613,37 @@ public class MatchGraphRequest implements IndexedRecord {
         public static final String CHARGING_PENALTY = "charging_penalty";
 
         /**
+         * For the {@link SolveMethod#MATCH_ROUTE_DETOUR MATCH_ROUTE_DETOUR}
+         * solver only. Cost along the route at which to search for nearby
+         * stations If zero, it solves along the trip sliding the 3 SSSP cycle
+         * kernel by radius amount. The default value is '3600.0'.
+         */
+        public static final String DETOUR_MARK_COST = "detour_mark_cost";
+
+        /**
+         * For the {@link SolveMethod#MATCH_ROUTE_DETOUR MATCH_ROUTE_DETOUR}
+         * solver only. Multiplier on detour_mark_cost to determine the reentry
+         * point on the route (default 1.2 means 20% further along). The
+         * default value is '1.2'.
+         */
+        public static final String DETOUR_REENTRY_FACTOR = "detour_reentry_factor";
+
+        /**
+         * For the {@link SolveMethod#MATCH_ROUTE_DETOUR MATCH_ROUTE_DETOUR}
+         * solver only. Search radius around the mark point for finding nearby
+         * prospective stations (e.g.&nbsp;cafes, pit stops, EV charging
+         * stations). The default value is '600.0'.
+         */
+        public static final String DETOUR_SEARCH_RADIUS = "detour_search_radius";
+
+        /**
+         * For the {@link SolveMethod#MATCH_ROUTE_DETOUR MATCH_ROUTE_DETOUR}
+         * solver only. Maximum number of nearby stations to consider within
+         * the search radius around the mark point. The default value is '10'.
+         */
+        public static final String DETOUR_SEARCH_LIMIT = "detour_search_limit";
+
+        /**
          * For the {@link SolveMethod#MATCH_SIMILARITY MATCH_SIMILARITY} and
          * {@link SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solvers only.
          * Searches within this maximum hops for source and target node pairs
@@ -827,6 +864,10 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         <li>{@link SolveMethod#MATCH_ISOCHRONE
      *                             MATCH_ISOCHRONE}: Solves for isochrones for
      *                             a set of input sources
+     *                         <li>{@link SolveMethod#MATCH_ROUTE_DETOUR
+     *                             MATCH_ROUTE_DETOUR}: Computes detour costs
+     *                             for nearby stations at a mark point along
+     *                             each source-target route.
      *                     </ul>
      *                     The default value is {@link SolveMethod#MARKOV_CHAIN
      *                     MARKOV_CHAIN}.
@@ -1258,6 +1299,36 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         MATCH_CHARGING_STATIONS} solver only. This is
      *                         the penalty for full charging. The default value
      *                         is '30000.0'.
+     *                     <li>{@link Options#DETOUR_MARK_COST
+     *                         DETOUR_MARK_COST}: For the {@link
+     *                         SolveMethod#MATCH_ROUTE_DETOUR
+     *                         MATCH_ROUTE_DETOUR} solver only. Cost along the
+     *                         route at which to search for nearby stations If
+     *                         zero, it solves along the trip sliding the 3
+     *                         SSSP cycle kernel by radius amount. The default
+     *                         value is '3600.0'.
+     *                     <li>{@link Options#DETOUR_REENTRY_FACTOR
+     *                         DETOUR_REENTRY_FACTOR}: For the {@link
+     *                         SolveMethod#MATCH_ROUTE_DETOUR
+     *                         MATCH_ROUTE_DETOUR} solver only. Multiplier on
+     *                         detour_mark_cost to determine the reentry point
+     *                         on the route (default 1.2 means 20% further
+     *                         along). The default value is '1.2'.
+     *                     <li>{@link Options#DETOUR_SEARCH_RADIUS
+     *                         DETOUR_SEARCH_RADIUS}: For the {@link
+     *                         SolveMethod#MATCH_ROUTE_DETOUR
+     *                         MATCH_ROUTE_DETOUR} solver only. Search radius
+     *                         around the mark point for finding nearby
+     *                         prospective stations (e.g. cafes, pit stops, EV
+     *                         charging stations). The default value is
+     *                         '600.0'.
+     *                     <li>{@link Options#DETOUR_SEARCH_LIMIT
+     *                         DETOUR_SEARCH_LIMIT}: For the {@link
+     *                         SolveMethod#MATCH_ROUTE_DETOUR
+     *                         MATCH_ROUTE_DETOUR} solver only. Maximum number
+     *                         of nearby stations to consider within the search
+     *                         radius around the mark point. The default value
+     *                         is '10'.
      *                     <li>{@link Options#MAX_HOPS MAX_HOPS}: For the
      *                         {@link SolveMethod#MATCH_SIMILARITY
      *                         MATCH_SIMILARITY} and {@link
@@ -1488,6 +1559,9 @@ public class MatchGraphRequest implements IndexedRecord {
      *         vector node embeddings
      *     <li>{@link SolveMethod#MATCH_ISOCHRONE MATCH_ISOCHRONE}: Solves for
      *         isochrones for a set of input sources
+     *     <li>{@link SolveMethod#MATCH_ROUTE_DETOUR MATCH_ROUTE_DETOUR}:
+     *         Computes detour costs for nearby stations at a mark point along
+     *         each source-target route.
      * </ul>
      * The default value is {@link SolveMethod#MARKOV_CHAIN MARKOV_CHAIN}.
      *
@@ -1548,6 +1622,9 @@ public class MatchGraphRequest implements IndexedRecord {
      *         vector node embeddings
      *     <li>{@link SolveMethod#MATCH_ISOCHRONE MATCH_ISOCHRONE}: Solves for
      *         isochrones for a set of input sources
+     *     <li>{@link SolveMethod#MATCH_ROUTE_DETOUR MATCH_ROUTE_DETOUR}:
+     *         Computes detour costs for nearby stations at a mark point along
+     *         each source-target route.
      * </ul>
      * The default value is {@link SolveMethod#MARKOV_CHAIN MARKOV_CHAIN}.
      *
@@ -1917,6 +1994,25 @@ public class MatchGraphRequest implements IndexedRecord {
      *         {@link SolveMethod#MATCH_CHARGING_STATIONS
      *         MATCH_CHARGING_STATIONS} solver only. This is the penalty for
      *         full charging. The default value is '30000.0'.
+     *     <li>{@link Options#DETOUR_MARK_COST DETOUR_MARK_COST}: For the
+     *         {@link SolveMethod#MATCH_ROUTE_DETOUR MATCH_ROUTE_DETOUR} solver
+     *         only. Cost along the route at which to search for nearby
+     *         stations If zero, it solves along the trip sliding the 3 SSSP
+     *         cycle kernel by radius amount. The default value is '3600.0'.
+     *     <li>{@link Options#DETOUR_REENTRY_FACTOR DETOUR_REENTRY_FACTOR}: For
+     *         the {@link SolveMethod#MATCH_ROUTE_DETOUR MATCH_ROUTE_DETOUR}
+     *         solver only. Multiplier on detour_mark_cost to determine the
+     *         reentry point on the route (default 1.2 means 20% further
+     *         along). The default value is '1.2'.
+     *     <li>{@link Options#DETOUR_SEARCH_RADIUS DETOUR_SEARCH_RADIUS}: For
+     *         the {@link SolveMethod#MATCH_ROUTE_DETOUR MATCH_ROUTE_DETOUR}
+     *         solver only. Search radius around the mark point for finding
+     *         nearby prospective stations (e.g. cafes, pit stops, EV charging
+     *         stations). The default value is '600.0'.
+     *     <li>{@link Options#DETOUR_SEARCH_LIMIT DETOUR_SEARCH_LIMIT}: For the
+     *         {@link SolveMethod#MATCH_ROUTE_DETOUR MATCH_ROUTE_DETOUR} solver
+     *         only. Maximum number of nearby stations to consider within the
+     *         search radius around the mark point. The default value is '10'.
      *     <li>{@link Options#MAX_HOPS MAX_HOPS}: For the {@link
      *         SolveMethod#MATCH_SIMILARITY MATCH_SIMILARITY} and {@link
      *         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solvers only.
@@ -2323,6 +2419,25 @@ public class MatchGraphRequest implements IndexedRecord {
      *         {@link SolveMethod#MATCH_CHARGING_STATIONS
      *         MATCH_CHARGING_STATIONS} solver only. This is the penalty for
      *         full charging. The default value is '30000.0'.
+     *     <li>{@link Options#DETOUR_MARK_COST DETOUR_MARK_COST}: For the
+     *         {@link SolveMethod#MATCH_ROUTE_DETOUR MATCH_ROUTE_DETOUR} solver
+     *         only. Cost along the route at which to search for nearby
+     *         stations If zero, it solves along the trip sliding the 3 SSSP
+     *         cycle kernel by radius amount. The default value is '3600.0'.
+     *     <li>{@link Options#DETOUR_REENTRY_FACTOR DETOUR_REENTRY_FACTOR}: For
+     *         the {@link SolveMethod#MATCH_ROUTE_DETOUR MATCH_ROUTE_DETOUR}
+     *         solver only. Multiplier on detour_mark_cost to determine the
+     *         reentry point on the route (default 1.2 means 20% further
+     *         along). The default value is '1.2'.
+     *     <li>{@link Options#DETOUR_SEARCH_RADIUS DETOUR_SEARCH_RADIUS}: For
+     *         the {@link SolveMethod#MATCH_ROUTE_DETOUR MATCH_ROUTE_DETOUR}
+     *         solver only. Search radius around the mark point for finding
+     *         nearby prospective stations (e.g. cafes, pit stops, EV charging
+     *         stations). The default value is '600.0'.
+     *     <li>{@link Options#DETOUR_SEARCH_LIMIT DETOUR_SEARCH_LIMIT}: For the
+     *         {@link SolveMethod#MATCH_ROUTE_DETOUR MATCH_ROUTE_DETOUR} solver
+     *         only. Maximum number of nearby stations to consider within the
+     *         search radius around the mark point. The default value is '10'.
      *     <li>{@link Options#MAX_HOPS MAX_HOPS}: For the {@link
      *         SolveMethod#MATCH_SIMILARITY MATCH_SIMILARITY} and {@link
      *         SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING} solvers only.

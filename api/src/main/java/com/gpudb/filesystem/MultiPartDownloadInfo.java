@@ -1,25 +1,25 @@
-package com.gpudb.filesystem.download;
+package com.gpudb.filesystem;
 
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 
 /**
- * This is an internal class and not meant to be used by the end users of the
- * filesystem API. The consequences of using this class directly in client code
- * is not guaranteed and maybe undesirable.
-
  * This class packages and mimics certain important attributes of a multi-part
  * download operation. The attributes of this class are in one-one correspondence
  * to those specified in the {@link com.gpudb.GPUdb#downloadFiles(List, List, List, Map)}
  * endpoint.
+ *
+ * <p>This class is read-only for API consumers - instances are created internally
+ * and provided via Result callbacks. Users should not attempt to instantiate
+ * this class directly.</p>
  */
 public class MultiPartDownloadInfo {
 
     /**
-     * Default constructor
+     * Package-private constructor - prevents external instantiation.
      */
-    public MultiPartDownloadInfo() {
+    MultiPartDownloadInfo() {
     }
 
     /**
@@ -48,7 +48,7 @@ public class MultiPartDownloadInfo {
         return readOffset;
     }
 
-    public void setReadOffset(long readOffset) {
+    void setReadOffset(long readOffset) {
         this.readOffset = readOffset;
     }
 
@@ -56,7 +56,7 @@ public class MultiPartDownloadInfo {
         return readLength;
     }
 
-    public void setReadLength(long readLength) {
+    void setReadLength(long readLength) {
         this.readLength = readLength;
     }
 
@@ -64,7 +64,7 @@ public class MultiPartDownloadInfo {
         return downloadPartNumber;
     }
 
-    public void setDownloadPartNumber(long downloadPartNumber) {
+    void setDownloadPartNumber(long downloadPartNumber) {
         this.downloadPartNumber = downloadPartNumber;
     }
 
@@ -72,7 +72,7 @@ public class MultiPartDownloadInfo {
         return totalParts;
     }
 
-    public void setTotalParts(long totalParts) {
+    void setTotalParts(long totalParts) {
         this.totalParts = totalParts;
     }
 
@@ -80,7 +80,7 @@ public class MultiPartDownloadInfo {
         return data;
     }
 
-    public void setData(ByteBuffer data) {
+    void setData(ByteBuffer data) {
         this.data = data;
     }
 }

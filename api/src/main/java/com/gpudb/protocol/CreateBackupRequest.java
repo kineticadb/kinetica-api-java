@@ -54,12 +54,6 @@ public class CreateBackupRequest implements IndexedRecord {
     public static final class BackupType {
         /**
          * Snapshot of changes in the database objects and data since the last
-         * snapshot of any kind.
-         */
-        public static final String INCREMENTAL = "incremental";
-
-        /**
-         * Snapshot of changes in the database objects and data since the last
          * full snapshot.
          */
         public static final String DIFFERENTIAL = "differential";
@@ -68,6 +62,12 @@ public class CreateBackupRequest implements IndexedRecord {
          * Snapshot of the given database objects and data.
          */
         public static final String FULL = "full";
+
+        /**
+         * Snapshot of changes in the database objects and data since the last
+         * snapshot of any kind.
+         */
+        public static final String INCREMENTAL = "incremental";
 
         private BackupType() {  }
     }
@@ -84,29 +84,21 @@ public class CreateBackupRequest implements IndexedRecord {
         /**
          * All object types and data contained in the given <a
          * href="../../../../../../concepts/schemas/"
-         * target="_top">schemas(s)</a>.
+         * target="_top">schema(s)</a>.
          */
         public static final String ALL = "all";
-
-        /**
-         * <a href="../../../../../../concepts/tables/"
-         * target="_top">Tables(s)</a> and <a
-         * href="../../../../../../sql/ddl/#create-view" target="_top">SQL
-         * view(s)</a>.
-         */
-        public static final String TABLE = "table";
-
-        /**
-         * <a href="../../../../../../concepts/credentials/"
-         * target="_top">Credential(s)</a>.
-         */
-        public static final String CREDENTIAL = "credential";
 
         /**
          * <a href="../../../../../../sql-gpt/concepts/#sql-gpt-context"
          * target="_top">Context(s)</a>.
          */
         public static final String CONTEXT = "context";
+
+        /**
+         * <a href="../../../../../../concepts/credentials/"
+         * target="_top">Credential(s)</a>.
+         */
+        public static final String CREDENTIAL = "credential";
 
         /**
          * <a href="../../../../../../concepts/data_sinks/" target="_top">Data
@@ -121,10 +113,10 @@ public class CreateBackupRequest implements IndexedRecord {
         public static final String DATASOURCE = "datasource";
 
         /**
-         * <a href="../../../../../../sql/procedure/" target="_top">SQL
-         * procedure(s)</a>.
+         * <a href="../../../../../../udf/python/writing/#udf-python-func-env"
+         * target="_top">Python UDF function environment(s)</a>.
          */
-        public static final String STORED_PROCEDURE = "stored_procedure";
+        public static final String FUNCTION_ENVIRONMENT = "function_environment";
 
         /**
          * <a href="../../../../../../concepts/table_monitors/"
@@ -135,12 +127,10 @@ public class CreateBackupRequest implements IndexedRecord {
         public static final String MONITOR = "monitor";
 
         /**
-         * <a
-         * href="../../../../../../security/sec_concepts/#security-concepts-users"
-         * target="_top">User(s)</a> (internal and external) and associated
-         * permissions.
+         * <a href="../../../../../../rm/concepts/#resource-groups"
+         * target="_top">Resource group(s)</a>.
          */
-        public static final String USER = "user";
+        public static final String RESOURCE_GROUP = "resource_group";
 
         /**
          * <a href="../../../../../../security/sec_concepts/#roles"
@@ -150,14 +140,29 @@ public class CreateBackupRequest implements IndexedRecord {
         public static final String ROLE = "role";
 
         /**
-         * <a href="../../../../../../rm/concepts/#resource-groups"
-         * target="_top">Resource group(s)</a>.
+         * <a href="../../../../../../sql/procedure/" target="_top">SQL
+         * procedure(s)</a>.
          */
-        public static final String RESOURCE_GROUP = "resource_group";
+        public static final String STORED_PROCEDURE = "stored_procedure";
 
         /**
-         * UDF Procedure(s)<a href="../../../../../../udf_overview"
-         * target="_top">None</a>.
+         * <a href="../../../../../../concepts/tables/"
+         * target="_top">Table(s)</a> and <a
+         * href="../../../../../../sql/ddl/#create-view" target="_top">SQL
+         * view(s)</a>.
+         */
+        public static final String TABLE = "table";
+
+        /**
+         * <a
+         * href="../../../../../../security/sec_concepts/#security-concepts-users"
+         * target="_top">User(s)</a> (internal and external) and associated
+         * permissions.
+         */
+        public static final String USER = "user";
+
+        /**
+         * <a href="../../../../../../udf_overview" target="_top">UDF(s)</a>.
          */
         public static final String USER_DEFINED_FUNCTION = "user_defined_function";
 
@@ -171,11 +176,6 @@ public class CreateBackupRequest implements IndexedRecord {
      * Optional parameters.
      */
     public static final class Options {
-        /**
-         * Comments to store with this backup.
-         */
-        public static final String COMMENT = "comment";
-
         /**
          * Whether or not to calculate checksums for backup files.
          * Supported values:
@@ -191,6 +191,11 @@ public class CreateBackupRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
+         * Comments to store with this backup.
+         */
+        public static final String COMMENT = "comment";
+
+        /**
          * Whether or not, for tables, to only backup DDL and not table data.
          * Supported values:
          * <ul>
@@ -202,12 +207,6 @@ public class CreateBackupRequest implements IndexedRecord {
          * The default value is {@link Options#FALSE FALSE}.
          */
         public static final String DDL_ONLY = "ddl_only";
-
-        /**
-         * Maximum number of incremental snapshots to keep. The default value
-         * is '-1'.
-         */
-        public static final String MAX_INCREMENTAL_BACKUPS_TO_KEEP = "max_incremental_backups_to_keep";
 
         /**
          * Whether or not to delete any intermediate snapshots when the {@link
@@ -223,6 +222,23 @@ public class CreateBackupRequest implements IndexedRecord {
         public static final String DELETE_INTERMEDIATE_BACKUPS = "delete_intermediate_backups";
 
         /**
+         * Whether or not to perform a dry run of a backup operation.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String DRY_RUN = "dry_run";
+
+        /**
+         * Maximum number of incremental snapshots to keep. The default value
+         * is '-1'.
+         */
+        public static final String MAX_INCREMENTAL_BACKUPS_TO_KEEP = "max_incremental_backups_to_keep";
+
+        /**
          * Whether or not to replace an existing backup object with a new
          * backup with a full snapshot, if one already exists.
          * Supported values:
@@ -233,17 +249,6 @@ public class CreateBackupRequest implements IndexedRecord {
          * The default value is {@link Options#FALSE FALSE}.
          */
         public static final String RECREATE = "recreate";
-
-        /**
-         * Whether or not to perform a dry run of a backup operation.
-         * Supported values:
-         * <ul>
-         *     <li>{@link Options#TRUE TRUE}
-         *     <li>{@link Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link Options#FALSE FALSE}.
-         */
-        public static final String DRY_RUN = "dry_run";
 
         private Options() {  }
     }
@@ -275,14 +280,14 @@ public class CreateBackupRequest implements IndexedRecord {
      * @param backupType  Type of snapshot to create.
      *                    Supported values:
      *                    <ul>
-     *                        <li>{@link BackupType#INCREMENTAL INCREMENTAL}:
-     *                            Snapshot of changes in the database objects
-     *                            and data since the last snapshot of any kind.
      *                        <li>{@link BackupType#DIFFERENTIAL DIFFERENTIAL}:
      *                            Snapshot of changes in the database objects
      *                            and data since the last full snapshot.
      *                        <li>{@link BackupType#FULL FULL}: Snapshot of the
      *                            given database objects and data.
+     *                        <li>{@link BackupType#INCREMENTAL INCREMENTAL}:
+     *                            Snapshot of changes in the database objects
+     *                            and data since the last snapshot of any kind.
      *                    </ul>
      * @param backupObjectsMap  Map of objects to be captured in the backup;
      *                          must be specified when creating a full snapshot
@@ -293,21 +298,15 @@ public class CreateBackupRequest implements IndexedRecord {
      *                                  object types and data contained in the
      *                                  given <a
      *                                  href="../../../../../../concepts/schemas/"
-     *                                  target="_top">schemas(s)</a>.
-     *                              <li>{@link BackupObjectsMap#TABLE TABLE}:
-     *                                  <a
-     *                                  href="../../../../../../concepts/tables/"
-     *                                  target="_top">Tables(s)</a> and <a
-     *                                  href="../../../../../../sql/ddl/#create-view"
-     *                                  target="_top">SQL view(s)</a>.
-     *                              <li>{@link BackupObjectsMap#CREDENTIAL
-     *                                  CREDENTIAL}: <a
-     *                                  href="../../../../../../concepts/credentials/"
-     *                                  target="_top">Credential(s)</a>.
+     *                                  target="_top">schema(s)</a>.
      *                              <li>{@link BackupObjectsMap#CONTEXT
      *                                  CONTEXT}: <a
      *                                  href="../../../../../../sql-gpt/concepts/#sql-gpt-context"
      *                                  target="_top">Context(s)</a>.
+     *                              <li>{@link BackupObjectsMap#CREDENTIAL
+     *                                  CREDENTIAL}: <a
+     *                                  href="../../../../../../concepts/credentials/"
+     *                                  target="_top">Credential(s)</a>.
      *                              <li>{@link BackupObjectsMap#DATASINK
      *                                  DATASINK}: <a
      *                                  href="../../../../../../concepts/data_sinks/"
@@ -317,42 +316,51 @@ public class CreateBackupRequest implements IndexedRecord {
      *                                  href="../../../../../../concepts/data_sources/"
      *                                  target="_top">Data source(s)</a>.
      *                              <li>{@link
-     *                                  BackupObjectsMap#STORED_PROCEDURE
-     *                                  STORED_PROCEDURE}: <a
-     *                                  href="../../../../../../sql/procedure/"
-     *                                  target="_top">SQL procedure(s)</a>.
+     *                                  BackupObjectsMap#FUNCTION_ENVIRONMENT
+     *                                  FUNCTION_ENVIRONMENT}: <a
+     *                                  href="../../../../../../udf/python/writing/#udf-python-func-env"
+     *                                  target="_top">Python UDF function
+     *                                  environment(s)</a>.
      *                              <li>{@link BackupObjectsMap#MONITOR
      *                                  MONITOR}: <a
      *                                  href="../../../../../../concepts/table_monitors/"
      *                                  target="_top">Table monitor(s)</a> / <a
      *                                  href="../../../../../../sql/ddl/#create-stream"
      *                                  target="_top">SQL stream(s)</a>.
-     *                              <li>{@link BackupObjectsMap#USER USER}: <a
-     *                                  href="../../../../../../security/sec_concepts/#security-concepts-users"
-     *                                  target="_top">User(s)</a> (internal and
-     *                                  external) and associated permissions.
+     *                              <li>{@link BackupObjectsMap#RESOURCE_GROUP
+     *                                  RESOURCE_GROUP}: <a
+     *                                  href="../../../../../../rm/concepts/#resource-groups"
+     *                                  target="_top">Resource group(s)</a>.
      *                              <li>{@link BackupObjectsMap#ROLE ROLE}: <a
      *                                  href="../../../../../../security/sec_concepts/#roles"
      *                                  target="_top">Role(s)</a>, role members
      *                                  (roles or users, recursively), and
      *                                  associated permissions.
-     *                              <li>{@link BackupObjectsMap#RESOURCE_GROUP
-     *                                  RESOURCE_GROUP}: <a
-     *                                  href="../../../../../../rm/concepts/#resource-groups"
-     *                                  target="_top">Resource group(s)</a>.
+     *                              <li>{@link
+     *                                  BackupObjectsMap#STORED_PROCEDURE
+     *                                  STORED_PROCEDURE}: <a
+     *                                  href="../../../../../../sql/procedure/"
+     *                                  target="_top">SQL procedure(s)</a>.
+     *                              <li>{@link BackupObjectsMap#TABLE TABLE}:
+     *                                  <a
+     *                                  href="../../../../../../concepts/tables/"
+     *                                  target="_top">Table(s)</a> and <a
+     *                                  href="../../../../../../sql/ddl/#create-view"
+     *                                  target="_top">SQL view(s)</a>.
+     *                              <li>{@link BackupObjectsMap#USER USER}: <a
+     *                                  href="../../../../../../security/sec_concepts/#security-concepts-users"
+     *                                  target="_top">User(s)</a> (internal and
+     *                                  external) and associated permissions.
      *                              <li>{@link
      *                                  BackupObjectsMap#USER_DEFINED_FUNCTION
-     *                                  USER_DEFINED_FUNCTION}: UDF
-     *                                  Procedure(s)<a
+     *                                  USER_DEFINED_FUNCTION}: <a
      *                                  href="../../../../../../udf_overview"
-     *                                  target="_top">None</a>.
+     *                                  target="_top">UDF(s)</a>.
      *                          </ul>
      *                          The default value is an empty {@link Map}.
      * @param datasinkName  Data sink through which the backup will be stored.
      * @param options  Optional parameters.
      *                 <ul>
-     *                     <li>{@link Options#COMMENT COMMENT}: Comments to
-     *                         store with this backup.
      *                     <li>{@link Options#CHECKSUM CHECKSUM}: Whether or
      *                         not to calculate checksums for backup files.
      *                         Supported values:
@@ -362,6 +370,8 @@ public class CreateBackupRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#COMMENT COMMENT}: Comments to
+     *                         store with this backup.
      *                     <li>{@link Options#DDL_ONLY DDL_ONLY}: Whether or
      *                         not, for tables, to only backup DDL and not
      *                         table data.
@@ -374,10 +384,6 @@ public class CreateBackupRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
-     *                     <li>{@link Options#MAX_INCREMENTAL_BACKUPS_TO_KEEP
-     *                         MAX_INCREMENTAL_BACKUPS_TO_KEEP}: Maximum number
-     *                         of incremental snapshots to keep. The default
-     *                         value is '-1'.
      *                     <li>{@link Options#DELETE_INTERMEDIATE_BACKUPS
      *                         DELETE_INTERMEDIATE_BACKUPS}: Whether or not to
      *                         delete any intermediate snapshots when the
@@ -390,10 +396,8 @@ public class CreateBackupRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
-     *                     <li>{@link Options#RECREATE RECREATE}: Whether or
-     *                         not to replace an existing backup object with a
-     *                         new backup with a full snapshot, if one already
-     *                         exists.
+     *                     <li>{@link Options#DRY_RUN DRY_RUN}: Whether or not
+     *                         to perform a dry run of a backup operation.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
@@ -401,8 +405,14 @@ public class CreateBackupRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
-     *                     <li>{@link Options#DRY_RUN DRY_RUN}: Whether or not
-     *                         to perform a dry run of a backup operation.
+     *                     <li>{@link Options#MAX_INCREMENTAL_BACKUPS_TO_KEEP
+     *                         MAX_INCREMENTAL_BACKUPS_TO_KEEP}: Maximum number
+     *                         of incremental snapshots to keep. The default
+     *                         value is '-1'.
+     *                     <li>{@link Options#RECREATE RECREATE}: Whether or
+     *                         not to replace an existing backup object with a
+     *                         new backup with a full snapshot, if one already
+     *                         exists.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
@@ -450,14 +460,14 @@ public class CreateBackupRequest implements IndexedRecord {
      * Type of snapshot to create.
      * Supported values:
      * <ul>
-     *     <li>{@link BackupType#INCREMENTAL INCREMENTAL}: Snapshot of changes
-     *         in the database objects and data since the last snapshot of any
-     *         kind.
      *     <li>{@link BackupType#DIFFERENTIAL DIFFERENTIAL}: Snapshot of
      *         changes in the database objects and data since the last full
      *         snapshot.
      *     <li>{@link BackupType#FULL FULL}: Snapshot of the given database
      *         objects and data.
+     *     <li>{@link BackupType#INCREMENTAL INCREMENTAL}: Snapshot of changes
+     *         in the database objects and data since the last snapshot of any
+     *         kind.
      * </ul>
      *
      * @return The current value of {@code backupType}.
@@ -470,14 +480,14 @@ public class CreateBackupRequest implements IndexedRecord {
      * Type of snapshot to create.
      * Supported values:
      * <ul>
-     *     <li>{@link BackupType#INCREMENTAL INCREMENTAL}: Snapshot of changes
-     *         in the database objects and data since the last snapshot of any
-     *         kind.
      *     <li>{@link BackupType#DIFFERENTIAL DIFFERENTIAL}: Snapshot of
      *         changes in the database objects and data since the last full
      *         snapshot.
      *     <li>{@link BackupType#FULL FULL}: Snapshot of the given database
      *         objects and data.
+     *     <li>{@link BackupType#INCREMENTAL INCREMENTAL}: Snapshot of changes
+     *         in the database objects and data since the last snapshot of any
+     *         kind.
      * </ul>
      *
      * @param backupType  The new value for {@code backupType}.
@@ -497,46 +507,50 @@ public class CreateBackupRequest implements IndexedRecord {
      *     <li>{@link BackupObjectsMap#ALL ALL}: All object types and data
      *         contained in the given <a
      *         href="../../../../../../concepts/schemas/"
-     *         target="_top">schemas(s)</a>.
-     *     <li>{@link BackupObjectsMap#TABLE TABLE}: <a
-     *         href="../../../../../../concepts/tables/"
-     *         target="_top">Tables(s)</a> and <a
-     *         href="../../../../../../sql/ddl/#create-view" target="_top">SQL
-     *         view(s)</a>.
-     *     <li>{@link BackupObjectsMap#CREDENTIAL CREDENTIAL}: <a
-     *         href="../../../../../../concepts/credentials/"
-     *         target="_top">Credential(s)</a>.
+     *         target="_top">schema(s)</a>.
      *     <li>{@link BackupObjectsMap#CONTEXT CONTEXT}: <a
      *         href="../../../../../../sql-gpt/concepts/#sql-gpt-context"
      *         target="_top">Context(s)</a>.
+     *     <li>{@link BackupObjectsMap#CREDENTIAL CREDENTIAL}: <a
+     *         href="../../../../../../concepts/credentials/"
+     *         target="_top">Credential(s)</a>.
      *     <li>{@link BackupObjectsMap#DATASINK DATASINK}: <a
      *         href="../../../../../../concepts/data_sinks/" target="_top">Data
      *         sink(s)</a>.
      *     <li>{@link BackupObjectsMap#DATASOURCE DATASOURCE}: <a
      *         href="../../../../../../concepts/data_sources/"
      *         target="_top">Data source(s)</a>.
-     *     <li>{@link BackupObjectsMap#STORED_PROCEDURE STORED_PROCEDURE}: <a
-     *         href="../../../../../../sql/procedure/" target="_top">SQL
-     *         procedure(s)</a>.
+     *     <li>{@link BackupObjectsMap#FUNCTION_ENVIRONMENT
+     *         FUNCTION_ENVIRONMENT}: <a
+     *         href="../../../../../../udf/python/writing/#udf-python-func-env"
+     *         target="_top">Python UDF function environment(s)</a>.
      *     <li>{@link BackupObjectsMap#MONITOR MONITOR}: <a
      *         href="../../../../../../concepts/table_monitors/"
      *         target="_top">Table monitor(s)</a> / <a
      *         href="../../../../../../sql/ddl/#create-stream"
      *         target="_top">SQL stream(s)</a>.
-     *     <li>{@link BackupObjectsMap#USER USER}: <a
-     *         href="../../../../../../security/sec_concepts/#security-concepts-users"
-     *         target="_top">User(s)</a> (internal and external) and associated
-     *         permissions.
+     *     <li>{@link BackupObjectsMap#RESOURCE_GROUP RESOURCE_GROUP}: <a
+     *         href="../../../../../../rm/concepts/#resource-groups"
+     *         target="_top">Resource group(s)</a>.
      *     <li>{@link BackupObjectsMap#ROLE ROLE}: <a
      *         href="../../../../../../security/sec_concepts/#roles"
      *         target="_top">Role(s)</a>, role members (roles or users,
      *         recursively), and associated permissions.
-     *     <li>{@link BackupObjectsMap#RESOURCE_GROUP RESOURCE_GROUP}: <a
-     *         href="../../../../../../rm/concepts/#resource-groups"
-     *         target="_top">Resource group(s)</a>.
+     *     <li>{@link BackupObjectsMap#STORED_PROCEDURE STORED_PROCEDURE}: <a
+     *         href="../../../../../../sql/procedure/" target="_top">SQL
+     *         procedure(s)</a>.
+     *     <li>{@link BackupObjectsMap#TABLE TABLE}: <a
+     *         href="../../../../../../concepts/tables/"
+     *         target="_top">Table(s)</a> and <a
+     *         href="../../../../../../sql/ddl/#create-view" target="_top">SQL
+     *         view(s)</a>.
+     *     <li>{@link BackupObjectsMap#USER USER}: <a
+     *         href="../../../../../../security/sec_concepts/#security-concepts-users"
+     *         target="_top">User(s)</a> (internal and external) and associated
+     *         permissions.
      *     <li>{@link BackupObjectsMap#USER_DEFINED_FUNCTION
-     *         USER_DEFINED_FUNCTION}: UDF Procedure(s)<a
-     *         href="../../../../../../udf_overview" target="_top">None</a>.
+     *         USER_DEFINED_FUNCTION}: <a href="../../../../../../udf_overview"
+     *         target="_top">UDF(s)</a>.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -554,46 +568,50 @@ public class CreateBackupRequest implements IndexedRecord {
      *     <li>{@link BackupObjectsMap#ALL ALL}: All object types and data
      *         contained in the given <a
      *         href="../../../../../../concepts/schemas/"
-     *         target="_top">schemas(s)</a>.
-     *     <li>{@link BackupObjectsMap#TABLE TABLE}: <a
-     *         href="../../../../../../concepts/tables/"
-     *         target="_top">Tables(s)</a> and <a
-     *         href="../../../../../../sql/ddl/#create-view" target="_top">SQL
-     *         view(s)</a>.
-     *     <li>{@link BackupObjectsMap#CREDENTIAL CREDENTIAL}: <a
-     *         href="../../../../../../concepts/credentials/"
-     *         target="_top">Credential(s)</a>.
+     *         target="_top">schema(s)</a>.
      *     <li>{@link BackupObjectsMap#CONTEXT CONTEXT}: <a
      *         href="../../../../../../sql-gpt/concepts/#sql-gpt-context"
      *         target="_top">Context(s)</a>.
+     *     <li>{@link BackupObjectsMap#CREDENTIAL CREDENTIAL}: <a
+     *         href="../../../../../../concepts/credentials/"
+     *         target="_top">Credential(s)</a>.
      *     <li>{@link BackupObjectsMap#DATASINK DATASINK}: <a
      *         href="../../../../../../concepts/data_sinks/" target="_top">Data
      *         sink(s)</a>.
      *     <li>{@link BackupObjectsMap#DATASOURCE DATASOURCE}: <a
      *         href="../../../../../../concepts/data_sources/"
      *         target="_top">Data source(s)</a>.
-     *     <li>{@link BackupObjectsMap#STORED_PROCEDURE STORED_PROCEDURE}: <a
-     *         href="../../../../../../sql/procedure/" target="_top">SQL
-     *         procedure(s)</a>.
+     *     <li>{@link BackupObjectsMap#FUNCTION_ENVIRONMENT
+     *         FUNCTION_ENVIRONMENT}: <a
+     *         href="../../../../../../udf/python/writing/#udf-python-func-env"
+     *         target="_top">Python UDF function environment(s)</a>.
      *     <li>{@link BackupObjectsMap#MONITOR MONITOR}: <a
      *         href="../../../../../../concepts/table_monitors/"
      *         target="_top">Table monitor(s)</a> / <a
      *         href="../../../../../../sql/ddl/#create-stream"
      *         target="_top">SQL stream(s)</a>.
-     *     <li>{@link BackupObjectsMap#USER USER}: <a
-     *         href="../../../../../../security/sec_concepts/#security-concepts-users"
-     *         target="_top">User(s)</a> (internal and external) and associated
-     *         permissions.
+     *     <li>{@link BackupObjectsMap#RESOURCE_GROUP RESOURCE_GROUP}: <a
+     *         href="../../../../../../rm/concepts/#resource-groups"
+     *         target="_top">Resource group(s)</a>.
      *     <li>{@link BackupObjectsMap#ROLE ROLE}: <a
      *         href="../../../../../../security/sec_concepts/#roles"
      *         target="_top">Role(s)</a>, role members (roles or users,
      *         recursively), and associated permissions.
-     *     <li>{@link BackupObjectsMap#RESOURCE_GROUP RESOURCE_GROUP}: <a
-     *         href="../../../../../../rm/concepts/#resource-groups"
-     *         target="_top">Resource group(s)</a>.
+     *     <li>{@link BackupObjectsMap#STORED_PROCEDURE STORED_PROCEDURE}: <a
+     *         href="../../../../../../sql/procedure/" target="_top">SQL
+     *         procedure(s)</a>.
+     *     <li>{@link BackupObjectsMap#TABLE TABLE}: <a
+     *         href="../../../../../../concepts/tables/"
+     *         target="_top">Table(s)</a> and <a
+     *         href="../../../../../../sql/ddl/#create-view" target="_top">SQL
+     *         view(s)</a>.
+     *     <li>{@link BackupObjectsMap#USER USER}: <a
+     *         href="../../../../../../security/sec_concepts/#security-concepts-users"
+     *         target="_top">User(s)</a> (internal and external) and associated
+     *         permissions.
      *     <li>{@link BackupObjectsMap#USER_DEFINED_FUNCTION
-     *         USER_DEFINED_FUNCTION}: UDF Procedure(s)<a
-     *         href="../../../../../../udf_overview" target="_top">None</a>.
+     *         USER_DEFINED_FUNCTION}: <a href="../../../../../../udf_overview"
+     *         target="_top">UDF(s)</a>.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -630,8 +648,6 @@ public class CreateBackupRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#COMMENT COMMENT}: Comments to store with this
-     *         backup.
      *     <li>{@link Options#CHECKSUM CHECKSUM}: Whether or not to calculate
      *         checksums for backup files.
      *         Supported values:
@@ -640,6 +656,8 @@ public class CreateBackupRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#COMMENT COMMENT}: Comments to store with this
+     *         backup.
      *     <li>{@link Options#DDL_ONLY DDL_ONLY}: Whether or not, for tables,
      *         to only backup DDL and not table data.
      *         Supported values:
@@ -650,9 +668,6 @@ public class CreateBackupRequest implements IndexedRecord {
      *                 data.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#MAX_INCREMENTAL_BACKUPS_TO_KEEP
-     *         MAX_INCREMENTAL_BACKUPS_TO_KEEP}: Maximum number of incremental
-     *         snapshots to keep. The default value is '-1'.
      *     <li>{@link Options#DELETE_INTERMEDIATE_BACKUPS
      *         DELETE_INTERMEDIATE_BACKUPS}: Whether or not to delete any
      *         intermediate snapshots when the {@link #getBackupType()
@@ -664,17 +679,20 @@ public class CreateBackupRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#RECREATE RECREATE}: Whether or not to replace an
-     *         existing backup object with a new backup with a full snapshot,
-     *         if one already exists.
+     *     <li>{@link Options#DRY_RUN DRY_RUN}: Whether or not to perform a dry
+     *         run of a backup operation.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#DRY_RUN DRY_RUN}: Whether or not to perform a dry
-     *         run of a backup operation.
+     *     <li>{@link Options#MAX_INCREMENTAL_BACKUPS_TO_KEEP
+     *         MAX_INCREMENTAL_BACKUPS_TO_KEEP}: Maximum number of incremental
+     *         snapshots to keep. The default value is '-1'.
+     *     <li>{@link Options#RECREATE RECREATE}: Whether or not to replace an
+     *         existing backup object with a new backup with a full snapshot,
+     *         if one already exists.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
@@ -693,8 +711,6 @@ public class CreateBackupRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#COMMENT COMMENT}: Comments to store with this
-     *         backup.
      *     <li>{@link Options#CHECKSUM CHECKSUM}: Whether or not to calculate
      *         checksums for backup files.
      *         Supported values:
@@ -703,6 +719,8 @@ public class CreateBackupRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#COMMENT COMMENT}: Comments to store with this
+     *         backup.
      *     <li>{@link Options#DDL_ONLY DDL_ONLY}: Whether or not, for tables,
      *         to only backup DDL and not table data.
      *         Supported values:
@@ -713,9 +731,6 @@ public class CreateBackupRequest implements IndexedRecord {
      *                 data.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#MAX_INCREMENTAL_BACKUPS_TO_KEEP
-     *         MAX_INCREMENTAL_BACKUPS_TO_KEEP}: Maximum number of incremental
-     *         snapshots to keep. The default value is '-1'.
      *     <li>{@link Options#DELETE_INTERMEDIATE_BACKUPS
      *         DELETE_INTERMEDIATE_BACKUPS}: Whether or not to delete any
      *         intermediate snapshots when the {@link #getBackupType()
@@ -727,17 +742,20 @@ public class CreateBackupRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#RECREATE RECREATE}: Whether or not to replace an
-     *         existing backup object with a new backup with a full snapshot,
-     *         if one already exists.
+     *     <li>{@link Options#DRY_RUN DRY_RUN}: Whether or not to perform a dry
+     *         run of a backup operation.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#DRY_RUN DRY_RUN}: Whether or not to perform a dry
-     *         run of a backup operation.
+     *     <li>{@link Options#MAX_INCREMENTAL_BACKUPS_TO_KEEP
+     *         MAX_INCREMENTAL_BACKUPS_TO_KEEP}: Maximum number of incremental
+     *         snapshots to keep. The default value is '-1'.
+     *     <li>{@link Options#RECREATE RECREATE}: Whether or not to replace an
+     *         existing backup object with a new backup with a full snapshot,
+     *         if one already exists.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}

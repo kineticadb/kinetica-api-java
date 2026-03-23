@@ -125,7 +125,7 @@ public class CreateTableMonitorRequest implements IndexedRecord {
          * send notifications persisted in this table when the stream is
          * resumed. The table has the following columns: rank (long), job_id
          * (long), uuid (uuid), timestamp (timestamp), error_msg (string),
-         * payload (bytes). Leave the this option empty to disable persisting
+         * payload (bytes). Leave this option empty to disable persisting
          * failed notification events.
          */
         public static final String FAILED_NOTIFICATIONS_TABLE_NAME = "failed_notifications_table_name";
@@ -292,9 +292,9 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *                         stream is resumed.  The table has the following
      *                         columns: rank (long), job_id (long), uuid
      *                         (uuid), timestamp (timestamp), error_msg
-     *                         (string), payload (bytes).  Leave the this
-     *                         option empty to disable persisting failed
-     *                         notification events.
+     *                         (string), payload (bytes).  Leave this option
+     *                         empty to disable persisting failed notification
+     *                         events.
      *                     <li>{@link Options#DESTINATION DESTINATION}:
      *                         Destination for the output data in format
      *                         'destination_type://path[:port]'. Supported
@@ -433,8 +433,8 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *         to send notifications persisted in this table when the stream is
      *         resumed.  The table has the following columns: rank (long),
      *         job_id (long), uuid (uuid), timestamp (timestamp), error_msg
-     *         (string), payload (bytes).  Leave the this option empty to
-     *         disable persisting failed notification events.
+     *         (string), payload (bytes).  Leave this option empty to disable
+     *         persisting failed notification events.
      *     <li>{@link Options#DESTINATION DESTINATION}: Destination for the
      *         output data in format 'destination_type://path[:port]'.
      *         Supported destination types are 'http', 'https' and 'kafka'.
@@ -532,8 +532,8 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *         to send notifications persisted in this table when the stream is
      *         resumed.  The table has the following columns: rank (long),
      *         job_id (long), uuid (uuid), timestamp (timestamp), error_msg
-     *         (string), payload (bytes).  Leave the this option empty to
-     *         disable persisting failed notification events.
+     *         (string), payload (bytes).  Leave this option empty to disable
+     *         persisting failed notification events.
      *     <li>{@link Options#DESTINATION DESTINATION}: Destination for the
      *         output data in format 'destination_type://path[:port]'.
      *         Supported destination types are 'http', 'https' and 'kafka'.

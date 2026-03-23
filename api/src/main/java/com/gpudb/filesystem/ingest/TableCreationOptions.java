@@ -3,7 +3,7 @@ package com.gpudb.filesystem.ingest;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gpudb.GPUdbLogger;
-import com.gpudb.filesystem.utils.GPUdbFileHandlerUtils;
+import com.gpudb.filesystem.GPUdbFileHandlerUtils;
 import com.gpudb.protocol.InsertRecordsFromFilesRequest;
 
 import java.util.LinkedHashMap;

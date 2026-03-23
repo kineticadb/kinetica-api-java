@@ -1,6 +1,5 @@
-package com.gpudb.filesystem.common;
+package com.gpudb.filesystem;
 
-import com.gpudb.filesystem.GPUdbFileHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ import java.util.Map;
  * This class manages the task of creating batches of files where the files
  * are candidates for one-shot uploads.
  */
-public class FullFileBatchManager {
+class FullFileBatchManager {
 
     private final GPUdbFileHandler.Options fileHandlerOptions;
     /**
@@ -43,7 +42,7 @@ public class FullFileBatchManager {
      * getFileSizeToSplit() of the class GPUdbFileHandler.Options.
      * Each entry in this list is a map of local file name to its corresponding
      * KIFS file name.
-     * 
+     *
      * This is used by the method 'FileUploader#uploadFullFiles()'
      */
     protected List<Map<String, String>> listOfFullFileNameToRemoteFileNameMap;
@@ -59,7 +58,7 @@ public class FullFileBatchManager {
     /**
      * Resets the internal data structures maintained for the batches
      */
-    public void clearBatches() {
+    void clearBatches() {
         this.fullFileNameToSizeMap.clear();
         this.listOfFullFileNameToRemoteFileNameMap.clear();
     }
@@ -68,7 +67,7 @@ public class FullFileBatchManager {
     /**
      * Creates batches of files which could be uploaded one shot.
      */
-    public void createBatches() {
+    void createBatches() {
 
         if( this.fullFileNameToSizeMap.size() == 0 )
             return;
@@ -121,22 +120,22 @@ public class FullFileBatchManager {
 
     /**
      * Add the details for a file to be uploaded one shot.
-     * 
+     *
      * @param localFileName  Name of the file on the local file system.
      * @param remoteFileName  Name of the file on KIFS.
      * @param size  The size of the file, needed to partition the batches on.
      */
-    public void addFile( String localFileName, String remoteFileName, Long size ) {
+    void addFile( String localFileName, String remoteFileName, Long size ) {
         this.fullFileNameToSizeMap.put( localFileName, Pair.of( remoteFileName, size) );
     }
 
 
     /**
      * Gets the number of batches of files which could be uploaded one shot.
-     * 
+     *
      * @return  The number of batches
      */
-    public int getNumberOfBatches() {
+    int getNumberOfBatches() {
         return this.listOfFullFileNameToRemoteFileNameMap.size();
     }
 
@@ -144,16 +143,16 @@ public class FullFileBatchManager {
     /**
      * Gets a particular batch of files which could be uploaded one shot using
      * a single call to the endpoint '/upload/files'.
-     * 
+     *
      * @param n  The index of the batch to retrieve.
      * @return  The Nth batch; this batch is a set of entries in a map where
      *        each entry has the local file name as the key and the name of the
      *        file on KIFS as the value.
      */
-    public Map<String, String> getNthBatch( int n ) {
+    Map<String, String> getNthBatch( int n ) {
         if( n >= 0 && n < this.listOfFullFileNameToRemoteFileNameMap.size() )
             return this.listOfFullFileNameToRemoteFileNameMap.get( n );
-        
+
         return null;
     }
 
