@@ -56,6 +56,42 @@ public class ShowBackupRequest implements IndexedRecord {
         public static final String BACKUP_ID = "backup_id";
 
         /**
+         * Show backups by type. This option is ignored if {@link
+         * Options#BACKUP_ID BACKUP_ID} is non-empty.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#ALL ALL}: Show all backup types.
+         *     <li>{@link Options#FULL FULL}: Show full backups only.
+         *     <li>{@link Options#INCREMENTAL INCREMENTAL}: Show incremental
+         *         backups only.
+         *     <li>{@link Options#DIFFERENTIAL DIFFERENTIAL}: Show differential
+         *         backups only.
+         * </ul>
+         * The default value is {@link Options#ALL ALL}.
+         */
+        public static final String BACKUP_TYPE = "backup_type";
+
+        /**
+         * Show all backup types.
+         */
+        public static final String ALL = "all";
+
+        /**
+         * Show full backups only.
+         */
+        public static final String FULL = "full";
+
+        /**
+         * Show incremental backups only.
+         */
+        public static final String INCREMENTAL = "incremental";
+
+        /**
+         * Show differential backups only.
+         */
+        public static final String DIFFERENTIAL = "differential";
+
+        /**
          * Show the contents of the backed-up snapshots.
          * Supported values:
          * <ul>
@@ -132,6 +168,23 @@ public class ShowBackupRequest implements IndexedRecord {
      *                         snapshot to show. Leave empty to show
      *                         information from the most recent snapshot in the
      *                         backup. The default value is ''.
+     *                     <li>{@link Options#BACKUP_TYPE BACKUP_TYPE}: Show
+     *                         backups by type. This option is ignored if
+     *                         {@link Options#BACKUP_ID BACKUP_ID} is
+     *                         non-empty.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#ALL ALL}: Show all backup
+     *                                 types.
+     *                             <li>{@link Options#FULL FULL}: Show full
+     *                                 backups only.
+     *                             <li>{@link Options#INCREMENTAL INCREMENTAL}:
+     *                                 Show incremental backups only.
+     *                             <li>{@link Options#DIFFERENTIAL
+     *                                 DIFFERENTIAL}: Show differential backups
+     *                                 only.
+     *                         </ul>
+     *                         The default value is {@link Options#ALL ALL}.
      *                     <li>{@link Options#SHOW_CONTENTS SHOW_CONTENTS}:
      *                         Show the contents of the backed-up snapshots.
      *                         Supported values:
@@ -219,6 +272,19 @@ public class ShowBackupRequest implements IndexedRecord {
      *     <li>{@link Options#BACKUP_ID BACKUP_ID}: ID of the snapshot to show.
      *         Leave empty to show information from the most recent snapshot in
      *         the backup. The default value is ''.
+     *     <li>{@link Options#BACKUP_TYPE BACKUP_TYPE}: Show backups by type.
+     *         This option is ignored if {@link Options#BACKUP_ID BACKUP_ID} is
+     *         non-empty.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#ALL ALL}: Show all backup types.
+     *             <li>{@link Options#FULL FULL}: Show full backups only.
+     *             <li>{@link Options#INCREMENTAL INCREMENTAL}: Show
+     *                 incremental backups only.
+     *             <li>{@link Options#DIFFERENTIAL DIFFERENTIAL}: Show
+     *                 differential backups only.
+     *         </ul>
+     *         The default value is {@link Options#ALL ALL}.
      *     <li>{@link Options#SHOW_CONTENTS SHOW_CONTENTS}: Show the contents
      *         of the backed-up snapshots.
      *         Supported values:
@@ -255,6 +321,19 @@ public class ShowBackupRequest implements IndexedRecord {
      *     <li>{@link Options#BACKUP_ID BACKUP_ID}: ID of the snapshot to show.
      *         Leave empty to show information from the most recent snapshot in
      *         the backup. The default value is ''.
+     *     <li>{@link Options#BACKUP_TYPE BACKUP_TYPE}: Show backups by type.
+     *         This option is ignored if {@link Options#BACKUP_ID BACKUP_ID} is
+     *         non-empty.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#ALL ALL}: Show all backup types.
+     *             <li>{@link Options#FULL FULL}: Show full backups only.
+     *             <li>{@link Options#INCREMENTAL INCREMENTAL}: Show
+     *                 incremental backups only.
+     *             <li>{@link Options#DIFFERENTIAL DIFFERENTIAL}: Show
+     *                 differential backups only.
+     *         </ul>
+     *         The default value is {@link Options#ALL ALL}.
      *     <li>{@link Options#SHOW_CONTENTS SHOW_CONTENTS}: Show the contents
      *         of the backed-up snapshots.
      *         Supported values:

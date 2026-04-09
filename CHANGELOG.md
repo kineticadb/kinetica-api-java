@@ -2,6 +2,12 @@
 
 ## Version 7.2
 
+### Version 7.2.3.16 - 2026.04.09
+
+#### Changed
+-   Upgraded Snappy library to 1.1.10.8.
+
+
 ### Version 7.2.3.15 - 2026.03.22
 
 #### Changed

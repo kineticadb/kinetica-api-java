@@ -33,6 +33,7 @@ public class ImportModelRequest implements IndexedRecord {
         public static final String CREDENTIAL = "credential";
         public static final String MEMORY_LIMIT = "memory_limit";
         public static final String REMOTE_MODEL_NAME = "remote_model_name";
+        public static final String REMOTE_MODEL_DIMENSIONS = "remote_model_dimensions";
         public static final String REMOTE_MODEL_LOCATION = "remote_model_location";
         public static final String REMOTE_MODEL_PROVIDER_TYPE = "remote_model_provider_type";
         public static final String NVIDIA = "nvidia";

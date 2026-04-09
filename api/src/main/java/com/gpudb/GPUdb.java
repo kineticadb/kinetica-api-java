@@ -17303,6 +17303,81 @@ public class GPUdb extends GPUdbBase {
     }
 
     /**
+     * Retrieves node or edge entities from an existing graph, with pagination
+     * support via offset and limit. Use {@link
+     * GPUdb#showGraph(ShowGraphRequest) showGraph} to obtain the total number
+     * of nodes and edges.
+     *
+     * @param request  {@link GetGraphEntitiesRequest Request} object
+     *                 containing the parameters for the operation.
+     *
+     * @return {@link GetGraphEntitiesResponse Response} object containing the
+     *         results of the operation.
+     *
+     * @throws GPUdbException  if an error occurs during the operation.
+     */
+    public GetGraphEntitiesResponse getGraphEntities(GetGraphEntitiesRequest request) throws GPUdbException {
+        GetGraphEntitiesResponse actualResponse_ = new GetGraphEntitiesResponse();
+        submitRequest("/get/graph/entities", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+    /**
+     * Retrieves node or edge entities from an existing graph, with pagination
+     * support via offset and limit. Use {@link GPUdb#showGraph(String, Map)
+     * showGraph} to obtain the total number of nodes and edges.
+     *
+     * @param graphName  Name of the graph from which to retrieve entities.
+     * @param offset  Starting index of the entities to retrieve (0-based). The
+     *                default value is 0.
+     * @param limit  Number of entities to retrieve starting from {@code
+     *               offset}. A value of -1 returns all entities from the
+     *               offset to the end. Note: the {@link
+     *               com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesInt()
+     *               entitiesInt} or {@link
+     *               com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesString()
+     *               entitiesString} array size will be 2x this value for nodes
+     *               (stride 2) or 4x for edges (stride 4). The default value
+     *               is 10000.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                     <li>{@link
+     *                         com.gpudb.protocol.GetGraphEntitiesRequest.Options#ENTITY_TYPE
+     *                         ENTITY_TYPE}: The type of entity to retrieve.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.GetGraphEntitiesRequest.Options#EDGE
+     *                                 EDGE}: Retrieve edge entities (default).
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.GetGraphEntitiesRequest.Options#NODE
+     *                                 NODE}: Retrieve node entities.
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.GetGraphEntitiesRequest.Options#EDGE
+     *                         EDGE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.GetGraphEntitiesRequest.Options#SERVER_ID
+     *                         SERVER_ID}: Indicates which graph server to send
+     *                         the request to. Required when the graph is
+     *                         distributed across multiple servers. The default
+     *                         value is '0'.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     *
+     * @return {@link GetGraphEntitiesResponse Response} object containing the
+     *         results of the operation.
+     *
+     * @throws GPUdbException  if an error occurs during the operation.
+     */
+    public GetGraphEntitiesResponse getGraphEntities(String graphName, long offset, long limit, Map<String, String> options) throws GPUdbException {
+        GetGraphEntitiesRequest actualRequest_ = new GetGraphEntitiesRequest(graphName, offset, limit, options);
+        GetGraphEntitiesResponse actualResponse_ = new GetGraphEntitiesResponse();
+        submitRequest("/get/graph/entities", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+    /**
      * Get the status and result of asynchronously running job.  See the {@link
      * GPUdb#createJob(CreateJobRequest) createJob} for starting an
      * asynchronous job.  Some fields of the response are filled only after the
@@ -25751,6 +25826,32 @@ public class GPUdb extends GPUdbBase {
      *                         BACKUP_ID}: ID of the snapshot to show. Leave
      *                         empty to show information from the most recent
      *                         snapshot in the backup. The default value is ''.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.ShowBackupRequest.Options#BACKUP_TYPE
+     *                         BACKUP_TYPE}: Show backups by type. This option
+     *                         is ignored if {@link
+     *                         com.gpudb.protocol.ShowBackupRequest.Options#BACKUP_ID
+     *                         BACKUP_ID} is non-empty.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.ShowBackupRequest.Options#ALL
+     *                                 ALL}: Show all backup types.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.ShowBackupRequest.Options#FULL
+     *                                 FULL}: Show full backups only.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.ShowBackupRequest.Options#INCREMENTAL
+     *                                 INCREMENTAL}: Show incremental backups
+     *                                 only.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.ShowBackupRequest.Options#DIFFERENTIAL
+     *                                 DIFFERENTIAL}: Show differential backups
+     *                                 only.
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.ShowBackupRequest.Options#ALL
+     *                         ALL}.
      *                     <li>{@link
      *                         com.gpudb.protocol.ShowBackupRequest.Options#SHOW_CONTENTS
      *                         SHOW_CONTENTS}: Show the contents of the
