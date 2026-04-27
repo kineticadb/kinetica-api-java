@@ -5,7 +5,9 @@
  */
 package com.gpudb.protocol;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
@@ -13,18 +15,24 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#showGraph(ShowGraphRequest)
- * GPUdb.showGraph}.
+ * A set of parameters for {@link com.gpudb.GPUdb#checkTable(CheckTableRequest)
+ * GPUdb.checkTable}.
  * <p>
- * Shows information and characteristics of graphs that exist on the graph
- * server.
+ * Scans the requested tables as specified in {@link #getTableNames()
+ * tableNames} for integrity. Any table chunks which fail the check will be
+ * marked as corrupt. By default the database will automatically repair corrupt
+ * tables (via truncating). Note that since this reads every table column from
+ * disk it may be a potentially long-running operation. The option {@link
+ * Options#LOCAL_ONLY LOCAL_ONLY} can be used to skip any table files already
+ * written to a remote storage.
+ * Returns table corruption results.
  */
-public class ShowGraphRequest implements IndexedRecord {
+public class CheckTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("ShowGraphRequest")
+            .record("CheckTableRequest")
             .namespace("com.gpudb")
             .fields()
-                .name("graphName").type().stringType().noDefault()
+                .name("tableNames").type().array().items().stringType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -39,36 +47,15 @@ public class ShowGraphRequest implements IndexedRecord {
     }
 
     /**
-     * A set of string constants for the {@link ShowGraphRequest} parameter
+     * A set of string constants for the {@link CheckTableRequest} parameter
      * {@link #getOptions() options}.
      * <p>
      * Optional parameters.
      */
     public static final class Options {
         /**
-         * If set to {@link Options#TRUE TRUE}, the request that was originally
-         * used to create the graph is also returned as JSON.
-         * Supported values:
-         * <ul>
-         *     <li>{@link Options#TRUE TRUE}
-         *     <li>{@link Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link Options#TRUE TRUE}.
-         */
-        public static final String SHOW_ORIGINAL_REQUEST = "show_original_request";
-
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
-
-        /**
-         * Indicates which graph server(s) to send the request to. Default is
-         * to send to get information about all the servers.
-         */
-        public static final String SERVER_ID = "server_id";
-
-        /**
-         * If true, generates the graph ontology (schema) as a DOT format
-         * string in the response info field under the key 'dot'.
+         * If {@link Options#TRUE TRUE} only locally persisted files will be
+         * checked.
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}
@@ -76,49 +63,46 @@ public class ShowGraphRequest implements IndexedRecord {
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
-        public static final String EXPORT_GRAPH_SCHEMA = "export_graph_schema";
+        public static final String LOCAL_ONLY = "local_only";
+
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
+         * If {@link Options#TRUE TRUE} reports individual chunk errors.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#TRUE TRUE}.
+         */
+        public static final String SHOW_DETAIL = "show_detail";
 
         private Options() {  }
     }
 
-    private String graphName;
+    private List<String> tableNames;
     private Map<String, String> options;
 
     /**
-     * Constructs a ShowGraphRequest object with default parameters.
+     * Constructs a CheckTableRequest object with default parameters.
      */
-    public ShowGraphRequest() {
-        graphName = "";
+    public CheckTableRequest() {
+        tableNames = new ArrayList<>();
         options = new LinkedHashMap<>();
     }
 
     /**
-     * Constructs a ShowGraphRequest object with the specified parameters.
+     * Constructs a CheckTableRequest object with the specified parameters.
      *
-     * @param graphName  Name of the graph on which to retrieve information. If
-     *                   left as the default value, information about all
-     *                   graphs is returned. The default value is ''.
+     * @param tableNames  List of tables to query. An asterisk returns all
+     *                    tables.
      * @param options  Optional parameters.
      *                 <ul>
-     *                     <li>{@link Options#SHOW_ORIGINAL_REQUEST
-     *                         SHOW_ORIGINAL_REQUEST}: If set to {@link
-     *                         Options#TRUE TRUE}, the request that was
-     *                         originally used to create the graph is also
-     *                         returned as JSON.
-     *                         Supported values:
-     *                         <ul>
-     *                             <li>{@link Options#TRUE TRUE}
-     *                             <li>{@link Options#FALSE FALSE}
-     *                         </ul>
-     *                         The default value is {@link Options#TRUE TRUE}.
-     *                     <li>{@link Options#SERVER_ID SERVER_ID}: Indicates
-     *                         which graph server(s) to send the request to.
-     *                         Default is to send to get information about all
-     *                         the servers.
-     *                     <li>{@link Options#EXPORT_GRAPH_SCHEMA
-     *                         EXPORT_GRAPH_SCHEMA}: If true, generates the
-     *                         graph ontology (schema) as a DOT format string
-     *                         in the response info field under the key 'dot'.
+     *                     <li>{@link Options#LOCAL_ONLY LOCAL_ONLY}: If {@link
+     *                         Options#TRUE TRUE} only locally persisted files
+     *                         will be checked.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
@@ -126,63 +110,63 @@ public class ShowGraphRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#SHOW_DETAIL SHOW_DETAIL}: If
+     *                         {@link Options#TRUE TRUE} reports individual
+     *                         chunk errors.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#TRUE TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
-    public ShowGraphRequest(String graphName, Map<String, String> options) {
-        this.graphName = (graphName == null) ? "" : graphName;
+    public CheckTableRequest(List<String> tableNames, Map<String, String> options) {
+        this.tableNames = (tableNames == null) ? new ArrayList<String>() : tableNames;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
     /**
-     * Name of the graph on which to retrieve information. If left as the
-     * default value, information about all graphs is returned. The default
-     * value is ''.
+     * List of tables to query. An asterisk returns all tables.
      *
-     * @return The current value of {@code graphName}.
+     * @return The current value of {@code tableNames}.
      */
-    public String getGraphName() {
-        return graphName;
+    public List<String> getTableNames() {
+        return tableNames;
     }
 
     /**
-     * Name of the graph on which to retrieve information. If left as the
-     * default value, information about all graphs is returned. The default
-     * value is ''.
+     * List of tables to query. An asterisk returns all tables.
      *
-     * @param graphName  The new value for {@code graphName}.
+     * @param tableNames  The new value for {@code tableNames}.
      *
      * @return {@code this} to mimic the builder pattern.
      */
-    public ShowGraphRequest setGraphName(String graphName) {
-        this.graphName = (graphName == null) ? "" : graphName;
+    public CheckTableRequest setTableNames(List<String> tableNames) {
+        this.tableNames = (tableNames == null) ? new ArrayList<String>() : tableNames;
         return this;
     }
 
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#SHOW_ORIGINAL_REQUEST SHOW_ORIGINAL_REQUEST}: If
-     *         set to {@link Options#TRUE TRUE}, the request that was
-     *         originally used to create the graph is also returned as JSON.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link Options#TRUE TRUE}.
-     *     <li>{@link Options#SERVER_ID SERVER_ID}: Indicates which graph
-     *         server(s) to send the request to. Default is to send to get
-     *         information about all the servers.
-     *     <li>{@link Options#EXPORT_GRAPH_SCHEMA EXPORT_GRAPH_SCHEMA}: If
-     *         true, generates the graph ontology (schema) as a DOT format
-     *         string in the response info field under the key 'dot'.
+     *     <li>{@link Options#LOCAL_ONLY LOCAL_ONLY}: If {@link Options#TRUE
+     *         TRUE} only locally persisted files will be checked.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#SHOW_DETAIL SHOW_DETAIL}: If {@link Options#TRUE
+     *         TRUE} reports individual chunk errors.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -195,27 +179,22 @@ public class ShowGraphRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#SHOW_ORIGINAL_REQUEST SHOW_ORIGINAL_REQUEST}: If
-     *         set to {@link Options#TRUE TRUE}, the request that was
-     *         originally used to create the graph is also returned as JSON.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link Options#TRUE TRUE}.
-     *     <li>{@link Options#SERVER_ID SERVER_ID}: Indicates which graph
-     *         server(s) to send the request to. Default is to send to get
-     *         information about all the servers.
-     *     <li>{@link Options#EXPORT_GRAPH_SCHEMA EXPORT_GRAPH_SCHEMA}: If
-     *         true, generates the graph ontology (schema) as a DOT format
-     *         string in the response info field under the key 'dot'.
+     *     <li>{@link Options#LOCAL_ONLY LOCAL_ONLY}: If {@link Options#TRUE
+     *         TRUE} only locally persisted files will be checked.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#SHOW_DETAIL SHOW_DETAIL}: If {@link Options#TRUE
+     *         TRUE} reports individual chunk errors.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -223,7 +202,7 @@ public class ShowGraphRequest implements IndexedRecord {
      *
      * @return {@code this} to mimic the builder pattern.
      */
-    public ShowGraphRequest setOptions(Map<String, String> options) {
+    public CheckTableRequest setOptions(Map<String, String> options) {
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
         return this;
     }
@@ -253,7 +232,7 @@ public class ShowGraphRequest implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.graphName;
+                return this.tableNames;
 
             case 1:
                 return this.options;
@@ -277,7 +256,7 @@ public class ShowGraphRequest implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.graphName = (String)value;
+                this.tableNames = (List<String>)value;
                 break;
 
             case 1:
@@ -299,9 +278,9 @@ public class ShowGraphRequest implements IndexedRecord {
             return false;
         }
 
-        ShowGraphRequest that = (ShowGraphRequest)obj;
+        CheckTableRequest that = (CheckTableRequest)obj;
 
-        return ( this.graphName.equals( that.graphName )
+        return ( this.tableNames.equals( that.tableNames )
                  && this.options.equals( that.options ) );
     }
 
@@ -310,9 +289,9 @@ public class ShowGraphRequest implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "graphName" ) );
+        builder.append( gd.toString( "tableNames" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.graphName ) );
+        builder.append( gd.toString( this.tableNames ) );
         builder.append( ", " );
         builder.append( gd.toString( "options" ) );
         builder.append( ": " );
@@ -325,7 +304,7 @@ public class ShowGraphRequest implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.graphName.hashCode();
+        hashCode = (31 * hashCode) + this.tableNames.hashCode();
         hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }

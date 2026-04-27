@@ -236,6 +236,7 @@ public abstract class GPUdbBase {
         private long  initialConnectionAttemptTimeout = DEFAULT_INITIAL_CONNECTION_ATTEMPT_TIMEOUT_MS;
         private int   maxTotalConnections   = DEFAULT_MAX_TOTAL_CONNECTIONS;
         private int   maxConnectionsPerHost = DEFAULT_MAX_CONNECTIONS_PER_HOST;
+        private int   maxRetries            = HTTP_REQUEST_MAX_RETRY_ATTEMPTS;
         private FailbackOptions failbackOptions = FailbackOptions.defaultOptions();
 
         /**
@@ -267,6 +268,7 @@ public abstract class GPUdbBase {
             this.hmPort                      = other.hmPort;
             this.maxTotalConnections         = other.maxTotalConnections;
             this.maxConnectionsPerHost       = other.maxConnectionsPerHost;
+            this.maxRetries                  = other.maxRetries;
             this.initialConnectionAttemptTimeout = other.initialConnectionAttemptTimeout;
             this.connectionInactivityValidationTimeout = other.connectionInactivityValidationTimeout;
             this.trustStoreFilePath = other.trustStoreFilePath;
@@ -309,6 +311,7 @@ public abstract class GPUdbBase {
                                             toStringKeyValue("threadCount",                           this.threadCount,                           false),
                                             toStringKeyValue("maxTotalConnections",                   this.maxTotalConnections,                   false),
                                             toStringKeyValue("maxConnectionsPerHost",                 this.maxConnectionsPerHost,                 false),
+                                            toStringKeyValue("maxRetries",                            this.maxRetries,                            false),
                                             toStringKeyValue("useSnappy",                             this.useSnappy,                             false),
                                             toStringKeyValue("failbackOptions",                       this.failbackOptions,                       false)
                                     )
@@ -605,6 +608,17 @@ public abstract class GPUdbBase {
          */
         public int getMaxConnectionsPerHost() {
             return this.maxConnectionsPerHost;
+        }
+
+        /**
+         * Gets the maximum number of retries for HTTP requests.
+         *
+         * @return  the maxRetries value
+         *
+         * @see #setMaxRetries(int)
+         */
+        public int getMaxRetries() {
+            return this.maxRetries;
         }
 
         /**
@@ -1149,6 +1163,24 @@ public abstract class GPUdbBase {
             }
 
             this.maxConnectionsPerHost = value;
+            return this;
+        }
+
+        /**
+         * Sets the maximum number of retries for HTTP requests.
+         * Must be 0 at a minimum.
+         *
+         * @param value  the maxRetries value
+         * @return       the current {@link Options} instance
+         *
+         * @see #getMaxRetries()
+         */
+        public Options setMaxRetries(int value) {
+            if (value < 0) {
+                throw new IllegalArgumentException("maxRetries must be greater than or equal to zero.");
+            }
+
+            this.maxRetries = value;
             return this;
         }
 
@@ -2640,6 +2672,7 @@ public abstract class GPUdbBase {
     private boolean       disableAutoDiscovery;
     private int           threadCount;
     private int           timeout;
+    private int           maxRetries;
     private int           hostManagerPort;
     private long          initialConnectionAttemptTimeoutNS;
     private GPUdbVersion  serverVersion;
@@ -2767,6 +2800,7 @@ public abstract class GPUdbBase {
         this.threadCount          = this.options.getThreadCount();
         this.executor             = this.options.getExecutor();
         this.timeout              = this.options.getTimeout();
+        this.maxRetries           = this.options.getMaxRetries();
         this.hostManagerPort      = this.options.getHostManagerPort();
         this.haFailoverOrder      = this.options.getHAFailoverOrder();
         this.initialConnectionAttemptTimeoutNS = this.options.getInitialConnectionAttemptTimeout();
@@ -2984,7 +3018,7 @@ public abstract class GPUdbBase {
                 public boolean retryRequest(HttpRequest httpRequest, IOException e, int executionCount, HttpContext httpContext) {
                     GPUdbLogger.trace_with_info(String.format("Retry #%d for exception %s", executionCount, e.getMessage()));
 
-                    if (executionCount > HTTP_REQUEST_MAX_RETRY_ATTEMPTS) {
+                    if (executionCount > GPUdbBase.this.maxRetries) {
                         return false;
                     }
 
@@ -2999,8 +3033,8 @@ public abstract class GPUdbBase {
 
                 @Override
                 public boolean retryRequest(HttpResponse httpResponse, int executionCount, HttpContext httpContext) {
-                    boolean doRetry = 
-                            executionCount <= HTTP_REQUEST_MAX_RETRY_ATTEMPTS &&
+                    boolean doRetry =
+                            executionCount <= GPUdbBase.this.maxRetries &&
                             (
                                 httpResponse.getCode() == 502 ||
                                 httpResponse.getCode() == 503
@@ -3072,6 +3106,8 @@ public abstract class GPUdbBase {
         } catch ( GPUdbException ex ) {
             this.httpClient.close(CloseMode.GRACEFUL);
             connectionManager.close();
+            this.httpClientFastConnect.close(CloseMode.GRACEFUL);
+            connectionManagerFastConnect.close();
             String msg = String.format("Connectivity check for <%s> failed: %s", this.getURL(), ex.getMessage());
             throw new GPUdbException( msg, ex );
         }
@@ -3466,6 +3502,17 @@ public abstract class GPUdbBase {
      */
     public int getTimeout() {
         return this.timeout;
+    }
+
+    /**
+     * Gets the maximum number of retries for HTTP requests.
+     *
+     * @return  the maxRetries value
+     *
+     * @see Options#setMaxRetries(int)
+     */
+    public int getMaxRetries() {
+        return this.maxRetries;
     }
 
     /**

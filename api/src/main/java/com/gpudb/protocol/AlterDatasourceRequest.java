@@ -203,6 +203,20 @@ public class AlterDatasourceRequest implements IndexedRecord {
         public static final String AZURE_OAUTH_TOKEN = "azure_oauth_token";
 
         /**
+         * Whether to use virtual addressing when referencing the Azure source.
+         * Supported values:
+         * <ul>
+         *     <li>{@link DatasourceUpdatesMap#TRUE TRUE}: The requests URI
+         *         should be specified in virtual-hosted-style format where the
+         *         bucket name is part of the domain name in the URL.
+         *     <li>{@link DatasourceUpdatesMap#FALSE FALSE}: Use path-style URI
+         *         for requests.
+         * </ul>
+         * The default value is {@link DatasourceUpdatesMap#TRUE TRUE}.
+         */
+        public static final String AZURE_USE_VIRTUAL_ADDRESSING = "azure_use_virtual_addressing";
+
+        /**
          * Name of the Google Cloud Storage bucket to use as the data source
          */
         public static final String GCS_BUCKET_NAME = "gcs_bucket_name";
@@ -503,6 +517,28 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                      AZURE_OAUTH_TOKEN}: OAuth token to
      *                                      access given storage container
      *                                  <li>{@link
+     *                                      DatasourceUpdatesMap#AZURE_USE_VIRTUAL_ADDRESSING
+     *                                      AZURE_USE_VIRTUAL_ADDRESSING}:
+     *                                      Whether to use virtual addressing
+     *                                      when referencing the Azure source.
+     *                                      Supported values:
+     *                                      <ul>
+     *                                          <li>{@link
+     *                                              DatasourceUpdatesMap#TRUE
+     *                                              TRUE}: The requests URI
+     *                                              should be specified in
+     *                                              virtual-hosted-style format
+     *                                              where the bucket name is
+     *                                              part of the domain name in
+     *                                              the URL.
+     *                                          <li>{@link
+     *                                              DatasourceUpdatesMap#FALSE
+     *                                              FALSE}: Use path-style URI
+     *                                              for requests.
+     *                                      </ul>
+     *                                      The default value is {@link
+     *                                      DatasourceUpdatesMap#TRUE TRUE}.
+     *                                  <li>{@link
      *                                      DatasourceUpdatesMap#GCS_BUCKET_NAME
      *                                      GCS_BUCKET_NAME}: Name of the
      *                                      Google Cloud Storage bucket to use
@@ -751,6 +787,18 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *     <li>{@link DatasourceUpdatesMap#AZURE_OAUTH_TOKEN
      *         AZURE_OAUTH_TOKEN}: OAuth token to access given storage
      *         container
+     *     <li>{@link DatasourceUpdatesMap#AZURE_USE_VIRTUAL_ADDRESSING
+     *         AZURE_USE_VIRTUAL_ADDRESSING}: Whether to use virtual addressing
+     *         when referencing the Azure source.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link DatasourceUpdatesMap#TRUE TRUE}: The requests URI
+     *                 should be specified in virtual-hosted-style format where
+     *                 the bucket name is part of the domain name in the URL.
+     *             <li>{@link DatasourceUpdatesMap#FALSE FALSE}: Use path-style
+     *                 URI for requests.
+     *         </ul>
+     *         The default value is {@link DatasourceUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasourceUpdatesMap#GCS_BUCKET_NAME GCS_BUCKET_NAME}:
      *         Name of the Google Cloud Storage bucket to use as the data
      *         source
@@ -921,6 +969,18 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *     <li>{@link DatasourceUpdatesMap#AZURE_OAUTH_TOKEN
      *         AZURE_OAUTH_TOKEN}: OAuth token to access given storage
      *         container
+     *     <li>{@link DatasourceUpdatesMap#AZURE_USE_VIRTUAL_ADDRESSING
+     *         AZURE_USE_VIRTUAL_ADDRESSING}: Whether to use virtual addressing
+     *         when referencing the Azure source.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link DatasourceUpdatesMap#TRUE TRUE}: The requests URI
+     *                 should be specified in virtual-hosted-style format where
+     *                 the bucket name is part of the domain name in the URL.
+     *             <li>{@link DatasourceUpdatesMap#FALSE FALSE}: Use path-style
+     *                 URI for requests.
+     *         </ul>
+     *         The default value is {@link DatasourceUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasourceUpdatesMap#GCS_BUCKET_NAME GCS_BUCKET_NAME}:
      *         Name of the Google Cloud Storage bucket to use as the data
      *         source

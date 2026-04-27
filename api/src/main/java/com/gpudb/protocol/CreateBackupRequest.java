@@ -119,6 +119,12 @@ public class CreateBackupRequest implements IndexedRecord {
         public static final String FUNCTION_ENVIRONMENT = "function_environment";
 
         /**
+         * <a href="../../../../../../graph_solver/network_graph_solver/"
+         * target="_top">Graph(s)</a>.
+         */
+        public static final String GRAPH = "graph";
+
+        /**
          * <a href="../../../../../../concepts/table_monitors/"
          * target="_top">Table monitor(s)</a> / <a
          * href="../../../../../../sql/ddl/#create-stream" target="_top">SQL
@@ -321,6 +327,10 @@ public class CreateBackupRequest implements IndexedRecord {
      *                                  href="../../../../../../udf/python/writing/#udf-python-func-env"
      *                                  target="_top">Python UDF function
      *                                  environment(s)</a>.
+     *                              <li>{@link BackupObjectsMap#GRAPH GRAPH}:
+     *                                  <a
+     *                                  href="../../../../../../graph_solver/network_graph_solver/"
+     *                                  target="_top">Graph(s)</a>.
      *                              <li>{@link BackupObjectsMap#MONITOR
      *                                  MONITOR}: <a
      *                                  href="../../../../../../concepts/table_monitors/"
@@ -524,6 +534,9 @@ public class CreateBackupRequest implements IndexedRecord {
      *         FUNCTION_ENVIRONMENT}: <a
      *         href="../../../../../../udf/python/writing/#udf-python-func-env"
      *         target="_top">Python UDF function environment(s)</a>.
+     *     <li>{@link BackupObjectsMap#GRAPH GRAPH}: <a
+     *         href="../../../../../../graph_solver/network_graph_solver/"
+     *         target="_top">Graph(s)</a>.
      *     <li>{@link BackupObjectsMap#MONITOR MONITOR}: <a
      *         href="../../../../../../concepts/table_monitors/"
      *         target="_top">Table monitor(s)</a> / <a
@@ -585,6 +598,9 @@ public class CreateBackupRequest implements IndexedRecord {
      *         FUNCTION_ENVIRONMENT}: <a
      *         href="../../../../../../udf/python/writing/#udf-python-func-env"
      *         target="_top">Python UDF function environment(s)</a>.
+     *     <li>{@link BackupObjectsMap#GRAPH GRAPH}: <a
+     *         href="../../../../../../graph_solver/network_graph_solver/"
+     *         target="_top">Graph(s)</a>.
      *     <li>{@link BackupObjectsMap#MONITOR MONITOR}: <a
      *         href="../../../../../../concepts/table_monitors/"
      *         target="_top">Table monitor(s)</a> / <a

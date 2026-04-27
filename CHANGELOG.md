@@ -2,6 +2,16 @@
 
 ## Version 7.2
 
+### Version 7.2.3.17 - 2026-04-26
+
+#### Added
+-   Option to change the number of automatic retries of failed requests.
+-   Clean up of fast connection manager.
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
 ### Version 7.2.3.16 - 2026.04.09
 
 #### Changed

@@ -4388,6 +4388,29 @@ public class GPUdb extends GPUdbBase {
      *                                    AZURE_OAUTH_TOKEN}: Oauth token to
      *                                    access given storage container
      *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#AZURE_USE_VIRTUAL_ADDRESSING
+     *                                    AZURE_USE_VIRTUAL_ADDRESSING}:
+     *                                    Whether to use virtual addressing
+     *                                    when referencing the Azure source.
+     *                                    Supported values:
+     *                                    <ul>
+     *                                        <li>{@link
+     *                                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#TRUE
+     *                                            TRUE}: The requests URI
+     *                                            should be specified in
+     *                                            virtual-hosted-style format
+     *                                            where the bucket name is part
+     *                                            of the domain name in the
+     *                                            URL.
+     *                                        <li>{@link
+     *                                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FALSE
+     *                                            FALSE}: Use path-style URI
+     *                                            for requests.
+     *                                    </ul>
+     *                                    The default value is {@link
+     *                                    com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#TRUE
+     *                                    TRUE}.
+     *                                <li>{@link
      *                                    com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#GCS_BUCKET_NAME
      *                                    GCS_BUCKET_NAME}: Name of the Google
      *                                    Cloud Storage bucket to use as the
@@ -4743,6 +4766,29 @@ public class GPUdb extends GPUdbBase {
      *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_OAUTH_TOKEN
      *                                      AZURE_OAUTH_TOKEN}: OAuth token to
      *                                      access given storage container
+     *                                  <li>{@link
+     *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_USE_VIRTUAL_ADDRESSING
+     *                                      AZURE_USE_VIRTUAL_ADDRESSING}:
+     *                                      Whether to use virtual addressing
+     *                                      when referencing the Azure source.
+     *                                      Supported values:
+     *                                      <ul>
+     *                                          <li>{@link
+     *                                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     *                                              TRUE}: The requests URI
+     *                                              should be specified in
+     *                                              virtual-hosted-style format
+     *                                              where the bucket name is
+     *                                              part of the domain name in
+     *                                              the URL.
+     *                                          <li>{@link
+     *                                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+     *                                              FALSE}: Use path-style URI
+     *                                              for requests.
+     *                                      </ul>
+     *                                      The default value is {@link
+     *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     *                                      TRUE}.
      *                                  <li>{@link
      *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#GCS_BUCKET_NAME
      *                                      GCS_BUCKET_NAME}: Name of the
@@ -7146,6 +7192,97 @@ public class GPUdb extends GPUdbBase {
     }
 
     /**
+     * Scans the requested tables as specified in {@link
+     * com.gpudb.protocol.CheckTableRequest#getTableNames() tableNames} for
+     * integrity. Any table chunks which fail the check will be marked as
+     * corrupt. By default the database will automatically repair corrupt
+     * tables (via truncating). Note that since this reads every table column
+     * from disk it may be a potentially long-running operation. The option
+     * {@link com.gpudb.protocol.CheckTableRequest.Options#LOCAL_ONLY
+     * LOCAL_ONLY} can be used to skip any table files already written to a
+     * remote storage.
+     * Returns table corruption results.
+     *
+     * @param request  {@link CheckTableRequest Request} object containing the
+     *                 parameters for the operation.
+     *
+     * @return {@link CheckTableResponse Response} object containing the
+     *         results of the operation.
+     *
+     * @throws GPUdbException  if an error occurs during the operation.
+     */
+    public CheckTableResponse checkTable(CheckTableRequest request) throws GPUdbException {
+        CheckTableResponse actualResponse_ = new CheckTableResponse();
+        submitRequest("/check/table", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+    /**
+     * Scans the requested tables as specified in {@code tableNames} for
+     * integrity. Any table chunks which fail the check will be marked as
+     * corrupt. By default the database will automatically repair corrupt
+     * tables (via truncating). Note that since this reads every table column
+     * from disk it may be a potentially long-running operation. The option
+     * {@link com.gpudb.protocol.CheckTableRequest.Options#LOCAL_ONLY
+     * LOCAL_ONLY} can be used to skip any table files already written to a
+     * remote storage.
+     * Returns table corruption results.
+     *
+     * @param tableNames  List of tables to query. An asterisk returns all
+     *                    tables.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CheckTableRequest.Options#LOCAL_ONLY
+     *                         LOCAL_ONLY}: If {@link
+     *                         com.gpudb.protocol.CheckTableRequest.Options#TRUE
+     *                         TRUE} only locally persisted files will be
+     *                         checked.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CheckTableRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CheckTableRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.CheckTableRequest.Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CheckTableRequest.Options#SHOW_DETAIL
+     *                         SHOW_DETAIL}: If {@link
+     *                         com.gpudb.protocol.CheckTableRequest.Options#TRUE
+     *                         TRUE} reports individual chunk errors.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CheckTableRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CheckTableRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.CheckTableRequest.Options#TRUE
+     *                         TRUE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     *
+     * @return {@link CheckTableResponse Response} object containing the
+     *         results of the operation.
+     *
+     * @throws GPUdbException  if an error occurs during the operation.
+     */
+    public CheckTableResponse checkTable(List<String> tableNames, Map<String, String> options) throws GPUdbException {
+        CheckTableRequest actualRequest_ = new CheckTableRequest(tableNames, options);
+        CheckTableResponse actualResponse_ = new CheckTableResponse();
+        submitRequest("/check/table", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+    /**
      * Clears statistics (cardinality, mean value, etc.) for a column in a
      * specified table.
      *
@@ -7602,6 +7739,11 @@ public class GPUdb extends GPUdbBase {
      *                                  href="../../../../../udf/python/writing/#udf-python-func-env"
      *                                  target="_top">Python UDF function
      *                                  environment(s)</a>.
+     *                              <li>{@link
+     *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#GRAPH
+     *                                  GRAPH}: <a
+     *                                  href="../../../../../graph_solver/network_graph_solver/"
+     *                                  target="_top">Graph(s)</a>.
      *                              <li>{@link
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#MONITOR
      *                                  MONITOR}: <a
@@ -8108,6 +8250,26 @@ public class GPUdb extends GPUdbBase {
      *                         AZURE_OAUTH_TOKEN}: Oauth token to access given
      *                         storage container
      *                     <li>{@link
+     *                         com.gpudb.protocol.CreateDatasinkRequest.Options#AZURE_USE_VIRTUAL_ADDRESSING
+     *                         AZURE_USE_VIRTUAL_ADDRESSING}: Whether to use
+     *                         virtual addressing when referencing the Azure
+     *                         source.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateDatasinkRequest.Options#TRUE
+     *                                 TRUE}: The requests URI should be
+     *                                 specified in virtual-hosted-style format
+     *                                 where the bucket name is part of the
+     *                                 domain name in the URL.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateDatasinkRequest.Options#FALSE
+     *                                 FALSE}: Use path-style URI for requests.
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.CreateDatasinkRequest.Options#TRUE
+     *                         TRUE}.
+     *                     <li>{@link
      *                         com.gpudb.protocol.CreateDatasinkRequest.Options#GCS_BUCKET_NAME
      *                         GCS_BUCKET_NAME}: Name of the Google Cloud
      *                         Storage bucket to use as the data sink
@@ -8398,6 +8560,26 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_OAUTH_TOKEN
      *                         AZURE_OAUTH_TOKEN}: OAuth token to access given
      *                         storage container
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_USE_VIRTUAL_ADDRESSING
+     *                         AZURE_USE_VIRTUAL_ADDRESSING}: Whether to use
+     *                         virtual addressing when referencing the Azure
+     *                         source.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
+     *                                 TRUE}: The requests URI should be
+     *                                 specified in virtual-hosted-style format
+     *                                 where the bucket name is part of the
+     *                                 domain name in the URL.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE
+     *                                 FALSE}: Use path-style URI for requests.
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
+     *                         TRUE}.
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateDatasourceRequest.Options#GCS_BUCKET_NAME
      *                         GCS_BUCKET_NAME}: Name of the Google Cloud
@@ -25064,6 +25246,11 @@ public class GPUdb extends GPUdbBase {
      *                                   target="_top">Python UDF function
      *                                   environment(s)</a>.
      *                               <li>{@link
+     *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#GRAPH
+     *                                   GRAPH}: <a
+     *                                   href="../../../../../graph_solver/network_graph_solver/"
+     *                                   target="_top">Graph(s)</a>.
+     *                               <li>{@link
      *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#MONITOR
      *                                   MONITOR}: <a
      *                                   href="../../../../../concepts/table_monitors/"
@@ -26287,6 +26474,23 @@ public class GPUdb extends GPUdbBase {
      *                         SERVER_ID}: Indicates which graph server(s) to
      *                         send the request to. Default is to send to get
      *                         information about all the servers.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.ShowGraphRequest.Options#EXPORT_GRAPH_SCHEMA
+     *                         EXPORT_GRAPH_SCHEMA}: If true, generates the
+     *                         graph ontology (schema) as a DOT format string
+     *                         in the response info field under the key 'dot'.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.ShowGraphRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.ShowGraphRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.ShowGraphRequest.Options#FALSE
+     *                         FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      *

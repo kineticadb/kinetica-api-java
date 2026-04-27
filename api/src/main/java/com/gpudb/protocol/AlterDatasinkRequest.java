@@ -190,6 +190,20 @@ public class AlterDatasinkRequest implements IndexedRecord {
         public static final String AZURE_OAUTH_TOKEN = "azure_oauth_token";
 
         /**
+         * Whether to use virtual addressing when referencing the Azure source.
+         * Supported values:
+         * <ul>
+         *     <li>{@link DatasinkUpdatesMap#TRUE TRUE}: The requests URI
+         *         should be specified in virtual-hosted-style format where the
+         *         bucket name is part of the domain name in the URL.
+         *     <li>{@link DatasinkUpdatesMap#FALSE FALSE}: Use path-style URI
+         *         for requests.
+         * </ul>
+         * The default value is {@link DatasinkUpdatesMap#TRUE TRUE}.
+         */
+        public static final String AZURE_USE_VIRTUAL_ADDRESSING = "azure_use_virtual_addressing";
+
+        /**
          * Name of the Google Cloud Storage bucket to use as the data sink
          */
         public static final String GCS_BUCKET_NAME = "gcs_bucket_name";
@@ -484,6 +498,28 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *                                    AZURE_OAUTH_TOKEN}: Oauth token to
      *                                    access given storage container
      *                                <li>{@link
+     *                                    DatasinkUpdatesMap#AZURE_USE_VIRTUAL_ADDRESSING
+     *                                    AZURE_USE_VIRTUAL_ADDRESSING}:
+     *                                    Whether to use virtual addressing
+     *                                    when referencing the Azure source.
+     *                                    Supported values:
+     *                                    <ul>
+     *                                        <li>{@link
+     *                                            DatasinkUpdatesMap#TRUE
+     *                                            TRUE}: The requests URI
+     *                                            should be specified in
+     *                                            virtual-hosted-style format
+     *                                            where the bucket name is part
+     *                                            of the domain name in the
+     *                                            URL.
+     *                                        <li>{@link
+     *                                            DatasinkUpdatesMap#FALSE
+     *                                            FALSE}: Use path-style URI
+     *                                            for requests.
+     *                                    </ul>
+     *                                    The default value is {@link
+     *                                    DatasinkUpdatesMap#TRUE TRUE}.
+     *                                <li>{@link
      *                                    DatasinkUpdatesMap#GCS_BUCKET_NAME
      *                                    GCS_BUCKET_NAME}: Name of the Google
      *                                    Cloud Storage bucket to use as the
@@ -723,6 +759,18 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *         as the data sink
      *     <li>{@link DatasinkUpdatesMap#AZURE_OAUTH_TOKEN AZURE_OAUTH_TOKEN}:
      *         Oauth token to access given storage container
+     *     <li>{@link DatasinkUpdatesMap#AZURE_USE_VIRTUAL_ADDRESSING
+     *         AZURE_USE_VIRTUAL_ADDRESSING}: Whether to use virtual addressing
+     *         when referencing the Azure source.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link DatasinkUpdatesMap#TRUE TRUE}: The requests URI
+     *                 should be specified in virtual-hosted-style format where
+     *                 the bucket name is part of the domain name in the URL.
+     *             <li>{@link DatasinkUpdatesMap#FALSE FALSE}: Use path-style
+     *                 URI for requests.
+     *         </ul>
+     *         The default value is {@link DatasinkUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasinkUpdatesMap#GCS_BUCKET_NAME GCS_BUCKET_NAME}: Name
      *         of the Google Cloud Storage bucket to use as the data sink
      *     <li>{@link DatasinkUpdatesMap#GCS_PROJECT_ID GCS_PROJECT_ID}: Name
@@ -888,6 +936,18 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *         as the data sink
      *     <li>{@link DatasinkUpdatesMap#AZURE_OAUTH_TOKEN AZURE_OAUTH_TOKEN}:
      *         Oauth token to access given storage container
+     *     <li>{@link DatasinkUpdatesMap#AZURE_USE_VIRTUAL_ADDRESSING
+     *         AZURE_USE_VIRTUAL_ADDRESSING}: Whether to use virtual addressing
+     *         when referencing the Azure source.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link DatasinkUpdatesMap#TRUE TRUE}: The requests URI
+     *                 should be specified in virtual-hosted-style format where
+     *                 the bucket name is part of the domain name in the URL.
+     *             <li>{@link DatasinkUpdatesMap#FALSE FALSE}: Use path-style
+     *                 URI for requests.
+     *         </ul>
+     *         The default value is {@link DatasinkUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasinkUpdatesMap#GCS_BUCKET_NAME GCS_BUCKET_NAME}: Name
      *         of the Google Cloud Storage bucket to use as the data sink
      *     <li>{@link DatasinkUpdatesMap#GCS_PROJECT_ID GCS_PROJECT_ID}: Name
