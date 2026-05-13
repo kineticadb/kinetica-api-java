@@ -3,6 +3,7 @@
 ## Version 7.2.3.13
 #### Added
 -   Added backup and restore support for graph definitions.
+-   Added backup and restore support for datalake catalogs.
 -   Added ``/check/table`` endpoint
 -   Added new option ``azure_use_virtual_addressing`` to ``/alter/datasource``, ``/alter/datasink``, ``/create/datasink``, and ``/create/datasource`` request
 

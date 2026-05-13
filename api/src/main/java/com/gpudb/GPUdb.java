@@ -2513,6 +2513,87 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
      *                         RESULT_TABLE} option.
      *                     <li>{@link
+     *                         com.gpudb.protocol.AggregateGroupByRequest.Options#PARTITION_TYPE
+     *                         PARTITION_TYPE}: <a
+     *                         href="../../../../../concepts/tables/#partitioning"
+     *                         target="_top">Partitioning</a> scheme to use for
+     *                         the result table.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.AggregateGroupByRequest.Options#RANGE
+     *                                 RANGE}: Use <a
+     *                                 href="../../../../../concepts/tables/#partitioning-by-range"
+     *                                 target="_top">range partitioning</a>.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.AggregateGroupByRequest.Options#INTERVAL
+     *                                 INTERVAL}: Use <a
+     *                                 href="../../../../../concepts/tables/#partitioning-by-interval"
+     *                                 target="_top">interval partitioning</a>.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.AggregateGroupByRequest.Options#LIST
+     *                                 LIST}: Use <a
+     *                                 href="../../../../../concepts/tables/#partitioning-by-list"
+     *                                 target="_top">list partitioning</a>.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.AggregateGroupByRequest.Options#HASH
+     *                                 HASH}: Use <a
+     *                                 href="../../../../../concepts/tables/#partitioning-by-hash"
+     *                                 target="_top">hash partitioning</a>.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.AggregateGroupByRequest.Options#SERIES
+     *                                 SERIES}: Use <a
+     *                                 href="../../../../../concepts/tables/#partitioning-by-series"
+     *                                 target="_top">series partitioning</a>.
+     *                         </ul>
+     *                     <li>{@link
+     *                         com.gpudb.protocol.AggregateGroupByRequest.Options#PARTITION_KEYS
+     *                         PARTITION_KEYS}: Comma-separated list of
+     *                         partition keys, which are the columns or column
+     *                         expressions by which records will be assigned to
+     *                         partitions defined by {@link
+     *                         com.gpudb.protocol.AggregateGroupByRequest.Options#PARTITION_DEFINITIONS
+     *                         PARTITION_DEFINITIONS}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.AggregateGroupByRequest.Options#PARTITION_DEFINITIONS
+     *                         PARTITION_DEFINITIONS}: Comma-separated list of
+     *                         partition definitions, whose format depends on
+     *                         the choice of {@link
+     *                         com.gpudb.protocol.AggregateGroupByRequest.Options#PARTITION_TYPE
+     *                         PARTITION_TYPE}.  See <a
+     *                         href="../../../../../concepts/tables/#partitioning-by-range"
+     *                         target="_top">range partitioning</a>, <a
+     *                         href="../../../../../concepts/tables/#partitioning-by-interval"
+     *                         target="_top">interval partitioning</a>, <a
+     *                         href="../../../../../concepts/tables/#partitioning-by-list"
+     *                         target="_top">list partitioning</a>, <a
+     *                         href="../../../../../concepts/tables/#partitioning-by-hash"
+     *                         target="_top">hash partitioning</a>, or <a
+     *                         href="../../../../../concepts/tables/#partitioning-by-series"
+     *                         target="_top">series partitioning</a> for
+     *                         example formats.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.AggregateGroupByRequest.Options#IS_AUTOMATIC_PARTITION
+     *                         IS_AUTOMATIC_PARTITION}: If {@link
+     *                         com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE
+     *                         TRUE}, a new partition will be created for
+     *                         values which don't fall into an existing
+     *                         partition.  Currently only supported for <a
+     *                         href="../../../../../concepts/tables/#partitioning-by-list"
+     *                         target="_top">list partitions</a>.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link
      *                         com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID
      *                         VIEW_ID}: ID of view of which the result table
      *                         will be a member. The default value is ''.
@@ -5709,6 +5790,11 @@ public class GPUdb extends GPUdbBase {
      *                                    timestamp (as milliseconds since unix
      *                                    epoch). The minimum allowed value is
      *                                    '-1'.
+     *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ADMIN_ACCESS_ONLY
+     *                                    ADMIN_ACCESS_ONLY}: Restricts access
+     *                                    to system admin users only. The
+     *                                    default value is 'false'.
      *                            </ul>
      * @param options  Optional parameters.
      *                 <ul>
@@ -7743,7 +7829,7 @@ public class GPUdb extends GPUdbBase {
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#GRAPH
      *                                  GRAPH}: <a
      *                                  href="../../../../../graph_solver/network_graph_solver/"
-     *                                  target="_top">Graph(s)</a>.
+     *                                  target="_top">Graph(s)</a> definition.
      *                              <li>{@link
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#MONITOR
      *                                  MONITOR}: <a
@@ -10134,6 +10220,18 @@ public class GPUdb extends GPUdbBase {
      *                         bytes), then window functions which require a
      *                         reshard will be computed separately and joined
      *                         back together. The default value is ''.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateProjectionRequest.Options#QUALIFY_FILTER
+     *                         QUALIFY_FILTER}: An optional filter <a
+     *                         href="../../../../../concepts/expressions/"
+     *                         target="_top">expression</a> applied to the
+     *                         projection after window function evaluation,
+     *                         equivalent to a SQL QUALIFY clause.  May
+     *                         reference window function aliases as well as any
+     *                         other column in the projection.  Rows for which
+     *                         the expression evaluates to false (or NULL) are
+     *                         removed from the projection. The default value
+     *                         is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      *
@@ -13011,6 +13109,87 @@ public class GPUdb extends GPUdbBase {
      *                         on which to create indexes on the output table.
      *                         The columns specified must be present in {@code
      *                         outputColumnNames}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateUnionRequest.Options#PARTITION_TYPE
+     *                         PARTITION_TYPE}: <a
+     *                         href="../../../../../concepts/tables/#partitioning"
+     *                         target="_top">Partitioning</a> scheme to use for
+     *                         the output table.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateUnionRequest.Options#RANGE
+     *                                 RANGE}: Use <a
+     *                                 href="../../../../../concepts/tables/#partitioning-by-range"
+     *                                 target="_top">range partitioning</a>.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateUnionRequest.Options#INTERVAL
+     *                                 INTERVAL}: Use <a
+     *                                 href="../../../../../concepts/tables/#partitioning-by-interval"
+     *                                 target="_top">interval partitioning</a>.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateUnionRequest.Options#LIST
+     *                                 LIST}: Use <a
+     *                                 href="../../../../../concepts/tables/#partitioning-by-list"
+     *                                 target="_top">list partitioning</a>.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateUnionRequest.Options#HASH
+     *                                 HASH}: Use <a
+     *                                 href="../../../../../concepts/tables/#partitioning-by-hash"
+     *                                 target="_top">hash partitioning</a>.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateUnionRequest.Options#SERIES
+     *                                 SERIES}: Use <a
+     *                                 href="../../../../../concepts/tables/#partitioning-by-series"
+     *                                 target="_top">series partitioning</a>.
+     *                         </ul>
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateUnionRequest.Options#PARTITION_KEYS
+     *                         PARTITION_KEYS}: Comma-separated list of
+     *                         partition keys, which are the columns or column
+     *                         expressions by which records will be assigned to
+     *                         partitions defined by {@link
+     *                         com.gpudb.protocol.CreateUnionRequest.Options#PARTITION_DEFINITIONS
+     *                         PARTITION_DEFINITIONS}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateUnionRequest.Options#PARTITION_DEFINITIONS
+     *                         PARTITION_DEFINITIONS}: Comma-separated list of
+     *                         partition definitions, whose format depends on
+     *                         the choice of {@link
+     *                         com.gpudb.protocol.CreateUnionRequest.Options#PARTITION_TYPE
+     *                         PARTITION_TYPE}.  See <a
+     *                         href="../../../../../concepts/tables/#partitioning-by-range"
+     *                         target="_top">range partitioning</a>, <a
+     *                         href="../../../../../concepts/tables/#partitioning-by-interval"
+     *                         target="_top">interval partitioning</a>, <a
+     *                         href="../../../../../concepts/tables/#partitioning-by-list"
+     *                         target="_top">list partitioning</a>, <a
+     *                         href="../../../../../concepts/tables/#partitioning-by-hash"
+     *                         target="_top">hash partitioning</a>, or <a
+     *                         href="../../../../../concepts/tables/#partitioning-by-series"
+     *                         target="_top">series partitioning</a> for
+     *                         example formats.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateUnionRequest.Options#IS_AUTOMATIC_PARTITION
+     *                         IS_AUTOMATIC_PARTITION}: If {@link
+     *                         com.gpudb.protocol.CreateUnionRequest.Options#TRUE
+     *                         TRUE}, a new partition will be created for
+     *                         values which don't fall into an existing
+     *                         partition.  Currently only supported for <a
+     *                         href="../../../../../concepts/tables/#partitioning-by-list"
+     *                         target="_top">list partitions</a>.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateUnionRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.CreateUnionRequest.Options#FALSE
+     *                         FALSE}.
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateUnionRequest.Options#TTL
      *                         TTL}: Sets the <a
@@ -17544,6 +17723,72 @@ public class GPUdb extends GPUdbBase {
      *                         the request to. Required when the graph is
      *                         distributed across multiple servers. The default
      *                         value is '0'.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.GetGraphEntitiesRequest.Options#CONCISE_EDGE_CONNECTIVITY
+     *                         CONCISE_EDGE_CONNECTIVITY}: When true, edges are
+     *                         emitted in a compact connectivity form
+     *                         regardless of the graph's identifier type:
+     *                         {@link
+     *                         com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesInt()
+     *                         entitiesInt} contains stride-4 records [edge_id,
+     *                         node1_index, node2_index, edge_label_index]
+     *                         where node1_index/node2_index are 0-based
+     *                         positions into the node array (obtained from a
+     *                         node-entity call on the same graph). When
+     *                         requesting nodes with this option, the response
+     *                         includes tombstoned (deleted) slots in order to
+     *                         keep position indices stable so edge indices
+     *                         resolve correctly; deleted slots carry id=0 for
+     *                         integer graphs or an empty identifier for
+     *                         string/WKT graphs. For paginated node calls,
+     *                         subtract {@code offset} from an edge endpoint
+     *                         index to locate it within the returned page.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.GetGraphEntitiesRequest.Options#TRUE
+     *                                 TRUE}: Compact integer connectivity for
+     *                                 edges; deleted node slots included in
+     *                                 node output.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.GetGraphEntitiesRequest.Options#FALSE
+     *                                 FALSE}: Default: edges emit node
+     *                                 identifiers (int/string/WKT) matching
+     *                                 the graph; deleted nodes are skipped.
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.GetGraphEntitiesRequest.Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.GetGraphEntitiesRequest.Options#INCLUDE_WEIGHTS
+     *                         INCLUDE_WEIGHTS}: When true and {@code options
+     *                         entityType} is 'edge', the response {@link
+     *                         com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesWeight()
+     *                         entitiesWeight} array is populated with one
+     *                         float weight per emitted edge (aligned 1:1 with
+     *                         the edge records in {@link
+     *                         com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesInt()
+     *                         entitiesInt} or {@link
+     *                         com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesString()
+     *                         entitiesString}). Empty when the graph has no
+     *                         weights component or when requesting nodes.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.GetGraphEntitiesRequest.Options#TRUE
+     *                                 TRUE}: Populate {@link
+     *                                 com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesWeight()
+     *                                 entitiesWeight} with per-edge weights
+     *                                 (edge requests only).
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.GetGraphEntitiesRequest.Options#FALSE
+     *                                 FALSE}: Default: {@link
+     *                                 com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesWeight()
+     *                                 entitiesWeight} is empty.
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.GetGraphEntitiesRequest.Options#FALSE
+     *                         FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      *
@@ -25249,7 +25494,7 @@ public class GPUdb extends GPUdbBase {
      *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#GRAPH
      *                                   GRAPH}: <a
      *                                   href="../../../../../graph_solver/network_graph_solver/"
-     *                                   target="_top">Graph(s)</a>.
+     *                                   target="_top">Graph(s)</a> definition.
      *                               <li>{@link
      *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#MONITOR
      *                                   MONITOR}: <a
@@ -25281,7 +25526,13 @@ public class GPUdb extends GPUdbBase {
      *                                   href="../../../../../concepts/tables/"
      *                                   target="_top">Table(s)</a> and <a
      *                                   href="../../../../../sql/ddl/#create-view"
-     *                                   target="_top">SQL view(s)</a>.
+     *                                   target="_top">SQL view(s)</a>.  Tables
+     *                                   with subscriptions will by default be
+     *                                   restored in the state they were in at
+     *                                   the time of the snapshot.  See {@link
+     *                                   com.gpudb.protocol.RestoreBackupRequest.Options#RESTORE_SUBSCRIPTIONS
+     *                                   RESTORE_SUBSCRIPTIONS} for options to
+     *                                   override the default behavior.
      *                               <li>{@link
      *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#USER
      *                                   USER}: <a
@@ -25374,6 +25625,27 @@ public class GPUdb extends GPUdbBase {
      *                         The default value is {@link
      *                         com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#RESTORE_SUBSCRIPTIONS
+     *                         RESTORE_SUBSCRIPTIONS}: Behavior to apply when
+     *                         restoring datasource subscriptions on tables.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#RESUME
+     *                                 RESUME}: Resume subscriptions that were
+     *                                 active when the backup was made.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#PAUSE
+     *                                 PAUSE}: Pause subscriptions that were
+     *                                 active when the backup was made.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#CANCEL
+     *                                 CANCEL}: Cancel active subscriptions.
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#RESUME
+     *                         RESUME}.
      *                     <li>{@link
      *                         com.gpudb.protocol.RestoreBackupRequest.Options#REINGEST
      *                         REINGEST}: Behavior to apply when restoring

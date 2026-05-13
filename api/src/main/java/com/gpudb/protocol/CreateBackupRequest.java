@@ -120,7 +120,7 @@ public class CreateBackupRequest implements IndexedRecord {
 
         /**
          * <a href="../../../../../../graph_solver/network_graph_solver/"
-         * target="_top">Graph(s)</a>.
+         * target="_top">Graph(s)</a> definition.
          */
         public static final String GRAPH = "graph";
 
@@ -330,7 +330,7 @@ public class CreateBackupRequest implements IndexedRecord {
      *                              <li>{@link BackupObjectsMap#GRAPH GRAPH}:
      *                                  <a
      *                                  href="../../../../../../graph_solver/network_graph_solver/"
-     *                                  target="_top">Graph(s)</a>.
+     *                                  target="_top">Graph(s)</a> definition.
      *                              <li>{@link BackupObjectsMap#MONITOR
      *                                  MONITOR}: <a
      *                                  href="../../../../../../concepts/table_monitors/"
@@ -536,7 +536,7 @@ public class CreateBackupRequest implements IndexedRecord {
      *         target="_top">Python UDF function environment(s)</a>.
      *     <li>{@link BackupObjectsMap#GRAPH GRAPH}: <a
      *         href="../../../../../../graph_solver/network_graph_solver/"
-     *         target="_top">Graph(s)</a>.
+     *         target="_top">Graph(s)</a> definition.
      *     <li>{@link BackupObjectsMap#MONITOR MONITOR}: <a
      *         href="../../../../../../concepts/table_monitors/"
      *         target="_top">Table monitor(s)</a> / <a
@@ -600,7 +600,7 @@ public class CreateBackupRequest implements IndexedRecord {
      *         target="_top">Python UDF function environment(s)</a>.
      *     <li>{@link BackupObjectsMap#GRAPH GRAPH}: <a
      *         href="../../../../../../graph_solver/network_graph_solver/"
-     *         target="_top">Graph(s)</a>.
+     *         target="_top">Graph(s)</a> definition.
      *     <li>{@link BackupObjectsMap#MONITOR MONITOR}: <a
      *         href="../../../../../../concepts/table_monitors/"
      *         target="_top">Table monitor(s)</a> / <a

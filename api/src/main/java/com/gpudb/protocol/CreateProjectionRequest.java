@@ -364,6 +364,16 @@ public class CreateProjectionRequest implements IndexedRecord {
          */
         public static final String JOIN_WINDOW_FUNCTIONS_THRESHOLD = "join_window_functions_threshold";
 
+        /**
+         * An optional filter <a href="../../../../../../concepts/expressions/"
+         * target="_top">expression</a> applied to the projection after window
+         * function evaluation, equivalent to a SQL QUALIFY clause.  May
+         * reference window function aliases as well as any other column in the
+         * projection.  Rows for which the expression evaluates to false (or
+         * NULL) are removed from the projection. The default value is ''.
+         */
+        public static final String QUALIFY_FILTER = "qualify_filter";
+
         private Options() {  }
     }
 
@@ -620,6 +630,17 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                         bytes), then window functions which require a
      *                         reshard will be computed separately and joined
      *                         back together. The default value is ''.
+     *                     <li>{@link Options#QUALIFY_FILTER QUALIFY_FILTER}:
+     *                         An optional filter <a
+     *                         href="../../../../../../concepts/expressions/"
+     *                         target="_top">expression</a> applied to the
+     *                         projection after window function evaluation,
+     *                         equivalent to a SQL QUALIFY clause.  May
+     *                         reference window function aliases as well as any
+     *                         other column in the projection.  Rows for which
+     *                         the expression evaluates to false (or NULL) are
+     *                         removed from the projection. The default value
+     *                         is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -894,6 +915,14 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         than this width (in bytes), then window functions which require
      *         a reshard will be computed separately and joined back together.
      *         The default value is ''.
+     *     <li>{@link Options#QUALIFY_FILTER QUALIFY_FILTER}: An optional
+     *         filter <a href="../../../../../../concepts/expressions/"
+     *         target="_top">expression</a> applied to the projection after
+     *         window function evaluation, equivalent to a SQL QUALIFY clause.
+     *         May reference window function aliases as well as any other
+     *         column in the projection.  Rows for which the expression
+     *         evaluates to false (or NULL) are removed from the projection.
+     *         The default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -1079,6 +1108,14 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         JOIN_WINDOW_FUNCTIONS_THRESHOLD}: If the projection is greater
      *         than this width (in bytes), then window functions which require
      *         a reshard will be computed separately and joined back together.
+     *         The default value is ''.
+     *     <li>{@link Options#QUALIFY_FILTER QUALIFY_FILTER}: An optional
+     *         filter <a href="../../../../../../concepts/expressions/"
+     *         target="_top">expression</a> applied to the projection after
+     *         window function evaluation, equivalent to a SQL QUALIFY clause.
+     *         May reference window function aliases as well as any other
+     *         column in the projection.  Rows for which the expression
+     *         evaluates to false (or NULL) are removed from the projection.
      *         The default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.

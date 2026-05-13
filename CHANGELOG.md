@@ -2,6 +2,22 @@
 
 ## Version 7.2
 
+### Version 7.2.3.18 - 2026-05-13
+
+#### Added
+-   Initial support for default column values.
+
+#### Changed
+-   Optimized bulk ingest for single worker rank installations.
+
+#### Fixed
+-   Extra logging in `BulkInserter` for table permission check fails.
+-   Broken logo link in readme file.
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
 ### Version 7.2.3.17 - 2026-04-26
 
 #### Added

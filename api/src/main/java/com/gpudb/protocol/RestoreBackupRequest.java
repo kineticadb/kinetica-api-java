@@ -89,7 +89,7 @@ public class RestoreBackupRequest implements IndexedRecord {
 
         /**
          * <a href="../../../../../../graph_solver/network_graph_solver/"
-         * target="_top">Graph(s)</a>.
+         * target="_top">Graph(s)</a> definition.
          */
         public static final String GRAPH = "graph";
 
@@ -124,7 +124,10 @@ public class RestoreBackupRequest implements IndexedRecord {
          * <a href="../../../../../../concepts/tables/"
          * target="_top">Table(s)</a> and <a
          * href="../../../../../../sql/ddl/#create-view" target="_top">SQL
-         * view(s)</a>.
+         * view(s)</a>. Tables with subscriptions will by default be restored
+         * in the state they were in at the time of the snapshot. See {@link
+         * Options#RESTORE_SUBSCRIPTIONS RESTORE_SUBSCRIPTIONS} for options to
+         * override the default behavior.
          */
         public static final String TABLE = "table";
 
@@ -215,6 +218,35 @@ public class RestoreBackupRequest implements IndexedRecord {
          * The default value is {@link Options#FALSE FALSE}.
          */
         public static final String DRY_RUN = "dry_run";
+
+        /**
+         * Behavior to apply when restoring datasource subscriptions on tables.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#RESUME RESUME}: Resume subscriptions that
+         *         were active when the backup was made.
+         *     <li>{@link Options#PAUSE PAUSE}: Pause subscriptions that were
+         *         active when the backup was made.
+         *     <li>{@link Options#CANCEL CANCEL}: Cancel active subscriptions.
+         * </ul>
+         * The default value is {@link Options#RESUME RESUME}.
+         */
+        public static final String RESTORE_SUBSCRIPTIONS = "restore_subscriptions";
+
+        /**
+         * Resume subscriptions that were active when the backup was made.
+         */
+        public static final String RESUME = "resume";
+
+        /**
+         * Pause subscriptions that were active when the backup was made.
+         */
+        public static final String PAUSE = "pause";
+
+        /**
+         * Cancel active subscriptions.
+         */
+        public static final String CANCEL = "cancel";
 
         /**
          * Behavior to apply when restoring table data.
@@ -334,7 +366,7 @@ public class RestoreBackupRequest implements IndexedRecord {
      *                               <li>{@link RestoreObjectsMap#GRAPH GRAPH}:
      *                                   <a
      *                                   href="../../../../../../graph_solver/network_graph_solver/"
-     *                                   target="_top">Graph(s)</a>.
+     *                                   target="_top">Graph(s)</a> definition.
      *                               <li>{@link RestoreObjectsMap#MONITOR
      *                                   MONITOR}: <a
      *                                   href="../../../../../../concepts/table_monitors/"
@@ -363,7 +395,13 @@ public class RestoreBackupRequest implements IndexedRecord {
      *                                   href="../../../../../../concepts/tables/"
      *                                   target="_top">Table(s)</a> and <a
      *                                   href="../../../../../../sql/ddl/#create-view"
-     *                                   target="_top">SQL view(s)</a>.
+     *                                   target="_top">SQL view(s)</a>.  Tables
+     *                                   with subscriptions will by default be
+     *                                   restored in the state they were in at
+     *                                   the time of the snapshot.  See {@link
+     *                                   Options#RESTORE_SUBSCRIPTIONS
+     *                                   RESTORE_SUBSCRIPTIONS} for options to
+     *                                   override the default behavior.
      *                               <li>{@link RestoreObjectsMap#USER USER}:
      *                                   <a
      *                                   href="../../../../../../security/sec_concepts/#security-concepts-users"
@@ -429,6 +467,22 @@ public class RestoreBackupRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#RESTORE_SUBSCRIPTIONS
+     *                         RESTORE_SUBSCRIPTIONS}: Behavior to apply when
+     *                         restoring datasource subscriptions on tables.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#RESUME RESUME}: Resume
+     *                                 subscriptions that were active when the
+     *                                 backup was made.
+     *                             <li>{@link Options#PAUSE PAUSE}: Pause
+     *                                 subscriptions that were active when the
+     *                                 backup was made.
+     *                             <li>{@link Options#CANCEL CANCEL}: Cancel
+     *                                 active subscriptions.
+     *                         </ul>
+     *                         The default value is {@link Options#RESUME
+     *                         RESUME}.
      *                     <li>{@link Options#REINGEST REINGEST}: Behavior to
      *                         apply when restoring table data.
      *                         Supported values:
@@ -528,7 +582,7 @@ public class RestoreBackupRequest implements IndexedRecord {
      *         target="_top">Python UDF function environment(s)</a>.
      *     <li>{@link RestoreObjectsMap#GRAPH GRAPH}: <a
      *         href="../../../../../../graph_solver/network_graph_solver/"
-     *         target="_top">Graph(s)</a>.
+     *         target="_top">Graph(s)</a> definition.
      *     <li>{@link RestoreObjectsMap#MONITOR MONITOR}: <a
      *         href="../../../../../../concepts/table_monitors/"
      *         target="_top">Table monitor(s)</a> / <a
@@ -548,7 +602,10 @@ public class RestoreBackupRequest implements IndexedRecord {
      *         href="../../../../../../concepts/tables/"
      *         target="_top">Table(s)</a> and <a
      *         href="../../../../../../sql/ddl/#create-view" target="_top">SQL
-     *         view(s)</a>.
+     *         view(s)</a>.  Tables with subscriptions will by default be
+     *         restored in the state they were in at the time of the snapshot.
+     *         See {@link Options#RESTORE_SUBSCRIPTIONS RESTORE_SUBSCRIPTIONS}
+     *         for options to override the default behavior.
      *     <li>{@link RestoreObjectsMap#USER USER}: <a
      *         href="../../../../../../security/sec_concepts/#security-concepts-users"
      *         target="_top">User(s)</a> (internal and external) and associated
@@ -589,7 +646,7 @@ public class RestoreBackupRequest implements IndexedRecord {
      *         target="_top">Python UDF function environment(s)</a>.
      *     <li>{@link RestoreObjectsMap#GRAPH GRAPH}: <a
      *         href="../../../../../../graph_solver/network_graph_solver/"
-     *         target="_top">Graph(s)</a>.
+     *         target="_top">Graph(s)</a> definition.
      *     <li>{@link RestoreObjectsMap#MONITOR MONITOR}: <a
      *         href="../../../../../../concepts/table_monitors/"
      *         target="_top">Table monitor(s)</a> / <a
@@ -609,7 +666,10 @@ public class RestoreBackupRequest implements IndexedRecord {
      *         href="../../../../../../concepts/tables/"
      *         target="_top">Table(s)</a> and <a
      *         href="../../../../../../sql/ddl/#create-view" target="_top">SQL
-     *         view(s)</a>.
+     *         view(s)</a>.  Tables with subscriptions will by default be
+     *         restored in the state they were in at the time of the snapshot.
+     *         See {@link Options#RESTORE_SUBSCRIPTIONS RESTORE_SUBSCRIPTIONS}
+     *         for options to override the default behavior.
      *     <li>{@link RestoreObjectsMap#USER USER}: <a
      *         href="../../../../../../security/sec_concepts/#security-concepts-users"
      *         target="_top">User(s)</a> (internal and external) and associated
@@ -693,6 +753,19 @@ public class RestoreBackupRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#RESTORE_SUBSCRIPTIONS RESTORE_SUBSCRIPTIONS}:
+     *         Behavior to apply when restoring datasource subscriptions on
+     *         tables.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#RESUME RESUME}: Resume subscriptions that
+     *                 were active when the backup was made.
+     *             <li>{@link Options#PAUSE PAUSE}: Pause subscriptions that
+     *                 were active when the backup was made.
+     *             <li>{@link Options#CANCEL CANCEL}: Cancel active
+     *                 subscriptions.
+     *         </ul>
+     *         The default value is {@link Options#RESUME RESUME}.
      *     <li>{@link Options#REINGEST REINGEST}: Behavior to apply when
      *         restoring table data.
      *         Supported values:
@@ -780,6 +853,19 @@ public class RestoreBackupRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#RESTORE_SUBSCRIPTIONS RESTORE_SUBSCRIPTIONS}:
+     *         Behavior to apply when restoring datasource subscriptions on
+     *         tables.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#RESUME RESUME}: Resume subscriptions that
+     *                 were active when the backup was made.
+     *             <li>{@link Options#PAUSE PAUSE}: Pause subscriptions that
+     *                 were active when the backup was made.
+     *             <li>{@link Options#CANCEL CANCEL}: Cancel active
+     *                 subscriptions.
+     *         </ul>
+     *         The default value is {@link Options#RESUME RESUME}.
      *     <li>{@link Options#REINGEST REINGEST}: Behavior to apply when
      *         restoring table data.
      *         Supported values:

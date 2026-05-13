@@ -3036,8 +3036,8 @@ public abstract class GPUdbBase {
                     boolean doRetry =
                             executionCount <= GPUdbBase.this.maxRetries &&
                             (
-                                httpResponse.getCode() == 502 ||
-                                httpResponse.getCode() == 503
+                                httpResponse.getCode() == HttpURLConnection.HTTP_BAD_GATEWAY ||
+                                httpResponse.getCode() == HttpURLConnection.HTTP_UNAVAILABLE
                             );
 
                     if (doRetry)

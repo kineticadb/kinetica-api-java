@@ -774,7 +774,6 @@ public class BulkInserter<T> implements AutoCloseable {
         final boolean hasPermissions = hasPermissionsForTable(gpudb, tableName, options);
         if( !hasPermissions ) {
             String errorMsg = String.format("User %s doesn't have requisite permissions on the table %s to use BulkInserter", gpudb.getUsername(), tableName);
-            GPUdbLogger.error(errorMsg);
             throw new GPUdbException(errorMsg);
         }
 
@@ -2867,17 +2866,14 @@ public class BulkInserter<T> implements AutoCloseable {
 
         WorkerQueue<T> workerQueue;
 
-        if( this.isJson ) {
-            // Handle JSON records
-            if (this.useHeadNode)
-                workerQueue = this.workerQueues.get(0);
-            else
+        if (this.useHeadNode || (this.workerQueues.size() == 1))
+            workerQueue = this.workerQueues.get(0);
+        else {
+            if( this.isJson ) {
+                // Handle JSON records
                 workerQueue = this.workerQueues.get(this.routingTable.get(ThreadLocalRandom.current().nextInt(this.routingTable.size())) - 1);
-        } else {
-            //Handle GenericRecords or RecordObjects
-            if (this.useHeadNode)
-                workerQueue = this.workerQueues.get(0);
-            else {
+            } else {
+                //Handle GenericRecords or RecordObjects
                 RecordKey shardKey = null;
 
                 try {

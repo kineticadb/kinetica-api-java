@@ -338,6 +338,12 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          */
         public static final String HA_CONSUMER_REPLAY_OFFSET = "ha_consumer_replay_offset";
 
+        /**
+         * Restricts access to system admin users only. The default value is
+         * 'false'.
+         */
+        public static final String ADMIN_ACCESS_ONLY = "admin_access_only";
+
         private PropertyUpdatesMap() {  }
     }
 
@@ -686,6 +692,11 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    timestamp (as milliseconds since unix
      *                                    epoch). The minimum allowed value is
      *                                    '-1'.
+     *                                <li>{@link
+     *                                    PropertyUpdatesMap#ADMIN_ACCESS_ONLY
+     *                                    ADMIN_ACCESS_ONLY}: Restricts access
+     *                                    to system admin users only. The
+     *                                    default value is 'false'.
      *                            </ul>
      * @param options  Optional parameters.
      *                 <ul>
@@ -885,6 +896,9 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         HA_CONSUMER_REPLAY_OFFSET}: Initializes HA replay from the given
      *         timestamp (as milliseconds since unix epoch). The minimum
      *         allowed value is '-1'.
+     *     <li>{@link PropertyUpdatesMap#ADMIN_ACCESS_ONLY ADMIN_ACCESS_ONLY}:
+     *         Restricts access to system admin users only. The default value
+     *         is 'false'.
      * </ul>
      *
      * @return The current value of {@code propertyUpdatesMap}.
@@ -1060,6 +1074,9 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         HA_CONSUMER_REPLAY_OFFSET}: Initializes HA replay from the given
      *         timestamp (as milliseconds since unix epoch). The minimum
      *         allowed value is '-1'.
+     *     <li>{@link PropertyUpdatesMap#ADMIN_ACCESS_ONLY ADMIN_ACCESS_ONLY}:
+     *         Restricts access to system admin users only. The default value
+     *         is 'false'.
      * </ul>
      *
      * @param propertyUpdatesMap  The new value for {@code propertyUpdatesMap}.

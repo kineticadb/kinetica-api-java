@@ -394,6 +394,23 @@ public final class Type implements Serializable {
             return this.type;
         }
 
+        public String getAvroType() {
+            if (this.type == java.nio.ByteBuffer.class)
+                return "bytes";
+            if (this.type == Double.class)
+                return "double";
+            if (this.type == Float.class)
+                return "float";
+            if (this.type == Integer.class)
+                return "int";
+            if (this.type == Long.class)
+                return "long";
+            if (this.type == String.class)
+                return "string";
+
+            throw new IllegalArgumentException("Column " + this.name + " must be of type ByteBuffer, Double, Float, Integer, Long or String.");
+        }
+
         /**
          * Gets the enumeration of the *base* type of the column.  This is far
          * more efficient than using {@link #getType()} and then comparing
@@ -1319,24 +1336,7 @@ public final class Type implements Serializable {
             ObjectNode field = MAPPER.createObjectNode();
             String columnName = column.getName();
             field.put("name", columnName);
-            Class<?> columnType = column.getType();
-            String columnTypeString;
-
-            if (columnType == ByteBuffer.class) {
-                columnTypeString = "bytes";
-            } else if (columnType == Double.class) {
-                columnTypeString = "double";
-            } else if (columnType == Float.class) {
-                columnTypeString = "float";
-            } else if (columnType == Integer.class) {
-                columnTypeString = "int";
-            } else if (columnType == Long.class) {
-                columnTypeString = "long";
-            } else if (columnType == String.class) {
-                columnTypeString = "string";
-            } else {
-                throw new IllegalArgumentException("Column " + columnName + " must be of type ByteBuffer, Double, Float, Integer, Long or String.");
-            }
+            String columnTypeString = column.getAvroType();
 
             if (column.isNullable())
             {
@@ -1361,6 +1361,89 @@ public final class Type implements Serializable {
 
         root.set("fields", fields);
         return gpudb.createType(root.toString(), this.label, properties, null).getTypeId();
+    }
+
+    public String getBaseDefinition()
+    {
+        StringBuilder schemaJson = new StringBuilder("[");
+        for (Column column : this.columns)
+        {
+            if (schemaJson.length() > 1)
+                schemaJson.append(",");
+            schemaJson.append("[\"")
+                      .append(column.getName())
+                      .append("\",\"")
+                      .append(column.getAvroType())
+                      .append("\"");
+            if (column.isNullable())
+                schemaJson.append(",\"nullable\"");
+            schemaJson.append("]");
+        }
+        schemaJson.append("]");
+
+        return schemaJson.toString();
+    }
+
+    public String getFullDefinition()
+    {
+        StringBuilder schemaJson = new StringBuilder("[");
+        for (Column column : this.columns)
+        {
+            if (schemaJson.length() > 1)
+                schemaJson.append(",");
+
+            List<String> columnProperties = column.getProperties();
+            String type = column.getAvroType();
+
+            int i = 0;
+            while (i < columnProperties.size())
+            {
+                String prop = columnProperties.get(i);
+                if (prop == ColumnProperty.BOOLEAN ||
+                    prop == ColumnProperty.CHAR1 ||
+                    prop == ColumnProperty.CHAR2 ||
+                    prop == ColumnProperty.CHAR4 ||
+                    prop == ColumnProperty.CHAR8 ||
+                    prop == ColumnProperty.CHAR16 ||
+                    prop == ColumnProperty.CHAR32 ||
+                    prop == ColumnProperty.CHAR64 ||
+                    prop == ColumnProperty.CHAR128 ||
+                    prop == ColumnProperty.CHAR256 ||
+                    prop == ColumnProperty.DATE ||
+                    prop == ColumnProperty.DATETIME ||
+                    prop == ColumnProperty.INT8 ||
+                    prop == ColumnProperty.INT16 ||
+                    prop == ColumnProperty.IPV4 ||
+                    prop == ColumnProperty.JSON ||
+                    prop == ColumnProperty.TIME ||
+                    prop == ColumnProperty.TIMESTAMP ||
+                    prop == ColumnProperty.ULONG ||
+                    prop == ColumnProperty.WKT ||
+                    prop.startsWith(ColumnProperty.ARRAY) ||
+                    prop.startsWith(ColumnProperty.DECIMAL) ||
+                    prop.startsWith(ColumnProperty.VECTOR))
+                {
+                    type = prop;
+                    columnProperties.remove(i);
+                }
+                else
+                {
+                    i++;
+                }
+            }
+
+            schemaJson.append("[\"")
+                      .append(column.getName())
+                      .append("\",\"")
+                      .append(type)
+                      .append("\"");
+            if (!columnProperties.isEmpty())
+                schemaJson.append(",\"").append(String.join(",", columnProperties)).append("\"");
+            schemaJson.append("]");
+        }
+        schemaJson.append("]");
+
+        return schemaJson.toString();
     }
 
     @Override

@@ -27,6 +27,8 @@ public class GetGraphEntitiesResponse implements IndexedRecord {
                 .name("result").type().booleanType().noDefault()
                 .name("entitiesInt").type().array().items().longType().noDefault()
                 .name("entitiesString").type().array().items().stringType().noDefault()
+                .name("entitiesDouble").type().array().items().doubleType().noDefault()
+                .name("entitiesWeight").type().array().items().floatType().noDefault()
                 .name("labels").type().array().items().stringType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
@@ -44,6 +46,8 @@ public class GetGraphEntitiesResponse implements IndexedRecord {
     private boolean result;
     private List<Long> entitiesInt;
     private List<String> entitiesString;
+    private List<Double> entitiesDouble;
+    private List<Float> entitiesWeight;
     private List<String> labels;
     private Map<String, String> info;
 
@@ -80,7 +84,12 @@ public class GetGraphEntitiesResponse implements IndexedRecord {
      * edge entities (stride 4): [edge_id, node1_id, node2_id, label_index,
      * ...]. Populated when the graph uses integer identifiers; empty
      * otherwise. The label_index is a 1-based index into the {@link
-     * #getLabels() labels} array; 0 indicates no label.
+     * #getLabels() labels} array; 0 indicates no label. When the request
+     * option 'concise_edge_connectivity' is 'true', this array is also used
+     * (regardless of graph identifier type) for edge entities and carries
+     * [edge_id, node1_index, node2_index, edge_label_index] where
+     * node1_index/node2_index are 0-based positions into the node array
+     * returned from a paired node call on the same graph.
      *
      * @return The current value of {@code entitiesInt}.
      */
@@ -94,7 +103,12 @@ public class GetGraphEntitiesResponse implements IndexedRecord {
      * edge entities (stride 4): [edge_id, node1_id, node2_id, label_index,
      * ...]. Populated when the graph uses integer identifiers; empty
      * otherwise. The label_index is a 1-based index into the {@link
-     * #getLabels() labels} array; 0 indicates no label.
+     * #getLabels() labels} array; 0 indicates no label. When the request
+     * option 'concise_edge_connectivity' is 'true', this array is also used
+     * (regardless of graph identifier type) for edge entities and carries
+     * [edge_id, node1_index, node2_index, edge_label_index] where
+     * node1_index/node2_index are 0-based positions into the node array
+     * returned from a paired node call on the same graph.
      *
      * @param entitiesInt  The new value for {@code entitiesInt}.
      *
@@ -106,16 +120,15 @@ public class GetGraphEntitiesResponse implements IndexedRecord {
     }
 
     /**
-     * Flat array of entity data for name-identifier or WKT-identifier (geo/XY)
-     * graphs with a repeating stride. For node entities (stride 2):
-     * [node_name, label_index, ...] or [wkt_point, label_index, ...]. For edge
-     * entities (stride 4): [edge_id, node1_name, node2_name, label_index, ...]
-     * or [edge_id, node1_wkt, node2_wkt, label_index, ...]. Populated when the
-     * graph uses string/name identifiers or geo/XY coordinate identifiers;
-     * empty otherwise. For geo/XY graphs, node identifiers are formatted as
-     * 'POINT(x y)' WKT strings. The label_index is a string representation of
-     * a 1-based index into the {@link #getLabels() labels} array; '0'
-     * indicates no label.
+     * Flat array of entity data for name-identifier (string) graphs only. For
+     * node entities (stride 2): [node_name, label_index, ...]. For edge
+     * entities (stride 4): [edge_id, node1_name, node2_name, label_index,
+     * ...]. Populated only when the graph uses string identifiers. Empty for
+     * integer-identifier graphs (data goes to {@link #getEntitiesInt()
+     * entitiesInt}) and for WKT/geo-XY graphs (data always goes to {@link
+     * #getEntitiesDouble() entitiesDouble} — 'POINT(x y)' strings are never
+     * emitted). The label_index is a string representation of a 1-based index
+     * into the {@link #getLabels() labels} array; '0' indicates no label.
      *
      * @return The current value of {@code entitiesString}.
      */
@@ -124,16 +137,15 @@ public class GetGraphEntitiesResponse implements IndexedRecord {
     }
 
     /**
-     * Flat array of entity data for name-identifier or WKT-identifier (geo/XY)
-     * graphs with a repeating stride. For node entities (stride 2):
-     * [node_name, label_index, ...] or [wkt_point, label_index, ...]. For edge
-     * entities (stride 4): [edge_id, node1_name, node2_name, label_index, ...]
-     * or [edge_id, node1_wkt, node2_wkt, label_index, ...]. Populated when the
-     * graph uses string/name identifiers or geo/XY coordinate identifiers;
-     * empty otherwise. For geo/XY graphs, node identifiers are formatted as
-     * 'POINT(x y)' WKT strings. The label_index is a string representation of
-     * a 1-based index into the {@link #getLabels() labels} array; '0'
-     * indicates no label.
+     * Flat array of entity data for name-identifier (string) graphs only. For
+     * node entities (stride 2): [node_name, label_index, ...]. For edge
+     * entities (stride 4): [edge_id, node1_name, node2_name, label_index,
+     * ...]. Populated only when the graph uses string identifiers. Empty for
+     * integer-identifier graphs (data goes to {@link #getEntitiesInt()
+     * entitiesInt}) and for WKT/geo-XY graphs (data always goes to {@link
+     * #getEntitiesDouble() entitiesDouble} — 'POINT(x y)' strings are never
+     * emitted). The label_index is a string representation of a 1-based index
+     * into the {@link #getLabels() labels} array; '0' indicates no label.
      *
      * @param entitiesString  The new value for {@code entitiesString}.
      *
@@ -145,10 +157,86 @@ public class GetGraphEntitiesResponse implements IndexedRecord {
     }
 
     /**
-     * Array of distinct label strings. The label_index values in {@link
+     * Compact double-packed payload for WKT (geo/XY) graphs. WKT graphs ALWAYS
+     * use this array — 'POINT(x y)' strings are never emitted anywhere. Stride
+     * 3 for nodes: [x, y, label_index, ...]. Stride 6 for edges (non-concise):
+     * [edge_id, x0, y0, x1, y1, label_index, ...]. Empty for non-WKT graphs
+     * and when concise mode emits edges into {@link #getEntitiesInt()
+     * entitiesInt} instead. label_index/edge_id occupy double slots
+     * (representable exactly up to 2^53). When 'concise_edge_connectivity' is
+     * 'true' and entity_type is 'node', tombstoned (deleted) WKT slots emit
+     * [0.0, 0.0, 0.0] to keep position indices stable. Roughly 4x smaller on
+     * the wire than 'POINT(x y)' strings and avoids any client-side regex
+     * parse.
+     *
+     * @return The current value of {@code entitiesDouble}.
+     */
+    public List<Double> getEntitiesDouble() {
+        return entitiesDouble;
+    }
+
+    /**
+     * Compact double-packed payload for WKT (geo/XY) graphs. WKT graphs ALWAYS
+     * use this array — 'POINT(x y)' strings are never emitted anywhere. Stride
+     * 3 for nodes: [x, y, label_index, ...]. Stride 6 for edges (non-concise):
+     * [edge_id, x0, y0, x1, y1, label_index, ...]. Empty for non-WKT graphs
+     * and when concise mode emits edges into {@link #getEntitiesInt()
+     * entitiesInt} instead. label_index/edge_id occupy double slots
+     * (representable exactly up to 2^53). When 'concise_edge_connectivity' is
+     * 'true' and entity_type is 'node', tombstoned (deleted) WKT slots emit
+     * [0.0, 0.0, 0.0] to keep position indices stable. Roughly 4x smaller on
+     * the wire than 'POINT(x y)' strings and avoids any client-side regex
+     * parse.
+     *
+     * @param entitiesDouble  The new value for {@code entitiesDouble}.
+     *
+     * @return {@code this} to mimic the builder pattern.
+     */
+    public GetGraphEntitiesResponse setEntitiesDouble(List<Double> entitiesDouble) {
+        this.entitiesDouble = (entitiesDouble == null) ? new ArrayList<Double>() : entitiesDouble;
+        return this;
+    }
+
+    /**
+     * Per-edge weight values, populated only when the request option
+     * 'include_weights' is 'true' and {@code options entityType} is 'edge'.
+     * Stride 1, aligned 1:1 with the edge records emitted in {@link
      * #getEntitiesInt() entitiesInt} or {@link #getEntitiesString()
-     * entitiesString} are 1-based indexes into this array; index 0 means no
-     * label.
+     * entitiesString} (i.e.&nbsp;the i-th weight corresponds to the i-th edge
+     * record). Empty when the graph has no weights component, when requesting
+     * nodes, or when the option is not set. Single-precision float matches the
+     * graph server's native weight storage.
+     *
+     * @return The current value of {@code entitiesWeight}.
+     */
+    public List<Float> getEntitiesWeight() {
+        return entitiesWeight;
+    }
+
+    /**
+     * Per-edge weight values, populated only when the request option
+     * 'include_weights' is 'true' and {@code options entityType} is 'edge'.
+     * Stride 1, aligned 1:1 with the edge records emitted in {@link
+     * #getEntitiesInt() entitiesInt} or {@link #getEntitiesString()
+     * entitiesString} (i.e.&nbsp;the i-th weight corresponds to the i-th edge
+     * record). Empty when the graph has no weights component, when requesting
+     * nodes, or when the option is not set. Single-precision float matches the
+     * graph server's native weight storage.
+     *
+     * @param entitiesWeight  The new value for {@code entitiesWeight}.
+     *
+     * @return {@code this} to mimic the builder pattern.
+     */
+    public GetGraphEntitiesResponse setEntitiesWeight(List<Float> entitiesWeight) {
+        this.entitiesWeight = (entitiesWeight == null) ? new ArrayList<Float>() : entitiesWeight;
+        return this;
+    }
+
+    /**
+     * Array of distinct label strings. The label_index values in {@link
+     * #getEntitiesInt() entitiesInt}, {@link #getEntitiesString()
+     * entitiesString}, or {@link #getEntitiesDouble() entitiesDouble} are
+     * 1-based indexes into this array; index 0 means no label.
      *
      * @return The current value of {@code labels}.
      */
@@ -158,9 +246,9 @@ public class GetGraphEntitiesResponse implements IndexedRecord {
 
     /**
      * Array of distinct label strings. The label_index values in {@link
-     * #getEntitiesInt() entitiesInt} or {@link #getEntitiesString()
-     * entitiesString} are 1-based indexes into this array; index 0 means no
-     * label.
+     * #getEntitiesInt() entitiesInt}, {@link #getEntitiesString()
+     * entitiesString}, or {@link #getEntitiesDouble() entitiesDouble} are
+     * 1-based indexes into this array; index 0 means no label.
      *
      * @param labels  The new value for {@code labels}.
      *
@@ -173,14 +261,28 @@ public class GetGraphEntitiesResponse implements IndexedRecord {
 
     /**
      * Additional information map. Contains the following keys:
-     * 'identifier_type' — set to 'int' (integer node IDs in {@link
-     * #getEntitiesInt() entitiesInt}), 'string' (name-based node IDs in {@link
-     * #getEntitiesString() entitiesString}), or 'wkt' (geo/XY graph with
-     * 'POINT(x y)' node identifiers in {@link #getEntitiesString()
-     * entitiesString}). 'total_count' — total number of live (non-deleted)
-     * entities available in the graph for the requested entity_type, used for
-     * pagination. 'status_message' — set to 'Cancelled' if the request was
-     * cancelled mid-iteration (with {@link #getResult() result} set to false).
+     * 'identifier_type' — describes the graph's native node identifier type:
+     * 'int', 'string', or 'wkt' (geo/XY graph). 'payload_type' — describes
+     * which array actually holds this response payload: 'int' ({@link
+     * #getEntitiesInt() entitiesInt}), 'string' ({@link #getEntitiesString()
+     * entitiesString}), or 'double' ({@link #getEntitiesDouble()
+     * entitiesDouble}). WKT graphs ALWAYS use 'double' for both nodes and
+     * edges — 'POINT(x y)' strings are never emitted. In concise edge mode
+     * payload_type is 'int' regardless of graph type. Clients should dispatch
+     * on 'payload_type', not 'identifier_type', to parse the response.
+     * 'total_count' — total number of entities available in the graph for the
+     * requested entity_type, used for pagination; this is the live
+     * (non-deleted) count by default, or the raw count (including deleted
+     * slots) when 'concise_edge_connectivity' is true for a node request.
+     * 'status_message' — set to 'Cancelled' if the request was cancelled
+     * mid-iteration (with {@link #getResult() result} set to false).
+     * 'concise_edge_connectivity' — set to 'true' when the response was
+     * produced with the concise option (edges emitted as [edge_id, v0_index,
+     * v1_index, label_idx] in {@link #getEntitiesInt() entitiesInt}; WKT-graph
+     * nodes emitted as [x, y, label_idx] in {@link #getEntitiesDouble()
+     * entitiesDouble}; non-WKT nodes still in their native array; node output
+     * includes deleted slots to keep indices stable). 'include_weights' — set
+     * to 'true' when {@link #getEntitiesWeight() entitiesWeight} is populated.
      *
      * @return The current value of {@code info}.
      */
@@ -190,14 +292,28 @@ public class GetGraphEntitiesResponse implements IndexedRecord {
 
     /**
      * Additional information map. Contains the following keys:
-     * 'identifier_type' — set to 'int' (integer node IDs in {@link
-     * #getEntitiesInt() entitiesInt}), 'string' (name-based node IDs in {@link
-     * #getEntitiesString() entitiesString}), or 'wkt' (geo/XY graph with
-     * 'POINT(x y)' node identifiers in {@link #getEntitiesString()
-     * entitiesString}). 'total_count' — total number of live (non-deleted)
-     * entities available in the graph for the requested entity_type, used for
-     * pagination. 'status_message' — set to 'Cancelled' if the request was
-     * cancelled mid-iteration (with {@link #getResult() result} set to false).
+     * 'identifier_type' — describes the graph's native node identifier type:
+     * 'int', 'string', or 'wkt' (geo/XY graph). 'payload_type' — describes
+     * which array actually holds this response payload: 'int' ({@link
+     * #getEntitiesInt() entitiesInt}), 'string' ({@link #getEntitiesString()
+     * entitiesString}), or 'double' ({@link #getEntitiesDouble()
+     * entitiesDouble}). WKT graphs ALWAYS use 'double' for both nodes and
+     * edges — 'POINT(x y)' strings are never emitted. In concise edge mode
+     * payload_type is 'int' regardless of graph type. Clients should dispatch
+     * on 'payload_type', not 'identifier_type', to parse the response.
+     * 'total_count' — total number of entities available in the graph for the
+     * requested entity_type, used for pagination; this is the live
+     * (non-deleted) count by default, or the raw count (including deleted
+     * slots) when 'concise_edge_connectivity' is true for a node request.
+     * 'status_message' — set to 'Cancelled' if the request was cancelled
+     * mid-iteration (with {@link #getResult() result} set to false).
+     * 'concise_edge_connectivity' — set to 'true' when the response was
+     * produced with the concise option (edges emitted as [edge_id, v0_index,
+     * v1_index, label_idx] in {@link #getEntitiesInt() entitiesInt}; WKT-graph
+     * nodes emitted as [x, y, label_idx] in {@link #getEntitiesDouble()
+     * entitiesDouble}; non-WKT nodes still in their native array; node output
+     * includes deleted slots to keep indices stable). 'include_weights' — set
+     * to 'true' when {@link #getEntitiesWeight() entitiesWeight} is populated.
      *
      * @param info  The new value for {@code info}.
      *
@@ -242,9 +358,15 @@ public class GetGraphEntitiesResponse implements IndexedRecord {
                 return this.entitiesString;
 
             case 3:
-                return this.labels;
+                return this.entitiesDouble;
 
             case 4:
+                return this.entitiesWeight;
+
+            case 5:
+                return this.labels;
+
+            case 6:
                 return this.info;
 
             default:
@@ -278,10 +400,18 @@ public class GetGraphEntitiesResponse implements IndexedRecord {
                 break;
 
             case 3:
-                this.labels = (List<String>)value;
+                this.entitiesDouble = (List<Double>)value;
                 break;
 
             case 4:
+                this.entitiesWeight = (List<Float>)value;
+                break;
+
+            case 5:
+                this.labels = (List<String>)value;
+                break;
+
+            case 6:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -305,6 +435,8 @@ public class GetGraphEntitiesResponse implements IndexedRecord {
         return ( ( this.result == that.result )
                  && this.entitiesInt.equals( that.entitiesInt )
                  && this.entitiesString.equals( that.entitiesString )
+                 && this.entitiesDouble.equals( that.entitiesDouble )
+                 && this.entitiesWeight.equals( that.entitiesWeight )
                  && this.labels.equals( that.labels )
                  && this.info.equals( that.info ) );
     }
@@ -326,6 +458,14 @@ public class GetGraphEntitiesResponse implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.entitiesString ) );
         builder.append( ", " );
+        builder.append( gd.toString( "entitiesDouble" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.entitiesDouble ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "entitiesWeight" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.entitiesWeight ) );
+        builder.append( ", " );
         builder.append( gd.toString( "labels" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.labels ) );
@@ -344,6 +484,8 @@ public class GetGraphEntitiesResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + ((Boolean)this.result).hashCode();
         hashCode = (31 * hashCode) + this.entitiesInt.hashCode();
         hashCode = (31 * hashCode) + this.entitiesString.hashCode();
+        hashCode = (31 * hashCode) + this.entitiesDouble.hashCode();
+        hashCode = (31 * hashCode) + this.entitiesWeight.hashCode();
         hashCode = (31 * hashCode) + this.labels.hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;

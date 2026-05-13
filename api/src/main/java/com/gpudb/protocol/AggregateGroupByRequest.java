@@ -378,6 +378,104 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String CREATE_INDEXES = "create_indexes";
 
         /**
+         * <a href="../../../../../../concepts/tables/#partitioning"
+         * target="_top">Partitioning</a> scheme to use for the result table.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#RANGE RANGE}: Use <a
+         *         href="../../../../../../concepts/tables/#partitioning-by-range"
+         *         target="_top">range partitioning</a>.
+         *     <li>{@link Options#INTERVAL INTERVAL}: Use <a
+         *         href="../../../../../../concepts/tables/#partitioning-by-interval"
+         *         target="_top">interval partitioning</a>.
+         *     <li>{@link Options#LIST LIST}: Use <a
+         *         href="../../../../../../concepts/tables/#partitioning-by-list"
+         *         target="_top">list partitioning</a>.
+         *     <li>{@link Options#HASH HASH}: Use <a
+         *         href="../../../../../../concepts/tables/#partitioning-by-hash"
+         *         target="_top">hash partitioning</a>.
+         *     <li>{@link Options#SERIES SERIES}: Use <a
+         *         href="../../../../../../concepts/tables/#partitioning-by-series"
+         *         target="_top">series partitioning</a>.
+         * </ul>
+         */
+        public static final String PARTITION_TYPE = "partition_type";
+
+        /**
+         * Use <a
+         * href="../../../../../../concepts/tables/#partitioning-by-range"
+         * target="_top">range partitioning</a>.
+         */
+        public static final String RANGE = "RANGE";
+
+        /**
+         * Use <a
+         * href="../../../../../../concepts/tables/#partitioning-by-interval"
+         * target="_top">interval partitioning</a>.
+         */
+        public static final String INTERVAL = "INTERVAL";
+
+        /**
+         * Use <a
+         * href="../../../../../../concepts/tables/#partitioning-by-list"
+         * target="_top">list partitioning</a>.
+         */
+        public static final String LIST = "LIST";
+
+        /**
+         * Use <a
+         * href="../../../../../../concepts/tables/#partitioning-by-hash"
+         * target="_top">hash partitioning</a>.
+         */
+        public static final String HASH = "HASH";
+
+        /**
+         * Use <a
+         * href="../../../../../../concepts/tables/#partitioning-by-series"
+         * target="_top">series partitioning</a>.
+         */
+        public static final String SERIES = "SERIES";
+
+        /**
+         * Comma-separated list of partition keys, which are the columns or
+         * column expressions by which records will be assigned to partitions
+         * defined by {@link Options#PARTITION_DEFINITIONS
+         * PARTITION_DEFINITIONS}.
+         */
+        public static final String PARTITION_KEYS = "partition_keys";
+
+        /**
+         * Comma-separated list of partition definitions, whose format depends
+         * on the choice of {@link Options#PARTITION_TYPE PARTITION_TYPE}.  See
+         * <a href="../../../../../../concepts/tables/#partitioning-by-range"
+         * target="_top">range partitioning</a>, <a
+         * href="../../../../../../concepts/tables/#partitioning-by-interval"
+         * target="_top">interval partitioning</a>, <a
+         * href="../../../../../../concepts/tables/#partitioning-by-list"
+         * target="_top">list partitioning</a>, <a
+         * href="../../../../../../concepts/tables/#partitioning-by-hash"
+         * target="_top">hash partitioning</a>, or <a
+         * href="../../../../../../concepts/tables/#partitioning-by-series"
+         * target="_top">series partitioning</a> for example formats.
+         */
+        public static final String PARTITION_DEFINITIONS = "partition_definitions";
+
+        /**
+         * If {@link Options#TRUE TRUE}, a new partition will be created for
+         * values which don't fall into an existing partition.  Currently only
+         * supported for <a
+         * href="../../../../../../concepts/tables/#partitioning-by-list"
+         * target="_top">list partitions</a>.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String IS_AUTOMATIC_PARTITION = "is_automatic_partition";
+
+        /**
          * ID of view of which the result table will be a member. The default
          * value is ''.
          */
@@ -669,6 +767,66 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         create indexes on the result table. Must be used
      *                         in combination with the {@link
      *                         Options#RESULT_TABLE RESULT_TABLE} option.
+     *                     <li>{@link Options#PARTITION_TYPE PARTITION_TYPE}:
+     *                         <a
+     *                         href="../../../../../../concepts/tables/#partitioning"
+     *                         target="_top">Partitioning</a> scheme to use for
+     *                         the result table.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#RANGE RANGE}: Use <a
+     *                                 href="../../../../../../concepts/tables/#partitioning-by-range"
+     *                                 target="_top">range partitioning</a>.
+     *                             <li>{@link Options#INTERVAL INTERVAL}: Use
+     *                                 <a
+     *                                 href="../../../../../../concepts/tables/#partitioning-by-interval"
+     *                                 target="_top">interval partitioning</a>.
+     *                             <li>{@link Options#LIST LIST}: Use <a
+     *                                 href="../../../../../../concepts/tables/#partitioning-by-list"
+     *                                 target="_top">list partitioning</a>.
+     *                             <li>{@link Options#HASH HASH}: Use <a
+     *                                 href="../../../../../../concepts/tables/#partitioning-by-hash"
+     *                                 target="_top">hash partitioning</a>.
+     *                             <li>{@link Options#SERIES SERIES}: Use <a
+     *                                 href="../../../../../../concepts/tables/#partitioning-by-series"
+     *                                 target="_top">series partitioning</a>.
+     *                         </ul>
+     *                     <li>{@link Options#PARTITION_KEYS PARTITION_KEYS}:
+     *                         Comma-separated list of partition keys, which
+     *                         are the columns or column expressions by which
+     *                         records will be assigned to partitions defined
+     *                         by {@link Options#PARTITION_DEFINITIONS
+     *                         PARTITION_DEFINITIONS}.
+     *                     <li>{@link Options#PARTITION_DEFINITIONS
+     *                         PARTITION_DEFINITIONS}: Comma-separated list of
+     *                         partition definitions, whose format depends on
+     *                         the choice of {@link Options#PARTITION_TYPE
+     *                         PARTITION_TYPE}.  See <a
+     *                         href="../../../../../../concepts/tables/#partitioning-by-range"
+     *                         target="_top">range partitioning</a>, <a
+     *                         href="../../../../../../concepts/tables/#partitioning-by-interval"
+     *                         target="_top">interval partitioning</a>, <a
+     *                         href="../../../../../../concepts/tables/#partitioning-by-list"
+     *                         target="_top">list partitioning</a>, <a
+     *                         href="../../../../../../concepts/tables/#partitioning-by-hash"
+     *                         target="_top">hash partitioning</a>, or <a
+     *                         href="../../../../../../concepts/tables/#partitioning-by-series"
+     *                         target="_top">series partitioning</a> for
+     *                         example formats.
+     *                     <li>{@link Options#IS_AUTOMATIC_PARTITION
+     *                         IS_AUTOMATIC_PARTITION}: If {@link Options#TRUE
+     *                         TRUE}, a new partition will be created for
+     *                         values which don't fall into an existing
+     *                         partition.  Currently only supported for <a
+     *                         href="../../../../../../concepts/tables/#partitioning-by-list"
+     *                         target="_top">list partitions</a>.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                     <li>{@link Options#VIEW_ID VIEW_ID}: ID of view of
      *                         which the result table will be a member. The
      *                         default value is ''.
@@ -945,6 +1103,66 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         create indexes on the result table. Must be used
      *                         in combination with the {@link
      *                         Options#RESULT_TABLE RESULT_TABLE} option.
+     *                     <li>{@link Options#PARTITION_TYPE PARTITION_TYPE}:
+     *                         <a
+     *                         href="../../../../../../concepts/tables/#partitioning"
+     *                         target="_top">Partitioning</a> scheme to use for
+     *                         the result table.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#RANGE RANGE}: Use <a
+     *                                 href="../../../../../../concepts/tables/#partitioning-by-range"
+     *                                 target="_top">range partitioning</a>.
+     *                             <li>{@link Options#INTERVAL INTERVAL}: Use
+     *                                 <a
+     *                                 href="../../../../../../concepts/tables/#partitioning-by-interval"
+     *                                 target="_top">interval partitioning</a>.
+     *                             <li>{@link Options#LIST LIST}: Use <a
+     *                                 href="../../../../../../concepts/tables/#partitioning-by-list"
+     *                                 target="_top">list partitioning</a>.
+     *                             <li>{@link Options#HASH HASH}: Use <a
+     *                                 href="../../../../../../concepts/tables/#partitioning-by-hash"
+     *                                 target="_top">hash partitioning</a>.
+     *                             <li>{@link Options#SERIES SERIES}: Use <a
+     *                                 href="../../../../../../concepts/tables/#partitioning-by-series"
+     *                                 target="_top">series partitioning</a>.
+     *                         </ul>
+     *                     <li>{@link Options#PARTITION_KEYS PARTITION_KEYS}:
+     *                         Comma-separated list of partition keys, which
+     *                         are the columns or column expressions by which
+     *                         records will be assigned to partitions defined
+     *                         by {@link Options#PARTITION_DEFINITIONS
+     *                         PARTITION_DEFINITIONS}.
+     *                     <li>{@link Options#PARTITION_DEFINITIONS
+     *                         PARTITION_DEFINITIONS}: Comma-separated list of
+     *                         partition definitions, whose format depends on
+     *                         the choice of {@link Options#PARTITION_TYPE
+     *                         PARTITION_TYPE}.  See <a
+     *                         href="../../../../../../concepts/tables/#partitioning-by-range"
+     *                         target="_top">range partitioning</a>, <a
+     *                         href="../../../../../../concepts/tables/#partitioning-by-interval"
+     *                         target="_top">interval partitioning</a>, <a
+     *                         href="../../../../../../concepts/tables/#partitioning-by-list"
+     *                         target="_top">list partitioning</a>, <a
+     *                         href="../../../../../../concepts/tables/#partitioning-by-hash"
+     *                         target="_top">hash partitioning</a>, or <a
+     *                         href="../../../../../../concepts/tables/#partitioning-by-series"
+     *                         target="_top">series partitioning</a> for
+     *                         example formats.
+     *                     <li>{@link Options#IS_AUTOMATIC_PARTITION
+     *                         IS_AUTOMATIC_PARTITION}: If {@link Options#TRUE
+     *                         TRUE}, a new partition will be created for
+     *                         values which don't fall into an existing
+     *                         partition.  Currently only supported for <a
+     *                         href="../../../../../../concepts/tables/#partitioning-by-list"
+     *                         target="_top">list partitions</a>.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                     <li>{@link Options#VIEW_ID VIEW_ID}: ID of view of
      *                         which the result table will be a member. The
      *                         default value is ''.
@@ -1295,6 +1513,59 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         list of columns on which to create indexes on the result table.
      *         Must be used in combination with the {@link Options#RESULT_TABLE
      *         RESULT_TABLE} option.
+     *     <li>{@link Options#PARTITION_TYPE PARTITION_TYPE}: <a
+     *         href="../../../../../../concepts/tables/#partitioning"
+     *         target="_top">Partitioning</a> scheme to use for the result
+     *         table.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#RANGE RANGE}: Use <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-range"
+     *                 target="_top">range partitioning</a>.
+     *             <li>{@link Options#INTERVAL INTERVAL}: Use <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-interval"
+     *                 target="_top">interval partitioning</a>.
+     *             <li>{@link Options#LIST LIST}: Use <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-list"
+     *                 target="_top">list partitioning</a>.
+     *             <li>{@link Options#HASH HASH}: Use <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-hash"
+     *                 target="_top">hash partitioning</a>.
+     *             <li>{@link Options#SERIES SERIES}: Use <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-series"
+     *                 target="_top">series partitioning</a>.
+     *         </ul>
+     *     <li>{@link Options#PARTITION_KEYS PARTITION_KEYS}: Comma-separated
+     *         list of partition keys, which are the columns or column
+     *         expressions by which records will be assigned to partitions
+     *         defined by {@link Options#PARTITION_DEFINITIONS
+     *         PARTITION_DEFINITIONS}.
+     *     <li>{@link Options#PARTITION_DEFINITIONS PARTITION_DEFINITIONS}:
+     *         Comma-separated list of partition definitions, whose format
+     *         depends on the choice of {@link Options#PARTITION_TYPE
+     *         PARTITION_TYPE}.  See <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-range"
+     *         target="_top">range partitioning</a>, <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-interval"
+     *         target="_top">interval partitioning</a>, <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-list"
+     *         target="_top">list partitioning</a>, <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-hash"
+     *         target="_top">hash partitioning</a>, or <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-series"
+     *         target="_top">series partitioning</a> for example formats.
+     *     <li>{@link Options#IS_AUTOMATIC_PARTITION IS_AUTOMATIC_PARTITION}:
+     *         If {@link Options#TRUE TRUE}, a new partition will be created
+     *         for values which don't fall into an existing partition.
+     *         Currently only supported for <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-list"
+     *         target="_top">list partitions</a>.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#VIEW_ID VIEW_ID}: ID of view of which the result
      *         table will be a member. The default value is ''.
      *     <li>{@link Options#PIVOT PIVOT}: pivot column
@@ -1481,6 +1752,59 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         list of columns on which to create indexes on the result table.
      *         Must be used in combination with the {@link Options#RESULT_TABLE
      *         RESULT_TABLE} option.
+     *     <li>{@link Options#PARTITION_TYPE PARTITION_TYPE}: <a
+     *         href="../../../../../../concepts/tables/#partitioning"
+     *         target="_top">Partitioning</a> scheme to use for the result
+     *         table.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#RANGE RANGE}: Use <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-range"
+     *                 target="_top">range partitioning</a>.
+     *             <li>{@link Options#INTERVAL INTERVAL}: Use <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-interval"
+     *                 target="_top">interval partitioning</a>.
+     *             <li>{@link Options#LIST LIST}: Use <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-list"
+     *                 target="_top">list partitioning</a>.
+     *             <li>{@link Options#HASH HASH}: Use <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-hash"
+     *                 target="_top">hash partitioning</a>.
+     *             <li>{@link Options#SERIES SERIES}: Use <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-series"
+     *                 target="_top">series partitioning</a>.
+     *         </ul>
+     *     <li>{@link Options#PARTITION_KEYS PARTITION_KEYS}: Comma-separated
+     *         list of partition keys, which are the columns or column
+     *         expressions by which records will be assigned to partitions
+     *         defined by {@link Options#PARTITION_DEFINITIONS
+     *         PARTITION_DEFINITIONS}.
+     *     <li>{@link Options#PARTITION_DEFINITIONS PARTITION_DEFINITIONS}:
+     *         Comma-separated list of partition definitions, whose format
+     *         depends on the choice of {@link Options#PARTITION_TYPE
+     *         PARTITION_TYPE}.  See <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-range"
+     *         target="_top">range partitioning</a>, <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-interval"
+     *         target="_top">interval partitioning</a>, <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-list"
+     *         target="_top">list partitioning</a>, <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-hash"
+     *         target="_top">hash partitioning</a>, or <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-series"
+     *         target="_top">series partitioning</a> for example formats.
+     *     <li>{@link Options#IS_AUTOMATIC_PARTITION IS_AUTOMATIC_PARTITION}:
+     *         If {@link Options#TRUE TRUE}, a new partition will be created
+     *         for values which don't fall into an existing partition.
+     *         Currently only supported for <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-list"
+     *         target="_top">list partitions</a>.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#VIEW_ID VIEW_ID}: ID of view of which the result
      *         table will be a member. The default value is ''.
      *     <li>{@link Options#PIVOT PIVOT}: pivot column

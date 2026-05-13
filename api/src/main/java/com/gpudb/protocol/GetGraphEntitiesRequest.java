@@ -78,6 +78,70 @@ public class GetGraphEntitiesRequest implements IndexedRecord {
          */
         public static final String SERVER_ID = "server_id";
 
+        /**
+         * When true, edges are emitted in a compact connectivity form
+         * regardless of the graph's identifier type: {@link
+         * com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesInt()
+         * entitiesInt} contains stride-4 records [edge_id, node1_index,
+         * node2_index, edge_label_index] where node1_index/node2_index are
+         * 0-based positions into the node array (obtained from a node-entity
+         * call on the same graph). When requesting nodes with this option, the
+         * response includes tombstoned (deleted) slots in order to keep
+         * position indices stable so edge indices resolve correctly; deleted
+         * slots carry id=0 for integer graphs or an empty identifier for
+         * string/WKT graphs. For paginated node calls, subtract {@link
+         * #getOffset() offset} from an edge endpoint index to locate it within
+         * the returned page.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}: Compact integer connectivity for
+         *         edges; deleted node slots included in node output.
+         *     <li>{@link Options#FALSE FALSE}: Default: edges emit node
+         *         identifiers (int/string/WKT) matching the graph; deleted
+         *         nodes are skipped.
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String CONCISE_EDGE_CONNECTIVITY = "concise_edge_connectivity";
+
+        /**
+         * Populate {@link
+         * com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesWeight()
+         * entitiesWeight} with per-edge weights (edge requests only).
+         */
+        public static final String TRUE = "true";
+
+        /**
+         * Default: {@link
+         * com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesWeight()
+         * entitiesWeight} is empty.
+         */
+        public static final String FALSE = "false";
+
+        /**
+         * When true and {@code options entityType} is 'edge', the response
+         * {@link
+         * com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesWeight()
+         * entitiesWeight} array is populated with one float weight per emitted
+         * edge (aligned 1:1 with the edge records in {@link
+         * com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesInt()
+         * entitiesInt} or {@link
+         * com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesString()
+         * entitiesString}). Empty when the graph has no weights component or
+         * when requesting nodes.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}: Populate {@link
+         *         com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesWeight()
+         *         entitiesWeight} with per-edge weights (edge requests only).
+         *     <li>{@link Options#FALSE FALSE}: Default: {@link
+         *         com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesWeight()
+         *         entitiesWeight} is empty.
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String INCLUDE_WEIGHTS = "include_weights";
+
         private Options() {  }
     }
 
@@ -126,6 +190,63 @@ public class GetGraphEntitiesRequest implements IndexedRecord {
      *                         which graph server to send the request to.
      *                         Required when the graph is distributed across
      *                         multiple servers. The default value is '0'.
+     *                     <li>{@link Options#CONCISE_EDGE_CONNECTIVITY
+     *                         CONCISE_EDGE_CONNECTIVITY}: When true, edges are
+     *                         emitted in a compact connectivity form
+     *                         regardless of the graph's identifier type:
+     *                         {@link
+     *                         com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesInt()
+     *                         entitiesInt} contains stride-4 records [edge_id,
+     *                         node1_index, node2_index, edge_label_index]
+     *                         where node1_index/node2_index are 0-based
+     *                         positions into the node array (obtained from a
+     *                         node-entity call on the same graph). When
+     *                         requesting nodes with this option, the response
+     *                         includes tombstoned (deleted) slots in order to
+     *                         keep position indices stable so edge indices
+     *                         resolve correctly; deleted slots carry id=0 for
+     *                         integer graphs or an empty identifier for
+     *                         string/WKT graphs. For paginated node calls,
+     *                         subtract {@code offset} from an edge endpoint
+     *                         index to locate it within the returned page.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}: Compact
+     *                                 integer connectivity for edges; deleted
+     *                                 node slots included in node output.
+     *                             <li>{@link Options#FALSE FALSE}: Default:
+     *                                 edges emit node identifiers
+     *                                 (int/string/WKT) matching the graph;
+     *                                 deleted nodes are skipped.
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link Options#INCLUDE_WEIGHTS INCLUDE_WEIGHTS}:
+     *                         When true and {@code options entityType} is
+     *                         'edge', the response {@link
+     *                         com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesWeight()
+     *                         entitiesWeight} array is populated with one
+     *                         float weight per emitted edge (aligned 1:1 with
+     *                         the edge records in {@link
+     *                         com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesInt()
+     *                         entitiesInt} or {@link
+     *                         com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesString()
+     *                         entitiesString}). Empty when the graph has no
+     *                         weights component or when requesting nodes.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}: Populate
+     *                                 {@link
+     *                                 com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesWeight()
+     *                                 entitiesWeight} with per-edge weights
+     *                                 (edge requests only).
+     *                             <li>{@link Options#FALSE FALSE}: Default:
+     *                                 {@link
+     *                                 com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesWeight()
+     *                                 entitiesWeight} is empty.
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -230,6 +351,51 @@ public class GetGraphEntitiesRequest implements IndexedRecord {
      *     <li>{@link Options#SERVER_ID SERVER_ID}: Indicates which graph
      *         server to send the request to. Required when the graph is
      *         distributed across multiple servers. The default value is '0'.
+     *     <li>{@link Options#CONCISE_EDGE_CONNECTIVITY
+     *         CONCISE_EDGE_CONNECTIVITY}: When true, edges are emitted in a
+     *         compact connectivity form regardless of the graph's identifier
+     *         type: {@link
+     *         com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesInt()
+     *         entitiesInt} contains stride-4 records [edge_id, node1_index,
+     *         node2_index, edge_label_index] where node1_index/node2_index are
+     *         0-based positions into the node array (obtained from a
+     *         node-entity call on the same graph). When requesting nodes with
+     *         this option, the response includes tombstoned (deleted) slots in
+     *         order to keep position indices stable so edge indices resolve
+     *         correctly; deleted slots carry id=0 for integer graphs or an
+     *         empty identifier for string/WKT graphs. For paginated node
+     *         calls, subtract {@link #getOffset() offset} from an edge
+     *         endpoint index to locate it within the returned page.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}: Compact integer connectivity
+     *                 for edges; deleted node slots included in node output.
+     *             <li>{@link Options#FALSE FALSE}: Default: edges emit node
+     *                 identifiers (int/string/WKT) matching the graph; deleted
+     *                 nodes are skipped.
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#INCLUDE_WEIGHTS INCLUDE_WEIGHTS}: When true and
+     *         {@code options entityType} is 'edge', the response {@link
+     *         com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesWeight()
+     *         entitiesWeight} array is populated with one float weight per
+     *         emitted edge (aligned 1:1 with the edge records in {@link
+     *         com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesInt()
+     *         entitiesInt} or {@link
+     *         com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesString()
+     *         entitiesString}). Empty when the graph has no weights component
+     *         or when requesting nodes.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}: Populate {@link
+     *                 com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesWeight()
+     *                 entitiesWeight} with per-edge weights (edge requests
+     *                 only).
+     *             <li>{@link Options#FALSE FALSE}: Default: {@link
+     *                 com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesWeight()
+     *                 entitiesWeight} is empty.
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -254,6 +420,51 @@ public class GetGraphEntitiesRequest implements IndexedRecord {
      *     <li>{@link Options#SERVER_ID SERVER_ID}: Indicates which graph
      *         server to send the request to. Required when the graph is
      *         distributed across multiple servers. The default value is '0'.
+     *     <li>{@link Options#CONCISE_EDGE_CONNECTIVITY
+     *         CONCISE_EDGE_CONNECTIVITY}: When true, edges are emitted in a
+     *         compact connectivity form regardless of the graph's identifier
+     *         type: {@link
+     *         com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesInt()
+     *         entitiesInt} contains stride-4 records [edge_id, node1_index,
+     *         node2_index, edge_label_index] where node1_index/node2_index are
+     *         0-based positions into the node array (obtained from a
+     *         node-entity call on the same graph). When requesting nodes with
+     *         this option, the response includes tombstoned (deleted) slots in
+     *         order to keep position indices stable so edge indices resolve
+     *         correctly; deleted slots carry id=0 for integer graphs or an
+     *         empty identifier for string/WKT graphs. For paginated node
+     *         calls, subtract {@link #getOffset() offset} from an edge
+     *         endpoint index to locate it within the returned page.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}: Compact integer connectivity
+     *                 for edges; deleted node slots included in node output.
+     *             <li>{@link Options#FALSE FALSE}: Default: edges emit node
+     *                 identifiers (int/string/WKT) matching the graph; deleted
+     *                 nodes are skipped.
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#INCLUDE_WEIGHTS INCLUDE_WEIGHTS}: When true and
+     *         {@code options entityType} is 'edge', the response {@link
+     *         com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesWeight()
+     *         entitiesWeight} array is populated with one float weight per
+     *         emitted edge (aligned 1:1 with the edge records in {@link
+     *         com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesInt()
+     *         entitiesInt} or {@link
+     *         com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesString()
+     *         entitiesString}). Empty when the graph has no weights component
+     *         or when requesting nodes.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}: Populate {@link
+     *                 com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesWeight()
+     *                 entitiesWeight} with per-edge weights (edge requests
+     *                 only).
+     *             <li>{@link Options#FALSE FALSE}: Default: {@link
+     *                 com.gpudb.protocol.GetGraphEntitiesResponse#getEntitiesWeight()
+     *                 entitiesWeight} is empty.
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      *
