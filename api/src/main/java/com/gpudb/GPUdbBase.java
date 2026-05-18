@@ -228,6 +228,8 @@ public abstract class GPUdbBase {
         private HAFailoverOrder haFailoverOrder = HAFailoverOrder.SEQUENTIAL;
         private ExecutorService executor;
         private Map<String, String> httpHeaders = new HashMap<>();
+        private String clientName;
+        private String clientVersion;
         private int   timeout;
         private int   connectionInactivityValidationTimeout = DEFAULT_CONNECTION_INACTIVITY_VALIDATION_TIMEOUT;
         private int   serverConnectionTimeout = DEFAULT_SERVER_CONNECTION_TIMEOUT;
@@ -262,6 +264,8 @@ public abstract class GPUdbBase {
             this.disableAutoDiscovery = other.disableAutoDiscovery;
             this.haFailoverOrder      = other.haFailoverOrder;
             this.httpHeaders          = new HashMap<>( other.httpHeaders );
+            this.clientName           = other.clientName;
+            this.clientVersion        = other.clientVersion;
             this.timeout              = other.timeout;
             this.serverConnectionTimeout     = other.serverConnectionTimeout;
             this.threadCount                 = other.threadCount;
@@ -303,6 +307,8 @@ public abstract class GPUdbBase {
                                             toStringKeyValue("disableAutoDiscovery",                  this.disableAutoDiscovery,                  false),
                                             toStringKeyValue("haFailoverOrder",                       this.haFailoverOrder,                       false),
                                             toStringKeyValue("httpHeaders",                           this.httpHeaders,                           false),
+                                            toStringKeyValue("clientName",                            this.clientName,                            false),
+                                            toStringKeyValue("clientVersion",                         this.clientVersion,                         false),
                                             toStringKeyValue("hmPort",                                this.hmPort,                                false),
                                             toStringKeyValue("timeout",                               this.timeout,                               false),
                                             toStringKeyValue("serverConnectionTimeout",               this.serverConnectionTimeout,               false),
@@ -1025,6 +1031,54 @@ public abstract class GPUdbBase {
          */
         public Options addHttpHeader(String header, String value) {
             this.httpHeaders.put(header, value);
+            return this;
+        }
+
+        /**
+         * Gets the client program name, or {@code null} if none has been set.
+         *
+         * @return the client name, or {@code null}
+         *
+         * @see #setClientInfo(String, String)
+         */
+        public String getClientName() {
+            return this.clientName;
+        }
+
+        /**
+         * Gets the client program version, or {@code null} if none has been set.
+         *
+         * @return the client version, or {@code null}
+         *
+         * @see #setClientInfo(String, String)
+         */
+        public String getClientVersion() {
+            return this.clientVersion;
+        }
+
+        /**
+         * Sets a client program name and version, which will be prepended to
+         * the {@code User-Agent} header sent with each request.
+         *
+         * Pass {@code null} for {@code clientName} to clear any previously-set
+         * client info.
+         *
+         * @param clientName     the client program name; pass {@code null} to clear
+         * @param clientVersion  the client program version, or {@code null} if
+         *                       the client does not have a version
+         * @return               the current {@link Options} instance
+         *
+         * @see #getClientName()
+         * @see #getClientVersion()
+         */
+        public Options setClientInfo(String clientName, String clientVersion) {
+            if (clientName == null) {
+                this.clientName    = null;
+                this.clientVersion = null;
+            } else {
+                this.clientName    = clientName;
+                this.clientVersion = clientVersion;
+            }
             return this;
         }
 
@@ -2161,17 +2215,29 @@ public abstract class GPUdbBase {
     } // end class CountingOutputStream
 
     /**
-     * Gets the version number of the GPUdb Java API.
+     * Gets the version and build number of the GPUdb Java API.
      *
      * @return  the version number
      */
     public static String getApiVersion() {
+        return getApiVersion(true);
+    }
+
+    /**
+     * Returns the API's release version (MAJOR.MINOR.REVISION.ABI).  The build
+     * number can optionally be appended to the version.
+     */
+    private static String getApiVersion(boolean includeBuildNumber) {
         try (InputStream stream = GPUdbBase.class.getResourceAsStream("/gpudb-api-build.properties")) {
 
             if (stream != null) {
                 Properties properties = new Properties();
                 properties.load(stream);
-                return properties.getProperty("version") + "-" + properties.getProperty("buildNumber");
+
+                if (includeBuildNumber)
+                	return properties.getProperty("version") + "-" + properties.getProperty("buildNumber");
+
+                return properties.getProperty("version");
             }
         } catch (IOException ex) {
         }
@@ -2179,7 +2245,109 @@ public abstract class GPUdbBase {
         return "unknown";
     }
 
-    // Internal Helper
+    /**
+     * Gets the API's release version (MAJOR.MINOR.REVISION.ABI) if it is set
+     * appropriate for use in an HTTP header.
+     */
+    private static String getApiVersionHeader() {
+        String version = getApiVersion(false);
+        if (version != null && !version.isEmpty() && !version.startsWith("$"))
+            return version;
+
+    	return "unknown";
+    }
+
+    /**
+     * Sanitizes a string for use as an HTTP {@code User-Agent} token by
+     * replacing any character that is not in the RFC 7230 {@code tchar} set
+     * with an underscore.
+     */
+    private static String sanitizeUserAgentToken(String value) {
+        if (value == null || value.isEmpty()) {
+            return "unknown";
+        }
+        return value.replaceAll("[^A-Za-z0-9!#$%&'*+.^_`|~-]", "_");
+    }
+
+    /**
+     * Builds the {@code User-Agent} string sent with every request.  The base
+     * format is:
+     * <pre>
+     *   kinetica-api-java/&lt;api-version&gt; (Java/&lt;java-version&gt;; &lt;os-name&gt;/&lt;os-version&gt;; &lt;os-arch&gt;)
+     * </pre>
+     * If a client program has registered identifying info via
+     * {@link Options#setClientInfo(String, String)}, it is prepended as the
+     * leading product token, following the convention used by browsers and
+     * other HTTP user agents where the primary agent is listed first and the
+     * underlying libraries follow:
+     * <pre>
+     *   MyApp/1.0 kinetica-api-java/7.2.3.18 (Java/11.0.1; Linux/5.15.0; amd64)
+     * </pre>
+     */
+    protected String buildUserAgent() {
+        String apiVersion = sanitizeUserAgentToken(getApiVersionHeader());
+        String javaVersion = System.getProperty("java.version", "unknown");
+        String osName = System.getProperty("os.name", "unknown");
+        String osVersion = System.getProperty("os.version", "unknown");
+        String osArch = System.getProperty("os.arch", "unknown");
+
+        StringBuilder sb = new StringBuilder();
+
+        if (this.clientName != null && !this.clientName.isEmpty()) {
+            sb.append(sanitizeUserAgentToken(this.clientName));
+            if (this.clientVersion != null && !this.clientVersion.isEmpty()) {
+                sb.append('/').append(sanitizeUserAgentToken(this.clientVersion));
+            }
+            sb.append(' ');
+        }
+
+        sb.append(USER_AGENT_PROGRAM_NAME).append('/').append(apiVersion)
+                .append(" (Java/").append(javaVersion)
+                .append("; ").append(osName).append('/').append(osVersion)
+                .append("; ").append(osArch).append(')');
+
+        return sb.toString();
+    }
+
+    /**
+     * Returns the {@code User-Agent} header value currently sent with each
+     * request from this client.
+     *
+     * @return the User-Agent string
+     */
+    public String getUserAgent() {
+        return this.httpHeaders.get(HEADER_USER_AGENT);
+    }
+
+    /**
+     * Returns the client program name (the name portion of the leading product
+     * token of the {@code User-Agent} header), or {@code null} if none has
+     * been set.  Set via {@link Options#setClientInfo(String, String)} prior
+     * to constructing the client.
+     *
+     * @return the client name, or {@code null}
+     *
+     * @see Options#setClientInfo(String, String)
+     */
+    public String getClientName() {
+        return this.clientName;
+    }
+
+    /**
+     * Returns the client program version (the version portion of the leading
+     * product token of the {@code User-Agent} header), or {@code null} if
+     * none has been set.  Set via
+     * {@link Options#setClientInfo(String, String)} prior to constructing
+     * the client.
+     *
+     * @return the client version, or {@code null}
+     *
+     * @see Options#setClientInfo(String, String)
+     */
+    public String getClientVersion() {
+        return this.clientVersion;
+    }
+
 
     static URL appendPathToURL(URL url, String path) throws MalformedURLException {
         String newPath = url.getPath();
@@ -2273,13 +2441,21 @@ public abstract class GPUdbBase {
     protected static final String HEADER_HA_SYNC_MODE  = "X-Kinetica-Group";
     protected static final String HEADER_AUTHORIZATION = "Authorization";
     protected static final String HEADER_CONTENT_TYPE  = "Content-type";
+    protected static final String HEADER_USER_AGENT    = "User-Agent";
 
     // Headers that are read-only once the connection has been created
     protected static final String[] PROTECTED_HEADERS = new String[]{
         HEADER_HA_SYNC_MODE,
         HEADER_AUTHORIZATION,
-        HEADER_CONTENT_TYPE
+        HEADER_CONTENT_TYPE,
+        HEADER_USER_AGENT
     };
+
+    /**
+     * The program name reported in the {@code User-Agent} HTTP header sent with
+     * every request.
+     */
+    public static final String USER_AGENT_PROGRAM_NAME = "kinetica-api-java";
 
     protected static final String SslErrorMessageFormat = "<%s>.  To fix, either:\n" +
             "* Specify a trust store containing the server's certificate or a CA cert in the server's certificate path\n" +
@@ -2679,6 +2855,8 @@ public abstract class GPUdbBase {
     private FailbackPollerService failbackPollerService;
     private ExecutorService     executor;
     private Map<String, String> httpHeaders;
+    private String              clientName;
+    private String              clientVersion;
     private HASynchronicityMode haSyncMode;
     private HAFailoverOrder     haFailoverOrder;
     private CloseableHttpClient httpClient;
@@ -2792,6 +2970,12 @@ public abstract class GPUdbBase {
 
         // Remove the protected Http headers if any (which are in the array PROTECTED_HEADERS)
         removeProtectedHttpHeaders();
+
+        // Install the default User-Agent header.  Must happen AFTER
+        // removeProtectedHttpHeaders() since User-Agent is a protected header.
+        this.clientName    = this.options.getClientName();
+        this.clientVersion = this.options.getClientVersion();
+        this.httpHeaders.put(HEADER_USER_AGENT, buildUserAgent());
 
         // Save various options
         this.useSnappy            = checkSnappy(this.options.getUseSnappy());

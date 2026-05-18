@@ -7800,6 +7800,10 @@ public class GPUdb extends GPUdbBase {
      *                                  href="../../../../../concepts/schemas/"
      *                                  target="_top">schema(s)</a>.
      *                              <li>{@link
+     *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#CATALOG
+     *                                  CATALOG}: Data Lake catalog that is
+     *                                  external to the database.
+     *                              <li>{@link
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#CONTEXT
      *                                  CONTEXT}: <a
      *                                  href="../../../../../sql-gpt/concepts/#sql-gpt-context"
@@ -7860,7 +7864,10 @@ public class GPUdb extends GPUdbBase {
      *                                  href="../../../../../concepts/tables/"
      *                                  target="_top">Table(s)</a> and <a
      *                                  href="../../../../../sql/ddl/#create-view"
-     *                                  target="_top">SQL view(s)</a>.
+     *                                  target="_top">SQL view(s)</a>.  Active
+     *                                  subscriptions on any tables to be
+     *                                  backed up will be temporarily suspended
+     *                                  while the backup is active.
      *                              <li>{@link
      *                                  com.gpudb.protocol.CreateBackupRequest.BackupObjectsMap#USER
      *                                  USER}: <a
@@ -29729,6 +29736,72 @@ public class GPUdb extends GPUdbBase {
         UploadFilesFromurlRequest actualRequest_ = new UploadFilesFromurlRequest(fileNames, urls, options);
         UploadFilesFromurlResponse actualResponse_ = new UploadFilesFromurlResponse();
         submitRequest("/upload/files/fromurl", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+    /**
+     * Inspects the requested database <a
+     * href="../../../../../admin/backup_restore/#database-backup"
+     * target="_top">backup(s)</a> for conformity at the remote file store
+     * accessible via the <a href="../../../../../concepts/data_sources/"
+     * target="_top">data source</a> specified by {@link
+     * com.gpudb.protocol.VerifyBackupRequest#getDatasourceName()
+     * datasourceName}. By default all snapshots are inspected unless the
+     * option {@link com.gpudb.protocol.VerifyBackupRequest.Options#BACKUP_ID
+     * BACKUP_ID} is used to target a specific instance.
+     * Returns backup verification results.
+     *
+     * @param request  {@link VerifyBackupRequest Request} object containing
+     *                 the parameters for the operation.
+     *
+     * @return {@link VerifyBackupResponse Response} object containing the
+     *         results of the operation.
+     *
+     * @throws GPUdbException  if an error occurs during the operation.
+     */
+    public VerifyBackupResponse verifyBackup(VerifyBackupRequest request) throws GPUdbException {
+        VerifyBackupResponse actualResponse_ = new VerifyBackupResponse();
+        submitRequest("/verify/backup", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+    /**
+     * Inspects the requested database <a
+     * href="../../../../../admin/backup_restore/#database-backup"
+     * target="_top">backup(s)</a> for conformity at the remote file store
+     * accessible via the <a href="../../../../../concepts/data_sources/"
+     * target="_top">data source</a> specified by {@code datasourceName}. By
+     * default all snapshots are inspected unless the option {@link
+     * com.gpudb.protocol.VerifyBackupRequest.Options#BACKUP_ID BACKUP_ID} is
+     * used to target a specific instance.
+     * Returns backup verification results.
+     *
+     * @param backupName  Name of the backup. An empty string or '*' will check
+     *                    all existing backups. Any text followed by a '*' will
+     *                    inspect backups whose name starts with that text. The
+     *                    default value is ''.
+     * @param datasourceName  Data source through which the backup is
+     *                        accessible.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                     <li>{@link
+     *                         com.gpudb.protocol.VerifyBackupRequest.Options#BACKUP_ID
+     *                         BACKUP_ID}: ID of the snapshot to verify. Set to
+     *                         '-1' to verify only the most recent  snapshot in
+     *                         the backup. Leave empty to verify all snapshots.
+     *                         The default value is '-1'.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     *
+     * @return {@link VerifyBackupResponse Response} object containing the
+     *         results of the operation.
+     *
+     * @throws GPUdbException  if an error occurs during the operation.
+     */
+    public VerifyBackupResponse verifyBackup(String backupName, String datasourceName, Map<String, String> options) throws GPUdbException {
+        VerifyBackupRequest actualRequest_ = new VerifyBackupRequest(backupName, datasourceName, options);
+        VerifyBackupResponse actualResponse_ = new VerifyBackupResponse();
+        submitRequest("/verify/backup", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 

@@ -1,5 +1,9 @@
 # Kinetica REST API Changelog
 
+## Version 7.2.3.14
+#### Added
+-   Added ``/verify/backup`` endpoint
+
 ## Version 7.2.3.13
 #### Added
 -   Added backup and restore support for graph definitions.

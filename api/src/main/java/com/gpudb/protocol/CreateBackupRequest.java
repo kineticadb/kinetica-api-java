@@ -89,6 +89,11 @@ public class CreateBackupRequest implements IndexedRecord {
         public static final String ALL = "all";
 
         /**
+         * Data Lake catalog that is external to the database.
+         */
+        public static final String CATALOG = "catalog";
+
+        /**
          * <a href="../../../../../../sql-gpt/concepts/#sql-gpt-context"
          * target="_top">Context(s)</a>.
          */
@@ -155,7 +160,8 @@ public class CreateBackupRequest implements IndexedRecord {
          * <a href="../../../../../../concepts/tables/"
          * target="_top">Table(s)</a> and <a
          * href="../../../../../../sql/ddl/#create-view" target="_top">SQL
-         * view(s)</a>.
+         * view(s)</a>. Active subscriptions on any tables to be backed up will
+         * be temporarily suspended while the backup is active.
          */
         public static final String TABLE = "table";
 
@@ -305,6 +311,9 @@ public class CreateBackupRequest implements IndexedRecord {
      *                                  given <a
      *                                  href="../../../../../../concepts/schemas/"
      *                                  target="_top">schema(s)</a>.
+     *                              <li>{@link BackupObjectsMap#CATALOG
+     *                                  CATALOG}: Data Lake catalog that is
+     *                                  external to the database.
      *                              <li>{@link BackupObjectsMap#CONTEXT
      *                                  CONTEXT}: <a
      *                                  href="../../../../../../sql-gpt/concepts/#sql-gpt-context"
@@ -356,7 +365,10 @@ public class CreateBackupRequest implements IndexedRecord {
      *                                  href="../../../../../../concepts/tables/"
      *                                  target="_top">Table(s)</a> and <a
      *                                  href="../../../../../../sql/ddl/#create-view"
-     *                                  target="_top">SQL view(s)</a>.
+     *                                  target="_top">SQL view(s)</a>.  Active
+     *                                  subscriptions on any tables to be
+     *                                  backed up will be temporarily suspended
+     *                                  while the backup is active.
      *                              <li>{@link BackupObjectsMap#USER USER}: <a
      *                                  href="../../../../../../security/sec_concepts/#security-concepts-users"
      *                                  target="_top">User(s)</a> (internal and
@@ -518,6 +530,8 @@ public class CreateBackupRequest implements IndexedRecord {
      *         contained in the given <a
      *         href="../../../../../../concepts/schemas/"
      *         target="_top">schema(s)</a>.
+     *     <li>{@link BackupObjectsMap#CATALOG CATALOG}: Data Lake catalog that
+     *         is external to the database.
      *     <li>{@link BackupObjectsMap#CONTEXT CONTEXT}: <a
      *         href="../../../../../../sql-gpt/concepts/#sql-gpt-context"
      *         target="_top">Context(s)</a>.
@@ -556,7 +570,8 @@ public class CreateBackupRequest implements IndexedRecord {
      *         href="../../../../../../concepts/tables/"
      *         target="_top">Table(s)</a> and <a
      *         href="../../../../../../sql/ddl/#create-view" target="_top">SQL
-     *         view(s)</a>.
+     *         view(s)</a>.  Active subscriptions on any tables to be backed up
+     *         will be temporarily suspended while the backup is active.
      *     <li>{@link BackupObjectsMap#USER USER}: <a
      *         href="../../../../../../security/sec_concepts/#security-concepts-users"
      *         target="_top">User(s)</a> (internal and external) and associated
@@ -582,6 +597,8 @@ public class CreateBackupRequest implements IndexedRecord {
      *         contained in the given <a
      *         href="../../../../../../concepts/schemas/"
      *         target="_top">schema(s)</a>.
+     *     <li>{@link BackupObjectsMap#CATALOG CATALOG}: Data Lake catalog that
+     *         is external to the database.
      *     <li>{@link BackupObjectsMap#CONTEXT CONTEXT}: <a
      *         href="../../../../../../sql-gpt/concepts/#sql-gpt-context"
      *         target="_top">Context(s)</a>.
@@ -620,7 +637,8 @@ public class CreateBackupRequest implements IndexedRecord {
      *         href="../../../../../../concepts/tables/"
      *         target="_top">Table(s)</a> and <a
      *         href="../../../../../../sql/ddl/#create-view" target="_top">SQL
-     *         view(s)</a>.
+     *         view(s)</a>.  Active subscriptions on any tables to be backed up
+     *         will be temporarily suspended while the backup is active.
      *     <li>{@link BackupObjectsMap#USER USER}: <a
      *         href="../../../../../../security/sec_concepts/#security-concepts-users"
      *         target="_top">User(s)</a> (internal and external) and associated
