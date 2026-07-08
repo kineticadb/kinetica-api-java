@@ -89,7 +89,7 @@ public class AdminRemoveHostRequest implements IndexedRecord {
      *
      * @param host  Identifies the host this applies to. Can be the host
      *              address, or formatted as 'hostN' where N is the host number
-     *              as specified in gpudb.conf
+     *              as specified in gpudb.conf.
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link Options#DRY_RUN DRY_RUN}: If set to
@@ -113,7 +113,7 @@ public class AdminRemoveHostRequest implements IndexedRecord {
     /**
      * Identifies the host this applies to. Can be the host address, or
      * formatted as 'hostN' where N is the host number as specified in
-     * gpudb.conf
+     * gpudb.conf.
      *
      * @return The current value of {@code host}.
      */
@@ -124,7 +124,7 @@ public class AdminRemoveHostRequest implements IndexedRecord {
     /**
      * Identifies the host this applies to. Can be the host address, or
      * formatted as 'hostN' where N is the host number as specified in
-     * gpudb.conf
+     * gpudb.conf.
      *
      * @param host  The new value for {@code host}.
      *

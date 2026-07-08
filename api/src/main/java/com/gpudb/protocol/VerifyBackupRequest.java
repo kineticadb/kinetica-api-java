@@ -53,9 +53,9 @@ public class VerifyBackupRequest implements IndexedRecord {
      */
     public static final class Options {
         /**
-         * ID of the snapshot to verify. Set to '-1' to verify only the most
-         * recent snapshot in the backup. Leave empty to verify all snapshots.
-         * The default value is '-1'.
+         * ID of the snapshot to verify. Set to '-1' to verify all snapshots in
+         * the backup. Leave empty to verify only the most recent snapshot. The
+         * default value is '-1'.
          */
         public static final String BACKUP_ID = "backup_id";
 
@@ -87,9 +87,9 @@ public class VerifyBackupRequest implements IndexedRecord {
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link Options#BACKUP_ID BACKUP_ID}: ID of the
-     *                         snapshot to verify. Set to '-1' to verify only
-     *                         the most recent  snapshot in the backup. Leave
-     *                         empty to verify all snapshots. The default value
+     *                         snapshot to verify. Set to '-1' to verify all
+     *                         snapshots in the backup.  Leave empty to verify
+     *                         only the most recent snapshot. The default value
      *                         is '-1'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
@@ -150,8 +150,8 @@ public class VerifyBackupRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *     <li>{@link Options#BACKUP_ID BACKUP_ID}: ID of the snapshot to
-     *         verify. Set to '-1' to verify only the most recent  snapshot in
-     *         the backup. Leave empty to verify all snapshots. The default
+     *         verify. Set to '-1' to verify all snapshots in the backup.
+     *         Leave empty to verify only the most recent snapshot. The default
      *         value is '-1'.
      * </ul>
      * The default value is an empty {@link Map}.
@@ -166,8 +166,8 @@ public class VerifyBackupRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *     <li>{@link Options#BACKUP_ID BACKUP_ID}: ID of the snapshot to
-     *         verify. Set to '-1' to verify only the most recent  snapshot in
-     *         the backup. Leave empty to verify all snapshots. The default
+     *         verify. Set to '-1' to verify all snapshots in the backup.
+     *         Leave empty to verify only the most recent snapshot. The default
      *         value is '-1'.
      * </ul>
      * The default value is an empty {@link Map}.

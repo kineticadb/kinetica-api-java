@@ -83,7 +83,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
         public static final String BINARY = "binary";
 
         /**
-         * Indicates that the returned records should be json encoded.
+         * Indicates that the returned records should be JSON-encoded.
          */
         public static final String JSON = "json";
 
@@ -131,7 +131,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
         public static final String COLLECTION_NAME = "collection_name";
 
         /**
-         * Optional filter expression to apply to the table.
+         * Filter expression to apply to the table.
          */
         public static final String EXPRESSION = "expression";
 
@@ -333,8 +333,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                         Options#RESULT_TABLE RESULT_TABLE}. If the
      *                         schema provided is non-existent, it will be
      *                         automatically created.
-     *                     <li>{@link Options#EXPRESSION EXPRESSION}: Optional
-     *                         filter expression to apply to the table.
+     *                     <li>{@link Options#EXPRESSION EXPRESSION}: Filter
+     *                         expression to apply to the table.
      *                     <li>{@link Options#SORT_ORDER SORT_ORDER}: String
      *                         indicating how the returned values should be
      *                         sorted.
@@ -479,7 +479,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                      <li>{@link Encoding#BINARY BINARY}: Indicates that
      *                          the returned records should be binary encoded.
      *                      <li>{@link Encoding#JSON JSON}: Indicates that the
-     *                          returned records should be json encoded.
+     *                          returned records should be JSON-encoded.
      *                  </ul>
      *                  The default value is {@link Encoding#BINARY BINARY}.
      * @param options  Optional parameters.
@@ -516,8 +516,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                         Options#RESULT_TABLE RESULT_TABLE}. If the
      *                         schema provided is non-existent, it will be
      *                         automatically created.
-     *                     <li>{@link Options#EXPRESSION EXPRESSION}: Optional
-     *                         filter expression to apply to the table.
+     *                     <li>{@link Options#EXPRESSION EXPRESSION}: Filter
+     *                         expression to apply to the table.
      *                     <li>{@link Options#SORT_ORDER SORT_ORDER}: String
      *                         indicating how the returned values should be
      *                         sorted.
@@ -752,7 +752,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *     <li>{@link Encoding#BINARY BINARY}: Indicates that the returned
      *         records should be binary encoded.
      *     <li>{@link Encoding#JSON JSON}: Indicates that the returned records
-     *         should be json encoded.
+     *         should be JSON-encoded.
      * </ul>
      * The default value is {@link Encoding#BINARY BINARY}.
      *
@@ -769,7 +769,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *     <li>{@link Encoding#BINARY BINARY}: Indicates that the returned
      *         records should be binary encoded.
      *     <li>{@link Encoding#JSON JSON}: Indicates that the returned records
-     *         should be json encoded.
+     *         should be JSON-encoded.
      * </ul>
      * The default value is {@link Encoding#BINARY BINARY}.
      *
@@ -809,8 +809,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *         of a schema which is to contain the table specified in {@link
      *         Options#RESULT_TABLE RESULT_TABLE}. If the schema provided is
      *         non-existent, it will be automatically created.
-     *     <li>{@link Options#EXPRESSION EXPRESSION}: Optional filter
-     *         expression to apply to the table.
+     *     <li>{@link Options#EXPRESSION EXPRESSION}: Filter expression to
+     *         apply to the table.
      *     <li>{@link Options#SORT_ORDER SORT_ORDER}: String indicating how the
      *         returned values should be sorted.
      *         Supported values:
@@ -923,8 +923,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *         of a schema which is to contain the table specified in {@link
      *         Options#RESULT_TABLE RESULT_TABLE}. If the schema provided is
      *         non-existent, it will be automatically created.
-     *     <li>{@link Options#EXPRESSION EXPRESSION}: Optional filter
-     *         expression to apply to the table.
+     *     <li>{@link Options#EXPRESSION EXPRESSION}: Filter expression to
+     *         apply to the table.
      *     <li>{@link Options#SORT_ORDER SORT_ORDER}: String indicating how the
      *         returned values should be sorted.
      *         Supported values:

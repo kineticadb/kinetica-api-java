@@ -158,7 +158,7 @@ public class AggregateStatisticsRequest implements IndexedRecord {
          * Estimate (via t-digest) of the given percentile of the column(s)
          * (percentile(50.0) will be an approximation of the median). Add a
          * second, comma-separated value to calculate percentile resolution,
-         * e.g., 'percentile(75,150)'
+         * e.g., 'percentile(75,150)'.
          */
         public static final String PERCENTILE = "percentile";
 
@@ -260,7 +260,7 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      *                       (percentile(50.0) will be an approximation of the
      *                       median). Add a second, comma-separated value to
      *                       calculate percentile resolution, e.g.,
-     *                       'percentile(75,150)'
+     *                       'percentile(75,150)'.
      *                   <li>{@link Stats#PERCENTILE_RANK PERCENTILE_RANK}:
      *                       Estimate (via t-digest) of the percentile rank of
      *                       the given value in the column(s) (if the given
@@ -374,7 +374,7 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      *         the given percentile of the column(s) (percentile(50.0) will be
      *         an approximation of the median). Add a second, comma-separated
      *         value to calculate percentile resolution, e.g.,
-     *         'percentile(75,150)'
+     *         'percentile(75,150)'.
      *     <li>{@link Stats#PERCENTILE_RANK PERCENTILE_RANK}: Estimate (via
      *         t-digest) of the percentile rank of the given value in the
      *         column(s) (if the given value is the median of the column(s),
@@ -419,7 +419,7 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      *         the given percentile of the column(s) (percentile(50.0) will be
      *         an approximation of the median). Add a second, comma-separated
      *         value to calculate percentile resolution, e.g.,
-     *         'percentile(75,150)'
+     *         'percentile(75,150)'.
      *     <li>{@link Stats#PERCENTILE_RANK PERCENTILE_RANK}: Estimate (via
      *         t-digest) of the percentile rank of the given value in the
      *         column(s) (if the given value is the median of the column(s),

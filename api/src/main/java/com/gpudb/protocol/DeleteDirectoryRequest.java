@@ -94,7 +94,7 @@ public class DeleteDirectoryRequest implements IndexedRecord {
      * @param directoryName  Name of the directory in KiFS to be deleted. The
      *                       directory must contain no files, unless {@link
      *                       Options#RECURSIVE RECURSIVE} is {@link
-     *                       Options#TRUE TRUE}
+     *                       Options#TRUE TRUE}.
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link Options#RECURSIVE RECURSIVE}: If {@link
@@ -130,7 +130,7 @@ public class DeleteDirectoryRequest implements IndexedRecord {
     /**
      * Name of the directory in KiFS to be deleted. The directory must contain
      * no files, unless {@link Options#RECURSIVE RECURSIVE} is {@link
-     * Options#TRUE TRUE}
+     * Options#TRUE TRUE}.
      *
      * @return The current value of {@code directoryName}.
      */
@@ -141,7 +141,7 @@ public class DeleteDirectoryRequest implements IndexedRecord {
     /**
      * Name of the directory in KiFS to be deleted. The directory must contain
      * no files, unless {@link Options#RECURSIVE RECURSIVE} is {@link
-     * Options#TRUE TRUE}
+     * Options#TRUE TRUE}.
      *
      * @param directoryName  The new value for {@code directoryName}.
      *

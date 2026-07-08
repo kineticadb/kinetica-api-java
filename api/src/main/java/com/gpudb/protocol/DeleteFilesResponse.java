@@ -47,7 +47,7 @@ public class DeleteFilesResponse implements IndexedRecord {
     }
 
     /**
-     * Names of the files deleted from KiFS
+     * Names of the files deleted from KiFS.
      *
      * @return The current value of {@code fileNames}.
      */
@@ -56,7 +56,7 @@ public class DeleteFilesResponse implements IndexedRecord {
     }
 
     /**
-     * Names of the files deleted from KiFS
+     * Names of the files deleted from KiFS.
      *
      * @param fileNames  The new value for {@code fileNames}.
      *

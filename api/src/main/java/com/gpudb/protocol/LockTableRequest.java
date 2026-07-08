@@ -56,27 +56,27 @@ public class LockTableRequest implements IndexedRecord {
      */
     public static final class LockType {
         /**
-         * Show locked status
+         * Show locked status.
          */
         public static final String STATUS = "status";
 
         /**
-         * Allow no read/write operations
+         * Allow no read/write operations.
          */
         public static final String NO_ACCESS = "no_access";
 
         /**
-         * Allow only read operations
+         * Allow only read operations.
          */
         public static final String READ_ONLY = "read_only";
 
         /**
-         * Allow only write operations
+         * Allow only write operations.
          */
         public static final String WRITE_ONLY = "write_only";
 
         /**
-         * Allow all read/write operations
+         * Allow all read/write operations.
          */
         public static final String READ_WRITE = "read_write";
 
@@ -110,15 +110,15 @@ public class LockTableRequest implements IndexedRecord {
      *                  Supported values:
      *                  <ul>
      *                      <li>{@link LockType#STATUS STATUS}: Show locked
-     *                          status
+     *                          status.
      *                      <li>{@link LockType#NO_ACCESS NO_ACCESS}: Allow no
-     *                          read/write operations
+     *                          read/write operations.
      *                      <li>{@link LockType#READ_ONLY READ_ONLY}: Allow
-     *                          only read operations
+     *                          only read operations.
      *                      <li>{@link LockType#WRITE_ONLY WRITE_ONLY}: Allow
-     *                          only write operations
+     *                          only write operations.
      *                      <li>{@link LockType#READ_WRITE READ_WRITE}: Allow
-     *                          all read/write operations
+     *                          all read/write operations.
      *                  </ul>
      *                  The default value is {@link LockType#STATUS STATUS}.
      * @param options  Optional parameters. The default value is an empty
@@ -165,14 +165,15 @@ public class LockTableRequest implements IndexedRecord {
      * without changing it.
      * Supported values:
      * <ul>
-     *     <li>{@link LockType#STATUS STATUS}: Show locked status
+     *     <li>{@link LockType#STATUS STATUS}: Show locked status.
      *     <li>{@link LockType#NO_ACCESS NO_ACCESS}: Allow no read/write
-     *         operations
-     *     <li>{@link LockType#READ_ONLY READ_ONLY}: Allow only read operations
+     *         operations.
+     *     <li>{@link LockType#READ_ONLY READ_ONLY}: Allow only read
+     *         operations.
      *     <li>{@link LockType#WRITE_ONLY WRITE_ONLY}: Allow only write
-     *         operations
+     *         operations.
      *     <li>{@link LockType#READ_WRITE READ_WRITE}: Allow all read/write
-     *         operations
+     *         operations.
      * </ul>
      * The default value is {@link LockType#STATUS STATUS}.
      *
@@ -188,14 +189,15 @@ public class LockTableRequest implements IndexedRecord {
      * without changing it.
      * Supported values:
      * <ul>
-     *     <li>{@link LockType#STATUS STATUS}: Show locked status
+     *     <li>{@link LockType#STATUS STATUS}: Show locked status.
      *     <li>{@link LockType#NO_ACCESS NO_ACCESS}: Allow no read/write
-     *         operations
-     *     <li>{@link LockType#READ_ONLY READ_ONLY}: Allow only read operations
+     *         operations.
+     *     <li>{@link LockType#READ_ONLY READ_ONLY}: Allow only read
+     *         operations.
      *     <li>{@link LockType#WRITE_ONLY WRITE_ONLY}: Allow only write
-     *         operations
+     *         operations.
      *     <li>{@link LockType#READ_WRITE READ_WRITE}: Allow all read/write
-     *         operations
+     *         operations.
      * </ul>
      * The default value is {@link LockType#STATUS STATUS}.
      *

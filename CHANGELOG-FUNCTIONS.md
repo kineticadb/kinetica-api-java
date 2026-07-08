@@ -1,5 +1,18 @@
 # Kinetica REST API Changelog
 
+## Version 7.2.3.18
+#### Added
+-   Added ``transformations`` option to ``/create/table/external``, ``/insert/records/fromfiles`` and ``/insert/records/frompayload``
+-   Added ``restore_all_permissions`` option to ``/restore/backup`` to override default-on behavior that scopes permissions to restored objects only.
+
+## Version 7.2.3.15
+#### Added
+-   Added new option ``telm_force_metrics_duration`` to ``/alter/system/properties`` request
+-   Added ``update_with_user``, ``default`` and ``default_sql`` column properties to ``/create/type``
+-   Added ``set_default`` and ``delete_default`` to ``action`` in ``/alter/table``
+-   Added ``add_column_expression_sql`` to ``options`` in ``/alter/table``
+-   Added ``request_schema_str`` and ``transformations`` options to ``/insert/records``
+
 ## Version 7.2.3.14
 #### Added
 -   Added ``/verify/backup`` endpoint

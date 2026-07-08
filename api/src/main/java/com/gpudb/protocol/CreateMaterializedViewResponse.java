@@ -46,7 +46,7 @@ public class CreateMaterializedViewResponse implements IndexedRecord {
     public static final class Info {
         /**
          * The fully qualified name of the result table (i.e.&nbsp;including
-         * the schema)
+         * the schema).
          */
         public static final String QUALIFIED_TABLE_NAME = "qualified_table_name";
 
@@ -115,7 +115,7 @@ public class CreateMaterializedViewResponse implements IndexedRecord {
      * <ul>
      *     <li>{@link Info#QUALIFIED_TABLE_NAME QUALIFIED_TABLE_NAME}: The
      *         fully qualified name of the result table (i.e. including the
-     *         schema)
+     *         schema).
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -130,7 +130,7 @@ public class CreateMaterializedViewResponse implements IndexedRecord {
      * <ul>
      *     <li>{@link Info#QUALIFIED_TABLE_NAME QUALIFIED_TABLE_NAME}: The
      *         fully qualified name of the result table (i.e. including the
-     *         schema)
+     *         schema).
      * </ul>
      * The default value is an empty {@link Map}.
      *

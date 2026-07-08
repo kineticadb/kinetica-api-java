@@ -118,6 +118,12 @@ public class CreateBackupRequest implements IndexedRecord {
         public static final String DATASOURCE = "datasource";
 
         /**
+         * KiFS <a href="../../../../../../tools/kifs/" target="_top">File
+         * directory(ies)</a>.
+         */
+        public static final String DIRECTORY = "directory";
+
+        /**
          * <a href="../../../../../../udf/python/writing/#udf-python-func-env"
          * target="_top">Python UDF function environment(s)</a>.
          */
@@ -125,7 +131,8 @@ public class CreateBackupRequest implements IndexedRecord {
 
         /**
          * <a href="../../../../../../graph_solver/network_graph_solver/"
-         * target="_top">Graph(s)</a> definition.
+         * target="_top">Graph</a> definition(s). Source table(s), if
+         * applicable, are required in order to restore graph objects.
          */
         public static final String GRAPH = "graph";
 
@@ -330,6 +337,10 @@ public class CreateBackupRequest implements IndexedRecord {
      *                                  DATASOURCE}: <a
      *                                  href="../../../../../../concepts/data_sources/"
      *                                  target="_top">Data source(s)</a>.
+     *                              <li>{@link BackupObjectsMap#DIRECTORY
+     *                                  DIRECTORY}: KiFS <a
+     *                                  href="../../../../../../tools/kifs/"
+     *                                  target="_top">File directory(ies)</a>.
      *                              <li>{@link
      *                                  BackupObjectsMap#FUNCTION_ENVIRONMENT
      *                                  FUNCTION_ENVIRONMENT}: <a
@@ -339,7 +350,10 @@ public class CreateBackupRequest implements IndexedRecord {
      *                              <li>{@link BackupObjectsMap#GRAPH GRAPH}:
      *                                  <a
      *                                  href="../../../../../../graph_solver/network_graph_solver/"
-     *                                  target="_top">Graph(s)</a> definition.
+     *                                  target="_top">Graph</a> definition(s).
+     *                                  Source table(s), if applicable, are
+     *                                  required in order to restore graph
+     *                                  objects.
      *                              <li>{@link BackupObjectsMap#MONITOR
      *                                  MONITOR}: <a
      *                                  href="../../../../../../concepts/table_monitors/"
@@ -544,13 +558,17 @@ public class CreateBackupRequest implements IndexedRecord {
      *     <li>{@link BackupObjectsMap#DATASOURCE DATASOURCE}: <a
      *         href="../../../../../../concepts/data_sources/"
      *         target="_top">Data source(s)</a>.
+     *     <li>{@link BackupObjectsMap#DIRECTORY DIRECTORY}: KiFS <a
+     *         href="../../../../../../tools/kifs/" target="_top">File
+     *         directory(ies)</a>.
      *     <li>{@link BackupObjectsMap#FUNCTION_ENVIRONMENT
      *         FUNCTION_ENVIRONMENT}: <a
      *         href="../../../../../../udf/python/writing/#udf-python-func-env"
      *         target="_top">Python UDF function environment(s)</a>.
      *     <li>{@link BackupObjectsMap#GRAPH GRAPH}: <a
      *         href="../../../../../../graph_solver/network_graph_solver/"
-     *         target="_top">Graph(s)</a> definition.
+     *         target="_top">Graph</a> definition(s).  Source table(s), if
+     *         applicable, are required in order to restore graph objects.
      *     <li>{@link BackupObjectsMap#MONITOR MONITOR}: <a
      *         href="../../../../../../concepts/table_monitors/"
      *         target="_top">Table monitor(s)</a> / <a
@@ -611,13 +629,17 @@ public class CreateBackupRequest implements IndexedRecord {
      *     <li>{@link BackupObjectsMap#DATASOURCE DATASOURCE}: <a
      *         href="../../../../../../concepts/data_sources/"
      *         target="_top">Data source(s)</a>.
+     *     <li>{@link BackupObjectsMap#DIRECTORY DIRECTORY}: KiFS <a
+     *         href="../../../../../../tools/kifs/" target="_top">File
+     *         directory(ies)</a>.
      *     <li>{@link BackupObjectsMap#FUNCTION_ENVIRONMENT
      *         FUNCTION_ENVIRONMENT}: <a
      *         href="../../../../../../udf/python/writing/#udf-python-func-env"
      *         target="_top">Python UDF function environment(s)</a>.
      *     <li>{@link BackupObjectsMap#GRAPH GRAPH}: <a
      *         href="../../../../../../graph_solver/network_graph_solver/"
-     *         target="_top">Graph(s)</a> definition.
+     *         target="_top">Graph</a> definition(s).  Source table(s), if
+     *         applicable, are required in order to restore graph objects.
      *     <li>{@link BackupObjectsMap#MONITOR MONITOR}: <a
      *         href="../../../../../../concepts/table_monitors/"
      *         target="_top">Table monitor(s)</a> / <a

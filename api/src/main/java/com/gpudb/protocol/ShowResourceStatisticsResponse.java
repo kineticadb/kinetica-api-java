@@ -47,7 +47,7 @@ public class ShowResourceStatisticsResponse implements IndexedRecord {
     }
 
     /**
-     * Map of resource statistics
+     * Map of resource statistics.
      *
      * @return The current value of {@code statisticsMap}.
      */
@@ -56,7 +56,7 @@ public class ShowResourceStatisticsResponse implements IndexedRecord {
     }
 
     /**
-     * Map of resource statistics
+     * Map of resource statistics.
      *
      * @param statisticsMap  The new value for {@code statisticsMap}.
      *

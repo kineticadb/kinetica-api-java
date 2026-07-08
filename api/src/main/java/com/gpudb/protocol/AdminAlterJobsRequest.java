@@ -65,7 +65,7 @@ public class AdminAlterJobsRequest implements IndexedRecord {
      */
     public static final class Options {
         /**
-         * Job tag returned in call to create the job
+         * Job tag returned in call to create the job.
          */
         public static final String JOB_TAG = "job_tag";
 
@@ -98,7 +98,7 @@ public class AdminAlterJobsRequest implements IndexedRecord {
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link Options#JOB_TAG JOB_TAG}: Job tag
-     *                         returned in call to create the job
+     *                         returned in call to create the job.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -162,7 +162,7 @@ public class AdminAlterJobsRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *     <li>{@link Options#JOB_TAG JOB_TAG}: Job tag returned in call to
-     *         create the job
+     *         create the job.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -176,7 +176,7 @@ public class AdminAlterJobsRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *     <li>{@link Options#JOB_TAG JOB_TAG}: Job tag returned in call to
-     *         create the job
+     *         create the job.
      * </ul>
      * The default value is an empty {@link Map}.
      *

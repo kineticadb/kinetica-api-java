@@ -45,7 +45,7 @@ public class FilterByRadiusGeometryResponse implements IndexedRecord {
     public static final class Info {
         /**
          * The fully qualified name of the view (i.e.&nbsp;including the
-         * schema)
+         * schema).
          */
         public static final String QUALIFIED_VIEW_NAME = "qualified_view_name";
 
@@ -87,7 +87,7 @@ public class FilterByRadiusGeometryResponse implements IndexedRecord {
      * Additional information.
      * <ul>
      *     <li>{@link Info#QUALIFIED_VIEW_NAME QUALIFIED_VIEW_NAME}: The fully
-     *         qualified name of the view (i.e. including the schema)
+     *         qualified name of the view (i.e. including the schema).
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -101,7 +101,7 @@ public class FilterByRadiusGeometryResponse implements IndexedRecord {
      * Additional information.
      * <ul>
      *     <li>{@link Info#QUALIFIED_VIEW_NAME QUALIFIED_VIEW_NAME}: The fully
-     *         qualified name of the view (i.e. including the schema)
+     *         qualified name of the view (i.e. including the schema).
      * </ul>
      * The default value is an empty {@link Map}.
      *

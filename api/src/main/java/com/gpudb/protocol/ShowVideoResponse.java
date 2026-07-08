@@ -194,7 +194,7 @@ public class ShowVideoResponse implements IndexedRecord {
     }
 
     /**
-     * Percent completion of each video's rendering process (0-100)
+     * Percent completion of each video's rendering process (0-100).
      *
      * @return The current value of {@code renderedPercents}.
      */
@@ -203,7 +203,7 @@ public class ShowVideoResponse implements IndexedRecord {
     }
 
     /**
-     * Percent completion of each video's rendering process (0-100)
+     * Percent completion of each video's rendering process (0-100).
      *
      * @param renderedPercents  The new value for {@code renderedPercents}.
      *

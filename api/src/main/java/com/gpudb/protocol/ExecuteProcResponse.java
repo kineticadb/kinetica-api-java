@@ -35,6 +35,21 @@ public class ExecuteProcResponse implements IndexedRecord {
         return schema$;
     }
 
+    /**
+     * A set of string constants for the {@link ExecuteProcResponse} parameter
+     * {@link #getInfo() info}.
+     * <p>
+     * Additional information.
+     */
+    public static final class Info {
+        /**
+         * &lt;DEVELOPER&gt;
+         */
+        public static final String DEFERRED_TABLES = "deferred_tables";
+
+        private Info() {  }
+    }
+
     private String runId;
     private Map<String, String> info;
 
@@ -75,6 +90,10 @@ public class ExecuteProcResponse implements IndexedRecord {
 
     /**
      * Additional information.
+     * <ul>
+     *     <li>{@link Info#DEFERRED_TABLES DEFERRED_TABLES}: &lt;DEVELOPER&gt;
+     * </ul>
+     * The default value is an empty {@link Map}.
      *
      * @return The current value of {@code info}.
      */
@@ -84,6 +103,10 @@ public class ExecuteProcResponse implements IndexedRecord {
 
     /**
      * Additional information.
+     * <ul>
+     *     <li>{@link Info#DEFERRED_TABLES DEFERRED_TABLES}: &lt;DEVELOPER&gt;
+     * </ul>
+     * The default value is an empty {@link Map}.
      *
      * @param info  The new value for {@code info}.
      *

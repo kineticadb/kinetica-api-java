@@ -59,14 +59,14 @@ public class GetJobResponse implements IndexedRecord {
         /**
          * The job execution has successfully completed and the response is
          * included in the {@link #getJobResponse() jobResponse} or {@link
-         * #getJobResponseStr() jobResponseStr} field
+         * #getJobResponseStr() jobResponseStr} field.
          */
         public static final String DONE = "DONE";
 
         /**
          * The job was attempted, but an error was encountered.  The {@link
          * #getStatusMap() statusMap} contains the details of the error in
-         * error_message
+         * error_message.
          */
         public static final String ERROR = "ERROR";
 
@@ -93,7 +93,7 @@ public class GetJobResponse implements IndexedRecord {
         public static final String BINARY = "binary";
 
         /**
-         * The job result is json-encoded.  It is contained in {@link
+         * The job result is JSON-encoded.  It is contained in {@link
          * #getJobResponseStr() jobResponseStr}.
          */
         public static final String JSON = "json";
@@ -167,10 +167,10 @@ public class GetJobResponse implements IndexedRecord {
      *     <li>{@link JobStatus#DONE DONE}: The job execution has successfully
      *         completed and the response is included in the {@link
      *         #getJobResponse() jobResponse} or {@link #getJobResponseStr()
-     *         jobResponseStr} field
+     *         jobResponseStr} field.
      *     <li>{@link JobStatus#ERROR ERROR}: The job was attempted, but an
      *         error was encountered.  The {@link #getStatusMap() statusMap}
-     *         contains the details of the error in error_message
+     *         contains the details of the error in error_message.
      *     <li>{@link JobStatus#CANCELLED CANCELLED}: Job cancellation was
      *         requested while the execution was in progress.
      * </ul>
@@ -190,10 +190,10 @@ public class GetJobResponse implements IndexedRecord {
      *     <li>{@link JobStatus#DONE DONE}: The job execution has successfully
      *         completed and the response is included in the {@link
      *         #getJobResponse() jobResponse} or {@link #getJobResponseStr()
-     *         jobResponseStr} field
+     *         jobResponseStr} field.
      *     <li>{@link JobStatus#ERROR ERROR}: The job was attempted, but an
      *         error was encountered.  The {@link #getStatusMap() statusMap}
-     *         contains the details of the error in error_message
+     *         contains the details of the error in error_message.
      *     <li>{@link JobStatus#CANCELLED CANCELLED}: Job cancellation was
      *         requested while the execution was in progress.
      * </ul>
@@ -279,7 +279,7 @@ public class GetJobResponse implements IndexedRecord {
      *         binary-encoded.  It is contained in {@link #getJobResponse()
      *         jobResponse}.
      *     <li>{@link ResponseEncoding#JSON JSON}: The job result is
-     *         json-encoded.  It is contained in {@link #getJobResponseStr()
+     *         JSON-encoded.  It is contained in {@link #getJobResponseStr()
      *         jobResponseStr}.
      * </ul>
      *
@@ -298,7 +298,7 @@ public class GetJobResponse implements IndexedRecord {
      *         binary-encoded.  It is contained in {@link #getJobResponse()
      *         jobResponse}.
      *     <li>{@link ResponseEncoding#JSON JSON}: The job result is
-     *         json-encoded.  It is contained in {@link #getJobResponseStr()
+     *         JSON-encoded.  It is contained in {@link #getJobResponseStr()
      *         jobResponseStr}.
      * </ul>
      *
@@ -314,7 +314,7 @@ public class GetJobResponse implements IndexedRecord {
     /**
      * The binary-encoded response of the job.  This field is populated only
      * when the job has completed and {@link #getResponseEncoding()
-     * responseEncoding} is {@link ResponseEncoding#BINARY BINARY}
+     * responseEncoding} is {@link ResponseEncoding#BINARY BINARY}.
      *
      * @return The current value of {@code jobResponse}.
      */
@@ -325,7 +325,7 @@ public class GetJobResponse implements IndexedRecord {
     /**
      * The binary-encoded response of the job.  This field is populated only
      * when the job has completed and {@link #getResponseEncoding()
-     * responseEncoding} is {@link ResponseEncoding#BINARY BINARY}
+     * responseEncoding} is {@link ResponseEncoding#BINARY BINARY}.
      *
      * @param jobResponse  The new value for {@code jobResponse}.
      *
@@ -339,7 +339,7 @@ public class GetJobResponse implements IndexedRecord {
     /**
      * The json-encoded response of the job.  This field is populated only when
      * the job has completed and {@link #getResponseEncoding()
-     * responseEncoding} is {@link ResponseEncoding#JSON JSON}
+     * responseEncoding} is {@link ResponseEncoding#JSON JSON}.
      *
      * @return The current value of {@code jobResponseStr}.
      */
@@ -350,7 +350,7 @@ public class GetJobResponse implements IndexedRecord {
     /**
      * The json-encoded response of the job.  This field is populated only when
      * the job has completed and {@link #getResponseEncoding()
-     * responseEncoding} is {@link ResponseEncoding#JSON JSON}
+     * responseEncoding} is {@link ResponseEncoding#JSON JSON}.
      *
      * @param jobResponseStr  The new value for {@code jobResponseStr}.
      *

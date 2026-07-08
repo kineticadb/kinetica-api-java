@@ -1,6 +1,7 @@
 package com.gpudb;
 
 import com.gpudb.GPUdbBase.GPUdbExitException;
+import com.gpudb.GPUdbBase.GPUdbVersion;
 import com.gpudb.protocol.*;
 import com.gpudb.util.json.JsonUtils;
 import org.apache.commons.lang3.mutable.MutableLong;
@@ -74,6 +75,9 @@ public class BulkInserter<T> implements AutoCloseable {
     private int numClusterSwitches;
     private URL currentHeadNodeURL;
     private final Object haFailoverLock;
+
+    // Version that supports column defaults
+    private static final GPUdbVersion DEFAULTS_VERSION = new GPUdbVersion(7, 2, 3, 18);
 
 
     /**
@@ -793,11 +797,9 @@ public class BulkInserter<T> implements AutoCloseable {
         // By default, we will retry insertions once
         this.maxRetries = DEFAULT_INSERTION_RETRY_COUNT;
 
-        if (options != null) {
-            this.options = Collections.unmodifiableMap(new HashMap<>(options));
-        } else {
-            this.options = null;
-        }
+        this.options = (options == null) ? new HashMap<>() : new HashMap<>(options); // Make a (mutable) copy
+        if ((type != null) && !DEFAULTS_VERSION.isNewerThan(gpudb.getServerVersion()))
+            this.options.put("request_schema_str", type.getBaseDefinition());
 
         this.flushOptions = ( flushOptions == null ) ? FlushOptions.defaultOptions() : flushOptions;
 

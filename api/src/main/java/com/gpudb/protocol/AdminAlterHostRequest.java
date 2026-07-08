@@ -43,7 +43,7 @@ public class AdminAlterHostRequest implements IndexedRecord {
      * A set of string constants for the {@link AdminAlterHostRequest}
      * parameter {@link #getOptions() options}.
      * <p>
-     * Optional parameters
+     * Optional parameters.
      */
     public static final class Options {
         /**
@@ -82,7 +82,7 @@ public class AdminAlterHostRequest implements IndexedRecord {
      *
      * @param host  Identifies the host this applies to. Can be the host
      *              address, or formatted as 'hostN' where N is the host number
-     *              as specified in gpudb.conf
+     *              as specified in gpudb.conf.
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link Options#ACCEPTS_FAILOVER
@@ -108,7 +108,7 @@ public class AdminAlterHostRequest implements IndexedRecord {
     /**
      * Identifies the host this applies to. Can be the host address, or
      * formatted as 'hostN' where N is the host number as specified in
-     * gpudb.conf
+     * gpudb.conf.
      *
      * @return The current value of {@code host}.
      */
@@ -119,7 +119,7 @@ public class AdminAlterHostRequest implements IndexedRecord {
     /**
      * Identifies the host this applies to. Can be the host address, or
      * formatted as 'hostN' where N is the host number as specified in
-     * gpudb.conf
+     * gpudb.conf.
      *
      * @param host  The new value for {@code host}.
      *

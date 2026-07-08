@@ -366,10 +366,32 @@ public class CreateTypeRequest implements IndexedRecord {
         public static final String INIT_WITH_UUID = "init_with_uuid";
 
         /**
-         * For 'date', 'time', 'datetime', or 'timestamp' column types, always
-         * update the field with 'NOW()' upon any update.
+         * For 'date', 'time', 'datetime', or 'timestamp' column types, update
+         * the field with 'NOW()' upon any update.
          */
         public static final String UPDATE_WITH_NOW = "update_with_now";
+
+        /**
+         * For 'charN' or 'string' column types, update the field with the
+         * current user's name upon any update.
+         */
+        public static final String UPDATE_WITH_USER = "update_with_user";
+
+        /**
+         * Sets a default value expression for this column,
+         * e.g.&nbsp;'default(0)', 'default(''pending'')', or 'default(NOW())'.
+         * When the column is omitted from an insert via request_schema_str,
+         * the expression is evaluated and the result is used as the column
+         * value.
+         */
+        public static final String DEFAULT = "default";
+
+        /**
+         * Sets a default value expression for this column with SQL syntax,
+         * e.g.&nbsp;'default(0)', 'default(''pending'')', or 'default(NOW())'.
+         * Only used for showing the expression when generating SQL DDL.
+         */
+        public static final String DEFAULT_SQL = "default_sql";
 
         private Properties() {  }
     }
@@ -408,8 +430,8 @@ public class CreateTypeRequest implements IndexedRecord {
     /**
      * Constructs a CreateTypeRequest object with the specified parameters.
      *
-     * @param typeDefinition  a JSON string describing the columns of the type
-     *                        to be registered, as described above.
+     * @param typeDefinition  JSON string defining the columns of the type to
+     *                        be registered, as described above.
      * @param label  A user-defined description string which can be used to
      *               differentiate between tables and types with otherwise
      *               identical schemas.
@@ -637,8 +659,25 @@ public class CreateTypeRequest implements IndexedRecord {
      *                        <li>{@link Properties#UPDATE_WITH_NOW
      *                            UPDATE_WITH_NOW}: For 'date', 'time',
      *                            'datetime', or 'timestamp' column types,
-     *                            always update the field with 'NOW()' upon any
+     *                            update the field with 'NOW()' upon any
      *                            update.
+     *                        <li>{@link Properties#UPDATE_WITH_USER
+     *                            UPDATE_WITH_USER}: For 'charN' or 'string'
+     *                            column types, update the field with the
+     *                            current user's name upon any update.
+     *                        <li>{@link Properties#DEFAULT DEFAULT}: Sets a
+     *                            default value expression for this column,
+     *                            e.g. 'default(0)', 'default(''pending'')', or
+     *                            'default(NOW())'.  When the column is omitted
+     *                            from an insert via request_schema_str, the
+     *                            expression is evaluated and the result is
+     *                            used as the column value.
+     *                        <li>{@link Properties#DEFAULT_SQL DEFAULT_SQL}:
+     *                            Sets a default value expression for this
+     *                            column with SQL syntax, e.g. 'default(0)',
+     *                            'default(''pending'')', or 'default(NOW())'.
+     *                            Only used for showing the expression when
+     *                            generating SQL DDL.
      *                    </ul>
      *                    The default value is an empty {@link Map}.
      * @param options  Optional parameters.
@@ -659,7 +698,7 @@ public class CreateTypeRequest implements IndexedRecord {
     }
 
     /**
-     * a JSON string describing the columns of the type to be registered, as
+     * JSON string defining the columns of the type to be registered, as
      * described above.
      *
      * @return The current value of {@code typeDefinition}.
@@ -669,7 +708,7 @@ public class CreateTypeRequest implements IndexedRecord {
     }
 
     /**
-     * a JSON string describing the columns of the type to be registered, as
+     * JSON string defining the columns of the type to be registered, as
      * described above.
      *
      * @param typeDefinition  The new value for {@code typeDefinition}.
@@ -865,8 +904,20 @@ public class CreateTypeRequest implements IndexedRecord {
      *         type, replace empty strings and invalid UUID values with
      *         randomly-generated UUIDs upon insert.
      *     <li>{@link Properties#UPDATE_WITH_NOW UPDATE_WITH_NOW}: For 'date',
-     *         'time', 'datetime', or 'timestamp' column types, always update
-     *         the field with 'NOW()' upon any update.
+     *         'time', 'datetime', or 'timestamp' column types, update the
+     *         field with 'NOW()' upon any update.
+     *     <li>{@link Properties#UPDATE_WITH_USER UPDATE_WITH_USER}: For
+     *         'charN' or 'string' column types, update the field with the
+     *         current user's name upon any update.
+     *     <li>{@link Properties#DEFAULT DEFAULT}: Sets a default value
+     *         expression for this column, e.g. 'default(0)',
+     *         'default(''pending'')', or 'default(NOW())'.  When the column is
+     *         omitted from an insert via request_schema_str, the expression is
+     *         evaluated and the result is used as the column value.
+     *     <li>{@link Properties#DEFAULT_SQL DEFAULT_SQL}: Sets a default value
+     *         expression for this column with SQL syntax, e.g. 'default(0)',
+     *         'default(''pending'')', or 'default(NOW())'.  Only used for
+     *         showing the expression when generating SQL DDL.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -1037,8 +1088,20 @@ public class CreateTypeRequest implements IndexedRecord {
      *         type, replace empty strings and invalid UUID values with
      *         randomly-generated UUIDs upon insert.
      *     <li>{@link Properties#UPDATE_WITH_NOW UPDATE_WITH_NOW}: For 'date',
-     *         'time', 'datetime', or 'timestamp' column types, always update
-     *         the field with 'NOW()' upon any update.
+     *         'time', 'datetime', or 'timestamp' column types, update the
+     *         field with 'NOW()' upon any update.
+     *     <li>{@link Properties#UPDATE_WITH_USER UPDATE_WITH_USER}: For
+     *         'charN' or 'string' column types, update the field with the
+     *         current user's name upon any update.
+     *     <li>{@link Properties#DEFAULT DEFAULT}: Sets a default value
+     *         expression for this column, e.g. 'default(0)',
+     *         'default(''pending'')', or 'default(NOW())'.  When the column is
+     *         omitted from an insert via request_schema_str, the expression is
+     *         evaluated and the result is used as the column value.
+     *     <li>{@link Properties#DEFAULT_SQL DEFAULT_SQL}: Sets a default value
+     *         expression for this column with SQL syntax, e.g. 'default(0)',
+     *         'default(''pending'')', or 'default(NOW())'.  Only used for
+     *         showing the expression when generating SQL DDL.
      * </ul>
      * The default value is an empty {@link Map}.
      *

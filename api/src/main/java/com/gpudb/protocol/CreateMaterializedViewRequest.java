@@ -66,7 +66,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
         public static final String COLLECTION_NAME = "collection_name";
 
         /**
-         * User name to use to run the refresh job
+         * User name to use to run the refresh job.
          */
         public static final String EXECUTE_AS = "execute_as";
 
@@ -129,8 +129,23 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
+         * If {@link Options#TRUE TRUE}, each base table the view reads is
+         * accessed through a wrapper view so an in-progress out-of-place
+         * update cannot make a record momentarily disappear from the view, and
+         * a long refresh does not block updates to the base tables.  Overrides
+         * the {gaia.enable_mv_input_wrappers} configuration default when set.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String ENABLE_MV_INPUT_WRAPPERS = "enable_mv_input_wrappers";
+
+        /**
          * Sets the future time-offset(in seconds) at which periodic refresh
-         * stops
+         * stops.
          */
         public static final String REFRESH_SPAN = "refresh_span";
 
@@ -150,7 +165,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
          *     <li>{@link Options#MANUAL MANUAL}: Refresh only occurs when
          *         manually requested by calling {@link
          *         com.gpudb.GPUdb#alterTable(AlterTableRequest)
-         *         GPUdb.alterTable} with an 'action' of 'refresh'
+         *         GPUdb.alterTable} with an 'action' of 'refresh'.
          *     <li>{@link Options#ON_QUERY ON_QUERY}: Refresh any time the view
          *         is queried.
          *     <li>{@link Options#ON_CHANGE ON_CHANGE}: If possible,
@@ -160,7 +175,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
          *         is not possible.
          *     <li>{@link Options#PERIODIC PERIODIC}: Refresh table
          *         periodically at rate specified by {@link
-         *         Options#REFRESH_PERIOD REFRESH_PERIOD}
+         *         Options#REFRESH_PERIOD REFRESH_PERIOD}.
          * </ul>
          * The default value is {@link Options#MANUAL MANUAL}.
          */
@@ -169,7 +184,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
         /**
          * Refresh only occurs when manually requested by calling {@link
          * com.gpudb.GPUdb#alterTable(AlterTableRequest) GPUdb.alterTable} with
-         * an 'action' of 'refresh'
+         * an 'action' of 'refresh'.
          */
         public static final String MANUAL = "manual";
 
@@ -188,14 +203,14 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
 
         /**
          * Refresh table periodically at rate specified by {@link
-         * Options#REFRESH_PERIOD REFRESH_PERIOD}
+         * Options#REFRESH_PERIOD REFRESH_PERIOD}.
          */
         public static final String PERIODIC = "periodic";
 
         /**
          * When {@link Options#REFRESH_METHOD REFRESH_METHOD} is {@link
          * Options#PERIODIC PERIODIC}, specifies the period in seconds at which
-         * refresh occurs
+         * refresh occurs.
          */
         public static final String REFRESH_PERIOD = "refresh_period";
 
@@ -253,7 +268,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                         provided is non-existent, it will be
      *                         automatically created.
      *                     <li>{@link Options#EXECUTE_AS EXECUTE_AS}: User name
-     *                         to use to run the refresh job
+     *                         to use to run the refresh job.
      *                     <li>{@link Options#BUILD_MATERIALIZED_VIEW_POLICY
      *                         BUILD_MATERIALIZED_VIEW_POLICY}: Sets startup
      *                         materialized view rebuild scheme.
@@ -289,9 +304,26 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#ENABLE_MV_INPUT_WRAPPERS
+     *                         ENABLE_MV_INPUT_WRAPPERS}: If {@link
+     *                         Options#TRUE TRUE}, each base table the view
+     *                         reads is accessed through a wrapper view so an
+     *                         in-progress out-of-place update cannot make a
+     *                         record momentarily disappear from the view, and
+     *                         a long refresh does not block updates to the
+     *                         base tables.  Overrides the
+     *                         {gaia.enable_mv_input_wrappers} configuration
+     *                         default when set.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                     <li>{@link Options#REFRESH_SPAN REFRESH_SPAN}: Sets
      *                         the future time-offset(in seconds) at which
-     *                         periodic refresh stops
+     *                         periodic refresh stops.
      *                     <li>{@link Options#REFRESH_STOP_TIME
      *                         REFRESH_STOP_TIME}: When {@link
      *                         Options#REFRESH_METHOD REFRESH_METHOD} is {@link
@@ -310,7 +342,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                                 calling {@link
      *                                 com.gpudb.GPUdb#alterTable(AlterTableRequest)
      *                                 GPUdb.alterTable} with an 'action' of
-     *                                 'refresh'
+     *                                 'refresh'.
      *                             <li>{@link Options#ON_QUERY ON_QUERY}:
      *                                 Refresh any time the view is queried.
      *                             <li>{@link Options#ON_CHANGE ON_CHANGE}: If
@@ -323,7 +355,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                             <li>{@link Options#PERIODIC PERIODIC}:
      *                                 Refresh table periodically at rate
      *                                 specified by {@link
-     *                                 Options#REFRESH_PERIOD REFRESH_PERIOD}
+     *                                 Options#REFRESH_PERIOD REFRESH_PERIOD}.
      *                         </ul>
      *                         The default value is {@link Options#MANUAL
      *                         MANUAL}.
@@ -331,7 +363,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                         When {@link Options#REFRESH_METHOD
      *                         REFRESH_METHOD} is {@link Options#PERIODIC
      *                         PERIODIC}, specifies the period in seconds at
-     *                         which refresh occurs
+     *                         which refresh occurs.
      *                     <li>{@link Options#REFRESH_START_TIME
      *                         REFRESH_START_TIME}: When {@link
      *                         Options#REFRESH_METHOD REFRESH_METHOD} is {@link
@@ -394,7 +426,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *         schema provided is non-existent, it will be automatically
      *         created.
      *     <li>{@link Options#EXECUTE_AS EXECUTE_AS}: User name to use to run
-     *         the refresh job
+     *         the refresh job.
      *     <li>{@link Options#BUILD_MATERIALIZED_VIEW_POLICY
      *         BUILD_MATERIALIZED_VIEW_POLICY}: Sets startup materialized view
      *         rebuild scheme.
@@ -424,8 +456,21 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#ENABLE_MV_INPUT_WRAPPERS
+     *         ENABLE_MV_INPUT_WRAPPERS}: If {@link Options#TRUE TRUE}, each
+     *         base table the view reads is accessed through a wrapper view so
+     *         an in-progress out-of-place update cannot make a record
+     *         momentarily disappear from the view, and a long refresh does not
+     *         block updates to the base tables.  Overrides the
+     *         {gaia.enable_mv_input_wrappers} configuration default when set.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#REFRESH_SPAN REFRESH_SPAN}: Sets the future
-     *         time-offset(in seconds) at which periodic refresh stops
+     *         time-offset(in seconds) at which periodic refresh stops.
      *     <li>{@link Options#REFRESH_STOP_TIME REFRESH_STOP_TIME}: When {@link
      *         Options#REFRESH_METHOD REFRESH_METHOD} is {@link
      *         Options#PERIODIC PERIODIC}, specifies the time at which a
@@ -439,7 +484,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *             <li>{@link Options#MANUAL MANUAL}: Refresh only occurs when
      *                 manually requested by calling {@link
      *                 com.gpudb.GPUdb#alterTable(AlterTableRequest)
-     *                 GPUdb.alterTable} with an 'action' of 'refresh'
+     *                 GPUdb.alterTable} with an 'action' of 'refresh'.
      *             <li>{@link Options#ON_QUERY ON_QUERY}: Refresh any time the
      *                 view is queried.
      *             <li>{@link Options#ON_CHANGE ON_CHANGE}: If possible,
@@ -449,13 +494,13 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                 refresh is not possible.
      *             <li>{@link Options#PERIODIC PERIODIC}: Refresh table
      *                 periodically at rate specified by {@link
-     *                 Options#REFRESH_PERIOD REFRESH_PERIOD}
+     *                 Options#REFRESH_PERIOD REFRESH_PERIOD}.
      *         </ul>
      *         The default value is {@link Options#MANUAL MANUAL}.
      *     <li>{@link Options#REFRESH_PERIOD REFRESH_PERIOD}: When {@link
      *         Options#REFRESH_METHOD REFRESH_METHOD} is {@link
      *         Options#PERIODIC PERIODIC}, specifies the period in seconds at
-     *         which refresh occurs
+     *         which refresh occurs.
      *     <li>{@link Options#REFRESH_START_TIME REFRESH_START_TIME}: When
      *         {@link Options#REFRESH_METHOD REFRESH_METHOD} is {@link
      *         Options#PERIODIC PERIODIC}, specifies the first time at which a
@@ -485,7 +530,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *         schema provided is non-existent, it will be automatically
      *         created.
      *     <li>{@link Options#EXECUTE_AS EXECUTE_AS}: User name to use to run
-     *         the refresh job
+     *         the refresh job.
      *     <li>{@link Options#BUILD_MATERIALIZED_VIEW_POLICY
      *         BUILD_MATERIALIZED_VIEW_POLICY}: Sets startup materialized view
      *         rebuild scheme.
@@ -515,8 +560,21 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#ENABLE_MV_INPUT_WRAPPERS
+     *         ENABLE_MV_INPUT_WRAPPERS}: If {@link Options#TRUE TRUE}, each
+     *         base table the view reads is accessed through a wrapper view so
+     *         an in-progress out-of-place update cannot make a record
+     *         momentarily disappear from the view, and a long refresh does not
+     *         block updates to the base tables.  Overrides the
+     *         {gaia.enable_mv_input_wrappers} configuration default when set.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#REFRESH_SPAN REFRESH_SPAN}: Sets the future
-     *         time-offset(in seconds) at which periodic refresh stops
+     *         time-offset(in seconds) at which periodic refresh stops.
      *     <li>{@link Options#REFRESH_STOP_TIME REFRESH_STOP_TIME}: When {@link
      *         Options#REFRESH_METHOD REFRESH_METHOD} is {@link
      *         Options#PERIODIC PERIODIC}, specifies the time at which a
@@ -530,7 +588,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *             <li>{@link Options#MANUAL MANUAL}: Refresh only occurs when
      *                 manually requested by calling {@link
      *                 com.gpudb.GPUdb#alterTable(AlterTableRequest)
-     *                 GPUdb.alterTable} with an 'action' of 'refresh'
+     *                 GPUdb.alterTable} with an 'action' of 'refresh'.
      *             <li>{@link Options#ON_QUERY ON_QUERY}: Refresh any time the
      *                 view is queried.
      *             <li>{@link Options#ON_CHANGE ON_CHANGE}: If possible,
@@ -540,13 +598,13 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                 refresh is not possible.
      *             <li>{@link Options#PERIODIC PERIODIC}: Refresh table
      *                 periodically at rate specified by {@link
-     *                 Options#REFRESH_PERIOD REFRESH_PERIOD}
+     *                 Options#REFRESH_PERIOD REFRESH_PERIOD}.
      *         </ul>
      *         The default value is {@link Options#MANUAL MANUAL}.
      *     <li>{@link Options#REFRESH_PERIOD REFRESH_PERIOD}: When {@link
      *         Options#REFRESH_METHOD REFRESH_METHOD} is {@link
      *         Options#PERIODIC PERIODIC}, specifies the period in seconds at
-     *         which refresh occurs
+     *         which refresh occurs.
      *     <li>{@link Options#REFRESH_START_TIME REFRESH_START_TIME}: When
      *         {@link Options#REFRESH_METHOD REFRESH_METHOD} is {@link
      *         Options#PERIODIC PERIODIC}, specifies the first time at which a

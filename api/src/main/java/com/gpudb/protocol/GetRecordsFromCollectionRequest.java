@@ -87,8 +87,7 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * Optional filter expression to apply to the table. The default value
-         * is ''.
+         * Filter expression to apply to the table. The default value is ''.
          */
         public static final String EXPRESSION = "expression";
 
@@ -147,9 +146,9 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
-     *                     <li>{@link Options#EXPRESSION EXPRESSION}: Optional
-     *                         filter expression to apply to the table. The
-     *                         default value is ''.
+     *                     <li>{@link Options#EXPRESSION EXPRESSION}: Filter
+     *                         expression to apply to the table. The default
+     *                         value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -206,9 +205,9 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
-     *                     <li>{@link Options#EXPRESSION EXPRESSION}: Optional
-     *                         filter expression to apply to the table. The
-     *                         default value is ''.
+     *                     <li>{@link Options#EXPRESSION EXPRESSION}: Filter
+     *                         expression to apply to the table. The default
+     *                         value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -359,8 +358,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#EXPRESSION EXPRESSION}: Optional filter
-     *         expression to apply to the table. The default value is ''.
+     *     <li>{@link Options#EXPRESSION EXPRESSION}: Filter expression to
+     *         apply to the table. The default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -381,8 +380,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#EXPRESSION EXPRESSION}: Optional filter
-     *         expression to apply to the table. The default value is ''.
+     *     <li>{@link Options#EXPRESSION EXPRESSION}: Filter expression to
+     *         apply to the table. The default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      *

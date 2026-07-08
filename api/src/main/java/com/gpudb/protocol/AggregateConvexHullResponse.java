@@ -118,6 +118,8 @@ public class AggregateConvexHullResponse implements IndexedRecord {
     }
 
     /**
+     * Indicates whether a valid convex hull could be computed for the input.
+     *
      * @return The current value of {@code isValid}.
      */
     public boolean getIsValid() {
@@ -125,6 +127,8 @@ public class AggregateConvexHullResponse implements IndexedRecord {
     }
 
     /**
+     * Indicates whether a valid convex hull could be computed for the input.
+     *
      * @param isValid  The new value for {@code isValid}.
      *
      * @return {@code this} to mimic the builder pattern.

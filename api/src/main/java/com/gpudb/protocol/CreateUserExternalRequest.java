@@ -50,8 +50,8 @@ public class CreateUserExternalRequest implements IndexedRecord {
          * Is the user allowed to login.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#TRUE TRUE}: User may login
-         *     <li>{@link Options#FALSE FALSE}: User may not login
+         *     <li>{@link Options#TRUE TRUE}: User may login.
+         *     <li>{@link Options#FALSE FALSE}: User may not login.
          * </ul>
          * The default value is {@link Options#TRUE TRUE}.
          */
@@ -73,7 +73,7 @@ public class CreateUserExternalRequest implements IndexedRecord {
         public static final String CREATE_HOME_DIRECTORY = "create_home_directory";
 
         /**
-         * Default schema to associate with this user
+         * Default schema to associate with this user.
          */
         public static final String DEFAULT_SCHEMA = "default_schema";
 
@@ -86,7 +86,7 @@ public class CreateUserExternalRequest implements IndexedRecord {
         public static final String DIRECTORY_DATA_LIMIT = "directory_data_limit";
 
         /**
-         * Name of an existing resource group to associate with this user
+         * Name of an existing resource group to associate with this user.
          */
         public static final String RESOURCE_GROUP = "resource_group";
 
@@ -118,9 +118,9 @@ public class CreateUserExternalRequest implements IndexedRecord {
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: User may
-     *                                 login
+     *                                 login.
      *                             <li>{@link Options#FALSE FALSE}: User may
-     *                                 not login
+     *                                 not login.
      *                         </ul>
      *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#CREATE_HOME_DIRECTORY
@@ -134,7 +134,7 @@ public class CreateUserExternalRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#DEFAULT_SCHEMA DEFAULT_SCHEMA}:
-     *                         Default schema to associate with this user
+     *                         Default schema to associate with this user.
      *                     <li>{@link Options#DIRECTORY_DATA_LIMIT
      *                         DIRECTORY_DATA_LIMIT}: The maximum capacity to
      *                         apply to the created directory if {@link
@@ -144,7 +144,7 @@ public class CreateUserExternalRequest implements IndexedRecord {
      *                         empty, the system default limit is applied.
      *                     <li>{@link Options#RESOURCE_GROUP RESOURCE_GROUP}:
      *                         Name of an existing resource group to associate
-     *                         with this user
+     *                         with this user.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -185,8 +185,8 @@ public class CreateUserExternalRequest implements IndexedRecord {
      *         login.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#TRUE TRUE}: User may login
-     *             <li>{@link Options#FALSE FALSE}: User may not login
+     *             <li>{@link Options#TRUE TRUE}: User may login.
+     *             <li>{@link Options#FALSE FALSE}: User may not login.
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#CREATE_HOME_DIRECTORY CREATE_HOME_DIRECTORY}:
@@ -199,14 +199,14 @@ public class CreateUserExternalRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#DEFAULT_SCHEMA DEFAULT_SCHEMA}: Default schema to
-     *         associate with this user
+     *         associate with this user.
      *     <li>{@link Options#DIRECTORY_DATA_LIMIT DIRECTORY_DATA_LIMIT}: The
      *         maximum capacity to apply to the created directory if {@link
      *         Options#CREATE_HOME_DIRECTORY CREATE_HOME_DIRECTORY} is {@link
      *         Options#TRUE TRUE}. Set to -1 to indicate no upper limit. If
      *         empty, the system default limit is applied.
      *     <li>{@link Options#RESOURCE_GROUP RESOURCE_GROUP}: Name of an
-     *         existing resource group to associate with this user
+     *         existing resource group to associate with this user.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -223,8 +223,8 @@ public class CreateUserExternalRequest implements IndexedRecord {
      *         login.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#TRUE TRUE}: User may login
-     *             <li>{@link Options#FALSE FALSE}: User may not login
+     *             <li>{@link Options#TRUE TRUE}: User may login.
+     *             <li>{@link Options#FALSE FALSE}: User may not login.
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#CREATE_HOME_DIRECTORY CREATE_HOME_DIRECTORY}:
@@ -237,14 +237,14 @@ public class CreateUserExternalRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#DEFAULT_SCHEMA DEFAULT_SCHEMA}: Default schema to
-     *         associate with this user
+     *         associate with this user.
      *     <li>{@link Options#DIRECTORY_DATA_LIMIT DIRECTORY_DATA_LIMIT}: The
      *         maximum capacity to apply to the created directory if {@link
      *         Options#CREATE_HOME_DIRECTORY CREATE_HOME_DIRECTORY} is {@link
      *         Options#TRUE TRUE}. Set to -1 to indicate no upper limit. If
      *         empty, the system default limit is applied.
      *     <li>{@link Options#RESOURCE_GROUP RESOURCE_GROUP}: Name of an
-     *         existing resource group to associate with this user
+     *         existing resource group to associate with this user.
      * </ul>
      * The default value is an empty {@link Map}.
      *

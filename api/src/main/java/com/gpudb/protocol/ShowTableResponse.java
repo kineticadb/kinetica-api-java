@@ -158,19 +158,19 @@ public class ShowTableResponse implements IndexedRecord {
          * The primary key type of the table (if it has a primary key).
          * Supported values:
          * <ul>
-         *     <li>{@link AdditionalInfo#MEMORY MEMORY}: In-memory primary key
-         *     <li>{@link AdditionalInfo#DISK DISK}: On-disk primary key
+         *     <li>{@link AdditionalInfo#MEMORY MEMORY}: In-memory primary key.
+         *     <li>{@link AdditionalInfo#DISK DISK}: On-disk primary key.
          * </ul>
          */
         public static final String PRIMARY_KEY_TYPE = "primary_key_type";
 
         /**
-         * In-memory primary key
+         * In-memory primary key.
          */
         public static final String MEMORY = "memory";
 
         /**
-         * On-disk primary key
+         * On-disk primary key.
          */
         public static final String DISK = "disk";
 
@@ -198,20 +198,20 @@ public class ShowTableResponse implements IndexedRecord {
          * <ul>
          *     <li>{@link AdditionalInfo#RANGE RANGE}: Using <a
          *         href="../../../../../../concepts/tables/#partitioning-by-range"
-         *         target="_top">range partitioning</a>
+         *         target="_top">range partitioning</a>.
          *     <li>{@link AdditionalInfo#INTERVAL INTERVAL}: Using <a
          *         href="../../../../../../concepts/tables/#partitioning-by-interval"
-         *         target="_top">interval partitioning</a>
+         *         target="_top">interval partitioning</a>.
          *     <li>{@link AdditionalInfo#LIST LIST}: Using <a
          *         href="../../../../../../concepts/tables/#partitioning-by-list-manual"
-         *         target="_top">manual list partitioning</a>
+         *         target="_top">manual list partitioning</a>.
          *     <li>{@link AdditionalInfo#HASH HASH}: Using <a
          *         href="../../../../../../concepts/tables/#partitioning-by-hash"
          *         target="_top">hash partitioning</a>.
          *     <li>{@link AdditionalInfo#SERIES SERIES}: Using <a
          *         href="../../../../../../concepts/tables/#partitioning-by-series"
          *         target="_top">series partitioning</a>.
-         *     <li>{@link AdditionalInfo#NONE NONE}: Using no partitioning
+         *     <li>{@link AdditionalInfo#NONE NONE}: Using no partitioning.
          * </ul>
          * The default value is {@link AdditionalInfo#NONE NONE}.
          */
@@ -220,21 +220,21 @@ public class ShowTableResponse implements IndexedRecord {
         /**
          * Using <a
          * href="../../../../../../concepts/tables/#partitioning-by-range"
-         * target="_top">range partitioning</a>
+         * target="_top">range partitioning</a>.
          */
         public static final String RANGE = "RANGE";
 
         /**
          * Using <a
          * href="../../../../../../concepts/tables/#partitioning-by-interval"
-         * target="_top">interval partitioning</a>
+         * target="_top">interval partitioning</a>.
          */
         public static final String INTERVAL = "INTERVAL";
 
         /**
          * Using <a
          * href="../../../../../../concepts/tables/#partitioning-by-list-manual"
-         * target="_top">manual list partitioning</a>
+         * target="_top">manual list partitioning</a>.
          */
         public static final String LIST = "LIST";
 
@@ -253,7 +253,7 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String SERIES = "SERIES";
 
         /**
-         * Using no partitioning
+         * Using no partitioning.
          */
         public static final String NONE = "NONE";
 
@@ -800,8 +800,8 @@ public class ShowTableResponse implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link AdditionalInfo#MEMORY MEMORY}: In-memory primary
-     *                 key
-     *             <li>{@link AdditionalInfo#DISK DISK}: On-disk primary key
+     *                 key.
+     *             <li>{@link AdditionalInfo#DISK DISK}: On-disk primary key.
      *         </ul>
      *     <li>{@link AdditionalInfo#FOREIGN_KEYS FOREIGN_KEYS}:
      *         Semicolon-separated list of <a
@@ -821,20 +821,20 @@ public class ShowTableResponse implements IndexedRecord {
      *         <ul>
      *             <li>{@link AdditionalInfo#RANGE RANGE}: Using <a
      *                 href="../../../../../../concepts/tables/#partitioning-by-range"
-     *                 target="_top">range partitioning</a>
+     *                 target="_top">range partitioning</a>.
      *             <li>{@link AdditionalInfo#INTERVAL INTERVAL}: Using <a
      *                 href="../../../../../../concepts/tables/#partitioning-by-interval"
-     *                 target="_top">interval partitioning</a>
+     *                 target="_top">interval partitioning</a>.
      *             <li>{@link AdditionalInfo#LIST LIST}: Using <a
      *                 href="../../../../../../concepts/tables/#partitioning-by-list-manual"
-     *                 target="_top">manual list partitioning</a>
+     *                 target="_top">manual list partitioning</a>.
      *             <li>{@link AdditionalInfo#HASH HASH}: Using <a
      *                 href="../../../../../../concepts/tables/#partitioning-by-hash"
      *                 target="_top">hash partitioning</a>.
      *             <li>{@link AdditionalInfo#SERIES SERIES}: Using <a
      *                 href="../../../../../../concepts/tables/#partitioning-by-series"
      *                 target="_top">series partitioning</a>.
-     *             <li>{@link AdditionalInfo#NONE NONE}: Using no partitioning
+     *             <li>{@link AdditionalInfo#NONE NONE}: Using no partitioning.
      *         </ul>
      *         The default value is {@link AdditionalInfo#NONE NONE}.
      *     <li>{@link AdditionalInfo#PARTITION_KEYS PARTITION_KEYS}:
@@ -1018,8 +1018,8 @@ public class ShowTableResponse implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link AdditionalInfo#MEMORY MEMORY}: In-memory primary
-     *                 key
-     *             <li>{@link AdditionalInfo#DISK DISK}: On-disk primary key
+     *                 key.
+     *             <li>{@link AdditionalInfo#DISK DISK}: On-disk primary key.
      *         </ul>
      *     <li>{@link AdditionalInfo#FOREIGN_KEYS FOREIGN_KEYS}:
      *         Semicolon-separated list of <a
@@ -1039,20 +1039,20 @@ public class ShowTableResponse implements IndexedRecord {
      *         <ul>
      *             <li>{@link AdditionalInfo#RANGE RANGE}: Using <a
      *                 href="../../../../../../concepts/tables/#partitioning-by-range"
-     *                 target="_top">range partitioning</a>
+     *                 target="_top">range partitioning</a>.
      *             <li>{@link AdditionalInfo#INTERVAL INTERVAL}: Using <a
      *                 href="../../../../../../concepts/tables/#partitioning-by-interval"
-     *                 target="_top">interval partitioning</a>
+     *                 target="_top">interval partitioning</a>.
      *             <li>{@link AdditionalInfo#LIST LIST}: Using <a
      *                 href="../../../../../../concepts/tables/#partitioning-by-list-manual"
-     *                 target="_top">manual list partitioning</a>
+     *                 target="_top">manual list partitioning</a>.
      *             <li>{@link AdditionalInfo#HASH HASH}: Using <a
      *                 href="../../../../../../concepts/tables/#partitioning-by-hash"
      *                 target="_top">hash partitioning</a>.
      *             <li>{@link AdditionalInfo#SERIES SERIES}: Using <a
      *                 href="../../../../../../concepts/tables/#partitioning-by-series"
      *                 target="_top">series partitioning</a>.
-     *             <li>{@link AdditionalInfo#NONE NONE}: Using no partitioning
+     *             <li>{@link AdditionalInfo#NONE NONE}: Using no partitioning.
      *         </ul>
      *         The default value is {@link AdditionalInfo#NONE NONE}.
      *     <li>{@link AdditionalInfo#PARTITION_KEYS PARTITION_KEYS}:

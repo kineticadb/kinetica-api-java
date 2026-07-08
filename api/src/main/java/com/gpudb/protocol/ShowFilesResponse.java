@@ -48,7 +48,7 @@ public class ShowFilesResponse implements IndexedRecord {
      */
     public static final class Info {
         /**
-         * JSON-encoded information about multipart uploads in progress
+         * JSON-encoded information about multipart uploads in progress.
          */
         public static final String MULTIPART_UPLOADS = "multipart_uploads";
 
@@ -68,7 +68,7 @@ public class ShowFilesResponse implements IndexedRecord {
     }
 
     /**
-     * A listing of files in the paths specified
+     * A listing of files in the paths specified.
      *
      * @return The current value of {@code fileNames}.
      */
@@ -77,7 +77,7 @@ public class ShowFilesResponse implements IndexedRecord {
     }
 
     /**
-     * A listing of files in the paths specified
+     * A listing of files in the paths specified.
      *
      * @param fileNames  The new value for {@code fileNames}.
      *
@@ -89,7 +89,7 @@ public class ShowFilesResponse implements IndexedRecord {
     }
 
     /**
-     * Size of each file, in bytes
+     * Size of each file, in bytes.
      *
      * @return The current value of {@code sizes}.
      */
@@ -98,7 +98,7 @@ public class ShowFilesResponse implements IndexedRecord {
     }
 
     /**
-     * Size of each file, in bytes
+     * Size of each file, in bytes.
      *
      * @param sizes  The new value for {@code sizes}.
      *
@@ -110,7 +110,7 @@ public class ShowFilesResponse implements IndexedRecord {
     }
 
     /**
-     * User that created the file
+     * User that created the file.
      *
      * @return The current value of {@code users}.
      */
@@ -119,7 +119,7 @@ public class ShowFilesResponse implements IndexedRecord {
     }
 
     /**
-     * User that created the file
+     * User that created the file.
      *
      * @param users  The new value for {@code users}.
      *
@@ -131,7 +131,7 @@ public class ShowFilesResponse implements IndexedRecord {
     }
 
     /**
-     * Creation time for each file, in milliseconds since epoch
+     * Creation time for each file, in milliseconds since epoch.
      *
      * @return The current value of {@code creationTimes}.
      */
@@ -140,7 +140,7 @@ public class ShowFilesResponse implements IndexedRecord {
     }
 
     /**
-     * Creation time for each file, in milliseconds since epoch
+     * Creation time for each file, in milliseconds since epoch.
      *
      * @param creationTimes  The new value for {@code creationTimes}.
      *
@@ -155,7 +155,7 @@ public class ShowFilesResponse implements IndexedRecord {
      * Additional information.
      * <ul>
      *     <li>{@link Info#MULTIPART_UPLOADS MULTIPART_UPLOADS}: JSON-encoded
-     *         information about multipart uploads in progress
+     *         information about multipart uploads in progress.
      * </ul>
      *
      * @return The current value of {@code info}.
@@ -168,7 +168,7 @@ public class ShowFilesResponse implements IndexedRecord {
      * Additional information.
      * <ul>
      *     <li>{@link Info#MULTIPART_UPLOADS MULTIPART_UPLOADS}: JSON-encoded
-     *         information about multipart uploads in progress
+     *         information about multipart uploads in progress.
      * </ul>
      *
      * @param info  The new value for {@code info}.

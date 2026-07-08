@@ -43,12 +43,12 @@ public class ExportQueryMetricsResponse implements IndexedRecord {
      */
     public static final class Info {
         /**
-         * Comma separated list of filenames exported if applicable
+         * Comma separated list of filenames exported if applicable.
          */
         public static final String EXPORTED_FILES = "exported_files";
 
         /**
-         * Exported metrics if no other destination specified
+         * Exported metrics if no other destination specified.
          */
         public static final String OUTPUT = "output";
 
@@ -67,9 +67,9 @@ public class ExportQueryMetricsResponse implements IndexedRecord {
      * Additional information.
      * <ul>
      *     <li>{@link Info#EXPORTED_FILES EXPORTED_FILES}: Comma separated list
-     *         of filenames exported if applicable
+     *         of filenames exported if applicable.
      *     <li>{@link Info#OUTPUT OUTPUT}: Exported metrics if no other
-     *         destination specified
+     *         destination specified.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -83,9 +83,9 @@ public class ExportQueryMetricsResponse implements IndexedRecord {
      * Additional information.
      * <ul>
      *     <li>{@link Info#EXPORTED_FILES EXPORTED_FILES}: Comma separated list
-     *         of filenames exported if applicable
+     *         of filenames exported if applicable.
      *     <li>{@link Info#OUTPUT OUTPUT}: Exported metrics if no other
-     *         destination specified
+     *         destination specified.
      * </ul>
      * The default value is an empty {@link Map}.
      *

@@ -54,11 +54,11 @@ public class AdminRepairTableRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#DELETE_CHUNKS DELETE_CHUNKS}: Deletes any
-         *         corrupted chunks
+         *         corrupted chunks.
          *     <li>{@link Options#SHRINK_COLUMNS SHRINK_COLUMNS}: Shrinks
-         *         corrupted chunks to the shortest column
+         *         corrupted chunks to the shortest column.
          *     <li>{@link Options#REPLAY_WAL REPLAY_WAL}: Manually invokes
-         *         write-ahead log (WAL) replay on the table
+         *         write-ahead log (WAL) replay on the table.
          *     <li>{@link Options#ALTER_TABLE ALTER_TABLE}: Reset columns
          *         modification after incomplete alter column.
          * </ul>
@@ -66,17 +66,17 @@ public class AdminRepairTableRequest implements IndexedRecord {
         public static final String REPAIR_POLICY = "repair_policy";
 
         /**
-         * Deletes any corrupted chunks
+         * Deletes any corrupted chunks.
          */
         public static final String DELETE_CHUNKS = "delete_chunks";
 
         /**
-         * Shrinks corrupted chunks to the shortest column
+         * Shrinks corrupted chunks to the shortest column.
          */
         public static final String SHRINK_COLUMNS = "shrink_columns";
 
         /**
-         * Manually invokes write-ahead log (WAL) replay on the table
+         * Manually invokes write-ahead log (WAL) replay on the table.
          */
         public static final String REPLAY_WAL = "replay_wal";
 
@@ -123,7 +123,7 @@ public class AdminRepairTableRequest implements IndexedRecord {
      *
      * @param tableNames  List of tables to query. An asterisk returns all
      *                    tables.
-     * @param tableTypes  internal: type_id per table.
+     * @param tableTypes  ID of the type per table.
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link Options#REPAIR_POLICY REPAIR_POLICY}:
@@ -132,13 +132,13 @@ public class AdminRepairTableRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#DELETE_CHUNKS
      *                                 DELETE_CHUNKS}: Deletes any corrupted
-     *                                 chunks
+     *                                 chunks.
      *                             <li>{@link Options#SHRINK_COLUMNS
      *                                 SHRINK_COLUMNS}: Shrinks corrupted
-     *                                 chunks to the shortest column
+     *                                 chunks to the shortest column.
      *                             <li>{@link Options#REPLAY_WAL REPLAY_WAL}:
      *                                 Manually invokes write-ahead log (WAL)
-     *                                 replay on the table
+     *                                 replay on the table.
      *                             <li>{@link Options#ALTER_TABLE ALTER_TABLE}:
      *                                 Reset columns modification after
      *                                 incomplete alter column.
@@ -186,7 +186,7 @@ public class AdminRepairTableRequest implements IndexedRecord {
     }
 
     /**
-     * internal: type_id per table.
+     * ID of the type per table.
      *
      * @return The current value of {@code tableTypes}.
      */
@@ -195,7 +195,7 @@ public class AdminRepairTableRequest implements IndexedRecord {
     }
 
     /**
-     * internal: type_id per table.
+     * ID of the type per table.
      *
      * @param tableTypes  The new value for {@code tableTypes}.
      *
@@ -214,11 +214,11 @@ public class AdminRepairTableRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#DELETE_CHUNKS DELETE_CHUNKS}: Deletes any
-     *                 corrupted chunks
+     *                 corrupted chunks.
      *             <li>{@link Options#SHRINK_COLUMNS SHRINK_COLUMNS}: Shrinks
-     *                 corrupted chunks to the shortest column
+     *                 corrupted chunks to the shortest column.
      *             <li>{@link Options#REPLAY_WAL REPLAY_WAL}: Manually invokes
-     *                 write-ahead log (WAL) replay on the table
+     *                 write-ahead log (WAL) replay on the table.
      *             <li>{@link Options#ALTER_TABLE ALTER_TABLE}: Reset columns
      *                 modification after incomplete alter column.
      *         </ul>
@@ -249,11 +249,11 @@ public class AdminRepairTableRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#DELETE_CHUNKS DELETE_CHUNKS}: Deletes any
-     *                 corrupted chunks
+     *                 corrupted chunks.
      *             <li>{@link Options#SHRINK_COLUMNS SHRINK_COLUMNS}: Shrinks
-     *                 corrupted chunks to the shortest column
+     *                 corrupted chunks to the shortest column.
      *             <li>{@link Options#REPLAY_WAL REPLAY_WAL}: Manually invokes
-     *                 write-ahead log (WAL) replay on the table
+     *                 write-ahead log (WAL) replay on the table.
      *             <li>{@link Options#ALTER_TABLE ALTER_TABLE}: Reset columns
      *                 modification after incomplete alter column.
      *         </ul>

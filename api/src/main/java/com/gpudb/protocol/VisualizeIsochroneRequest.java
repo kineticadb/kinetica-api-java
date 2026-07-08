@@ -274,7 +274,7 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      * A set of string constants for the {@link VisualizeIsochroneRequest}
      * parameter {@link #getSolveOptions() solveOptions}.
      * <p>
-     * Solver specific parameters
+     * Solver specific parameters.
      */
     public static final class SolveOptions {
         /**
@@ -315,7 +315,7 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      * A set of string constants for the {@link VisualizeIsochroneRequest}
      * parameter {@link #getContourOptions() contourOptions}.
      * <p>
-     * Solver specific parameters
+     * Contour specific parameters.
      */
     public static final class ContourOptions {
         /**
@@ -460,7 +460,7 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      * A set of string constants for the {@link VisualizeIsochroneRequest}
      * parameter {@link #getOptions() options}.
      * <p>
-     * Additional parameters
+     * Additional parameters.
      */
     public static final class Options {
         /**
@@ -489,14 +489,15 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
         public static final String IS_REPLICATED = "is_replicated";
 
         /**
-         * uses the solvers scheduled for 'shortest_path' and
-         * 'inverse_shortest_path' based on solve_direction
+         * Uses the solvers scheduled for 'shortest_path' and
+         * 'inverse_shortest_path' based on {@link Options#SOLVE_DIRECTION
+         * SOLVE_DIRECTION}.
          */
         public static final String TRUE = "true";
 
         /**
-         * uses the solvers 'priority_queue' and 'inverse_priority_queue' based
-         * on solve_direction
+         * Uses the solvers 'priority_queue' and 'inverse_priority_queue' based
+         * on {@link Options#SOLVE_DIRECTION SOLVE_DIRECTION}.
          */
         public static final String FALSE = "false";
 
@@ -533,15 +534,15 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
         public static final String CONCAVITY_LEVEL = "concavity_level";
 
         /**
-         * sets the solver methods explicitly if true.
+         * Sets the solver methods explicitly if true.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#TRUE TRUE}: uses the solvers scheduled for
-         *         'shortest_path' and 'inverse_shortest_path' based on
-         *         solve_direction
-         *     <li>{@link Options#FALSE FALSE}: uses the solvers
+         *     <li>{@link Options#TRUE TRUE}: Uses the solvers scheduled for
+         *         'shortest_path' and 'inverse_shortest_path' based on {@link
+         *         Options#SOLVE_DIRECTION SOLVE_DIRECTION}.
+         *     <li>{@link Options#FALSE FALSE}: Uses the solvers
          *         'priority_queue' and 'inverse_priority_queue' based on
-         *         solve_direction
+         *         {@link Options#SOLVE_DIRECTION SOLVE_DIRECTION}.
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
@@ -553,21 +554,21 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#FROM_SOURCE FROM_SOURCE}: Shortest path to
-         *         get to the source (inverse Dijkstra)
+         *         get to the source (inverse Dijkstra).
          *     <li>{@link Options#TO_SOURCE TO_SOURCE}: Shortest path to source
-         *         (Dijkstra)
+         *         (Dijkstra).
          * </ul>
          * The default value is {@link Options#FROM_SOURCE FROM_SOURCE}.
          */
         public static final String SOLVE_DIRECTION = "solve_direction";
 
         /**
-         * Shortest path to get to the source (inverse Dijkstra)
+         * Shortest path to get to the source (inverse Dijkstra).
          */
         public static final String FROM_SOURCE = "from_source";
 
         /**
-         * Shortest path to source (Dijkstra)
+         * Shortest path to source (Dijkstra).
          */
         public static final String TO_SOURCE = "to_source";
 
@@ -845,7 +846,7 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      *                              weightsOnEdges} will override this value.
      *                      </ul>
      *                      The default value is an empty {@link Map}.
-     * @param contourOptions  Solver specific parameters.
+     * @param contourOptions  Contour specific parameters.
      *                        <ul>
      *                            <li>{@link ContourOptions#PROJECTION
      *                                PROJECTION}: Spatial Reference System
@@ -1029,18 +1030,20 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      *                         The minimum allowed value is '0'. The maximum
      *                         allowed value is '1'.
      *                     <li>{@link Options#USE_PRIORITY_QUEUE_SOLVERS
-     *                         USE_PRIORITY_QUEUE_SOLVERS}: sets the solver
+     *                         USE_PRIORITY_QUEUE_SOLVERS}: Sets the solver
      *                         methods explicitly if true.
      *                         Supported values:
      *                         <ul>
-     *                             <li>{@link Options#TRUE TRUE}: uses the
+     *                             <li>{@link Options#TRUE TRUE}: Uses the
      *                                 solvers scheduled for 'shortest_path'
      *                                 and 'inverse_shortest_path' based on
-     *                                 solve_direction
-     *                             <li>{@link Options#FALSE FALSE}: uses the
+     *                                 {@link Options#SOLVE_DIRECTION
+     *                                 SOLVE_DIRECTION}.
+     *                             <li>{@link Options#FALSE FALSE}: Uses the
      *                                 solvers 'priority_queue' and
-     *                                 'inverse_priority_queue' based on
-     *                                 solve_direction
+     *                                 'inverse_priority_queue' based on {@link
+     *                                 Options#SOLVE_DIRECTION
+     *                                 SOLVE_DIRECTION}.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
@@ -1051,9 +1054,9 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#FROM_SOURCE FROM_SOURCE}:
      *                                 Shortest path to get to the source
-     *                                 (inverse Dijkstra)
+     *                                 (inverse Dijkstra).
      *                             <li>{@link Options#TO_SOURCE TO_SOURCE}:
-     *                                 Shortest path to source (Dijkstra)
+     *                                 Shortest path to source (Dijkstra).
      *                         </ul>
      *                         The default value is {@link Options#FROM_SOURCE
      *                         FROM_SOURCE}.
@@ -1624,7 +1627,7 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
     }
 
     /**
-     * Solver specific parameters.
+     * Contour specific parameters.
      * <ul>
      *     <li>{@link ContourOptions#PROJECTION PROJECTION}: Spatial Reference
      *         System (i.e. EPSG Code).
@@ -1722,7 +1725,7 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
     }
 
     /**
-     * Solver specific parameters.
+     * Contour specific parameters.
      * <ul>
      *     <li>{@link ContourOptions#PROJECTION PROJECTION}: Spatial Reference
      *         System (i.e. EPSG Code).
@@ -1863,16 +1866,16 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      *         being the most concave). The default value is '0.5'. The minimum
      *         allowed value is '0'. The maximum allowed value is '1'.
      *     <li>{@link Options#USE_PRIORITY_QUEUE_SOLVERS
-     *         USE_PRIORITY_QUEUE_SOLVERS}: sets the solver methods explicitly
+     *         USE_PRIORITY_QUEUE_SOLVERS}: Sets the solver methods explicitly
      *         if true.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#TRUE TRUE}: uses the solvers scheduled
+     *             <li>{@link Options#TRUE TRUE}: Uses the solvers scheduled
      *                 for 'shortest_path' and 'inverse_shortest_path' based on
-     *                 solve_direction
-     *             <li>{@link Options#FALSE FALSE}: uses the solvers
+     *                 {@link Options#SOLVE_DIRECTION SOLVE_DIRECTION}.
+     *             <li>{@link Options#FALSE FALSE}: Uses the solvers
      *                 'priority_queue' and 'inverse_priority_queue' based on
-     *                 solve_direction
+     *                 {@link Options#SOLVE_DIRECTION SOLVE_DIRECTION}.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#SOLVE_DIRECTION SOLVE_DIRECTION}: Specify whether
@@ -1880,9 +1883,9 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#FROM_SOURCE FROM_SOURCE}: Shortest path
-     *                 to get to the source (inverse Dijkstra)
+     *                 to get to the source (inverse Dijkstra).
      *             <li>{@link Options#TO_SOURCE TO_SOURCE}: Shortest path to
-     *                 source (Dijkstra)
+     *                 source (Dijkstra).
      *         </ul>
      *         The default value is {@link Options#FROM_SOURCE FROM_SOURCE}.
      * </ul>
@@ -1935,16 +1938,16 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      *         being the most concave). The default value is '0.5'. The minimum
      *         allowed value is '0'. The maximum allowed value is '1'.
      *     <li>{@link Options#USE_PRIORITY_QUEUE_SOLVERS
-     *         USE_PRIORITY_QUEUE_SOLVERS}: sets the solver methods explicitly
+     *         USE_PRIORITY_QUEUE_SOLVERS}: Sets the solver methods explicitly
      *         if true.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#TRUE TRUE}: uses the solvers scheduled
+     *             <li>{@link Options#TRUE TRUE}: Uses the solvers scheduled
      *                 for 'shortest_path' and 'inverse_shortest_path' based on
-     *                 solve_direction
-     *             <li>{@link Options#FALSE FALSE}: uses the solvers
+     *                 {@link Options#SOLVE_DIRECTION SOLVE_DIRECTION}.
+     *             <li>{@link Options#FALSE FALSE}: Uses the solvers
      *                 'priority_queue' and 'inverse_priority_queue' based on
-     *                 solve_direction
+     *                 {@link Options#SOLVE_DIRECTION SOLVE_DIRECTION}.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#SOLVE_DIRECTION SOLVE_DIRECTION}: Specify whether
@@ -1952,9 +1955,9 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#FROM_SOURCE FROM_SOURCE}: Shortest path
-     *                 to get to the source (inverse Dijkstra)
+     *                 to get to the source (inverse Dijkstra).
      *             <li>{@link Options#TO_SOURCE TO_SOURCE}: Shortest path to
-     *                 source (Dijkstra)
+     *                 source (Dijkstra).
      *         </ul>
      *         The default value is {@link Options#FROM_SOURCE FROM_SOURCE}.
      * </ul>

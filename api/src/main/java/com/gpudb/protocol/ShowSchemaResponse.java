@@ -76,7 +76,7 @@ public class ShowSchemaResponse implements IndexedRecord {
     }
 
     /**
-     * A list of all schema names for which information is returned
+     * A list of all schema names for which information is returned.
      *
      * @return The current value of {@code schemaNames}.
      */
@@ -85,7 +85,7 @@ public class ShowSchemaResponse implements IndexedRecord {
     }
 
     /**
-     * A list of all schema names for which information is returned
+     * A list of all schema names for which information is returned.
      *
      * @param schemaNames  The new value for {@code schemaNames}.
      *

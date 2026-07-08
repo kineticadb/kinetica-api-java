@@ -455,6 +455,41 @@ public final class Type implements Serializable {
         }
 
         /**
+         * Determine if the column has a default expression
+         *
+         * @return True if the column has a default expression
+         */
+        public boolean hasDefault()
+        {
+            for (String prop: getProperties())
+                if ((prop.startsWith("default(") && prop.endsWith(")")) ||
+                    prop.equals(ColumnProperty.INIT_WITH_NOW) ||
+                    prop.equals(ColumnProperty.INIT_WITH_UUID))
+                    return true;
+
+            return false;
+        }
+
+        /**
+         * Returns the column's default expression
+         *
+         * @return The default expression of the column, or null if none exists
+         */
+        public String getDefault()
+        {
+            for (String prop: getProperties()) {
+                if (prop.startsWith("default(") && prop.endsWith(")"))
+                    return prop.substring(8, prop.length() - 1);
+                if (prop.equals(ColumnProperty.INIT_WITH_NOW))
+                    return "NOW()";
+                if (prop.equals(ColumnProperty.INIT_WITH_UUID))
+                    return "NEW_UUID()";
+            }
+
+            return null;
+        }
+
+        /**
          * Gets whether the column is nullable.
          *
          * @return  whether the column is nullable

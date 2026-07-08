@@ -89,7 +89,7 @@ public class InsertRecordsFromPayloadResponse implements IndexedRecord {
     /**
      * ID of the currently registered table structure <a
      * href="../../../../../../concepts/types/" target="_top">type</a> for the
-     * target table
+     * target table.
      *
      * @return The current value of {@code typeId}.
      */
@@ -100,7 +100,7 @@ public class InsertRecordsFromPayloadResponse implements IndexedRecord {
     /**
      * ID of the currently registered table structure <a
      * href="../../../../../../concepts/types/" target="_top">type</a> for the
-     * target table
+     * target table.
      *
      * @param typeId  The new value for {@code typeId}.
      *
@@ -112,7 +112,7 @@ public class InsertRecordsFromPayloadResponse implements IndexedRecord {
     }
 
     /**
-     * A JSON string describing the columns of the target table
+     * A JSON string describing the columns of the target table.
      *
      * @return The current value of {@code typeDefinition}.
      */
@@ -121,7 +121,7 @@ public class InsertRecordsFromPayloadResponse implements IndexedRecord {
     }
 
     /**
-     * A JSON string describing the columns of the target table
+     * A JSON string describing the columns of the target table.
      *
      * @param typeDefinition  The new value for {@code typeDefinition}.
      *
@@ -134,7 +134,7 @@ public class InsertRecordsFromPayloadResponse implements IndexedRecord {
 
     /**
      * The user-defined description associated with the target table's
-     * structure
+     * structure.
      *
      * @return The current value of {@code typeLabel}.
      */
@@ -144,7 +144,7 @@ public class InsertRecordsFromPayloadResponse implements IndexedRecord {
 
     /**
      * The user-defined description associated with the target table's
-     * structure
+     * structure.
      *
      * @param typeLabel  The new value for {@code typeLabel}.
      *
@@ -157,7 +157,7 @@ public class InsertRecordsFromPayloadResponse implements IndexedRecord {
 
     /**
      * A mapping of each target table column name to an array of column
-     * properties associated with that column
+     * properties associated with that column.
      *
      * @return The current value of {@code typeProperties}.
      */
@@ -167,7 +167,7 @@ public class InsertRecordsFromPayloadResponse implements IndexedRecord {
 
     /**
      * A mapping of each target table column name to an array of column
-     * properties associated with that column
+     * properties associated with that column.
      *
      * @param typeProperties  The new value for {@code typeProperties}.
      *

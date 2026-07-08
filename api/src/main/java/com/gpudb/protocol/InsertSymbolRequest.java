@@ -100,7 +100,7 @@ public class InsertSymbolRequest implements IndexedRecord {
      *
      * @param symbolId  The id of the symbol being added. This is the same id
      *                  that should be in the 'SYMBOLCODE' column for objects
-     *                  using this symbol
+     *                  using this symbol.
      * @param symbolFormat  Specifies the symbol format. Must be either 'svg'
      *                      or 'svg_path'.
      *                      Supported values:
@@ -111,8 +111,8 @@ public class InsertSymbolRequest implements IndexedRecord {
      * @param symbolData  The actual symbol data. If {@code symbolFormat} is
      *                    'svg' then this should be the raw bytes representing
      *                    an svg file. If {@code symbolFormat} is svg path then
-     *                    this should be an svg path string, for example:
-     *                    'M25.979,12.896,5.979,12.896,5.979,19.562,25.979,19.562z'
+     *                    this should be an svg path string; for example:
+     *                    'M25.979,12.896,5.979,12.896,5.979,19.562,25.979,19.562z'.
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link Options#COLOR COLOR}: If {@code
@@ -135,7 +135,7 @@ public class InsertSymbolRequest implements IndexedRecord {
 
     /**
      * The id of the symbol being added. This is the same id that should be in
-     * the 'SYMBOLCODE' column for objects using this symbol
+     * the 'SYMBOLCODE' column for objects using this symbol.
      *
      * @return The current value of {@code symbolId}.
      */
@@ -145,7 +145,7 @@ public class InsertSymbolRequest implements IndexedRecord {
 
     /**
      * The id of the symbol being added. This is the same id that should be in
-     * the 'SYMBOLCODE' column for objects using this symbol
+     * the 'SYMBOLCODE' column for objects using this symbol.
      *
      * @param symbolId  The new value for {@code symbolId}.
      *
@@ -191,8 +191,8 @@ public class InsertSymbolRequest implements IndexedRecord {
      * The actual symbol data. If {@link #getSymbolFormat() symbolFormat} is
      * 'svg' then this should be the raw bytes representing an svg file. If
      * {@link #getSymbolFormat() symbolFormat} is svg path then this should be
-     * an svg path string, for example:
-     * 'M25.979,12.896,5.979,12.896,5.979,19.562,25.979,19.562z'
+     * an svg path string; for example:
+     * 'M25.979,12.896,5.979,12.896,5.979,19.562,25.979,19.562z'.
      *
      * @return The current value of {@code symbolData}.
      */
@@ -204,8 +204,8 @@ public class InsertSymbolRequest implements IndexedRecord {
      * The actual symbol data. If {@link #getSymbolFormat() symbolFormat} is
      * 'svg' then this should be the raw bytes representing an svg file. If
      * {@link #getSymbolFormat() symbolFormat} is svg path then this should be
-     * an svg path string, for example:
-     * 'M25.979,12.896,5.979,12.896,5.979,19.562,25.979,19.562z'
+     * an svg path string; for example:
+     * 'M25.979,12.896,5.979,12.896,5.979,19.562,25.979,19.562z'.
      *
      * @param symbolData  The new value for {@code symbolData}.
      *

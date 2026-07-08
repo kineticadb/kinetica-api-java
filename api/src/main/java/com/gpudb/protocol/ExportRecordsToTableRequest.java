@@ -18,7 +18,7 @@ import org.apache.avro.generic.IndexedRecord;
  * GPUdb.exportRecordsToTable}.
  * <p>
  * Exports records from source table to the specified target table in an
- * external database
+ * external database.
  */
 public class ExportRecordsToTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -55,7 +55,7 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
 
         /**
          * Name of an existing external data sink to which table name specified
-         * in {@link #getTableName() tableName} will be exported
+         * in {@link #getTableName() tableName} will be exported.
          */
         public static final String DATASINK_NAME = "datasink_name";
 
@@ -141,7 +141,7 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
      *                     <li>{@link Options#DATASINK_NAME DATASINK_NAME}:
      *                         Name of an existing external data sink to which
      *                         table name specified in {@code tableName} will
-     *                         be exported
+     *                         be exported.
      *                     <li>{@link Options#JDBC_SESSION_INIT_STATEMENT
      *                         JDBC_SESSION_INIT_STATEMENT}: Executes the
      *                         statement per each JDBC session before doing
@@ -244,7 +244,7 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
      *         value is '200000'.
      *     <li>{@link Options#DATASINK_NAME DATASINK_NAME}: Name of an existing
      *         external data sink to which table name specified in {@link
-     *         #getTableName() tableName} will be exported
+     *         #getTableName() tableName} will be exported.
      *     <li>{@link Options#JDBC_SESSION_INIT_STATEMENT
      *         JDBC_SESSION_INIT_STATEMENT}: Executes the statement per each
      *         JDBC session before doing actual load. The default value is ''.
@@ -290,7 +290,7 @@ public class ExportRecordsToTableRequest implements IndexedRecord {
      *         value is '200000'.
      *     <li>{@link Options#DATASINK_NAME DATASINK_NAME}: Name of an existing
      *         external data sink to which table name specified in {@link
-     *         #getTableName() tableName} will be exported
+     *         #getTableName() tableName} will be exported.
      *     <li>{@link Options#JDBC_SESSION_INIT_STATEMENT
      *         JDBC_SESSION_INIT_STATEMENT}: Executes the statement per each
      *         JDBC session before doing actual load. The default value is ''.

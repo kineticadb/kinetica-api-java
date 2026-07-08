@@ -48,7 +48,7 @@ public class FilterByGeometryRequest implements IndexedRecord {
      * A set of string constants for the {@link FilterByGeometryRequest}
      * parameter {@link #getOperation() operation}.
      * <p>
-     * The geometric filtering operation to perform
+     * The geometric filtering operation to perform.
      */
     public static final class Operation {
         /**

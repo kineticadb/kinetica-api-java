@@ -84,8 +84,12 @@ public class ShowStatisticsRequest implements IndexedRecord {
      * @param tableNames  Names of tables whose metadata will be fetched, each
      *                    in [schema_name.]table_name format, using standard <a
      *                    href="../../../../../../concepts/tables/#table-name-resolution"
-     *                    target="_top">name resolution rules</a>.  All
-     *                    provided tables must exist, or an error is returned.
+     *                    target="_top">name resolution rules</a>. All provided
+     *                    tables must exist, or an error is returned.  A single
+     *                    entry of '*' expands to every user table the caller
+     *                    may read (excluding system schemas, views, and
+     *                    temporary tables); when used it must be the only
+     *                    entry.
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link Options#NO_ERROR_IF_NOT_EXISTS
@@ -114,8 +118,10 @@ public class ShowStatisticsRequest implements IndexedRecord {
      * Names of tables whose metadata will be fetched, each in
      * [schema_name.]table_name format, using standard <a
      * href="../../../../../../concepts/tables/#table-name-resolution"
-     * target="_top">name resolution rules</a>.  All provided tables must
-     * exist, or an error is returned.
+     * target="_top">name resolution rules</a>. All provided tables must exist,
+     * or an error is returned.  A single entry of '*' expands to every user
+     * table the caller may read (excluding system schemas, views, and
+     * temporary tables); when used it must be the only entry.
      *
      * @return The current value of {@code tableNames}.
      */
@@ -127,8 +133,10 @@ public class ShowStatisticsRequest implements IndexedRecord {
      * Names of tables whose metadata will be fetched, each in
      * [schema_name.]table_name format, using standard <a
      * href="../../../../../../concepts/tables/#table-name-resolution"
-     * target="_top">name resolution rules</a>.  All provided tables must
-     * exist, or an error is returned.
+     * target="_top">name resolution rules</a>. All provided tables must exist,
+     * or an error is returned.  A single entry of '*' expands to every user
+     * table the caller may read (excluding system schemas, views, and
+     * temporary tables); when used it must be the only entry.
      *
      * @param tableNames  The new value for {@code tableNames}.
      *

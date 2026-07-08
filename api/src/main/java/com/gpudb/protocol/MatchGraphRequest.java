@@ -114,28 +114,28 @@ public class MatchGraphRequest implements IndexedRecord {
         public static final String MATCH_SIMILARITY = "match_similarity";
 
         /**
-         * Matches the pickups and dropoffs by optimizing the total trip costs
+         * Matches the pickups and dropoffs by optimizing the total trip costs.
          */
         public static final String MATCH_PICKUP_DROPOFF = "match_pickup_dropoff";
 
         /**
          * Matches the graph nodes with a cluster index using Louvain
-         * clustering algorithm
+         * clustering algorithm.
          */
         public static final String MATCH_CLUSTERS = "match_clusters";
 
         /**
-         * Matches a pattern in the graph
+         * Matches a pattern in the graph.
          */
         public static final String MATCH_PATTERN = "match_pattern";
 
         /**
-         * Creates vector node embeddings
+         * Creates vector node embeddings.
          */
         public static final String MATCH_EMBEDDING = "match_embedding";
 
         /**
-         * Solves for isochrones for a set of input sources
+         * Solves for isochrones for a set of input sources.
          */
         public static final String MATCH_ISOCHRONE = "match_isochrone";
 
@@ -152,7 +152,7 @@ public class MatchGraphRequest implements IndexedRecord {
      * A set of string constants for the {@link MatchGraphRequest} parameter
      * {@link #getOptions() options}.
      * <p>
-     * Additional parameters
+     * Additional parameters.
      */
     public static final class Options {
         /**
@@ -186,18 +186,16 @@ public class MatchGraphRequest implements IndexedRecord {
         public static final String CHAIN_WIDTH = "chain_width";
 
         /**
-         * Optional WKT starting point from {@link #getSamplePoints()
-         * samplePoints} for the solver. The default behavior for the endpoint
-         * is to use time to determine the starting point. The default value is
-         * 'POINT NULL'.
+         * WKT starting point from {@link #getSamplePoints() samplePoints} for
+         * the solver. The default behavior for the endpoint is to use time to
+         * determine the starting point. The default value is 'POINT NULL'.
          */
         public static final String SOURCE = "source";
 
         /**
-         * Optional WKT ending point from {@link #getSamplePoints()
-         * samplePoints} for the solver. The default behavior for the endpoint
-         * is to use time to determine the destination point. The default value
-         * is 'POINT NULL'.
+         * WKT ending point from {@link #getSamplePoints() samplePoints} for
+         * the solver. The default behavior for the endpoint is to use time to
+         * determine the destination point. The default value is 'POINT NULL'.
          */
         public static final String DESTINATION = "destination";
 
@@ -208,7 +206,7 @@ public class MatchGraphRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: Partial off-loading at multiple
-         *         store (demand) locations
+         *         store (demand) locations.
          *     <li>{@link Options#FALSE FALSE}: No partial off-loading allowed
          *         if supply is less than the store's demand.
          * </ul>
@@ -308,7 +306,7 @@ public class MatchGraphRequest implements IndexedRecord {
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: Filter out the folded paths.
          *     <li>{@link Options#FALSE FALSE}: Do not filter out the folded
-         *         paths
+         *         paths.
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
@@ -389,10 +387,10 @@ public class MatchGraphRequest implements IndexedRecord {
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: Generates sequences over supply
          *         side permutations if total supply is less than twice the
-         *         total demand
+         *         total demand.
          *     <li>{@link Options#FALSE FALSE}: Permutations are not performed,
          *         rather a specific order of supplies based on capacity is
-         *         computed
+         *         computed.
          * </ul>
          * The default value is {@link Options#TRUE TRUE}.
          */
@@ -406,9 +404,9 @@ public class MatchGraphRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: Sets only one visit per demand
-         *         location by a salesman (TSM mode)
+         *         location by a salesman (TSM mode).
          *     <li>{@link Options#FALSE FALSE}: No preset limit (usual MSDO
-         *         mode)
+         *         mode).
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
@@ -422,7 +420,7 @@ public class MatchGraphRequest implements IndexedRecord {
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: The optimization is done for
          *         trips in round trip manner always returning to originating
-         *         locations
+         *         locations.
          *     <li>{@link Options#FALSE FALSE}: Supplies do not have to come
          *         back to their originating locations in their routes. The
          *         routes are considered finished at the final dropoff.
@@ -471,21 +469,21 @@ public class MatchGraphRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#GIRVAN GIRVAN}: Uses the Newman Girvan
-         *         quality metric for cluster solver
+         *         quality metric for cluster solver.
          *     <li>{@link Options#SPECTRAL SPECTRAL}: Applies recursive
-         *         spectral bisection (RSB) partitioning solver
+         *         spectral bisection (RSB) partitioning solver.
          * </ul>
          * The default value is {@link Options#GIRVAN GIRVAN}.
          */
         public static final String CLUSTER_QUALITY_METRIC = "cluster_quality_metric";
 
         /**
-         * Uses the Newman Girvan quality metric for cluster solver
+         * Uses the Newman Girvan quality metric for cluster solver.
          */
         public static final String GIRVAN = "girvan";
 
         /**
-         * Applies recursive spectral bisection (RSB) partitioning solver
+         * Applies recursive spectral bisection (RSB) partitioning solver.
          */
         public static final String SPECTRAL = "spectral";
 
@@ -850,20 +848,20 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         <li>{@link SolveMethod#MATCH_PICKUP_DROPOFF
      *                             MATCH_PICKUP_DROPOFF}: Matches the pickups
      *                             and dropoffs by optimizing the total trip
-     *                             costs
+     *                             costs.
      *                         <li>{@link SolveMethod#MATCH_CLUSTERS
      *                             MATCH_CLUSTERS}: Matches the graph nodes
      *                             with a cluster index using Louvain
-     *                             clustering algorithm
+     *                             clustering algorithm.
      *                         <li>{@link SolveMethod#MATCH_PATTERN
      *                             MATCH_PATTERN}: Matches a pattern in the
-     *                             graph
+     *                             graph.
      *                         <li>{@link SolveMethod#MATCH_EMBEDDING
      *                             MATCH_EMBEDDING}: Creates vector node
-     *                             embeddings
+     *                             embeddings.
      *                         <li>{@link SolveMethod#MATCH_ISOCHRONE
      *                             MATCH_ISOCHRONE}: Solves for isochrones for
-     *                             a set of input sources
+     *                             a set of input sources.
      *                         <li>{@link SolveMethod#MATCH_ROUTE_DETOUR
      *                             MATCH_ROUTE_DETOUR}: Computes detour costs
      *                             for nearby stations at a mark point along
@@ -915,17 +913,16 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         lookahead window within the Markov kernel; the
      *                         larger the number, the more accurate the
      *                         solution. The default value is '9'.
-     *                     <li>{@link Options#SOURCE SOURCE}: Optional WKT
-     *                         starting point from {@code samplePoints} for the
-     *                         solver. The default behavior for the endpoint is
-     *                         to use time to determine the starting point. The
+     *                     <li>{@link Options#SOURCE SOURCE}: WKT starting
+     *                         point from {@code samplePoints} for the solver.
+     *                         The default behavior for the endpoint is to use
+     *                         time to determine the starting point. The
      *                         default value is 'POINT NULL'.
-     *                     <li>{@link Options#DESTINATION DESTINATION}:
-     *                         Optional WKT ending point from {@code
-     *                         samplePoints} for the solver. The default
-     *                         behavior for the endpoint is to use time to
-     *                         determine the destination point. The default
-     *                         value is 'POINT NULL'.
+     *                     <li>{@link Options#DESTINATION DESTINATION}: WKT
+     *                         ending point from {@code samplePoints} for the
+     *                         solver. The default behavior for the endpoint is
+     *                         to use time to determine the destination point.
+     *                         The default value is 'POINT NULL'.
      *                     <li>{@link Options#PARTIAL_LOADING PARTIAL_LOADING}:
      *                         For the {@link SolveMethod#MATCH_SUPPLY_DEMAND
      *                         MATCH_SUPPLY_DEMAND} solver only. When false
@@ -936,7 +933,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Partial
      *                                 off-loading at multiple store (demand)
-     *                                 locations
+     *                                 locations.
      *                             <li>{@link Options#FALSE FALSE}: No partial
      *                                 off-loading allowed if supply is less
      *                                 than the store's demand.
@@ -1033,7 +1030,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *                             <li>{@link Options#TRUE TRUE}: Filter out
      *                                 the folded paths.
      *                             <li>{@link Options#FALSE FALSE}: Do not
-     *                                 filter out the folded paths
+     *                                 filter out the folded paths.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
@@ -1114,11 +1111,11 @@ public class MatchGraphRequest implements IndexedRecord {
      *                             <li>{@link Options#TRUE TRUE}: Generates
      *                                 sequences over supply side permutations
      *                                 if total supply is less than twice the
-     *                                 total demand
+     *                                 total demand.
      *                             <li>{@link Options#FALSE FALSE}:
      *                                 Permutations are not performed, rather a
      *                                 specific order of supplies based on
-     *                                 capacity is computed
+     *                                 capacity is computed.
      *                         </ul>
      *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#BATCH_TSM_MODE BATCH_TSM_MODE}:
@@ -1132,9 +1129,9 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Sets only one
      *                                 visit per demand location by a salesman
-     *                                 (TSM mode)
+     *                                 (TSM mode).
      *                             <li>{@link Options#FALSE FALSE}: No preset
-     *                                 limit (usual MSDO mode)
+     *                                 limit (usual MSDO mode).
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
@@ -1148,7 +1145,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *                             <li>{@link Options#TRUE TRUE}: The
      *                                 optimization is done for trips in round
      *                                 trip manner always returning to
-     *                                 originating locations
+     *                                 originating locations.
      *                             <li>{@link Options#FALSE FALSE}: Supplies do
      *                                 not have to come back to their
      *                                 originating locations in their routes.
@@ -1196,10 +1193,10 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#GIRVAN GIRVAN}: Uses the
      *                                 Newman Girvan quality metric for cluster
-     *                                 solver
+     *                                 solver.
      *                             <li>{@link Options#SPECTRAL SPECTRAL}:
      *                                 Applies recursive spectral bisection
-     *                                 (RSB) partitioning solver
+     *                                 (RSB) partitioning solver.
      *                         </ul>
      *                         The default value is {@link Options#GIRVAN
      *                         GIRVAN}.
@@ -1549,16 +1546,16 @@ public class MatchGraphRequest implements IndexedRecord {
      *         score between node pairs.
      *     <li>{@link SolveMethod#MATCH_PICKUP_DROPOFF MATCH_PICKUP_DROPOFF}:
      *         Matches the pickups and dropoffs by optimizing the total trip
-     *         costs
+     *         costs.
      *     <li>{@link SolveMethod#MATCH_CLUSTERS MATCH_CLUSTERS}: Matches the
      *         graph nodes with a cluster index using Louvain clustering
-     *         algorithm
+     *         algorithm.
      *     <li>{@link SolveMethod#MATCH_PATTERN MATCH_PATTERN}: Matches a
-     *         pattern in the graph
+     *         pattern in the graph.
      *     <li>{@link SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING}: Creates
-     *         vector node embeddings
+     *         vector node embeddings.
      *     <li>{@link SolveMethod#MATCH_ISOCHRONE MATCH_ISOCHRONE}: Solves for
-     *         isochrones for a set of input sources
+     *         isochrones for a set of input sources.
      *     <li>{@link SolveMethod#MATCH_ROUTE_DETOUR MATCH_ROUTE_DETOUR}:
      *         Computes detour costs for nearby stations at a mark point along
      *         each source-target route.
@@ -1612,16 +1609,16 @@ public class MatchGraphRequest implements IndexedRecord {
      *         score between node pairs.
      *     <li>{@link SolveMethod#MATCH_PICKUP_DROPOFF MATCH_PICKUP_DROPOFF}:
      *         Matches the pickups and dropoffs by optimizing the total trip
-     *         costs
+     *         costs.
      *     <li>{@link SolveMethod#MATCH_CLUSTERS MATCH_CLUSTERS}: Matches the
      *         graph nodes with a cluster index using Louvain clustering
-     *         algorithm
+     *         algorithm.
      *     <li>{@link SolveMethod#MATCH_PATTERN MATCH_PATTERN}: Matches a
-     *         pattern in the graph
+     *         pattern in the graph.
      *     <li>{@link SolveMethod#MATCH_EMBEDDING MATCH_EMBEDDING}: Creates
-     *         vector node embeddings
+     *         vector node embeddings.
      *     <li>{@link SolveMethod#MATCH_ISOCHRONE MATCH_ISOCHRONE}: Solves for
-     *         isochrones for a set of input sources
+     *         isochrones for a set of input sources.
      *     <li>{@link SolveMethod#MATCH_ROUTE_DETOUR MATCH_ROUTE_DETOUR}:
      *         Computes detour costs for nearby stations at a mark point along
      *         each source-target route.
@@ -1702,15 +1699,14 @@ public class MatchGraphRequest implements IndexedRecord {
      *         the sample points lookahead window within the Markov kernel; the
      *         larger the number, the more accurate the solution. The default
      *         value is '9'.
-     *     <li>{@link Options#SOURCE SOURCE}: Optional WKT starting point from
+     *     <li>{@link Options#SOURCE SOURCE}: WKT starting point from {@link
+     *         #getSamplePoints() samplePoints} for the solver. The default
+     *         behavior for the endpoint is to use time to determine the
+     *         starting point. The default value is 'POINT NULL'.
+     *     <li>{@link Options#DESTINATION DESTINATION}: WKT ending point from
      *         {@link #getSamplePoints() samplePoints} for the solver. The
      *         default behavior for the endpoint is to use time to determine
-     *         the starting point. The default value is 'POINT NULL'.
-     *     <li>{@link Options#DESTINATION DESTINATION}: Optional WKT ending
-     *         point from {@link #getSamplePoints() samplePoints} for the
-     *         solver. The default behavior for the endpoint is to use time to
-     *         determine the destination point. The default value is 'POINT
-     *         NULL'.
+     *         the destination point. The default value is 'POINT NULL'.
      *     <li>{@link Options#PARTIAL_LOADING PARTIAL_LOADING}: For the {@link
      *         SolveMethod#MATCH_SUPPLY_DEMAND MATCH_SUPPLY_DEMAND} solver
      *         only. When false (non-default), trucks do not off-load at the
@@ -1719,7 +1715,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Partial off-loading at
-     *                 multiple store (demand) locations
+     *                 multiple store (demand) locations.
      *             <li>{@link Options#FALSE FALSE}: No partial off-loading
      *                 allowed if supply is less than the store's demand.
      *         </ul>
@@ -1792,7 +1788,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Filter out the folded paths.
      *             <li>{@link Options#FALSE FALSE}: Do not filter out the
-     *                 folded paths
+     *                 folded paths.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#UNIT_UNLOADING_COST UNIT_UNLOADING_COST}: For the
@@ -1852,10 +1848,10 @@ public class MatchGraphRequest implements IndexedRecord {
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Generates sequences over
      *                 supply side permutations if total supply is less than
-     *                 twice the total demand
+     *                 twice the total demand.
      *             <li>{@link Options#FALSE FALSE}: Permutations are not
      *                 performed, rather a specific order of supplies based on
-     *                 capacity is computed
+     *                 capacity is computed.
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#BATCH_TSM_MODE BATCH_TSM_MODE}: For the {@link
@@ -1866,9 +1862,9 @@ public class MatchGraphRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Sets only one visit per
-     *                 demand location by a salesman (TSM mode)
+     *                 demand location by a salesman (TSM mode).
      *             <li>{@link Options#FALSE FALSE}: No preset limit (usual MSDO
-     *                 mode)
+     *                 mode).
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#ROUND_TRIP ROUND_TRIP}: For the {@link
@@ -1879,7 +1875,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: The optimization is done for
      *                 trips in round trip manner always returning to
-     *                 originating locations
+     *                 originating locations.
      *             <li>{@link Options#FALSE FALSE}: Supplies do not have to
      *                 come back to their originating locations in their
      *                 routes. The routes are considered finished at the final
@@ -1915,9 +1911,9 @@ public class MatchGraphRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#GIRVAN GIRVAN}: Uses the Newman Girvan
-     *                 quality metric for cluster solver
+     *                 quality metric for cluster solver.
      *             <li>{@link Options#SPECTRAL SPECTRAL}: Applies recursive
-     *                 spectral bisection (RSB) partitioning solver
+     *                 spectral bisection (RSB) partitioning solver.
      *         </ul>
      *         The default value is {@link Options#GIRVAN GIRVAN}.
      *     <li>{@link Options#RESTRICTED_TYPE RESTRICTED_TYPE}: For the {@link
@@ -2127,15 +2123,14 @@ public class MatchGraphRequest implements IndexedRecord {
      *         the sample points lookahead window within the Markov kernel; the
      *         larger the number, the more accurate the solution. The default
      *         value is '9'.
-     *     <li>{@link Options#SOURCE SOURCE}: Optional WKT starting point from
+     *     <li>{@link Options#SOURCE SOURCE}: WKT starting point from {@link
+     *         #getSamplePoints() samplePoints} for the solver. The default
+     *         behavior for the endpoint is to use time to determine the
+     *         starting point. The default value is 'POINT NULL'.
+     *     <li>{@link Options#DESTINATION DESTINATION}: WKT ending point from
      *         {@link #getSamplePoints() samplePoints} for the solver. The
      *         default behavior for the endpoint is to use time to determine
-     *         the starting point. The default value is 'POINT NULL'.
-     *     <li>{@link Options#DESTINATION DESTINATION}: Optional WKT ending
-     *         point from {@link #getSamplePoints() samplePoints} for the
-     *         solver. The default behavior for the endpoint is to use time to
-     *         determine the destination point. The default value is 'POINT
-     *         NULL'.
+     *         the destination point. The default value is 'POINT NULL'.
      *     <li>{@link Options#PARTIAL_LOADING PARTIAL_LOADING}: For the {@link
      *         SolveMethod#MATCH_SUPPLY_DEMAND MATCH_SUPPLY_DEMAND} solver
      *         only. When false (non-default), trucks do not off-load at the
@@ -2144,7 +2139,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Partial off-loading at
-     *                 multiple store (demand) locations
+     *                 multiple store (demand) locations.
      *             <li>{@link Options#FALSE FALSE}: No partial off-loading
      *                 allowed if supply is less than the store's demand.
      *         </ul>
@@ -2217,7 +2212,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Filter out the folded paths.
      *             <li>{@link Options#FALSE FALSE}: Do not filter out the
-     *                 folded paths
+     *                 folded paths.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#UNIT_UNLOADING_COST UNIT_UNLOADING_COST}: For the
@@ -2277,10 +2272,10 @@ public class MatchGraphRequest implements IndexedRecord {
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Generates sequences over
      *                 supply side permutations if total supply is less than
-     *                 twice the total demand
+     *                 twice the total demand.
      *             <li>{@link Options#FALSE FALSE}: Permutations are not
      *                 performed, rather a specific order of supplies based on
-     *                 capacity is computed
+     *                 capacity is computed.
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#BATCH_TSM_MODE BATCH_TSM_MODE}: For the {@link
@@ -2291,9 +2286,9 @@ public class MatchGraphRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Sets only one visit per
-     *                 demand location by a salesman (TSM mode)
+     *                 demand location by a salesman (TSM mode).
      *             <li>{@link Options#FALSE FALSE}: No preset limit (usual MSDO
-     *                 mode)
+     *                 mode).
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#ROUND_TRIP ROUND_TRIP}: For the {@link
@@ -2304,7 +2299,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: The optimization is done for
      *                 trips in round trip manner always returning to
-     *                 originating locations
+     *                 originating locations.
      *             <li>{@link Options#FALSE FALSE}: Supplies do not have to
      *                 come back to their originating locations in their
      *                 routes. The routes are considered finished at the final
@@ -2340,9 +2335,9 @@ public class MatchGraphRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#GIRVAN GIRVAN}: Uses the Newman Girvan
-     *                 quality metric for cluster solver
+     *                 quality metric for cluster solver.
      *             <li>{@link Options#SPECTRAL SPECTRAL}: Applies recursive
-     *                 spectral bisection (RSB) partitioning solver
+     *                 spectral bisection (RSB) partitioning solver.
      *         </ul>
      *         The default value is {@link Options#GIRVAN GIRVAN}.
      *     <li>{@link Options#RESTRICTED_TYPE RESTRICTED_TYPE}: For the {@link

@@ -187,13 +187,13 @@ public class VisualizeImageChartRequest implements IndexedRecord {
         public static final String SCALE_TYPE_Y = "scale_type_y";
 
         /**
-         * If this options is set to "false", this endpoint expects request's
-         * min/max values are not yet scaled. They will be scaled according to
-         * scale_type_x or scale_type_y for response. If this options is set to
-         * "true", this endpoint expects request's min/max values are already
-         * scaled according to scale_type_x/scale_type_y. Response's min/max
-         * values will be equal to request's min/max values. The default value
-         * is 'false'.
+         * If this options is set to {@code FALSE}, this endpoint expects
+         * request's min/max values are not yet scaled. They will be scaled
+         * according to scale_type_x or scale_type_y for response. If this
+         * options is set to {@code TRUE}, this endpoint expects request's
+         * min/max values are already scaled according to
+         * scale_type_x/scale_type_y. Response's min/max values will be equal
+         * to request's min/max values. The default value is 'false'.
          */
         public static final String MIN_MAX_SCALED = "min_max_scaled";
 
@@ -210,9 +210,9 @@ public class VisualizeImageChartRequest implements IndexedRecord {
         public static final String JITTER_Y = "jitter_y";
 
         /**
-         * If this options is set to "true", all non-numeric column values are
-         * plotted ignoring min_x, max_x, min_y and max_y parameters. The
-         * default value is 'false'.
+         * If this options is set to {@code TRUE}, all non-numeric column
+         * values are plotted ignoring min_x, max_x, min_y and max_y
+         * parameters. The default value is 'false'.
          */
         public static final String PLOT_ALL = "plot_all";
 
@@ -410,16 +410,17 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *                              StyleOptions#NONE NONE}.
      *                          <li>{@link StyleOptions#MIN_MAX_SCALED
      *                              MIN_MAX_SCALED}: If this options is set to
-     *                              "false", this endpoint expects request's
-     *                              min/max values are not yet scaled. They
-     *                              will be scaled according to scale_type_x or
-     *                              scale_type_y for response. If this options
-     *                              is set to "true", this endpoint expects
-     *                              request's min/max values are already scaled
-     *                              according to scale_type_x/scale_type_y.
-     *                              Response's min/max values will be equal to
-     *                              request's min/max values. The default value
-     *                              is 'false'.
+     *                              {@code FALSE}, this endpoint expects
+     *                              request's min/max values are not yet
+     *                              scaled. They will be scaled according to
+     *                              scale_type_x or scale_type_y for response.
+     *                              If this options is set to {@code TRUE},
+     *                              this endpoint expects request's min/max
+     *                              values are already scaled according to
+     *                              scale_type_x/scale_type_y. Response's
+     *                              min/max values will be equal to request's
+     *                              min/max values. The default value is
+     *                              'false'.
      *                          <li>{@link StyleOptions#JITTER_X JITTER_X}:
      *                              Amplitude of horizontal jitter applied to
      *                              non-numeric x column values. The default
@@ -429,7 +430,7 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *                              non-numeric y column values. The default
      *                              value is '0.0'.
      *                          <li>{@link StyleOptions#PLOT_ALL PLOT_ALL}: If
-     *                              this options is set to "true", all
+     *                              this options is set to {@code TRUE}, all
      *                              non-numeric column values are plotted
      *                              ignoring min_x, max_x, min_y and max_y
      *                              parameters. The default value is 'false'.
@@ -771,13 +772,13 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link StyleOptions#NONE NONE}.
      *     <li>{@link StyleOptions#MIN_MAX_SCALED MIN_MAX_SCALED}: If this
-     *         options is set to "false", this endpoint expects request's
+     *         options is set to {@code FALSE}, this endpoint expects request's
      *         min/max values are not yet scaled. They will be scaled according
      *         to scale_type_x or scale_type_y for response. If this options is
-     *         set to "true", this endpoint expects request's min/max values
-     *         are already scaled according to scale_type_x/scale_type_y.
-     *         Response's min/max values will be equal to request's min/max
-     *         values. The default value is 'false'.
+     *         set to {@code TRUE}, this endpoint expects request's min/max
+     *         values are already scaled according to
+     *         scale_type_x/scale_type_y. Response's min/max values will be
+     *         equal to request's min/max values. The default value is 'false'.
      *     <li>{@link StyleOptions#JITTER_X JITTER_X}: Amplitude of horizontal
      *         jitter applied to non-numeric x column values. The default value
      *         is '0.0'.
@@ -785,9 +786,9 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *         jitter applied to non-numeric y column values. The default value
      *         is '0.0'.
      *     <li>{@link StyleOptions#PLOT_ALL PLOT_ALL}: If this options is set
-     *         to "true", all non-numeric column values are plotted ignoring
-     *         min_x, max_x, min_y and max_y parameters. The default value is
-     *         'false'.
+     *         to {@code TRUE}, all non-numeric column values are plotted
+     *         ignoring min_x, max_x, min_y and max_y parameters. The default
+     *         value is 'false'.
      * </ul>
      *
      * @return The current value of {@code styleOptions}.
@@ -872,13 +873,13 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link StyleOptions#NONE NONE}.
      *     <li>{@link StyleOptions#MIN_MAX_SCALED MIN_MAX_SCALED}: If this
-     *         options is set to "false", this endpoint expects request's
+     *         options is set to {@code FALSE}, this endpoint expects request's
      *         min/max values are not yet scaled. They will be scaled according
      *         to scale_type_x or scale_type_y for response. If this options is
-     *         set to "true", this endpoint expects request's min/max values
-     *         are already scaled according to scale_type_x/scale_type_y.
-     *         Response's min/max values will be equal to request's min/max
-     *         values. The default value is 'false'.
+     *         set to {@code TRUE}, this endpoint expects request's min/max
+     *         values are already scaled according to
+     *         scale_type_x/scale_type_y. Response's min/max values will be
+     *         equal to request's min/max values. The default value is 'false'.
      *     <li>{@link StyleOptions#JITTER_X JITTER_X}: Amplitude of horizontal
      *         jitter applied to non-numeric x column values. The default value
      *         is '0.0'.
@@ -886,9 +887,9 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *         jitter applied to non-numeric y column values. The default value
      *         is '0.0'.
      *     <li>{@link StyleOptions#PLOT_ALL PLOT_ALL}: If this options is set
-     *         to "true", all non-numeric column values are plotted ignoring
-     *         min_x, max_x, min_y and max_y parameters. The default value is
-     *         'false'.
+     *         to {@code TRUE}, all non-numeric column values are plotted
+     *         ignoring min_x, max_x, min_y and max_y parameters. The default
+     *         value is 'false'.
      * </ul>
      *
      * @param styleOptions  The new value for {@code styleOptions}.

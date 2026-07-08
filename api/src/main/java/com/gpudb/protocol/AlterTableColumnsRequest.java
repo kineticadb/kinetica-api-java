@@ -84,7 +84,7 @@ public class AlterTableColumnsRequest implements IndexedRecord {
      *                           table requests but in the same map as the
      *                           column name and the action. For example:
      *                           [{'column_name':'col_1','action':'change_column','rename_column':'col_2'},{'column_name':'col_1','action':'add_column',
-     *                           'type':'int','default_value':'1'}]
+     *                           'type':'int','default_value':'1'}].
      * @param options  Optional parameters.
      */
     public AlterTableColumnsRequest(String tableName, List<Map<String, String>> columnAlterations, Map<String, String> options) {
@@ -127,7 +127,7 @@ public class AlterTableColumnsRequest implements IndexedRecord {
      * alter table requests but in the same map as the column name and the
      * action. For example:
      * [{'column_name':'col_1','action':'change_column','rename_column':'col_2'},{'column_name':'col_1','action':'add_column',
-     * 'type':'int','default_value':'1'}]
+     * 'type':'int','default_value':'1'}].
      *
      * @return The current value of {@code columnAlterations}.
      */
@@ -142,7 +142,7 @@ public class AlterTableColumnsRequest implements IndexedRecord {
      * alter table requests but in the same map as the column name and the
      * action. For example:
      * [{'column_name':'col_1','action':'change_column','rename_column':'col_2'},{'column_name':'col_1','action':'add_column',
-     * 'type':'int','default_value':'1'}]
+     * 'type':'int','default_value':'1'}].
      *
      * @param columnAlterations  The new value for {@code columnAlterations}.
      *

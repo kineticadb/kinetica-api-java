@@ -44,7 +44,7 @@ public class CreateProjectionResponse implements IndexedRecord {
      */
     public static final class Info {
         /**
-         * Number of records in the final table
+         * Number of records in the final table.
          */
         public static final String COUNT = "count";
 
@@ -94,7 +94,7 @@ public class CreateProjectionResponse implements IndexedRecord {
     /**
      * Additional information.
      * <ul>
-     *     <li>{@link Info#COUNT COUNT}: Number of records in the final table
+     *     <li>{@link Info#COUNT COUNT}: Number of records in the final table.
      *     <li>{@link Info#QUALIFIED_PROJECTION_NAME
      *         QUALIFIED_PROJECTION_NAME}: The fully qualified name of the
      *         projection (i.e. including the schema).
@@ -110,7 +110,7 @@ public class CreateProjectionResponse implements IndexedRecord {
     /**
      * Additional information.
      * <ul>
-     *     <li>{@link Info#COUNT COUNT}: Number of records in the final table
+     *     <li>{@link Info#COUNT COUNT}: Number of records in the final table.
      *     <li>{@link Info#QUALIFIED_PROJECTION_NAME
      *         QUALIFIED_PROJECTION_NAME}: The fully qualified name of the
      *         projection (i.e. including the schema).

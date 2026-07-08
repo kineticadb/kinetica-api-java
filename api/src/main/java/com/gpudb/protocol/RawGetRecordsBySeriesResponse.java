@@ -147,7 +147,7 @@ public class RawGetRecordsBySeriesResponse implements IndexedRecord {
 
     /**
      * If the encoding parameter of the request was 'json' then this
-     * list-of-lists contains the json encoded records for each object (inner
+     * list-of-lists contains the JSON-encoded records for each object (inner
      * list) in each series/track (outer list). Otherwise, empty list-of-lists.
      *
      * @return The current value of {@code listRecordsJson}.
@@ -158,7 +158,7 @@ public class RawGetRecordsBySeriesResponse implements IndexedRecord {
 
     /**
      * If the encoding parameter of the request was 'json' then this
-     * list-of-lists contains the json encoded records for each object (inner
+     * list-of-lists contains the JSON-encoded records for each object (inner
      * list) in each series/track (outer list). Otherwise, empty list-of-lists.
      *
      * @param listRecordsJson  The new value for {@code listRecordsJson}.

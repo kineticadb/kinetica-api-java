@@ -379,7 +379,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#NONE NONE}: No compression.
-         *     <li>{@link Options#AUTO AUTO}: Auto detect compression type
+         *     <li>{@link Options#AUTO AUTO}: Auto detect compression type.
          *     <li>{@link Options#GZIP GZIP}: gzip file compression.
          *     <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
          * </ul>
@@ -393,7 +393,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
         public static final String NONE = "none";
 
         /**
-         * Auto detect compression type
+         * Auto detect compression type.
          */
         public static final String AUTO = "auto";
 
@@ -409,7 +409,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
 
         /**
          * Name of an existing external data source from which data file(s)
-         * specified in {@link #getFilepaths() filepaths} will be loaded
+         * specified in {@link #getFilepaths() filepaths} will be loaded.
          */
         public static final String DATASOURCE_NAME = "datasource_name";
 
@@ -439,22 +439,22 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * characters. Formats for the 'datetime' annotation meet both the
          * 'date' and 'time' control character requirements. For example,
          * '{"datetime" : "%m/%d/%Y %H:%M:%S" }' would be used to interpret
-         * text as "05/04/2000 12:12:11"
+         * text as "05/04/2000 12:12:11".
          */
         public static final String DEFAULT_COLUMN_FORMATS = "default_column_formats";
 
         /**
-         * Name of an existing datalake(iceberg) catalog used in loading files
+         * Name of an existing datalake(iceberg) catalog used in loading files.
          */
         public static final String DATALAKE_CATALOG = "datalake_catalog";
 
         /**
-         * Path of datalake(iceberg) object
+         * Path of datalake(iceberg) object.
          */
         public static final String DATALAKE_PATH = "datalake_path";
 
         /**
-         * Snapshot ID of datalake(iceberg) object
+         * Snapshot ID of datalake(iceberg) object.
          */
         public static final String DATALAKE_SNAPSHOT = "datalake_snapshot";
 
@@ -500,11 +500,11 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#MATERIALIZED MATERIALIZED}: Loads a copy of
-         *         the external data into the database, refreshed on demand
+         *         the external data into the database, refreshed on demand.
          *     <li>{@link Options#LOGICAL LOGICAL}: External data will not be
          *         loaded into the database; the data will be retrieved from
          *         the source upon servicing each query against the external
-         *         table
+         *         table.
          * </ul>
          * The default value is {@link Options#MATERIALIZED MATERIALIZED}.
          */
@@ -512,14 +512,14 @@ public class CreateTableExternalRequest implements IndexedRecord {
 
         /**
          * Loads a copy of the external data into the database, refreshed on
-         * demand
+         * demand.
          */
         public static final String MATERIALIZED = "materialized";
 
         /**
          * External data will not be loaded into the database; the data will be
          * retrieved from the source upon servicing each query against the
-         * external table
+         * external table.
          */
         public static final String LOGICAL = "logical";
 
@@ -527,20 +527,20 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * Specifies the type of the file(s) whose records will be inserted.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#AVRO AVRO}: Avro file format
+         *     <li>{@link Options#AVRO AVRO}: Avro file format.
          *     <li>{@link Options#DELIMITED_TEXT DELIMITED_TEXT}: Delimited
          *         text file format; e.g., CSV, TSV, PSV, etc.
-         *     <li>{@link Options#GDB GDB}: Esri/GDB file format
-         *     <li>{@link Options#JSON JSON}: Json file format
-         *     <li>{@link Options#PARQUET PARQUET}: Apache Parquet file format
-         *     <li>{@link Options#SHAPEFILE SHAPEFILE}: ShapeFile file format
+         *     <li>{@link Options#GDB GDB}: Esri/GDB file format.
+         *     <li>{@link Options#JSON JSON}: JSON file format.
+         *     <li>{@link Options#PARQUET PARQUET}: Apache Parquet file format.
+         *     <li>{@link Options#SHAPEFILE SHAPEFILE}: ShapeFile file format.
          * </ul>
          * The default value is {@link Options#DELIMITED_TEXT DELIMITED_TEXT}.
          */
         public static final String FILE_TYPE = "file_type";
 
         /**
-         * Avro file format
+         * Avro file format.
          */
         public static final String AVRO = "avro";
 
@@ -550,22 +550,22 @@ public class CreateTableExternalRequest implements IndexedRecord {
         public static final String DELIMITED_TEXT = "delimited_text";
 
         /**
-         * Esri/GDB file format
+         * Esri/GDB file format.
          */
         public static final String GDB = "gdb";
 
         /**
-         * Json file format
+         * JSON file format.
          */
         public static final String JSON = "json";
 
         /**
-         * Apache Parquet file format
+         * Apache Parquet file format.
          */
         public static final String PARQUET = "parquet";
 
         /**
-         * ShapeFile file format
+         * ShapeFile file format.
          */
         public static final String SHAPEFILE = "shapefile";
 
@@ -574,27 +574,27 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: Break up nested columns to
-         *         multiple columns
-         *     <li>{@link Options#FALSE FALSE}: Treat nested columns as json
-         *         columns instead of flattening
+         *         multiple columns.
+         *     <li>{@link Options#FALSE FALSE}: Treat nested columns as JSON
+         *         columns instead of flattening.
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
         public static final String FLATTEN_COLUMNS = "flatten_columns";
 
         /**
-         * Upsert new records when primary keys match existing records
+         * Upsert new records when primary keys match existing records.
          */
         public static final String TRUE = "true";
 
         /**
-         * Reject new records when primary keys match existing records
+         * Reject new records when primary keys match existing records.
          */
         public static final String FALSE = "false";
 
         /**
          * Comma separated list of gdal conf options, for the specific
-         * requests: key=value
+         * requests: key=value.
          */
         public static final String GDAL_CONFIGURATION_OPTIONS = "gdal_configuration_options";
 
@@ -618,10 +618,10 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: Ignore new records whose primary
-         *         key values collide with those of existing records
+         *         key values collide with those of existing records.
          *     <li>{@link Options#FALSE FALSE}: Treat as errors any new records
          *         whose primary key values collide with those of existing
-         *         records
+         *         records.
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
@@ -633,7 +633,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#FULL FULL}: Run a type inference on the
-         *         source data (if needed) and ingest
+         *         source data (if needed) and ingest.
          *     <li>{@link Options#DRY_RUN DRY_RUN}: Does not load data, but
          *         walks through the source data and determines the number of
          *         valid records, taking into account the current mode of
@@ -648,7 +648,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
         public static final String INGESTION_MODE = "ingestion_mode";
 
         /**
-         * Run a type inference on the source data (if needed) and ingest
+         * Run a type inference on the source data (if needed) and ingest.
          */
         public static final String FULL = "full";
 
@@ -816,6 +816,20 @@ public class CreateTableExternalRequest implements IndexedRecord {
         public static final String MAX_RECORDS_TO_LOAD = "max_records_to_load";
 
         /**
+         * Specifies a comma-delimited list of column names to be used as the
+         * source-data column names.  If the file has a header row (i.e.,
+         * {@link Options#TEXT_HAS_HEADER TEXT_HAS_HEADER} is {@link
+         * Options#TRUE TRUE}), these names override the file's header names.
+         * If the file has no header row, these names are used as the
+         * source-data column names. Either way, the i-th name in this list
+         * applies to the i-th column in the file, enabling name-based matching
+         * against the target table's columns (and use with {@link
+         * Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD} / {@link
+         * Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP}).
+         */
+        public static final String NAME_COLUMNS_FROM_FILE = "name_columns_from_file";
+
+        /**
          * Number of tasks for reading file per rank. Default will be system
          * configuration parameter, external_file_reader_num_tasks.
          */
@@ -870,22 +884,22 @@ public class CreateTableExternalRequest implements IndexedRecord {
         public static final String ON_START = "on_start";
 
         /**
-         * Confluent Schema registry connection timeout (in Secs)
+         * Confluent Schema registry connection timeout (in secs).
          */
         public static final String SCHEMA_REGISTRY_CONNECTION_RETRIES = "schema_registry_connection_retries";
 
         /**
-         * Confluent Schema registry connection timeout (in Secs)
+         * Confluent Schema registry connection timeout (in secs).
          */
         public static final String SCHEMA_REGISTRY_CONNECTION_TIMEOUT = "schema_registry_connection_timeout";
 
         /**
-         * Max records to skip due to SR connection failures, before failing
+         * Max records to skip due to SR connection failures, before failing.
          */
         public static final String SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES = "schema_registry_max_consecutive_connection_failures";
 
         /**
-         * Max records to skip due to schema related errors, before failing
+         * Max records to skip due to schema related errors, before failing.
          */
         public static final String MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE = "max_consecutive_invalid_schema_failure";
 
@@ -1054,6 +1068,17 @@ public class CreateTableExternalRequest implements IndexedRecord {
         public static final String TEXT_SEARCH_MIN_COLUMN_LENGTH = "text_search_min_column_length";
 
         /**
+         * Comma-separated expressions, one per target table column.  Each
+         * expression is evaluated per record.  Empty entries (two consecutive
+         * commas) mean no transformation for that column -- the value is
+         * resolved from the input record, table default, NULL, or an error.
+         * Expressions may reference input columns by name or by position ($1
+         * for the first input column, $2 for the second, etc.). The default
+         * value is ''.
+         */
+        public static final String TRANSFORMATIONS = "transformations";
+
+        /**
          * If set to {@link Options#TRUE TRUE}, remove leading or trailing
          * space from fields.
          * Supported values:
@@ -1099,7 +1124,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
          *         exactly-typed and sized columns for all data scanned.
          *     <li>{@link Options#SPEED SPEED}: Scans data and picks the widest
          *         possible column types so that 'all' values will fit with
-         *         minimum data scanned
+         *         minimum data scanned.
          * </ul>
          * The default value is {@link Options#SPEED SPEED}.
          */
@@ -1113,19 +1138,19 @@ public class CreateTableExternalRequest implements IndexedRecord {
 
         /**
          * Scans data and picks the widest possible column types so that 'all'
-         * values will fit with minimum data scanned
+         * values will fit with minimum data scanned.
          */
         public static final String SPEED = "speed";
 
         /**
-         * Remote SQL query from which data will be sourced
+         * Remote SQL query from which data will be sourced.
          */
         public static final String REMOTE_QUERY = "remote_query";
 
         /**
          * Name of column to be used for splitting {@link Options#REMOTE_QUERY
          * REMOTE_QUERY} into multiple sub-queries using the data distribution
-         * of given column
+         * of given column.
          */
         public static final String REMOTE_QUERY_FILTER_COLUMN = "remote_query_filter_column";
 
@@ -1140,6 +1165,22 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * REMOTE_QUERY_FILTER_COLUMN}.
          */
         public static final String REMOTE_QUERY_PARTITION_COLUMN = "remote_query_partition_column";
+
+        /**
+         * Applies only when upserting (when update_on_existing_pk is true). If
+         * set to true (the default), an existing record matched by primary key
+         * is modified in place. If set to false, the matched record is updated
+         * by deleting it and inserting a replacement (delete and insert),
+         * which prevents the change from being reflected in dependent
+         * materialized views until they are refreshed.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#TRUE TRUE}.
+         */
+        public static final String ENABLE_INPLACE_UPDATES = "enable_inplace_updates";
 
         /**
          * Specifies the record collision policy for inserting into a table
@@ -1157,9 +1198,9 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: Upsert new records when primary
-         *         keys match existing records
+         *         keys match existing records.
          *     <li>{@link Options#FALSE FALSE}: Reject new records when primary
-         *         keys match existing records
+         *         keys match existing records.
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
@@ -1543,7 +1584,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                             <li>{@link Options#NONE NONE}: No
      *                                 compression.
      *                             <li>{@link Options#AUTO AUTO}: Auto detect
-     *                                 compression type
+     *                                 compression type.
      *                             <li>{@link Options#GZIP GZIP}: gzip file
      *                                 compression.
      *                             <li>{@link Options#BZIP2 BZIP2}: bzip2 file
@@ -1553,7 +1594,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                     <li>{@link Options#DATASOURCE_NAME DATASOURCE_NAME}:
      *                         Name of an existing external data source from
      *                         which data file(s) specified in {@code
-     *                         filepaths} will be loaded
+     *                         filepaths} will be loaded.
      *                     <li>{@link Options#DEFAULT_COLUMN_FORMATS
      *                         DEFAULT_COLUMN_FORMATS}: Specifies the default
      *                         format to be applied to source data loaded into
@@ -1588,15 +1629,15 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         'time' control character requirements. For
      *                         example, '{"datetime" : "%m/%d/%Y %H:%M:%S" }'
      *                         would be used to interpret text as "05/04/2000
-     *                         12:12:11"
+     *                         12:12:11".
      *                     <li>{@link Options#DATALAKE_CATALOG
      *                         DATALAKE_CATALOG}: Name of an existing
-     *                         datalake(iceberg) catalog used in loading files
+     *                         datalake(iceberg) catalog used in loading files.
      *                     <li>{@link Options#DATALAKE_PATH DATALAKE_PATH}:
-     *                         Path of datalake(iceberg) object
+     *                         Path of datalake(iceberg) object.
      *                     <li>{@link Options#DATALAKE_SNAPSHOT
      *                         DATALAKE_SNAPSHOT}: Snapshot ID of
-     *                         datalake(iceberg) object
+     *                         datalake(iceberg) object.
      *                     <li>{@link Options#ERROR_HANDLING ERROR_HANDLING}:
      *                         Specifies how errors should be handled upon
      *                         insertion.
@@ -1627,12 +1668,12 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                             <li>{@link Options#MATERIALIZED
      *                                 MATERIALIZED}: Loads a copy of the
      *                                 external data into the database,
-     *                                 refreshed on demand
+     *                                 refreshed on demand.
      *                             <li>{@link Options#LOGICAL LOGICAL}:
      *                                 External data will not be loaded into
      *                                 the database; the data will be retrieved
      *                                 from the source upon servicing each
-     *                                 query against the external table
+     *                                 query against the external table.
      *                         </ul>
      *                         The default value is {@link Options#MATERIALIZED
      *                         MATERIALIZED}.
@@ -1642,18 +1683,18 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#AVRO AVRO}: Avro file
-     *                                 format
+     *                                 format.
      *                             <li>{@link Options#DELIMITED_TEXT
      *                                 DELIMITED_TEXT}: Delimited text file
      *                                 format; e.g., CSV, TSV, PSV, etc.
      *                             <li>{@link Options#GDB GDB}: Esri/GDB file
-     *                                 format
-     *                             <li>{@link Options#JSON JSON}: Json file
-     *                                 format
+     *                                 format.
+     *                             <li>{@link Options#JSON JSON}: JSON file
+     *                                 format.
      *                             <li>{@link Options#PARQUET PARQUET}: Apache
-     *                                 Parquet file format
+     *                                 Parquet file format.
      *                             <li>{@link Options#SHAPEFILE SHAPEFILE}:
-     *                                 ShapeFile file format
+     *                                 ShapeFile file format.
      *                         </ul>
      *                         The default value is {@link
      *                         Options#DELIMITED_TEXT DELIMITED_TEXT}.
@@ -1662,17 +1703,17 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Break up
-     *                                 nested columns to multiple columns
+     *                                 nested columns to multiple columns.
      *                             <li>{@link Options#FALSE FALSE}: Treat
-     *                                 nested columns as json columns instead
-     *                                 of flattening
+     *                                 nested columns as JSON columns instead
+     *                                 of flattening.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
      *                     <li>{@link Options#GDAL_CONFIGURATION_OPTIONS
      *                         GDAL_CONFIGURATION_OPTIONS}: Comma separated
      *                         list of gdal conf options, for the specific
-     *                         requests: key=value
+     *                         requests: key=value.
      *                     <li>{@link Options#IGNORE_EXISTING_PK
      *                         IGNORE_EXISTING_PK}: Specifies the record
      *                         collision error-suppression policy for inserting
@@ -1700,11 +1741,11 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Ignore new
      *                                 records whose primary key values collide
-     *                                 with those of existing records
+     *                                 with those of existing records.
      *                             <li>{@link Options#FALSE FALSE}: Treat as
      *                                 errors any new records whose primary key
      *                                 values collide with those of existing
-     *                                 records
+     *                                 records.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
@@ -1715,7 +1756,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#FULL FULL}: Run a type
      *                                 inference on the source data (if needed)
-     *                                 and ingest
+     *                                 and ingest.
      *                             <li>{@link Options#DRY_RUN DRY_RUN}: Does
      *                                 not load data, but walks through the
      *                                 source data and determines the number of
@@ -1834,6 +1875,22 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         will be limited to the next whole number of
      *                         {@link Options#BATCH_SIZE BATCH_SIZE} (per
      *                         working thread).
+     *                     <li>{@link Options#NAME_COLUMNS_FROM_FILE
+     *                         NAME_COLUMNS_FROM_FILE}: Specifies a
+     *                         comma-delimited list of column names to be used
+     *                         as the source-data column names.  If the file
+     *                         has a header row (i.e., {@link
+     *                         Options#TEXT_HAS_HEADER TEXT_HAS_HEADER} is
+     *                         {@link Options#TRUE TRUE}), these names override
+     *                         the file's header names.  If the file has no
+     *                         header row, these names are used as the
+     *                         source-data column names. Either way, the i-th
+     *                         name in this list applies to the i-th column in
+     *                         the file, enabling name-based matching against
+     *                         the target table's columns (and use with {@link
+     *                         Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD} /
+     *                         {@link Options#COLUMNS_TO_SKIP
+     *                         COLUMNS_TO_SKIP}).
      *                     <li>{@link Options#NUM_TASKS_PER_RANK
      *                         NUM_TASKS_PER_RANK}: Number of tasks for reading
      *                         file per rank. Default will be system
@@ -1871,21 +1928,21 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                     <li>{@link
      *                         Options#SCHEMA_REGISTRY_CONNECTION_RETRIES
      *                         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent
-     *                         Schema registry connection timeout (in Secs)
+     *                         Schema registry connection timeout (in secs).
      *                     <li>{@link
      *                         Options#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
      *                         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent
-     *                         Schema registry connection timeout (in Secs)
+     *                         Schema registry connection timeout (in secs).
      *                     <li>{@link
      *                         Options#SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES
      *                         SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES}:
      *                         Max records to skip due to SR connection
-     *                         failures, before failing
+     *                         failures, before failing.
      *                     <li>{@link
      *                         Options#MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE
      *                         MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE}: Max
      *                         records to skip due to schema related errors,
-     *                         before failing
+     *                         before failing.
      *                     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_NAME
      *                         SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro
      *                         schema in the schema registry to use when
@@ -2012,6 +2069,16 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         'text_search' property to. Used only when {@link
      *                         Options#TEXT_SEARCH_COLUMNS TEXT_SEARCH_COLUMNS}
      *                         has a value.
+     *                     <li>{@link Options#TRANSFORMATIONS TRANSFORMATIONS}:
+     *                         Comma-separated expressions, one per target
+     *                         table column.  Each expression is evaluated per
+     *                         record.  Empty entries (two consecutive commas)
+     *                         mean no transformation for that column -- the
+     *                         value is resolved from the input record, table
+     *                         default, NULL, or an error. Expressions may
+     *                         reference input columns by name or by position
+     *                         ($1 for the first input column, $2 for the
+     *                         second, etc.). The default value is ''.
      *                     <li>{@link Options#TRIM_SPACE TRIM_SPACE}: If set to
      *                         {@link Options#TRUE TRUE}, remove leading or
      *                         trailing space from fields.
@@ -2057,18 +2124,19 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                             <li>{@link Options#SPEED SPEED}: Scans data
      *                                 and picks the widest possible column
      *                                 types so that 'all' values will fit with
-     *                                 minimum data scanned
+     *                                 minimum data scanned.
      *                         </ul>
      *                         The default value is {@link Options#SPEED
      *                         SPEED}.
      *                     <li>{@link Options#REMOTE_QUERY REMOTE_QUERY}:
-     *                         Remote SQL query from which data will be sourced
+     *                         Remote SQL query from which data will be
+     *                         sourced.
      *                     <li>{@link Options#REMOTE_QUERY_FILTER_COLUMN
      *                         REMOTE_QUERY_FILTER_COLUMN}: Name of column to
      *                         be used for splitting {@link
      *                         Options#REMOTE_QUERY REMOTE_QUERY} into multiple
      *                         sub-queries using the data distribution of given
-     *                         column
+     *                         column.
      *                     <li>{@link Options#REMOTE_QUERY_INCREASING_COLUMN
      *                         REMOTE_QUERY_INCREASING_COLUMN}: Column on
      *                         subscribed remote query result that will
@@ -2077,6 +2145,22 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
      *                         {@link Options#REMOTE_QUERY_FILTER_COLUMN
      *                         REMOTE_QUERY_FILTER_COLUMN}.
+     *                     <li>{@link Options#ENABLE_INPLACE_UPDATES
+     *                         ENABLE_INPLACE_UPDATES}: Applies only when
+     *                         upserting (when update_on_existing_pk is true).
+     *                         If set to true (the default), an existing record
+     *                         matched by primary key is modified in place. If
+     *                         set to false, the matched record is updated by
+     *                         deleting it and inserting a replacement (delete
+     *                         and insert), which prevents the change from
+     *                         being reflected in dependent materialized views
+     *                         until they are refreshed.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#UPDATE_ON_EXISTING_PK
      *                         UPDATE_ON_EXISTING_PK}: Specifies the record
      *                         collision policy for inserting into a table with
@@ -2101,10 +2185,10 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Upsert new
      *                                 records when primary keys match existing
-     *                                 records
+     *                                 records.
      *                             <li>{@link Options#FALSE FALSE}: Reject new
      *                                 records when primary keys match existing
-     *                                 records
+     *                                 records.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
@@ -2606,14 +2690,14 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#NONE NONE}: No compression.
-     *             <li>{@link Options#AUTO AUTO}: Auto detect compression type
+     *             <li>{@link Options#AUTO AUTO}: Auto detect compression type.
      *             <li>{@link Options#GZIP GZIP}: gzip file compression.
      *             <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
      *         </ul>
      *         The default value is {@link Options#AUTO AUTO}.
      *     <li>{@link Options#DATASOURCE_NAME DATASOURCE_NAME}: Name of an
      *         existing external data source from which data file(s) specified
-     *         in {@link #getFilepaths() filepaths} will be loaded
+     *         in {@link #getFilepaths() filepaths} will be loaded.
      *     <li>{@link Options#DEFAULT_COLUMN_FORMATS DEFAULT_COLUMN_FORMATS}:
      *         Specifies the default format to be applied to source data loaded
      *         into columns with the corresponding column property.  Currently
@@ -2639,13 +2723,13 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         control characters. Formats for the 'datetime' annotation meet
      *         both the 'date' and 'time' control character requirements. For
      *         example, '{"datetime" : "%m/%d/%Y %H:%M:%S" }' would be used to
-     *         interpret text as "05/04/2000 12:12:11"
+     *         interpret text as "05/04/2000 12:12:11".
      *     <li>{@link Options#DATALAKE_CATALOG DATALAKE_CATALOG}: Name of an
-     *         existing datalake(iceberg) catalog used in loading files
+     *         existing datalake(iceberg) catalog used in loading files.
      *     <li>{@link Options#DATALAKE_PATH DATALAKE_PATH}: Path of
-     *         datalake(iceberg) object
+     *         datalake(iceberg) object.
      *     <li>{@link Options#DATALAKE_SNAPSHOT DATALAKE_SNAPSHOT}: Snapshot ID
-     *         of datalake(iceberg) object
+     *         of datalake(iceberg) object.
      *     <li>{@link Options#ERROR_HANDLING ERROR_HANDLING}: Specifies how
      *         errors should be handled upon insertion.
      *         Supported values:
@@ -2668,26 +2752,26 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         <ul>
      *             <li>{@link Options#MATERIALIZED MATERIALIZED}: Loads a copy
      *                 of the external data into the database, refreshed on
-     *                 demand
+     *                 demand.
      *             <li>{@link Options#LOGICAL LOGICAL}: External data will not
      *                 be loaded into the database; the data will be retrieved
      *                 from the source upon servicing each query against the
-     *                 external table
+     *                 external table.
      *         </ul>
      *         The default value is {@link Options#MATERIALIZED MATERIALIZED}.
      *     <li>{@link Options#FILE_TYPE FILE_TYPE}: Specifies the type of the
      *         file(s) whose records will be inserted.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#AVRO AVRO}: Avro file format
+     *             <li>{@link Options#AVRO AVRO}: Avro file format.
      *             <li>{@link Options#DELIMITED_TEXT DELIMITED_TEXT}: Delimited
      *                 text file format; e.g., CSV, TSV, PSV, etc.
-     *             <li>{@link Options#GDB GDB}: Esri/GDB file format
-     *             <li>{@link Options#JSON JSON}: Json file format
+     *             <li>{@link Options#GDB GDB}: Esri/GDB file format.
+     *             <li>{@link Options#JSON JSON}: JSON file format.
      *             <li>{@link Options#PARQUET PARQUET}: Apache Parquet file
-     *                 format
+     *                 format.
      *             <li>{@link Options#SHAPEFILE SHAPEFILE}: ShapeFile file
-     *                 format
+     *                 format.
      *         </ul>
      *         The default value is {@link Options#DELIMITED_TEXT
      *         DELIMITED_TEXT}.
@@ -2696,14 +2780,14 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Break up nested columns to
-     *                 multiple columns
+     *                 multiple columns.
      *             <li>{@link Options#FALSE FALSE}: Treat nested columns as
-     *                 json columns instead of flattening
+     *                 JSON columns instead of flattening.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#GDAL_CONFIGURATION_OPTIONS
      *         GDAL_CONFIGURATION_OPTIONS}: Comma separated list of gdal conf
-     *         options, for the specific requests: key=value
+     *         options, for the specific requests: key=value.
      *     <li>{@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}: Specifies
      *         the record collision error-suppression policy for inserting into
      *         a table with a <a
@@ -2726,10 +2810,10 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Ignore new records whose
      *                 primary key values collide with those of existing
-     *                 records
+     *                 records.
      *             <li>{@link Options#FALSE FALSE}: Treat as errors any new
      *                 records whose primary key values collide with those of
-     *                 existing records
+     *                 existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#INGESTION_MODE INGESTION_MODE}: Whether to do a
@@ -2738,7 +2822,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#FULL FULL}: Run a type inference on the
-     *                 source data (if needed) and ingest
+     *                 source data (if needed) and ingest.
      *             <li>{@link Options#DRY_RUN DRY_RUN}: Does not load data, but
      *                 walks through the source data and determines the number
      *                 of valid records, taking into account the current mode
@@ -2828,6 +2912,17 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         number of records loaded will be limited to the next whole
      *         number of {@link Options#BATCH_SIZE BATCH_SIZE} (per working
      *         thread).
+     *     <li>{@link Options#NAME_COLUMNS_FROM_FILE NAME_COLUMNS_FROM_FILE}:
+     *         Specifies a comma-delimited list of column names to be used as
+     *         the source-data column names.  If the file has a header row
+     *         (i.e., {@link Options#TEXT_HAS_HEADER TEXT_HAS_HEADER} is {@link
+     *         Options#TRUE TRUE}), these names override the file's header
+     *         names.  If the file has no header row, these names are used as
+     *         the source-data column names. Either way, the i-th name in this
+     *         list applies to the i-th column in the file, enabling name-based
+     *         matching against the target table's columns (and use with {@link
+     *         Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD} / {@link
+     *         Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP}).
      *     <li>{@link Options#NUM_TASKS_PER_RANK NUM_TASKS_PER_RANK}: Number of
      *         tasks for reading file per rank. Default will be system
      *         configuration parameter, external_file_reader_num_tasks.
@@ -2857,17 +2952,17 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         The default value is {@link Options#MANUAL MANUAL}.
      *     <li>{@link Options#SCHEMA_REGISTRY_CONNECTION_RETRIES
      *         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent Schema registry
-     *         connection timeout (in Secs)
+     *         connection timeout (in secs).
      *     <li>{@link Options#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
      *         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent Schema registry
-     *         connection timeout (in Secs)
+     *         connection timeout (in secs).
      *     <li>{@link
      *         Options#SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES
      *         SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES}: Max
-     *         records to skip due to SR connection failures, before failing
+     *         records to skip due to SR connection failures, before failing.
      *     <li>{@link Options#MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE
      *         MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE}: Max records to skip due
-     *         to schema related errors, before failing
+     *         to schema related errors, before failing.
      *     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_NAME
      *         SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro schema in the
      *         schema registry to use when reading Avro records.
@@ -2967,6 +3062,14 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         strings to apply the 'text_search' property to. Used only when
      *         {@link Options#TEXT_SEARCH_COLUMNS TEXT_SEARCH_COLUMNS} has a
      *         value.
+     *     <li>{@link Options#TRANSFORMATIONS TRANSFORMATIONS}: Comma-separated
+     *         expressions, one per target table column.  Each expression is
+     *         evaluated per record.  Empty entries (two consecutive commas)
+     *         mean no transformation for that column -- the value is resolved
+     *         from the input record, table default, NULL, or an error.
+     *         Expressions may reference input columns by name or by position
+     *         ($1 for the first input column, $2 for the second, etc.). The
+     *         default value is ''.
      *     <li>{@link Options#TRIM_SPACE TRIM_SPACE}: If set to {@link
      *         Options#TRUE TRUE}, remove leading or trailing space from
      *         fields.
@@ -3004,15 +3107,16 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 exactly-typed and sized columns for all data scanned.
      *             <li>{@link Options#SPEED SPEED}: Scans data and picks the
      *                 widest possible column types so that 'all' values will
-     *                 fit with minimum data scanned
+     *                 fit with minimum data scanned.
      *         </ul>
      *         The default value is {@link Options#SPEED SPEED}.
      *     <li>{@link Options#REMOTE_QUERY REMOTE_QUERY}: Remote SQL query from
-     *         which data will be sourced
+     *         which data will be sourced.
      *     <li>{@link Options#REMOTE_QUERY_FILTER_COLUMN
      *         REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used for
      *         splitting {@link Options#REMOTE_QUERY REMOTE_QUERY} into
-     *         multiple sub-queries using the data distribution of given column
+     *         multiple sub-queries using the data distribution of given
+     *         column.
      *     <li>{@link Options#REMOTE_QUERY_INCREASING_COLUMN
      *         REMOTE_QUERY_INCREASING_COLUMN}: Column on subscribed remote
      *         query result that will increase for new records (e.g.,
@@ -3020,6 +3124,20 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *     <li>{@link Options#REMOTE_QUERY_PARTITION_COLUMN
      *         REMOTE_QUERY_PARTITION_COLUMN}: Alias name for {@link
      *         Options#REMOTE_QUERY_FILTER_COLUMN REMOTE_QUERY_FILTER_COLUMN}.
+     *     <li>{@link Options#ENABLE_INPLACE_UPDATES ENABLE_INPLACE_UPDATES}:
+     *         Applies only when upserting (when update_on_existing_pk is
+     *         true). If set to true (the default), an existing record matched
+     *         by primary key is modified in place. If set to false, the
+     *         matched record is updated by deleting it and inserting a
+     *         replacement (delete and insert), which prevents the change from
+     *         being reflected in dependent materialized views until they are
+     *         refreshed.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK}:
      *         Specifies the record collision policy for inserting into a table
      *         with a <a href="../../../../../../concepts/tables/#primary-keys"
@@ -3037,9 +3155,9 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Upsert new records when
-     *                 primary keys match existing records
+     *                 primary keys match existing records.
      *             <li>{@link Options#FALSE FALSE}: Reject new records when
-     *                 primary keys match existing records
+     *                 primary keys match existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      * </ul>
@@ -3118,14 +3236,14 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#NONE NONE}: No compression.
-     *             <li>{@link Options#AUTO AUTO}: Auto detect compression type
+     *             <li>{@link Options#AUTO AUTO}: Auto detect compression type.
      *             <li>{@link Options#GZIP GZIP}: gzip file compression.
      *             <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
      *         </ul>
      *         The default value is {@link Options#AUTO AUTO}.
      *     <li>{@link Options#DATASOURCE_NAME DATASOURCE_NAME}: Name of an
      *         existing external data source from which data file(s) specified
-     *         in {@link #getFilepaths() filepaths} will be loaded
+     *         in {@link #getFilepaths() filepaths} will be loaded.
      *     <li>{@link Options#DEFAULT_COLUMN_FORMATS DEFAULT_COLUMN_FORMATS}:
      *         Specifies the default format to be applied to source data loaded
      *         into columns with the corresponding column property.  Currently
@@ -3151,13 +3269,13 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         control characters. Formats for the 'datetime' annotation meet
      *         both the 'date' and 'time' control character requirements. For
      *         example, '{"datetime" : "%m/%d/%Y %H:%M:%S" }' would be used to
-     *         interpret text as "05/04/2000 12:12:11"
+     *         interpret text as "05/04/2000 12:12:11".
      *     <li>{@link Options#DATALAKE_CATALOG DATALAKE_CATALOG}: Name of an
-     *         existing datalake(iceberg) catalog used in loading files
+     *         existing datalake(iceberg) catalog used in loading files.
      *     <li>{@link Options#DATALAKE_PATH DATALAKE_PATH}: Path of
-     *         datalake(iceberg) object
+     *         datalake(iceberg) object.
      *     <li>{@link Options#DATALAKE_SNAPSHOT DATALAKE_SNAPSHOT}: Snapshot ID
-     *         of datalake(iceberg) object
+     *         of datalake(iceberg) object.
      *     <li>{@link Options#ERROR_HANDLING ERROR_HANDLING}: Specifies how
      *         errors should be handled upon insertion.
      *         Supported values:
@@ -3180,26 +3298,26 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         <ul>
      *             <li>{@link Options#MATERIALIZED MATERIALIZED}: Loads a copy
      *                 of the external data into the database, refreshed on
-     *                 demand
+     *                 demand.
      *             <li>{@link Options#LOGICAL LOGICAL}: External data will not
      *                 be loaded into the database; the data will be retrieved
      *                 from the source upon servicing each query against the
-     *                 external table
+     *                 external table.
      *         </ul>
      *         The default value is {@link Options#MATERIALIZED MATERIALIZED}.
      *     <li>{@link Options#FILE_TYPE FILE_TYPE}: Specifies the type of the
      *         file(s) whose records will be inserted.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#AVRO AVRO}: Avro file format
+     *             <li>{@link Options#AVRO AVRO}: Avro file format.
      *             <li>{@link Options#DELIMITED_TEXT DELIMITED_TEXT}: Delimited
      *                 text file format; e.g., CSV, TSV, PSV, etc.
-     *             <li>{@link Options#GDB GDB}: Esri/GDB file format
-     *             <li>{@link Options#JSON JSON}: Json file format
+     *             <li>{@link Options#GDB GDB}: Esri/GDB file format.
+     *             <li>{@link Options#JSON JSON}: JSON file format.
      *             <li>{@link Options#PARQUET PARQUET}: Apache Parquet file
-     *                 format
+     *                 format.
      *             <li>{@link Options#SHAPEFILE SHAPEFILE}: ShapeFile file
-     *                 format
+     *                 format.
      *         </ul>
      *         The default value is {@link Options#DELIMITED_TEXT
      *         DELIMITED_TEXT}.
@@ -3208,14 +3326,14 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Break up nested columns to
-     *                 multiple columns
+     *                 multiple columns.
      *             <li>{@link Options#FALSE FALSE}: Treat nested columns as
-     *                 json columns instead of flattening
+     *                 JSON columns instead of flattening.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#GDAL_CONFIGURATION_OPTIONS
      *         GDAL_CONFIGURATION_OPTIONS}: Comma separated list of gdal conf
-     *         options, for the specific requests: key=value
+     *         options, for the specific requests: key=value.
      *     <li>{@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}: Specifies
      *         the record collision error-suppression policy for inserting into
      *         a table with a <a
@@ -3238,10 +3356,10 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Ignore new records whose
      *                 primary key values collide with those of existing
-     *                 records
+     *                 records.
      *             <li>{@link Options#FALSE FALSE}: Treat as errors any new
      *                 records whose primary key values collide with those of
-     *                 existing records
+     *                 existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#INGESTION_MODE INGESTION_MODE}: Whether to do a
@@ -3250,7 +3368,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#FULL FULL}: Run a type inference on the
-     *                 source data (if needed) and ingest
+     *                 source data (if needed) and ingest.
      *             <li>{@link Options#DRY_RUN DRY_RUN}: Does not load data, but
      *                 walks through the source data and determines the number
      *                 of valid records, taking into account the current mode
@@ -3340,6 +3458,17 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         number of records loaded will be limited to the next whole
      *         number of {@link Options#BATCH_SIZE BATCH_SIZE} (per working
      *         thread).
+     *     <li>{@link Options#NAME_COLUMNS_FROM_FILE NAME_COLUMNS_FROM_FILE}:
+     *         Specifies a comma-delimited list of column names to be used as
+     *         the source-data column names.  If the file has a header row
+     *         (i.e., {@link Options#TEXT_HAS_HEADER TEXT_HAS_HEADER} is {@link
+     *         Options#TRUE TRUE}), these names override the file's header
+     *         names.  If the file has no header row, these names are used as
+     *         the source-data column names. Either way, the i-th name in this
+     *         list applies to the i-th column in the file, enabling name-based
+     *         matching against the target table's columns (and use with {@link
+     *         Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD} / {@link
+     *         Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP}).
      *     <li>{@link Options#NUM_TASKS_PER_RANK NUM_TASKS_PER_RANK}: Number of
      *         tasks for reading file per rank. Default will be system
      *         configuration parameter, external_file_reader_num_tasks.
@@ -3369,17 +3498,17 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         The default value is {@link Options#MANUAL MANUAL}.
      *     <li>{@link Options#SCHEMA_REGISTRY_CONNECTION_RETRIES
      *         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent Schema registry
-     *         connection timeout (in Secs)
+     *         connection timeout (in secs).
      *     <li>{@link Options#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
      *         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent Schema registry
-     *         connection timeout (in Secs)
+     *         connection timeout (in secs).
      *     <li>{@link
      *         Options#SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES
      *         SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES}: Max
-     *         records to skip due to SR connection failures, before failing
+     *         records to skip due to SR connection failures, before failing.
      *     <li>{@link Options#MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE
      *         MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE}: Max records to skip due
-     *         to schema related errors, before failing
+     *         to schema related errors, before failing.
      *     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_NAME
      *         SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro schema in the
      *         schema registry to use when reading Avro records.
@@ -3479,6 +3608,14 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         strings to apply the 'text_search' property to. Used only when
      *         {@link Options#TEXT_SEARCH_COLUMNS TEXT_SEARCH_COLUMNS} has a
      *         value.
+     *     <li>{@link Options#TRANSFORMATIONS TRANSFORMATIONS}: Comma-separated
+     *         expressions, one per target table column.  Each expression is
+     *         evaluated per record.  Empty entries (two consecutive commas)
+     *         mean no transformation for that column -- the value is resolved
+     *         from the input record, table default, NULL, or an error.
+     *         Expressions may reference input columns by name or by position
+     *         ($1 for the first input column, $2 for the second, etc.). The
+     *         default value is ''.
      *     <li>{@link Options#TRIM_SPACE TRIM_SPACE}: If set to {@link
      *         Options#TRUE TRUE}, remove leading or trailing space from
      *         fields.
@@ -3516,15 +3653,16 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 exactly-typed and sized columns for all data scanned.
      *             <li>{@link Options#SPEED SPEED}: Scans data and picks the
      *                 widest possible column types so that 'all' values will
-     *                 fit with minimum data scanned
+     *                 fit with minimum data scanned.
      *         </ul>
      *         The default value is {@link Options#SPEED SPEED}.
      *     <li>{@link Options#REMOTE_QUERY REMOTE_QUERY}: Remote SQL query from
-     *         which data will be sourced
+     *         which data will be sourced.
      *     <li>{@link Options#REMOTE_QUERY_FILTER_COLUMN
      *         REMOTE_QUERY_FILTER_COLUMN}: Name of column to be used for
      *         splitting {@link Options#REMOTE_QUERY REMOTE_QUERY} into
-     *         multiple sub-queries using the data distribution of given column
+     *         multiple sub-queries using the data distribution of given
+     *         column.
      *     <li>{@link Options#REMOTE_QUERY_INCREASING_COLUMN
      *         REMOTE_QUERY_INCREASING_COLUMN}: Column on subscribed remote
      *         query result that will increase for new records (e.g.,
@@ -3532,6 +3670,20 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *     <li>{@link Options#REMOTE_QUERY_PARTITION_COLUMN
      *         REMOTE_QUERY_PARTITION_COLUMN}: Alias name for {@link
      *         Options#REMOTE_QUERY_FILTER_COLUMN REMOTE_QUERY_FILTER_COLUMN}.
+     *     <li>{@link Options#ENABLE_INPLACE_UPDATES ENABLE_INPLACE_UPDATES}:
+     *         Applies only when upserting (when update_on_existing_pk is
+     *         true). If set to true (the default), an existing record matched
+     *         by primary key is modified in place. If set to false, the
+     *         matched record is updated by deleting it and inserting a
+     *         replacement (delete and insert), which prevents the change from
+     *         being reflected in dependent materialized views until they are
+     *         refreshed.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK}:
      *         Specifies the record collision policy for inserting into a table
      *         with a <a href="../../../../../../concepts/tables/#primary-keys"
@@ -3549,9 +3701,9 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Upsert new records when
-     *                 primary keys match existing records
+     *                 primary keys match existing records.
      *             <li>{@link Options#FALSE FALSE}: Reject new records when
-     *                 primary keys match existing records
+     *                 primary keys match existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      * </ul>

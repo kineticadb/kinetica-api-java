@@ -48,12 +48,12 @@ public class InsertRecordsResponse implements IndexedRecord {
     public static final class Info {
         /**
          * If return_individual_errors option is specified or implied, returns
-         * a comma-separated list of invalid indices (0-based)
+         * a comma-separated list of invalid indices (0-based).
          */
         public static final String BAD_RECORD_INDICES = "bad_record_indices";
 
         /**
-         * Error message for record at index N (0-based)
+         * Error message for record at index N (0-based).
          */
         public static final String ERROR_N = "error_N";
 
@@ -141,9 +141,9 @@ public class InsertRecordsResponse implements IndexedRecord {
      * <ul>
      *     <li>{@link Info#BAD_RECORD_INDICES BAD_RECORD_INDICES}: If
      *         return_individual_errors option is specified or implied, returns
-     *         a comma-separated list of invalid indices (0-based)
+     *         a comma-separated list of invalid indices (0-based).
      *     <li>{@link Info#ERROR_N ERROR_N}: Error message for record at index
-     *         N (0-based)
+     *         N (0-based).
      * </ul>
      *
      * @return The current value of {@code info}.
@@ -157,9 +157,9 @@ public class InsertRecordsResponse implements IndexedRecord {
      * <ul>
      *     <li>{@link Info#BAD_RECORD_INDICES BAD_RECORD_INDICES}: If
      *         return_individual_errors option is specified or implied, returns
-     *         a comma-separated list of invalid indices (0-based)
+     *         a comma-separated list of invalid indices (0-based).
      *     <li>{@link Info#ERROR_N ERROR_N}: Error message for record at index
-     *         N (0-based)
+     *         N (0-based).
      * </ul>
      *
      * @param info  The new value for {@code info}.

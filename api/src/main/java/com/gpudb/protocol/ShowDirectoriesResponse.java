@@ -58,7 +58,7 @@ public class ShowDirectoriesResponse implements IndexedRecord {
     }
 
     /**
-     * KiFS directory names
+     * KiFS directory names.
      *
      * @return The current value of {@code directories}.
      */
@@ -67,7 +67,7 @@ public class ShowDirectoriesResponse implements IndexedRecord {
     }
 
     /**
-     * KiFS directory names
+     * KiFS directory names.
      *
      * @param directories  The new value for {@code directories}.
      *
@@ -80,7 +80,7 @@ public class ShowDirectoriesResponse implements IndexedRecord {
 
     /**
      * User that created each directory for the respective directories in
-     * {@link #getDirectories() directories}
+     * {@link #getDirectories() directories}.
      *
      * @return The current value of {@code users}.
      */
@@ -90,7 +90,7 @@ public class ShowDirectoriesResponse implements IndexedRecord {
 
     /**
      * User that created each directory for the respective directories in
-     * {@link #getDirectories() directories}
+     * {@link #getDirectories() directories}.
      *
      * @param users  The new value for {@code users}.
      *
@@ -103,7 +103,7 @@ public class ShowDirectoriesResponse implements IndexedRecord {
 
     /**
      * The creation time for each directory in milliseconds since epoch, for
-     * the respective directories in {@link #getDirectories() directories}
+     * the respective directories in {@link #getDirectories() directories}.
      *
      * @return The current value of {@code creationTimes}.
      */
@@ -113,7 +113,7 @@ public class ShowDirectoriesResponse implements IndexedRecord {
 
     /**
      * The creation time for each directory in milliseconds since epoch, for
-     * the respective directories in {@link #getDirectories() directories}
+     * the respective directories in {@link #getDirectories() directories}.
      *
      * @param creationTimes  The new value for {@code creationTimes}.
      *
@@ -126,7 +126,7 @@ public class ShowDirectoriesResponse implements IndexedRecord {
 
     /**
      * The data usage each directory in bytes, for the respective directories
-     * in {@link #getDirectories() directories}
+     * in {@link #getDirectories() directories}.
      *
      * @return The current value of {@code dataUsages}.
      */
@@ -136,7 +136,7 @@ public class ShowDirectoriesResponse implements IndexedRecord {
 
     /**
      * The data usage each directory in bytes, for the respective directories
-     * in {@link #getDirectories() directories}
+     * in {@link #getDirectories() directories}.
      *
      * @param dataUsages  The new value for {@code dataUsages}.
      *
@@ -149,7 +149,7 @@ public class ShowDirectoriesResponse implements IndexedRecord {
 
     /**
      * The data limit for each directory in bytes, for the respective
-     * directories in {@link #getDirectories() directories}
+     * directories in {@link #getDirectories() directories}.
      *
      * @return The current value of {@code dataLimits}.
      */
@@ -159,7 +159,7 @@ public class ShowDirectoriesResponse implements IndexedRecord {
 
     /**
      * The data limit for each directory in bytes, for the respective
-     * directories in {@link #getDirectories() directories}
+     * directories in {@link #getDirectories() directories}.
      *
      * @param dataLimits  The new value for {@code dataLimits}.
      *

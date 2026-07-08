@@ -46,7 +46,7 @@ public class CreateTableResponse implements IndexedRecord {
     public static final class Info {
         /**
          * The fully qualified name of the new table (i.e.&nbsp;including the
-         * schema)
+         * schema).
          */
         public static final String QUALIFIED_TABLE_NAME = "qualified_table_name";
 
@@ -138,7 +138,7 @@ public class CreateTableResponse implements IndexedRecord {
      * <ul>
      *     <li>{@link Info#QUALIFIED_TABLE_NAME QUALIFIED_TABLE_NAME}: The
      *         fully qualified name of the new table (i.e. including the
-     *         schema)
+     *         schema).
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -153,7 +153,7 @@ public class CreateTableResponse implements IndexedRecord {
      * <ul>
      *     <li>{@link Info#QUALIFIED_TABLE_NAME QUALIFIED_TABLE_NAME}: The
      *         fully qualified name of the new table (i.e. including the
-     *         schema)
+     *         schema).
      * </ul>
      * The default value is an empty {@link Map}.
      *

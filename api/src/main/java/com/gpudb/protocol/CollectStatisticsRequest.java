@@ -61,11 +61,17 @@ public class CollectStatisticsRequest implements IndexedRecord {
      * @param tableName  Name of a table, in [schema_name.]table_name format,
      *                   using standard <a
      *                   href="../../../../../../concepts/tables/#table-name-resolution"
-     *                   target="_top">name resolution rules</a>.  Must be an
-     *                   existing table.
+     *                   target="_top">name resolution rules</a>. Must be an
+     *                   existing table.  A value of '*' collects statistics on
+     *                   every user table the caller may read (excluding system
+     *                   schemas, views, and temporary tables); when used,
+     *                   {@code columnNames} must be '*'.
      * @param columnNames  List of one or more column names in {@code
      *                     tableName} for which to collect statistics
-     *                     (cardinality, mean value, etc.).
+     *                     (cardinality, mean value, etc.). A single entry of
+     *                     '*' expands to every collectable column on the table
+     *                     (geometry, vector, JSON, and array columns are
+     *                     skipped).
      * @param options  Optional parameters. The default value is an empty
      *                 {@link Map}.
      */
@@ -78,7 +84,10 @@ public class CollectStatisticsRequest implements IndexedRecord {
     /**
      * Name of a table, in [schema_name.]table_name format, using standard <a
      * href="../../../../../../concepts/tables/#table-name-resolution"
-     * target="_top">name resolution rules</a>.  Must be an existing table.
+     * target="_top">name resolution rules</a>. Must be an existing table.  A
+     * value of '*' collects statistics on every user table the caller may read
+     * (excluding system schemas, views, and temporary tables); when used,
+     * {@link #getColumnNames() columnNames} must be '*'.
      *
      * @return The current value of {@code tableName}.
      */
@@ -89,7 +98,10 @@ public class CollectStatisticsRequest implements IndexedRecord {
     /**
      * Name of a table, in [schema_name.]table_name format, using standard <a
      * href="../../../../../../concepts/tables/#table-name-resolution"
-     * target="_top">name resolution rules</a>.  Must be an existing table.
+     * target="_top">name resolution rules</a>. Must be an existing table.  A
+     * value of '*' collects statistics on every user table the caller may read
+     * (excluding system schemas, views, and temporary tables); when used,
+     * {@link #getColumnNames() columnNames} must be '*'.
      *
      * @param tableName  The new value for {@code tableName}.
      *
@@ -102,7 +114,9 @@ public class CollectStatisticsRequest implements IndexedRecord {
 
     /**
      * List of one or more column names in {@link #getTableName() tableName}
-     * for which to collect statistics (cardinality, mean value, etc.).
+     * for which to collect statistics (cardinality, mean value, etc.). A
+     * single entry of '*' expands to every collectable column on the table
+     * (geometry, vector, JSON, and array columns are skipped).
      *
      * @return The current value of {@code columnNames}.
      */
@@ -112,7 +126,9 @@ public class CollectStatisticsRequest implements IndexedRecord {
 
     /**
      * List of one or more column names in {@link #getTableName() tableName}
-     * for which to collect statistics (cardinality, mean value, etc.).
+     * for which to collect statistics (cardinality, mean value, etc.). A
+     * single entry of '*' expands to every collectable column on the table
+     * (geometry, vector, JSON, and array columns are skipped).
      *
      * @param columnNames  The new value for {@code columnNames}.
      *

@@ -82,6 +82,12 @@ public class RestoreBackupRequest implements IndexedRecord {
         public static final String DATASOURCE = "datasource";
 
         /**
+         * KiFS <a href="../../../../../../tools/kifs/" target="_top">File
+         * directory(ies)</a>.
+         */
+        public static final String DIRECTORY = "directory";
+
+        /**
          * <a href="../../../../../../udf/python/writing/#udf-python-func-env"
          * target="_top">Python UDF function environment(s)</a>.
          */
@@ -89,7 +95,8 @@ public class RestoreBackupRequest implements IndexedRecord {
 
         /**
          * <a href="../../../../../../graph_solver/network_graph_solver/"
-         * target="_top">Graph(s)</a> definition.
+         * target="_top">Graph</a> definition(s). Source table(s), if
+         * applicable, are required in order to restore graph objects.
          */
         public static final String GRAPH = "graph";
 
@@ -172,13 +179,12 @@ public class RestoreBackupRequest implements IndexedRecord {
         public static final String CHECKSUM = "checksum";
 
         /**
-         * Restore table data by re-ingesting it.  This is the default behavior
-         * if the cluster topology differs from that of the contained backup.
+         * Restore all permissions.
          */
         public static final String TRUE = "true";
 
         /**
-         * Restore the persisted data files directly.
+         * Restore only permissions on restored objects.
          */
         public static final String FALSE = "false";
 
@@ -271,6 +277,19 @@ public class RestoreBackupRequest implements IndexedRecord {
         public static final String RENAMED_OBJECTS_SCHEMA = "renamed_objects_schema";
 
         /**
+         * Whether or not all permissions of restored principals should be
+         * restored or scoped to the restored objects.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}: Restore all permissions.
+         *     <li>{@link Options#FALSE FALSE}: Restore only permissions on
+         *         restored objects.
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String RESTORE_ALL_PERMISSIONS = "restore_all_permissions";
+
+        /**
          * Behavior to apply when any database object to restore already
          * exists.
          * Supported values:
@@ -357,6 +376,10 @@ public class RestoreBackupRequest implements IndexedRecord {
      *                                   DATASOURCE}: <a
      *                                   href="../../../../../../concepts/data_sources/"
      *                                   target="_top">Data source(s)</a>.
+     *                               <li>{@link RestoreObjectsMap#DIRECTORY
+     *                                   DIRECTORY}: KiFS <a
+     *                                   href="../../../../../../tools/kifs/"
+     *                                   target="_top">File directory(ies)</a>.
      *                               <li>{@link
      *                                   RestoreObjectsMap#FUNCTION_ENVIRONMENT
      *                                   FUNCTION_ENVIRONMENT}: <a
@@ -366,7 +389,10 @@ public class RestoreBackupRequest implements IndexedRecord {
      *                               <li>{@link RestoreObjectsMap#GRAPH GRAPH}:
      *                                   <a
      *                                   href="../../../../../../graph_solver/network_graph_solver/"
-     *                                   target="_top">Graph(s)</a> definition.
+     *                                   target="_top">Graph</a> definition(s).
+     *                                   Source table(s), if applicable, are
+     *                                   required in order to restore graph
+     *                                   objects.
      *                               <li>{@link RestoreObjectsMap#MONITOR
      *                                   MONITOR}: <a
      *                                   href="../../../../../../concepts/table_monitors/"
@@ -503,6 +529,19 @@ public class RestoreBackupRequest implements IndexedRecord {
      *                         Options#RENAME RENAME}, use this schema for
      *                         relocated existing objects instead of the
      *                         default generated one. The default value is ''.
+     *                     <li>{@link Options#RESTORE_ALL_PERMISSIONS
+     *                         RESTORE_ALL_PERMISSIONS}: Whether or not all
+     *                         permissions of restored principals should be
+     *                         restored or scoped to the restored objects.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}: Restore all
+     *                                 permissions.
+     *                             <li>{@link Options#FALSE FALSE}: Restore
+     *                                 only permissions on restored objects.
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                     <li>{@link Options#RESTORE_POLICY RESTORE_POLICY}:
      *                         Behavior to apply when any database object to
      *                         restore already exists.
@@ -576,13 +615,17 @@ public class RestoreBackupRequest implements IndexedRecord {
      *     <li>{@link RestoreObjectsMap#DATASOURCE DATASOURCE}: <a
      *         href="../../../../../../concepts/data_sources/"
      *         target="_top">Data source(s)</a>.
+     *     <li>{@link RestoreObjectsMap#DIRECTORY DIRECTORY}: KiFS <a
+     *         href="../../../../../../tools/kifs/" target="_top">File
+     *         directory(ies)</a>.
      *     <li>{@link RestoreObjectsMap#FUNCTION_ENVIRONMENT
      *         FUNCTION_ENVIRONMENT}: <a
      *         href="../../../../../../udf/python/writing/#udf-python-func-env"
      *         target="_top">Python UDF function environment(s)</a>.
      *     <li>{@link RestoreObjectsMap#GRAPH GRAPH}: <a
      *         href="../../../../../../graph_solver/network_graph_solver/"
-     *         target="_top">Graph(s)</a> definition.
+     *         target="_top">Graph</a> definition(s).  Source table(s), if
+     *         applicable, are required in order to restore graph objects.
      *     <li>{@link RestoreObjectsMap#MONITOR MONITOR}: <a
      *         href="../../../../../../concepts/table_monitors/"
      *         target="_top">Table monitor(s)</a> / <a
@@ -640,13 +683,17 @@ public class RestoreBackupRequest implements IndexedRecord {
      *     <li>{@link RestoreObjectsMap#DATASOURCE DATASOURCE}: <a
      *         href="../../../../../../concepts/data_sources/"
      *         target="_top">Data source(s)</a>.
+     *     <li>{@link RestoreObjectsMap#DIRECTORY DIRECTORY}: KiFS <a
+     *         href="../../../../../../tools/kifs/" target="_top">File
+     *         directory(ies)</a>.
      *     <li>{@link RestoreObjectsMap#FUNCTION_ENVIRONMENT
      *         FUNCTION_ENVIRONMENT}: <a
      *         href="../../../../../../udf/python/writing/#udf-python-func-env"
      *         target="_top">Python UDF function environment(s)</a>.
      *     <li>{@link RestoreObjectsMap#GRAPH GRAPH}: <a
      *         href="../../../../../../graph_solver/network_graph_solver/"
-     *         target="_top">Graph(s)</a> definition.
+     *         target="_top">Graph</a> definition(s).  Source table(s), if
+     *         applicable, are required in order to restore graph objects.
      *     <li>{@link RestoreObjectsMap#MONITOR MONITOR}: <a
      *         href="../../../../../../concepts/table_monitors/"
      *         target="_top">Table monitor(s)</a> / <a
@@ -783,6 +830,16 @@ public class RestoreBackupRequest implements IndexedRecord {
      *         Options#RENAME RENAME}, use this schema for relocated existing
      *         objects instead of the default generated one. The default value
      *         is ''.
+     *     <li>{@link Options#RESTORE_ALL_PERMISSIONS RESTORE_ALL_PERMISSIONS}:
+     *         Whether or not all permissions of restored principals should be
+     *         restored or scoped to the restored objects.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}: Restore all permissions.
+     *             <li>{@link Options#FALSE FALSE}: Restore only permissions on
+     *                 restored objects.
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#RESTORE_POLICY RESTORE_POLICY}: Behavior to apply
      *         when any database object to restore already exists.
      *         Supported values:
@@ -883,6 +940,16 @@ public class RestoreBackupRequest implements IndexedRecord {
      *         Options#RENAME RENAME}, use this schema for relocated existing
      *         objects instead of the default generated one. The default value
      *         is ''.
+     *     <li>{@link Options#RESTORE_ALL_PERMISSIONS RESTORE_ALL_PERMISSIONS}:
+     *         Whether or not all permissions of restored principals should be
+     *         restored or scoped to the restored objects.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}: Restore all permissions.
+     *             <li>{@link Options#FALSE FALSE}: Restore only permissions on
+     *                 restored objects.
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#RESTORE_POLICY RESTORE_POLICY}: Behavior to apply
      *         when any database object to restore already exists.
      *         Supported values:

@@ -43,13 +43,13 @@ public class CreateUnionResponse implements IndexedRecord {
      */
     public static final class Info {
         /**
-         * Number of records in the final table
+         * Number of records in the final table.
          */
         public static final String COUNT = "count";
 
         /**
          * The fully qualified name of the result table (i.e.&nbsp;including
-         * the schema)
+         * the schema).
          */
         public static final String QUALIFIED_TABLE_NAME = "qualified_table_name";
 
@@ -91,10 +91,10 @@ public class CreateUnionResponse implements IndexedRecord {
     /**
      * Additional information.
      * <ul>
-     *     <li>{@link Info#COUNT COUNT}: Number of records in the final table
+     *     <li>{@link Info#COUNT COUNT}: Number of records in the final table.
      *     <li>{@link Info#QUALIFIED_TABLE_NAME QUALIFIED_TABLE_NAME}: The
      *         fully qualified name of the result table (i.e. including the
-     *         schema)
+     *         schema).
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -107,10 +107,10 @@ public class CreateUnionResponse implements IndexedRecord {
     /**
      * Additional information.
      * <ul>
-     *     <li>{@link Info#COUNT COUNT}: Number of records in the final table
+     *     <li>{@link Info#COUNT COUNT}: Number of records in the final table.
      *     <li>{@link Info#QUALIFIED_TABLE_NAME QUALIFIED_TABLE_NAME}: The
      *         fully qualified name of the result table (i.e. including the
-     *         schema)
+     *         schema).
      * </ul>
      * The default value is an empty {@link Map}.
      *

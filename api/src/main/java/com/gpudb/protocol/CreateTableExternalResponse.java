@@ -89,7 +89,7 @@ public class CreateTableExternalResponse implements IndexedRecord {
     /**
      * ID of the currently registered table structure <a
      * href="../../../../../../concepts/types/" target="_top">type</a> for this
-     * external table
+     * external table.
      *
      * @return The current value of {@code typeId}.
      */
@@ -100,7 +100,7 @@ public class CreateTableExternalResponse implements IndexedRecord {
     /**
      * ID of the currently registered table structure <a
      * href="../../../../../../concepts/types/" target="_top">type</a> for this
-     * external table
+     * external table.
      *
      * @param typeId  The new value for {@code typeId}.
      *
@@ -112,7 +112,7 @@ public class CreateTableExternalResponse implements IndexedRecord {
     }
 
     /**
-     * A JSON string describing the columns of the created external table
+     * A JSON string describing the columns of the created external table.
      *
      * @return The current value of {@code typeDefinition}.
      */
@@ -121,7 +121,7 @@ public class CreateTableExternalResponse implements IndexedRecord {
     }
 
     /**
-     * A JSON string describing the columns of the created external table
+     * A JSON string describing the columns of the created external table.
      *
      * @param typeDefinition  The new value for {@code typeDefinition}.
      *
@@ -133,7 +133,7 @@ public class CreateTableExternalResponse implements IndexedRecord {
     }
 
     /**
-     * The user-defined description associated with the table's structure
+     * The user-defined description associated with the table's structure.
      *
      * @return The current value of {@code typeLabel}.
      */
@@ -142,7 +142,7 @@ public class CreateTableExternalResponse implements IndexedRecord {
     }
 
     /**
-     * The user-defined description associated with the table's structure
+     * The user-defined description associated with the table's structure.
      *
      * @param typeLabel  The new value for {@code typeLabel}.
      *
@@ -155,7 +155,7 @@ public class CreateTableExternalResponse implements IndexedRecord {
 
     /**
      * A mapping of each external table column name to an array of column
-     * properties associated with that column
+     * properties associated with that column.
      *
      * @return The current value of {@code typeProperties}.
      */
@@ -165,7 +165,7 @@ public class CreateTableExternalResponse implements IndexedRecord {
 
     /**
      * A mapping of each external table column name to an array of column
-     * properties associated with that column
+     * properties associated with that column.
      *
      * @param typeProperties  The new value for {@code typeProperties}.
      *
@@ -267,6 +267,8 @@ public class CreateTableExternalResponse implements IndexedRecord {
     }
 
     /**
+     * The list of source files used to create the external table.
+     *
      * @return The current value of {@code files}.
      */
     public List<String> getFiles() {
@@ -274,6 +276,8 @@ public class CreateTableExternalResponse implements IndexedRecord {
     }
 
     /**
+     * The list of source files used to create the external table.
+     *
      * @param files  The new value for {@code files}.
      *
      * @return {@code this} to mimic the builder pattern.

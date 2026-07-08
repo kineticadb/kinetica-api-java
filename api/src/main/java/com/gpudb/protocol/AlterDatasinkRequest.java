@@ -17,7 +17,7 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#alterDatasink(AlterDatasinkRequest) GPUdb.alterDatasink}.
  * <p>
  * Alters the properties of an existing <a
- * href="../../../../../../concepts/data_sinks/" target="_top">data sink</a>
+ * href="../../../../../../concepts/data_sinks/" target="_top">data sink</a>.
  */
 public class AlterDatasinkRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -57,28 +57,28 @@ public class AlterDatasinkRequest implements IndexedRecord {
         public static final String DESTINATION = "destination";
 
         /**
-         * Timeout in seconds for connecting to this sink
+         * Timeout in seconds for connecting to this sink.
          */
         public static final String CONNECTION_TIMEOUT = "connection_timeout";
 
         /**
-         * Timeout in seconds for waiting for a response from this sink
+         * Timeout in seconds for waiting for a response from this sink.
          */
         public static final String WAIT_TIMEOUT = "wait_timeout";
 
         /**
          * Name of the <a href="../../../../../../concepts/credentials/"
-         * target="_top">credential</a> object to be used in this data sink
+         * target="_top">credential</a> object to be used in this data sink.
          */
         public static final String CREDENTIAL = "credential";
 
         /**
-         * Name of the Amazon S3 bucket to use as the data sink
+         * Name of the Amazon S3 bucket to use as the data sink.
          */
         public static final String S3_BUCKET_NAME = "s3_bucket_name";
 
         /**
-         * Name of the Amazon S3 region where the given bucket is located
+         * Name of the Amazon S3 region where the given bucket is located.
          */
         public static final String S3_REGION = "s3_region";
 
@@ -87,7 +87,7 @@ public class AlterDatasinkRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link DatasinkUpdatesMap#TRUE TRUE}: Connect with SSL
-         *         verification
+         *         verification.
          *     <li>{@link DatasinkUpdatesMap#FALSE FALSE}: Connect without
          *         verifying the SSL connection; for testing purposes,
          *         bypassing TLS errors, self-signed certificates, etc.
@@ -116,27 +116,27 @@ public class AlterDatasinkRequest implements IndexedRecord {
 
         /**
          * Amazon IAM Role ARN which has required S3 permissions that can be
-         * assumed for the given S3 IAM user
+         * assumed for the given S3 IAM user.
          */
         public static final String S3_AWS_ROLE_ARN = "s3_aws_role_arn";
 
         /**
-         * Customer encryption algorithm used encrypting data
+         * Customer encryption algorithm used encrypting data.
          */
         public static final String S3_ENCRYPTION_CUSTOMER_ALGORITHM = "s3_encryption_customer_algorithm";
 
         /**
-         * Customer encryption key to encrypt or decrypt data
+         * Customer encryption key to encrypt or decrypt data.
          */
         public static final String S3_ENCRYPTION_CUSTOMER_KEY = "s3_encryption_customer_key";
 
         /**
-         * Server side encryption type
+         * Server side encryption type.
          */
         public static final String S3_ENCRYPTION_TYPE = "s3_encryption_type";
 
         /**
-         * KMS key
+         * KMS key.
          */
         public static final String S3_KMS_KEY_ID = "s3_kms_key_id";
 
@@ -147,7 +147,7 @@ public class AlterDatasinkRequest implements IndexedRecord {
         public static final String HDFS_KERBEROS_KEYTAB = "hdfs_kerberos_keytab";
 
         /**
-         * Delegation token for the given HDFS user
+         * Delegation token for the given HDFS user.
          */
         public static final String HDFS_DELEGATION_TOKEN = "hdfs_delegation_token";
 
@@ -164,28 +164,28 @@ public class AlterDatasinkRequest implements IndexedRecord {
 
         /**
          * Name of the Azure storage account to use as the data sink, this is
-         * valid only if tenant_id is specified
+         * valid only if tenant_id is specified.
          */
         public static final String AZURE_STORAGE_ACCOUNT_NAME = "azure_storage_account_name";
 
         /**
-         * Name of the Azure storage container to use as the data sink
+         * Name of the Azure storage container to use as the data sink.
          */
         public static final String AZURE_CONTAINER_NAME = "azure_container_name";
 
         /**
-         * Active Directory tenant ID (or directory ID)
+         * Active Directory tenant ID (or directory ID).
          */
         public static final String AZURE_TENANT_ID = "azure_tenant_id";
 
         /**
          * Shared access signature token for Azure storage account to use as
-         * the data sink
+         * the data sink.
          */
         public static final String AZURE_SAS_TOKEN = "azure_sas_token";
 
         /**
-         * Oauth token to access given storage container
+         * OAuth token to access given storage container.
          */
         public static final String AZURE_OAUTH_TOKEN = "azure_oauth_token";
 
@@ -204,18 +204,18 @@ public class AlterDatasinkRequest implements IndexedRecord {
         public static final String AZURE_USE_VIRTUAL_ADDRESSING = "azure_use_virtual_addressing";
 
         /**
-         * Name of the Google Cloud Storage bucket to use as the data sink
+         * Name of the Google Cloud Storage bucket to use as the data sink.
          */
         public static final String GCS_BUCKET_NAME = "gcs_bucket_name";
 
         /**
-         * Name of the Google Cloud project to use as the data sink
+         * Name of the Google Cloud project to use as the data sink.
          */
         public static final String GCS_PROJECT_ID = "gcs_project_id";
 
         /**
          * Google Cloud service account keys to use for authenticating the data
-         * sink
+         * sink.
          */
         public static final String GCS_SERVICE_ACCOUNT_KEYS = "gcs_service_account_keys";
 
@@ -225,7 +225,7 @@ public class AlterDatasinkRequest implements IndexedRecord {
         public static final String JDBC_DRIVER_JAR_PATH = "jdbc_driver_jar_path";
 
         /**
-         * Name of the JDBC driver class
+         * Name of the JDBC driver class.
          */
         public static final String JDBC_DRIVER_CLASS_NAME = "jdbc_driver_class_name";
 
@@ -237,7 +237,7 @@ public class AlterDatasinkRequest implements IndexedRecord {
 
         /**
          * Name of the Kafka topic to use for this data sink, if it references
-         * a Kafka broker
+         * a Kafka broker.
          */
         public static final String KAFKA_TOPIC_NAME = "kafka_topic_name";
 
@@ -267,7 +267,7 @@ public class AlterDatasinkRequest implements IndexedRecord {
         public static final String USE_MANAGED_CREDENTIALS = "use_managed_credentials";
 
         /**
-         * Use https to connect to datasink if true, otherwise use http.
+         * Use HTTPS to connect to datasink if true, otherwise use HTTP.
          * Supported values:
          * <ul>
          *     <li>{@link DatasinkUpdatesMap#TRUE TRUE}
@@ -294,21 +294,21 @@ public class AlterDatasinkRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link DatasinkUpdatesMap#FLAT FLAT}: A single record is
-         *         returned per message
+         *         returned per message.
          *     <li>{@link DatasinkUpdatesMap#NESTED NESTED}: Records are
-         *         returned as an array per message
+         *         returned as an array per message.
          * </ul>
          * The default value is {@link DatasinkUpdatesMap#FLAT FLAT}.
          */
         public static final String JSON_FORMAT = "json_format";
 
         /**
-         * A single record is returned per message
+         * A single record is returned per message.
          */
         public static final String FLAT = "flat";
 
         /**
-         * Records are returned as an array per message
+         * Records are returned as an array per message.
          */
         public static final String NESTED = "nested";
 
@@ -365,24 +365,25 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *                                <li>{@link
      *                                    DatasinkUpdatesMap#CONNECTION_TIMEOUT
      *                                    CONNECTION_TIMEOUT}: Timeout in
-     *                                    seconds for connecting to this sink
+     *                                    seconds for connecting to this sink.
      *                                <li>{@link
      *                                    DatasinkUpdatesMap#WAIT_TIMEOUT
      *                                    WAIT_TIMEOUT}: Timeout in seconds for
-     *                                    waiting for a response from this sink
+     *                                    waiting for a response from this
+     *                                    sink.
      *                                <li>{@link DatasinkUpdatesMap#CREDENTIAL
      *                                    CREDENTIAL}: Name of the <a
      *                                    href="../../../../../../concepts/credentials/"
      *                                    target="_top">credential</a> object
-     *                                    to be used in this data sink
+     *                                    to be used in this data sink.
      *                                <li>{@link
      *                                    DatasinkUpdatesMap#S3_BUCKET_NAME
      *                                    S3_BUCKET_NAME}: Name of the Amazon
-     *                                    S3 bucket to use as the data sink
+     *                                    S3 bucket to use as the data sink.
      *                                <li>{@link DatasinkUpdatesMap#S3_REGION
      *                                    S3_REGION}: Name of the Amazon S3
      *                                    region where the given bucket is
-     *                                    located
+     *                                    located.
      *                                <li>{@link
      *                                    DatasinkUpdatesMap#S3_VERIFY_SSL
      *                                    S3_VERIFY_SSL}: Whether to verify SSL
@@ -392,7 +393,7 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *                                        <li>{@link
      *                                            DatasinkUpdatesMap#TRUE
      *                                            TRUE}: Connect with SSL
-     *                                            verification
+     *                                            verification.
      *                                        <li>{@link
      *                                            DatasinkUpdatesMap#FALSE
      *                                            FALSE}: Connect without
@@ -431,24 +432,24 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *                                    S3_AWS_ROLE_ARN}: Amazon IAM Role ARN
      *                                    which has required S3 permissions
      *                                    that can be assumed for the given S3
-     *                                    IAM user
+     *                                    IAM user.
      *                                <li>{@link
      *                                    DatasinkUpdatesMap#S3_ENCRYPTION_CUSTOMER_ALGORITHM
      *                                    S3_ENCRYPTION_CUSTOMER_ALGORITHM}:
      *                                    Customer encryption algorithm used
-     *                                    encrypting data
+     *                                    encrypting data.
      *                                <li>{@link
      *                                    DatasinkUpdatesMap#S3_ENCRYPTION_CUSTOMER_KEY
      *                                    S3_ENCRYPTION_CUSTOMER_KEY}: Customer
      *                                    encryption key to encrypt or decrypt
-     *                                    data
+     *                                    data.
      *                                <li>{@link
      *                                    DatasinkUpdatesMap#S3_ENCRYPTION_TYPE
      *                                    S3_ENCRYPTION_TYPE}: Server side
-     *                                    encryption type
+     *                                    encryption type.
      *                                <li>{@link
      *                                    DatasinkUpdatesMap#S3_KMS_KEY_ID
-     *                                    S3_KMS_KEY_ID}: KMS key
+     *                                    S3_KMS_KEY_ID}: KMS key.
      *                                <li>{@link
      *                                    DatasinkUpdatesMap#HDFS_KERBEROS_KEYTAB
      *                                    HDFS_KERBEROS_KEYTAB}: Kerberos
@@ -457,7 +458,7 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *                                <li>{@link
      *                                    DatasinkUpdatesMap#HDFS_DELEGATION_TOKEN
      *                                    HDFS_DELEGATION_TOKEN}: Delegation
-     *                                    token for the given HDFS user
+     *                                    token for the given HDFS user.
      *                                <li>{@link
      *                                    DatasinkUpdatesMap#HDFS_USE_KERBEROS
      *                                    HDFS_USE_KERBEROS}: Use kerberos
@@ -478,25 +479,25 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *                                    AZURE_STORAGE_ACCOUNT_NAME}: Name of
      *                                    the Azure storage account to use as
      *                                    the data sink, this is valid only if
-     *                                    tenant_id is specified
+     *                                    tenant_id is specified.
      *                                <li>{@link
      *                                    DatasinkUpdatesMap#AZURE_CONTAINER_NAME
      *                                    AZURE_CONTAINER_NAME}: Name of the
      *                                    Azure storage container to use as the
-     *                                    data sink
+     *                                    data sink.
      *                                <li>{@link
      *                                    DatasinkUpdatesMap#AZURE_TENANT_ID
      *                                    AZURE_TENANT_ID}: Active Directory
-     *                                    tenant ID (or directory ID)
+     *                                    tenant ID (or directory ID).
      *                                <li>{@link
      *                                    DatasinkUpdatesMap#AZURE_SAS_TOKEN
      *                                    AZURE_SAS_TOKEN}: Shared access
      *                                    signature token for Azure storage
-     *                                    account to use as the data sink
+     *                                    account to use as the data sink.
      *                                <li>{@link
      *                                    DatasinkUpdatesMap#AZURE_OAUTH_TOKEN
-     *                                    AZURE_OAUTH_TOKEN}: Oauth token to
-     *                                    access given storage container
+     *                                    AZURE_OAUTH_TOKEN}: OAuth token to
+     *                                    access given storage container.
      *                                <li>{@link
      *                                    DatasinkUpdatesMap#AZURE_USE_VIRTUAL_ADDRESSING
      *                                    AZURE_USE_VIRTUAL_ADDRESSING}:
@@ -523,16 +524,17 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *                                    DatasinkUpdatesMap#GCS_BUCKET_NAME
      *                                    GCS_BUCKET_NAME}: Name of the Google
      *                                    Cloud Storage bucket to use as the
-     *                                    data sink
+     *                                    data sink.
      *                                <li>{@link
      *                                    DatasinkUpdatesMap#GCS_PROJECT_ID
      *                                    GCS_PROJECT_ID}: Name of the Google
-     *                                    Cloud project to use as the data sink
+     *                                    Cloud project to use as the data
+     *                                    sink.
      *                                <li>{@link
      *                                    DatasinkUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
      *                                    GCS_SERVICE_ACCOUNT_KEYS}: Google
      *                                    Cloud service account keys to use for
-     *                                    authenticating the data sink
+     *                                    authenticating the data sink.
      *                                <li>{@link
      *                                    DatasinkUpdatesMap#JDBC_DRIVER_JAR_PATH
      *                                    JDBC_DRIVER_JAR_PATH}: JDBC driver
@@ -541,7 +543,7 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *                                <li>{@link
      *                                    DatasinkUpdatesMap#JDBC_DRIVER_CLASS_NAME
      *                                    JDBC_DRIVER_CLASS_NAME}: Name of the
-     *                                    JDBC driver class
+     *                                    JDBC driver class.
      *                                <li>{@link DatasinkUpdatesMap#KAFKA_URL
      *                                    KAFKA_URL}: The publicly-accessible
      *                                    full path URL to the kafka broker,
@@ -550,7 +552,7 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *                                    DatasinkUpdatesMap#KAFKA_TOPIC_NAME
      *                                    KAFKA_TOPIC_NAME}: Name of the Kafka
      *                                    topic to use for this data sink, if
-     *                                    it references a Kafka broker
+     *                                    it references a Kafka broker.
      *                                <li>{@link DatasinkUpdatesMap#ANONYMOUS
      *                                    ANONYMOUS}: Create an anonymous
      *                                    connection to the storage
@@ -586,8 +588,8 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *                                    The default value is {@link
      *                                    DatasinkUpdatesMap#FALSE FALSE}.
      *                                <li>{@link DatasinkUpdatesMap#USE_HTTPS
-     *                                    USE_HTTPS}: Use https to connect to
-     *                                    datasink if true, otherwise use http.
+     *                                    USE_HTTPS}: Use HTTPS to connect to
+     *                                    datasink if true, otherwise use HTTP.
      *                                    Supported values:
      *                                    <ul>
      *                                        <li>{@link
@@ -616,11 +618,11 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *                                        <li>{@link
      *                                            DatasinkUpdatesMap#FLAT
      *                                            FLAT}: A single record is
-     *                                            returned per message
+     *                                            returned per message.
      *                                        <li>{@link
      *                                            DatasinkUpdatesMap#NESTED
      *                                            NESTED}: Records are returned
-     *                                            as an array per message
+     *                                            as an array per message.
      *                                    </ul>
      *                                    The default value is {@link
      *                                    DatasinkUpdatesMap#FLAT FLAT}.
@@ -687,22 +689,23 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *         'https', 'jdbc', 'kafka', and 's3'.
      *     <li>{@link DatasinkUpdatesMap#CONNECTION_TIMEOUT
      *         CONNECTION_TIMEOUT}: Timeout in seconds for connecting to this
-     *         sink
+     *         sink.
      *     <li>{@link DatasinkUpdatesMap#WAIT_TIMEOUT WAIT_TIMEOUT}: Timeout in
-     *         seconds for waiting for a response from this sink
+     *         seconds for waiting for a response from this sink.
      *     <li>{@link DatasinkUpdatesMap#CREDENTIAL CREDENTIAL}: Name of the <a
      *         href="../../../../../../concepts/credentials/"
-     *         target="_top">credential</a> object to be used in this data sink
+     *         target="_top">credential</a> object to be used in this data
+     *         sink.
      *     <li>{@link DatasinkUpdatesMap#S3_BUCKET_NAME S3_BUCKET_NAME}: Name
-     *         of the Amazon S3 bucket to use as the data sink
+     *         of the Amazon S3 bucket to use as the data sink.
      *     <li>{@link DatasinkUpdatesMap#S3_REGION S3_REGION}: Name of the
-     *         Amazon S3 region where the given bucket is located
+     *         Amazon S3 region where the given bucket is located.
      *     <li>{@link DatasinkUpdatesMap#S3_VERIFY_SSL S3_VERIFY_SSL}: Whether
      *         to verify SSL connections.
      *         Supported values:
      *         <ul>
      *             <li>{@link DatasinkUpdatesMap#TRUE TRUE}: Connect with SSL
-     *                 verification
+     *                 verification.
      *             <li>{@link DatasinkUpdatesMap#FALSE FALSE}: Connect without
      *                 verifying the SSL connection; for testing purposes,
      *                 bypassing TLS errors, self-signed certificates, etc.
@@ -722,21 +725,22 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *         The default value is {@link DatasinkUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasinkUpdatesMap#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}:
      *         Amazon IAM Role ARN which has required S3 permissions that can
-     *         be assumed for the given S3 IAM user
+     *         be assumed for the given S3 IAM user.
      *     <li>{@link DatasinkUpdatesMap#S3_ENCRYPTION_CUSTOMER_ALGORITHM
      *         S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer encryption algorithm
-     *         used encrypting data
+     *         used encrypting data.
      *     <li>{@link DatasinkUpdatesMap#S3_ENCRYPTION_CUSTOMER_KEY
      *         S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption key to encrypt
-     *         or decrypt data
+     *         or decrypt data.
      *     <li>{@link DatasinkUpdatesMap#S3_ENCRYPTION_TYPE
-     *         S3_ENCRYPTION_TYPE}: Server side encryption type
-     *     <li>{@link DatasinkUpdatesMap#S3_KMS_KEY_ID S3_KMS_KEY_ID}: KMS key
+     *         S3_ENCRYPTION_TYPE}: Server side encryption type.
+     *     <li>{@link DatasinkUpdatesMap#S3_KMS_KEY_ID S3_KMS_KEY_ID}: KMS key.
      *     <li>{@link DatasinkUpdatesMap#HDFS_KERBEROS_KEYTAB
      *         HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for the
      *         given HDFS user.  This may be a KIFS file.
      *     <li>{@link DatasinkUpdatesMap#HDFS_DELEGATION_TOKEN
-     *         HDFS_DELEGATION_TOKEN}: Delegation token for the given HDFS user
+     *         HDFS_DELEGATION_TOKEN}: Delegation token for the given HDFS
+     *         user.
      *     <li>{@link DatasinkUpdatesMap#HDFS_USE_KERBEROS HDFS_USE_KERBEROS}:
      *         Use kerberos authentication for the given HDFS cluster.
      *         Supported values:
@@ -748,17 +752,17 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *     <li>{@link DatasinkUpdatesMap#AZURE_STORAGE_ACCOUNT_NAME
      *         AZURE_STORAGE_ACCOUNT_NAME}: Name of the Azure storage account
      *         to use as the data sink, this is valid only if tenant_id is
-     *         specified
+     *         specified.
      *     <li>{@link DatasinkUpdatesMap#AZURE_CONTAINER_NAME
      *         AZURE_CONTAINER_NAME}: Name of the Azure storage container to
-     *         use as the data sink
+     *         use as the data sink.
      *     <li>{@link DatasinkUpdatesMap#AZURE_TENANT_ID AZURE_TENANT_ID}:
-     *         Active Directory tenant ID (or directory ID)
+     *         Active Directory tenant ID (or directory ID).
      *     <li>{@link DatasinkUpdatesMap#AZURE_SAS_TOKEN AZURE_SAS_TOKEN}:
      *         Shared access signature token for Azure storage account to use
-     *         as the data sink
+     *         as the data sink.
      *     <li>{@link DatasinkUpdatesMap#AZURE_OAUTH_TOKEN AZURE_OAUTH_TOKEN}:
-     *         Oauth token to access given storage container
+     *         OAuth token to access given storage container.
      *     <li>{@link DatasinkUpdatesMap#AZURE_USE_VIRTUAL_ADDRESSING
      *         AZURE_USE_VIRTUAL_ADDRESSING}: Whether to use virtual addressing
      *         when referencing the Azure source.
@@ -772,23 +776,23 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link DatasinkUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasinkUpdatesMap#GCS_BUCKET_NAME GCS_BUCKET_NAME}: Name
-     *         of the Google Cloud Storage bucket to use as the data sink
+     *         of the Google Cloud Storage bucket to use as the data sink.
      *     <li>{@link DatasinkUpdatesMap#GCS_PROJECT_ID GCS_PROJECT_ID}: Name
-     *         of the Google Cloud project to use as the data sink
+     *         of the Google Cloud project to use as the data sink.
      *     <li>{@link DatasinkUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
      *         GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud service account keys to
-     *         use for authenticating the data sink
+     *         use for authenticating the data sink.
      *     <li>{@link DatasinkUpdatesMap#JDBC_DRIVER_JAR_PATH
      *         JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location.  This may
      *         be a KIFS file.
      *     <li>{@link DatasinkUpdatesMap#JDBC_DRIVER_CLASS_NAME
-     *         JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
+     *         JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class.
      *     <li>{@link DatasinkUpdatesMap#KAFKA_URL KAFKA_URL}: The
      *         publicly-accessible full path URL to the kafka broker, e.g.,
      *         'http://172.123.45.67:9300'.
      *     <li>{@link DatasinkUpdatesMap#KAFKA_TOPIC_NAME KAFKA_TOPIC_NAME}:
      *         Name of the Kafka topic to use for this data sink, if it
-     *         references a Kafka broker
+     *         references a Kafka broker.
      *     <li>{@link DatasinkUpdatesMap#ANONYMOUS ANONYMOUS}: Create an
      *         anonymous connection to the storage provider--DEPRECATED: this
      *         is now the default.  Specify use_managed_credentials for
@@ -809,8 +813,8 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *             <li>{@link DatasinkUpdatesMap#FALSE FALSE}
      *         </ul>
      *         The default value is {@link DatasinkUpdatesMap#FALSE FALSE}.
-     *     <li>{@link DatasinkUpdatesMap#USE_HTTPS USE_HTTPS}: Use https to
-     *         connect to datasink if true, otherwise use http.
+     *     <li>{@link DatasinkUpdatesMap#USE_HTTPS USE_HTTPS}: Use HTTPS to
+     *         connect to datasink if true, otherwise use HTTP.
      *         Supported values:
      *         <ul>
      *             <li>{@link DatasinkUpdatesMap#TRUE TRUE}
@@ -828,9 +832,9 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link DatasinkUpdatesMap#FLAT FLAT}: A single record is
-     *                 returned per message
+     *                 returned per message.
      *             <li>{@link DatasinkUpdatesMap#NESTED NESTED}: Records are
-     *                 returned as an array per message
+     *                 returned as an array per message.
      *         </ul>
      *         The default value is {@link DatasinkUpdatesMap#FLAT FLAT}.
      *     <li>{@link DatasinkUpdatesMap#SKIP_VALIDATION SKIP_VALIDATION}:
@@ -864,22 +868,23 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *         'https', 'jdbc', 'kafka', and 's3'.
      *     <li>{@link DatasinkUpdatesMap#CONNECTION_TIMEOUT
      *         CONNECTION_TIMEOUT}: Timeout in seconds for connecting to this
-     *         sink
+     *         sink.
      *     <li>{@link DatasinkUpdatesMap#WAIT_TIMEOUT WAIT_TIMEOUT}: Timeout in
-     *         seconds for waiting for a response from this sink
+     *         seconds for waiting for a response from this sink.
      *     <li>{@link DatasinkUpdatesMap#CREDENTIAL CREDENTIAL}: Name of the <a
      *         href="../../../../../../concepts/credentials/"
-     *         target="_top">credential</a> object to be used in this data sink
+     *         target="_top">credential</a> object to be used in this data
+     *         sink.
      *     <li>{@link DatasinkUpdatesMap#S3_BUCKET_NAME S3_BUCKET_NAME}: Name
-     *         of the Amazon S3 bucket to use as the data sink
+     *         of the Amazon S3 bucket to use as the data sink.
      *     <li>{@link DatasinkUpdatesMap#S3_REGION S3_REGION}: Name of the
-     *         Amazon S3 region where the given bucket is located
+     *         Amazon S3 region where the given bucket is located.
      *     <li>{@link DatasinkUpdatesMap#S3_VERIFY_SSL S3_VERIFY_SSL}: Whether
      *         to verify SSL connections.
      *         Supported values:
      *         <ul>
      *             <li>{@link DatasinkUpdatesMap#TRUE TRUE}: Connect with SSL
-     *                 verification
+     *                 verification.
      *             <li>{@link DatasinkUpdatesMap#FALSE FALSE}: Connect without
      *                 verifying the SSL connection; for testing purposes,
      *                 bypassing TLS errors, self-signed certificates, etc.
@@ -899,21 +904,22 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *         The default value is {@link DatasinkUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasinkUpdatesMap#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}:
      *         Amazon IAM Role ARN which has required S3 permissions that can
-     *         be assumed for the given S3 IAM user
+     *         be assumed for the given S3 IAM user.
      *     <li>{@link DatasinkUpdatesMap#S3_ENCRYPTION_CUSTOMER_ALGORITHM
      *         S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer encryption algorithm
-     *         used encrypting data
+     *         used encrypting data.
      *     <li>{@link DatasinkUpdatesMap#S3_ENCRYPTION_CUSTOMER_KEY
      *         S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption key to encrypt
-     *         or decrypt data
+     *         or decrypt data.
      *     <li>{@link DatasinkUpdatesMap#S3_ENCRYPTION_TYPE
-     *         S3_ENCRYPTION_TYPE}: Server side encryption type
-     *     <li>{@link DatasinkUpdatesMap#S3_KMS_KEY_ID S3_KMS_KEY_ID}: KMS key
+     *         S3_ENCRYPTION_TYPE}: Server side encryption type.
+     *     <li>{@link DatasinkUpdatesMap#S3_KMS_KEY_ID S3_KMS_KEY_ID}: KMS key.
      *     <li>{@link DatasinkUpdatesMap#HDFS_KERBEROS_KEYTAB
      *         HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for the
      *         given HDFS user.  This may be a KIFS file.
      *     <li>{@link DatasinkUpdatesMap#HDFS_DELEGATION_TOKEN
-     *         HDFS_DELEGATION_TOKEN}: Delegation token for the given HDFS user
+     *         HDFS_DELEGATION_TOKEN}: Delegation token for the given HDFS
+     *         user.
      *     <li>{@link DatasinkUpdatesMap#HDFS_USE_KERBEROS HDFS_USE_KERBEROS}:
      *         Use kerberos authentication for the given HDFS cluster.
      *         Supported values:
@@ -925,17 +931,17 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *     <li>{@link DatasinkUpdatesMap#AZURE_STORAGE_ACCOUNT_NAME
      *         AZURE_STORAGE_ACCOUNT_NAME}: Name of the Azure storage account
      *         to use as the data sink, this is valid only if tenant_id is
-     *         specified
+     *         specified.
      *     <li>{@link DatasinkUpdatesMap#AZURE_CONTAINER_NAME
      *         AZURE_CONTAINER_NAME}: Name of the Azure storage container to
-     *         use as the data sink
+     *         use as the data sink.
      *     <li>{@link DatasinkUpdatesMap#AZURE_TENANT_ID AZURE_TENANT_ID}:
-     *         Active Directory tenant ID (or directory ID)
+     *         Active Directory tenant ID (or directory ID).
      *     <li>{@link DatasinkUpdatesMap#AZURE_SAS_TOKEN AZURE_SAS_TOKEN}:
      *         Shared access signature token for Azure storage account to use
-     *         as the data sink
+     *         as the data sink.
      *     <li>{@link DatasinkUpdatesMap#AZURE_OAUTH_TOKEN AZURE_OAUTH_TOKEN}:
-     *         Oauth token to access given storage container
+     *         OAuth token to access given storage container.
      *     <li>{@link DatasinkUpdatesMap#AZURE_USE_VIRTUAL_ADDRESSING
      *         AZURE_USE_VIRTUAL_ADDRESSING}: Whether to use virtual addressing
      *         when referencing the Azure source.
@@ -949,23 +955,23 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link DatasinkUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasinkUpdatesMap#GCS_BUCKET_NAME GCS_BUCKET_NAME}: Name
-     *         of the Google Cloud Storage bucket to use as the data sink
+     *         of the Google Cloud Storage bucket to use as the data sink.
      *     <li>{@link DatasinkUpdatesMap#GCS_PROJECT_ID GCS_PROJECT_ID}: Name
-     *         of the Google Cloud project to use as the data sink
+     *         of the Google Cloud project to use as the data sink.
      *     <li>{@link DatasinkUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
      *         GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud service account keys to
-     *         use for authenticating the data sink
+     *         use for authenticating the data sink.
      *     <li>{@link DatasinkUpdatesMap#JDBC_DRIVER_JAR_PATH
      *         JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location.  This may
      *         be a KIFS file.
      *     <li>{@link DatasinkUpdatesMap#JDBC_DRIVER_CLASS_NAME
-     *         JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
+     *         JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class.
      *     <li>{@link DatasinkUpdatesMap#KAFKA_URL KAFKA_URL}: The
      *         publicly-accessible full path URL to the kafka broker, e.g.,
      *         'http://172.123.45.67:9300'.
      *     <li>{@link DatasinkUpdatesMap#KAFKA_TOPIC_NAME KAFKA_TOPIC_NAME}:
      *         Name of the Kafka topic to use for this data sink, if it
-     *         references a Kafka broker
+     *         references a Kafka broker.
      *     <li>{@link DatasinkUpdatesMap#ANONYMOUS ANONYMOUS}: Create an
      *         anonymous connection to the storage provider--DEPRECATED: this
      *         is now the default.  Specify use_managed_credentials for
@@ -986,8 +992,8 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *             <li>{@link DatasinkUpdatesMap#FALSE FALSE}
      *         </ul>
      *         The default value is {@link DatasinkUpdatesMap#FALSE FALSE}.
-     *     <li>{@link DatasinkUpdatesMap#USE_HTTPS USE_HTTPS}: Use https to
-     *         connect to datasink if true, otherwise use http.
+     *     <li>{@link DatasinkUpdatesMap#USE_HTTPS USE_HTTPS}: Use HTTPS to
+     *         connect to datasink if true, otherwise use HTTP.
      *         Supported values:
      *         <ul>
      *             <li>{@link DatasinkUpdatesMap#TRUE TRUE}
@@ -1005,9 +1011,9 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link DatasinkUpdatesMap#FLAT FLAT}: A single record is
-     *                 returned per message
+     *                 returned per message.
      *             <li>{@link DatasinkUpdatesMap#NESTED NESTED}: Records are
-     *                 returned as an array per message
+     *                 returned as an array per message.
      *         </ul>
      *         The default value is {@link DatasinkUpdatesMap#FLAT FLAT}.
      *     <li>{@link DatasinkUpdatesMap#SKIP_VALIDATION SKIP_VALIDATION}:

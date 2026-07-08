@@ -53,6 +53,8 @@ public class CheckTableResponse implements IndexedRecord {
     }
 
     /**
+     * The names of the tables that were checked.
+     *
      * @return The current value of {@code tableNames}.
      */
     public List<String> getTableNames() {
@@ -60,6 +62,8 @@ public class CheckTableResponse implements IndexedRecord {
     }
 
     /**
+     * The names of the tables that were checked.
+     *
      * @param tableNames  The new value for {@code tableNames}.
      *
      * @return {@code this} to mimic the builder pattern.
@@ -70,6 +74,8 @@ public class CheckTableResponse implements IndexedRecord {
     }
 
     /**
+     * The chunk identifiers associated with each reported result.
+     *
      * @return The current value of {@code ids}.
      */
     public List<String> getIds() {
@@ -77,6 +83,8 @@ public class CheckTableResponse implements IndexedRecord {
     }
 
     /**
+     * The chunk identifiers associated with each reported result.
+     *
      * @param ids  The new value for {@code ids}.
      *
      * @return {@code this} to mimic the builder pattern.
@@ -87,6 +95,8 @@ public class CheckTableResponse implements IndexedRecord {
     }
 
     /**
+     * The locations (rank/tom) where each chunk corruption was found.
+     *
      * @return The current value of {@code locations}.
      */
     public List<String> getLocations() {
@@ -94,6 +104,8 @@ public class CheckTableResponse implements IndexedRecord {
     }
 
     /**
+     * The locations (rank/tom) where each chunk corruption was found.
+     *
      * @param locations  The new value for {@code locations}.
      *
      * @return {@code this} to mimic the builder pattern.
@@ -104,6 +116,10 @@ public class CheckTableResponse implements IndexedRecord {
     }
 
     /**
+     * A description of each corruption error detected or count of the errors,
+     * based on {@link com.gpudb.protocol.CheckTableRequest.Options#SHOW_DETAIL
+     * SHOW_DETAIL}.
+     *
      * @return The current value of {@code errors}.
      */
     public List<String> getErrors() {
@@ -111,6 +127,10 @@ public class CheckTableResponse implements IndexedRecord {
     }
 
     /**
+     * A description of each corruption error detected or count of the errors,
+     * based on {@link com.gpudb.protocol.CheckTableRequest.Options#SHOW_DETAIL
+     * SHOW_DETAIL}.
+     *
      * @param errors  The new value for {@code errors}.
      *
      * @return {@code this} to mimic the builder pattern.

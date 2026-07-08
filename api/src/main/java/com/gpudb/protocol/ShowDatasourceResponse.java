@@ -48,12 +48,12 @@ public class ShowDatasourceResponse implements IndexedRecord {
      */
     public static final class StorageProviderTypes {
         /**
-         * Apache Hadoop Distributed File System
+         * Apache Hadoop Distributed File System.
          */
         public static final String HDFS = "hdfs";
 
         /**
-         * Amazon S3 bucket
+         * Amazon S3 bucket.
          */
         public static final String S3 = "s3";
 
@@ -70,27 +70,27 @@ public class ShowDatasourceResponse implements IndexedRecord {
     public static final class AdditionalInfo {
         /**
          * Location of the remote storage in
-         * 'storage_provider_type://[storage_path[:storage_port]]' format
+         * 'storage_provider_type://[storage_path[:storage_port]]' format.
          */
         public static final String LOCATION = "location";
 
         /**
-         * Name of the Amazon S3 bucket used as the data source
+         * Name of the Amazon S3 bucket used as the data source.
          */
         public static final String S3_BUCKET_NAME = "s3_bucket_name";
 
         /**
-         * Name of the Amazon S3 region where the bucket is located
+         * Name of the Amazon S3 region where the bucket is located.
          */
         public static final String S3_REGION = "s3_region";
 
         /**
-         * Kerberos key for the given HDFS user
+         * Kerberos key for the given HDFS user.
          */
         public static final String HDFS_KERBEROS_KEYTAB = "hdfs_kerberos_keytab";
 
         /**
-         * Name of the remote system user
+         * Name of the remote system user.
          */
         public static final String USER_NAME = "user_name";
 
@@ -135,8 +135,8 @@ public class ShowDatasourceResponse implements IndexedRecord {
      * Supported values:
      * <ul>
      *     <li>{@link StorageProviderTypes#HDFS HDFS}: Apache Hadoop
-     *         Distributed File System
-     *     <li>{@link StorageProviderTypes#S3 S3}: Amazon S3 bucket
+     *         Distributed File System.
+     *     <li>{@link StorageProviderTypes#S3 S3}: Amazon S3 bucket.
      * </ul>
      *
      * @return The current value of {@code storageProviderTypes}.
@@ -151,8 +151,8 @@ public class ShowDatasourceResponse implements IndexedRecord {
      * Supported values:
      * <ul>
      *     <li>{@link StorageProviderTypes#HDFS HDFS}: Apache Hadoop
-     *         Distributed File System
-     *     <li>{@link StorageProviderTypes#S3 S3}: Amazon S3 bucket
+     *         Distributed File System.
+     *     <li>{@link StorageProviderTypes#S3 S3}: Amazon S3 bucket.
      * </ul>
      *
      * @param storageProviderTypes  The new value for {@code
@@ -171,15 +171,15 @@ public class ShowDatasourceResponse implements IndexedRecord {
      * <ul>
      *     <li>{@link AdditionalInfo#LOCATION LOCATION}: Location of the remote
      *         storage in
-     *         'storage_provider_type://[storage_path[:storage_port]]' format
+     *         'storage_provider_type://[storage_path[:storage_port]]' format.
      *     <li>{@link AdditionalInfo#S3_BUCKET_NAME S3_BUCKET_NAME}: Name of
-     *         the Amazon S3 bucket used as the data source
+     *         the Amazon S3 bucket used as the data source.
      *     <li>{@link AdditionalInfo#S3_REGION S3_REGION}: Name of the Amazon
-     *         S3 region where the bucket is located
+     *         S3 region where the bucket is located.
      *     <li>{@link AdditionalInfo#HDFS_KERBEROS_KEYTAB
-     *         HDFS_KERBEROS_KEYTAB}: Kerberos key for the given HDFS user
+     *         HDFS_KERBEROS_KEYTAB}: Kerberos key for the given HDFS user.
      *     <li>{@link AdditionalInfo#USER_NAME USER_NAME}: Name of the remote
-     *         system user
+     *         system user.
      * </ul>
      *
      * @return The current value of {@code additionalInfo}.
@@ -194,15 +194,15 @@ public class ShowDatasourceResponse implements IndexedRecord {
      * <ul>
      *     <li>{@link AdditionalInfo#LOCATION LOCATION}: Location of the remote
      *         storage in
-     *         'storage_provider_type://[storage_path[:storage_port]]' format
+     *         'storage_provider_type://[storage_path[:storage_port]]' format.
      *     <li>{@link AdditionalInfo#S3_BUCKET_NAME S3_BUCKET_NAME}: Name of
-     *         the Amazon S3 bucket used as the data source
+     *         the Amazon S3 bucket used as the data source.
      *     <li>{@link AdditionalInfo#S3_REGION S3_REGION}: Name of the Amazon
-     *         S3 region where the bucket is located
+     *         S3 region where the bucket is located.
      *     <li>{@link AdditionalInfo#HDFS_KERBEROS_KEYTAB
-     *         HDFS_KERBEROS_KEYTAB}: Kerberos key for the given HDFS user
+     *         HDFS_KERBEROS_KEYTAB}: Kerberos key for the given HDFS user.
      *     <li>{@link AdditionalInfo#USER_NAME USER_NAME}: Name of the remote
-     *         system user
+     *         system user.
      * </ul>
      *
      * @param additionalInfo  The new value for {@code additionalInfo}.

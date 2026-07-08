@@ -45,7 +45,7 @@ public class RevokePermissionRequest implements IndexedRecord {
      * A set of string constants for the {@link RevokePermissionRequest}
      * parameter {@link #getObjectType() objectType}.
      * <p>
-     * The type of object being revoked
+     * The type of object being revoked.
      */
     public static final class ObjectType {
         /**

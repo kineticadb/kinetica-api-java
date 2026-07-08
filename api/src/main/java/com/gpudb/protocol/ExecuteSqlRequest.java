@@ -149,10 +149,10 @@ public class ExecuteSqlRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: Ignore inserts/updates that
-         *         result in primary key collisions with existing records
+         *         result in primary key collisions with existing records.
          *     <li>{@link Options#FALSE FALSE}: Treat as errors any
          *         inserts/updates that result in primary key collisions with
-         *         existing records
+         *         existing records.
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
@@ -320,10 +320,10 @@ public class ExecuteSqlRequest implements IndexedRecord {
          *     <li>{@link Options#TRUE TRUE}: Replace the collided-into record
          *         with the record inserted or updated when a new/modified
          *         record causes a primary key collision with an existing
-         *         record
+         *         record.
          *     <li>{@link Options#FALSE FALSE}: Reject the insert or update
          *         when it results in a primary key collision with an existing
-         *         record
+         *         record.
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
@@ -376,7 +376,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
     /**
      * Constructs an ExecuteSqlRequest object with the specified parameters.
      *
-     * @param statement  SQL statement (query, DML, or DDL) to be executed
+     * @param statement  SQL statement (query, DML, or DDL) to be executed.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
      *                the results). The default value is 0. The minimum allowed
@@ -468,11 +468,11 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Ignore
      *                                 inserts/updates that result in primary
-     *                                 key collisions with existing records
+     *                                 key collisions with existing records.
      *                             <li>{@link Options#FALSE FALSE}: Treat as
      *                                 errors any inserts/updates that result
      *                                 in primary key collisions with existing
-     *                                 records
+     *                                 records.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
@@ -624,11 +624,11 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                                 collided-into record with the record
      *                                 inserted or updated when a new/modified
      *                                 record causes a primary key collision
-     *                                 with an existing record
+     *                                 with an existing record.
      *                             <li>{@link Options#FALSE FALSE}: Reject the
      *                                 insert or update when it results in a
      *                                 primary key collision with an existing
-     *                                 record
+     *                                 record.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
@@ -668,7 +668,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
     /**
      * Constructs an ExecuteSqlRequest object with the specified parameters.
      *
-     * @param statement  SQL statement (query, DML, or DDL) to be executed
+     * @param statement  SQL statement (query, DML, or DDL) to be executed.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
      *                the results). The default value is 0. The minimum allowed
@@ -768,11 +768,11 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Ignore
      *                                 inserts/updates that result in primary
-     *                                 key collisions with existing records
+     *                                 key collisions with existing records.
      *                             <li>{@link Options#FALSE FALSE}: Treat as
      *                                 errors any inserts/updates that result
      *                                 in primary key collisions with existing
-     *                                 records
+     *                                 records.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
@@ -924,11 +924,11 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                                 collided-into record with the record
      *                                 inserted or updated when a new/modified
      *                                 record causes a primary key collision
-     *                                 with an existing record
+     *                                 with an existing record.
      *                             <li>{@link Options#FALSE FALSE}: Reject the
      *                                 insert or update when it results in a
      *                                 primary key collision with an existing
-     *                                 record
+     *                                 record.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
@@ -966,7 +966,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
     }
 
     /**
-     * SQL statement (query, DML, or DDL) to be executed
+     * SQL statement (query, DML, or DDL) to be executed.
      *
      * @return The current value of {@code statement}.
      */
@@ -975,7 +975,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
     }
 
     /**
-     * SQL statement (query, DML, or DDL) to be executed
+     * SQL statement (query, DML, or DDL) to be executed.
      *
      * @param statement  The new value for {@code statement}.
      *
@@ -1188,10 +1188,10 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Ignore inserts/updates that
-     *                 result in primary key collisions with existing records
+     *                 result in primary key collisions with existing records.
      *             <li>{@link Options#FALSE FALSE}: Treat as errors any
      *                 inserts/updates that result in primary key collisions
-     *                 with existing records
+     *                 with existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#LATE_MATERIALIZATION LATE_MATERIALIZATION}: If
@@ -1319,10 +1319,10 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *             <li>{@link Options#TRUE TRUE}: Replace the collided-into
      *                 record with the record inserted or updated when a
      *                 new/modified record causes a primary key collision with
-     *                 an existing record
+     *                 an existing record.
      *             <li>{@link Options#FALSE FALSE}: Reject the insert or update
      *                 when it results in a primary key collision with an
-     *                 existing record
+     *                 existing record.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#VALIDATE_CHANGE_COLUMN VALIDATE_CHANGE_COLUMN}:
@@ -1406,10 +1406,10 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Ignore inserts/updates that
-     *                 result in primary key collisions with existing records
+     *                 result in primary key collisions with existing records.
      *             <li>{@link Options#FALSE FALSE}: Treat as errors any
      *                 inserts/updates that result in primary key collisions
-     *                 with existing records
+     *                 with existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#LATE_MATERIALIZATION LATE_MATERIALIZATION}: If
@@ -1537,10 +1537,10 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *             <li>{@link Options#TRUE TRUE}: Replace the collided-into
      *                 record with the record inserted or updated when a
      *                 new/modified record causes a primary key collision with
-     *                 an existing record
+     *                 an existing record.
      *             <li>{@link Options#FALSE FALSE}: Reject the insert or update
      *                 when it results in a primary key collision with an
-     *                 existing record
+     *                 existing record.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#VALIDATE_CHANGE_COLUMN VALIDATE_CHANGE_COLUMN}:

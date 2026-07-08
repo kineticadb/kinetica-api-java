@@ -50,7 +50,7 @@ public class DownloadFilesResponse implements IndexedRecord {
     }
 
     /**
-     * Names of the files downloaded from KiFS
+     * Names of the files downloaded from KiFS.
      *
      * @return The current value of {@code fileNames}.
      */
@@ -59,7 +59,7 @@ public class DownloadFilesResponse implements IndexedRecord {
     }
 
     /**
-     * Names of the files downloaded from KiFS
+     * Names of the files downloaded from KiFS.
      *
      * @param fileNames  The new value for {@code fileNames}.
      *
@@ -72,7 +72,7 @@ public class DownloadFilesResponse implements IndexedRecord {
 
     /**
      * Data for the respective downloaded files listed in {@link
-     * #getFileNames() fileNames}
+     * #getFileNames() fileNames}.
      *
      * @return The current value of {@code fileData}.
      */
@@ -82,7 +82,7 @@ public class DownloadFilesResponse implements IndexedRecord {
 
     /**
      * Data for the respective downloaded files listed in {@link
-     * #getFileNames() fileNames}
+     * #getFileNames() fileNames}.
      *
      * @param fileData  The new value for {@code fileData}.
      *

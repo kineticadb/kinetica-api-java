@@ -52,12 +52,12 @@ public class AlterUserRequest implements IndexedRecord {
         public static final String SET_ACTIVATED = "set_activated";
 
         /**
-         * User may login
+         * User may login.
          */
         public static final String TRUE = "true";
 
         /**
-         * User may not login
+         * User may not login.
          */
         public static final String FALSE = "false";
 
@@ -111,8 +111,8 @@ public class AlterUserRequest implements IndexedRecord {
      *                <ul>
      *                    <li>{@link Action#SET_ACTIVATED SET_ACTIVATED}: Is
      *                        the user allowed to login.
-     *                    <li>{@link Action#TRUE TRUE}: User may login
-     *                    <li>{@link Action#FALSE FALSE}: User may not login
+     *                    <li>{@link Action#TRUE TRUE}: User may login.
+     *                    <li>{@link Action#FALSE FALSE}: User may not login.
      *                    <li>{@link Action#SET_COMMENT SET_COMMENT}: Sets the
      *                        comment for an internal user.
      *                    <li>{@link Action#SET_DEFAULT_SCHEMA
@@ -167,8 +167,8 @@ public class AlterUserRequest implements IndexedRecord {
      * <ul>
      *     <li>{@link Action#SET_ACTIVATED SET_ACTIVATED}: Is the user allowed
      *         to login.
-     *     <li>{@link Action#TRUE TRUE}: User may login
-     *     <li>{@link Action#FALSE FALSE}: User may not login
+     *     <li>{@link Action#TRUE TRUE}: User may login.
+     *     <li>{@link Action#FALSE FALSE}: User may not login.
      *     <li>{@link Action#SET_COMMENT SET_COMMENT}: Sets the comment for an
      *         internal user.
      *     <li>{@link Action#SET_DEFAULT_SCHEMA SET_DEFAULT_SCHEMA}: Set the
@@ -194,8 +194,8 @@ public class AlterUserRequest implements IndexedRecord {
      * <ul>
      *     <li>{@link Action#SET_ACTIVATED SET_ACTIVATED}: Is the user allowed
      *         to login.
-     *     <li>{@link Action#TRUE TRUE}: User may login
-     *     <li>{@link Action#FALSE FALSE}: User may not login
+     *     <li>{@link Action#TRUE TRUE}: User may login.
+     *     <li>{@link Action#FALSE FALSE}: User may not login.
      *     <li>{@link Action#SET_COMMENT SET_COMMENT}: Sets the comment for an
      *         internal user.
      *     <li>{@link Action#SET_DEFAULT_SCHEMA SET_DEFAULT_SCHEMA}: Set the

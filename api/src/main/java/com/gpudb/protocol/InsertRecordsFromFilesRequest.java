@@ -392,7 +392,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#NONE NONE}: No compression.
-         *     <li>{@link Options#AUTO AUTO}: Auto detect compression type
+         *     <li>{@link Options#AUTO AUTO}: Auto detect compression type.
          *     <li>{@link Options#GZIP GZIP}: gzip file compression.
          *     <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
          * </ul>
@@ -406,7 +406,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String NONE = "none";
 
         /**
-         * Auto detect compression type
+         * Auto detect compression type.
          */
         public static final String AUTO = "auto";
 
@@ -422,7 +422,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
 
         /**
          * Name of an existing external data source from which data file(s)
-         * specified in {@link #getFilepaths() filepaths} will be loaded
+         * specified in {@link #getFilepaths() filepaths} will be loaded.
          */
         public static final String DATASOURCE_NAME = "datasource_name";
 
@@ -496,20 +496,20 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * Specifies the type of the file(s) whose records will be inserted.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#AVRO AVRO}: Avro file format
+         *     <li>{@link Options#AVRO AVRO}: Avro file format.
          *     <li>{@link Options#DELIMITED_TEXT DELIMITED_TEXT}: Delimited
          *         text file format; e.g., CSV, TSV, PSV, etc.
-         *     <li>{@link Options#GDB GDB}: Esri/GDB file format
-         *     <li>{@link Options#JSON JSON}: Json file format
-         *     <li>{@link Options#PARQUET PARQUET}: Apache Parquet file format
-         *     <li>{@link Options#SHAPEFILE SHAPEFILE}: ShapeFile file format
+         *     <li>{@link Options#GDB GDB}: Esri/GDB file format.
+         *     <li>{@link Options#JSON JSON}: JSON file format.
+         *     <li>{@link Options#PARQUET PARQUET}: Apache Parquet file format.
+         *     <li>{@link Options#SHAPEFILE SHAPEFILE}: ShapeFile file format.
          * </ul>
          * The default value is {@link Options#DELIMITED_TEXT DELIMITED_TEXT}.
          */
         public static final String FILE_TYPE = "file_type";
 
         /**
-         * Avro file format
+         * Avro file format.
          */
         public static final String AVRO = "avro";
 
@@ -519,22 +519,22 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String DELIMITED_TEXT = "delimited_text";
 
         /**
-         * Esri/GDB file format
+         * Esri/GDB file format.
          */
         public static final String GDB = "gdb";
 
         /**
-         * Json file format
+         * JSON file format.
          */
         public static final String JSON = "json";
 
         /**
-         * Apache Parquet file format
+         * Apache Parquet file format.
          */
         public static final String PARQUET = "parquet";
 
         /**
-         * ShapeFile file format
+         * ShapeFile file format.
          */
         public static final String SHAPEFILE = "shapefile";
 
@@ -543,27 +543,27 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: Break up nested columns to
-         *         multiple columns
-         *     <li>{@link Options#FALSE FALSE}: Treat nested columns as json
-         *         columns instead of flattening
+         *         multiple columns.
+         *     <li>{@link Options#FALSE FALSE}: Treat nested columns as JSON
+         *         columns instead of flattening.
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
         public static final String FLATTEN_COLUMNS = "flatten_columns";
 
         /**
-         * Upsert new records when primary keys match existing records
+         * Upsert new records when primary keys match existing records.
          */
         public static final String TRUE = "true";
 
         /**
-         * Reject new records when primary keys match existing records
+         * Reject new records when primary keys match existing records.
          */
         public static final String FALSE = "false";
 
         /**
          * Comma separated list of gdal conf options, for the specific
-         * requests: key=value
+         * requests: key=value.
          */
         public static final String GDAL_CONFIGURATION_OPTIONS = "gdal_configuration_options";
 
@@ -587,10 +587,10 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: Ignore new records whose primary
-         *         key values collide with those of existing records
+         *         key values collide with those of existing records.
          *     <li>{@link Options#FALSE FALSE}: Treat as errors any new records
          *         whose primary key values collide with those of existing
-         *         records
+         *         records.
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
@@ -602,7 +602,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#FULL FULL}: Run a type inference on the
-         *         source data (if needed) and ingest
+         *         source data (if needed) and ingest.
          *     <li>{@link Options#DRY_RUN DRY_RUN}: Does not load data, but
          *         walks through the source data and determines the number of
          *         valid records, taking into account the current mode of
@@ -617,7 +617,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String INGESTION_MODE = "ingestion_mode";
 
         /**
-         * Run a type inference on the source data (if needed) and ingest
+         * Run a type inference on the source data (if needed) and ingest.
          */
         public static final String FULL = "full";
 
@@ -779,6 +779,20 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String MAX_RECORDS_TO_LOAD = "max_records_to_load";
 
         /**
+         * Specifies a comma-delimited list of column names to be used as the
+         * source-data column names.  If the file has a header row (i.e.,
+         * {@link Options#TEXT_HAS_HEADER TEXT_HAS_HEADER} is {@link
+         * Options#TRUE TRUE}), these names override the file's header names.
+         * If the file has no header row, these names are used as the
+         * source-data column names. Either way, the i-th name in this list
+         * applies to the i-th column in the file, enabling name-based matching
+         * against the target table's columns (and use with {@link
+         * Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD} / {@link
+         * Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP}).
+         */
+        public static final String NAME_COLUMNS_FROM_FILE = "name_columns_from_file";
+
+        /**
          * Number of tasks for reading file per rank. Default will be system
          * configuration parameter, external_file_reader_num_tasks.
          */
@@ -800,22 +814,22 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String PRIMARY_KEYS = "primary_keys";
 
         /**
-         * Confluent Schema registry connection timeout (in Secs)
+         * Confluent Schema registry connection timeout (in secs).
          */
         public static final String SCHEMA_REGISTRY_CONNECTION_RETRIES = "schema_registry_connection_retries";
 
         /**
-         * Confluent Schema registry connection timeout (in Secs)
+         * Confluent Schema registry connection timeout (in secs).
          */
         public static final String SCHEMA_REGISTRY_CONNECTION_TIMEOUT = "schema_registry_connection_timeout";
 
         /**
-         * Max records to skip due to SR connection failures, before failing
+         * Max records to skip due to SR connection failures, before failing.
          */
         public static final String SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES = "schema_registry_max_consecutive_connection_failures";
 
         /**
-         * Max records to skip due to schema related errors, before failing
+         * Max records to skip due to schema related errors, before failing.
          */
         public static final String MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE = "max_consecutive_invalid_schema_failure";
 
@@ -1029,7 +1043,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          *         exactly-typed and sized columns for all data scanned.
          *     <li>{@link Options#SPEED SPEED}: Scans data and picks the widest
          *         possible column types so that 'all' values will fit with
-         *         minimum data scanned
+         *         minimum data scanned.
          * </ul>
          * The default value is {@link Options#ACCURACY ACCURACY}.
          */
@@ -1043,9 +1057,25 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
 
         /**
          * Scans data and picks the widest possible column types so that 'all'
-         * values will fit with minimum data scanned
+         * values will fit with minimum data scanned.
          */
         public static final String SPEED = "speed";
+
+        /**
+         * Applies only when upserting (when update_on_existing_pk is true). If
+         * set to true (the default), an existing record matched by primary key
+         * is modified in place. If set to false, the matched record is updated
+         * by deleting it and inserting a replacement (delete and insert),
+         * which prevents the change from being reflected in dependent
+         * materialized views until they are refreshed.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#TRUE TRUE}.
+         */
+        public static final String ENABLE_INPLACE_UPDATES = "enable_inplace_updates";
 
         /**
          * Specifies the record collision policy for inserting into a table
@@ -1063,13 +1093,24 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: Upsert new records when primary
-         *         keys match existing records
+         *         keys match existing records.
          *     <li>{@link Options#FALSE FALSE}: Reject new records when primary
-         *         keys match existing records
+         *         keys match existing records.
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
         public static final String UPDATE_ON_EXISTING_PK = "update_on_existing_pk";
+
+        /**
+         * Comma-separated expressions, one per target table column.  Each
+         * expression is evaluated per record.  Empty entries (two consecutive
+         * commas) mean no transformation for that column -- the value is
+         * resolved from the input record, table default, NULL, or an error.
+         * Expressions may reference input columns by name or by position ($1
+         * for the first input column, $2 for the second, etc.). The default
+         * value is ''.
+         */
+        public static final String TRANSFORMATIONS = "transformations";
 
         private Options() {  }
     }
@@ -1455,7 +1496,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                             <li>{@link Options#NONE NONE}: No
      *                                 compression.
      *                             <li>{@link Options#AUTO AUTO}: Auto detect
-     *                                 compression type
+     *                                 compression type.
      *                             <li>{@link Options#GZIP GZIP}: gzip file
      *                                 compression.
      *                             <li>{@link Options#BZIP2 BZIP2}: bzip2 file
@@ -1465,7 +1506,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                     <li>{@link Options#DATASOURCE_NAME DATASOURCE_NAME}:
      *                         Name of an existing external data source from
      *                         which data file(s) specified in {@code
-     *                         filepaths} will be loaded
+     *                         filepaths} will be loaded.
      *                     <li>{@link Options#DEFAULT_COLUMN_FORMATS
      *                         DEFAULT_COLUMN_FORMATS}: Specifies the default
      *                         format to be applied to source data loaded into
@@ -1528,18 +1569,18 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#AVRO AVRO}: Avro file
-     *                                 format
+     *                                 format.
      *                             <li>{@link Options#DELIMITED_TEXT
      *                                 DELIMITED_TEXT}: Delimited text file
      *                                 format; e.g., CSV, TSV, PSV, etc.
      *                             <li>{@link Options#GDB GDB}: Esri/GDB file
-     *                                 format
-     *                             <li>{@link Options#JSON JSON}: Json file
-     *                                 format
+     *                                 format.
+     *                             <li>{@link Options#JSON JSON}: JSON file
+     *                                 format.
      *                             <li>{@link Options#PARQUET PARQUET}: Apache
-     *                                 Parquet file format
+     *                                 Parquet file format.
      *                             <li>{@link Options#SHAPEFILE SHAPEFILE}:
-     *                                 ShapeFile file format
+     *                                 ShapeFile file format.
      *                         </ul>
      *                         The default value is {@link
      *                         Options#DELIMITED_TEXT DELIMITED_TEXT}.
@@ -1548,17 +1589,17 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Break up
-     *                                 nested columns to multiple columns
+     *                                 nested columns to multiple columns.
      *                             <li>{@link Options#FALSE FALSE}: Treat
-     *                                 nested columns as json columns instead
-     *                                 of flattening
+     *                                 nested columns as JSON columns instead
+     *                                 of flattening.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
      *                     <li>{@link Options#GDAL_CONFIGURATION_OPTIONS
      *                         GDAL_CONFIGURATION_OPTIONS}: Comma separated
      *                         list of gdal conf options, for the specific
-     *                         requests: key=value
+     *                         requests: key=value.
      *                     <li>{@link Options#IGNORE_EXISTING_PK
      *                         IGNORE_EXISTING_PK}: Specifies the record
      *                         collision error-suppression policy for inserting
@@ -1586,11 +1627,11 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Ignore new
      *                                 records whose primary key values collide
-     *                                 with those of existing records
+     *                                 with those of existing records.
      *                             <li>{@link Options#FALSE FALSE}: Treat as
      *                                 errors any new records whose primary key
      *                                 values collide with those of existing
-     *                                 records
+     *                                 records.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
@@ -1601,7 +1642,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#FULL FULL}: Run a type
      *                                 inference on the source data (if needed)
-     *                                 and ingest
+     *                                 and ingest.
      *                             <li>{@link Options#DRY_RUN DRY_RUN}: Does
      *                                 not load data, but walks through the
      *                                 source data and determines the number of
@@ -1716,6 +1757,22 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                         will be limited to the next whole number of
      *                         {@link Options#BATCH_SIZE BATCH_SIZE} (per
      *                         working thread).
+     *                     <li>{@link Options#NAME_COLUMNS_FROM_FILE
+     *                         NAME_COLUMNS_FROM_FILE}: Specifies a
+     *                         comma-delimited list of column names to be used
+     *                         as the source-data column names.  If the file
+     *                         has a header row (i.e., {@link
+     *                         Options#TEXT_HAS_HEADER TEXT_HAS_HEADER} is
+     *                         {@link Options#TRUE TRUE}), these names override
+     *                         the file's header names.  If the file has no
+     *                         header row, these names are used as the
+     *                         source-data column names. Either way, the i-th
+     *                         name in this list applies to the i-th column in
+     *                         the file, enabling name-based matching against
+     *                         the target table's columns (and use with {@link
+     *                         Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD} /
+     *                         {@link Options#COLUMNS_TO_SKIP
+     *                         COLUMNS_TO_SKIP}).
      *                     <li>{@link Options#NUM_TASKS_PER_RANK
      *                         NUM_TASKS_PER_RANK}: Number of tasks for reading
      *                         file per rank. Default will be system
@@ -1734,21 +1791,21 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                     <li>{@link
      *                         Options#SCHEMA_REGISTRY_CONNECTION_RETRIES
      *                         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent
-     *                         Schema registry connection timeout (in Secs)
+     *                         Schema registry connection timeout (in secs).
      *                     <li>{@link
      *                         Options#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
      *                         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent
-     *                         Schema registry connection timeout (in Secs)
+     *                         Schema registry connection timeout (in secs).
      *                     <li>{@link
      *                         Options#SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES
      *                         SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES}:
      *                         Max records to skip due to SR connection
-     *                         failures, before failing
+     *                         failures, before failing.
      *                     <li>{@link
      *                         Options#MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE
      *                         MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE}: Max
      *                         records to skip due to schema related errors,
-     *                         before failing
+     *                         before failing.
      *                     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_NAME
      *                         SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro
      *                         schema in the schema registry to use when
@@ -1920,10 +1977,26 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                             <li>{@link Options#SPEED SPEED}: Scans data
      *                                 and picks the widest possible column
      *                                 types so that 'all' values will fit with
-     *                                 minimum data scanned
+     *                                 minimum data scanned.
      *                         </ul>
      *                         The default value is {@link Options#ACCURACY
      *                         ACCURACY}.
+     *                     <li>{@link Options#ENABLE_INPLACE_UPDATES
+     *                         ENABLE_INPLACE_UPDATES}: Applies only when
+     *                         upserting (when update_on_existing_pk is true).
+     *                         If set to true (the default), an existing record
+     *                         matched by primary key is modified in place. If
+     *                         set to false, the matched record is updated by
+     *                         deleting it and inserting a replacement (delete
+     *                         and insert), which prevents the change from
+     *                         being reflected in dependent materialized views
+     *                         until they are refreshed.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#UPDATE_ON_EXISTING_PK
      *                         UPDATE_ON_EXISTING_PK}: Specifies the record
      *                         collision policy for inserting into a table with
@@ -1948,13 +2021,23 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Upsert new
      *                                 records when primary keys match existing
-     *                                 records
+     *                                 records.
      *                             <li>{@link Options#FALSE FALSE}: Reject new
      *                                 records when primary keys match existing
-     *                                 records
+     *                                 records.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#TRANSFORMATIONS TRANSFORMATIONS}:
+     *                         Comma-separated expressions, one per target
+     *                         table column.  Each expression is evaluated per
+     *                         record.  Empty entries (two consecutive commas)
+     *                         mean no transformation for that column -- the
+     *                         value is resolved from the input record, table
+     *                         default, NULL, or an error. Expressions may
+     *                         reference input columns by name or by position
+     *                         ($1 for the first input column, $2 for the
+     *                         second, etc.). The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -2459,14 +2542,14 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#NONE NONE}: No compression.
-     *             <li>{@link Options#AUTO AUTO}: Auto detect compression type
+     *             <li>{@link Options#AUTO AUTO}: Auto detect compression type.
      *             <li>{@link Options#GZIP GZIP}: gzip file compression.
      *             <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
      *         </ul>
      *         The default value is {@link Options#AUTO AUTO}.
      *     <li>{@link Options#DATASOURCE_NAME DATASOURCE_NAME}: Name of an
      *         existing external data source from which data file(s) specified
-     *         in {@link #getFilepaths() filepaths} will be loaded
+     *         in {@link #getFilepaths() filepaths} will be loaded.
      *     <li>{@link Options#DEFAULT_COLUMN_FORMATS DEFAULT_COLUMN_FORMATS}:
      *         Specifies the default format to be applied to source data loaded
      *         into columns with the corresponding column property.  Currently
@@ -2512,15 +2595,15 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         file(s) whose records will be inserted.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#AVRO AVRO}: Avro file format
+     *             <li>{@link Options#AVRO AVRO}: Avro file format.
      *             <li>{@link Options#DELIMITED_TEXT DELIMITED_TEXT}: Delimited
      *                 text file format; e.g., CSV, TSV, PSV, etc.
-     *             <li>{@link Options#GDB GDB}: Esri/GDB file format
-     *             <li>{@link Options#JSON JSON}: Json file format
+     *             <li>{@link Options#GDB GDB}: Esri/GDB file format.
+     *             <li>{@link Options#JSON JSON}: JSON file format.
      *             <li>{@link Options#PARQUET PARQUET}: Apache Parquet file
-     *                 format
+     *                 format.
      *             <li>{@link Options#SHAPEFILE SHAPEFILE}: ShapeFile file
-     *                 format
+     *                 format.
      *         </ul>
      *         The default value is {@link Options#DELIMITED_TEXT
      *         DELIMITED_TEXT}.
@@ -2529,14 +2612,14 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Break up nested columns to
-     *                 multiple columns
+     *                 multiple columns.
      *             <li>{@link Options#FALSE FALSE}: Treat nested columns as
-     *                 json columns instead of flattening
+     *                 JSON columns instead of flattening.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#GDAL_CONFIGURATION_OPTIONS
      *         GDAL_CONFIGURATION_OPTIONS}: Comma separated list of gdal conf
-     *         options, for the specific requests: key=value
+     *         options, for the specific requests: key=value.
      *     <li>{@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}: Specifies
      *         the record collision error-suppression policy for inserting into
      *         a table with a <a
@@ -2559,10 +2642,10 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Ignore new records whose
      *                 primary key values collide with those of existing
-     *                 records
+     *                 records.
      *             <li>{@link Options#FALSE FALSE}: Treat as errors any new
      *                 records whose primary key values collide with those of
-     *                 existing records
+     *                 existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#INGESTION_MODE INGESTION_MODE}: Whether to do a
@@ -2571,7 +2654,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#FULL FULL}: Run a type inference on the
-     *                 source data (if needed) and ingest
+     *                 source data (if needed) and ingest.
      *             <li>{@link Options#DRY_RUN DRY_RUN}: Does not load data, but
      *                 walks through the source data and determines the number
      *                 of valid records, taking into account the current mode
@@ -2658,6 +2741,17 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         number of records loaded will be limited to the next whole
      *         number of {@link Options#BATCH_SIZE BATCH_SIZE} (per working
      *         thread).
+     *     <li>{@link Options#NAME_COLUMNS_FROM_FILE NAME_COLUMNS_FROM_FILE}:
+     *         Specifies a comma-delimited list of column names to be used as
+     *         the source-data column names.  If the file has a header row
+     *         (i.e., {@link Options#TEXT_HAS_HEADER TEXT_HAS_HEADER} is {@link
+     *         Options#TRUE TRUE}), these names override the file's header
+     *         names.  If the file has no header row, these names are used as
+     *         the source-data column names. Either way, the i-th name in this
+     *         list applies to the i-th column in the file, enabling name-based
+     *         matching against the target table's columns (and use with {@link
+     *         Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD} / {@link
+     *         Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP}).
      *     <li>{@link Options#NUM_TASKS_PER_RANK NUM_TASKS_PER_RANK}: Number of
      *         tasks for reading file per rank. Default will be system
      *         configuration parameter, external_file_reader_num_tasks.
@@ -2672,17 +2766,17 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         the type.
      *     <li>{@link Options#SCHEMA_REGISTRY_CONNECTION_RETRIES
      *         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent Schema registry
-     *         connection timeout (in Secs)
+     *         connection timeout (in secs).
      *     <li>{@link Options#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
      *         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent Schema registry
-     *         connection timeout (in Secs)
+     *         connection timeout (in secs).
      *     <li>{@link
      *         Options#SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES
      *         SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES}: Max
-     *         records to skip due to SR connection failures, before failing
+     *         records to skip due to SR connection failures, before failing.
      *     <li>{@link Options#MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE
      *         MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE}: Max records to skip due
-     *         to schema related errors, before failing
+     *         to schema related errors, before failing.
      *     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_NAME
      *         SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro schema in the
      *         schema registry to use when reading Avro records.
@@ -2819,9 +2913,23 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 exactly-typed and sized columns for all data scanned.
      *             <li>{@link Options#SPEED SPEED}: Scans data and picks the
      *                 widest possible column types so that 'all' values will
-     *                 fit with minimum data scanned
+     *                 fit with minimum data scanned.
      *         </ul>
      *         The default value is {@link Options#ACCURACY ACCURACY}.
+     *     <li>{@link Options#ENABLE_INPLACE_UPDATES ENABLE_INPLACE_UPDATES}:
+     *         Applies only when upserting (when update_on_existing_pk is
+     *         true). If set to true (the default), an existing record matched
+     *         by primary key is modified in place. If set to false, the
+     *         matched record is updated by deleting it and inserting a
+     *         replacement (delete and insert), which prevents the change from
+     *         being reflected in dependent materialized views until they are
+     *         refreshed.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK}:
      *         Specifies the record collision policy for inserting into a table
      *         with a <a href="../../../../../../concepts/tables/#primary-keys"
@@ -2839,11 +2947,19 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Upsert new records when
-     *                 primary keys match existing records
+     *                 primary keys match existing records.
      *             <li>{@link Options#FALSE FALSE}: Reject new records when
-     *                 primary keys match existing records
+     *                 primary keys match existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#TRANSFORMATIONS TRANSFORMATIONS}: Comma-separated
+     *         expressions, one per target table column.  Each expression is
+     *         evaluated per record.  Empty entries (two consecutive commas)
+     *         mean no transformation for that column -- the value is resolved
+     *         from the input record, table default, NULL, or an error.
+     *         Expressions may reference input columns by name or by position
+     *         ($1 for the first input column, $2 for the second, etc.). The
+     *         default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -2920,14 +3036,14 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#NONE NONE}: No compression.
-     *             <li>{@link Options#AUTO AUTO}: Auto detect compression type
+     *             <li>{@link Options#AUTO AUTO}: Auto detect compression type.
      *             <li>{@link Options#GZIP GZIP}: gzip file compression.
      *             <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
      *         </ul>
      *         The default value is {@link Options#AUTO AUTO}.
      *     <li>{@link Options#DATASOURCE_NAME DATASOURCE_NAME}: Name of an
      *         existing external data source from which data file(s) specified
-     *         in {@link #getFilepaths() filepaths} will be loaded
+     *         in {@link #getFilepaths() filepaths} will be loaded.
      *     <li>{@link Options#DEFAULT_COLUMN_FORMATS DEFAULT_COLUMN_FORMATS}:
      *         Specifies the default format to be applied to source data loaded
      *         into columns with the corresponding column property.  Currently
@@ -2973,15 +3089,15 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         file(s) whose records will be inserted.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#AVRO AVRO}: Avro file format
+     *             <li>{@link Options#AVRO AVRO}: Avro file format.
      *             <li>{@link Options#DELIMITED_TEXT DELIMITED_TEXT}: Delimited
      *                 text file format; e.g., CSV, TSV, PSV, etc.
-     *             <li>{@link Options#GDB GDB}: Esri/GDB file format
-     *             <li>{@link Options#JSON JSON}: Json file format
+     *             <li>{@link Options#GDB GDB}: Esri/GDB file format.
+     *             <li>{@link Options#JSON JSON}: JSON file format.
      *             <li>{@link Options#PARQUET PARQUET}: Apache Parquet file
-     *                 format
+     *                 format.
      *             <li>{@link Options#SHAPEFILE SHAPEFILE}: ShapeFile file
-     *                 format
+     *                 format.
      *         </ul>
      *         The default value is {@link Options#DELIMITED_TEXT
      *         DELIMITED_TEXT}.
@@ -2990,14 +3106,14 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Break up nested columns to
-     *                 multiple columns
+     *                 multiple columns.
      *             <li>{@link Options#FALSE FALSE}: Treat nested columns as
-     *                 json columns instead of flattening
+     *                 JSON columns instead of flattening.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#GDAL_CONFIGURATION_OPTIONS
      *         GDAL_CONFIGURATION_OPTIONS}: Comma separated list of gdal conf
-     *         options, for the specific requests: key=value
+     *         options, for the specific requests: key=value.
      *     <li>{@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}: Specifies
      *         the record collision error-suppression policy for inserting into
      *         a table with a <a
@@ -3020,10 +3136,10 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Ignore new records whose
      *                 primary key values collide with those of existing
-     *                 records
+     *                 records.
      *             <li>{@link Options#FALSE FALSE}: Treat as errors any new
      *                 records whose primary key values collide with those of
-     *                 existing records
+     *                 existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#INGESTION_MODE INGESTION_MODE}: Whether to do a
@@ -3032,7 +3148,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#FULL FULL}: Run a type inference on the
-     *                 source data (if needed) and ingest
+     *                 source data (if needed) and ingest.
      *             <li>{@link Options#DRY_RUN DRY_RUN}: Does not load data, but
      *                 walks through the source data and determines the number
      *                 of valid records, taking into account the current mode
@@ -3119,6 +3235,17 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         number of records loaded will be limited to the next whole
      *         number of {@link Options#BATCH_SIZE BATCH_SIZE} (per working
      *         thread).
+     *     <li>{@link Options#NAME_COLUMNS_FROM_FILE NAME_COLUMNS_FROM_FILE}:
+     *         Specifies a comma-delimited list of column names to be used as
+     *         the source-data column names.  If the file has a header row
+     *         (i.e., {@link Options#TEXT_HAS_HEADER TEXT_HAS_HEADER} is {@link
+     *         Options#TRUE TRUE}), these names override the file's header
+     *         names.  If the file has no header row, these names are used as
+     *         the source-data column names. Either way, the i-th name in this
+     *         list applies to the i-th column in the file, enabling name-based
+     *         matching against the target table's columns (and use with {@link
+     *         Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD} / {@link
+     *         Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP}).
      *     <li>{@link Options#NUM_TASKS_PER_RANK NUM_TASKS_PER_RANK}: Number of
      *         tasks for reading file per rank. Default will be system
      *         configuration parameter, external_file_reader_num_tasks.
@@ -3133,17 +3260,17 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         the type.
      *     <li>{@link Options#SCHEMA_REGISTRY_CONNECTION_RETRIES
      *         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent Schema registry
-     *         connection timeout (in Secs)
+     *         connection timeout (in secs).
      *     <li>{@link Options#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
      *         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent Schema registry
-     *         connection timeout (in Secs)
+     *         connection timeout (in secs).
      *     <li>{@link
      *         Options#SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES
      *         SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES}: Max
-     *         records to skip due to SR connection failures, before failing
+     *         records to skip due to SR connection failures, before failing.
      *     <li>{@link Options#MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE
      *         MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE}: Max records to skip due
-     *         to schema related errors, before failing
+     *         to schema related errors, before failing.
      *     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_NAME
      *         SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro schema in the
      *         schema registry to use when reading Avro records.
@@ -3280,9 +3407,23 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 exactly-typed and sized columns for all data scanned.
      *             <li>{@link Options#SPEED SPEED}: Scans data and picks the
      *                 widest possible column types so that 'all' values will
-     *                 fit with minimum data scanned
+     *                 fit with minimum data scanned.
      *         </ul>
      *         The default value is {@link Options#ACCURACY ACCURACY}.
+     *     <li>{@link Options#ENABLE_INPLACE_UPDATES ENABLE_INPLACE_UPDATES}:
+     *         Applies only when upserting (when update_on_existing_pk is
+     *         true). If set to true (the default), an existing record matched
+     *         by primary key is modified in place. If set to false, the
+     *         matched record is updated by deleting it and inserting a
+     *         replacement (delete and insert), which prevents the change from
+     *         being reflected in dependent materialized views until they are
+     *         refreshed.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK}:
      *         Specifies the record collision policy for inserting into a table
      *         with a <a href="../../../../../../concepts/tables/#primary-keys"
@@ -3300,11 +3441,19 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Upsert new records when
-     *                 primary keys match existing records
+     *                 primary keys match existing records.
      *             <li>{@link Options#FALSE FALSE}: Reject new records when
-     *                 primary keys match existing records
+     *                 primary keys match existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#TRANSFORMATIONS TRANSFORMATIONS}: Comma-separated
+     *         expressions, one per target table column.  Each expression is
+     *         evaluated per record.  Empty entries (two consecutive commas)
+     *         mean no transformation for that column -- the value is resolved
+     *         from the input record, table default, NULL, or an error.
+     *         Expressions may reference input columns by name or by position
+     *         ($1 for the first input column, $2 for the second, etc.). The
+     *         default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      *

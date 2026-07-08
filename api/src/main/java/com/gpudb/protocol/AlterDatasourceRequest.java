@@ -19,7 +19,7 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * Alters the properties of an existing <a
  * href="../../../../../../concepts/data_sources/" target="_top">data
- * source</a>
+ * source</a>.
  */
 public class AlterDatasourceRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -59,12 +59,12 @@ public class AlterDatasourceRequest implements IndexedRecord {
         public static final String LOCATION = "location";
 
         /**
-         * Name of the remote system user; may be an empty string
+         * Name of the remote system user; may be an empty string.
          */
         public static final String USER_NAME = "user_name";
 
         /**
-         * Password for the remote system user; may be an empty string
+         * Password for the remote system user; may be an empty string.
          */
         public static final String PASSWORD = "password";
 
@@ -83,28 +83,28 @@ public class AlterDatasourceRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * Timeout in seconds for connecting to this storage provider
+         * Timeout in seconds for connecting to this storage provider.
          */
         public static final String CONNECTION_TIMEOUT = "connection_timeout";
 
         /**
-         * Timeout in seconds for reading from this storage provider
+         * Timeout in seconds for reading from this storage provider.
          */
         public static final String WAIT_TIMEOUT = "wait_timeout";
 
         /**
          * Name of the <a href="../../../../../../concepts/credentials"
-         * target="_top">credential</a> object to be used in data source
+         * target="_top">credential</a> object to be used in data source.
          */
         public static final String CREDENTIAL = "credential";
 
         /**
-         * Name of the Amazon S3 bucket to use as the data source
+         * Name of the Amazon S3 bucket to use as the data source.
          */
         public static final String S3_BUCKET_NAME = "s3_bucket_name";
 
         /**
-         * Name of the Amazon S3 region where the given bucket is located
+         * Name of the Amazon S3 region where the given bucket is located.
          */
         public static final String S3_REGION = "s3_region";
 
@@ -113,7 +113,7 @@ public class AlterDatasourceRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link DatasourceUpdatesMap#TRUE TRUE}: Connect with SSL
-         *         verification
+         *         verification.
          *     <li>{@link DatasourceUpdatesMap#FALSE FALSE}: Connect without
          *         verifying the SSL connection; for testing purposes,
          *         bypassing TLS errors, self-signed certificates, etc.
@@ -139,17 +139,17 @@ public class AlterDatasourceRequest implements IndexedRecord {
 
         /**
          * Amazon IAM Role ARN which has required S3 permissions that can be
-         * assumed for the given S3 IAM user
+         * assumed for the given S3 IAM user.
          */
         public static final String S3_AWS_ROLE_ARN = "s3_aws_role_arn";
 
         /**
-         * Customer encryption algorithm used encrypting data
+         * Customer encryption algorithm used encrypting data.
          */
         public static final String S3_ENCRYPTION_CUSTOMER_ALGORITHM = "s3_encryption_customer_algorithm";
 
         /**
-         * Customer encryption key to encrypt or decrypt data
+         * Customer encryption key to encrypt or decrypt data.
          */
         public static final String S3_ENCRYPTION_CUSTOMER_KEY = "s3_encryption_customer_key";
 
@@ -160,7 +160,7 @@ public class AlterDatasourceRequest implements IndexedRecord {
         public static final String HDFS_KERBEROS_KEYTAB = "hdfs_kerberos_keytab";
 
         /**
-         * Delegation token for the given HDFS user
+         * Delegation token for the given HDFS user.
          */
         public static final String HDFS_DELEGATION_TOKEN = "hdfs_delegation_token";
 
@@ -177,28 +177,28 @@ public class AlterDatasourceRequest implements IndexedRecord {
 
         /**
          * Name of the Azure storage account to use as the data source, this is
-         * valid only if tenant_id is specified
+         * valid only if tenant_id is specified.
          */
         public static final String AZURE_STORAGE_ACCOUNT_NAME = "azure_storage_account_name";
 
         /**
-         * Name of the Azure storage container to use as the data source
+         * Name of the Azure storage container to use as the data source.
          */
         public static final String AZURE_CONTAINER_NAME = "azure_container_name";
 
         /**
-         * Active Directory tenant ID (or directory ID)
+         * Active Directory tenant ID (or directory ID).
          */
         public static final String AZURE_TENANT_ID = "azure_tenant_id";
 
         /**
          * Shared access signature token for Azure storage account to use as
-         * the data source
+         * the data source.
          */
         public static final String AZURE_SAS_TOKEN = "azure_sas_token";
 
         /**
-         * OAuth token to access given storage container
+         * OAuth token to access given storage container.
          */
         public static final String AZURE_OAUTH_TOKEN = "azure_oauth_token";
 
@@ -217,18 +217,18 @@ public class AlterDatasourceRequest implements IndexedRecord {
         public static final String AZURE_USE_VIRTUAL_ADDRESSING = "azure_use_virtual_addressing";
 
         /**
-         * Name of the Google Cloud Storage bucket to use as the data source
+         * Name of the Google Cloud Storage bucket to use as the data source.
          */
         public static final String GCS_BUCKET_NAME = "gcs_bucket_name";
 
         /**
-         * Name of the Google Cloud project to use as the data source
+         * Name of the Google Cloud project to use as the data source.
          */
         public static final String GCS_PROJECT_ID = "gcs_project_id";
 
         /**
          * Google Cloud service account keys to use for authenticating the data
-         * source
+         * source.
          */
         public static final String GCS_SERVICE_ACCOUNT_KEYS = "gcs_service_account_keys";
 
@@ -238,7 +238,7 @@ public class AlterDatasourceRequest implements IndexedRecord {
         public static final String JDBC_DRIVER_JAR_PATH = "jdbc_driver_jar_path";
 
         /**
-         * Name of the JDBC driver class
+         * Name of the JDBC driver class.
          */
         public static final String JDBC_DRIVER_CLASS_NAME = "jdbc_driver_class_name";
 
@@ -249,7 +249,7 @@ public class AlterDatasourceRequest implements IndexedRecord {
         public static final String KAFKA_URL = "kafka_url";
 
         /**
-         * Name of the Kafka topic to use as the data source
+         * Name of the Kafka topic to use as the data source.
          */
         public static final String KAFKA_TOPIC_NAME = "kafka_topic_name";
 
@@ -279,7 +279,7 @@ public class AlterDatasourceRequest implements IndexedRecord {
         public static final String USE_MANAGED_CREDENTIALS = "use_managed_credentials";
 
         /**
-         * Use https to connect to datasource if true, otherwise use http.
+         * Use HTTPS to connect to datasource if true, otherwise use HTTP.
          * Supported values:
          * <ul>
          *     <li>{@link DatasourceUpdatesMap#TRUE TRUE}
@@ -298,12 +298,12 @@ public class AlterDatasourceRequest implements IndexedRecord {
         public static final String SCHEMA_NAME = "schema_name";
 
         /**
-         * Confluent Schema registry connection timeout (in Secs)
+         * Confluent Schema registry connection timeout (in secs).
          */
         public static final String SCHEMA_REGISTRY_CONNECTION_RETRIES = "schema_registry_connection_retries";
 
         /**
-         * Confluent Schema registry connection timeout (in Secs)
+         * Confluent Schema registry connection timeout (in secs).
          */
         public static final String SCHEMA_REGISTRY_CONNECTION_TIMEOUT = "schema_registry_connection_timeout";
 
@@ -362,11 +362,13 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#USER_NAME
      *                                      USER_NAME}: Name of the remote
-     *                                      system user; may be an empty string
+     *                                      system user; may be an empty
+     *                                      string.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#PASSWORD
      *                                      PASSWORD}: Password for the remote
-     *                                      system user; may be an empty string
+     *                                      system user; may be an empty
+     *                                      string.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#SKIP_VALIDATION
      *                                      SKIP_VALIDATION}: Bypass validation
@@ -386,27 +388,28 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                      DatasourceUpdatesMap#CONNECTION_TIMEOUT
      *                                      CONNECTION_TIMEOUT}: Timeout in
      *                                      seconds for connecting to this
-     *                                      storage provider
+     *                                      storage provider.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#WAIT_TIMEOUT
      *                                      WAIT_TIMEOUT}: Timeout in seconds
      *                                      for reading from this storage
-     *                                      provider
+     *                                      provider.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#CREDENTIAL
      *                                      CREDENTIAL}: Name of the <a
      *                                      href="../../../../../../concepts/credentials"
      *                                      target="_top">credential</a> object
-     *                                      to be used in data source
+     *                                      to be used in data source.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#S3_BUCKET_NAME
      *                                      S3_BUCKET_NAME}: Name of the Amazon
-     *                                      S3 bucket to use as the data source
+     *                                      S3 bucket to use as the data
+     *                                      source.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#S3_REGION
      *                                      S3_REGION}: Name of the Amazon S3
      *                                      region where the given bucket is
-     *                                      located
+     *                                      located.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#S3_VERIFY_SSL
      *                                      S3_VERIFY_SSL}: Whether to verify
@@ -416,7 +419,7 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                          <li>{@link
      *                                              DatasourceUpdatesMap#TRUE
      *                                              TRUE}: Connect with SSL
-     *                                              verification
+     *                                              verification.
      *                                          <li>{@link
      *                                              DatasourceUpdatesMap#FALSE
      *                                              FALSE}: Connect without
@@ -455,17 +458,17 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                      S3_AWS_ROLE_ARN}: Amazon IAM Role
      *                                      ARN which has required S3
      *                                      permissions that can be assumed for
-     *                                      the given S3 IAM user
+     *                                      the given S3 IAM user.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#S3_ENCRYPTION_CUSTOMER_ALGORITHM
      *                                      S3_ENCRYPTION_CUSTOMER_ALGORITHM}:
      *                                      Customer encryption algorithm used
-     *                                      encrypting data
+     *                                      encrypting data.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#S3_ENCRYPTION_CUSTOMER_KEY
      *                                      S3_ENCRYPTION_CUSTOMER_KEY}:
      *                                      Customer encryption key to encrypt
-     *                                      or decrypt data
+     *                                      or decrypt data.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#HDFS_KERBEROS_KEYTAB
      *                                      HDFS_KERBEROS_KEYTAB}: Kerberos
@@ -475,7 +478,7 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#HDFS_DELEGATION_TOKEN
      *                                      HDFS_DELEGATION_TOKEN}: Delegation
-     *                                      token for the given HDFS user
+     *                                      token for the given HDFS user.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#HDFS_USE_KERBEROS
      *                                      HDFS_USE_KERBEROS}: Use kerberos
@@ -497,25 +500,25 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                      AZURE_STORAGE_ACCOUNT_NAME}: Name
      *                                      of the Azure storage account to use
      *                                      as the data source, this is valid
-     *                                      only if tenant_id is specified
+     *                                      only if tenant_id is specified.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#AZURE_CONTAINER_NAME
      *                                      AZURE_CONTAINER_NAME}: Name of the
      *                                      Azure storage container to use as
-     *                                      the data source
+     *                                      the data source.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#AZURE_TENANT_ID
      *                                      AZURE_TENANT_ID}: Active Directory
-     *                                      tenant ID (or directory ID)
+     *                                      tenant ID (or directory ID).
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#AZURE_SAS_TOKEN
      *                                      AZURE_SAS_TOKEN}: Shared access
      *                                      signature token for Azure storage
-     *                                      account to use as the data source
+     *                                      account to use as the data source.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#AZURE_OAUTH_TOKEN
      *                                      AZURE_OAUTH_TOKEN}: OAuth token to
-     *                                      access given storage container
+     *                                      access given storage container.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#AZURE_USE_VIRTUAL_ADDRESSING
      *                                      AZURE_USE_VIRTUAL_ADDRESSING}:
@@ -542,17 +545,17 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                      DatasourceUpdatesMap#GCS_BUCKET_NAME
      *                                      GCS_BUCKET_NAME}: Name of the
      *                                      Google Cloud Storage bucket to use
-     *                                      as the data source
+     *                                      as the data source.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#GCS_PROJECT_ID
      *                                      GCS_PROJECT_ID}: Name of the Google
      *                                      Cloud project to use as the data
-     *                                      source
+     *                                      source.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
      *                                      GCS_SERVICE_ACCOUNT_KEYS}: Google
      *                                      Cloud service account keys to use
-     *                                      for authenticating the data source
+     *                                      for authenticating the data source.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#JDBC_DRIVER_JAR_PATH
      *                                      JDBC_DRIVER_JAR_PATH}: JDBC driver
@@ -561,7 +564,7 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#JDBC_DRIVER_CLASS_NAME
      *                                      JDBC_DRIVER_CLASS_NAME}: Name of
-     *                                      the JDBC driver class
+     *                                      the JDBC driver class.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#KAFKA_URL
      *                                      KAFKA_URL}: The publicly-accessible
@@ -571,7 +574,7 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                      DatasourceUpdatesMap#KAFKA_TOPIC_NAME
      *                                      KAFKA_TOPIC_NAME}: Name of the
      *                                      Kafka topic to use as the data
-     *                                      source
+     *                                      source.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#ANONYMOUS
      *                                      ANONYMOUS}: Create an anonymous
@@ -611,9 +614,9 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                      DatasourceUpdatesMap#FALSE FALSE}.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#USE_HTTPS
-     *                                      USE_HTTPS}: Use https to connect to
+     *                                      USE_HTTPS}: Use HTTPS to connect to
      *                                      datasource if true, otherwise use
-     *                                      http.
+     *                                      HTTP.
      *                                      Supported values:
      *                                      <ul>
      *                                          <li>{@link
@@ -639,12 +642,12 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                      DatasourceUpdatesMap#SCHEMA_REGISTRY_CONNECTION_RETRIES
      *                                      SCHEMA_REGISTRY_CONNECTION_RETRIES}:
      *                                      Confluent Schema registry
-     *                                      connection timeout (in Secs)
+     *                                      connection timeout (in secs).
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
      *                                      SCHEMA_REGISTRY_CONNECTION_TIMEOUT}:
      *                                      Confluent Schema registry
-     *                                      connection timeout (in Secs)
+     *                                      connection timeout (in secs).
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#SCHEMA_REGISTRY_CREDENTIAL
      *                                      SCHEMA_REGISTRY_CREDENTIAL}:
@@ -702,9 +705,9 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         Supported storage provider types are 'azure', 'gcs', 'hdfs',
      *         'jdbc', 'kafka', 'confluent', and 's3'.
      *     <li>{@link DatasourceUpdatesMap#USER_NAME USER_NAME}: Name of the
-     *         remote system user; may be an empty string
+     *         remote system user; may be an empty string.
      *     <li>{@link DatasourceUpdatesMap#PASSWORD PASSWORD}: Password for the
-     *         remote system user; may be an empty string
+     *         remote system user; may be an empty string.
      *     <li>{@link DatasourceUpdatesMap#SKIP_VALIDATION SKIP_VALIDATION}:
      *         Bypass validation of connection to remote source.
      *         Supported values:
@@ -715,22 +718,22 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         The default value is {@link DatasourceUpdatesMap#FALSE FALSE}.
      *     <li>{@link DatasourceUpdatesMap#CONNECTION_TIMEOUT
      *         CONNECTION_TIMEOUT}: Timeout in seconds for connecting to this
-     *         storage provider
+     *         storage provider.
      *     <li>{@link DatasourceUpdatesMap#WAIT_TIMEOUT WAIT_TIMEOUT}: Timeout
-     *         in seconds for reading from this storage provider
+     *         in seconds for reading from this storage provider.
      *     <li>{@link DatasourceUpdatesMap#CREDENTIAL CREDENTIAL}: Name of the
      *         <a href="../../../../../../concepts/credentials"
-     *         target="_top">credential</a> object to be used in data source
+     *         target="_top">credential</a> object to be used in data source.
      *     <li>{@link DatasourceUpdatesMap#S3_BUCKET_NAME S3_BUCKET_NAME}: Name
-     *         of the Amazon S3 bucket to use as the data source
+     *         of the Amazon S3 bucket to use as the data source.
      *     <li>{@link DatasourceUpdatesMap#S3_REGION S3_REGION}: Name of the
-     *         Amazon S3 region where the given bucket is located
+     *         Amazon S3 region where the given bucket is located.
      *     <li>{@link DatasourceUpdatesMap#S3_VERIFY_SSL S3_VERIFY_SSL}:
      *         Whether to verify SSL connections.
      *         Supported values:
      *         <ul>
      *             <li>{@link DatasourceUpdatesMap#TRUE TRUE}: Connect with SSL
-     *                 verification
+     *                 verification.
      *             <li>{@link DatasourceUpdatesMap#FALSE FALSE}: Connect
      *                 without verifying the SSL connection; for testing
      *                 purposes, bypassing TLS errors, self-signed
@@ -751,18 +754,19 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         The default value is {@link DatasourceUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasourceUpdatesMap#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}:
      *         Amazon IAM Role ARN which has required S3 permissions that can
-     *         be assumed for the given S3 IAM user
+     *         be assumed for the given S3 IAM user.
      *     <li>{@link DatasourceUpdatesMap#S3_ENCRYPTION_CUSTOMER_ALGORITHM
      *         S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer encryption algorithm
-     *         used encrypting data
+     *         used encrypting data.
      *     <li>{@link DatasourceUpdatesMap#S3_ENCRYPTION_CUSTOMER_KEY
      *         S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption key to encrypt
-     *         or decrypt data
+     *         or decrypt data.
      *     <li>{@link DatasourceUpdatesMap#HDFS_KERBEROS_KEYTAB
      *         HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for the
      *         given HDFS user.  This may be a KIFS file.
      *     <li>{@link DatasourceUpdatesMap#HDFS_DELEGATION_TOKEN
-     *         HDFS_DELEGATION_TOKEN}: Delegation token for the given HDFS user
+     *         HDFS_DELEGATION_TOKEN}: Delegation token for the given HDFS
+     *         user.
      *     <li>{@link DatasourceUpdatesMap#HDFS_USE_KERBEROS
      *         HDFS_USE_KERBEROS}: Use kerberos authentication for the given
      *         HDFS cluster.
@@ -775,18 +779,18 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *     <li>{@link DatasourceUpdatesMap#AZURE_STORAGE_ACCOUNT_NAME
      *         AZURE_STORAGE_ACCOUNT_NAME}: Name of the Azure storage account
      *         to use as the data source, this is valid only if tenant_id is
-     *         specified
+     *         specified.
      *     <li>{@link DatasourceUpdatesMap#AZURE_CONTAINER_NAME
      *         AZURE_CONTAINER_NAME}: Name of the Azure storage container to
-     *         use as the data source
+     *         use as the data source.
      *     <li>{@link DatasourceUpdatesMap#AZURE_TENANT_ID AZURE_TENANT_ID}:
-     *         Active Directory tenant ID (or directory ID)
+     *         Active Directory tenant ID (or directory ID).
      *     <li>{@link DatasourceUpdatesMap#AZURE_SAS_TOKEN AZURE_SAS_TOKEN}:
      *         Shared access signature token for Azure storage account to use
-     *         as the data source
+     *         as the data source.
      *     <li>{@link DatasourceUpdatesMap#AZURE_OAUTH_TOKEN
      *         AZURE_OAUTH_TOKEN}: OAuth token to access given storage
-     *         container
+     *         container.
      *     <li>{@link DatasourceUpdatesMap#AZURE_USE_VIRTUAL_ADDRESSING
      *         AZURE_USE_VIRTUAL_ADDRESSING}: Whether to use virtual addressing
      *         when referencing the Azure source.
@@ -801,22 +805,22 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         The default value is {@link DatasourceUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasourceUpdatesMap#GCS_BUCKET_NAME GCS_BUCKET_NAME}:
      *         Name of the Google Cloud Storage bucket to use as the data
-     *         source
+     *         source.
      *     <li>{@link DatasourceUpdatesMap#GCS_PROJECT_ID GCS_PROJECT_ID}: Name
-     *         of the Google Cloud project to use as the data source
+     *         of the Google Cloud project to use as the data source.
      *     <li>{@link DatasourceUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
      *         GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud service account keys to
-     *         use for authenticating the data source
+     *         use for authenticating the data source.
      *     <li>{@link DatasourceUpdatesMap#JDBC_DRIVER_JAR_PATH
      *         JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location.  This may
      *         be a KIFS file.
      *     <li>{@link DatasourceUpdatesMap#JDBC_DRIVER_CLASS_NAME
-     *         JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
+     *         JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class.
      *     <li>{@link DatasourceUpdatesMap#KAFKA_URL KAFKA_URL}: The
      *         publicly-accessible full path URL to the Kafka broker, e.g.,
      *         'http://172.123.45.67:9300'.
      *     <li>{@link DatasourceUpdatesMap#KAFKA_TOPIC_NAME KAFKA_TOPIC_NAME}:
-     *         Name of the Kafka topic to use as the data source
+     *         Name of the Kafka topic to use as the data source.
      *     <li>{@link DatasourceUpdatesMap#ANONYMOUS ANONYMOUS}: Create an
      *         anonymous connection to the storage provider--DEPRECATED: this
      *         is now the default.  Specify use_managed_credentials for
@@ -837,8 +841,8 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *             <li>{@link DatasourceUpdatesMap#FALSE FALSE}
      *         </ul>
      *         The default value is {@link DatasourceUpdatesMap#FALSE FALSE}.
-     *     <li>{@link DatasourceUpdatesMap#USE_HTTPS USE_HTTPS}: Use https to
-     *         connect to datasource if true, otherwise use http.
+     *     <li>{@link DatasourceUpdatesMap#USE_HTTPS USE_HTTPS}: Use HTTPS to
+     *         connect to datasource if true, otherwise use HTTP.
      *         Supported values:
      *         <ul>
      *             <li>{@link DatasourceUpdatesMap#TRUE TRUE}
@@ -852,10 +856,10 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         user's default schema will be used.
      *     <li>{@link DatasourceUpdatesMap#SCHEMA_REGISTRY_CONNECTION_RETRIES
      *         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent Schema registry
-     *         connection timeout (in Secs)
+     *         connection timeout (in secs).
      *     <li>{@link DatasourceUpdatesMap#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
      *         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent Schema registry
-     *         connection timeout (in Secs)
+     *         connection timeout (in secs).
      *     <li>{@link DatasourceUpdatesMap#SCHEMA_REGISTRY_CREDENTIAL
      *         SCHEMA_REGISTRY_CREDENTIAL}: Confluent Schema Registry <a
      *         href="../../../../../../concepts/credentials"
@@ -884,9 +888,9 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         Supported storage provider types are 'azure', 'gcs', 'hdfs',
      *         'jdbc', 'kafka', 'confluent', and 's3'.
      *     <li>{@link DatasourceUpdatesMap#USER_NAME USER_NAME}: Name of the
-     *         remote system user; may be an empty string
+     *         remote system user; may be an empty string.
      *     <li>{@link DatasourceUpdatesMap#PASSWORD PASSWORD}: Password for the
-     *         remote system user; may be an empty string
+     *         remote system user; may be an empty string.
      *     <li>{@link DatasourceUpdatesMap#SKIP_VALIDATION SKIP_VALIDATION}:
      *         Bypass validation of connection to remote source.
      *         Supported values:
@@ -897,22 +901,22 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         The default value is {@link DatasourceUpdatesMap#FALSE FALSE}.
      *     <li>{@link DatasourceUpdatesMap#CONNECTION_TIMEOUT
      *         CONNECTION_TIMEOUT}: Timeout in seconds for connecting to this
-     *         storage provider
+     *         storage provider.
      *     <li>{@link DatasourceUpdatesMap#WAIT_TIMEOUT WAIT_TIMEOUT}: Timeout
-     *         in seconds for reading from this storage provider
+     *         in seconds for reading from this storage provider.
      *     <li>{@link DatasourceUpdatesMap#CREDENTIAL CREDENTIAL}: Name of the
      *         <a href="../../../../../../concepts/credentials"
-     *         target="_top">credential</a> object to be used in data source
+     *         target="_top">credential</a> object to be used in data source.
      *     <li>{@link DatasourceUpdatesMap#S3_BUCKET_NAME S3_BUCKET_NAME}: Name
-     *         of the Amazon S3 bucket to use as the data source
+     *         of the Amazon S3 bucket to use as the data source.
      *     <li>{@link DatasourceUpdatesMap#S3_REGION S3_REGION}: Name of the
-     *         Amazon S3 region where the given bucket is located
+     *         Amazon S3 region where the given bucket is located.
      *     <li>{@link DatasourceUpdatesMap#S3_VERIFY_SSL S3_VERIFY_SSL}:
      *         Whether to verify SSL connections.
      *         Supported values:
      *         <ul>
      *             <li>{@link DatasourceUpdatesMap#TRUE TRUE}: Connect with SSL
-     *                 verification
+     *                 verification.
      *             <li>{@link DatasourceUpdatesMap#FALSE FALSE}: Connect
      *                 without verifying the SSL connection; for testing
      *                 purposes, bypassing TLS errors, self-signed
@@ -933,18 +937,19 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         The default value is {@link DatasourceUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasourceUpdatesMap#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}:
      *         Amazon IAM Role ARN which has required S3 permissions that can
-     *         be assumed for the given S3 IAM user
+     *         be assumed for the given S3 IAM user.
      *     <li>{@link DatasourceUpdatesMap#S3_ENCRYPTION_CUSTOMER_ALGORITHM
      *         S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer encryption algorithm
-     *         used encrypting data
+     *         used encrypting data.
      *     <li>{@link DatasourceUpdatesMap#S3_ENCRYPTION_CUSTOMER_KEY
      *         S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption key to encrypt
-     *         or decrypt data
+     *         or decrypt data.
      *     <li>{@link DatasourceUpdatesMap#HDFS_KERBEROS_KEYTAB
      *         HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for the
      *         given HDFS user.  This may be a KIFS file.
      *     <li>{@link DatasourceUpdatesMap#HDFS_DELEGATION_TOKEN
-     *         HDFS_DELEGATION_TOKEN}: Delegation token for the given HDFS user
+     *         HDFS_DELEGATION_TOKEN}: Delegation token for the given HDFS
+     *         user.
      *     <li>{@link DatasourceUpdatesMap#HDFS_USE_KERBEROS
      *         HDFS_USE_KERBEROS}: Use kerberos authentication for the given
      *         HDFS cluster.
@@ -957,18 +962,18 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *     <li>{@link DatasourceUpdatesMap#AZURE_STORAGE_ACCOUNT_NAME
      *         AZURE_STORAGE_ACCOUNT_NAME}: Name of the Azure storage account
      *         to use as the data source, this is valid only if tenant_id is
-     *         specified
+     *         specified.
      *     <li>{@link DatasourceUpdatesMap#AZURE_CONTAINER_NAME
      *         AZURE_CONTAINER_NAME}: Name of the Azure storage container to
-     *         use as the data source
+     *         use as the data source.
      *     <li>{@link DatasourceUpdatesMap#AZURE_TENANT_ID AZURE_TENANT_ID}:
-     *         Active Directory tenant ID (or directory ID)
+     *         Active Directory tenant ID (or directory ID).
      *     <li>{@link DatasourceUpdatesMap#AZURE_SAS_TOKEN AZURE_SAS_TOKEN}:
      *         Shared access signature token for Azure storage account to use
-     *         as the data source
+     *         as the data source.
      *     <li>{@link DatasourceUpdatesMap#AZURE_OAUTH_TOKEN
      *         AZURE_OAUTH_TOKEN}: OAuth token to access given storage
-     *         container
+     *         container.
      *     <li>{@link DatasourceUpdatesMap#AZURE_USE_VIRTUAL_ADDRESSING
      *         AZURE_USE_VIRTUAL_ADDRESSING}: Whether to use virtual addressing
      *         when referencing the Azure source.
@@ -983,22 +988,22 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         The default value is {@link DatasourceUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasourceUpdatesMap#GCS_BUCKET_NAME GCS_BUCKET_NAME}:
      *         Name of the Google Cloud Storage bucket to use as the data
-     *         source
+     *         source.
      *     <li>{@link DatasourceUpdatesMap#GCS_PROJECT_ID GCS_PROJECT_ID}: Name
-     *         of the Google Cloud project to use as the data source
+     *         of the Google Cloud project to use as the data source.
      *     <li>{@link DatasourceUpdatesMap#GCS_SERVICE_ACCOUNT_KEYS
      *         GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud service account keys to
-     *         use for authenticating the data source
+     *         use for authenticating the data source.
      *     <li>{@link DatasourceUpdatesMap#JDBC_DRIVER_JAR_PATH
      *         JDBC_DRIVER_JAR_PATH}: JDBC driver jar file location.  This may
      *         be a KIFS file.
      *     <li>{@link DatasourceUpdatesMap#JDBC_DRIVER_CLASS_NAME
-     *         JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class
+     *         JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver class.
      *     <li>{@link DatasourceUpdatesMap#KAFKA_URL KAFKA_URL}: The
      *         publicly-accessible full path URL to the Kafka broker, e.g.,
      *         'http://172.123.45.67:9300'.
      *     <li>{@link DatasourceUpdatesMap#KAFKA_TOPIC_NAME KAFKA_TOPIC_NAME}:
-     *         Name of the Kafka topic to use as the data source
+     *         Name of the Kafka topic to use as the data source.
      *     <li>{@link DatasourceUpdatesMap#ANONYMOUS ANONYMOUS}: Create an
      *         anonymous connection to the storage provider--DEPRECATED: this
      *         is now the default.  Specify use_managed_credentials for
@@ -1019,8 +1024,8 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *             <li>{@link DatasourceUpdatesMap#FALSE FALSE}
      *         </ul>
      *         The default value is {@link DatasourceUpdatesMap#FALSE FALSE}.
-     *     <li>{@link DatasourceUpdatesMap#USE_HTTPS USE_HTTPS}: Use https to
-     *         connect to datasource if true, otherwise use http.
+     *     <li>{@link DatasourceUpdatesMap#USE_HTTPS USE_HTTPS}: Use HTTPS to
+     *         connect to datasource if true, otherwise use HTTP.
      *         Supported values:
      *         <ul>
      *             <li>{@link DatasourceUpdatesMap#TRUE TRUE}
@@ -1034,10 +1039,10 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         user's default schema will be used.
      *     <li>{@link DatasourceUpdatesMap#SCHEMA_REGISTRY_CONNECTION_RETRIES
      *         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent Schema registry
-     *         connection timeout (in Secs)
+     *         connection timeout (in secs).
      *     <li>{@link DatasourceUpdatesMap#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
      *         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent Schema registry
-     *         connection timeout (in Secs)
+     *         connection timeout (in secs).
      *     <li>{@link DatasourceUpdatesMap#SCHEMA_REGISTRY_CREDENTIAL
      *         SCHEMA_REGISTRY_CREDENTIAL}: Confluent Schema Registry <a
      *         href="../../../../../../concepts/credentials"

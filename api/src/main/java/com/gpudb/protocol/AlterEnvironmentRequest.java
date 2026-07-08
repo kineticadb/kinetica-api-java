@@ -46,16 +46,16 @@ public class AlterEnvironmentRequest implements IndexedRecord {
      * A set of string constants for the {@link AlterEnvironmentRequest}
      * parameter {@link #getAction() action}.
      * <p>
-     * Modification operation to be applied
+     * Modification operation to be applied.
      */
     public static final class Action {
         /**
-         * Install a python package from PyPI, an external data source or KiFS
+         * Install a python package from PyPI, an external data source or KiFS.
          */
         public static final String INSTALL_PACKAGE = "install_package";
 
         /**
-         * Install packages from a requirements file
+         * Install packages from a requirements file.
          */
         public static final String INSTALL_REQUIREMENTS = "install_requirements";
 
@@ -65,19 +65,19 @@ public class AlterEnvironmentRequest implements IndexedRecord {
         public static final String UNINSTALL_PACKAGE = "uninstall_package";
 
         /**
-         * Uninstall packages from a requirements file
+         * Uninstall packages from a requirements file.
          */
         public static final String UNINSTALL_REQUIREMENTS = "uninstall_requirements";
 
         /**
          * Uninstalls all packages in the environment and resets it to the
-         * original state at time of creation
+         * original state at time of creation.
          */
         public static final String RESET = "reset";
 
         /**
          * Recreates the environment and re-installs all packages, upgrades the
-         * packages if necessary based on dependencies
+         * packages if necessary based on dependencies.
          */
         public static final String REBUILD = "rebuild";
 
@@ -93,7 +93,7 @@ public class AlterEnvironmentRequest implements IndexedRecord {
     public static final class Options {
         /**
          * Name of an existing external data source from which packages
-         * specified in {@link #getValue() value} can be loaded
+         * specified in {@link #getValue() value} can be loaded.
          */
         public static final String DATASOURCE_NAME = "datasource_name";
 
@@ -125,22 +125,22 @@ public class AlterEnvironmentRequest implements IndexedRecord {
      *                <ul>
      *                    <li>{@link Action#INSTALL_PACKAGE INSTALL_PACKAGE}:
      *                        Install a python package from PyPI, an external
-     *                        data source or KiFS
+     *                        data source or KiFS.
      *                    <li>{@link Action#INSTALL_REQUIREMENTS
      *                        INSTALL_REQUIREMENTS}: Install packages from a
-     *                        requirements file
+     *                        requirements file.
      *                    <li>{@link Action#UNINSTALL_PACKAGE
      *                        UNINSTALL_PACKAGE}: Uninstall a python package.
      *                    <li>{@link Action#UNINSTALL_REQUIREMENTS
      *                        UNINSTALL_REQUIREMENTS}: Uninstall packages from
-     *                        a requirements file
+     *                        a requirements file.
      *                    <li>{@link Action#RESET RESET}: Uninstalls all
      *                        packages in the environment and resets it to the
-     *                        original state at time of creation
+     *                        original state at time of creation.
      *                    <li>{@link Action#REBUILD REBUILD}: Recreates the
      *                        environment and re-installs all packages,
      *                        upgrades the packages if necessary based on
-     *                        dependencies
+     *                        dependencies.
      *                </ul>
      * @param value  The value of the modification, depending on {@code
      *               action}.  For example, if {@code action} is {@link
@@ -160,7 +160,7 @@ public class AlterEnvironmentRequest implements IndexedRecord {
      *                     <li>{@link Options#DATASOURCE_NAME DATASOURCE_NAME}:
      *                         Name of an existing external data source from
      *                         which packages specified in {@code value} can be
-     *                         loaded
+     *                         loaded.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -197,19 +197,19 @@ public class AlterEnvironmentRequest implements IndexedRecord {
      * Supported values:
      * <ul>
      *     <li>{@link Action#INSTALL_PACKAGE INSTALL_PACKAGE}: Install a python
-     *         package from PyPI, an external data source or KiFS
+     *         package from PyPI, an external data source or KiFS.
      *     <li>{@link Action#INSTALL_REQUIREMENTS INSTALL_REQUIREMENTS}:
-     *         Install packages from a requirements file
+     *         Install packages from a requirements file.
      *     <li>{@link Action#UNINSTALL_PACKAGE UNINSTALL_PACKAGE}: Uninstall a
      *         python package.
      *     <li>{@link Action#UNINSTALL_REQUIREMENTS UNINSTALL_REQUIREMENTS}:
-     *         Uninstall packages from a requirements file
+     *         Uninstall packages from a requirements file.
      *     <li>{@link Action#RESET RESET}: Uninstalls all packages in the
      *         environment and resets it to the original state at time of
-     *         creation
+     *         creation.
      *     <li>{@link Action#REBUILD REBUILD}: Recreates the environment and
      *         re-installs all packages, upgrades the packages if necessary
-     *         based on dependencies
+     *         based on dependencies.
      * </ul>
      *
      * @return The current value of {@code action}.
@@ -223,19 +223,19 @@ public class AlterEnvironmentRequest implements IndexedRecord {
      * Supported values:
      * <ul>
      *     <li>{@link Action#INSTALL_PACKAGE INSTALL_PACKAGE}: Install a python
-     *         package from PyPI, an external data source or KiFS
+     *         package from PyPI, an external data source or KiFS.
      *     <li>{@link Action#INSTALL_REQUIREMENTS INSTALL_REQUIREMENTS}:
-     *         Install packages from a requirements file
+     *         Install packages from a requirements file.
      *     <li>{@link Action#UNINSTALL_PACKAGE UNINSTALL_PACKAGE}: Uninstall a
      *         python package.
      *     <li>{@link Action#UNINSTALL_REQUIREMENTS UNINSTALL_REQUIREMENTS}:
-     *         Uninstall packages from a requirements file
+     *         Uninstall packages from a requirements file.
      *     <li>{@link Action#RESET RESET}: Uninstalls all packages in the
      *         environment and resets it to the original state at time of
-     *         creation
+     *         creation.
      *     <li>{@link Action#REBUILD REBUILD}: Recreates the environment and
      *         re-installs all packages, upgrades the packages if necessary
-     *         based on dependencies
+     *         based on dependencies.
      * </ul>
      *
      * @param action  The new value for {@code action}.
@@ -299,7 +299,7 @@ public class AlterEnvironmentRequest implements IndexedRecord {
      * <ul>
      *     <li>{@link Options#DATASOURCE_NAME DATASOURCE_NAME}: Name of an
      *         existing external data source from which packages specified in
-     *         {@link #getValue() value} can be loaded
+     *         {@link #getValue() value} can be loaded.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -314,7 +314,7 @@ public class AlterEnvironmentRequest implements IndexedRecord {
      * <ul>
      *     <li>{@link Options#DATASOURCE_NAME DATASOURCE_NAME}: Name of an
      *         existing external data source from which packages specified in
-     *         {@link #getValue() value} can be loaded
+     *         {@link #getValue() value} can be loaded.
      * </ul>
      * The default value is an empty {@link Map}.
      *

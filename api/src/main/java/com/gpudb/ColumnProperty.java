@@ -271,10 +271,31 @@ public final class ColumnProperty {
     public static final String INIT_WITH_UUID = "init_with_uuid";
 
     /**
-     * For 'date', 'time', 'datetime', or 'timestamp' column types, always
-     * update the field with 'NOW()' upon any update.
+     * For 'date', 'time', 'datetime', or 'timestamp' column types, update the
+     * field with 'NOW()' upon any update.
      */
     public static final String UPDATE_WITH_NOW = "update_with_now";
+
+    /**
+     * For 'charN' or 'string' column types, update the field with the current
+     * user's name upon any update.
+     */
+    public static final String UPDATE_WITH_USER = "update_with_user";
+
+    /**
+     * Sets a default value expression for this column, e.g.&nbsp;'default(0)',
+     * 'default(''pending'')', or 'default(NOW())'.  When the column is omitted
+     * from an insert via request_schema_str, the expression is evaluated and
+     * the result is used as the column value.
+     */
+    public static final String DEFAULT = "default";
+
+    /**
+     * Sets a default value expression for this column with SQL syntax,
+     * e.g.&nbsp;'default(0)', 'default(''pending'')', or 'default(NOW())'.
+     * Only used for showing the expression when generating SQL DDL.
+     */
+    public static final String DEFAULT_SQL = "default_sql";
 
     private ColumnProperty() {  }
 }

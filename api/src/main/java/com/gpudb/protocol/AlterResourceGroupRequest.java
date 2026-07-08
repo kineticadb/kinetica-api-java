@@ -75,29 +75,31 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      */
     public static final class Ranking {
         /**
-         * Don't change the ranking
+         * Don't change the ranking.
          */
         public static final String EMPTY_STRING = "";
 
         /**
-         * Make this resource group the new first one in the ordering
+         * Make this resource group the new first one in the ordering.
          */
         public static final String FIRST = "first";
 
         /**
-         * Make this resource group the new last one in the ordering
+         * Make this resource group the new last one in the ordering.
          */
         public static final String LAST = "last";
 
         /**
          * Place this resource group before the one specified by {@link
-         * #getAdjoiningResourceGroup() adjoiningResourceGroup} in the ordering
+         * #getAdjoiningResourceGroup() adjoiningResourceGroup} in the
+         * ordering.
          */
         public static final String BEFORE = "before";
 
         /**
          * Place this resource group after the one specified by {@link
-         * #getAdjoiningResourceGroup() adjoiningResourceGroup} in the ordering
+         * #getAdjoiningResourceGroup() adjoiningResourceGroup} in the
+         * ordering.
          */
         public static final String AFTER = "after";
 
@@ -219,17 +221,17 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      *                 Supported values:
      *                 <ul>
      *                     <li>{@link Ranking#EMPTY_STRING EMPTY_STRING}: Don't
-     *                         change the ranking
+     *                         change the ranking.
      *                     <li>{@link Ranking#FIRST FIRST}: Make this resource
-     *                         group the new first one in the ordering
+     *                         group the new first one in the ordering.
      *                     <li>{@link Ranking#LAST LAST}: Make this resource
-     *                         group the new last one in the ordering
+     *                         group the new last one in the ordering.
      *                     <li>{@link Ranking#BEFORE BEFORE}: Place this
      *                         resource group before the one specified by
-     *                         {@code adjoiningResourceGroup} in the ordering
+     *                         {@code adjoiningResourceGroup} in the ordering.
      *                     <li>{@link Ranking#AFTER AFTER}: Place this resource
      *                         group after the one specified by {@code
-     *                         adjoiningResourceGroup} in the ordering
+     *                         adjoiningResourceGroup} in the ordering.
      *                 </ul>
      *                 The default value is {@link Ranking#EMPTY_STRING
      *                 EMPTY_STRING}.
@@ -379,17 +381,17 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      * Supported values:
      * <ul>
      *     <li>{@link Ranking#EMPTY_STRING EMPTY_STRING}: Don't change the
-     *         ranking
+     *         ranking.
      *     <li>{@link Ranking#FIRST FIRST}: Make this resource group the new
-     *         first one in the ordering
+     *         first one in the ordering.
      *     <li>{@link Ranking#LAST LAST}: Make this resource group the new last
-     *         one in the ordering
+     *         one in the ordering.
      *     <li>{@link Ranking#BEFORE BEFORE}: Place this resource group before
      *         the one specified by {@link #getAdjoiningResourceGroup()
-     *         adjoiningResourceGroup} in the ordering
+     *         adjoiningResourceGroup} in the ordering.
      *     <li>{@link Ranking#AFTER AFTER}: Place this resource group after the
      *         one specified by {@link #getAdjoiningResourceGroup()
-     *         adjoiningResourceGroup} in the ordering
+     *         adjoiningResourceGroup} in the ordering.
      * </ul>
      * The default value is {@link Ranking#EMPTY_STRING EMPTY_STRING}.
      *
@@ -406,17 +408,17 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      * Supported values:
      * <ul>
      *     <li>{@link Ranking#EMPTY_STRING EMPTY_STRING}: Don't change the
-     *         ranking
+     *         ranking.
      *     <li>{@link Ranking#FIRST FIRST}: Make this resource group the new
-     *         first one in the ordering
+     *         first one in the ordering.
      *     <li>{@link Ranking#LAST LAST}: Make this resource group the new last
-     *         one in the ordering
+     *         one in the ordering.
      *     <li>{@link Ranking#BEFORE BEFORE}: Place this resource group before
      *         the one specified by {@link #getAdjoiningResourceGroup()
-     *         adjoiningResourceGroup} in the ordering
+     *         adjoiningResourceGroup} in the ordering.
      *     <li>{@link Ranking#AFTER AFTER}: Place this resource group after the
      *         one specified by {@link #getAdjoiningResourceGroup()
-     *         adjoiningResourceGroup} in the ordering
+     *         adjoiningResourceGroup} in the ordering.
      * </ul>
      * The default value is {@link Ranking#EMPTY_STRING EMPTY_STRING}.
      *

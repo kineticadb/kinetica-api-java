@@ -54,7 +54,7 @@ public class CreateTableMonitorResponse implements IndexedRecord {
          * The topic id for 'insert' {@link
          * com.gpudb.protocol.CreateTableMonitorRequest.Options#EVENT EVENT} in
          * {@link com.gpudb.protocol.CreateTableMonitorRequest#getOptions()
-         * options}
+         * options}.
          */
         public static final String INSERT_TOPIC_ID = "insert_topic_id";
 
@@ -62,7 +62,7 @@ public class CreateTableMonitorResponse implements IndexedRecord {
          * The topic id for 'update' {@link
          * com.gpudb.protocol.CreateTableMonitorRequest.Options#EVENT EVENT} in
          * {@link com.gpudb.protocol.CreateTableMonitorRequest#getOptions()
-         * options}
+         * options}.
          */
         public static final String UPDATE_TOPIC_ID = "update_topic_id";
 
@@ -70,23 +70,23 @@ public class CreateTableMonitorResponse implements IndexedRecord {
          * The topic id for 'delete' {@link
          * com.gpudb.protocol.CreateTableMonitorRequest.Options#EVENT EVENT} in
          * {@link com.gpudb.protocol.CreateTableMonitorRequest#getOptions()
-         * options}
+         * options}.
          */
         public static final String DELETE_TOPIC_ID = "delete_topic_id";
 
         /**
          * The JSON Avro schema of the table in {@link #getTableName()
-         * tableName}
+         * tableName}.
          */
         public static final String INSERT_TYPE_SCHEMA = "insert_type_schema";
 
         /**
-         * The JSON Avro schema for 'update' events
+         * The JSON Avro schema for 'update' events.
          */
         public static final String UPDATE_TYPE_SCHEMA = "update_type_schema";
 
         /**
-         * The JSON Avro schema for 'delete' events
+         * The JSON Avro schema for 'delete' events.
          */
         public static final String DELETE_TYPE_SCHEMA = "delete_type_schema";
 
@@ -179,25 +179,25 @@ public class CreateTableMonitorResponse implements IndexedRecord {
      *         com.gpudb.protocol.CreateTableMonitorRequest.Options#EVENT
      *         EVENT} in {@link
      *         com.gpudb.protocol.CreateTableMonitorRequest#getOptions()
-     *         options}
+     *         options}.
      *     <li>{@link Info#UPDATE_TOPIC_ID UPDATE_TOPIC_ID}: The topic id for
      *         'update' {@link
      *         com.gpudb.protocol.CreateTableMonitorRequest.Options#EVENT
      *         EVENT} in {@link
      *         com.gpudb.protocol.CreateTableMonitorRequest#getOptions()
-     *         options}
+     *         options}.
      *     <li>{@link Info#DELETE_TOPIC_ID DELETE_TOPIC_ID}: The topic id for
      *         'delete' {@link
      *         com.gpudb.protocol.CreateTableMonitorRequest.Options#EVENT
      *         EVENT} in {@link
      *         com.gpudb.protocol.CreateTableMonitorRequest#getOptions()
-     *         options}
+     *         options}.
      *     <li>{@link Info#INSERT_TYPE_SCHEMA INSERT_TYPE_SCHEMA}: The JSON
-     *         Avro schema of the table in {@link #getTableName() tableName}
+     *         Avro schema of the table in {@link #getTableName() tableName}.
      *     <li>{@link Info#UPDATE_TYPE_SCHEMA UPDATE_TYPE_SCHEMA}: The JSON
-     *         Avro schema for 'update' events
+     *         Avro schema for 'update' events.
      *     <li>{@link Info#DELETE_TYPE_SCHEMA DELETE_TYPE_SCHEMA}: The JSON
-     *         Avro schema for 'delete' events
+     *         Avro schema for 'delete' events.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -217,25 +217,25 @@ public class CreateTableMonitorResponse implements IndexedRecord {
      *         com.gpudb.protocol.CreateTableMonitorRequest.Options#EVENT
      *         EVENT} in {@link
      *         com.gpudb.protocol.CreateTableMonitorRequest#getOptions()
-     *         options}
+     *         options}.
      *     <li>{@link Info#UPDATE_TOPIC_ID UPDATE_TOPIC_ID}: The topic id for
      *         'update' {@link
      *         com.gpudb.protocol.CreateTableMonitorRequest.Options#EVENT
      *         EVENT} in {@link
      *         com.gpudb.protocol.CreateTableMonitorRequest#getOptions()
-     *         options}
+     *         options}.
      *     <li>{@link Info#DELETE_TOPIC_ID DELETE_TOPIC_ID}: The topic id for
      *         'delete' {@link
      *         com.gpudb.protocol.CreateTableMonitorRequest.Options#EVENT
      *         EVENT} in {@link
      *         com.gpudb.protocol.CreateTableMonitorRequest#getOptions()
-     *         options}
+     *         options}.
      *     <li>{@link Info#INSERT_TYPE_SCHEMA INSERT_TYPE_SCHEMA}: The JSON
-     *         Avro schema of the table in {@link #getTableName() tableName}
+     *         Avro schema of the table in {@link #getTableName() tableName}.
      *     <li>{@link Info#UPDATE_TYPE_SCHEMA UPDATE_TYPE_SCHEMA}: The JSON
-     *         Avro schema for 'update' events
+     *         Avro schema for 'update' events.
      *     <li>{@link Info#DELETE_TYPE_SCHEMA DELETE_TYPE_SCHEMA}: The JSON
-     *         Avro schema for 'delete' events
+     *         Avro schema for 'delete' events.
      * </ul>
      * The default value is an empty {@link Map}.
      *

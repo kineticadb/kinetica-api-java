@@ -58,8 +58,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      * the top level keys represent which column's parameters are being
      * specified, while the internal keys represents which parameter is being
      * specified.  These parameters take on different meanings depending on the
-     * type of the column.  Below follows a more detailed description of the
-     * map:
+     * type of the column.
      */
     public static final class Options {
         /**
@@ -72,13 +71,13 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
          * value through this parameter, you need something equivalent to:
          * 'options' = {'seed': { 'value': 100 } }.
          * <ul>
-         *     <li>{@link Options#VALUE VALUE}: The seed value to use
+         *     <li>{@link Options#VALUE VALUE}: The seed value to use.
          * </ul>
          */
         public static final String SEED = "seed";
 
         /**
-         * The seed value to use
+         * The seed value to use.
          */
         public static final String VALUE = "value";
 
@@ -309,8 +308,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                 are being specified, while the internal keys represents
      *                 which parameter is being specified.  These parameters
      *                 take on different meanings depending on the type of the
-     *                 column.  Below follows a more detailed description of
-     *                 the map:
+     *                 column.
      *                 <ul>
      *                     <li>{@link Options#SEED SEED}: If provided, the
      *                         internal random number generator will be
@@ -326,7 +324,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                         'value': 100 } }.
      *                         <ul>
      *                             <li>{@link Options#VALUE VALUE}: The seed
-     *                                 value to use
+     *                                 value to use.
      *                         </ul>
      *                     <li>{@link Options#ALL ALL}: This key indicates that
      *                         the specifications relayed in the internal map
@@ -594,8 +592,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      * the top level keys represent which column's parameters are being
      * specified, while the internal keys represents which parameter is being
      * specified.  These parameters take on different meanings depending on the
-     * type of the column.  Below follows a more detailed description of the
-     * map:
+     * type of the column.
      * <ul>
      *     <li>{@link Options#SEED SEED}: If provided, the internal random
      *         number generator will be initialized with the given value.  The
@@ -607,7 +604,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *         parameter, you need something equivalent to: 'options' =
      *         {'seed': { 'value': 100 } }.
      *         <ul>
-     *             <li>{@link Options#VALUE VALUE}: The seed value to use
+     *             <li>{@link Options#VALUE VALUE}: The seed value to use.
      *         </ul>
      *     <li>{@link Options#ALL ALL}: This key indicates that the
      *         specifications relayed in the internal map are to be applied to
@@ -770,8 +767,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      * the top level keys represent which column's parameters are being
      * specified, while the internal keys represents which parameter is being
      * specified.  These parameters take on different meanings depending on the
-     * type of the column.  Below follows a more detailed description of the
-     * map:
+     * type of the column.
      * <ul>
      *     <li>{@link Options#SEED SEED}: If provided, the internal random
      *         number generator will be initialized with the given value.  The
@@ -783,7 +779,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *         parameter, you need something equivalent to: 'options' =
      *         {'seed': { 'value': 100 } }.
      *         <ul>
-     *             <li>{@link Options#VALUE VALUE}: The seed value to use
+     *             <li>{@link Options#VALUE VALUE}: The seed value to use.
      *         </ul>
      *     <li>{@link Options#ALL ALL}: This key indicates that the
      *         specifications relayed in the internal map are to be applied to

@@ -96,13 +96,13 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          * Sets the execution_mode for kernel executions to the specified
          * string value. Possible values are host, device, default (engine
          * decides) or an integer value that indicates max chunk size to exec
-         * on host
+         * on host.
          */
         public static final String EXECUTION_MODE = "execution_mode";
 
         /**
          * Sets the root directory path where external table data files are
-         * accessed from.  Path must exist on the head node
+         * accessed from.  Path must exist on the head node.
          */
         public static final String EXTERNAL_FILES_DIRECTORY = "external_files_directory";
 
@@ -182,14 +182,14 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String KAFKA_BATCH_SIZE = "kafka_batch_size";
 
         /**
-         * Maximum time (milliseconds) for each poll to get records from kafka.
+         * Maximum time (milliseconds) for each poll to get records from Kafka.
          * The default value is '0'. The minimum allowed value is '0'. The
          * maximum allowed value is '1000'.
          */
         public static final String KAFKA_POLL_TIMEOUT = "kafka_poll_timeout";
 
         /**
-         * Maximum time (seconds) to buffer records received from kafka before
+         * Maximum time (seconds) to buffer records received from Kafka before
          * ingestion. The default value is '30'. The minimum allowed value is
          * '1'. The maximum allowed value is '120'.
          */
@@ -272,27 +272,27 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String AI_ENABLE_RAG = "ai_enable_rag";
 
         /**
-         * AI API provider type
+         * AI API provider type.
          */
         public static final String AI_API_PROVIDER = "ai_api_provider";
 
         /**
-         * AI API URL
+         * AI API URL.
          */
         public static final String AI_API_URL = "ai_api_url";
 
         /**
-         * AI API key
+         * AI API key.
          */
         public static final String AI_API_KEY = "ai_api_key";
 
         /**
-         * AI API connection timeout in seconds
+         * AI API connection timeout in seconds.
          */
         public static final String AI_API_CONNECTION_TIMEOUT = "ai_api_connection_timeout";
 
         /**
-         * AI API model name
+         * AI API model name.
          */
         public static final String AI_API_EMBEDDINGS_MODEL = "ai_api_embeddings_model";
 
@@ -302,12 +302,17 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String TELM_PERSIST_QUERY_METRICS = "telm_persist_query_metrics";
 
         /**
-         * Idle connection timeout in seconds
+         * Capture metrics for any query exceeding this duration in seconds.
+         */
+        public static final String TELM_FORCE_METRICS_DURATION = "telm_force_metrics_duration";
+
+        /**
+         * Idle connection timeout in seconds.
          */
         public static final String POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT = "postgres_proxy_idle_connection_timeout";
 
         /**
-         * Enable  postgres proxy keep alive. The default value is 'false'.
+         * Enable postgres proxy keep alive. The default value is 'false'.
          */
         public static final String POSTGRES_PROXY_KEEP_ALIVE = "postgres_proxy_keep_alive";
 
@@ -321,7 +326,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          * The default <a href="../../../../../../concepts/column_compression/"
          * target="_top">compression algorithm</a> applied to any column
          * without a column-level or table-level default compression specified
-         * at the time it was created
+         * at the time it was created.
          */
         public static final String COMPRESSION_CODEC = "compression_codec";
 
@@ -454,13 +459,13 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    Possible values are host, device,
      *                                    default (engine decides) or an
      *                                    integer value that indicates max
-     *                                    chunk size to exec on host
+     *                                    chunk size to exec on host.
      *                                <li>{@link
      *                                    PropertyUpdatesMap#EXTERNAL_FILES_DIRECTORY
      *                                    EXTERNAL_FILES_DIRECTORY}: Sets the
      *                                    root directory path where external
      *                                    table data files are accessed from.
-     *                                    Path must exist on the head node
+     *                                    Path must exist on the head node.
      *                                <li>{@link
      *                                    PropertyUpdatesMap#REQUEST_TIMEOUT
      *                                    REQUEST_TIMEOUT}: Number of minutes
@@ -537,7 +542,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    PropertyUpdatesMap#KAFKA_POLL_TIMEOUT
      *                                    KAFKA_POLL_TIMEOUT}: Maximum time
      *                                    (milliseconds) for each poll to get
-     *                                    records from kafka. The default value
+     *                                    records from Kafka. The default value
      *                                    is '0'. The minimum allowed value is
      *                                    '0'. The maximum allowed value is
      *                                    '1000'.
@@ -545,7 +550,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    PropertyUpdatesMap#KAFKA_WAIT_TIME
      *                                    KAFKA_WAIT_TIME}: Maximum time
      *                                    (seconds) to buffer records received
-     *                                    from kafka before ingestion. The
+     *                                    from Kafka before ingestion. The
      *                                    default value is '30'. The minimum
      *                                    allowed value is '1'. The maximum
      *                                    allowed value is '120'.
@@ -634,28 +639,33 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                <li>{@link
      *                                    PropertyUpdatesMap#AI_API_PROVIDER
      *                                    AI_API_PROVIDER}: AI API provider
-     *                                    type
+     *                                    type.
      *                                <li>{@link PropertyUpdatesMap#AI_API_URL
-     *                                    AI_API_URL}: AI API URL
+     *                                    AI_API_URL}: AI API URL.
      *                                <li>{@link PropertyUpdatesMap#AI_API_KEY
-     *                                    AI_API_KEY}: AI API key
+     *                                    AI_API_KEY}: AI API key.
      *                                <li>{@link
      *                                    PropertyUpdatesMap#AI_API_CONNECTION_TIMEOUT
      *                                    AI_API_CONNECTION_TIMEOUT}: AI API
-     *                                    connection timeout in seconds
+     *                                    connection timeout in seconds.
      *                                <li>{@link
      *                                    PropertyUpdatesMap#AI_API_EMBEDDINGS_MODEL
      *                                    AI_API_EMBEDDINGS_MODEL}: AI API
-     *                                    model name
+     *                                    model name.
      *                                <li>{@link
      *                                    PropertyUpdatesMap#TELM_PERSIST_QUERY_METRICS
      *                                    TELM_PERSIST_QUERY_METRICS}: Enable
      *                                    or disable persisting of query
      *                                    metrics.
      *                                <li>{@link
+     *                                    PropertyUpdatesMap#TELM_FORCE_METRICS_DURATION
+     *                                    TELM_FORCE_METRICS_DURATION}: Capture
+     *                                    metrics for any query exceeding this
+     *                                    duration in seconds.
+     *                                <li>{@link
      *                                    PropertyUpdatesMap#POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT
      *                                    POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT}:
-     *                                    Idle connection timeout in seconds
+     *                                    Idle connection timeout in seconds.
      *                                <li>{@link
      *                                    PropertyUpdatesMap#POSTGRES_PROXY_KEEP_ALIVE
      *                                    POSTGRES_PROXY_KEEP_ALIVE}: Enable
@@ -676,7 +686,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    algorithm</a> applied to any column
      *                                    without a column-level or table-level
      *                                    default compression specified at the
-     *                                    time it was created
+     *                                    time it was created.
      *                                <li>{@link
      *                                    PropertyUpdatesMap#DISK_AUTO_OPTIMIZE_TIMEOUT
      *                                    DISK_AUTO_OPTIMIZE_TIMEOUT}: Time
@@ -760,11 +770,11 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         the execution_mode for kernel executions to the specified string
      *         value. Possible values are host, device, default (engine
      *         decides) or an integer value that indicates max chunk size to
-     *         exec on host
+     *         exec on host.
      *     <li>{@link PropertyUpdatesMap#EXTERNAL_FILES_DIRECTORY
      *         EXTERNAL_FILES_DIRECTORY}: Sets the root directory path where
      *         external table data files are accessed from.  Path must exist on
-     *         the head node
+     *         the head node.
      *     <li>{@link PropertyUpdatesMap#REQUEST_TIMEOUT REQUEST_TIMEOUT}:
      *         Number of minutes after which filtering (e.g., {@link
      *         com.gpudb.GPUdb#filter(FilterRequest) GPUdb.filter}) and
@@ -808,10 +818,10 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         maximum allowed value is '10000000'.
      *     <li>{@link PropertyUpdatesMap#KAFKA_POLL_TIMEOUT
      *         KAFKA_POLL_TIMEOUT}: Maximum time (milliseconds) for each poll
-     *         to get records from kafka. The default value is '0'. The minimum
+     *         to get records from Kafka. The default value is '0'. The minimum
      *         allowed value is '0'. The maximum allowed value is '1000'.
      *     <li>{@link PropertyUpdatesMap#KAFKA_WAIT_TIME KAFKA_WAIT_TIME}:
-     *         Maximum time (seconds) to buffer records received from kafka
+     *         Maximum time (seconds) to buffer records received from Kafka
      *         before ingestion. The default value is '30'. The minimum allowed
      *         value is '1'. The maximum allowed value is '120'.
      *     <li>{@link PropertyUpdatesMap#EGRESS_PARQUET_COMPRESSION
@@ -861,21 +871,25 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#AI_ENABLE_RAG AI_ENABLE_RAG}: Enable
      *         RAG. The default value is 'false'.
      *     <li>{@link PropertyUpdatesMap#AI_API_PROVIDER AI_API_PROVIDER}: AI
-     *         API provider type
-     *     <li>{@link PropertyUpdatesMap#AI_API_URL AI_API_URL}: AI API URL
-     *     <li>{@link PropertyUpdatesMap#AI_API_KEY AI_API_KEY}: AI API key
+     *         API provider type.
+     *     <li>{@link PropertyUpdatesMap#AI_API_URL AI_API_URL}: AI API URL.
+     *     <li>{@link PropertyUpdatesMap#AI_API_KEY AI_API_KEY}: AI API key.
      *     <li>{@link PropertyUpdatesMap#AI_API_CONNECTION_TIMEOUT
-     *         AI_API_CONNECTION_TIMEOUT}: AI API connection timeout in seconds
+     *         AI_API_CONNECTION_TIMEOUT}: AI API connection timeout in
+     *         seconds.
      *     <li>{@link PropertyUpdatesMap#AI_API_EMBEDDINGS_MODEL
-     *         AI_API_EMBEDDINGS_MODEL}: AI API model name
+     *         AI_API_EMBEDDINGS_MODEL}: AI API model name.
      *     <li>{@link PropertyUpdatesMap#TELM_PERSIST_QUERY_METRICS
      *         TELM_PERSIST_QUERY_METRICS}: Enable or disable persisting of
      *         query metrics.
+     *     <li>{@link PropertyUpdatesMap#TELM_FORCE_METRICS_DURATION
+     *         TELM_FORCE_METRICS_DURATION}: Capture metrics for any query
+     *         exceeding this duration in seconds.
      *     <li>{@link PropertyUpdatesMap#POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT
      *         POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT}: Idle connection timeout
-     *         in seconds
+     *         in seconds.
      *     <li>{@link PropertyUpdatesMap#POSTGRES_PROXY_KEEP_ALIVE
-     *         POSTGRES_PROXY_KEEP_ALIVE}: Enable  postgres proxy keep alive.
+     *         POSTGRES_PROXY_KEEP_ALIVE}: Enable postgres proxy keep alive.
      *         The default value is 'false'.
      *     <li>{@link PropertyUpdatesMap#KIFS_DIRECTORY_DATA_LIMIT
      *         KIFS_DIRECTORY_DATA_LIMIT}: The default maximum capacity to
@@ -886,7 +900,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         href="../../../../../../concepts/column_compression/"
      *         target="_top">compression algorithm</a> applied to any column
      *         without a column-level or table-level default compression
-     *         specified at the time it was created
+     *         specified at the time it was created.
      *     <li>{@link PropertyUpdatesMap#DISK_AUTO_OPTIMIZE_TIMEOUT
      *         DISK_AUTO_OPTIMIZE_TIMEOUT}: Time interval in seconds after
      *         which the database will apply optimizations/transformations to
@@ -938,11 +952,11 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         the execution_mode for kernel executions to the specified string
      *         value. Possible values are host, device, default (engine
      *         decides) or an integer value that indicates max chunk size to
-     *         exec on host
+     *         exec on host.
      *     <li>{@link PropertyUpdatesMap#EXTERNAL_FILES_DIRECTORY
      *         EXTERNAL_FILES_DIRECTORY}: Sets the root directory path where
      *         external table data files are accessed from.  Path must exist on
-     *         the head node
+     *         the head node.
      *     <li>{@link PropertyUpdatesMap#REQUEST_TIMEOUT REQUEST_TIMEOUT}:
      *         Number of minutes after which filtering (e.g., {@link
      *         com.gpudb.GPUdb#filter(FilterRequest) GPUdb.filter}) and
@@ -986,10 +1000,10 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         maximum allowed value is '10000000'.
      *     <li>{@link PropertyUpdatesMap#KAFKA_POLL_TIMEOUT
      *         KAFKA_POLL_TIMEOUT}: Maximum time (milliseconds) for each poll
-     *         to get records from kafka. The default value is '0'. The minimum
+     *         to get records from Kafka. The default value is '0'. The minimum
      *         allowed value is '0'. The maximum allowed value is '1000'.
      *     <li>{@link PropertyUpdatesMap#KAFKA_WAIT_TIME KAFKA_WAIT_TIME}:
-     *         Maximum time (seconds) to buffer records received from kafka
+     *         Maximum time (seconds) to buffer records received from Kafka
      *         before ingestion. The default value is '30'. The minimum allowed
      *         value is '1'. The maximum allowed value is '120'.
      *     <li>{@link PropertyUpdatesMap#EGRESS_PARQUET_COMPRESSION
@@ -1039,21 +1053,25 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#AI_ENABLE_RAG AI_ENABLE_RAG}: Enable
      *         RAG. The default value is 'false'.
      *     <li>{@link PropertyUpdatesMap#AI_API_PROVIDER AI_API_PROVIDER}: AI
-     *         API provider type
-     *     <li>{@link PropertyUpdatesMap#AI_API_URL AI_API_URL}: AI API URL
-     *     <li>{@link PropertyUpdatesMap#AI_API_KEY AI_API_KEY}: AI API key
+     *         API provider type.
+     *     <li>{@link PropertyUpdatesMap#AI_API_URL AI_API_URL}: AI API URL.
+     *     <li>{@link PropertyUpdatesMap#AI_API_KEY AI_API_KEY}: AI API key.
      *     <li>{@link PropertyUpdatesMap#AI_API_CONNECTION_TIMEOUT
-     *         AI_API_CONNECTION_TIMEOUT}: AI API connection timeout in seconds
+     *         AI_API_CONNECTION_TIMEOUT}: AI API connection timeout in
+     *         seconds.
      *     <li>{@link PropertyUpdatesMap#AI_API_EMBEDDINGS_MODEL
-     *         AI_API_EMBEDDINGS_MODEL}: AI API model name
+     *         AI_API_EMBEDDINGS_MODEL}: AI API model name.
      *     <li>{@link PropertyUpdatesMap#TELM_PERSIST_QUERY_METRICS
      *         TELM_PERSIST_QUERY_METRICS}: Enable or disable persisting of
      *         query metrics.
+     *     <li>{@link PropertyUpdatesMap#TELM_FORCE_METRICS_DURATION
+     *         TELM_FORCE_METRICS_DURATION}: Capture metrics for any query
+     *         exceeding this duration in seconds.
      *     <li>{@link PropertyUpdatesMap#POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT
      *         POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT}: Idle connection timeout
-     *         in seconds
+     *         in seconds.
      *     <li>{@link PropertyUpdatesMap#POSTGRES_PROXY_KEEP_ALIVE
-     *         POSTGRES_PROXY_KEEP_ALIVE}: Enable  postgres proxy keep alive.
+     *         POSTGRES_PROXY_KEEP_ALIVE}: Enable postgres proxy keep alive.
      *         The default value is 'false'.
      *     <li>{@link PropertyUpdatesMap#KIFS_DIRECTORY_DATA_LIMIT
      *         KIFS_DIRECTORY_DATA_LIMIT}: The default maximum capacity to
@@ -1064,7 +1082,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         href="../../../../../../concepts/column_compression/"
      *         target="_top">compression algorithm</a> applied to any column
      *         without a column-level or table-level default compression
-     *         specified at the time it was created
+     *         specified at the time it was created.
      *     <li>{@link PropertyUpdatesMap#DISK_AUTO_OPTIMIZE_TIMEOUT
      *         DISK_AUTO_OPTIMIZE_TIMEOUT}: Time interval in seconds after
      *         which the database will apply optimizations/transformations to

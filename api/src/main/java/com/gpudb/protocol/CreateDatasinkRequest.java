@@ -48,28 +48,28 @@ public class CreateDatasinkRequest implements IndexedRecord {
      */
     public static final class Options {
         /**
-         * Timeout in seconds for connecting to this data sink
+         * Timeout in seconds for connecting to this data sink.
          */
         public static final String CONNECTION_TIMEOUT = "connection_timeout";
 
         /**
-         * Timeout in seconds for waiting for a response from this data sink
+         * Timeout in seconds for waiting for a response from this data sink.
          */
         public static final String WAIT_TIMEOUT = "wait_timeout";
 
         /**
          * Name of the <a href="../../../../../../concepts/credentials/"
-         * target="_top">credential</a> object to be used in this data sink
+         * target="_top">credential</a> object to be used in this data sink.
          */
         public static final String CREDENTIAL = "credential";
 
         /**
-         * Name of the Amazon S3 bucket to use as the data sink
+         * Name of the Amazon S3 bucket to use as the data sink.
          */
         public static final String S3_BUCKET_NAME = "s3_bucket_name";
 
         /**
-         * Name of the Amazon S3 region where the given bucket is located
+         * Name of the Amazon S3 region where the given bucket is located.
          */
         public static final String S3_REGION = "s3_region";
 
@@ -77,7 +77,7 @@ public class CreateDatasinkRequest implements IndexedRecord {
          * Whether to verify SSL connections.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#TRUE TRUE}: Connect with SSL verification
+         *     <li>{@link Options#TRUE TRUE}: Connect with SSL verification.
          *     <li>{@link Options#FALSE FALSE}: Connect without verifying the
          *         SSL connection; for testing purposes, bypassing TLS errors,
          *         self-signed certificates, etc.
@@ -106,27 +106,27 @@ public class CreateDatasinkRequest implements IndexedRecord {
 
         /**
          * Amazon IAM Role ARN which has required S3 permissions that can be
-         * assumed for the given S3 IAM user
+         * assumed for the given S3 IAM user.
          */
         public static final String S3_AWS_ROLE_ARN = "s3_aws_role_arn";
 
         /**
-         * Customer encryption algorithm used encrypting data
+         * Customer encryption algorithm used encrypting data.
          */
         public static final String S3_ENCRYPTION_CUSTOMER_ALGORITHM = "s3_encryption_customer_algorithm";
 
         /**
-         * Customer encryption key to encrypt or decrypt data
+         * Customer encryption key to encrypt or decrypt data.
          */
         public static final String S3_ENCRYPTION_CUSTOMER_KEY = "s3_encryption_customer_key";
 
         /**
-         * Server side encryption type
+         * Server side encryption type.
          */
         public static final String S3_ENCRYPTION_TYPE = "s3_encryption_type";
 
         /**
-         * KMS key
+         * KMS key.
          */
         public static final String S3_KMS_KEY_ID = "s3_kms_key_id";
 
@@ -137,7 +137,7 @@ public class CreateDatasinkRequest implements IndexedRecord {
         public static final String HDFS_KERBEROS_KEYTAB = "hdfs_kerberos_keytab";
 
         /**
-         * Delegation token for the given HDFS user
+         * Delegation token for the given HDFS user.
          */
         public static final String HDFS_DELEGATION_TOKEN = "hdfs_delegation_token";
 
@@ -154,28 +154,28 @@ public class CreateDatasinkRequest implements IndexedRecord {
 
         /**
          * Name of the Azure storage account to use as the data sink, this is
-         * valid only if tenant_id is specified
+         * valid only if tenant_id is specified.
          */
         public static final String AZURE_STORAGE_ACCOUNT_NAME = "azure_storage_account_name";
 
         /**
-         * Name of the Azure storage container to use as the data sink
+         * Name of the Azure storage container to use as the data sink.
          */
         public static final String AZURE_CONTAINER_NAME = "azure_container_name";
 
         /**
-         * Active Directory tenant ID (or directory ID)
+         * Active Directory tenant ID (or directory ID).
          */
         public static final String AZURE_TENANT_ID = "azure_tenant_id";
 
         /**
          * Shared access signature token for Azure storage account to use as
-         * the data sink
+         * the data sink.
          */
         public static final String AZURE_SAS_TOKEN = "azure_sas_token";
 
         /**
-         * Oauth token to access given storage container
+         * Oauth token to access given storage container.
          */
         public static final String AZURE_OAUTH_TOKEN = "azure_oauth_token";
 
@@ -194,34 +194,34 @@ public class CreateDatasinkRequest implements IndexedRecord {
         public static final String AZURE_USE_VIRTUAL_ADDRESSING = "azure_use_virtual_addressing";
 
         /**
-         * Name of the Google Cloud Storage bucket to use as the data sink
+         * Name of the Google Cloud Storage bucket to use as the data sink.
          */
         public static final String GCS_BUCKET_NAME = "gcs_bucket_name";
 
         /**
-         * Name of the Google Cloud project to use as the data sink
+         * Name of the Google Cloud project to use as the data sink.
          */
         public static final String GCS_PROJECT_ID = "gcs_project_id";
 
         /**
          * Google Cloud service account keys to use for authenticating the data
-         * sink
+         * sink.
          */
         public static final String GCS_SERVICE_ACCOUNT_KEYS = "gcs_service_account_keys";
 
         /**
-         * JDBC driver jar file location
+         * JDBC driver jar file location.
          */
         public static final String JDBC_DRIVER_JAR_PATH = "jdbc_driver_jar_path";
 
         /**
-         * Name of the JDBC driver class
+         * Name of the JDBC driver class.
          */
         public static final String JDBC_DRIVER_CLASS_NAME = "jdbc_driver_class_name";
 
         /**
          * Name of the Kafka topic to publish to if {@link #getDestination()
-         * destination} is a Kafka broker
+         * destination} is a Kafka broker.
          */
         public static final String KAFKA_TOPIC_NAME = "kafka_topic_name";
 
@@ -242,21 +242,21 @@ public class CreateDatasinkRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#FLAT FLAT}: A single record is returned per
-         *         message
+         *         message.
          *     <li>{@link Options#NESTED NESTED}: Records are returned as an
-         *         array per message
+         *         array per message.
          * </ul>
          * The default value is {@link Options#FLAT FLAT}.
          */
         public static final String JSON_FORMAT = "json_format";
 
         /**
-         * A single record is returned per message
+         * A single record is returned per message.
          */
         public static final String FLAT = "flat";
 
         /**
-         * Records are returned as an array per message
+         * Records are returned as an array per message.
          */
         public static final String NESTED = "nested";
 
@@ -273,7 +273,7 @@ public class CreateDatasinkRequest implements IndexedRecord {
         public static final String USE_MANAGED_CREDENTIALS = "use_managed_credentials";
 
         /**
-         * Use https to connect to datasink if true, otherwise use http.
+         * Use HTTPS to connect to datasink if true, otherwise use HTTP.
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}
@@ -322,27 +322,27 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *                 <ul>
      *                     <li>{@link Options#CONNECTION_TIMEOUT
      *                         CONNECTION_TIMEOUT}: Timeout in seconds for
-     *                         connecting to this data sink
+     *                         connecting to this data sink.
      *                     <li>{@link Options#WAIT_TIMEOUT WAIT_TIMEOUT}:
      *                         Timeout in seconds for waiting for a response
-     *                         from this data sink
+     *                         from this data sink.
      *                     <li>{@link Options#CREDENTIAL CREDENTIAL}: Name of
      *                         the <a
      *                         href="../../../../../../concepts/credentials/"
      *                         target="_top">credential</a> object to be used
-     *                         in this data sink
+     *                         in this data sink.
      *                     <li>{@link Options#S3_BUCKET_NAME S3_BUCKET_NAME}:
      *                         Name of the Amazon S3 bucket to use as the data
-     *                         sink
+     *                         sink.
      *                     <li>{@link Options#S3_REGION S3_REGION}: Name of the
      *                         Amazon S3 region where the given bucket is
-     *                         located
+     *                         located.
      *                     <li>{@link Options#S3_VERIFY_SSL S3_VERIFY_SSL}:
      *                         Whether to verify SSL connections.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Connect with
-     *                                 SSL verification
+     *                                 SSL verification.
      *                             <li>{@link Options#FALSE FALSE}: Connect
      *                                 without verifying the SSL connection;
      *                                 for testing purposes, bypassing TLS
@@ -367,24 +367,25 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *                     <li>{@link Options#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}:
      *                         Amazon IAM Role ARN which has required S3
      *                         permissions that can be assumed for the given S3
-     *                         IAM user
+     *                         IAM user.
      *                     <li>{@link Options#S3_ENCRYPTION_CUSTOMER_ALGORITHM
      *                         S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer
-     *                         encryption algorithm used encrypting data
+     *                         encryption algorithm used encrypting data.
      *                     <li>{@link Options#S3_ENCRYPTION_CUSTOMER_KEY
      *                         S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption
-     *                         key to encrypt or decrypt data
+     *                         key to encrypt or decrypt data.
      *                     <li>{@link Options#S3_ENCRYPTION_TYPE
-     *                         S3_ENCRYPTION_TYPE}: Server side encryption type
+     *                         S3_ENCRYPTION_TYPE}: Server side encryption
+     *                         type.
      *                     <li>{@link Options#S3_KMS_KEY_ID S3_KMS_KEY_ID}: KMS
-     *                         key
+     *                         key.
      *                     <li>{@link Options#HDFS_KERBEROS_KEYTAB
      *                         HDFS_KERBEROS_KEYTAB}: Kerberos keytab file
      *                         location for the given HDFS user.  This may be a
      *                         KIFS file.
      *                     <li>{@link Options#HDFS_DELEGATION_TOKEN
      *                         HDFS_DELEGATION_TOKEN}: Delegation token for the
-     *                         given HDFS user
+     *                         given HDFS user.
      *                     <li>{@link Options#HDFS_USE_KERBEROS
      *                         HDFS_USE_KERBEROS}: Use kerberos authentication
      *                         for the given HDFS cluster.
@@ -398,18 +399,18 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *                     <li>{@link Options#AZURE_STORAGE_ACCOUNT_NAME
      *                         AZURE_STORAGE_ACCOUNT_NAME}: Name of the Azure
      *                         storage account to use as the data sink, this is
-     *                         valid only if tenant_id is specified
+     *                         valid only if tenant_id is specified.
      *                     <li>{@link Options#AZURE_CONTAINER_NAME
      *                         AZURE_CONTAINER_NAME}: Name of the Azure storage
-     *                         container to use as the data sink
+     *                         container to use as the data sink.
      *                     <li>{@link Options#AZURE_TENANT_ID AZURE_TENANT_ID}:
-     *                         Active Directory tenant ID (or directory ID)
+     *                         Active Directory tenant ID (or directory ID).
      *                     <li>{@link Options#AZURE_SAS_TOKEN AZURE_SAS_TOKEN}:
      *                         Shared access signature token for Azure storage
-     *                         account to use as the data sink
+     *                         account to use as the data sink.
      *                     <li>{@link Options#AZURE_OAUTH_TOKEN
      *                         AZURE_OAUTH_TOKEN}: Oauth token to access given
-     *                         storage container
+     *                         storage container.
      *                     <li>{@link Options#AZURE_USE_VIRTUAL_ADDRESSING
      *                         AZURE_USE_VIRTUAL_ADDRESSING}: Whether to use
      *                         virtual addressing when referencing the Azure
@@ -427,24 +428,24 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#GCS_BUCKET_NAME GCS_BUCKET_NAME}:
      *                         Name of the Google Cloud Storage bucket to use
-     *                         as the data sink
+     *                         as the data sink.
      *                     <li>{@link Options#GCS_PROJECT_ID GCS_PROJECT_ID}:
      *                         Name of the Google Cloud project to use as the
-     *                         data sink
+     *                         data sink.
      *                     <li>{@link Options#GCS_SERVICE_ACCOUNT_KEYS
      *                         GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud service
      *                         account keys to use for authenticating the data
-     *                         sink
+     *                         sink.
      *                     <li>{@link Options#JDBC_DRIVER_JAR_PATH
      *                         JDBC_DRIVER_JAR_PATH}: JDBC driver jar file
-     *                         location
+     *                         location.
      *                     <li>{@link Options#JDBC_DRIVER_CLASS_NAME
      *                         JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver
-     *                         class
+     *                         class.
      *                     <li>{@link Options#KAFKA_TOPIC_NAME
      *                         KAFKA_TOPIC_NAME}: Name of the Kafka topic to
      *                         publish to if {@code destination} is a Kafka
-     *                         broker
+     *                         broker.
      *                     <li>{@link Options#MAX_BATCH_SIZE MAX_BATCH_SIZE}:
      *                         Maximum number of records per notification
      *                         message. The default value is '1'.
@@ -458,9 +459,9 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#FLAT FLAT}: A single
-     *                                 record is returned per message
+     *                                 record is returned per message.
      *                             <li>{@link Options#NESTED NESTED}: Records
-     *                                 are returned as an array per message
+     *                                 are returned as an array per message.
      *                         </ul>
      *                         The default value is {@link Options#FLAT FLAT}.
      *                     <li>{@link Options#USE_MANAGED_CREDENTIALS
@@ -475,9 +476,9 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
-     *                     <li>{@link Options#USE_HTTPS USE_HTTPS}: Use https
+     *                     <li>{@link Options#USE_HTTPS USE_HTTPS}: Use HTTPS
      *                         to connect to datasink if true, otherwise use
-     *                         http.
+     *                         HTTP.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
@@ -557,21 +558,23 @@ public class CreateDatasinkRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *     <li>{@link Options#CONNECTION_TIMEOUT CONNECTION_TIMEOUT}: Timeout
-     *         in seconds for connecting to this data sink
+     *         in seconds for connecting to this data sink.
      *     <li>{@link Options#WAIT_TIMEOUT WAIT_TIMEOUT}: Timeout in seconds
-     *         for waiting for a response from this data sink
+     *         for waiting for a response from this data sink.
      *     <li>{@link Options#CREDENTIAL CREDENTIAL}: Name of the <a
      *         href="../../../../../../concepts/credentials/"
-     *         target="_top">credential</a> object to be used in this data sink
+     *         target="_top">credential</a> object to be used in this data
+     *         sink.
      *     <li>{@link Options#S3_BUCKET_NAME S3_BUCKET_NAME}: Name of the
-     *         Amazon S3 bucket to use as the data sink
+     *         Amazon S3 bucket to use as the data sink.
      *     <li>{@link Options#S3_REGION S3_REGION}: Name of the Amazon S3
-     *         region where the given bucket is located
+     *         region where the given bucket is located.
      *     <li>{@link Options#S3_VERIFY_SSL S3_VERIFY_SSL}: Whether to verify
      *         SSL connections.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#TRUE TRUE}: Connect with SSL verification
+     *             <li>{@link Options#TRUE TRUE}: Connect with SSL
+     *                 verification.
      *             <li>{@link Options#FALSE FALSE}: Connect without verifying
      *                 the SSL connection; for testing purposes, bypassing TLS
      *                 errors, self-signed certificates, etc.
@@ -591,21 +594,21 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}: Amazon IAM Role
      *         ARN which has required S3 permissions that can be assumed for
-     *         the given S3 IAM user
+     *         the given S3 IAM user.
      *     <li>{@link Options#S3_ENCRYPTION_CUSTOMER_ALGORITHM
      *         S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer encryption algorithm
-     *         used encrypting data
+     *         used encrypting data.
      *     <li>{@link Options#S3_ENCRYPTION_CUSTOMER_KEY
      *         S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption key to encrypt
-     *         or decrypt data
+     *         or decrypt data.
      *     <li>{@link Options#S3_ENCRYPTION_TYPE S3_ENCRYPTION_TYPE}: Server
-     *         side encryption type
-     *     <li>{@link Options#S3_KMS_KEY_ID S3_KMS_KEY_ID}: KMS key
+     *         side encryption type.
+     *     <li>{@link Options#S3_KMS_KEY_ID S3_KMS_KEY_ID}: KMS key.
      *     <li>{@link Options#HDFS_KERBEROS_KEYTAB HDFS_KERBEROS_KEYTAB}:
      *         Kerberos keytab file location for the given HDFS user.  This may
      *         be a KIFS file.
      *     <li>{@link Options#HDFS_DELEGATION_TOKEN HDFS_DELEGATION_TOKEN}:
-     *         Delegation token for the given HDFS user
+     *         Delegation token for the given HDFS user.
      *     <li>{@link Options#HDFS_USE_KERBEROS HDFS_USE_KERBEROS}: Use
      *         kerberos authentication for the given HDFS cluster.
      *         Supported values:
@@ -617,16 +620,16 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *     <li>{@link Options#AZURE_STORAGE_ACCOUNT_NAME
      *         AZURE_STORAGE_ACCOUNT_NAME}: Name of the Azure storage account
      *         to use as the data sink, this is valid only if tenant_id is
-     *         specified
+     *         specified.
      *     <li>{@link Options#AZURE_CONTAINER_NAME AZURE_CONTAINER_NAME}: Name
-     *         of the Azure storage container to use as the data sink
+     *         of the Azure storage container to use as the data sink.
      *     <li>{@link Options#AZURE_TENANT_ID AZURE_TENANT_ID}: Active
-     *         Directory tenant ID (or directory ID)
+     *         Directory tenant ID (or directory ID).
      *     <li>{@link Options#AZURE_SAS_TOKEN AZURE_SAS_TOKEN}: Shared access
      *         signature token for Azure storage account to use as the data
-     *         sink
+     *         sink.
      *     <li>{@link Options#AZURE_OAUTH_TOKEN AZURE_OAUTH_TOKEN}: Oauth token
-     *         to access given storage container
+     *         to access given storage container.
      *     <li>{@link Options#AZURE_USE_VIRTUAL_ADDRESSING
      *         AZURE_USE_VIRTUAL_ADDRESSING}: Whether to use virtual addressing
      *         when referencing the Azure source.
@@ -640,19 +643,19 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#GCS_BUCKET_NAME GCS_BUCKET_NAME}: Name of the
-     *         Google Cloud Storage bucket to use as the data sink
+     *         Google Cloud Storage bucket to use as the data sink.
      *     <li>{@link Options#GCS_PROJECT_ID GCS_PROJECT_ID}: Name of the
-     *         Google Cloud project to use as the data sink
+     *         Google Cloud project to use as the data sink.
      *     <li>{@link Options#GCS_SERVICE_ACCOUNT_KEYS
      *         GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud service account keys to
-     *         use for authenticating the data sink
+     *         use for authenticating the data sink.
      *     <li>{@link Options#JDBC_DRIVER_JAR_PATH JDBC_DRIVER_JAR_PATH}: JDBC
-     *         driver jar file location
+     *         driver jar file location.
      *     <li>{@link Options#JDBC_DRIVER_CLASS_NAME JDBC_DRIVER_CLASS_NAME}:
-     *         Name of the JDBC driver class
+     *         Name of the JDBC driver class.
      *     <li>{@link Options#KAFKA_TOPIC_NAME KAFKA_TOPIC_NAME}: Name of the
      *         Kafka topic to publish to if {@link #getDestination()
-     *         destination} is a Kafka broker
+     *         destination} is a Kafka broker.
      *     <li>{@link Options#MAX_BATCH_SIZE MAX_BATCH_SIZE}: Maximum number of
      *         records per notification message. The default value is '1'.
      *     <li>{@link Options#MAX_MESSAGE_SIZE MAX_MESSAGE_SIZE}: Maximum size
@@ -663,9 +666,9 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#FLAT FLAT}: A single record is returned
-     *                 per message
+     *                 per message.
      *             <li>{@link Options#NESTED NESTED}: Records are returned as
-     *                 an array per message
+     *                 an array per message.
      *         </ul>
      *         The default value is {@link Options#FLAT FLAT}.
      *     <li>{@link Options#USE_MANAGED_CREDENTIALS USE_MANAGED_CREDENTIALS}:
@@ -678,8 +681,8 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#USE_HTTPS USE_HTTPS}: Use https to connect to
-     *         datasink if true, otherwise use http.
+     *     <li>{@link Options#USE_HTTPS USE_HTTPS}: Use HTTPS to connect to
+     *         datasink if true, otherwise use HTTP.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
@@ -707,21 +710,23 @@ public class CreateDatasinkRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *     <li>{@link Options#CONNECTION_TIMEOUT CONNECTION_TIMEOUT}: Timeout
-     *         in seconds for connecting to this data sink
+     *         in seconds for connecting to this data sink.
      *     <li>{@link Options#WAIT_TIMEOUT WAIT_TIMEOUT}: Timeout in seconds
-     *         for waiting for a response from this data sink
+     *         for waiting for a response from this data sink.
      *     <li>{@link Options#CREDENTIAL CREDENTIAL}: Name of the <a
      *         href="../../../../../../concepts/credentials/"
-     *         target="_top">credential</a> object to be used in this data sink
+     *         target="_top">credential</a> object to be used in this data
+     *         sink.
      *     <li>{@link Options#S3_BUCKET_NAME S3_BUCKET_NAME}: Name of the
-     *         Amazon S3 bucket to use as the data sink
+     *         Amazon S3 bucket to use as the data sink.
      *     <li>{@link Options#S3_REGION S3_REGION}: Name of the Amazon S3
-     *         region where the given bucket is located
+     *         region where the given bucket is located.
      *     <li>{@link Options#S3_VERIFY_SSL S3_VERIFY_SSL}: Whether to verify
      *         SSL connections.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#TRUE TRUE}: Connect with SSL verification
+     *             <li>{@link Options#TRUE TRUE}: Connect with SSL
+     *                 verification.
      *             <li>{@link Options#FALSE FALSE}: Connect without verifying
      *                 the SSL connection; for testing purposes, bypassing TLS
      *                 errors, self-signed certificates, etc.
@@ -741,21 +746,21 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}: Amazon IAM Role
      *         ARN which has required S3 permissions that can be assumed for
-     *         the given S3 IAM user
+     *         the given S3 IAM user.
      *     <li>{@link Options#S3_ENCRYPTION_CUSTOMER_ALGORITHM
      *         S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer encryption algorithm
-     *         used encrypting data
+     *         used encrypting data.
      *     <li>{@link Options#S3_ENCRYPTION_CUSTOMER_KEY
      *         S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption key to encrypt
-     *         or decrypt data
+     *         or decrypt data.
      *     <li>{@link Options#S3_ENCRYPTION_TYPE S3_ENCRYPTION_TYPE}: Server
-     *         side encryption type
-     *     <li>{@link Options#S3_KMS_KEY_ID S3_KMS_KEY_ID}: KMS key
+     *         side encryption type.
+     *     <li>{@link Options#S3_KMS_KEY_ID S3_KMS_KEY_ID}: KMS key.
      *     <li>{@link Options#HDFS_KERBEROS_KEYTAB HDFS_KERBEROS_KEYTAB}:
      *         Kerberos keytab file location for the given HDFS user.  This may
      *         be a KIFS file.
      *     <li>{@link Options#HDFS_DELEGATION_TOKEN HDFS_DELEGATION_TOKEN}:
-     *         Delegation token for the given HDFS user
+     *         Delegation token for the given HDFS user.
      *     <li>{@link Options#HDFS_USE_KERBEROS HDFS_USE_KERBEROS}: Use
      *         kerberos authentication for the given HDFS cluster.
      *         Supported values:
@@ -767,16 +772,16 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *     <li>{@link Options#AZURE_STORAGE_ACCOUNT_NAME
      *         AZURE_STORAGE_ACCOUNT_NAME}: Name of the Azure storage account
      *         to use as the data sink, this is valid only if tenant_id is
-     *         specified
+     *         specified.
      *     <li>{@link Options#AZURE_CONTAINER_NAME AZURE_CONTAINER_NAME}: Name
-     *         of the Azure storage container to use as the data sink
+     *         of the Azure storage container to use as the data sink.
      *     <li>{@link Options#AZURE_TENANT_ID AZURE_TENANT_ID}: Active
-     *         Directory tenant ID (or directory ID)
+     *         Directory tenant ID (or directory ID).
      *     <li>{@link Options#AZURE_SAS_TOKEN AZURE_SAS_TOKEN}: Shared access
      *         signature token for Azure storage account to use as the data
-     *         sink
+     *         sink.
      *     <li>{@link Options#AZURE_OAUTH_TOKEN AZURE_OAUTH_TOKEN}: Oauth token
-     *         to access given storage container
+     *         to access given storage container.
      *     <li>{@link Options#AZURE_USE_VIRTUAL_ADDRESSING
      *         AZURE_USE_VIRTUAL_ADDRESSING}: Whether to use virtual addressing
      *         when referencing the Azure source.
@@ -790,19 +795,19 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#GCS_BUCKET_NAME GCS_BUCKET_NAME}: Name of the
-     *         Google Cloud Storage bucket to use as the data sink
+     *         Google Cloud Storage bucket to use as the data sink.
      *     <li>{@link Options#GCS_PROJECT_ID GCS_PROJECT_ID}: Name of the
-     *         Google Cloud project to use as the data sink
+     *         Google Cloud project to use as the data sink.
      *     <li>{@link Options#GCS_SERVICE_ACCOUNT_KEYS
      *         GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud service account keys to
-     *         use for authenticating the data sink
+     *         use for authenticating the data sink.
      *     <li>{@link Options#JDBC_DRIVER_JAR_PATH JDBC_DRIVER_JAR_PATH}: JDBC
-     *         driver jar file location
+     *         driver jar file location.
      *     <li>{@link Options#JDBC_DRIVER_CLASS_NAME JDBC_DRIVER_CLASS_NAME}:
-     *         Name of the JDBC driver class
+     *         Name of the JDBC driver class.
      *     <li>{@link Options#KAFKA_TOPIC_NAME KAFKA_TOPIC_NAME}: Name of the
      *         Kafka topic to publish to if {@link #getDestination()
-     *         destination} is a Kafka broker
+     *         destination} is a Kafka broker.
      *     <li>{@link Options#MAX_BATCH_SIZE MAX_BATCH_SIZE}: Maximum number of
      *         records per notification message. The default value is '1'.
      *     <li>{@link Options#MAX_MESSAGE_SIZE MAX_MESSAGE_SIZE}: Maximum size
@@ -813,9 +818,9 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#FLAT FLAT}: A single record is returned
-     *                 per message
+     *                 per message.
      *             <li>{@link Options#NESTED NESTED}: Records are returned as
-     *                 an array per message
+     *                 an array per message.
      *         </ul>
      *         The default value is {@link Options#FLAT FLAT}.
      *     <li>{@link Options#USE_MANAGED_CREDENTIALS USE_MANAGED_CREDENTIALS}:
@@ -828,8 +833,8 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#USE_HTTPS USE_HTTPS}: Use https to connect to
-     *         datasink if true, otherwise use http.
+     *     <li>{@link Options#USE_HTTPS USE_HTTPS}: Use HTTPS to connect to
+     *         datasink if true, otherwise use HTTP.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}

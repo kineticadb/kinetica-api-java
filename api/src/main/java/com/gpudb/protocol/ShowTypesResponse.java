@@ -53,6 +53,8 @@ public class ShowTypesResponse implements IndexedRecord {
     }
 
     /**
+     * The type IDs of the matching types.
+     *
      * @return The current value of {@code typeIds}.
      */
     public List<String> getTypeIds() {
@@ -60,6 +62,8 @@ public class ShowTypesResponse implements IndexedRecord {
     }
 
     /**
+     * The type IDs of the matching types.
+     *
      * @param typeIds  The new value for {@code typeIds}.
      *
      * @return {@code this} to mimic the builder pattern.
@@ -70,6 +74,8 @@ public class ShowTypesResponse implements IndexedRecord {
     }
 
     /**
+     * The Avro schema strings describing each matching type.
+     *
      * @return The current value of {@code typeSchemas}.
      */
     public List<String> getTypeSchemas() {
@@ -77,6 +83,8 @@ public class ShowTypesResponse implements IndexedRecord {
     }
 
     /**
+     * The Avro schema strings describing each matching type.
+     *
      * @param typeSchemas  The new value for {@code typeSchemas}.
      *
      * @return {@code this} to mimic the builder pattern.
@@ -87,6 +95,8 @@ public class ShowTypesResponse implements IndexedRecord {
     }
 
     /**
+     * The user-defined labels of each matching type.
+     *
      * @return The current value of {@code labels}.
      */
     public List<String> getLabels() {
@@ -94,6 +104,8 @@ public class ShowTypesResponse implements IndexedRecord {
     }
 
     /**
+     * The user-defined labels of each matching type.
+     *
      * @param labels  The new value for {@code labels}.
      *
      * @return {@code this} to mimic the builder pattern.
@@ -104,6 +116,8 @@ public class ShowTypesResponse implements IndexedRecord {
     }
 
     /**
+     * The column properties of each matching type.
+     *
      * @return The current value of {@code properties}.
      */
     public List<Map<String, List<String>>> getProperties() {
@@ -111,6 +125,8 @@ public class ShowTypesResponse implements IndexedRecord {
     }
 
     /**
+     * The column properties of each matching type.
+     *
      * @param properties  The new value for {@code properties}.
      *
      * @return {@code this} to mimic the builder pattern.

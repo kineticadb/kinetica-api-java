@@ -92,7 +92,7 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
     /**
      * ID of the currently registered table structure <a
      * href="../../../../../../concepts/types/" target="_top">type</a> for the
-     * target table
+     * target table.
      *
      * @return The current value of {@code typeId}.
      */
@@ -103,7 +103,7 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
     /**
      * ID of the currently registered table structure <a
      * href="../../../../../../concepts/types/" target="_top">type</a> for the
-     * target table
+     * target table.
      *
      * @param typeId  The new value for {@code typeId}.
      *
@@ -115,7 +115,7 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
     }
 
     /**
-     * A JSON string describing the columns of the target table
+     * A JSON string describing the columns of the target table.
      *
      * @return The current value of {@code typeDefinition}.
      */
@@ -124,7 +124,7 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
     }
 
     /**
-     * A JSON string describing the columns of the target table
+     * A JSON string describing the columns of the target table.
      *
      * @param typeDefinition  The new value for {@code typeDefinition}.
      *
@@ -137,7 +137,7 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
 
     /**
      * The user-defined description associated with the target table's
-     * structure
+     * structure.
      *
      * @return The current value of {@code typeLabel}.
      */
@@ -147,7 +147,7 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
 
     /**
      * The user-defined description associated with the target table's
-     * structure
+     * structure.
      *
      * @param typeLabel  The new value for {@code typeLabel}.
      *
@@ -160,7 +160,7 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
 
     /**
      * A mapping of each target table column name to an array of column
-     * properties associated with that column
+     * properties associated with that column.
      *
      * @return The current value of {@code typeProperties}.
      */
@@ -170,7 +170,7 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
 
     /**
      * A mapping of each target table column name to an array of column
-     * properties associated with that column
+     * properties associated with that column.
      *
      * @param typeProperties  The new value for {@code typeProperties}.
      *
@@ -272,6 +272,13 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
     }
 
     /**
+     * The list of source files from which records would be inserted; only
+     * filled in when {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#INGESTION_MODE
+     * INGESTION_MODE} is {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DRY_RUN
+     * DRY_RUN}.
+     *
      * @return The current value of {@code files}.
      */
     public List<String> getFiles() {
@@ -279,6 +286,13 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
     }
 
     /**
+     * The list of source files from which records would be inserted; only
+     * filled in when {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#INGESTION_MODE
+     * INGESTION_MODE} is {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DRY_RUN
+     * DRY_RUN}.
+     *
      * @param files  The new value for {@code files}.
      *
      * @return {@code this} to mimic the builder pattern.

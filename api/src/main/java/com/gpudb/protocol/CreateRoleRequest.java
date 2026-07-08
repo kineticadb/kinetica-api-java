@@ -45,7 +45,7 @@ public class CreateRoleRequest implements IndexedRecord {
      */
     public static final class Options {
         /**
-         * Name of an existing resource group to associate with this user
+         * Name of an existing resource group to associate with this user.
          */
         public static final String RESOURCE_GROUP = "resource_group";
 
@@ -74,7 +74,7 @@ public class CreateRoleRequest implements IndexedRecord {
      *                 <ul>
      *                     <li>{@link Options#RESOURCE_GROUP RESOURCE_GROUP}:
      *                         Name of an existing resource group to associate
-     *                         with this user
+     *                         with this user.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -112,7 +112,7 @@ public class CreateRoleRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *     <li>{@link Options#RESOURCE_GROUP RESOURCE_GROUP}: Name of an
-     *         existing resource group to associate with this user
+     *         existing resource group to associate with this user.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -126,7 +126,7 @@ public class CreateRoleRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *     <li>{@link Options#RESOURCE_GROUP RESOURCE_GROUP}: Name of an
-     *         existing resource group to associate with this user
+     *         existing resource group to associate with this user.
      * </ul>
      * The default value is an empty {@link Map}.
      *

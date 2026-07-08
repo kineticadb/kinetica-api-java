@@ -65,28 +65,28 @@ public class CreateDatasourceRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * Timeout in seconds for connecting to this storage provider
+         * Timeout in seconds for connecting to this storage provider.
          */
         public static final String CONNECTION_TIMEOUT = "connection_timeout";
 
         /**
-         * Timeout in seconds for reading from this storage provider
+         * Timeout in seconds for reading from this storage provider.
          */
         public static final String WAIT_TIMEOUT = "wait_timeout";
 
         /**
          * Name of the <a href="../../../../../../concepts/credentials"
-         * target="_top">credential</a> object to be used in data source
+         * target="_top">credential</a> object to be used in data source.
          */
         public static final String CREDENTIAL = "credential";
 
         /**
-         * Name of the Amazon S3 bucket to use as the data source
+         * Name of the Amazon S3 bucket to use as the data source.
          */
         public static final String S3_BUCKET_NAME = "s3_bucket_name";
 
         /**
-         * Name of the Amazon S3 region where the given bucket is located
+         * Name of the Amazon S3 region where the given bucket is located.
          */
         public static final String S3_REGION = "s3_region";
 
@@ -94,7 +94,7 @@ public class CreateDatasourceRequest implements IndexedRecord {
          * Whether to verify SSL connections.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#TRUE TRUE}: Connect with SSL verification
+         *     <li>{@link Options#TRUE TRUE}: Connect with SSL verification.
          *     <li>{@link Options#FALSE FALSE}: Connect without verifying the
          *         SSL connection; for testing purposes, bypassing TLS errors,
          *         self-signed certificates, etc.
@@ -120,17 +120,17 @@ public class CreateDatasourceRequest implements IndexedRecord {
 
         /**
          * Amazon IAM Role ARN which has required S3 permissions that can be
-         * assumed for the given S3 IAM user
+         * assumed for the given S3 IAM user.
          */
         public static final String S3_AWS_ROLE_ARN = "s3_aws_role_arn";
 
         /**
-         * Customer encryption algorithm used encrypting data
+         * Customer encryption algorithm used encrypting data.
          */
         public static final String S3_ENCRYPTION_CUSTOMER_ALGORITHM = "s3_encryption_customer_algorithm";
 
         /**
-         * Customer encryption key to encrypt or decrypt data
+         * Customer encryption key to encrypt or decrypt data.
          */
         public static final String S3_ENCRYPTION_CUSTOMER_KEY = "s3_encryption_customer_key";
 
@@ -141,7 +141,7 @@ public class CreateDatasourceRequest implements IndexedRecord {
         public static final String HDFS_KERBEROS_KEYTAB = "hdfs_kerberos_keytab";
 
         /**
-         * Delegation token for the given HDFS user
+         * Delegation token for the given HDFS user.
          */
         public static final String HDFS_DELEGATION_TOKEN = "hdfs_delegation_token";
 
@@ -158,28 +158,28 @@ public class CreateDatasourceRequest implements IndexedRecord {
 
         /**
          * Name of the Azure storage account to use as the data source, this is
-         * valid only if tenant_id is specified
+         * valid only if tenant_id is specified.
          */
         public static final String AZURE_STORAGE_ACCOUNT_NAME = "azure_storage_account_name";
 
         /**
-         * Name of the Azure storage container to use as the data source
+         * Name of the Azure storage container to use as the data source.
          */
         public static final String AZURE_CONTAINER_NAME = "azure_container_name";
 
         /**
-         * Active Directory tenant ID (or directory ID)
+         * Active Directory tenant ID (or directory ID).
          */
         public static final String AZURE_TENANT_ID = "azure_tenant_id";
 
         /**
          * Shared access signature token for Azure storage account to use as
-         * the data source
+         * the data source.
          */
         public static final String AZURE_SAS_TOKEN = "azure_sas_token";
 
         /**
-         * OAuth token to access given storage container
+         * OAuth token to access given storage container.
          */
         public static final String AZURE_OAUTH_TOKEN = "azure_oauth_token";
 
@@ -198,18 +198,18 @@ public class CreateDatasourceRequest implements IndexedRecord {
         public static final String AZURE_USE_VIRTUAL_ADDRESSING = "azure_use_virtual_addressing";
 
         /**
-         * Name of the Google Cloud Storage bucket to use as the data source
+         * Name of the Google Cloud Storage bucket to use as the data source.
          */
         public static final String GCS_BUCKET_NAME = "gcs_bucket_name";
 
         /**
-         * Name of the Google Cloud project to use as the data source
+         * Name of the Google Cloud project to use as the data source.
          */
         public static final String GCS_PROJECT_ID = "gcs_project_id";
 
         /**
          * Google Cloud service account keys to use for authenticating the data
-         * source
+         * source.
          */
         public static final String GCS_SERVICE_ACCOUNT_KEYS = "gcs_service_account_keys";
 
@@ -225,7 +225,7 @@ public class CreateDatasourceRequest implements IndexedRecord {
         public static final String IS_STREAM = "is_stream";
 
         /**
-         * Name of the Kafka topic to use as the data source
+         * Name of the Kafka topic to use as the data source.
          */
         public static final String KAFKA_TOPIC_NAME = "kafka_topic_name";
 
@@ -235,7 +235,7 @@ public class CreateDatasourceRequest implements IndexedRecord {
         public static final String JDBC_DRIVER_JAR_PATH = "jdbc_driver_jar_path";
 
         /**
-         * Name of the JDBC driver class
+         * Name of the JDBC driver class.
          */
         public static final String JDBC_DRIVER_CLASS_NAME = "jdbc_driver_class_name";
 
@@ -265,7 +265,7 @@ public class CreateDatasourceRequest implements IndexedRecord {
         public static final String USE_MANAGED_CREDENTIALS = "use_managed_credentials";
 
         /**
-         * Use https to connect to datasource if true, otherwise use http.
+         * Use HTTPS to connect to datasource if true, otherwise use HTTP.
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}
@@ -294,12 +294,12 @@ public class CreateDatasourceRequest implements IndexedRecord {
         public static final String SCHEMA_REGISTRY_PORT = "schema_registry_port";
 
         /**
-         * Confluent Schema registry connection timeout (in Secs)
+         * Confluent Schema registry connection timeout (in secs).
          */
         public static final String SCHEMA_REGISTRY_CONNECTION_RETRIES = "schema_registry_connection_retries";
 
         /**
-         * Confluent Schema registry connection timeout (in Secs)
+         * Confluent Schema registry connection timeout (in secs).
          */
         public static final String SCHEMA_REGISTRY_CONNECTION_TIMEOUT = "schema_registry_connection_timeout";
 
@@ -332,9 +332,9 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                  'storage_provider_type://[storage_path[:storage_port]]'
      *                  format.  Supported storage provider types are 'azure',
      *                  'gcs', 'hdfs', 'jdbc', 'kafka', 'confluent', and 's3'.
-     * @param userName  Name of the remote system user; may be an empty string
+     * @param userName  Name of the remote system user; may be an empty string.
      * @param password  Password for the remote system user; may be an empty
-     *                  string
+     *                  string.
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link Options#SKIP_VALIDATION SKIP_VALIDATION}:
@@ -349,27 +349,27 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                         FALSE}.
      *                     <li>{@link Options#CONNECTION_TIMEOUT
      *                         CONNECTION_TIMEOUT}: Timeout in seconds for
-     *                         connecting to this storage provider
+     *                         connecting to this storage provider.
      *                     <li>{@link Options#WAIT_TIMEOUT WAIT_TIMEOUT}:
      *                         Timeout in seconds for reading from this storage
-     *                         provider
+     *                         provider.
      *                     <li>{@link Options#CREDENTIAL CREDENTIAL}: Name of
      *                         the <a
      *                         href="../../../../../../concepts/credentials"
      *                         target="_top">credential</a> object to be used
-     *                         in data source
+     *                         in data source.
      *                     <li>{@link Options#S3_BUCKET_NAME S3_BUCKET_NAME}:
      *                         Name of the Amazon S3 bucket to use as the data
-     *                         source
+     *                         source.
      *                     <li>{@link Options#S3_REGION S3_REGION}: Name of the
      *                         Amazon S3 region where the given bucket is
-     *                         located
+     *                         located.
      *                     <li>{@link Options#S3_VERIFY_SSL S3_VERIFY_SSL}:
      *                         Whether to verify SSL connections.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Connect with
-     *                                 SSL verification
+     *                                 SSL verification.
      *                             <li>{@link Options#FALSE FALSE}: Connect
      *                                 without verifying the SSL connection;
      *                                 for testing purposes, bypassing TLS
@@ -394,20 +394,20 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                     <li>{@link Options#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}:
      *                         Amazon IAM Role ARN which has required S3
      *                         permissions that can be assumed for the given S3
-     *                         IAM user
+     *                         IAM user.
      *                     <li>{@link Options#S3_ENCRYPTION_CUSTOMER_ALGORITHM
      *                         S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer
-     *                         encryption algorithm used encrypting data
+     *                         encryption algorithm used encrypting data.
      *                     <li>{@link Options#S3_ENCRYPTION_CUSTOMER_KEY
      *                         S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption
-     *                         key to encrypt or decrypt data
+     *                         key to encrypt or decrypt data.
      *                     <li>{@link Options#HDFS_KERBEROS_KEYTAB
      *                         HDFS_KERBEROS_KEYTAB}: Kerberos keytab file
      *                         location for the given HDFS user.  This may be a
      *                         KIFS file.
      *                     <li>{@link Options#HDFS_DELEGATION_TOKEN
      *                         HDFS_DELEGATION_TOKEN}: Delegation token for the
-     *                         given HDFS user
+     *                         given HDFS user.
      *                     <li>{@link Options#HDFS_USE_KERBEROS
      *                         HDFS_USE_KERBEROS}: Use kerberos authentication
      *                         for the given HDFS cluster.
@@ -421,18 +421,18 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                     <li>{@link Options#AZURE_STORAGE_ACCOUNT_NAME
      *                         AZURE_STORAGE_ACCOUNT_NAME}: Name of the Azure
      *                         storage account to use as the data source, this
-     *                         is valid only if tenant_id is specified
+     *                         is valid only if tenant_id is specified.
      *                     <li>{@link Options#AZURE_CONTAINER_NAME
      *                         AZURE_CONTAINER_NAME}: Name of the Azure storage
-     *                         container to use as the data source
+     *                         container to use as the data source.
      *                     <li>{@link Options#AZURE_TENANT_ID AZURE_TENANT_ID}:
-     *                         Active Directory tenant ID (or directory ID)
+     *                         Active Directory tenant ID (or directory ID).
      *                     <li>{@link Options#AZURE_SAS_TOKEN AZURE_SAS_TOKEN}:
      *                         Shared access signature token for Azure storage
-     *                         account to use as the data source
+     *                         account to use as the data source.
      *                     <li>{@link Options#AZURE_OAUTH_TOKEN
      *                         AZURE_OAUTH_TOKEN}: OAuth token to access given
-     *                         storage container
+     *                         storage container.
      *                     <li>{@link Options#AZURE_USE_VIRTUAL_ADDRESSING
      *                         AZURE_USE_VIRTUAL_ADDRESSING}: Whether to use
      *                         virtual addressing when referencing the Azure
@@ -450,14 +450,14 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#GCS_BUCKET_NAME GCS_BUCKET_NAME}:
      *                         Name of the Google Cloud Storage bucket to use
-     *                         as the data source
+     *                         as the data source.
      *                     <li>{@link Options#GCS_PROJECT_ID GCS_PROJECT_ID}:
      *                         Name of the Google Cloud project to use as the
-     *                         data source
+     *                         data source.
      *                     <li>{@link Options#GCS_SERVICE_ACCOUNT_KEYS
      *                         GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud service
      *                         account keys to use for authenticating the data
-     *                         source
+     *                         source.
      *                     <li>{@link Options#IS_STREAM IS_STREAM}: To load
      *                         from Azure/GCS/S3 as a stream continuously.
      *                         Supported values:
@@ -469,13 +469,13 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                         FALSE}.
      *                     <li>{@link Options#KAFKA_TOPIC_NAME
      *                         KAFKA_TOPIC_NAME}: Name of the Kafka topic to
-     *                         use as the data source
+     *                         use as the data source.
      *                     <li>{@link Options#JDBC_DRIVER_JAR_PATH
      *                         JDBC_DRIVER_JAR_PATH}: JDBC driver jar file
      *                         location.  This may be a KIFS file.
      *                     <li>{@link Options#JDBC_DRIVER_CLASS_NAME
      *                         JDBC_DRIVER_CLASS_NAME}: Name of the JDBC driver
-     *                         class
+     *                         class.
      *                     <li>{@link Options#ANONYMOUS ANONYMOUS}: Use
      *                         anonymous connection to storage
      *                         provider--DEPRECATED: this is now the default.
@@ -499,9 +499,9 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
-     *                     <li>{@link Options#USE_HTTPS USE_HTTPS}: Use https
+     *                     <li>{@link Options#USE_HTTPS USE_HTTPS}: Use HTTPS
      *                         to connect to datasource if true, otherwise use
-     *                         http.
+     *                         HTTP.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
@@ -523,11 +523,11 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                     <li>{@link
      *                         Options#SCHEMA_REGISTRY_CONNECTION_RETRIES
      *                         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent
-     *                         Schema registry connection timeout (in Secs)
+     *                         Schema registry connection timeout (in secs).
      *                     <li>{@link
      *                         Options#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
      *                         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent
-     *                         Schema registry connection timeout (in Secs)
+     *                         Schema registry connection timeout (in secs).
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -590,7 +590,7 @@ public class CreateDatasourceRequest implements IndexedRecord {
     }
 
     /**
-     * Name of the remote system user; may be an empty string
+     * Name of the remote system user; may be an empty string.
      *
      * @return The current value of {@code userName}.
      */
@@ -599,7 +599,7 @@ public class CreateDatasourceRequest implements IndexedRecord {
     }
 
     /**
-     * Name of the remote system user; may be an empty string
+     * Name of the remote system user; may be an empty string.
      *
      * @param userName  The new value for {@code userName}.
      *
@@ -611,7 +611,7 @@ public class CreateDatasourceRequest implements IndexedRecord {
     }
 
     /**
-     * Password for the remote system user; may be an empty string
+     * Password for the remote system user; may be an empty string.
      *
      * @return The current value of {@code password}.
      */
@@ -620,7 +620,7 @@ public class CreateDatasourceRequest implements IndexedRecord {
     }
 
     /**
-     * Password for the remote system user; may be an empty string
+     * Password for the remote system user; may be an empty string.
      *
      * @param password  The new value for {@code password}.
      *
@@ -643,21 +643,22 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#CONNECTION_TIMEOUT CONNECTION_TIMEOUT}: Timeout
-     *         in seconds for connecting to this storage provider
+     *         in seconds for connecting to this storage provider.
      *     <li>{@link Options#WAIT_TIMEOUT WAIT_TIMEOUT}: Timeout in seconds
-     *         for reading from this storage provider
+     *         for reading from this storage provider.
      *     <li>{@link Options#CREDENTIAL CREDENTIAL}: Name of the <a
      *         href="../../../../../../concepts/credentials"
-     *         target="_top">credential</a> object to be used in data source
+     *         target="_top">credential</a> object to be used in data source.
      *     <li>{@link Options#S3_BUCKET_NAME S3_BUCKET_NAME}: Name of the
-     *         Amazon S3 bucket to use as the data source
+     *         Amazon S3 bucket to use as the data source.
      *     <li>{@link Options#S3_REGION S3_REGION}: Name of the Amazon S3
-     *         region where the given bucket is located
+     *         region where the given bucket is located.
      *     <li>{@link Options#S3_VERIFY_SSL S3_VERIFY_SSL}: Whether to verify
      *         SSL connections.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#TRUE TRUE}: Connect with SSL verification
+     *             <li>{@link Options#TRUE TRUE}: Connect with SSL
+     *                 verification.
      *             <li>{@link Options#FALSE FALSE}: Connect without verifying
      *                 the SSL connection; for testing purposes, bypassing TLS
      *                 errors, self-signed certificates, etc.
@@ -677,18 +678,18 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}: Amazon IAM Role
      *         ARN which has required S3 permissions that can be assumed for
-     *         the given S3 IAM user
+     *         the given S3 IAM user.
      *     <li>{@link Options#S3_ENCRYPTION_CUSTOMER_ALGORITHM
      *         S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer encryption algorithm
-     *         used encrypting data
+     *         used encrypting data.
      *     <li>{@link Options#S3_ENCRYPTION_CUSTOMER_KEY
      *         S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption key to encrypt
-     *         or decrypt data
+     *         or decrypt data.
      *     <li>{@link Options#HDFS_KERBEROS_KEYTAB HDFS_KERBEROS_KEYTAB}:
      *         Kerberos keytab file location for the given HDFS user.  This may
      *         be a KIFS file.
      *     <li>{@link Options#HDFS_DELEGATION_TOKEN HDFS_DELEGATION_TOKEN}:
-     *         Delegation token for the given HDFS user
+     *         Delegation token for the given HDFS user.
      *     <li>{@link Options#HDFS_USE_KERBEROS HDFS_USE_KERBEROS}: Use
      *         kerberos authentication for the given HDFS cluster.
      *         Supported values:
@@ -700,16 +701,16 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *     <li>{@link Options#AZURE_STORAGE_ACCOUNT_NAME
      *         AZURE_STORAGE_ACCOUNT_NAME}: Name of the Azure storage account
      *         to use as the data source, this is valid only if tenant_id is
-     *         specified
+     *         specified.
      *     <li>{@link Options#AZURE_CONTAINER_NAME AZURE_CONTAINER_NAME}: Name
-     *         of the Azure storage container to use as the data source
+     *         of the Azure storage container to use as the data source.
      *     <li>{@link Options#AZURE_TENANT_ID AZURE_TENANT_ID}: Active
-     *         Directory tenant ID (or directory ID)
+     *         Directory tenant ID (or directory ID).
      *     <li>{@link Options#AZURE_SAS_TOKEN AZURE_SAS_TOKEN}: Shared access
      *         signature token for Azure storage account to use as the data
-     *         source
+     *         source.
      *     <li>{@link Options#AZURE_OAUTH_TOKEN AZURE_OAUTH_TOKEN}: OAuth token
-     *         to access given storage container
+     *         to access given storage container.
      *     <li>{@link Options#AZURE_USE_VIRTUAL_ADDRESSING
      *         AZURE_USE_VIRTUAL_ADDRESSING}: Whether to use virtual addressing
      *         when referencing the Azure source.
@@ -723,12 +724,12 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#GCS_BUCKET_NAME GCS_BUCKET_NAME}: Name of the
-     *         Google Cloud Storage bucket to use as the data source
+     *         Google Cloud Storage bucket to use as the data source.
      *     <li>{@link Options#GCS_PROJECT_ID GCS_PROJECT_ID}: Name of the
-     *         Google Cloud project to use as the data source
+     *         Google Cloud project to use as the data source.
      *     <li>{@link Options#GCS_SERVICE_ACCOUNT_KEYS
      *         GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud service account keys to
-     *         use for authenticating the data source
+     *         use for authenticating the data source.
      *     <li>{@link Options#IS_STREAM IS_STREAM}: To load from Azure/GCS/S3
      *         as a stream continuously.
      *         Supported values:
@@ -738,11 +739,11 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#KAFKA_TOPIC_NAME KAFKA_TOPIC_NAME}: Name of the
-     *         Kafka topic to use as the data source
+     *         Kafka topic to use as the data source.
      *     <li>{@link Options#JDBC_DRIVER_JAR_PATH JDBC_DRIVER_JAR_PATH}: JDBC
      *         driver jar file location.  This may be a KIFS file.
      *     <li>{@link Options#JDBC_DRIVER_CLASS_NAME JDBC_DRIVER_CLASS_NAME}:
-     *         Name of the JDBC driver class
+     *         Name of the JDBC driver class.
      *     <li>{@link Options#ANONYMOUS ANONYMOUS}: Use anonymous connection to
      *         storage provider--DEPRECATED: this is now the default.  Specify
      *         use_managed_credentials for non-anonymous connection.
@@ -762,8 +763,8 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#USE_HTTPS USE_HTTPS}: Use https to connect to
-     *         datasource if true, otherwise use http.
+     *     <li>{@link Options#USE_HTTPS USE_HTTPS}: Use HTTPS to connect to
+     *         datasource if true, otherwise use HTTP.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
@@ -781,10 +782,10 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         Confluent Schema Registry port (optional).
      *     <li>{@link Options#SCHEMA_REGISTRY_CONNECTION_RETRIES
      *         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent Schema registry
-     *         connection timeout (in Secs)
+     *         connection timeout (in secs).
      *     <li>{@link Options#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
      *         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent Schema registry
-     *         connection timeout (in Secs)
+     *         connection timeout (in secs).
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -806,21 +807,22 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#CONNECTION_TIMEOUT CONNECTION_TIMEOUT}: Timeout
-     *         in seconds for connecting to this storage provider
+     *         in seconds for connecting to this storage provider.
      *     <li>{@link Options#WAIT_TIMEOUT WAIT_TIMEOUT}: Timeout in seconds
-     *         for reading from this storage provider
+     *         for reading from this storage provider.
      *     <li>{@link Options#CREDENTIAL CREDENTIAL}: Name of the <a
      *         href="../../../../../../concepts/credentials"
-     *         target="_top">credential</a> object to be used in data source
+     *         target="_top">credential</a> object to be used in data source.
      *     <li>{@link Options#S3_BUCKET_NAME S3_BUCKET_NAME}: Name of the
-     *         Amazon S3 bucket to use as the data source
+     *         Amazon S3 bucket to use as the data source.
      *     <li>{@link Options#S3_REGION S3_REGION}: Name of the Amazon S3
-     *         region where the given bucket is located
+     *         region where the given bucket is located.
      *     <li>{@link Options#S3_VERIFY_SSL S3_VERIFY_SSL}: Whether to verify
      *         SSL connections.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#TRUE TRUE}: Connect with SSL verification
+     *             <li>{@link Options#TRUE TRUE}: Connect with SSL
+     *                 verification.
      *             <li>{@link Options#FALSE FALSE}: Connect without verifying
      *                 the SSL connection; for testing purposes, bypassing TLS
      *                 errors, self-signed certificates, etc.
@@ -840,18 +842,18 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}: Amazon IAM Role
      *         ARN which has required S3 permissions that can be assumed for
-     *         the given S3 IAM user
+     *         the given S3 IAM user.
      *     <li>{@link Options#S3_ENCRYPTION_CUSTOMER_ALGORITHM
      *         S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer encryption algorithm
-     *         used encrypting data
+     *         used encrypting data.
      *     <li>{@link Options#S3_ENCRYPTION_CUSTOMER_KEY
      *         S3_ENCRYPTION_CUSTOMER_KEY}: Customer encryption key to encrypt
-     *         or decrypt data
+     *         or decrypt data.
      *     <li>{@link Options#HDFS_KERBEROS_KEYTAB HDFS_KERBEROS_KEYTAB}:
      *         Kerberos keytab file location for the given HDFS user.  This may
      *         be a KIFS file.
      *     <li>{@link Options#HDFS_DELEGATION_TOKEN HDFS_DELEGATION_TOKEN}:
-     *         Delegation token for the given HDFS user
+     *         Delegation token for the given HDFS user.
      *     <li>{@link Options#HDFS_USE_KERBEROS HDFS_USE_KERBEROS}: Use
      *         kerberos authentication for the given HDFS cluster.
      *         Supported values:
@@ -863,16 +865,16 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *     <li>{@link Options#AZURE_STORAGE_ACCOUNT_NAME
      *         AZURE_STORAGE_ACCOUNT_NAME}: Name of the Azure storage account
      *         to use as the data source, this is valid only if tenant_id is
-     *         specified
+     *         specified.
      *     <li>{@link Options#AZURE_CONTAINER_NAME AZURE_CONTAINER_NAME}: Name
-     *         of the Azure storage container to use as the data source
+     *         of the Azure storage container to use as the data source.
      *     <li>{@link Options#AZURE_TENANT_ID AZURE_TENANT_ID}: Active
-     *         Directory tenant ID (or directory ID)
+     *         Directory tenant ID (or directory ID).
      *     <li>{@link Options#AZURE_SAS_TOKEN AZURE_SAS_TOKEN}: Shared access
      *         signature token for Azure storage account to use as the data
-     *         source
+     *         source.
      *     <li>{@link Options#AZURE_OAUTH_TOKEN AZURE_OAUTH_TOKEN}: OAuth token
-     *         to access given storage container
+     *         to access given storage container.
      *     <li>{@link Options#AZURE_USE_VIRTUAL_ADDRESSING
      *         AZURE_USE_VIRTUAL_ADDRESSING}: Whether to use virtual addressing
      *         when referencing the Azure source.
@@ -886,12 +888,12 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#GCS_BUCKET_NAME GCS_BUCKET_NAME}: Name of the
-     *         Google Cloud Storage bucket to use as the data source
+     *         Google Cloud Storage bucket to use as the data source.
      *     <li>{@link Options#GCS_PROJECT_ID GCS_PROJECT_ID}: Name of the
-     *         Google Cloud project to use as the data source
+     *         Google Cloud project to use as the data source.
      *     <li>{@link Options#GCS_SERVICE_ACCOUNT_KEYS
      *         GCS_SERVICE_ACCOUNT_KEYS}: Google Cloud service account keys to
-     *         use for authenticating the data source
+     *         use for authenticating the data source.
      *     <li>{@link Options#IS_STREAM IS_STREAM}: To load from Azure/GCS/S3
      *         as a stream continuously.
      *         Supported values:
@@ -901,11 +903,11 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#KAFKA_TOPIC_NAME KAFKA_TOPIC_NAME}: Name of the
-     *         Kafka topic to use as the data source
+     *         Kafka topic to use as the data source.
      *     <li>{@link Options#JDBC_DRIVER_JAR_PATH JDBC_DRIVER_JAR_PATH}: JDBC
      *         driver jar file location.  This may be a KIFS file.
      *     <li>{@link Options#JDBC_DRIVER_CLASS_NAME JDBC_DRIVER_CLASS_NAME}:
-     *         Name of the JDBC driver class
+     *         Name of the JDBC driver class.
      *     <li>{@link Options#ANONYMOUS ANONYMOUS}: Use anonymous connection to
      *         storage provider--DEPRECATED: this is now the default.  Specify
      *         use_managed_credentials for non-anonymous connection.
@@ -925,8 +927,8 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#USE_HTTPS USE_HTTPS}: Use https to connect to
-     *         datasource if true, otherwise use http.
+     *     <li>{@link Options#USE_HTTPS USE_HTTPS}: Use HTTPS to connect to
+     *         datasource if true, otherwise use HTTP.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
@@ -944,10 +946,10 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         Confluent Schema Registry port (optional).
      *     <li>{@link Options#SCHEMA_REGISTRY_CONNECTION_RETRIES
      *         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent Schema registry
-     *         connection timeout (in Secs)
+     *         connection timeout (in secs).
      *     <li>{@link Options#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
      *         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent Schema registry
-     *         connection timeout (in Secs)
+     *         connection timeout (in secs).
      * </ul>
      * The default value is an empty {@link Map}.
      *

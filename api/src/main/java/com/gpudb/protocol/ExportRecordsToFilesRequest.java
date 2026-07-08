@@ -289,7 +289,8 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
      * Constructs an ExportRecordsToFilesRequest object with the specified
      * parameters.
      *
-     * @param tableName
+     * @param tableName  The name of the table whose records are to be
+     *                   exported.
      * @param filepath  Path to data export target.  If {@code filepath} has a
      *                  file extension, it is read as the name of a file. If
      *                  {@code filepath} is a directory, then the source table
@@ -476,6 +477,8 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
     }
 
     /**
+     * The name of the table whose records are to be exported.
+     *
      * @return The current value of {@code tableName}.
      */
     public String getTableName() {
@@ -483,6 +486,8 @@ public class ExportRecordsToFilesRequest implements IndexedRecord {
     }
 
     /**
+     * The name of the table whose records are to be exported.
+     *
      * @param tableName  The new value for {@code tableName}.
      *
      * @return {@code this} to mimic the builder pattern.

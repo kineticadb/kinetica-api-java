@@ -79,7 +79,7 @@ public class AlterTableColumnsResponse implements IndexedRecord {
     }
 
     /**
-     * return the type_id (when changing a table, a new type may be created)
+     * Return the type_id (when changing a table, a new type may be created).
      *
      * @return The current value of {@code typeId}.
      */
@@ -88,7 +88,7 @@ public class AlterTableColumnsResponse implements IndexedRecord {
     }
 
     /**
-     * return the type_id (when changing a table, a new type may be created)
+     * Return the type_id (when changing a table, a new type may be created).
      *
      * @param typeId  The new value for {@code typeId}.
      *
@@ -100,8 +100,8 @@ public class AlterTableColumnsResponse implements IndexedRecord {
     }
 
     /**
-     * return the type_definition  (when changing a table, a new type may be
-     * created)
+     * Return the type_definition  (when changing a table, a new type may be
+     * created).
      *
      * @return The current value of {@code typeDefinition}.
      */
@@ -110,8 +110,8 @@ public class AlterTableColumnsResponse implements IndexedRecord {
     }
 
     /**
-     * return the type_definition  (when changing a table, a new type may be
-     * created)
+     * Return the type_definition  (when changing a table, a new type may be
+     * created).
      *
      * @param typeDefinition  The new value for {@code typeDefinition}.
      *
@@ -123,8 +123,8 @@ public class AlterTableColumnsResponse implements IndexedRecord {
     }
 
     /**
-     * return the type properties  (when changing a table, a new type may be
-     * created)
+     * Return the type properties  (when changing a table, a new type may be
+     * created).
      *
      * @return The current value of {@code properties}.
      */
@@ -133,8 +133,8 @@ public class AlterTableColumnsResponse implements IndexedRecord {
     }
 
     /**
-     * return the type properties  (when changing a table, a new type may be
-     * created)
+     * Return the type properties  (when changing a table, a new type may be
+     * created).
      *
      * @param properties  The new value for {@code properties}.
      *
@@ -146,8 +146,8 @@ public class AlterTableColumnsResponse implements IndexedRecord {
     }
 
     /**
-     * return the type label  (when changing a table, a new type may be
-     * created)
+     * Return the type label  (when changing a table, a new type may be
+     * created).
      *
      * @return The current value of {@code label}.
      */
@@ -156,8 +156,8 @@ public class AlterTableColumnsResponse implements IndexedRecord {
     }
 
     /**
-     * return the type label  (when changing a table, a new type may be
-     * created)
+     * Return the type label  (when changing a table, a new type may be
+     * created).
      *
      * @param label  The new value for {@code label}.
      *
@@ -175,7 +175,7 @@ public class AlterTableColumnsResponse implements IndexedRecord {
      * alter table requests but in the same map as the column name and the
      * action. For example:
      * [{'column_name':'col_1','action':'change_column','rename_column':'col_2'},{'column_name':'col_1','action':'add_column',
-     * 'type':'int','default_value':'1'}]
+     * 'type':'int','default_value':'1'}].
      *
      * @return The current value of {@code columnAlterations}.
      */
@@ -190,7 +190,7 @@ public class AlterTableColumnsResponse implements IndexedRecord {
      * alter table requests but in the same map as the column name and the
      * action. For example:
      * [{'column_name':'col_1','action':'change_column','rename_column':'col_2'},{'column_name':'col_1','action':'add_column',
-     * 'type':'int','default_value':'1'}]
+     * 'type':'int','default_value':'1'}].
      *
      * @param columnAlterations  The new value for {@code columnAlterations}.
      *

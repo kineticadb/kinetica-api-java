@@ -63,7 +63,7 @@ public class RawExecuteSqlResponse implements IndexedRecord {
      */
     public static final class Info {
         /**
-         * Number of records without final limits applied
+         * Number of records without final limits applied.
          */
         public static final String COUNT = "count";
 
@@ -266,7 +266,7 @@ public class RawExecuteSqlResponse implements IndexedRecord {
      * Additional information.
      * <ul>
      *     <li>{@link Info#COUNT COUNT}: Number of records without final limits
-     *         applied
+     *         applied.
      *     <li>{@link Info#RESULT_TABLE_LIST RESULT_TABLE_LIST}: List of
      *         tables, comma-separated, in addition to the {@link
      *         #getPagingTable() pagingTable}, created as result of the query.
@@ -285,7 +285,7 @@ public class RawExecuteSqlResponse implements IndexedRecord {
      * Additional information.
      * <ul>
      *     <li>{@link Info#COUNT COUNT}: Number of records without final limits
-     *         applied
+     *         applied.
      *     <li>{@link Info#RESULT_TABLE_LIST RESULT_TABLE_LIST}: List of
      *         tables, comma-separated, in addition to the {@link
      *         #getPagingTable() pagingTable}, created as result of the query.

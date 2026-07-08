@@ -145,9 +145,9 @@ public class UpdateRecordsRequest<T> {
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: Ignore updates that result in
-         *         primary key collisions with existing records
+         *         primary key collisions with existing records.
          *     <li>{@link Options#FALSE FALSE}: Treat as errors any updates
-         *         that result in primary key collisions with existing records
+         *         that result in primary key collisions with existing records.
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
@@ -164,6 +164,38 @@ public class UpdateRecordsRequest<T> {
          * The default value is {@link Options#FALSE FALSE}.
          */
         public static final String UPDATE_PARTITION = "update_partition";
+
+        /**
+         * If set to {@link Options#TRUE TRUE}, qualifying records are modified
+         * in place. If set to {@link Options#FALSE FALSE}, they are updated by
+         * deleting the existing record and inserting a replacement (delete and
+         * insert), which prevents the change from being reflected in dependent
+         * materialized views until they are refreshed.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#TRUE TRUE}.
+         */
+        public static final String ENABLE_INPLACE_UPDATES = "enable_inplace_updates";
+
+        /**
+         * For an out-of-place update (delete and insert), controls where the
+         * replacement records are reinserted. If set to {@link Options#TRUE
+         * TRUE}, the workers that own the data reinsert them directly,
+         * avoiding a round trip through the head node; a shard-key change
+         * reshards the replacements to their new owning workers. If set to
+         * {@link Options#FALSE FALSE}, the replacement records are reinserted
+         * from the head node. Overrides the
+         * {feature.enable_worker_oop_update}@ configuration default.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         */
+        public static final String ENABLE_WORKER_OOP_UPDATE = "enable_worker_oop_update";
 
         /**
          * If set to {@link Options#TRUE TRUE}, any strings which are too long
@@ -345,11 +377,11 @@ public class UpdateRecordsRequest<T> {
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Ignore
      *                                 updates that result in primary key
-     *                                 collisions with existing records
+     *                                 collisions with existing records.
      *                             <li>{@link Options#FALSE FALSE}: Treat as
      *                                 errors any updates that result in
      *                                 primary key collisions with existing
-     *                                 records
+     *                                 records.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
@@ -364,6 +396,39 @@ public class UpdateRecordsRequest<T> {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#ENABLE_INPLACE_UPDATES
+     *                         ENABLE_INPLACE_UPDATES}: If set to {@link
+     *                         Options#TRUE TRUE}, qualifying records are
+     *                         modified in place. If set to {@link
+     *                         Options#FALSE FALSE}, they are updated by
+     *                         deleting the existing record and inserting a
+     *                         replacement (delete and insert), which prevents
+     *                         the change from being reflected in dependent
+     *                         materialized views until they are refreshed.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#TRUE TRUE}.
+     *                     <li>{@link Options#ENABLE_WORKER_OOP_UPDATE
+     *                         ENABLE_WORKER_OOP_UPDATE}: For an out-of-place
+     *                         update (delete and insert), controls where the
+     *                         replacement records are reinserted. If set to
+     *                         {@link Options#TRUE TRUE}, the workers that own
+     *                         the data reinsert them directly, avoiding a
+     *                         round trip through the head node; a shard-key
+     *                         change reshards the replacements to their new
+     *                         owning workers. If set to {@link Options#FALSE
+     *                         FALSE}, the replacement records are reinserted
+     *                         from the head node. Overrides the
+     *                         {feature.enable_worker_oop_update}@
+     *                         configuration default.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
      *                     <li>{@link Options#TRUNCATE_STRINGS
      *                         TRUNCATE_STRINGS}: If set to {@link Options#TRUE
      *                         TRUE}, any strings which are too long for their
@@ -600,10 +665,10 @@ public class UpdateRecordsRequest<T> {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Ignore updates that result in
-     *                 primary key collisions with existing records
+     *                 primary key collisions with existing records.
      *             <li>{@link Options#FALSE FALSE}: Treat as errors any updates
      *                 that result in primary key collisions with existing
-     *                 records
+     *                 records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#UPDATE_PARTITION UPDATE_PARTITION}: Force
@@ -615,6 +680,34 @@ public class UpdateRecordsRequest<T> {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#ENABLE_INPLACE_UPDATES ENABLE_INPLACE_UPDATES}:
+     *         If set to {@link Options#TRUE TRUE}, qualifying records are
+     *         modified in place. If set to {@link Options#FALSE FALSE}, they
+     *         are updated by deleting the existing record and inserting a
+     *         replacement (delete and insert), which prevents the change from
+     *         being reflected in dependent materialized views until they are
+     *         refreshed.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
+     *     <li>{@link Options#ENABLE_WORKER_OOP_UPDATE
+     *         ENABLE_WORKER_OOP_UPDATE}: For an out-of-place update (delete
+     *         and insert), controls where the replacement records are
+     *         reinserted. If set to {@link Options#TRUE TRUE}, the workers
+     *         that own the data reinsert them directly, avoiding a round trip
+     *         through the head node; a shard-key change reshards the
+     *         replacements to their new owning workers. If set to {@link
+     *         Options#FALSE FALSE}, the replacement records are reinserted
+     *         from the head node. Overrides the
+     *         {feature.enable_worker_oop_update}@ configuration default.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
      *     <li>{@link Options#TRUNCATE_STRINGS TRUNCATE_STRINGS}: If set to
      *         {@link Options#TRUE TRUE}, any strings which are too long for
      *         their charN string fields will be truncated to fit.
@@ -730,10 +823,10 @@ public class UpdateRecordsRequest<T> {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Ignore updates that result in
-     *                 primary key collisions with existing records
+     *                 primary key collisions with existing records.
      *             <li>{@link Options#FALSE FALSE}: Treat as errors any updates
      *                 that result in primary key collisions with existing
-     *                 records
+     *                 records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#UPDATE_PARTITION UPDATE_PARTITION}: Force
@@ -745,6 +838,34 @@ public class UpdateRecordsRequest<T> {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#ENABLE_INPLACE_UPDATES ENABLE_INPLACE_UPDATES}:
+     *         If set to {@link Options#TRUE TRUE}, qualifying records are
+     *         modified in place. If set to {@link Options#FALSE FALSE}, they
+     *         are updated by deleting the existing record and inserting a
+     *         replacement (delete and insert), which prevents the change from
+     *         being reflected in dependent materialized views until they are
+     *         refreshed.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
+     *     <li>{@link Options#ENABLE_WORKER_OOP_UPDATE
+     *         ENABLE_WORKER_OOP_UPDATE}: For an out-of-place update (delete
+     *         and insert), controls where the replacement records are
+     *         reinserted. If set to {@link Options#TRUE TRUE}, the workers
+     *         that own the data reinsert them directly, avoiding a round trip
+     *         through the head node; a shard-key change reshards the
+     *         replacements to their new owning workers. If set to {@link
+     *         Options#FALSE FALSE}, the replacement records are reinserted
+     *         from the head node. Overrides the
+     *         {feature.enable_worker_oop_update}@ configuration default.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
      *     <li>{@link Options#TRUNCATE_STRINGS TRUNCATE_STRINGS}: If set to
      *         {@link Options#TRUE TRUE}, any strings which are too long for
      *         their charN string fields will be truncated to fit.

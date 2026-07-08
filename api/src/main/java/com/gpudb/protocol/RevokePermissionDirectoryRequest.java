@@ -100,7 +100,7 @@ public class RevokePermissionDirectoryRequest implements IndexedRecord {
      *                            read access.
      *                    </ul>
      * @param directoryName  Name of the KiFS directory to which the permission
-     *                       revokes access
+     *                       revokes access.
      * @param options  Optional parameters. The default value is an empty
      *                 {@link Map}.
      */
@@ -174,7 +174,7 @@ public class RevokePermissionDirectoryRequest implements IndexedRecord {
     }
 
     /**
-     * Name of the KiFS directory to which the permission revokes access
+     * Name of the KiFS directory to which the permission revokes access.
      *
      * @return The current value of {@code directoryName}.
      */
@@ -183,7 +183,7 @@ public class RevokePermissionDirectoryRequest implements IndexedRecord {
     }
 
     /**
-     * Name of the KiFS directory to which the permission revokes access
+     * Name of the KiFS directory to which the permission revokes access.
      *
      * @param directoryName  The new value for {@code directoryName}.
      *

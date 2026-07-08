@@ -45,7 +45,7 @@ public class GrantPermissionRequest implements IndexedRecord {
      * A set of string constants for the {@link GrantPermissionRequest}
      * parameter {@link #getObjectType() objectType}.
      * <p>
-     * The type of object being granted to
+     * The type of object being granted to.
      */
     public static final class ObjectType {
         /**
@@ -201,8 +201,8 @@ public class GrantPermissionRequest implements IndexedRecord {
         public static final String COLUMNS = "columns";
 
         /**
-         * Optional filter expression to apply to this grant.  Only rows that
-         * match the filter will be affected. The default value is ''.
+         * Filter expression to apply to this grant.  Only rows that match the
+         * filter will be affected. The default value is ''.
          */
         public static final String FILTER_EXPRESSION = "filter_expression";
 
@@ -312,10 +312,9 @@ public class GrantPermissionRequest implements IndexedRecord {
      *                         security to these columns, comma-separated. The
      *                         default value is ''.
      *                     <li>{@link Options#FILTER_EXPRESSION
-     *                         FILTER_EXPRESSION}: Optional filter expression
-     *                         to apply to this grant.  Only rows that match
-     *                         the filter will be affected. The default value
-     *                         is ''.
+     *                         FILTER_EXPRESSION}: Filter expression to apply
+     *                         to this grant.  Only rows that match the filter
+     *                         will be affected. The default value is ''.
      *                     <li>{@link Options#WITH_GRANT_OPTION
      *                         WITH_GRANT_OPTION}: Allow the recipient to grant
      *                         the same permission (or subset) to others.
@@ -508,9 +507,9 @@ public class GrantPermissionRequest implements IndexedRecord {
      * <ul>
      *     <li>{@link Options#COLUMNS COLUMNS}: Apply table security to these
      *         columns, comma-separated. The default value is ''.
-     *     <li>{@link Options#FILTER_EXPRESSION FILTER_EXPRESSION}: Optional
-     *         filter expression to apply to this grant.  Only rows that match
-     *         the filter will be affected. The default value is ''.
+     *     <li>{@link Options#FILTER_EXPRESSION FILTER_EXPRESSION}: Filter
+     *         expression to apply to this grant.  Only rows that match the
+     *         filter will be affected. The default value is ''.
      *     <li>{@link Options#WITH_GRANT_OPTION WITH_GRANT_OPTION}: Allow the
      *         recipient to grant the same permission (or subset) to others.
      *         Supported values:
@@ -533,9 +532,9 @@ public class GrantPermissionRequest implements IndexedRecord {
      * <ul>
      *     <li>{@link Options#COLUMNS COLUMNS}: Apply table security to these
      *         columns, comma-separated. The default value is ''.
-     *     <li>{@link Options#FILTER_EXPRESSION FILTER_EXPRESSION}: Optional
-     *         filter expression to apply to this grant.  Only rows that match
-     *         the filter will be affected. The default value is ''.
+     *     <li>{@link Options#FILTER_EXPRESSION FILTER_EXPRESSION}: Filter
+     *         expression to apply to this grant.  Only rows that match the
+     *         filter will be affected. The default value is ''.
      *     <li>{@link Options#WITH_GRANT_OPTION WITH_GRANT_OPTION}: Allow the
      *         recipient to grant the same permission (or subset) to others.
      *         Supported values:

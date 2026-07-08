@@ -45,6 +45,8 @@ public class AppendRecordsResponse implements IndexedRecord {
     }
 
     /**
+     * The name of the table to which the records were appended.
+     *
      * @return The current value of {@code tableName}.
      */
     public String getTableName() {
@@ -52,6 +54,8 @@ public class AppendRecordsResponse implements IndexedRecord {
     }
 
     /**
+     * The name of the table to which the records were appended.
+     *
      * @param tableName  The new value for {@code tableName}.
      *
      * @return {@code this} to mimic the builder pattern.

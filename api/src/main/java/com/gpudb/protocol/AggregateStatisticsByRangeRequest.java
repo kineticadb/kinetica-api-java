@@ -74,7 +74,7 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
      * AggregateStatisticsByRangeRequest} parameter {@link #getOptions()
      * options}.
      * <p>
-     * Map of optional parameters:
+     * Optional parameters.
      */
     public static final class Options {
         /**
@@ -150,7 +150,7 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
      * @param interval  The interval of a bin. Set members fall into bin i if
      *                  the binning-column falls in the range
      *                  [start+interval*i, start+interval*(i+1)).
-     * @param options  Map of optional parameters:
+     * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link Options#ADDITIONAL_COLUMN_NAMES
      *                         ADDITIONAL_COLUMN_NAMES}: A list of comma
@@ -366,7 +366,7 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
     }
 
     /**
-     * Map of optional parameters:
+     * Optional parameters.
      * <ul>
      *     <li>{@link Options#ADDITIONAL_COLUMN_NAMES ADDITIONAL_COLUMN_NAMES}:
      *         A list of comma separated value-column names over which
@@ -390,7 +390,7 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
     }
 
     /**
-     * Map of optional parameters:
+     * Optional parameters.
      * <ul>
      *     <li>{@link Options#ADDITIONAL_COLUMN_NAMES ADDITIONAL_COLUMN_NAMES}:
      *         A list of comma separated value-column names over which

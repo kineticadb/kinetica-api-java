@@ -18,7 +18,7 @@ import org.apache.avro.generic.IndexedRecord;
  * GPUdb.insertRecordsFromQuery}.
  * <p>
  * Computes remote query result and inserts the result data into a new or
- * existing table
+ * existing table.
  */
 public class InsertRecordsFromQueryRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -265,16 +265,16 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      */
     public static final class Options {
         /**
-         * Optional name of a table to which records that were rejected are
-         * written.  The bad-record-table has the following columns:
-         * line_number (long), line_rejected (string), error_message (string).
-         * When error handling is Abort, bad records table is not populated.
+         * Name of a table to which records that were rejected are written.
+         * The bad-record-table has the following columns: line_number (long),
+         * line_rejected (string), error_message (string). When error handling
+         * is Abort, bad records table is not populated.
          */
         public static final String BAD_RECORD_TABLE_NAME = "bad_record_table_name";
 
         /**
          * A positive integer indicating the maximum number of records that can
-         * be  written to the bad-record-table.   Default value is 10000
+         * be  written to the bad-record-table.   Default value is 10000.
          */
         public static final String BAD_RECORD_TABLE_LIMIT = "bad_record_table_limit";
 
@@ -285,7 +285,7 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
 
         /**
          * Name of an existing external data source from which table will be
-         * loaded
+         * loaded.
          */
         public static final String DATASOURCE_NAME = "datasource_name";
 
@@ -345,22 +345,22 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: Ignore new records whose primary
-         *         key values collide with those of existing records
+         *         key values collide with those of existing records.
          *     <li>{@link Options#FALSE FALSE}: Treat as errors any new records
          *         whose primary key values collide with those of existing
-         *         records
+         *         records.
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
         public static final String IGNORE_EXISTING_PK = "ignore_existing_pk";
 
         /**
-         * Upsert new records when primary keys match existing records
+         * Upsert new records when primary keys match existing records.
          */
         public static final String TRUE = "true";
 
         /**
-         * Reject new records when primary keys match existing records
+         * Reject new records when primary keys match existing records.
          */
         public static final String FALSE = "false";
 
@@ -370,7 +370,7 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#FULL FULL}: Run a type inference on the
-         *         source data (if needed) and ingest
+         *         source data (if needed) and ingest.
          *     <li>{@link Options#DRY_RUN DRY_RUN}: Does not load data, but
          *         walks through the source data and determines the number of
          *         valid records, taking into account the current mode of
@@ -385,7 +385,7 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
         public static final String INGESTION_MODE = "ingestion_mode";
 
         /**
-         * Run a type inference on the source data (if needed) and ingest
+         * Run a type inference on the source data (if needed) and ingest.
          */
         public static final String FULL = "full";
 
@@ -409,32 +409,32 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
         public static final String JDBC_FETCH_SIZE = "jdbc_fetch_size";
 
         /**
-         * Executes the statement per each jdbc session before doing actual
+         * Executes the statement per each JDBC session before doing actual
          * load. The default value is ''.
          */
         public static final String JDBC_SESSION_INIT_STATEMENT = "jdbc_session_init_statement";
 
         /**
-         * Optional: number of splits for reading data per rank. Default will
-         * be external_file_reader_num_tasks. The default value is ''.
+         * Number of splits for reading data per rank. Default will be
+         * external_file_reader_num_tasks. The default value is ''.
          */
         public static final String NUM_SPLITS_PER_RANK = "num_splits_per_rank";
 
         /**
-         * Optional: number of tasks for reading data per rank. Default will be
-         * external_file_reader_num_tasks
+         * Number of tasks for reading data per rank. Default will be
+         * external_file_reader_num_tasks.
          */
         public static final String NUM_TASKS_PER_RANK = "num_tasks_per_rank";
 
         /**
-         * Optional: comma separated list of column names, to set as primary
-         * keys, when not specified in the type. The default value is ''.
+         * Comma separated list of column names, to set as primary keys, when
+         * not specified in the type. The default value is ''.
          */
         public static final String PRIMARY_KEYS = "primary_keys";
 
         /**
-         * Optional: comma separated list of column names, to set as primary
-         * keys, when not specified in the type. The default value is ''.
+         * Comma separated list of column names, to set as shard keys, when not
+         * specified in the type. The default value is ''.
          */
         public static final String SHARD_KEYS = "shard_keys";
 
@@ -463,7 +463,7 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
         public static final String TRUNCATE_TABLE = "truncate_table";
 
         /**
-         * Remote SQL query from which data will be sourced
+         * Remote SQL query from which data will be sourced.
          */
         public static final String REMOTE_QUERY = "remote_query";
 
@@ -487,7 +487,8 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
         public static final String REMOTE_QUERY_INCREASING_COLUMN = "remote_query_increasing_column";
 
         /**
-         * Alias name for remote_query_filter_column. The default value is ''.
+         * Alias name for {@link Options#REMOTE_QUERY_FILTER_COLUMN
+         * REMOTE_QUERY_FILTER_COLUMN}. The default value is ''.
          */
         public static final String REMOTE_QUERY_PARTITION_COLUMN = "remote_query_partition_column";
 
@@ -502,6 +503,22 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
          * The default value is {@link Options#FALSE FALSE}.
          */
         public static final String TRUNCATE_STRINGS = "truncate_strings";
+
+        /**
+         * Applies only when upserting (when update_on_existing_pk is true). If
+         * set to true (the default), an existing record matched by primary key
+         * is modified in place. If set to false, the matched record is updated
+         * by deleting it and inserting a replacement (delete and insert),
+         * which prevents the change from being reflected in dependent
+         * materialized views until they are refreshed.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#TRUE TRUE}.
+         */
+        public static final String ENABLE_INPLACE_UPDATES = "enable_inplace_updates";
 
         /**
          * Specifies the record collision policy for inserting into a table
@@ -519,9 +536,9 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: Upsert new records when primary
-         *         keys match existing records
+         *         keys match existing records.
          *     <li>{@link Options#FALSE FALSE}: Reject new records when primary
-         *         keys match existing records
+         *         keys match existing records.
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
@@ -563,7 +580,7 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                   new table name will have to meet standard <a
      *                   href="../../../../../../concepts/tables/#table-naming-criteria"
      *                   target="_top">table naming criteria</a>.
-     * @param remoteQuery  Query for which result data needs to be imported
+     * @param remoteQuery  Query for which result data needs to be imported.
      * @param modifyColumns  Not implemented yet. The default value is an empty
      *                       {@link Map}.
      * @param createTableOptions  Options used when creating the target table.
@@ -785,9 +802,9 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link Options#BAD_RECORD_TABLE_NAME
-     *                         BAD_RECORD_TABLE_NAME}: Optional name of a table
-     *                         to which records that were rejected are written.
-     *                         The bad-record-table has the following columns:
+     *                         BAD_RECORD_TABLE_NAME}: Name of a table to which
+     *                         records that were rejected are written.  The
+     *                         bad-record-table has the following columns:
      *                         line_number (long), line_rejected (string),
      *                         error_message (string). When error handling is
      *                         Abort, bad records table is not populated.
@@ -795,12 +812,12 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                         BAD_RECORD_TABLE_LIMIT}: A positive integer
      *                         indicating the maximum number of records that
      *                         can be  written to the bad-record-table.
-     *                         Default value is 10000
+     *                         Default value is 10000.
      *                     <li>{@link Options#BATCH_SIZE BATCH_SIZE}: Number of
      *                         records per batch when inserting data.
      *                     <li>{@link Options#DATASOURCE_NAME DATASOURCE_NAME}:
      *                         Name of an existing external data source from
-     *                         which table will be loaded
+     *                         which table will be loaded.
      *                     <li>{@link Options#ERROR_HANDLING ERROR_HANDLING}:
      *                         Specifies how errors should be handled upon
      *                         insertion.
@@ -849,11 +866,11 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Ignore new
      *                                 records whose primary key values collide
-     *                                 with those of existing records
+     *                                 with those of existing records.
      *                             <li>{@link Options#FALSE FALSE}: Treat as
      *                                 errors any new records whose primary key
      *                                 values collide with those of existing
-     *                                 records
+     *                                 records.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
@@ -864,7 +881,7 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#FULL FULL}: Run a type
      *                                 inference on the source data (if needed)
-     *                                 and ingest
+     *                                 and ingest.
      *                             <li>{@link Options#DRY_RUN DRY_RUN}: Does
      *                                 not load data, but walks through the
      *                                 source data and determines the number of
@@ -883,25 +900,25 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                         rows to fetch per round trip.
      *                     <li>{@link Options#JDBC_SESSION_INIT_STATEMENT
      *                         JDBC_SESSION_INIT_STATEMENT}: Executes the
-     *                         statement per each jdbc session before doing
+     *                         statement per each JDBC session before doing
      *                         actual load. The default value is ''.
      *                     <li>{@link Options#NUM_SPLITS_PER_RANK
-     *                         NUM_SPLITS_PER_RANK}: Optional: number of splits
-     *                         for reading data per rank. Default will be
+     *                         NUM_SPLITS_PER_RANK}: Number of splits for
+     *                         reading data per rank. Default will be
      *                         external_file_reader_num_tasks. The default
      *                         value is ''.
      *                     <li>{@link Options#NUM_TASKS_PER_RANK
-     *                         NUM_TASKS_PER_RANK}: Optional: number of tasks
-     *                         for reading data per rank. Default will be
-     *                         external_file_reader_num_tasks
-     *                     <li>{@link Options#PRIMARY_KEYS PRIMARY_KEYS}:
-     *                         Optional: comma separated list of column names,
-     *                         to set as primary keys, when not specified in
-     *                         the type. The default value is ''.
-     *                     <li>{@link Options#SHARD_KEYS SHARD_KEYS}: Optional:
-     *                         comma separated list of column names, to set as
+     *                         NUM_TASKS_PER_RANK}: Number of tasks for reading
+     *                         data per rank. Default will be
+     *                         external_file_reader_num_tasks.
+     *                     <li>{@link Options#PRIMARY_KEYS PRIMARY_KEYS}: Comma
+     *                         separated list of column names, to set as
      *                         primary keys, when not specified in the type.
      *                         The default value is ''.
+     *                     <li>{@link Options#SHARD_KEYS SHARD_KEYS}: Comma
+     *                         separated list of column names, to set as shard
+     *                         keys, when not specified in the type. The
+     *                         default value is ''.
      *                     <li>{@link Options#SUBSCRIBE SUBSCRIBE}:
      *                         Continuously poll the data source to check for
      *                         new data and load it into the table.
@@ -924,7 +941,8 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
      *                     <li>{@link Options#REMOTE_QUERY REMOTE_QUERY}:
-     *                         Remote SQL query from which data will be sourced
+     *                         Remote SQL query from which data will be
+     *                         sourced.
      *                     <li>{@link Options#REMOTE_QUERY_ORDER_BY
      *                         REMOTE_QUERY_ORDER_BY}: Name of column to be
      *                         used for splitting the query into multiple
@@ -942,8 +960,9 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                         default value is ''.
      *                     <li>{@link Options#REMOTE_QUERY_PARTITION_COLUMN
      *                         REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
-     *                         remote_query_filter_column. The default value is
-     *                         ''.
+     *                         {@link Options#REMOTE_QUERY_FILTER_COLUMN
+     *                         REMOTE_QUERY_FILTER_COLUMN}. The default value
+     *                         is ''.
      *                     <li>{@link Options#TRUNCATE_STRINGS
      *                         TRUNCATE_STRINGS}: If set to {@link Options#TRUE
      *                         TRUE}, truncate string values that are longer
@@ -955,6 +974,22 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#ENABLE_INPLACE_UPDATES
+     *                         ENABLE_INPLACE_UPDATES}: Applies only when
+     *                         upserting (when update_on_existing_pk is true).
+     *                         If set to true (the default), an existing record
+     *                         matched by primary key is modified in place. If
+     *                         set to false, the matched record is updated by
+     *                         deleting it and inserting a replacement (delete
+     *                         and insert), which prevents the change from
+     *                         being reflected in dependent materialized views
+     *                         until they are refreshed.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#UPDATE_ON_EXISTING_PK
      *                         UPDATE_ON_EXISTING_PK}: Specifies the record
      *                         collision policy for inserting into a table with
@@ -979,10 +1014,10 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Upsert new
      *                                 records when primary keys match existing
-     *                                 records
+     *                                 records.
      *                             <li>{@link Options#FALSE FALSE}: Reject new
      *                                 records when primary keys match existing
-     *                                 records
+     *                                 records.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
@@ -1035,7 +1070,7 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
     }
 
     /**
-     * Query for which result data needs to be imported
+     * Query for which result data needs to be imported.
      *
      * @return The current value of {@code remoteQuery}.
      */
@@ -1044,7 +1079,7 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
     }
 
     /**
-     * Query for which result data needs to be imported
+     * Query for which result data needs to be imported.
      *
      * @param remoteQuery  The new value for {@code remoteQuery}.
      *
@@ -1359,19 +1394,18 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *     <li>{@link Options#BAD_RECORD_TABLE_NAME BAD_RECORD_TABLE_NAME}:
-     *         Optional name of a table to which records that were rejected are
-     *         written.  The bad-record-table has the following columns:
-     *         line_number (long), line_rejected (string), error_message
-     *         (string). When error handling is Abort, bad records table is not
-     *         populated.
+     *         Name of a table to which records that were rejected are written.
+     *         The bad-record-table has the following columns: line_number
+     *         (long), line_rejected (string), error_message (string). When
+     *         error handling is Abort, bad records table is not populated.
      *     <li>{@link Options#BAD_RECORD_TABLE_LIMIT BAD_RECORD_TABLE_LIMIT}: A
      *         positive integer indicating the maximum number of records that
      *         can be  written to the bad-record-table.   Default value is
-     *         10000
+     *         10000.
      *     <li>{@link Options#BATCH_SIZE BATCH_SIZE}: Number of records per
      *         batch when inserting data.
      *     <li>{@link Options#DATASOURCE_NAME DATASOURCE_NAME}: Name of an
-     *         existing external data source from which table will be loaded
+     *         existing external data source from which table will be loaded.
      *     <li>{@link Options#ERROR_HANDLING ERROR_HANDLING}: Specifies how
      *         errors should be handled upon insertion.
      *         Supported values:
@@ -1409,10 +1443,10 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Ignore new records whose
      *                 primary key values collide with those of existing
-     *                 records
+     *                 records.
      *             <li>{@link Options#FALSE FALSE}: Treat as errors any new
      *                 records whose primary key values collide with those of
-     *                 existing records
+     *                 existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#INGESTION_MODE INGESTION_MODE}: Whether to do a
@@ -1421,7 +1455,7 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#FULL FULL}: Run a type inference on the
-     *                 source data (if needed) and ingest
+     *                 source data (if needed) and ingest.
      *             <li>{@link Options#DRY_RUN DRY_RUN}: Does not load data, but
      *                 walks through the source data and determines the number
      *                 of valid records, taking into account the current mode
@@ -1436,19 +1470,19 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         size, which determines how many rows to fetch per round trip.
      *     <li>{@link Options#JDBC_SESSION_INIT_STATEMENT
      *         JDBC_SESSION_INIT_STATEMENT}: Executes the statement per each
-     *         jdbc session before doing actual load. The default value is ''.
-     *     <li>{@link Options#NUM_SPLITS_PER_RANK NUM_SPLITS_PER_RANK}:
-     *         Optional: number of splits for reading data per rank. Default
-     *         will be external_file_reader_num_tasks. The default value is ''.
-     *     <li>{@link Options#NUM_TASKS_PER_RANK NUM_TASKS_PER_RANK}: Optional:
-     *         number of tasks for reading data per rank. Default will be
-     *         external_file_reader_num_tasks
-     *     <li>{@link Options#PRIMARY_KEYS PRIMARY_KEYS}: Optional: comma
-     *         separated list of column names, to set as primary keys, when not
-     *         specified in the type. The default value is ''.
-     *     <li>{@link Options#SHARD_KEYS SHARD_KEYS}: Optional: comma separated
-     *         list of column names, to set as primary keys, when not specified
-     *         in the type. The default value is ''.
+     *         JDBC session before doing actual load. The default value is ''.
+     *     <li>{@link Options#NUM_SPLITS_PER_RANK NUM_SPLITS_PER_RANK}: Number
+     *         of splits for reading data per rank. Default will be
+     *         external_file_reader_num_tasks. The default value is ''.
+     *     <li>{@link Options#NUM_TASKS_PER_RANK NUM_TASKS_PER_RANK}: Number of
+     *         tasks for reading data per rank. Default will be
+     *         external_file_reader_num_tasks.
+     *     <li>{@link Options#PRIMARY_KEYS PRIMARY_KEYS}: Comma separated list
+     *         of column names, to set as primary keys, when not specified in
+     *         the type. The default value is ''.
+     *     <li>{@link Options#SHARD_KEYS SHARD_KEYS}: Comma separated list of
+     *         column names, to set as shard keys, when not specified in the
+     *         type. The default value is ''.
      *     <li>{@link Options#SUBSCRIBE SUBSCRIBE}: Continuously poll the data
      *         source to check for new data and load it into the table.
      *         Supported values:
@@ -1467,7 +1501,7 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#REMOTE_QUERY REMOTE_QUERY}: Remote SQL query from
-     *         which data will be sourced
+     *         which data will be sourced.
      *     <li>{@link Options#REMOTE_QUERY_ORDER_BY REMOTE_QUERY_ORDER_BY}:
      *         Name of column to be used for splitting the query into multiple
      *         sub-queries using ordering of given column. The default value is
@@ -1481,8 +1515,9 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         query result that will increase for new records (e.g.,
      *         TIMESTAMP). The default value is ''.
      *     <li>{@link Options#REMOTE_QUERY_PARTITION_COLUMN
-     *         REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
-     *         remote_query_filter_column. The default value is ''.
+     *         REMOTE_QUERY_PARTITION_COLUMN}: Alias name for {@link
+     *         Options#REMOTE_QUERY_FILTER_COLUMN REMOTE_QUERY_FILTER_COLUMN}.
+     *         The default value is ''.
      *     <li>{@link Options#TRUNCATE_STRINGS TRUNCATE_STRINGS}: If set to
      *         {@link Options#TRUE TRUE}, truncate string values that are
      *         longer than the column's type size.
@@ -1492,6 +1527,20 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#ENABLE_INPLACE_UPDATES ENABLE_INPLACE_UPDATES}:
+     *         Applies only when upserting (when update_on_existing_pk is
+     *         true). If set to true (the default), an existing record matched
+     *         by primary key is modified in place. If set to false, the
+     *         matched record is updated by deleting it and inserting a
+     *         replacement (delete and insert), which prevents the change from
+     *         being reflected in dependent materialized views until they are
+     *         refreshed.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK}:
      *         Specifies the record collision policy for inserting into a table
      *         with a <a href="../../../../../../concepts/tables/#primary-keys"
@@ -1509,9 +1558,9 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Upsert new records when
-     *                 primary keys match existing records
+     *                 primary keys match existing records.
      *             <li>{@link Options#FALSE FALSE}: Reject new records when
-     *                 primary keys match existing records
+     *                 primary keys match existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      * </ul>
@@ -1527,19 +1576,18 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *     <li>{@link Options#BAD_RECORD_TABLE_NAME BAD_RECORD_TABLE_NAME}:
-     *         Optional name of a table to which records that were rejected are
-     *         written.  The bad-record-table has the following columns:
-     *         line_number (long), line_rejected (string), error_message
-     *         (string). When error handling is Abort, bad records table is not
-     *         populated.
+     *         Name of a table to which records that were rejected are written.
+     *         The bad-record-table has the following columns: line_number
+     *         (long), line_rejected (string), error_message (string). When
+     *         error handling is Abort, bad records table is not populated.
      *     <li>{@link Options#BAD_RECORD_TABLE_LIMIT BAD_RECORD_TABLE_LIMIT}: A
      *         positive integer indicating the maximum number of records that
      *         can be  written to the bad-record-table.   Default value is
-     *         10000
+     *         10000.
      *     <li>{@link Options#BATCH_SIZE BATCH_SIZE}: Number of records per
      *         batch when inserting data.
      *     <li>{@link Options#DATASOURCE_NAME DATASOURCE_NAME}: Name of an
-     *         existing external data source from which table will be loaded
+     *         existing external data source from which table will be loaded.
      *     <li>{@link Options#ERROR_HANDLING ERROR_HANDLING}: Specifies how
      *         errors should be handled upon insertion.
      *         Supported values:
@@ -1577,10 +1625,10 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Ignore new records whose
      *                 primary key values collide with those of existing
-     *                 records
+     *                 records.
      *             <li>{@link Options#FALSE FALSE}: Treat as errors any new
      *                 records whose primary key values collide with those of
-     *                 existing records
+     *                 existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#INGESTION_MODE INGESTION_MODE}: Whether to do a
@@ -1589,7 +1637,7 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#FULL FULL}: Run a type inference on the
-     *                 source data (if needed) and ingest
+     *                 source data (if needed) and ingest.
      *             <li>{@link Options#DRY_RUN DRY_RUN}: Does not load data, but
      *                 walks through the source data and determines the number
      *                 of valid records, taking into account the current mode
@@ -1604,19 +1652,19 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         size, which determines how many rows to fetch per round trip.
      *     <li>{@link Options#JDBC_SESSION_INIT_STATEMENT
      *         JDBC_SESSION_INIT_STATEMENT}: Executes the statement per each
-     *         jdbc session before doing actual load. The default value is ''.
-     *     <li>{@link Options#NUM_SPLITS_PER_RANK NUM_SPLITS_PER_RANK}:
-     *         Optional: number of splits for reading data per rank. Default
-     *         will be external_file_reader_num_tasks. The default value is ''.
-     *     <li>{@link Options#NUM_TASKS_PER_RANK NUM_TASKS_PER_RANK}: Optional:
-     *         number of tasks for reading data per rank. Default will be
-     *         external_file_reader_num_tasks
-     *     <li>{@link Options#PRIMARY_KEYS PRIMARY_KEYS}: Optional: comma
-     *         separated list of column names, to set as primary keys, when not
-     *         specified in the type. The default value is ''.
-     *     <li>{@link Options#SHARD_KEYS SHARD_KEYS}: Optional: comma separated
-     *         list of column names, to set as primary keys, when not specified
-     *         in the type. The default value is ''.
+     *         JDBC session before doing actual load. The default value is ''.
+     *     <li>{@link Options#NUM_SPLITS_PER_RANK NUM_SPLITS_PER_RANK}: Number
+     *         of splits for reading data per rank. Default will be
+     *         external_file_reader_num_tasks. The default value is ''.
+     *     <li>{@link Options#NUM_TASKS_PER_RANK NUM_TASKS_PER_RANK}: Number of
+     *         tasks for reading data per rank. Default will be
+     *         external_file_reader_num_tasks.
+     *     <li>{@link Options#PRIMARY_KEYS PRIMARY_KEYS}: Comma separated list
+     *         of column names, to set as primary keys, when not specified in
+     *         the type. The default value is ''.
+     *     <li>{@link Options#SHARD_KEYS SHARD_KEYS}: Comma separated list of
+     *         column names, to set as shard keys, when not specified in the
+     *         type. The default value is ''.
      *     <li>{@link Options#SUBSCRIBE SUBSCRIBE}: Continuously poll the data
      *         source to check for new data and load it into the table.
      *         Supported values:
@@ -1635,7 +1683,7 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#REMOTE_QUERY REMOTE_QUERY}: Remote SQL query from
-     *         which data will be sourced
+     *         which data will be sourced.
      *     <li>{@link Options#REMOTE_QUERY_ORDER_BY REMOTE_QUERY_ORDER_BY}:
      *         Name of column to be used for splitting the query into multiple
      *         sub-queries using ordering of given column. The default value is
@@ -1649,8 +1697,9 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         query result that will increase for new records (e.g.,
      *         TIMESTAMP). The default value is ''.
      *     <li>{@link Options#REMOTE_QUERY_PARTITION_COLUMN
-     *         REMOTE_QUERY_PARTITION_COLUMN}: Alias name for
-     *         remote_query_filter_column. The default value is ''.
+     *         REMOTE_QUERY_PARTITION_COLUMN}: Alias name for {@link
+     *         Options#REMOTE_QUERY_FILTER_COLUMN REMOTE_QUERY_FILTER_COLUMN}.
+     *         The default value is ''.
      *     <li>{@link Options#TRUNCATE_STRINGS TRUNCATE_STRINGS}: If set to
      *         {@link Options#TRUE TRUE}, truncate string values that are
      *         longer than the column's type size.
@@ -1660,6 +1709,20 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#ENABLE_INPLACE_UPDATES ENABLE_INPLACE_UPDATES}:
+     *         Applies only when upserting (when update_on_existing_pk is
+     *         true). If set to true (the default), an existing record matched
+     *         by primary key is modified in place. If set to false, the
+     *         matched record is updated by deleting it and inserting a
+     *         replacement (delete and insert), which prevents the change from
+     *         being reflected in dependent materialized views until they are
+     *         refreshed.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK}:
      *         Specifies the record collision policy for inserting into a table
      *         with a <a href="../../../../../../concepts/tables/#primary-keys"
@@ -1677,9 +1740,9 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Upsert new records when
-     *                 primary keys match existing records
+     *                 primary keys match existing records.
      *             <li>{@link Options#FALSE FALSE}: Reject new records when
-     *                 primary keys match existing records
+     *                 primary keys match existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      * </ul>

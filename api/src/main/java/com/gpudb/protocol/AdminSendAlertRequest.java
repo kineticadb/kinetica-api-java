@@ -43,7 +43,7 @@ public class AdminSendAlertRequest implements IndexedRecord {
      * A set of string constants for the {@link AdminSendAlertRequest}
      * parameter {@link #getLogLevel() logLevel}.
      * <p>
-     * Alert message logging criteria
+     * Alert message logging criteria.
      */
     public static final class LogLevel {
         public static final String FATAL = "fatal";

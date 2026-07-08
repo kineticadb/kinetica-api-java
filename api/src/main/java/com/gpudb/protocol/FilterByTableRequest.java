@@ -129,14 +129,14 @@ public class FilterByTableRequest implements IndexedRecord {
          * <ul>
          *     <li>{@link Options#NORMAL NORMAL}
          *     <li>{@link Options#GEOS GEOS}: Use geos 1 edge per corner
-         *         algorithm
+         *         algorithm.
          * </ul>
          * The default value is {@link Options#NORMAL NORMAL}.
          */
         public static final String BUFFER_METHOD = "buffer_method";
 
         /**
-         * Use geos 1 edge per corner algorithm
+         * Use geos 1 edge per corner algorithm.
          */
         public static final String GEOS = "geos";
 
@@ -280,7 +280,7 @@ public class FilterByTableRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#NORMAL NORMAL}
      *                             <li>{@link Options#GEOS GEOS}: Use geos 1
-     *                                 edge per corner algorithm
+     *                                 edge per corner algorithm.
      *                         </ul>
      *                         The default value is {@link Options#NORMAL
      *                         NORMAL}.
@@ -507,7 +507,7 @@ public class FilterByTableRequest implements IndexedRecord {
      *         <ul>
      *             <li>{@link Options#NORMAL NORMAL}
      *             <li>{@link Options#GEOS GEOS}: Use geos 1 edge per corner
-     *                 algorithm
+     *                 algorithm.
      *         </ul>
      *         The default value is {@link Options#NORMAL NORMAL}.
      *     <li>{@link Options#MAX_PARTITION_SIZE MAX_PARTITION_SIZE}: Maximum
@@ -583,7 +583,7 @@ public class FilterByTableRequest implements IndexedRecord {
      *         <ul>
      *             <li>{@link Options#NORMAL NORMAL}
      *             <li>{@link Options#GEOS GEOS}: Use geos 1 edge per corner
-     *                 algorithm
+     *                 algorithm.
      *         </ul>
      *         The default value is {@link Options#NORMAL NORMAL}.
      *     <li>{@link Options#MAX_PARTITION_SIZE MAX_PARTITION_SIZE}: Maximum

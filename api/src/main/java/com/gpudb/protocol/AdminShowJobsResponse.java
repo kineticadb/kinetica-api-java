@@ -59,7 +59,7 @@ public class AdminShowJobsResponse implements IndexedRecord {
         public static final String JOB_TAG = "job_tag";
 
         /**
-         * Worker job information as json
+         * Worker job information as JSON.
          */
         public static final String WORKER_INFO = "worker_info";
 
@@ -84,6 +84,8 @@ public class AdminShowJobsResponse implements IndexedRecord {
     }
 
     /**
+     * The identifiers of the running or completed jobs.
+     *
      * @return The current value of {@code jobId}.
      */
     public List<Long> getJobId() {
@@ -91,6 +93,8 @@ public class AdminShowJobsResponse implements IndexedRecord {
     }
 
     /**
+     * The identifiers of the running or completed jobs.
+     *
      * @param jobId  The new value for {@code jobId}.
      *
      * @return {@code this} to mimic the builder pattern.
@@ -101,6 +105,8 @@ public class AdminShowJobsResponse implements IndexedRecord {
     }
 
     /**
+     * The current status of each job.
+     *
      * @return The current value of {@code status}.
      */
     public List<String> getStatus() {
@@ -108,6 +114,8 @@ public class AdminShowJobsResponse implements IndexedRecord {
     }
 
     /**
+     * The current status of each job.
+     *
      * @param status  The new value for {@code status}.
      *
      * @return {@code this} to mimic the builder pattern.
@@ -118,6 +126,8 @@ public class AdminShowJobsResponse implements IndexedRecord {
     }
 
     /**
+     * The endpoint each job is executing (e.g.&nbsp;"/insert/records").
+     *
      * @return The current value of {@code endpointName}.
      */
     public List<String> getEndpointName() {
@@ -125,6 +135,8 @@ public class AdminShowJobsResponse implements IndexedRecord {
     }
 
     /**
+     * The endpoint each job is executing (e.g.&nbsp;"/insert/records").
+     *
      * @param endpointName  The new value for {@code endpointName}.
      *
      * @return {@code this} to mimic the builder pattern.
@@ -135,6 +147,8 @@ public class AdminShowJobsResponse implements IndexedRecord {
     }
 
     /**
+     * The epoch time, in milliseconds, at which each job was received.
+     *
      * @return The current value of {@code timeReceived}.
      */
     public List<Long> getTimeReceived() {
@@ -142,6 +156,8 @@ public class AdminShowJobsResponse implements IndexedRecord {
     }
 
     /**
+     * The epoch time, in milliseconds, at which each job was received.
+     *
      * @param timeReceived  The new value for {@code timeReceived}.
      *
      * @return {@code this} to mimic the builder pattern.
@@ -152,6 +168,8 @@ public class AdminShowJobsResponse implements IndexedRecord {
     }
 
     /**
+     * The identifier of the submitting or execute-as user for each job.
+     *
      * @return The current value of {@code authId}.
      */
     public List<String> getAuthId() {
@@ -159,6 +177,8 @@ public class AdminShowJobsResponse implements IndexedRecord {
     }
 
     /**
+     * The identifier of the submitting or execute-as user for each job.
+     *
      * @param authId  The new value for {@code authId}.
      *
      * @return {@code this} to mimic the builder pattern.
@@ -169,6 +189,8 @@ public class AdminShowJobsResponse implements IndexedRecord {
     }
 
     /**
+     * The IP address from which each job request originated.
+     *
      * @return The current value of {@code sourceIp}.
      */
     public List<String> getSourceIp() {
@@ -176,6 +198,8 @@ public class AdminShowJobsResponse implements IndexedRecord {
     }
 
     /**
+     * The IP address from which each job request originated.
+     *
      * @param sourceIp  The new value for {@code sourceIp}.
      *
      * @return {@code this} to mimic the builder pattern.
@@ -186,6 +210,8 @@ public class AdminShowJobsResponse implements IndexedRecord {
     }
 
     /**
+     * The text of the query associated with each job, when applicable.
+     *
      * @return The current value of {@code queryText}.
      */
     public List<String> getQueryText() {
@@ -193,6 +219,8 @@ public class AdminShowJobsResponse implements IndexedRecord {
     }
 
     /**
+     * The text of the query associated with each job, when applicable.
+     *
      * @param queryText  The new value for {@code queryText}.
      *
      * @return {@code this} to mimic the builder pattern.
@@ -203,6 +231,8 @@ public class AdminShowJobsResponse implements IndexedRecord {
     }
 
     /**
+     * Arbitrary user-provided data associated with each job.
+     *
      * @return The current value of {@code userData}.
      */
     public List<String> getUserData() {
@@ -210,6 +240,8 @@ public class AdminShowJobsResponse implements IndexedRecord {
     }
 
     /**
+     * Arbitrary user-provided data associated with each job.
+     *
      * @param userData  The new value for {@code userData}.
      *
      * @return {@code this} to mimic the builder pattern.
@@ -220,6 +252,8 @@ public class AdminShowJobsResponse implements IndexedRecord {
     }
 
     /**
+     * Flags associated with each job.
+     *
      * @return The current value of {@code flags}.
      */
     public List<String> getFlags() {
@@ -227,6 +261,8 @@ public class AdminShowJobsResponse implements IndexedRecord {
     }
 
     /**
+     * Flags associated with each job.
+     *
      * @param flags  The new value for {@code flags}.
      *
      * @return {@code this} to mimic the builder pattern.
@@ -243,7 +279,7 @@ public class AdminShowJobsResponse implements IndexedRecord {
      *         or if unspecified by user, an internally generated unique
      *         identifier for the job across clusters.
      *     <li>{@link Info#WORKER_INFO WORKER_INFO}: Worker job information as
-     *         json
+     *         JSON.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -260,7 +296,7 @@ public class AdminShowJobsResponse implements IndexedRecord {
      *         or if unspecified by user, an internally generated unique
      *         identifier for the job across clusters.
      *     <li>{@link Info#WORKER_INFO WORKER_INFO}: Worker job information as
-     *         json
+     *         JSON.
      * </ul>
      * The default value is an empty {@link Map}.
      *

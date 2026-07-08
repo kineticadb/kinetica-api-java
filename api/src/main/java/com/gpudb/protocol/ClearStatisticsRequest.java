@@ -61,11 +61,16 @@ public class ClearStatisticsRequest implements IndexedRecord {
      *                   using standard <a
      *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>. Must be an
-     *                   existing table. The default value is ''.
+     *                   existing table.  A value of {@code _*} clears
+     *                   statistics on every user table the caller may read
+     *                   (excluding system schemas, views, and temporary
+     *                   tables); when used, {@code columnName} must be empty.
+     *                   The default value is ''.
      * @param columnName  Name of the column in {@code tableName} for which to
      *                    clear statistics. The column must be from an existing
      *                    table. An empty string clears statistics for all
-     *                    columns in the table. The default value is ''.
+     *                    columns in the table.  Must be empty when {@code
+     *                    tableName} is {@code _*}. The default value is ''.
      * @param options  Optional parameters. The default value is an empty
      *                 {@link Map}.
      */
@@ -78,8 +83,11 @@ public class ClearStatisticsRequest implements IndexedRecord {
     /**
      * Name of a table, in [schema_name.]table_name format, using standard <a
      * href="../../../../../../concepts/tables/#table-name-resolution"
-     * target="_top">name resolution rules</a>. Must be an existing table. The
-     * default value is ''.
+     * target="_top">name resolution rules</a>. Must be an existing table.  A
+     * value of {@code _*} clears statistics on every user table the caller may
+     * read (excluding system schemas, views, and temporary tables); when used,
+     * {@link #getColumnName() columnName} must be empty. The default value is
+     * ''.
      *
      * @return The current value of {@code tableName}.
      */
@@ -90,8 +98,11 @@ public class ClearStatisticsRequest implements IndexedRecord {
     /**
      * Name of a table, in [schema_name.]table_name format, using standard <a
      * href="../../../../../../concepts/tables/#table-name-resolution"
-     * target="_top">name resolution rules</a>. Must be an existing table. The
-     * default value is ''.
+     * target="_top">name resolution rules</a>. Must be an existing table.  A
+     * value of {@code _*} clears statistics on every user table the caller may
+     * read (excluding system schemas, views, and temporary tables); when used,
+     * {@link #getColumnName() columnName} must be empty. The default value is
+     * ''.
      *
      * @param tableName  The new value for {@code tableName}.
      *
@@ -105,7 +116,8 @@ public class ClearStatisticsRequest implements IndexedRecord {
     /**
      * Name of the column in {@link #getTableName() tableName} for which to
      * clear statistics. The column must be from an existing table. An empty
-     * string clears statistics for all columns in the table. The default value
+     * string clears statistics for all columns in the table.  Must be empty
+     * when {@link #getTableName() tableName} is {@code _*}. The default value
      * is ''.
      *
      * @return The current value of {@code columnName}.
@@ -117,7 +129,8 @@ public class ClearStatisticsRequest implements IndexedRecord {
     /**
      * Name of the column in {@link #getTableName() tableName} for which to
      * clear statistics. The column must be from an existing table. An empty
-     * string clears statistics for all columns in the table. The default value
+     * string clears statistics for all columns in the table.  Must be empty
+     * when {@link #getTableName() tableName} is {@code _*}. The default value
      * is ''.
      *
      * @param columnName  The new value for {@code columnName}.

@@ -49,6 +49,8 @@ public class RawGpudbResponse implements IndexedRecord {
     }
 
     /**
+     * Indicates the success ("OK") or failure ("ERROR") of the request.
+     *
      * @return The current value of {@code status}.
      */
     public String getStatus() {
@@ -56,6 +58,8 @@ public class RawGpudbResponse implements IndexedRecord {
     }
 
     /**
+     * Indicates the success ("OK") or failure ("ERROR") of the request.
+     *
      * @param status  The new value for {@code status}.
      *
      * @return {@code this} to mimic the builder pattern.
@@ -66,6 +70,8 @@ public class RawGpudbResponse implements IndexedRecord {
     }
 
     /**
+     * Empty on success; otherwise the error message describing the failure.
+     *
      * @return The current value of {@code message}.
      */
     public String getMessage() {
@@ -73,6 +79,8 @@ public class RawGpudbResponse implements IndexedRecord {
     }
 
     /**
+     * Empty on success; otherwise the error message describing the failure.
+     *
      * @param message  The new value for {@code message}.
      *
      * @return {@code this} to mimic the builder pattern.
@@ -83,6 +91,9 @@ public class RawGpudbResponse implements IndexedRecord {
     }
 
     /**
+     * The fully-qualified name of the response's data type, or "none" if there
+     * is no data payload.
+     *
      * @return The current value of {@code dataType}.
      */
     public String getDataType() {
@@ -90,6 +101,9 @@ public class RawGpudbResponse implements IndexedRecord {
     }
 
     /**
+     * The fully-qualified name of the response's data type, or "none" if there
+     * is no data payload.
+     *
      * @param dataType  The new value for {@code dataType}.
      *
      * @return {@code this} to mimic the builder pattern.
@@ -100,6 +114,9 @@ public class RawGpudbResponse implements IndexedRecord {
     }
 
     /**
+     * The Avro binary-encoded response payload; populated when binary encoding
+     * was requested.
+     *
      * @return The current value of {@code data}.
      */
     public ByteBuffer getData() {
@@ -107,6 +124,9 @@ public class RawGpudbResponse implements IndexedRecord {
     }
 
     /**
+     * The Avro binary-encoded response payload; populated when binary encoding
+     * was requested.
+     *
      * @param data  The new value for {@code data}.
      *
      * @return {@code this} to mimic the builder pattern.
@@ -117,6 +137,9 @@ public class RawGpudbResponse implements IndexedRecord {
     }
 
     /**
+     * The JSON-encoded response payload; populated when JSON encoding was
+     * requested.
+     *
      * @return The current value of {@code dataStr}.
      */
     public String getDataStr() {
@@ -124,6 +147,9 @@ public class RawGpudbResponse implements IndexedRecord {
     }
 
     /**
+     * The JSON-encoded response payload; populated when JSON encoding was
+     * requested.
+     *
      * @param dataStr  The new value for {@code dataStr}.
      *
      * @return {@code this} to mimic the builder pattern.

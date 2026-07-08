@@ -46,7 +46,7 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      */
     public static final class Options {
         /**
-         * [DEPRECATED -- Use the Rebuild DB feature of GAdmin instead.].
+         * [DEPRECATED]  Use the Rebuild DB feature of GAdmin instead.
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}
@@ -172,8 +172,8 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link Options#REBUILD_ON_ERROR
-     *                         REBUILD_ON_ERROR}: [DEPRECATED -- Use the
-     *                         Rebuild DB feature of GAdmin instead.].
+     *                         REBUILD_ON_ERROR}: [DEPRECATED]  Use the Rebuild
+     *                         DB feature of GAdmin instead.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
@@ -276,8 +276,8 @@ public class AdminVerifyDbRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#REBUILD_ON_ERROR REBUILD_ON_ERROR}: [DEPRECATED
-     *         -- Use the Rebuild DB feature of GAdmin instead.].
+     *     <li>{@link Options#REBUILD_ON_ERROR REBUILD_ON_ERROR}: [DEPRECATED]
+     *         Use the Rebuild DB feature of GAdmin instead.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
@@ -366,8 +366,8 @@ public class AdminVerifyDbRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#REBUILD_ON_ERROR REBUILD_ON_ERROR}: [DEPRECATED
-     *         -- Use the Rebuild DB feature of GAdmin instead.].
+     *     <li>{@link Options#REBUILD_ON_ERROR REBUILD_ON_ERROR}: [DEPRECATED]
+     *         Use the Rebuild DB feature of GAdmin instead.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}

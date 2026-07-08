@@ -108,17 +108,17 @@ public class CreateCatalogRequest implements IndexedRecord {
      * Constructs a CreateCatalogRequest object with the specified parameters.
      *
      * @param name  Name of the catalog to be created.
-     * @param tableFormat  Table format (iceberg, hudi, deltalake)
+     * @param tableFormat  Table format (iceberg, hudi, deltalake).
      * @param location  Location of the catalog in 'http[s]://[server[:port]]]'
      *                  format.
      * @param type  Type of the catalog (REST (unity, polaris, tabular),
-     *              nessie, hive, glue)
+     *              nessie, hive, glue).
      * @param credential  Name of the <a
      *                    href="../../../../../../concepts/credentials"
      *                    target="_top">credential</a> object to be used in
-     *                    catalog
+     *                    catalog.
      * @param datasource  Password for the remote system user; may be an empty
-     *                    string
+     *                    string.
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link Options#ACCESS_DELEGATION
@@ -179,7 +179,7 @@ public class CreateCatalogRequest implements IndexedRecord {
     }
 
     /**
-     * Table format (iceberg, hudi, deltalake)
+     * Table format (iceberg, hudi, deltalake).
      *
      * @return The current value of {@code tableFormat}.
      */
@@ -188,7 +188,7 @@ public class CreateCatalogRequest implements IndexedRecord {
     }
 
     /**
-     * Table format (iceberg, hudi, deltalake)
+     * Table format (iceberg, hudi, deltalake).
      *
      * @param tableFormat  The new value for {@code tableFormat}.
      *
@@ -221,7 +221,8 @@ public class CreateCatalogRequest implements IndexedRecord {
     }
 
     /**
-     * Type of the catalog (REST (unity, polaris, tabular), nessie, hive, glue)
+     * Type of the catalog (REST (unity, polaris, tabular), nessie, hive,
+     * glue).
      *
      * @return The current value of {@code type}.
      */
@@ -230,7 +231,8 @@ public class CreateCatalogRequest implements IndexedRecord {
     }
 
     /**
-     * Type of the catalog (REST (unity, polaris, tabular), nessie, hive, glue)
+     * Type of the catalog (REST (unity, polaris, tabular), nessie, hive,
+     * glue).
      *
      * @param type  The new value for {@code type}.
      *
@@ -243,7 +245,7 @@ public class CreateCatalogRequest implements IndexedRecord {
 
     /**
      * Name of the <a href="../../../../../../concepts/credentials"
-     * target="_top">credential</a> object to be used in catalog
+     * target="_top">credential</a> object to be used in catalog.
      *
      * @return The current value of {@code credential}.
      */
@@ -253,7 +255,7 @@ public class CreateCatalogRequest implements IndexedRecord {
 
     /**
      * Name of the <a href="../../../../../../concepts/credentials"
-     * target="_top">credential</a> object to be used in catalog
+     * target="_top">credential</a> object to be used in catalog.
      *
      * @param credential  The new value for {@code credential}.
      *
@@ -265,7 +267,7 @@ public class CreateCatalogRequest implements IndexedRecord {
     }
 
     /**
-     * Password for the remote system user; may be an empty string
+     * Password for the remote system user; may be an empty string.
      *
      * @return The current value of {@code datasource}.
      */
@@ -274,7 +276,7 @@ public class CreateCatalogRequest implements IndexedRecord {
     }
 
     /**
-     * Password for the remote system user; may be an empty string
+     * Password for the remote system user; may be an empty string.
      *
      * @param datasource  The new value for {@code datasource}.
      *

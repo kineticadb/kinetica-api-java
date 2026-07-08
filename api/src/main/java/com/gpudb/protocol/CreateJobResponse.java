@@ -50,7 +50,7 @@ public class CreateJobResponse implements IndexedRecord {
 
         /**
          * A unique identifier for this job generated for use in tracing
-         * telemetry data
+         * telemetry data.
          */
         public static final String QUERY_ID = "query_id";
 
@@ -94,7 +94,7 @@ public class CreateJobResponse implements IndexedRecord {
      *         or if unspecified by user, a unique identifier generated
      *         internally.
      *     <li>{@link Info#QUERY_ID QUERY_ID}: A unique identifier for this job
-     *         generated for use in tracing telemetry data
+     *         generated for use in tracing telemetry data.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -111,7 +111,7 @@ public class CreateJobResponse implements IndexedRecord {
      *         or if unspecified by user, a unique identifier generated
      *         internally.
      *     <li>{@link Info#QUERY_ID QUERY_ID}: A unique identifier for this job
-     *         generated for use in tracing telemetry data
+     *         generated for use in tracing telemetry data.
      * </ul>
      * The default value is an empty {@link Map}.
      *

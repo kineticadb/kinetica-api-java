@@ -122,7 +122,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String BINARY = "binary";
 
         /**
-         * Indicates that the returned records should be json encoded.
+         * Indicates that the returned records should be JSON-encoded.
          */
         public static final String JSON = "json";
 
@@ -176,7 +176,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String EXPRESSION = "expression";
 
         /**
-         * evaluate the group-by during last JoinedSet filter plan step.
+         * Evaluate the group-by during last JoinedSet filter plan step.
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}
@@ -482,13 +482,14 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String VIEW_ID = "view_id";
 
         /**
-         * pivot column
+         * Pivot column.
          */
         public static final String PIVOT = "pivot";
 
         /**
-         * The value list provided will become the column headers in the
-         * output. Should be the values from the pivot_column.
+         * Comma-separated list of the values in the {@link Options#PIVOT
+         * PIVOT} column.  The list provided will become the column header
+         * prefixes in the output.
          */
         public static final String PIVOT_VALUES = "pivot_values";
 
@@ -606,7 +607,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         expression to apply to the table prior to
      *                         computing the aggregate group by.
      *                     <li>{@link Options#PIPELINED_EXPRESSION_EVALUATION
-     *                         PIPELINED_EXPRESSION_EVALUATION}: evaluate the
+     *                         PIPELINED_EXPRESSION_EVALUATION}: Evaluate the
      *                         group-by during last JoinedSet filter plan step.
      *                         Supported values:
      *                         <ul>
@@ -830,11 +831,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                     <li>{@link Options#VIEW_ID VIEW_ID}: ID of view of
      *                         which the result table will be a member. The
      *                         default value is ''.
-     *                     <li>{@link Options#PIVOT PIVOT}: pivot column
-     *                     <li>{@link Options#PIVOT_VALUES PIVOT_VALUES}: The
-     *                         value list provided will become the column
-     *                         headers in the output. Should be the values from
-     *                         the pivot_column.
+     *                     <li>{@link Options#PIVOT PIVOT}: Pivot column.
+     *                     <li>{@link Options#PIVOT_VALUES PIVOT_VALUES}:
+     *                         Comma-separated list of the values in the {@link
+     *                         Options#PIVOT PIVOT} column.  The list provided
+     *                         will become the column header prefixes in the
+     *                         output.
      *                     <li>{@link Options#GROUPING_SETS GROUPING_SETS}:
      *                         Customize the grouping attribute sets to compute
      *                         the aggregates. These sets can include ROLLUP or
@@ -901,7 +903,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                      <li>{@link Encoding#BINARY BINARY}: Indicates that
      *                          the returned records should be binary encoded.
      *                      <li>{@link Encoding#JSON JSON}: Indicates that the
-     *                          returned records should be json encoded.
+     *                          returned records should be JSON-encoded.
      *                  </ul>
      *                  The default value is {@link Encoding#BINARY BINARY}.
      * @param options  Optional parameters.
@@ -942,7 +944,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         expression to apply to the table prior to
      *                         computing the aggregate group by.
      *                     <li>{@link Options#PIPELINED_EXPRESSION_EVALUATION
-     *                         PIPELINED_EXPRESSION_EVALUATION}: evaluate the
+     *                         PIPELINED_EXPRESSION_EVALUATION}: Evaluate the
      *                         group-by during last JoinedSet filter plan step.
      *                         Supported values:
      *                         <ul>
@@ -1166,11 +1168,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                     <li>{@link Options#VIEW_ID VIEW_ID}: ID of view of
      *                         which the result table will be a member. The
      *                         default value is ''.
-     *                     <li>{@link Options#PIVOT PIVOT}: pivot column
-     *                     <li>{@link Options#PIVOT_VALUES PIVOT_VALUES}: The
-     *                         value list provided will become the column
-     *                         headers in the output. Should be the values from
-     *                         the pivot_column.
+     *                     <li>{@link Options#PIVOT PIVOT}: Pivot column.
+     *                     <li>{@link Options#PIVOT_VALUES PIVOT_VALUES}:
+     *                         Comma-separated list of the values in the {@link
+     *                         Options#PIVOT PIVOT} column.  The list provided
+     *                         will become the column header prefixes in the
+     *                         output.
      *                     <li>{@link Options#GROUPING_SETS GROUPING_SETS}:
      *                         Customize the grouping attribute sets to compute
      *                         the aggregates. These sets can include ROLLUP or
@@ -1328,7 +1331,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *     <li>{@link Encoding#BINARY BINARY}: Indicates that the returned
      *         records should be binary encoded.
      *     <li>{@link Encoding#JSON JSON}: Indicates that the returned records
-     *         should be json encoded.
+     *         should be JSON-encoded.
      * </ul>
      * The default value is {@link Encoding#BINARY BINARY}.
      *
@@ -1345,7 +1348,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *     <li>{@link Encoding#BINARY BINARY}: Indicates that the returned
      *         records should be binary encoded.
      *     <li>{@link Encoding#JSON JSON}: Indicates that the returned records
-     *         should be json encoded.
+     *         should be JSON-encoded.
      * </ul>
      * The default value is {@link Encoding#BINARY BINARY}.
      *
@@ -1388,7 +1391,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *     <li>{@link Options#EXPRESSION EXPRESSION}: Filter expression to
      *         apply to the table prior to computing the aggregate group by.
      *     <li>{@link Options#PIPELINED_EXPRESSION_EVALUATION
-     *         PIPELINED_EXPRESSION_EVALUATION}: evaluate the group-by during
+     *         PIPELINED_EXPRESSION_EVALUATION}: Evaluate the group-by during
      *         last JoinedSet filter plan step.
      *         Supported values:
      *         <ul>
@@ -1568,10 +1571,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#VIEW_ID VIEW_ID}: ID of view of which the result
      *         table will be a member. The default value is ''.
-     *     <li>{@link Options#PIVOT PIVOT}: pivot column
-     *     <li>{@link Options#PIVOT_VALUES PIVOT_VALUES}: The value list
-     *         provided will become the column headers in the output. Should be
-     *         the values from the pivot_column.
+     *     <li>{@link Options#PIVOT PIVOT}: Pivot column.
+     *     <li>{@link Options#PIVOT_VALUES PIVOT_VALUES}: Comma-separated list
+     *         of the values in the {@link Options#PIVOT PIVOT} column.  The
+     *         list provided will become the column header prefixes in the
+     *         output.
      *     <li>{@link Options#GROUPING_SETS GROUPING_SETS}: Customize the
      *         grouping attribute sets to compute the aggregates. These sets
      *         can include ROLLUP or CUBE operators. The attribute sets should
@@ -1627,7 +1631,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *     <li>{@link Options#EXPRESSION EXPRESSION}: Filter expression to
      *         apply to the table prior to computing the aggregate group by.
      *     <li>{@link Options#PIPELINED_EXPRESSION_EVALUATION
-     *         PIPELINED_EXPRESSION_EVALUATION}: evaluate the group-by during
+     *         PIPELINED_EXPRESSION_EVALUATION}: Evaluate the group-by during
      *         last JoinedSet filter plan step.
      *         Supported values:
      *         <ul>
@@ -1807,10 +1811,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#VIEW_ID VIEW_ID}: ID of view of which the result
      *         table will be a member. The default value is ''.
-     *     <li>{@link Options#PIVOT PIVOT}: pivot column
-     *     <li>{@link Options#PIVOT_VALUES PIVOT_VALUES}: The value list
-     *         provided will become the column headers in the output. Should be
-     *         the values from the pivot_column.
+     *     <li>{@link Options#PIVOT PIVOT}: Pivot column.
+     *     <li>{@link Options#PIVOT_VALUES PIVOT_VALUES}: Comma-separated list
+     *         of the values in the {@link Options#PIVOT PIVOT} column.  The
+     *         list provided will become the column header prefixes in the
+     *         output.
      *     <li>{@link Options#GROUPING_SETS GROUPING_SETS}: Customize the
      *         grouping attribute sets to compute the aggregates. These sets
      *         can include ROLLUP or CUBE operators. The attribute sets should

@@ -46,7 +46,7 @@ public class CreateJoinTableResponse implements IndexedRecord {
     public static final class Info {
         /**
          * The fully qualified name of the join table (i.e.&nbsp;including the
-         * schema)
+         * schema).
          */
         public static final String QUALIFIED_JOIN_TABLE_NAME = "qualified_join_table_name";
 
@@ -116,7 +116,7 @@ public class CreateJoinTableResponse implements IndexedRecord {
      * <ul>
      *     <li>{@link Info#QUALIFIED_JOIN_TABLE_NAME
      *         QUALIFIED_JOIN_TABLE_NAME}: The fully qualified name of the join
-     *         table (i.e. including the schema)
+     *         table (i.e. including the schema).
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -131,7 +131,7 @@ public class CreateJoinTableResponse implements IndexedRecord {
      * <ul>
      *     <li>{@link Info#QUALIFIED_JOIN_TABLE_NAME
      *         QUALIFIED_JOIN_TABLE_NAME}: The fully qualified name of the join
-     *         table (i.e. including the schema)
+     *         table (i.e. including the schema).
      * </ul>
      * The default value is an empty {@link Map}.
      *

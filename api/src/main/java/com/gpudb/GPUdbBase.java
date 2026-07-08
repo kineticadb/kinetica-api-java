@@ -50,6 +50,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import java.io.*;
 import java.net.*;
+import jdk.net.ExtendedSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
@@ -204,6 +205,9 @@ public abstract class GPUdbBase {
     // Safeguard against Snappy not being able to compress data of sufficient size
     private static final int MAX_SNAPPY_COMPRESSION_SIZE = 1840700241;
 
+    private static final String HA_STATUS_KEY = "ha_status";
+    private static final String HA_STATUS_DRAINED_KEY = "drained";
+    private static final String HA_STATUS_DRAINED_VALUE_DRAINING = "draining";
 
     /**
      * A set of configurable options for the GPUdb API. May be passed into the
@@ -231,6 +235,10 @@ public abstract class GPUdbBase {
         private String clientName;
         private String clientVersion;
         private int   timeout;
+        private boolean tcpKeepAlive = true;
+        private int   tcpKeepIdle = 0;      // 0 = use OS default (7200 seconds on Linux)
+        private int   tcpKeepInterval = 0;  // 0 = use OS default (75 seconds on Linux)
+        private int   tcpKeepCount = 0;     // 0 = use OS default (9 probes on Linux)
         private int   connectionInactivityValidationTimeout = DEFAULT_CONNECTION_INACTIVITY_VALIDATION_TIMEOUT;
         private int   serverConnectionTimeout = DEFAULT_SERVER_CONNECTION_TIMEOUT;
         private int   threadCount = 1;
@@ -267,6 +275,10 @@ public abstract class GPUdbBase {
             this.clientName           = other.clientName;
             this.clientVersion        = other.clientVersion;
             this.timeout              = other.timeout;
+            this.tcpKeepAlive                = other.tcpKeepAlive;
+            this.tcpKeepIdle                 = other.tcpKeepIdle;
+            this.tcpKeepInterval             = other.tcpKeepInterval;
+            this.tcpKeepCount                = other.tcpKeepCount;
             this.serverConnectionTimeout     = other.serverConnectionTimeout;
             this.threadCount                 = other.threadCount;
             this.hmPort                      = other.hmPort;
@@ -311,6 +323,10 @@ public abstract class GPUdbBase {
                                             toStringKeyValue("clientVersion",                         this.clientVersion,                         false),
                                             toStringKeyValue("hmPort",                                this.hmPort,                                false),
                                             toStringKeyValue("timeout",                               this.timeout,                               false),
+                                            toStringKeyValue("tcpKeepAlive",                          this.tcpKeepAlive,                          false),
+                                            toStringKeyValue("tcpKeepIdle",                           this.tcpKeepIdle,                           false),
+                                            toStringKeyValue("tcpKeepInterval",                       this.tcpKeepInterval,                       false),
+                                            toStringKeyValue("tcpKeepCount",                          this.tcpKeepCount,                          false),
                                             toStringKeyValue("serverConnectionTimeout",               this.serverConnectionTimeout,               false),
                                             toStringKeyValue("initialConnectionAttemptTimeout",       this.initialConnectionAttemptTimeout,       false),
                                             toStringKeyValue("connectionInactivityValidationTimeout", this.connectionInactivityValidationTimeout, false),
@@ -571,6 +587,89 @@ public abstract class GPUdbBase {
          */
         public int getTimeout() {
             return this.timeout;
+        }
+
+        /**
+         * Gets the value of the flag indicating whether TCP keepalive is
+         * enabled on sockets. When enabled, the operating system will send
+         * periodic keepalive probes on idle connections, which can help prevent
+         * firewalls and NAT devices from silently dropping the connection
+         * during long-running queries.
+         *
+         * <p>The default is {@code true}. Disabling TCP keepalive may cause
+         * clients to hang indefinitely if an intermediary (firewall, NAT,
+         * load balancer) silently drops an idle connection during a
+         * long-running query.</p>
+         *
+         * <p><b>Note:</b> TCP keepalive alone may not be sufficient. The
+         * keepalive interval is OS-controlled (default 2 hours on Linux).
+         * For robust protection, also set a non-infinite timeout using
+         * {@link #setTimeout(int)}.</p>
+         *
+         * @return  {@code true} if TCP keepalive is enabled, {@code false} otherwise
+         *
+         * @see #setTcpKeepAlive(boolean)
+         * @see #setTimeout(int)
+         */
+        public boolean getTcpKeepAlive() {
+            return this.tcpKeepAlive;
+        }
+
+        /**
+         * Gets the TCP keepalive idle time in seconds. This is the time a
+         * connection must be idle before the first keepalive probe is sent.
+         *
+         * <p>A value of 0 (the default) means use the operating system default,
+         * which is typically 7200 seconds (2 hours) on Linux.</p>
+         *
+         * <p><b>Note:</b> This option requires Java 11+ and OS support for
+         * {@code TCP_KEEPIDLE}. If not supported, the setting will be ignored.</p>
+         *
+         * @return  the TCP keepalive idle time in seconds, or 0 for OS default
+         *
+         * @see #setTcpKeepIdle(int)
+         * @see #getTcpKeepAlive()
+         */
+        public int getTcpKeepIdle() {
+            return this.tcpKeepIdle;
+        }
+
+        /**
+         * Gets the TCP keepalive probe interval in seconds. This is the time
+         * between successive keepalive probes when no acknowledgment is received.
+         *
+         * <p>A value of 0 (the default) means use the operating system default,
+         * which is typically 75 seconds on Linux.</p>
+         *
+         * <p><b>Note:</b> This option requires Java 11+ and OS support for
+         * {@code TCP_KEEPINTERVAL}. If not supported, the setting will be ignored.</p>
+         *
+         * @return  the TCP keepalive interval in seconds, or 0 for OS default
+         *
+         * @see #setTcpKeepInterval(int)
+         * @see #getTcpKeepAlive()
+         */
+        public int getTcpKeepInterval() {
+            return this.tcpKeepInterval;
+        }
+
+        /**
+         * Gets the TCP keepalive probe count. This is the number of unacknowledged
+         * probes to send before considering the connection dead.
+         *
+         * <p>A value of 0 (the default) means use the operating system default,
+         * which is typically 9 probes on Linux.</p>
+         *
+         * <p><b>Note:</b> This option requires Java 11+ and OS support for
+         * {@code TCP_KEEPCOUNT}. If not supported, the setting will be ignored.</p>
+         *
+         * @return  the TCP keepalive probe count, or 0 for OS default
+         *
+         * @see #setTcpKeepCount(int)
+         * @see #getTcpKeepAlive()
+         */
+        public int getTcpKeepCount() {
+            return this.tcpKeepCount;
         }
 
         /**
@@ -1127,6 +1226,155 @@ public abstract class GPUdbBase {
         }
 
         /**
+         * Sets whether TCP keepalive is enabled on sockets. When enabled, the
+         * operating system will send periodic keepalive probes on idle
+         * connections, which can help prevent firewalls and NAT devices from
+         * silently dropping the connection during long-running queries.
+         *
+         * <p>The default is {@code true}. Disabling TCP keepalive may cause
+         * clients to hang indefinitely if an intermediary (firewall, NAT,
+         * load balancer) silently drops an idle connection during a
+         * long-running query.</p>
+         *
+         * <p><b>Important:</b> TCP keepalive alone may not be sufficient to
+         * prevent hangs. The keepalive interval is controlled at the operating
+         * system level (e.g., {@code tcp_keepalive_time} on Linux, which
+         * defaults to 2 hours). If the firewall's idle timeout is shorter than
+         * the OS keepalive interval, the connection may still be dropped before
+         * the first keepalive probe is sent.</p>
+         *
+         * <p>For robust protection against connection drops during long-running
+         * queries, you should also set a non-infinite socket timeout using
+         * {@link #setTimeout(int)}. This ensures the client will eventually
+         * receive a {@code SocketTimeoutException} rather than hanging forever,
+         * allowing the application to detect the issue and retry.</p>
+         *
+         * <p>To tune OS-level keepalive parameters on Linux:</p>
+         * <ul>
+         *   <li>{@code tcp_keepalive_time} - seconds before first probe (default: 7200)</li>
+         *   <li>{@code tcp_keepalive_intvl} - seconds between probes (default: 75)</li>
+         *   <li>{@code tcp_keepalive_probes} - number of probes before giving up (default: 9)</li>
+         * </ul>
+         *
+         * @param value  {@code true} to enable TCP keepalive, {@code false} to disable
+         * @return       the current {@link Options} instance
+         *
+         * @see #getTcpKeepAlive()
+         * @see #setTimeout(int)
+         */
+        public Options setTcpKeepAlive(boolean value) {
+            this.tcpKeepAlive = value;
+            return this;
+        }
+
+        /**
+         * Sets the TCP keepalive idle time in seconds. This is the time a
+         * connection must be idle before the first keepalive probe is sent.
+         *
+         * <p>A value of 0 (the default) means use the operating system default,
+         * which is typically 7200 seconds (2 hours) on Linux. Setting a lower
+         * value (e.g., 60-300 seconds) can help detect dead connections faster
+         * and prevent firewalls from dropping idle connections during long-running
+         * queries.</p>
+         *
+         * <p><b>Note:</b> This option requires Java 11+ and OS support for
+         * {@code TCP_KEEPIDLE} (equivalent to Linux's {@code tcp_keepalive_time}).
+         * If not supported on the current platform, the setting will be silently
+         * ignored.</p>
+         *
+         * <p><b>Important:</b> TCP keepalive must be enabled via
+         * {@link #setTcpKeepAlive(boolean)} for this setting to have any effect.
+         * If {@code tcpKeepAlive} is {@code false} and this option is set to a
+         * non-zero value, a warning will be logged and the setting will be ignored.</p>
+         *
+         * @param seconds  the idle time in seconds before first probe, or 0 for OS default
+         * @return         the current {@link Options} instance
+         * @throws IllegalArgumentException if seconds is negative
+         *
+         * @see #getTcpKeepIdle()
+         * @see #setTcpKeepAlive(boolean)
+         * @see #setTcpKeepInterval(int)
+         * @see #setTcpKeepCount(int)
+         */
+        public Options setTcpKeepIdle(int seconds) {
+            if (seconds < 0) {
+                throw new IllegalArgumentException("TCP keepalive idle time must be >= 0");
+            }
+            this.tcpKeepIdle = seconds;
+            return this;
+        }
+
+        /**
+         * Sets the TCP keepalive probe interval in seconds. This is the time
+         * between successive keepalive probes when no acknowledgment is received.
+         *
+         * <p>A value of 0 (the default) means use the operating system default,
+         * which is typically 75 seconds on Linux. Setting a lower value can help
+         * detect dead connections more quickly once keepalive probing has started.</p>
+         *
+         * <p><b>Note:</b> This option requires Java 11+ and OS support for
+         * {@code TCP_KEEPINTERVAL} (equivalent to Linux's {@code tcp_keepalive_intvl}).
+         * If not supported on the current platform, the setting will be silently
+         * ignored.</p>
+         *
+         * <p><b>Important:</b> TCP keepalive must be enabled via
+         * {@link #setTcpKeepAlive(boolean)} for this setting to have any effect.
+         * If {@code tcpKeepAlive} is {@code false} and this option is set to a
+         * non-zero value, a warning will be logged and the setting will be ignored.</p>
+         *
+         * @param seconds  the interval in seconds between probes, or 0 for OS default
+         * @return         the current {@link Options} instance
+         * @throws IllegalArgumentException if seconds is negative
+         *
+         * @see #getTcpKeepInterval()
+         * @see #setTcpKeepAlive(boolean)
+         * @see #setTcpKeepIdle(int)
+         * @see #setTcpKeepCount(int)
+         */
+        public Options setTcpKeepInterval(int seconds) {
+            if (seconds < 0) {
+                throw new IllegalArgumentException("TCP keepalive interval must be >= 0");
+            }
+            this.tcpKeepInterval = seconds;
+            return this;
+        }
+
+        /**
+         * Sets the TCP keepalive probe count. This is the number of unacknowledged
+         * probes to send before considering the connection dead.
+         *
+         * <p>A value of 0 (the default) means use the operating system default,
+         * which is typically 9 probes on Linux. Setting a lower value can help
+         * fail faster when a connection is truly dead.</p>
+         *
+         * <p><b>Note:</b> This option requires Java 11+ and OS support for
+         * {@code TCP_KEEPCOUNT} (equivalent to Linux's {@code tcp_keepalive_probes}).
+         * If not supported on the current platform, the setting will be silently
+         * ignored.</p>
+         *
+         * <p><b>Important:</b> TCP keepalive must be enabled via
+         * {@link #setTcpKeepAlive(boolean)} for this setting to have any effect.
+         * If {@code tcpKeepAlive} is {@code false} and this option is set to a
+         * non-zero value, a warning will be logged and the setting will be ignored.</p>
+         *
+         * @param count  the number of probes before giving up, or 0 for OS default
+         * @return       the current {@link Options} instance
+         * @throws IllegalArgumentException if count is negative
+         *
+         * @see #getTcpKeepCount()
+         * @see #setTcpKeepAlive(boolean)
+         * @see #setTcpKeepIdle(int)
+         * @see #setTcpKeepInterval(int)
+         */
+        public Options setTcpKeepCount(int count) {
+            if (count < 0) {
+                throw new IllegalArgumentException("TCP keepalive count must be >= 0");
+            }
+            this.tcpKeepCount = count;
+            return this;
+        }
+
+        /**
          * Gets the server connection timeout value, in milliseconds, after
          * which an inability to establish a connection with the GPUdb server
          * will result in requests being aborted.  This serves to limit both the
@@ -1135,7 +1383,7 @@ public abstract class GPUdbBase {
          * timeout of zero is interpreted as an infinite timeout. Note that this
          * is different from the request timeout for requests other than a
          * system status check.
-         * 
+         *
          * Sets the server connection timeout value, in milliseconds, after
          * which an inability to establish a connection with the GPUdb server
          * will result in requests being aborted.  This serves to limit both the
@@ -2235,7 +2483,7 @@ public abstract class GPUdbBase {
                 properties.load(stream);
 
                 if (includeBuildNumber)
-                	return properties.getProperty("version") + "-" + properties.getProperty("buildNumber");
+                    return properties.getProperty("version") + "-" + properties.getProperty("buildNumber");
 
                 return properties.getProperty("version");
             }
@@ -2254,7 +2502,7 @@ public abstract class GPUdbBase {
         if (version != null && !version.isEmpty() && !version.startsWith("$"))
             return version;
 
-    	return "unknown";
+        return "unknown";
     }
 
     /**
@@ -2478,6 +2726,7 @@ public abstract class GPUdbBase {
         private Set<String>        hostNames;  // could have IPs, too
         private URL                hostManagerUrl;
         private boolean            isPrimaryCluster = false;
+        private String             haStatus;  // The HA drained status (e.g., "drained", "draining", "not_drained")
 
 
         // Constructors
@@ -2629,6 +2878,14 @@ public abstract class GPUdbBase {
         }
 
         /**
+         * Get the HA status (drained value) for this cluster.
+         * @return The HA status string (e.g., "drained", "draining", "not_drained"), or null if not set
+         */
+        public String getHaStatus() {
+            return this.haStatus;
+        }
+
+        /**
          * @deprecated
          * Get whether intra-cluster failover is enabled
          */
@@ -2691,6 +2948,16 @@ public abstract class GPUdbBase {
          */
         public ClusterAddressInfo setIsPrimaryCluster( boolean value ) {
             this.isPrimaryCluster = value;
+            return this;
+        }
+
+        /**
+         * Set the HA status (drained value) for this cluster.
+         * Return this object to be able to chain operations.
+         * @param value The HA status string (e.g., "drained", "draining", "not_drained")
+         */
+        public ClusterAddressInfo setHaStatus( String value ) {
+            this.haStatus = value;
             return this;
         }
 
@@ -3034,6 +3301,25 @@ public abstract class GPUdbBase {
 
         // Initiate the HttpClient object
         // ------------------------------
+        // Get TCP keepalive options for custom socket factories
+        final boolean tcpKeepAlive = this.options.getTcpKeepAlive();
+        final int tcpKeepIdle = this.options.getTcpKeepIdle();
+        final int tcpKeepInterval = this.options.getTcpKeepInterval();
+        final int tcpKeepCount = this.options.getTcpKeepCount();
+        final boolean hasExtendedTcpOptions = (tcpKeepIdle > 0 || tcpKeepInterval > 0 || tcpKeepCount > 0);
+
+        // Extended TCP keepalive options only apply when tcpKeepAlive is enabled
+        final boolean useTcpKeepaliveOptions = tcpKeepAlive && hasExtendedTcpOptions;
+
+        // Warn if extended options are set but tcpKeepAlive is disabled (they will be ignored)
+        if (!tcpKeepAlive && hasExtendedTcpOptions) {
+            GPUdbLogger.warn("TCP keepalive is disabled (tcpKeepAlive=false), but extended TCP keepalive options are set. " +
+                    "These options will be ignored: tcpKeepIdle=" + tcpKeepIdle +
+                    ", tcpKeepInterval=" + tcpKeepInterval +
+                    ", tcpKeepCount=" + tcpKeepCount +
+                    ". To use extended options, set tcpKeepAlive=true.");
+        }
+
         // Create a socket factory in order to use an http connection manager
         SSLConnectionSocketFactory secureSocketFactory = SSLConnectionSocketFactory.getSocketFactory();
         if ( this.bypassSslCertCheck ) {
@@ -3052,7 +3338,12 @@ public abstract class GPUdbBase {
 
             // Create the appropriate SSL socket factory
             if ( sslContext != null ) {
-                secureSocketFactory = new SSLConnectionSocketFactory( sslContext, allowAllHosts );
+                if (useTcpKeepaliveOptions) {
+                    secureSocketFactory = new TcpKeepaliveAwareSSLSocketFactory(sslContext, allowAllHosts,
+                            tcpKeepIdle, tcpKeepInterval, tcpKeepCount);
+                } else {
+                    secureSocketFactory = new SSLConnectionSocketFactory( sslContext, allowAllHosts );
+                }
             }
         }
 
@@ -3123,12 +3414,18 @@ public abstract class GPUdbBase {
                         acceptingTrustStrategy
                     ).build();
 
-                connectionSocketFactory = new SSLConnectionSocketFactory(sslContext, new HostnameVerifier() {
+                HostnameVerifier trustStoreHostnameVerifier = new HostnameVerifier() {
                     @Override
                     public boolean verify(String hostName, SSLSession session) {
                         return true;
                     }
-                });
+                };
+                if (useTcpKeepaliveOptions) {
+                    connectionSocketFactory = new TcpKeepaliveAwareSSLSocketFactory(sslContext, trustStoreHostnameVerifier,
+                            tcpKeepIdle, tcpKeepInterval, tcpKeepCount);
+                } else {
+                    connectionSocketFactory = new SSLConnectionSocketFactory(sslContext, trustStoreHostnameVerifier);
+                }
                 secureSocketFactory = connectionSocketFactory;
             } catch (Exception e) {
                 GPUdbLogger.error(String.format("Exception : %s", e.getMessage()));
@@ -3137,8 +3434,25 @@ public abstract class GPUdbBase {
 
         }
 
+        // If TCP keepalive options are set but we're using the default SSL factory,
+        // we need to wrap it with our custom factory
+        if (useTcpKeepaliveOptions && secureSocketFactory == SSLConnectionSocketFactory.getSocketFactory()) {
+            try {
+                SSLContext defaultSslContext = SSLContext.getDefault();
+                secureSocketFactory = new TcpKeepaliveAwareSSLSocketFactory(defaultSslContext,
+                        tcpKeepIdle, tcpKeepInterval, tcpKeepCount);
+            } catch (NoSuchAlgorithmException e) {
+                GPUdbLogger.warn("Could not create TCP keepalive aware SSL factory: " + e.getMessage());
+            }
+        }
+
         // And a plain http socket factory
-        PlainConnectionSocketFactory plainSocketFactory = PlainConnectionSocketFactory.getSocketFactory();
+        ConnectionSocketFactory plainSocketFactory;
+        if (useTcpKeepaliveOptions) {
+            plainSocketFactory = new TcpKeepaliveAwarePlainSocketFactory(tcpKeepIdle, tcpKeepInterval, tcpKeepCount);
+        } else {
+            plainSocketFactory = PlainConnectionSocketFactory.getSocketFactory();
+        }
         Registry<ConnectionSocketFactory> connSocketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
             .register("https", secureSocketFactory)
             .register("http", plainSocketFactory)
@@ -3159,12 +3473,21 @@ public abstract class GPUdbBase {
         connectionManager.setDefaultMaxPerRoute( this.options.getMaxConnectionsPerHost() );
 
         // SO timeout here controls read timeouts within cloud cluster
-        //   environments, and must be set explicitly
+        //   environments, and must be set explicitly.
+        // TCP keepalive prevents firewalls/NATs from silently dropping idle
+        //   connections during long-running queries.
         connectionManager.setDefaultSocketConfig(SocketConfig.custom()
             .setSoTimeout(Timeout.ofMilliseconds(this.options.getTimeout()))
+            .setSoKeepAlive(this.options.getTcpKeepAlive())
             .build());
-        
+
         GPUdbLogger.debug("Setting SO timeout to <" + this.options.getTimeout() + "> ms");
+        GPUdbLogger.debug("Setting TCP keepalive to <" + this.options.getTcpKeepAlive() + ">");
+        if (useTcpKeepaliveOptions) {
+            GPUdbLogger.debug("Setting TCP keepalive idle to <" + tcpKeepIdle + "> seconds (0 = OS default)");
+            GPUdbLogger.debug("Setting TCP keepalive interval to <" + tcpKeepInterval + "> seconds (0 = OS default)");
+            GPUdbLogger.debug("Setting TCP keepalive count to <" + tcpKeepCount + "> (0 = OS default)");
+        }
 
         // Socket timeout here controls read timeouts within non-cloud cluster
         //   environments, and must be set explicitly
@@ -3252,6 +3575,7 @@ public abstract class GPUdbBase {
 
         connectionManagerFastConnect.setDefaultSocketConfig(SocketConfig.custom()
             .setSoTimeout(Timeout.ofMilliseconds(this.options.getTimeout()))
+            .setSoKeepAlive(this.options.getTcpKeepAlive())
             .build());
 
         connectionManagerFastConnect.setDefaultConnectionConfig(ConnectionConfig.custom()
@@ -3282,10 +3606,27 @@ public abstract class GPUdbBase {
 
         // Verify connectivity and retrieve server version
         try {
-            Map<String, String> sysProps = this.getSystemProperties();
-            // If auto-discovery is disabled, sysProps will be empty
-            if (sysProps.isEmpty())
-                sysProps = this.getSystemProperties(null);  // triggers failover
+            // For a full HA-aware connection, ensure the initially-selected
+            // cluster is usable (reachable, running, and NOT draining its HA
+            // queue).  If it is not, fail over to a usable one using the very
+            // same mechanism and acceptance test (isClusterUsable) that runtime
+            // failover uses -- so "find the first available server" is unified
+            // across the initial connect and failover paths.
+            //
+            // A direct connection (failover or auto-discovery disabled -- e.g.
+            // status probes and the failback poller) connects to the given URL
+            // as-is, so it can still read a draining cluster's status.
+            if ( !this.disableFailover && !this.disableAutoDiscovery
+                    && !isClusterUsable( getURL(), false ) ) {
+                GPUdbLogger.debug_with_info( String.format(
+                        "Initially selected cluster <%s> is not usable (down or draining); failing over",
+                        getURL() ) );
+                switchURL( getURL(), getNumClusterSwitches() );
+            }
+
+            // Retrieve system properties from the selected cluster and record
+            // the server version.
+            Map<String, String> sysProps = getSystemProperties( getURL() );
             this.serverVersion = parseServerVersion( sysProps );
         } catch ( GPUdbException ex ) {
             this.httpClient.close(CloseMode.GRACEFUL);
@@ -3380,6 +3721,19 @@ public abstract class GPUdbBase {
 
     // Properties
     // ----------
+
+    /**
+     * Gets the {@link Options} that this instance was created with.  Note that
+     * the returned object reflects the configuration in effect for this client;
+     * the options cannot be changed after construction, so a new {@link GPUdb}
+     * instance must be created to use different options.
+     *
+     * @return  the options used to create this instance
+     */
+    public Options getOptions() {
+        return this.options;
+    }
+
 
     /**
      * Gets the list of URLs of the active head ranks of all the clusters for
@@ -3618,6 +3972,191 @@ public abstract class GPUdbBase {
         }
 
         return false;
+    }
+
+    /**
+     * Applies TCP keepalive extended socket options to a socket.
+     * These options are only available on Java 11+ and require OS support.
+     * If the options are not supported, they are silently ignored.
+     *
+     * @param socket       the socket to configure
+     * @param keepIdle     seconds before first probe (0 = use OS default)
+     * @param keepInterval seconds between probes (0 = use OS default)
+     * @param keepCount    number of probes before giving up (0 = use OS default)
+     */
+    private static void applyTcpKeepaliveOptions(Socket socket, int keepIdle, int keepInterval, int keepCount) {
+        // Only apply if at least one option is set (non-zero)
+        if (keepIdle <= 0 && keepInterval <= 0 && keepCount <= 0) {
+            return;
+        }
+
+        try {
+            if (keepIdle > 0) {
+                socket.setOption(ExtendedSocketOptions.TCP_KEEPIDLE, keepIdle);
+                GPUdbLogger.debug("Set TCP_KEEPIDLE to " + keepIdle + " seconds");
+            }
+        } catch (UnsupportedOperationException | IOException e) {
+            GPUdbLogger.debug("TCP_KEEPIDLE not supported on this platform: " + e.getMessage());
+        }
+
+        try {
+            if (keepInterval > 0) {
+                socket.setOption(ExtendedSocketOptions.TCP_KEEPINTERVAL, keepInterval);
+                GPUdbLogger.debug("Set TCP_KEEPINTERVAL to " + keepInterval + " seconds");
+            }
+        } catch (UnsupportedOperationException | IOException e) {
+            GPUdbLogger.debug("TCP_KEEPINTERVAL not supported on this platform: " + e.getMessage());
+        }
+
+        try {
+            if (keepCount > 0) {
+                socket.setOption(ExtendedSocketOptions.TCP_KEEPCOUNT, keepCount);
+                GPUdbLogger.debug("Set TCP_KEEPCOUNT to " + keepCount);
+            }
+        } catch (UnsupportedOperationException | IOException e) {
+            GPUdbLogger.debug("TCP_KEEPCOUNT not supported on this platform: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Custom PlainConnectionSocketFactory that applies TCP keepalive extended options.
+     */
+    private static class TcpKeepaliveAwarePlainSocketFactory extends PlainConnectionSocketFactory {
+        private final int keepIdle;
+        private final int keepInterval;
+        private final int keepCount;
+
+        TcpKeepaliveAwarePlainSocketFactory(int keepIdle, int keepInterval, int keepCount) {
+            this.keepIdle = keepIdle;
+            this.keepInterval = keepInterval;
+            this.keepCount = keepCount;
+        }
+
+        @Override
+        public Socket createSocket(HttpContext context) throws IOException {
+            Socket socket = super.createSocket(context);
+            applyTcpKeepaliveOptions(socket, keepIdle, keepInterval, keepCount);
+            return socket;
+        }
+    }
+
+    /**
+     * Custom SSLConnectionSocketFactory that applies TCP keepalive extended options.
+     */
+    private static class TcpKeepaliveAwareSSLSocketFactory extends SSLConnectionSocketFactory {
+        private final int keepIdle;
+        private final int keepInterval;
+        private final int keepCount;
+
+        TcpKeepaliveAwareSSLSocketFactory(SSLContext sslContext, HostnameVerifier hostnameVerifier,
+                                          int keepIdle, int keepInterval, int keepCount) {
+            super(sslContext, hostnameVerifier);
+            this.keepIdle = keepIdle;
+            this.keepInterval = keepInterval;
+            this.keepCount = keepCount;
+        }
+
+        TcpKeepaliveAwareSSLSocketFactory(SSLContext sslContext,
+                                          int keepIdle, int keepInterval, int keepCount) {
+            super(sslContext);
+            this.keepIdle = keepIdle;
+            this.keepInterval = keepInterval;
+            this.keepCount = keepCount;
+        }
+
+        @Override
+        public Socket createSocket(HttpContext context) throws IOException {
+            Socket socket = super.createSocket(context);
+            applyTcpKeepaliveOptions(socket, keepIdle, keepInterval, keepCount);
+            return socket;
+        }
+    }
+
+    /**
+     * Result object containing system running status and HA status information.
+     * Used to return both values from a single ShowSystemStatus call.
+     */
+    private static class SystemStatusResult {
+        final boolean isRunning;
+        final String haStatus;
+
+        SystemStatusResult(boolean isRunning, String haStatus) {
+            this.isRunning = isRunning;
+            this.haStatus = haStatus;
+        }
+    }
+
+    /**
+     * Gets the system running status and HA status for a given URL in a single call.
+     * This method fetches the ShowSystemStatus response and extracts both the running
+     * state and the HA drained status, returning them together to avoid duplicate
+     * server calls.
+     *
+     * @param url  The URL to check for
+     * @param quickCheck  Whether to perform a shorter connectivity check or not
+     * @return SystemStatusResult containing isRunning (true if the system
+     *         process is running, regardless of HA drain state) and haStatus
+     *         (the drained value from ha_status, or null if not available)
+     * @throws GPUdbException - Throws only {@link GPUdbUnauthorizedAccessException},
+     *                          logs other exceptions as warnings and returns not running
+     */
+    private SystemStatusResult getSystemRunningStatus( URL url, boolean quickCheck ) throws GPUdbException {
+        boolean systemRunning = false;
+        String haStatus = null;
+        try {
+            ShowSystemStatusResponse response = getSystemStatusResponse( url, quickCheck );
+
+            // Get the 'system' entry and parse it
+            String systemStatusStr = response.getStatusMap().get( SHOW_SYSTEM_STATUS_RESPONSE_SYSTEM );
+            if ( systemStatusStr == null ) {
+                GPUdbLogger.warn(String.format("No system status entry for URL %s", url));
+                return new SystemStatusResult(false, null);
+            }
+
+            JsonNode systemStatusInfo = GPUdbBase.JSON_MAPPER.readTree( systemStatusStr );
+            JsonNode systemStatus = systemStatusInfo.get( SHOW_SYSTEM_STATUS_RESPONSE_STATUS );
+
+            // Get the 'ha_status' entry and parse it
+            String haStatusStr = response.getStatusMap().get( HA_STATUS_KEY );
+            JsonNode haStatusInfo = null;
+            if ( haStatusStr != null ) {
+                haStatusInfo = GPUdbBase.JSON_MAPPER.readTree( haStatusStr );
+            }
+
+            // Check if system is running
+            boolean isRunning = ( systemStatus != null )
+                && SHOW_SYSTEM_STATUS_RESPONSE_RUNNING.equals( systemStatus.textValue() );
+
+            // Extract HA status (drained value)
+            if ( haStatusInfo != null ) {
+                JsonNode drainedNode = haStatusInfo.get( HA_STATUS_DRAINED_KEY );
+                if ( drainedNode != null ) {
+                    haStatus = drainedNode.textValue();
+                }
+            }
+
+            // A system with a draining HA queue is still running; the drain
+            // state is reported separately via haStatus (callers that need to
+            // route around a draining cluster consult that, not isRunning).
+            systemRunning = isRunning;
+            if ( isRunning ) {
+                GPUdbLogger.debug_with_info(String.format("System running at URL %s (haStatus=%s)", url, haStatus));
+            } else {
+                GPUdbLogger.warn(String.format("System not confirmed running at URL %s (running=%s, haStatus=%s)",
+                    url, isRunning, haStatus));
+            }
+        } catch ( Exception ex ) {
+            if( ex instanceof GPUdbUnauthorizedAccessException ) {
+                throw (GPUdbUnauthorizedAccessException) ex;
+            }
+
+            // Any error means we don't know whether the system is running
+            GPUdbLogger.warn(String.format(
+                    "Exception checking running status of URL %s -- %s",
+                    url.toString(), ex
+            ));
+        }
+        return new SystemStatusResult(systemRunning, haStatus);
     }
 
     /**
@@ -3989,7 +4528,7 @@ public abstract class GPUdbBase {
                     throw new GPUdbHAUnavailableException("Circled back to original URL; no clusters available for fail-over among these: " + getURLs().toString());
                 }
             }
-            while(!isKineticaRunning(getURL()));
+            while(!isClusterUsable(getURL(), true));
 
             // Haven't circled back to the old URL; so return the new one
             GPUdbLogger.warn("Switched to fail-over URL: " +  getURL());
@@ -4266,7 +4805,7 @@ public abstract class GPUdbBase {
      * @param url  The URL on which /show/system/status will be called
      * @param quickCheck  Whether to perform a shorter connectivity check or not
      */
-    private JsonNode getSystemStatusInformation( URL url, boolean quickCheck )
+    private ShowSystemStatusResponse getSystemStatusResponse( URL url, boolean quickCheck )
         throws GPUdbException, GPUdbExitException {
 
         URL endpointUrl = null;
@@ -4282,29 +4821,13 @@ public abstract class GPUdbBase {
         // Call /show/system/status at the given URL
         ShowSystemStatusRequest request = new ShowSystemStatusRequest();
         ShowSystemStatusResponse response = new ShowSystemStatusResponse();
-        response = 
+        response =
                 quickCheck ?
                 submitRequestRawFast(endpointUrl, request, response, false) :
                 submitRequest(endpointUrl, request, response, false);
 
-        // Get the 'system' entry in the status response and parse it
-        String systemStatusStr = response.getStatusMap().get( SHOW_SYSTEM_STATUS_RESPONSE_SYSTEM );
-        GPUdbLogger.debug_with_info( "Got system status " + systemStatusStr + " for URL: " + url);
-        JsonNode systemStatus;
-
-        if ( systemStatusStr == null )
-            throw new GPUdbException(String.format("No entry for <%s> in %s for URL: %s",
-                    SHOW_SYSTEM_STATUS_RESPONSE_SYSTEM, ENDPOINT_SHOW_SYSTEM_STATUS, url));
-
-        try {
-            systemStatus = GPUdbBase.JSON_MAPPER.readTree( systemStatusStr );
-        } catch ( IOException ex ) {
-            throw new GPUdbException( "Could not parse system status " + systemStatusStr + " for URL: " + url, ex );
-        }
-
-        return systemStatus;
-    }   // end getSystemStatusInformation
-
+        return response;
+    }   // end getSystemStatusResponse
 
     /**
      * Given a URL, return the system properties information
@@ -4403,32 +4926,42 @@ public abstract class GPUdbBase {
      *                          logs other exceptions as warnings
      */
     boolean isSystemRunning( URL url, boolean quickCheck ) throws GPUdbException {
-        boolean systemRunning = false;
+        // Delegate to getSystemRunningStatus and return only the isRunning component
+        SystemStatusResult result = getSystemRunningStatus( url, quickCheck );
+        return result.isRunning;
+    }
+
+    /**
+     * Determines whether the cluster at the given URL is usable as the <i>active
+     * serving</i> cluster: it must be reachable, running, AND not draining its
+     * HA queue.  This is the single acceptance test shared by the initial
+     * connection sequence ({@link #init}) and the failover chain
+     * ({@link #switchURL}), so that "find the first available server" means the
+     * same thing in both places.
+     *
+     * <p>Note this is deliberately stricter than {@link #isSystemRunning}: a
+     * draining cluster <i>is</i> running (its process is up and answers status
+     * endpoints) but is not yet ready to serve, so it is not <i>usable</i> and
+     * must be skipped when selecting a cluster to route to.
+     *
+     * <p>Never throws -- any error (including a status-check failure) is treated
+     * as "not usable" so callers can use it directly in a loop condition.
+     *
+     * @param url  the cluster head node URL to check
+     * @param quickCheck  whether to use the shorter connectivity check (used by
+     *                    the failover loop to keep failover fast)
+     * @return true if the cluster is running and not draining
+     */
+    boolean isClusterUsable( URL url, boolean quickCheck ) {
         try {
-            JsonNode systemStatusInfo = getSystemStatusInformation( url, quickCheck );
-
-            // Then look for 'status' and see if it is 'running'
-            JsonNode systemStatus = systemStatusInfo.get( SHOW_SYSTEM_STATUS_RESPONSE_STATUS );
-
-            if ( ( systemStatus != null)
-                && SHOW_SYSTEM_STATUS_RESPONSE_RUNNING.equals( systemStatus.textValue() ) ) {
-                systemRunning = true;
-                GPUdbLogger.debug_with_info(String.format("System running at URL %s", url));
-            } else {
-                GPUdbLogger.warn(String.format("System not confirmed running at URL %s", url));
-            }
-        } catch ( Exception ex ) {
-            if( ex instanceof GPUdbUnauthorizedAccessException ) {
-                throw ex;
-            }
-
-            // Any error means we don't know whether the system is running
-            GPUdbLogger.warn(String.format(
-                    "Exception checking running status of URL %s -- %s",
-                    url.toString(), ex
-            ));
+            SystemStatusResult result = getSystemRunningStatus( url, quickCheck );
+            return result.isRunning
+                    && !HA_STATUS_DRAINED_VALUE_DRAINING.equals( result.haStatus );
+        } catch ( GPUdbException ex ) {
+            GPUdbLogger.warn( String.format(
+                    "Cluster at %s deemed not usable: %s", url, ex.getMessage() ) );
+            return false;
         }
-        return systemRunning;
     }
 
     /**
@@ -5558,8 +6091,8 @@ public abstract class GPUdbBase {
             ++numProcessedURLs;
 
             GPUdbLogger.debug_with_info(String.format(
-            		"Processing %s URL: %s; remaining %d URL(s): %s",
-            		isUserGivenUrl ? "user-given" : "server-known", urlStr, urlQueue.size(), Arrays.toString(urlQueue.toArray())
+                    "Processing %s URL: %s; remaining %d URL(s): %s",
+                    isUserGivenUrl ? "user-given" : "server-known", urlStr, urlQueue.size(), Arrays.toString(urlQueue.toArray())
             ));
 
             // Skip processing this URL if the hostname/IP address is used in
@@ -5604,20 +6137,27 @@ public abstract class GPUdbBase {
                 continue; // skip to the next URL
             }
 
+            // Check system status and get HA status in a single call
             // Skip processing this URL if Kinetica is not running at this address
             // but create the 'ClusterAddressInfo' instance for it. It is not known
             // at this point in time whether it could come up later or not.
-            if ( !isSystemRunning( url, false ) ) {
+            SystemStatusResult statusResult = getSystemRunningStatus( url, false );
+            if ( !statusResult.isRunning ) {
 
-                // Whether this URL has been discovered by the API or given by 
+                // Whether this URL has been discovered by the API or given by
                 // the user, add it to the cluster list anyway
                 ClusterAddressInfo clusterInfo = new ClusterAddressInfo(url, this.hostManagerPort);
+                // Store the HA status even for non-running clusters (if available)
+                clusterInfo.setHaStatus( statusResult.haStatus );
                 this.hostAddresses.add( clusterInfo );
-    
-                GPUdbLogger.debug_with_info( String.format("Added non-running cluster with %s URL: %s", isUserGivenUrl ? "user-given" : "server-known", urlStr) );
+
+                GPUdbLogger.debug_with_info( String.format("Added non-running cluster with %s URL: %s (haStatus=%s)", isUserGivenUrl ? "user-given" : "server-known", urlStr, statusResult.haStatus) );
 
                 continue;
             }
+
+            // Store the HA status from the status check for use after cluster info creation
+            String haStatusFromStatusCheck = statusResult.haStatus;
 
             // Get system properties of the cluster, if can't get it, skip
             // to the next one
@@ -5645,6 +6185,9 @@ public abstract class GPUdbBase {
             // (this could fail due to a host name regex mismatch)
             ClusterAddressInfo clusterInfo = createClusterAddressInfo( url, systemProperties );
 
+            // Store the HA status from the earlier status check
+            clusterInfo.setHaStatus( haStatusFromStatusCheck );
+
             // If this is a user-given URL, verify connectivity to the cluster
             // it connects to using that cluster's known head rank URL
             if ( isUserGivenUrl ) {
@@ -5653,7 +6196,7 @@ public abstract class GPUdbBase {
                 
                 if (!url.equals(clusterHeadNodeUrl)) {
 
-                	// Check if the server given head node address is reachable.
+                    // Check if the server given head node address is reachable.
                     // If so, use that URL instead of the user-given one.
                     // If not, the user will not be able to use the server-known
                     // address for connecting normally.  The API will need to

@@ -68,7 +68,7 @@ public class CreateJobRequest implements IndexedRecord {
         /**
          * Tag to use for submitted job. The same tag could be used on backup
          * cluster to retrieve response for the job. Tags can use letter,
-         * numbers, '_' and '-'
+         * numbers, '_' and '-'.
          */
         public static final String JOB_TAG = "job_tag";
 
@@ -127,7 +127,7 @@ public class CreateJobRequest implements IndexedRecord {
      *                     <li>{@link Options#JOB_TAG JOB_TAG}: Tag to use for
      *                         submitted job. The same tag could be used on
      *                         backup cluster to retrieve response for the job.
-     *                         Tags can use letter, numbers, '_' and '-'
+     *                         Tags can use letter, numbers, '_' and '-'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -264,7 +264,7 @@ public class CreateJobRequest implements IndexedRecord {
      * <ul>
      *     <li>{@link Options#JOB_TAG JOB_TAG}: Tag to use for submitted job.
      *         The same tag could be used on backup cluster to retrieve
-     *         response for the job. Tags can use letter, numbers, '_' and '-'
+     *         response for the job. Tags can use letter, numbers, '_' and '-'.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -279,7 +279,7 @@ public class CreateJobRequest implements IndexedRecord {
      * <ul>
      *     <li>{@link Options#JOB_TAG JOB_TAG}: Tag to use for submitted job.
      *         The same tag could be used on backup cluster to retrieve
-     *         response for the job. Tags can use letter, numbers, '_' and '-'
+     *         response for the job. Tags can use letter, numbers, '_' and '-'.
      * </ul>
      * The default value is an empty {@link Map}.
      *

@@ -57,6 +57,8 @@ public class GetRecordsResponse<T> {
     }
 
     /**
+     * The name of the type of the returned records.
+     *
      * @return The current value of {@code typeName}.
      */
     public String getTypeName() {
@@ -64,6 +66,8 @@ public class GetRecordsResponse<T> {
     }
 
     /**
+     * The name of the type of the returned records.
+     *
      * @param typeName  The new value for {@code typeName}.
      *
      * @return {@code this} to mimic the builder pattern.
@@ -74,7 +78,7 @@ public class GetRecordsResponse<T> {
     }
 
     /**
-     * Avro schema of {@link #getData() data} or {@code recordsJson}
+     * Avro schema of {@link #getData() data} or {@code recordsJson}.
      *
      * @return The current value of {@code typeSchema}.
      */
@@ -83,7 +87,7 @@ public class GetRecordsResponse<T> {
     }
 
     /**
-     * Avro schema of {@link #getData() data} or {@code recordsJson}
+     * Avro schema of {@link #getData() data} or {@code recordsJson}.
      *
      * @param typeSchema  The new value for {@code typeSchema}.
      *

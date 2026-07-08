@@ -121,7 +121,7 @@ public class AlterTableResponse implements IndexedRecord {
     }
 
     /**
-     * return the type_id (when changing a table, a new type may be created)
+     * Return the type_id (when changing a table, a new type may be created).
      *
      * @return The current value of {@code typeId}.
      */
@@ -130,7 +130,7 @@ public class AlterTableResponse implements IndexedRecord {
     }
 
     /**
-     * return the type_id (when changing a table, a new type may be created)
+     * Return the type_id (when changing a table, a new type may be created).
      *
      * @param typeId  The new value for {@code typeId}.
      *
@@ -142,8 +142,8 @@ public class AlterTableResponse implements IndexedRecord {
     }
 
     /**
-     * return the type_definition  (when changing a table, a new type may be
-     * created)
+     * Return the type_definition  (when changing a table, a new type may be
+     * created).
      *
      * @return The current value of {@code typeDefinition}.
      */
@@ -152,8 +152,8 @@ public class AlterTableResponse implements IndexedRecord {
     }
 
     /**
-     * return the type_definition  (when changing a table, a new type may be
-     * created)
+     * Return the type_definition  (when changing a table, a new type may be
+     * created).
      *
      * @param typeDefinition  The new value for {@code typeDefinition}.
      *
@@ -165,8 +165,8 @@ public class AlterTableResponse implements IndexedRecord {
     }
 
     /**
-     * return the type properties  (when changing a table, a new type may be
-     * created)
+     * Return the type properties  (when changing a table, a new type may be
+     * created).
      *
      * @return The current value of {@code properties}.
      */
@@ -175,8 +175,8 @@ public class AlterTableResponse implements IndexedRecord {
     }
 
     /**
-     * return the type properties  (when changing a table, a new type may be
-     * created)
+     * Return the type properties  (when changing a table, a new type may be
+     * created).
      *
      * @param properties  The new value for {@code properties}.
      *
@@ -188,8 +188,8 @@ public class AlterTableResponse implements IndexedRecord {
     }
 
     /**
-     * return the type label  (when changing a table, a new type may be
-     * created)
+     * Return the type label  (when changing a table, a new type may be
+     * created).
      *
      * @return The current value of {@code label}.
      */
@@ -198,8 +198,8 @@ public class AlterTableResponse implements IndexedRecord {
     }
 
     /**
-     * return the type label  (when changing a table, a new type may be
-     * created)
+     * Return the type label  (when changing a table, a new type may be
+     * created).
      *
      * @param label  The new value for {@code label}.
      *

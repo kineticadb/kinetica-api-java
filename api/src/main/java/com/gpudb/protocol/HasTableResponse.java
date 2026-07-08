@@ -61,7 +61,7 @@ public class HasTableResponse implements IndexedRecord {
 
     /**
      * Value of {@link com.gpudb.protocol.HasTableRequest#getTableName()
-     * tableName}
+     * tableName}.
      *
      * @return The current value of {@code tableName}.
      */
@@ -71,7 +71,7 @@ public class HasTableResponse implements IndexedRecord {
 
     /**
      * Value of {@link com.gpudb.protocol.HasTableRequest#getTableName()
-     * tableName}
+     * tableName}.
      *
      * @param tableName  The new value for {@code tableName}.
      *

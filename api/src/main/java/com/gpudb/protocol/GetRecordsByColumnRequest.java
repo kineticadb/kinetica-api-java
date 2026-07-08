@@ -93,16 +93,16 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      */
     public static final class Options {
         /**
-         * Optional filter expression to apply to the table.
+         * Filter expression to apply to the table.
          */
         public static final String EXPRESSION = "expression";
 
         /**
-         * Optional column that the data should be sorted by. Used in
-         * conjunction with {@link Options#SORT_ORDER SORT_ORDER}. The {@link
-         * Options#ORDER_BY ORDER_BY} option can be used in lieu of {@link
-         * Options#SORT_BY SORT_BY} / {@link Options#SORT_ORDER SORT_ORDER}.
-         * The default value is ''.
+         * Column that the data should be sorted by. Used in conjunction with
+         * {@link Options#SORT_ORDER SORT_ORDER}. The {@link Options#ORDER_BY
+         * ORDER_BY} option can be used in lieu of {@link Options#SORT_BY
+         * SORT_BY} / {@link Options#SORT_ORDER SORT_ORDER}. The default value
+         * is ''.
          */
         public static final String SORT_BY = "sort_by";
 
@@ -202,16 +202,15 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *               request subsequent pages of results. The default value is
      *               -9999.
      * @param options  <ul>
-     *                     <li>{@link Options#EXPRESSION EXPRESSION}: Optional
-     *                         filter expression to apply to the table.
-     *                     <li>{@link Options#SORT_BY SORT_BY}: Optional column
-     *                         that the data should be sorted by. Used in
-     *                         conjunction with {@link Options#SORT_ORDER
-     *                         SORT_ORDER}. The {@link Options#ORDER_BY
-     *                         ORDER_BY} option can be used in lieu of {@link
-     *                         Options#SORT_BY SORT_BY} / {@link
-     *                         Options#SORT_ORDER SORT_ORDER}. The default
-     *                         value is ''.
+     *                     <li>{@link Options#EXPRESSION EXPRESSION}: Filter
+     *                         expression to apply to the table.
+     *                     <li>{@link Options#SORT_BY SORT_BY}: Column that the
+     *                         data should be sorted by. Used in conjunction
+     *                         with {@link Options#SORT_ORDER SORT_ORDER}. The
+     *                         {@link Options#ORDER_BY ORDER_BY} option can be
+     *                         used in lieu of {@link Options#SORT_BY SORT_BY}
+     *                         / {@link Options#SORT_ORDER SORT_ORDER}. The
+     *                         default value is ''.
      *                     <li>{@link Options#SORT_ORDER SORT_ORDER}: String
      *                         indicating how the returned values should be
      *                         sorted - {@link Options#ASCENDING ASCENDING} or
@@ -298,16 +297,15 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                  </ul>
      *                  The default value is {@link Encoding#BINARY BINARY}.
      * @param options  <ul>
-     *                     <li>{@link Options#EXPRESSION EXPRESSION}: Optional
-     *                         filter expression to apply to the table.
-     *                     <li>{@link Options#SORT_BY SORT_BY}: Optional column
-     *                         that the data should be sorted by. Used in
-     *                         conjunction with {@link Options#SORT_ORDER
-     *                         SORT_ORDER}. The {@link Options#ORDER_BY
-     *                         ORDER_BY} option can be used in lieu of {@link
-     *                         Options#SORT_BY SORT_BY} / {@link
-     *                         Options#SORT_ORDER SORT_ORDER}. The default
-     *                         value is ''.
+     *                     <li>{@link Options#EXPRESSION EXPRESSION}: Filter
+     *                         expression to apply to the table.
+     *                     <li>{@link Options#SORT_BY SORT_BY}: Column that the
+     *                         data should be sorted by. Used in conjunction
+     *                         with {@link Options#SORT_ORDER SORT_ORDER}. The
+     *                         {@link Options#ORDER_BY ORDER_BY} option can be
+     *                         used in lieu of {@link Options#SORT_BY SORT_BY}
+     *                         / {@link Options#SORT_ORDER SORT_ORDER}. The
+     *                         default value is ''.
      *                     <li>{@link Options#SORT_ORDER SORT_ORDER}: String
      *                         indicating how the returned values should be
      *                         sorted - {@link Options#ASCENDING ASCENDING} or
@@ -511,14 +509,13 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
     /**
      * <ul>
-     *     <li>{@link Options#EXPRESSION EXPRESSION}: Optional filter
-     *         expression to apply to the table.
-     *     <li>{@link Options#SORT_BY SORT_BY}: Optional column that the data
-     *         should be sorted by. Used in conjunction with {@link
-     *         Options#SORT_ORDER SORT_ORDER}. The {@link Options#ORDER_BY
-     *         ORDER_BY} option can be used in lieu of {@link Options#SORT_BY
-     *         SORT_BY} / {@link Options#SORT_ORDER SORT_ORDER}. The default
-     *         value is ''.
+     *     <li>{@link Options#EXPRESSION EXPRESSION}: Filter expression to
+     *         apply to the table.
+     *     <li>{@link Options#SORT_BY SORT_BY}: Column that the data should be
+     *         sorted by. Used in conjunction with {@link Options#SORT_ORDER
+     *         SORT_ORDER}. The {@link Options#ORDER_BY ORDER_BY} option can be
+     *         used in lieu of {@link Options#SORT_BY SORT_BY} / {@link
+     *         Options#SORT_ORDER SORT_ORDER}. The default value is ''.
      *     <li>{@link Options#SORT_ORDER SORT_ORDER}: String indicating how the
      *         returned values should be sorted - {@link Options#ASCENDING
      *         ASCENDING} or {@link Options#DESCENDING DESCENDING}. If {@link
@@ -556,14 +553,13 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
     /**
      * <ul>
-     *     <li>{@link Options#EXPRESSION EXPRESSION}: Optional filter
-     *         expression to apply to the table.
-     *     <li>{@link Options#SORT_BY SORT_BY}: Optional column that the data
-     *         should be sorted by. Used in conjunction with {@link
-     *         Options#SORT_ORDER SORT_ORDER}. The {@link Options#ORDER_BY
-     *         ORDER_BY} option can be used in lieu of {@link Options#SORT_BY
-     *         SORT_BY} / {@link Options#SORT_ORDER SORT_ORDER}. The default
-     *         value is ''.
+     *     <li>{@link Options#EXPRESSION EXPRESSION}: Filter expression to
+     *         apply to the table.
+     *     <li>{@link Options#SORT_BY SORT_BY}: Column that the data should be
+     *         sorted by. Used in conjunction with {@link Options#SORT_ORDER
+     *         SORT_ORDER}. The {@link Options#ORDER_BY ORDER_BY} option can be
+     *         used in lieu of {@link Options#SORT_BY SORT_BY} / {@link
+     *         Options#SORT_ORDER SORT_ORDER}. The default value is ''.
      *     <li>{@link Options#SORT_ORDER SORT_ORDER}: String indicating how the
      *         returned values should be sorted - {@link Options#ASCENDING
      *         ASCENDING} or {@link Options#DESCENDING DESCENDING}. If {@link

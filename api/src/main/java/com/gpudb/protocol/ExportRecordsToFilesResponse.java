@@ -62,7 +62,7 @@ public class ExportRecordsToFilesResponse implements IndexedRecord {
     }
 
     /**
-     * Name of source table
+     * Name of source table.
      *
      * @return The current value of {@code tableName}.
      */
@@ -71,7 +71,7 @@ public class ExportRecordsToFilesResponse implements IndexedRecord {
     }
 
     /**
-     * Name of source table
+     * Name of source table.
      *
      * @param tableName  The new value for {@code tableName}.
      *
@@ -83,7 +83,7 @@ public class ExportRecordsToFilesResponse implements IndexedRecord {
     }
 
     /**
-     * Number of source table records exported
+     * Number of source table records exported.
      *
      * @return The current value of {@code countExported}.
      */
@@ -92,7 +92,7 @@ public class ExportRecordsToFilesResponse implements IndexedRecord {
     }
 
     /**
-     * Number of source table records exported
+     * Number of source table records exported.
      *
      * @param countExported  The new value for {@code countExported}.
      *
@@ -104,7 +104,7 @@ public class ExportRecordsToFilesResponse implements IndexedRecord {
     }
 
     /**
-     * Number of source table records skipped
+     * Number of source table records skipped.
      *
      * @return The current value of {@code countSkipped}.
      */
@@ -113,7 +113,7 @@ public class ExportRecordsToFilesResponse implements IndexedRecord {
     }
 
     /**
-     * Number of source table records skipped
+     * Number of source table records skipped.
      *
      * @param countSkipped  The new value for {@code countSkipped}.
      *
@@ -125,7 +125,7 @@ public class ExportRecordsToFilesResponse implements IndexedRecord {
     }
 
     /**
-     * Names of all exported files
+     * Names of all exported files.
      *
      * @return The current value of {@code files}.
      */
@@ -134,7 +134,7 @@ public class ExportRecordsToFilesResponse implements IndexedRecord {
     }
 
     /**
-     * Names of all exported files
+     * Names of all exported files.
      *
      * @param files  The new value for {@code files}.
      *
@@ -146,7 +146,7 @@ public class ExportRecordsToFilesResponse implements IndexedRecord {
     }
 
     /**
-     * Timestamp of last file scanned
+     * Timestamp of last file scanned.
      *
      * @return The current value of {@code lastTimestamp}.
      */
@@ -155,7 +155,7 @@ public class ExportRecordsToFilesResponse implements IndexedRecord {
     }
 
     /**
-     * Timestamp of last file scanned
+     * Timestamp of last file scanned.
      *
      * @param lastTimestamp  The new value for {@code lastTimestamp}.
      *
@@ -167,6 +167,8 @@ public class ExportRecordsToFilesResponse implements IndexedRecord {
     }
 
     /**
+     * [Not used].
+     *
      * @return The current value of {@code dataText}.
      */
     public List<String> getDataText() {
@@ -174,6 +176,8 @@ public class ExportRecordsToFilesResponse implements IndexedRecord {
     }
 
     /**
+     * [Not used].
+     *
      * @param dataText  The new value for {@code dataText}.
      *
      * @return {@code this} to mimic the builder pattern.
@@ -184,6 +188,8 @@ public class ExportRecordsToFilesResponse implements IndexedRecord {
     }
 
     /**
+     * [Not used].
+     *
      * @return The current value of {@code dataBytes}.
      */
     public List<ByteBuffer> getDataBytes() {
@@ -191,6 +197,8 @@ public class ExportRecordsToFilesResponse implements IndexedRecord {
     }
 
     /**
+     * [Not used].
+     *
      * @param dataBytes  The new value for {@code dataBytes}.
      *
      * @return {@code this} to mimic the builder pattern.
@@ -201,7 +209,7 @@ public class ExportRecordsToFilesResponse implements IndexedRecord {
     }
 
     /**
-     * Additional information
+     * Additional information.
      *
      * @return The current value of {@code info}.
      */
@@ -210,7 +218,7 @@ public class ExportRecordsToFilesResponse implements IndexedRecord {
     }
 
     /**
-     * Additional information
+     * Additional information.
      *
      * @param info  The new value for {@code info}.
      *

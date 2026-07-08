@@ -45,7 +45,7 @@ public class HasPermissionRequest implements IndexedRecord {
      * A set of string constants for the {@link HasPermissionRequest} parameter
      * {@link #getObjectType() objectType}.
      * <p>
-     * The type of object being checked
+     * The type of object being checked.
      */
     public static final class ObjectType {
         /**

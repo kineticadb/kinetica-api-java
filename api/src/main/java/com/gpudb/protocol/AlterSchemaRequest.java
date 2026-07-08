@@ -45,11 +45,11 @@ public class AlterSchemaRequest implements IndexedRecord {
      * A set of string constants for the {@link AlterSchemaRequest} parameter
      * {@link #getAction() action}.
      * <p>
-     * Modification operation to be applied
+     * Modification operation to be applied.
      */
     public static final class Action {
         /**
-         * Adds a comment describing the schema
+         * Adds a comment describing the schema.
          */
         public static final String ADD_COMMENT = "add_comment";
 
@@ -86,7 +86,7 @@ public class AlterSchemaRequest implements IndexedRecord {
      *                Supported values:
      *                <ul>
      *                    <li>{@link Action#ADD_COMMENT ADD_COMMENT}: Adds a
-     *                        comment describing the schema
+     *                        comment describing the schema.
      *                    <li>{@link Action#RENAME_SCHEMA RENAME_SCHEMA}:
      *                        Renames a schema to {@code value}. Has the same
      *                        naming restrictions as <a
@@ -133,7 +133,7 @@ public class AlterSchemaRequest implements IndexedRecord {
      * Supported values:
      * <ul>
      *     <li>{@link Action#ADD_COMMENT ADD_COMMENT}: Adds a comment
-     *         describing the schema
+     *         describing the schema.
      *     <li>{@link Action#RENAME_SCHEMA RENAME_SCHEMA}: Renames a schema to
      *         {@link #getValue() value}. Has the same naming restrictions as
      *         <a href="../../../../../../concepts/tables/"
@@ -151,7 +151,7 @@ public class AlterSchemaRequest implements IndexedRecord {
      * Supported values:
      * <ul>
      *     <li>{@link Action#ADD_COMMENT ADD_COMMENT}: Adds a comment
-     *         describing the schema
+     *         describing the schema.
      *     <li>{@link Action#RENAME_SCHEMA RENAME_SCHEMA}: Renames a schema to
      *         {@link #getValue() value}. Has the same naming restrictions as
      *         <a href="../../../../../../concepts/tables/"

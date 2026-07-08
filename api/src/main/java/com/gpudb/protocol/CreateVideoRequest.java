@@ -152,7 +152,7 @@ public class CreateVideoRequest implements IndexedRecord {
      *                   may be any numeric type.
      * @param begin  The start point for the video. Accepts an expression
      *               evaluable over the {@code attribute}.
-     * @param durationSeconds  Seconds of video to produce
+     * @param durationSeconds  Seconds of video to produce.
      * @param end  The end point for the video. Accepts an expression evaluable
      *             over the {@code attribute}.
      * @param framesPerSecond  The presentation frame rate of the encoded video
@@ -281,7 +281,7 @@ public class CreateVideoRequest implements IndexedRecord {
     }
 
     /**
-     * Seconds of video to produce
+     * Seconds of video to produce.
      *
      * @return The current value of {@code durationSeconds}.
      */
@@ -290,7 +290,7 @@ public class CreateVideoRequest implements IndexedRecord {
     }
 
     /**
-     * Seconds of video to produce
+     * Seconds of video to produce.
      *
      * @param durationSeconds  The new value for {@code durationSeconds}.
      *

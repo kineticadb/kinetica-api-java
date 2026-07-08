@@ -71,7 +71,7 @@ public class GetRecordsRequest implements IndexedRecord {
      */
     public static final class Options {
         /**
-         * Optional filter expression to apply to the table.
+         * Filter expression to apply to the table.
          */
         public static final String EXPRESSION = "expression";
 
@@ -94,7 +94,7 @@ public class GetRecordsRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * Optional column that the data should be sorted by. Empty by default
+         * Column that the data should be sorted by. Empty by default
          * (i.e.&nbsp;no sorting is applied).
          */
         public static final String SORT_BY = "sort_by";
@@ -159,8 +159,8 @@ public class GetRecordsRequest implements IndexedRecord {
      *               request subsequent pages of results. The default value is
      *               -9999.
      * @param options  <ul>
-     *                     <li>{@link Options#EXPRESSION EXPRESSION}: Optional
-     *                         filter expression to apply to the table.
+     *                     <li>{@link Options#EXPRESSION EXPRESSION}: Filter
+     *                         expression to apply to the table.
      *                     <li>{@link Options#FAST_INDEX_LOOKUP
      *                         FAST_INDEX_LOOKUP}: Indicates if indexes should
      *                         be used to perform the lookup for a given
@@ -175,9 +175,9 @@ public class GetRecordsRequest implements IndexedRecord {
      *                             <li>{@link Options#FALSE FALSE}
      *                         </ul>
      *                         The default value is {@link Options#TRUE TRUE}.
-     *                     <li>{@link Options#SORT_BY SORT_BY}: Optional column
-     *                         that the data should be sorted by. Empty by
-     *                         default (i.e. no sorting is applied).
+     *                     <li>{@link Options#SORT_BY SORT_BY}: Column that the
+     *                         data should be sorted by. Empty by default (i.e.
+     *                         no sorting is applied).
      *                     <li>{@link Options#SORT_ORDER SORT_ORDER}: String
      *                         indicating how the returned values should be
      *                         sorted - ascending or descending. If sort_order
@@ -237,8 +237,8 @@ public class GetRecordsRequest implements IndexedRecord {
      *                  </ul>
      *                  The default value is {@link Encoding#BINARY BINARY}.
      * @param options  <ul>
-     *                     <li>{@link Options#EXPRESSION EXPRESSION}: Optional
-     *                         filter expression to apply to the table.
+     *                     <li>{@link Options#EXPRESSION EXPRESSION}: Filter
+     *                         expression to apply to the table.
      *                     <li>{@link Options#FAST_INDEX_LOOKUP
      *                         FAST_INDEX_LOOKUP}: Indicates if indexes should
      *                         be used to perform the lookup for a given
@@ -253,9 +253,9 @@ public class GetRecordsRequest implements IndexedRecord {
      *                             <li>{@link Options#FALSE FALSE}
      *                         </ul>
      *                         The default value is {@link Options#TRUE TRUE}.
-     *                     <li>{@link Options#SORT_BY SORT_BY}: Optional column
-     *                         that the data should be sorted by. Empty by
-     *                         default (i.e. no sorting is applied).
+     *                     <li>{@link Options#SORT_BY SORT_BY}: Column that the
+     *                         data should be sorted by. Empty by default (i.e.
+     *                         no sorting is applied).
      *                     <li>{@link Options#SORT_ORDER SORT_ORDER}: String
      *                         indicating how the returned values should be
      *                         sorted - ascending or descending. If sort_order
@@ -416,8 +416,8 @@ public class GetRecordsRequest implements IndexedRecord {
 
     /**
      * <ul>
-     *     <li>{@link Options#EXPRESSION EXPRESSION}: Optional filter
-     *         expression to apply to the table.
+     *     <li>{@link Options#EXPRESSION EXPRESSION}: Filter expression to
+     *         apply to the table.
      *     <li>{@link Options#FAST_INDEX_LOOKUP FAST_INDEX_LOOKUP}: Indicates
      *         if indexes should be used to perform the lookup for a given
      *         expression if possible. Only applicable if there is no sorting,
@@ -430,9 +430,8 @@ public class GetRecordsRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
-     *     <li>{@link Options#SORT_BY SORT_BY}: Optional column that the data
-     *         should be sorted by. Empty by default (i.e. no sorting is
-     *         applied).
+     *     <li>{@link Options#SORT_BY SORT_BY}: Column that the data should be
+     *         sorted by. Empty by default (i.e. no sorting is applied).
      *     <li>{@link Options#SORT_ORDER SORT_ORDER}: String indicating how the
      *         returned values should be sorted - ascending or descending. If
      *         sort_order is provided, sort_by has to be provided.
@@ -453,8 +452,8 @@ public class GetRecordsRequest implements IndexedRecord {
 
     /**
      * <ul>
-     *     <li>{@link Options#EXPRESSION EXPRESSION}: Optional filter
-     *         expression to apply to the table.
+     *     <li>{@link Options#EXPRESSION EXPRESSION}: Filter expression to
+     *         apply to the table.
      *     <li>{@link Options#FAST_INDEX_LOOKUP FAST_INDEX_LOOKUP}: Indicates
      *         if indexes should be used to perform the lookup for a given
      *         expression if possible. Only applicable if there is no sorting,
@@ -467,9 +466,8 @@ public class GetRecordsRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
-     *     <li>{@link Options#SORT_BY SORT_BY}: Optional column that the data
-     *         should be sorted by. Empty by default (i.e. no sorting is
-     *         applied).
+     *     <li>{@link Options#SORT_BY SORT_BY}: Column that the data should be
+     *         sorted by. Empty by default (i.e. no sorting is applied).
      *     <li>{@link Options#SORT_ORDER SORT_ORDER}: String indicating how the
      *         returned values should be sorted - ascending or descending. If
      *         sort_order is provided, sort_by has to be provided.

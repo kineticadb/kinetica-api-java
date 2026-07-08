@@ -61,7 +61,7 @@ public class HasSchemaResponse implements IndexedRecord {
 
     /**
      * Value of {@link com.gpudb.protocol.HasSchemaRequest#getSchemaName()
-     * schemaName}
+     * schemaName}.
      *
      * @return The current value of {@code schemaName}.
      */
@@ -71,7 +71,7 @@ public class HasSchemaResponse implements IndexedRecord {
 
     /**
      * Value of {@link com.gpudb.protocol.HasSchemaRequest#getSchemaName()
-     * schemaName}
+     * schemaName}.
      *
      * @param schemaName  The new value for {@code schemaName}.
      *

@@ -46,12 +46,12 @@ public class HasRoleResponse implements IndexedRecord {
      */
     public static final class HasRole {
         /**
-         * User has membership in the role
+         * User has membership in the role.
          */
         public static final String TRUE = "true";
 
         /**
-         * User does not have membership in the role
+         * User does not have membership in the role.
          */
         public static final String FALSE = "false";
 
@@ -96,7 +96,7 @@ public class HasRoleResponse implements IndexedRecord {
 
     /**
      * Value of {@link com.gpudb.protocol.HasRoleRequest#getPrincipal()
-     * principal}
+     * principal}.
      *
      * @return The current value of {@code principal}.
      */
@@ -106,7 +106,7 @@ public class HasRoleResponse implements IndexedRecord {
 
     /**
      * Value of {@link com.gpudb.protocol.HasRoleRequest#getPrincipal()
-     * principal}
+     * principal}.
      *
      * @param principal  The new value for {@code principal}.
      *
@@ -119,7 +119,7 @@ public class HasRoleResponse implements IndexedRecord {
 
     /**
      * {@link com.gpudb.protocol.HasRoleRequest#getRole() role} for which
-     * membership is being checked
+     * membership is being checked.
      *
      * @return The current value of {@code role}.
      */
@@ -129,7 +129,7 @@ public class HasRoleResponse implements IndexedRecord {
 
     /**
      * {@link com.gpudb.protocol.HasRoleRequest#getRole() role} for which
-     * membership is being checked
+     * membership is being checked.
      *
      * @param role  The new value for {@code role}.
      *
@@ -145,8 +145,8 @@ public class HasRoleResponse implements IndexedRecord {
      * target {@link com.gpudb.protocol.HasRoleRequest#getRole() role}.
      * Supported values:
      * <ul>
-     *     <li>{@code true}: User has membership in the role
-     *     <li>{@code false}: User does not have membership in the role
+     *     <li>{@code true}: User has membership in the role.
+     *     <li>{@code false}: User does not have membership in the role.
      * </ul>
      *
      * @return The current value of {@code hasRole}.
@@ -160,8 +160,8 @@ public class HasRoleResponse implements IndexedRecord {
      * target {@link com.gpudb.protocol.HasRoleRequest#getRole() role}.
      * Supported values:
      * <ul>
-     *     <li>{@code true}: User has membership in the role
-     *     <li>{@code false}: User does not have membership in the role
+     *     <li>{@code true}: User has membership in the role.
+     *     <li>{@code false}: User does not have membership in the role.
      * </ul>
      *
      * @param hasRole  The new value for {@code hasRole}.

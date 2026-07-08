@@ -54,7 +54,7 @@ public class CreateTypeResponse implements IndexedRecord {
     /**
      * An identifier representing the created type. This type_id can be used in
      * subsequent calls to {@link
-     * com.gpudb.GPUdb#createTable(CreateTableRequest) create a table}
+     * com.gpudb.GPUdb#createTable(CreateTableRequest) create a table}.
      *
      * @return The current value of {@code typeId}.
      */
@@ -65,7 +65,7 @@ public class CreateTypeResponse implements IndexedRecord {
     /**
      * An identifier representing the created type. This type_id can be used in
      * subsequent calls to {@link
-     * com.gpudb.GPUdb#createTable(CreateTableRequest) create a table}
+     * com.gpudb.GPUdb#createTable(CreateTableRequest) create a table}.
      *
      * @param typeId  The new value for {@code typeId}.
      *

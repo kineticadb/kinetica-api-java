@@ -76,7 +76,7 @@ public class ShowTableMonitorsResponse implements IndexedRecord {
         public static final String TYPE_SCHEMA = "type_schema";
 
         /**
-         * Materialized view that implements the change detector
+         * Materialized view that implements the change detector.
          */
         public static final String MATERIALIZED_VIEW_FOR_CHANGE_DETECTOR = "materialized_view_for_change_detector";
 
@@ -240,7 +240,7 @@ public class ShowTableMonitorsResponse implements IndexedRecord {
     }
 
     /**
-     * List of join_table_names.
+     * List of join table names.
      *
      * @return The current value of {@code joinTableNames}.
      */
@@ -249,7 +249,7 @@ public class ShowTableMonitorsResponse implements IndexedRecord {
     }
 
     /**
-     * List of join_table_names.
+     * List of join table names.
      *
      * @param joinTableNames  The new value for {@code joinTableNames}.
      *
@@ -261,7 +261,7 @@ public class ShowTableMonitorsResponse implements IndexedRecord {
     }
 
     /**
-     * List of join_column_names
+     * List of join column names.
      *
      * @return The current value of {@code joinColumnNames}.
      */
@@ -270,7 +270,7 @@ public class ShowTableMonitorsResponse implements IndexedRecord {
     }
 
     /**
-     * List of join_column_names
+     * List of join column names.
      *
      * @param joinColumnNames  The new value for {@code joinColumnNames}.
      *
@@ -476,7 +476,7 @@ public class ShowTableMonitorsResponse implements IndexedRecord {
      *         value is ''.
      *     <li>{@link AdditionalInfo#MATERIALIZED_VIEW_FOR_CHANGE_DETECTOR
      *         MATERIALIZED_VIEW_FOR_CHANGE_DETECTOR}: Materialized view that
-     *         implements the change detector
+     *         implements the change detector.
      *     <li>{@link AdditionalInfo#MATERIALIZED_VIEW_FOR_FILTER
      *         MATERIALIZED_VIEW_FOR_FILTER}: Materialized views created for
      *         the {@link #getFilterExpressions() filterExpressions}. The
@@ -508,7 +508,7 @@ public class ShowTableMonitorsResponse implements IndexedRecord {
      *         value is ''.
      *     <li>{@link AdditionalInfo#MATERIALIZED_VIEW_FOR_CHANGE_DETECTOR
      *         MATERIALIZED_VIEW_FOR_CHANGE_DETECTOR}: Materialized view that
-     *         implements the change detector
+     *         implements the change detector.
      *     <li>{@link AdditionalInfo#MATERIALIZED_VIEW_FOR_FILTER
      *         MATERIALIZED_VIEW_FOR_FILTER}: Materialized views created for
      *         the {@link #getFilterExpressions() filterExpressions}. The

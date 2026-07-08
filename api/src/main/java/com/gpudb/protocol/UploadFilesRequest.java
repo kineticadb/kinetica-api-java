@@ -125,7 +125,7 @@ public class UploadFilesRequest implements IndexedRecord {
         public static final String BASE64 = "base64";
 
         /**
-         * Default, indicates this is not a multipart upload
+         * Default, indicates this is not a multipart upload.
          */
         public static final String NONE = "none";
 
@@ -134,42 +134,42 @@ public class UploadFilesRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#NONE NONE}: Default, indicates this is not a
-         *         multipart upload
+         *         multipart upload.
          *     <li>{@link Options#INIT INIT}: Initialize a multipart file
-         *         upload
+         *         upload.
          *     <li>{@link Options#UPLOAD_PART UPLOAD_PART}: Uploads a part of
-         *         the specified multipart file upload
+         *         the specified multipart file upload.
          *     <li>{@link Options#COMPLETE COMPLETE}: Complete the specified
-         *         multipart file upload
+         *         multipart file upload.
          *     <li>{@link Options#CANCEL CANCEL}: Cancel the specified
-         *         multipart file upload
+         *         multipart file upload.
          * </ul>
          * The default value is {@link Options#NONE NONE}.
          */
         public static final String MULTIPART_OPERATION = "multipart_operation";
 
         /**
-         * Initialize a multipart file upload
+         * Initialize a multipart file upload.
          */
         public static final String INIT = "init";
 
         /**
-         * Uploads a part of the specified multipart file upload
+         * Uploads a part of the specified multipart file upload.
          */
         public static final String UPLOAD_PART = "upload_part";
 
         /**
-         * Complete the specified multipart file upload
+         * Complete the specified multipart file upload.
          */
         public static final String COMPLETE = "complete";
 
         /**
-         * Cancel the specified multipart file upload
+         * Cancel the specified multipart file upload.
          */
         public static final String CANCEL = "cancel";
 
         /**
-         * UUID to uniquely identify a multipart upload
+         * UUID to uniquely identify a multipart upload.
          */
         public static final String MULTIPART_UPLOAD_UUID = "multipart_upload_uuid";
 
@@ -249,22 +249,23 @@ public class UploadFilesRequest implements IndexedRecord {
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#NONE NONE}: Default,
-     *                                 indicates this is not a multipart upload
+     *                                 indicates this is not a multipart
+     *                                 upload.
      *                             <li>{@link Options#INIT INIT}: Initialize a
-     *                                 multipart file upload
+     *                                 multipart file upload.
      *                             <li>{@link Options#UPLOAD_PART UPLOAD_PART}:
      *                                 Uploads a part of the specified
-     *                                 multipart file upload
+     *                                 multipart file upload.
      *                             <li>{@link Options#COMPLETE COMPLETE}:
      *                                 Complete the specified multipart file
-     *                                 upload
+     *                                 upload.
      *                             <li>{@link Options#CANCEL CANCEL}: Cancel
-     *                                 the specified multipart file upload
+     *                                 the specified multipart file upload.
      *                         </ul>
      *                         The default value is {@link Options#NONE NONE}.
      *                     <li>{@link Options#MULTIPART_UPLOAD_UUID
      *                         MULTIPART_UPLOAD_UUID}: UUID to uniquely
-     *                         identify a multipart upload
+     *                         identify a multipart upload.
      *                     <li>{@link Options#MULTIPART_UPLOAD_PART_NUMBER
      *                         MULTIPART_UPLOAD_PART_NUMBER}: Incremental part
      *                         number for each part in a multipart upload. Part
@@ -368,19 +369,19 @@ public class UploadFilesRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#NONE NONE}: Default, indicates this is
-     *                 not a multipart upload
+     *                 not a multipart upload.
      *             <li>{@link Options#INIT INIT}: Initialize a multipart file
-     *                 upload
+     *                 upload.
      *             <li>{@link Options#UPLOAD_PART UPLOAD_PART}: Uploads a part
-     *                 of the specified multipart file upload
+     *                 of the specified multipart file upload.
      *             <li>{@link Options#COMPLETE COMPLETE}: Complete the
-     *                 specified multipart file upload
+     *                 specified multipart file upload.
      *             <li>{@link Options#CANCEL CANCEL}: Cancel the specified
-     *                 multipart file upload
+     *                 multipart file upload.
      *         </ul>
      *         The default value is {@link Options#NONE NONE}.
      *     <li>{@link Options#MULTIPART_UPLOAD_UUID MULTIPART_UPLOAD_UUID}:
-     *         UUID to uniquely identify a multipart upload
+     *         UUID to uniquely identify a multipart upload.
      *     <li>{@link Options#MULTIPART_UPLOAD_PART_NUMBER
      *         MULTIPART_UPLOAD_PART_NUMBER}: Incremental part number for each
      *         part in a multipart upload. Part numbers start at 1, increment
@@ -428,19 +429,19 @@ public class UploadFilesRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#NONE NONE}: Default, indicates this is
-     *                 not a multipart upload
+     *                 not a multipart upload.
      *             <li>{@link Options#INIT INIT}: Initialize a multipart file
-     *                 upload
+     *                 upload.
      *             <li>{@link Options#UPLOAD_PART UPLOAD_PART}: Uploads a part
-     *                 of the specified multipart file upload
+     *                 of the specified multipart file upload.
      *             <li>{@link Options#COMPLETE COMPLETE}: Complete the
-     *                 specified multipart file upload
+     *                 specified multipart file upload.
      *             <li>{@link Options#CANCEL CANCEL}: Cancel the specified
-     *                 multipart file upload
+     *                 multipart file upload.
      *         </ul>
      *         The default value is {@link Options#NONE NONE}.
      *     <li>{@link Options#MULTIPART_UPLOAD_UUID MULTIPART_UPLOAD_UUID}:
-     *         UUID to uniquely identify a multipart upload
+     *         UUID to uniquely identify a multipart upload.
      *     <li>{@link Options#MULTIPART_UPLOAD_PART_NUMBER
      *         MULTIPART_UPLOAD_PART_NUMBER}: Incremental part number for each
      *         part in a multipart upload. Part numbers start at 1, increment

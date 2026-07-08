@@ -67,8 +67,8 @@ public class AppendRecordsRequest implements IndexedRecord {
         public static final String LIMIT = "limit";
 
         /**
-         * Optional filter expression to apply to the {@link
-         * #getSourceTableName() sourceTableName}. The default value is ''.
+         * Filter expression to apply to the {@link #getSourceTableName()
+         * sourceTableName}. The default value is ''.
          */
         public static final String EXPRESSION = "expression";
 
@@ -99,9 +99,9 @@ public class AppendRecordsRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: Upsert new records when primary
-         *         keys match existing records
+         *         keys match existing records.
          *     <li>{@link Options#FALSE FALSE}: Reject new records when primary
-         *         keys match existing records
+         *         keys match existing records.
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
@@ -109,6 +109,24 @@ public class AppendRecordsRequest implements IndexedRecord {
 
         public static final String TRUE = "true";
         public static final String FALSE = "false";
+
+        /**
+         * Applies only when upserting (when {@link
+         * Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK} is {@link
+         * Options#TRUE TRUE}). If set to {@link Options#TRUE TRUE}, an
+         * existing record matched by primary key is modified in place. If set
+         * to {@link Options#FALSE FALSE}, it is updated by deleting the
+         * existing record and inserting a replacement (delete and insert),
+         * which prevents the change from being reflected in dependent
+         * materialized views until they are refreshed.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#TRUE TRUE}.
+         */
+        public static final String ENABLE_INPLACE_UPDATES = "enable_inplace_updates";
 
         /**
          * Specifies the record collision error-suppression policy for
@@ -133,10 +151,10 @@ public class AppendRecordsRequest implements IndexedRecord {
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: Ignore source table records whose
          *         primary key values collide with those of target table
-         *         records
+         *         records.
          *     <li>{@link Options#FALSE FALSE}: Raise an error for any source
          *         table record whose primary key values collide with those of
-         *         a target table record
+         *         a target table record.
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
@@ -222,8 +240,8 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                         END_OF_SET (-9999) to indicate that the max
      *                         number of results should be returned. The
      *                         default value is '-9999'.
-     *                     <li>{@link Options#EXPRESSION EXPRESSION}: Optional
-     *                         filter expression to apply to the {@code
+     *                     <li>{@link Options#EXPRESSION EXPRESSION}: Filter
+     *                         expression to apply to the {@code
      *                         sourceTableName}. The default value is ''.
      *                     <li>{@link Options#ORDER_BY ORDER_BY}:
      *                         Comma-separated list of the columns to be sorted
@@ -257,13 +275,32 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Upsert new
      *                                 records when primary keys match existing
-     *                                 records
+     *                                 records.
      *                             <li>{@link Options#FALSE FALSE}: Reject new
      *                                 records when primary keys match existing
-     *                                 records
+     *                                 records.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#ENABLE_INPLACE_UPDATES
+     *                         ENABLE_INPLACE_UPDATES}: Applies only when
+     *                         upserting (when {@link
+     *                         Options#UPDATE_ON_EXISTING_PK
+     *                         UPDATE_ON_EXISTING_PK} is {@link Options#TRUE
+     *                         TRUE}). If set to {@link Options#TRUE TRUE}, an
+     *                         existing record matched by primary key is
+     *                         modified in place. If set to {@link
+     *                         Options#FALSE FALSE}, it is updated by deleting
+     *                         the existing record and inserting a replacement
+     *                         (delete and insert), which prevents the change
+     *                         from being reflected in dependent materialized
+     *                         views until they are refreshed.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#IGNORE_EXISTING_PK
      *                         IGNORE_EXISTING_PK}: Specifies the record
      *                         collision error-suppression policy for inserting
@@ -294,11 +331,11 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                             <li>{@link Options#TRUE TRUE}: Ignore source
      *                                 table records whose primary key values
      *                                 collide with those of target table
-     *                                 records
+     *                                 records.
      *                             <li>{@link Options#FALSE FALSE}: Raise an
      *                                 error for any source table record whose
      *                                 primary key values collide with those of
-     *                                 a target table record
+     *                                 a target table record.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
@@ -438,9 +475,9 @@ public class AppendRecordsRequest implements IndexedRecord {
      *         #getSourceTableName() sourceTableName}. Or END_OF_SET (-9999) to
      *         indicate that the max number of results should be returned. The
      *         default value is '-9999'.
-     *     <li>{@link Options#EXPRESSION EXPRESSION}: Optional filter
-     *         expression to apply to the {@link #getSourceTableName()
-     *         sourceTableName}. The default value is ''.
+     *     <li>{@link Options#EXPRESSION EXPRESSION}: Filter expression to
+     *         apply to the {@link #getSourceTableName() sourceTableName}. The
+     *         default value is ''.
      *     <li>{@link Options#ORDER_BY ORDER_BY}: Comma-separated list of the
      *         columns to be sorted by from source table (specified by {@link
      *         #getSourceTableName() sourceTableName}), e.g., 'timestamp asc, x
@@ -467,11 +504,26 @@ public class AppendRecordsRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Upsert new records when
-     *                 primary keys match existing records
+     *                 primary keys match existing records.
      *             <li>{@link Options#FALSE FALSE}: Reject new records when
-     *                 primary keys match existing records
+     *                 primary keys match existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#ENABLE_INPLACE_UPDATES ENABLE_INPLACE_UPDATES}:
+     *         Applies only when upserting (when {@link
+     *         Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK} is {@link
+     *         Options#TRUE TRUE}). If set to {@link Options#TRUE TRUE}, an
+     *         existing record matched by primary key is modified in place. If
+     *         set to {@link Options#FALSE FALSE}, it is updated by deleting
+     *         the existing record and inserting a replacement (delete and
+     *         insert), which prevents the change from being reflected in
+     *         dependent materialized views until they are refreshed.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}: Specifies
      *         the record collision error-suppression policy for inserting
      *         source table records (specified by {@link #getSourceTableName()
@@ -495,10 +547,10 @@ public class AppendRecordsRequest implements IndexedRecord {
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Ignore source table records
      *                 whose primary key values collide with those of target
-     *                 table records
+     *                 table records.
      *             <li>{@link Options#FALSE FALSE}: Raise an error for any
      *                 source table record whose primary key values collide
-     *                 with those of a target table record
+     *                 with those of a target table record.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#PK_CONFLICT_PREDICATE_HIGHER
@@ -541,9 +593,9 @@ public class AppendRecordsRequest implements IndexedRecord {
      *         #getSourceTableName() sourceTableName}. Or END_OF_SET (-9999) to
      *         indicate that the max number of results should be returned. The
      *         default value is '-9999'.
-     *     <li>{@link Options#EXPRESSION EXPRESSION}: Optional filter
-     *         expression to apply to the {@link #getSourceTableName()
-     *         sourceTableName}. The default value is ''.
+     *     <li>{@link Options#EXPRESSION EXPRESSION}: Filter expression to
+     *         apply to the {@link #getSourceTableName() sourceTableName}. The
+     *         default value is ''.
      *     <li>{@link Options#ORDER_BY ORDER_BY}: Comma-separated list of the
      *         columns to be sorted by from source table (specified by {@link
      *         #getSourceTableName() sourceTableName}), e.g., 'timestamp asc, x
@@ -570,11 +622,26 @@ public class AppendRecordsRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Upsert new records when
-     *                 primary keys match existing records
+     *                 primary keys match existing records.
      *             <li>{@link Options#FALSE FALSE}: Reject new records when
-     *                 primary keys match existing records
+     *                 primary keys match existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#ENABLE_INPLACE_UPDATES ENABLE_INPLACE_UPDATES}:
+     *         Applies only when upserting (when {@link
+     *         Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK} is {@link
+     *         Options#TRUE TRUE}). If set to {@link Options#TRUE TRUE}, an
+     *         existing record matched by primary key is modified in place. If
+     *         set to {@link Options#FALSE FALSE}, it is updated by deleting
+     *         the existing record and inserting a replacement (delete and
+     *         insert), which prevents the change from being reflected in
+     *         dependent materialized views until they are refreshed.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}: Specifies
      *         the record collision error-suppression policy for inserting
      *         source table records (specified by {@link #getSourceTableName()
@@ -598,10 +665,10 @@ public class AppendRecordsRequest implements IndexedRecord {
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Ignore source table records
      *                 whose primary key values collide with those of target
-     *                 table records
+     *                 table records.
      *             <li>{@link Options#FALSE FALSE}: Raise an error for any
      *                 source table record whose primary key values collide
-     *                 with those of a target table record
+     *                 with those of a target table record.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#PK_CONFLICT_PREDICATE_HIGHER

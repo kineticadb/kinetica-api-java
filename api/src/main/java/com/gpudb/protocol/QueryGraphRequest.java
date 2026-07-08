@@ -69,7 +69,7 @@ public class QueryGraphRequest implements IndexedRecord {
      * A set of string constants for the {@link QueryGraphRequest} parameter
      * {@link #getOptions() options}.
      * <p>
-     * Additional parameters
+     * Additional parameters.
      */
     public static final class Options {
         /**

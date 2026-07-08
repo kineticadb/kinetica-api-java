@@ -48,7 +48,7 @@ public class AlterSystemPropertiesResponse implements IndexedRecord {
 
     /**
      * Map of values updated; for speed tests, a map of values measured to the
-     * measurement
+     * measurement.
      *
      * @return The current value of {@code updatedPropertiesMap}.
      */
@@ -58,7 +58,7 @@ public class AlterSystemPropertiesResponse implements IndexedRecord {
 
     /**
      * Map of values updated; for speed tests, a map of values measured to the
-     * measurement
+     * measurement.
      *
      * @param updatedPropertiesMap  The new value for {@code
      *                              updatedPropertiesMap}.

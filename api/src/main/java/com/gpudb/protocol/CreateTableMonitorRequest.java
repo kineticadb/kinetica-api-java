@@ -101,13 +101,13 @@ public class CreateTableMonitorRequest implements IndexedRecord {
         public static final String DELETE = "delete";
 
         /**
-         * ID to use for this monitor instead of a randomly generated one
+         * ID to use for this monitor instead of a randomly generated one.
          */
         public static final String MONITOR_ID = "monitor_id";
 
         /**
          * Name of an existing <a href="../../../../../../concepts/data_sinks/"
-         * target="_top">data sink</a> to send change data notifications to
+         * target="_top">data sink</a> to send change data notifications to.
          */
         public static final String DATASINK_NAME = "datasink_name";
 
@@ -140,7 +140,7 @@ public class CreateTableMonitorRequest implements IndexedRecord {
         /**
          * Name of the Kafka topic to publish to if {@link Options#DESTINATION
          * DESTINATION} in {@link #getOptions() options} is specified and is a
-         * Kafka broker
+         * Kafka broker.
          */
         public static final String KAFKA_TOPIC_NAME = "kafka_topic_name";
 
@@ -151,7 +151,7 @@ public class CreateTableMonitorRequest implements IndexedRecord {
         public static final String INCREASING_COLUMN = "increasing_column";
 
         /**
-         * Filter expression to limit records for notification
+         * Filter expression to limit records for notification.
          */
         public static final String EXPRESSION = "expression";
 
@@ -175,11 +175,11 @@ public class CreateTableMonitorRequest implements IndexedRecord {
         public static final String JOIN_COLUMN_NAMES = "join_column_names";
 
         /**
-         * Optional filter or join expressions to apply when combining the
-         * tables. Expressions are standard SQL-style conditions and can
-         * reference any table or alias listed in 'join_table_names'. This
-         * corresponds to the WHERE clause of the underlying join, and can
-         * include conditions to filter the delta rows.
+         * Filter or join expressions to apply when combining the tables.
+         * Expressions are standard SQL-style conditions and can reference any
+         * table or alias listed in 'join_table_names'. This corresponds to the
+         * WHERE clause of the underlying join, and can include conditions to
+         * filter the delta rows.
          */
         public static final String JOIN_EXPRESSIONS = "join_expressions";
 
@@ -270,12 +270,12 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *                         INSERT}.
      *                     <li>{@link Options#MONITOR_ID MONITOR_ID}: ID to use
      *                         for this monitor instead of a randomly generated
-     *                         one
+     *                         one.
      *                     <li>{@link Options#DATASINK_NAME DATASINK_NAME}:
      *                         Name of an existing <a
      *                         href="../../../../../../concepts/data_sinks/"
      *                         target="_top">data sink</a> to send change data
-     *                         notifications to
+     *                         notifications to.
      *                     <li>{@link Options#MAX_CONSECUTIVE_FAILURES
      *                         MAX_CONSECUTIVE_FAILURES}: Maximum number of
      *                         consecutive failed notification attempts before
@@ -304,13 +304,13 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *                         KAFKA_TOPIC_NAME}: Name of the Kafka topic to
      *                         publish to if {@link Options#DESTINATION
      *                         DESTINATION} in {@code options} is specified and
-     *                         is a Kafka broker
+     *                         is a Kafka broker.
      *                     <li>{@link Options#INCREASING_COLUMN
      *                         INCREASING_COLUMN}: Column on subscribed table
      *                         that will increase for new records (e.g.,
      *                         TIMESTAMP).
      *                     <li>{@link Options#EXPRESSION EXPRESSION}: Filter
-     *                         expression to limit records for notification
+     *                         expression to limit records for notification.
      *                     <li>{@link Options#JOIN_TABLE_NAMES
      *                         JOIN_TABLE_NAMES}: A comma-separated list of
      *                         tables (optionally with aliases) to include in
@@ -329,13 +329,13 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *                         'as'. The selected columns will also appear in
      *                         the notification output.
      *                     <li>{@link Options#JOIN_EXPRESSIONS
-     *                         JOIN_EXPRESSIONS}: Optional filter or join
-     *                         expressions to apply when combining the tables.
-     *                         Expressions are standard SQL-style conditions
-     *                         and can reference any table or alias listed in
-     *                         'join_table_names'. This corresponds to the
-     *                         WHERE clause of the underlying join, and can
-     *                         include conditions to filter the delta rows.
+     *                         JOIN_EXPRESSIONS}: Filter or join expressions to
+     *                         apply when combining the tables. Expressions are
+     *                         standard SQL-style conditions and can reference
+     *                         any table or alias listed in 'join_table_names'.
+     *                         This corresponds to the WHERE clause of the
+     *                         underlying join, and can include conditions to
+     *                         filter the delta rows.
      *                     <li>{@link Options#REFRESH_METHOD REFRESH_METHOD}:
      *                         Method controlling when the table monitor
      *                         reports changes to the {@code tableName}.
@@ -416,10 +416,11 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#INSERT INSERT}.
      *     <li>{@link Options#MONITOR_ID MONITOR_ID}: ID to use for this
-     *         monitor instead of a randomly generated one
+     *         monitor instead of a randomly generated one.
      *     <li>{@link Options#DATASINK_NAME DATASINK_NAME}: Name of an existing
      *         <a href="../../../../../../concepts/data_sinks/"
-     *         target="_top">data sink</a> to send change data notifications to
+     *         target="_top">data sink</a> to send change data notifications
+     *         to.
      *     <li>{@link Options#MAX_CONSECUTIVE_FAILURES
      *         MAX_CONSECUTIVE_FAILURES}: Maximum number of consecutive failed
      *         notification attempts before suspending the stream.  A value of
@@ -441,12 +442,12 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *     <li>{@link Options#KAFKA_TOPIC_NAME KAFKA_TOPIC_NAME}: Name of the
      *         Kafka topic to publish to if {@link Options#DESTINATION
      *         DESTINATION} in {@link #getOptions() options} is specified and
-     *         is a Kafka broker
+     *         is a Kafka broker.
      *     <li>{@link Options#INCREASING_COLUMN INCREASING_COLUMN}: Column on
      *         subscribed table that will increase for new records (e.g.,
      *         TIMESTAMP).
      *     <li>{@link Options#EXPRESSION EXPRESSION}: Filter expression to
-     *         limit records for notification
+     *         limit records for notification.
      *     <li>{@link Options#JOIN_TABLE_NAMES JOIN_TABLE_NAMES}: A
      *         comma-separated list of tables (optionally with aliases) to
      *         include in the join. The monitored table {@link #getTableName()
@@ -460,12 +461,12 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *         aliases defined in 'join_table_names'. Each column can
      *         optionally be aliased using 'as'. The selected columns will also
      *         appear in the notification output.
-     *     <li>{@link Options#JOIN_EXPRESSIONS JOIN_EXPRESSIONS}: Optional
-     *         filter or join expressions to apply when combining the tables.
-     *         Expressions are standard SQL-style conditions and can reference
-     *         any table or alias listed in 'join_table_names'. This
-     *         corresponds to the WHERE clause of the underlying join, and can
-     *         include conditions to filter the delta rows.
+     *     <li>{@link Options#JOIN_EXPRESSIONS JOIN_EXPRESSIONS}: Filter or
+     *         join expressions to apply when combining the tables. Expressions
+     *         are standard SQL-style conditions and can reference any table or
+     *         alias listed in 'join_table_names'. This corresponds to the
+     *         WHERE clause of the underlying join, and can include conditions
+     *         to filter the delta rows.
      *     <li>{@link Options#REFRESH_METHOD REFRESH_METHOD}: Method
      *         controlling when the table monitor reports changes to the {@link
      *         #getTableName() tableName}.
@@ -515,10 +516,11 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#INSERT INSERT}.
      *     <li>{@link Options#MONITOR_ID MONITOR_ID}: ID to use for this
-     *         monitor instead of a randomly generated one
+     *         monitor instead of a randomly generated one.
      *     <li>{@link Options#DATASINK_NAME DATASINK_NAME}: Name of an existing
      *         <a href="../../../../../../concepts/data_sinks/"
-     *         target="_top">data sink</a> to send change data notifications to
+     *         target="_top">data sink</a> to send change data notifications
+     *         to.
      *     <li>{@link Options#MAX_CONSECUTIVE_FAILURES
      *         MAX_CONSECUTIVE_FAILURES}: Maximum number of consecutive failed
      *         notification attempts before suspending the stream.  A value of
@@ -540,12 +542,12 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *     <li>{@link Options#KAFKA_TOPIC_NAME KAFKA_TOPIC_NAME}: Name of the
      *         Kafka topic to publish to if {@link Options#DESTINATION
      *         DESTINATION} in {@link #getOptions() options} is specified and
-     *         is a Kafka broker
+     *         is a Kafka broker.
      *     <li>{@link Options#INCREASING_COLUMN INCREASING_COLUMN}: Column on
      *         subscribed table that will increase for new records (e.g.,
      *         TIMESTAMP).
      *     <li>{@link Options#EXPRESSION EXPRESSION}: Filter expression to
-     *         limit records for notification
+     *         limit records for notification.
      *     <li>{@link Options#JOIN_TABLE_NAMES JOIN_TABLE_NAMES}: A
      *         comma-separated list of tables (optionally with aliases) to
      *         include in the join. The monitored table {@link #getTableName()
@@ -559,12 +561,12 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *         aliases defined in 'join_table_names'. Each column can
      *         optionally be aliased using 'as'. The selected columns will also
      *         appear in the notification output.
-     *     <li>{@link Options#JOIN_EXPRESSIONS JOIN_EXPRESSIONS}: Optional
-     *         filter or join expressions to apply when combining the tables.
-     *         Expressions are standard SQL-style conditions and can reference
-     *         any table or alias listed in 'join_table_names'. This
-     *         corresponds to the WHERE clause of the underlying join, and can
-     *         include conditions to filter the delta rows.
+     *     <li>{@link Options#JOIN_EXPRESSIONS JOIN_EXPRESSIONS}: Filter or
+     *         join expressions to apply when combining the tables. Expressions
+     *         are standard SQL-style conditions and can reference any table or
+     *         alias listed in 'join_table_names'. This corresponds to the
+     *         WHERE clause of the underlying join, and can include conditions
+     *         to filter the delta rows.
      *     <li>{@link Options#REFRESH_METHOD REFRESH_METHOD}: Method
      *         controlling when the table monitor reports changes to the {@link
      *         #getTableName() tableName}.

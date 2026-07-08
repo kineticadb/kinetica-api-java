@@ -49,17 +49,17 @@ public class ShowDatasinkResponse implements IndexedRecord {
     public static final class AdditionalInfo {
         /**
          * Destination for the output data in 'destination_type://path[:port]'
-         * format
+         * format.
          */
         public static final String DESTINATION = "destination";
 
         /**
-         * Kafka topic if the data sink type is a Kafka broker
+         * Kafka topic if the data sink type is a Kafka broker.
          */
         public static final String KAFKA_TOPIC_NAME = "kafka_topic_name";
 
         /**
-         * Name of the remote system user
+         * Name of the remote system user.
          */
         public static final String USER_NAME = "user_name";
 
@@ -126,11 +126,11 @@ public class ShowDatasinkResponse implements IndexedRecord {
      * #getDatasinkNames() datasinkNames}.
      * <ul>
      *     <li>{@link AdditionalInfo#DESTINATION DESTINATION}: Destination for
-     *         the output data in 'destination_type://path[:port]' format
+     *         the output data in 'destination_type://path[:port]' format.
      *     <li>{@link AdditionalInfo#KAFKA_TOPIC_NAME KAFKA_TOPIC_NAME}: Kafka
-     *         topic if the data sink type is a Kafka broker
+     *         topic if the data sink type is a Kafka broker.
      *     <li>{@link AdditionalInfo#USER_NAME USER_NAME}: Name of the remote
-     *         system user
+     *         system user.
      * </ul>
      *
      * @return The current value of {@code additionalInfo}.
@@ -144,11 +144,11 @@ public class ShowDatasinkResponse implements IndexedRecord {
      * #getDatasinkNames() datasinkNames}.
      * <ul>
      *     <li>{@link AdditionalInfo#DESTINATION DESTINATION}: Destination for
-     *         the output data in 'destination_type://path[:port]' format
+     *         the output data in 'destination_type://path[:port]' format.
      *     <li>{@link AdditionalInfo#KAFKA_TOPIC_NAME KAFKA_TOPIC_NAME}: Kafka
-     *         topic if the data sink type is a Kafka broker
+     *         topic if the data sink type is a Kafka broker.
      *     <li>{@link AdditionalInfo#USER_NAME USER_NAME}: Name of the remote
-     *         system user
+     *         system user.
      * </ul>
      *
      * @param additionalInfo  The new value for {@code additionalInfo}.

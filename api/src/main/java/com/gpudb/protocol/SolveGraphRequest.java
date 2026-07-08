@@ -137,7 +137,7 @@ public class SolveGraphRequest implements IndexedRecord {
      * A set of string constants for the {@link SolveGraphRequest} parameter
      * {@link #getOptions() options}.
      * <p>
-     * Additional parameters
+     * Additional parameters.
      */
     public static final class Options {
         /**
@@ -247,12 +247,12 @@ public class SolveGraphRequest implements IndexedRecord {
         public static final String OUTPUT_EDGE_PATH = "output_edge_path";
 
         /**
-         * An additional column 'CLUSTER' will be added for each node
+         * An additional column 'CLUSTER' will be added for each node.
          */
         public static final String TRUE = "true";
 
         /**
-         * No extra cluster info per node will be available in the output
+         * No extra cluster info per node will be available in the output.
          */
         public static final String FALSE = "false";
 
@@ -308,9 +308,9 @@ public class SolveGraphRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: An additional column 'CLUSTER'
-         *         will be added for each node
+         *         will be added for each node.
          *     <li>{@link Options#FALSE FALSE}: No extra cluster info per node
-         *         will be available in the output
+         *         will be available in the output.
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
@@ -322,20 +322,20 @@ public class SolveGraphRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#ASTAR ASTAR}: Employs A-STAR heuristics to
-         *         speed up the shortest path traversal
-         *     <li>{@link Options#NONE NONE}: No heuristics are applied
+         *         speed up the shortest path traversal.
+         *     <li>{@link Options#NONE NONE}: No heuristics are applied.
          * </ul>
          * The default value is {@link Options#NONE NONE}.
          */
         public static final String SOLVE_HEURISTIC = "solve_heuristic";
 
         /**
-         * Employs A-STAR heuristics to speed up the shortest path traversal
+         * Employs A-STAR heuristics to speed up the shortest path traversal.
          */
         public static final String ASTAR = "astar";
 
         /**
-         * No heuristics are applied
+         * No heuristics are applied.
          */
         public static final String NONE = "none";
 
@@ -642,10 +642,10 @@ public class SolveGraphRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: An additional
      *                                 column 'CLUSTER' will be added for each
-     *                                 node
+     *                                 node.
      *                             <li>{@link Options#FALSE FALSE}: No extra
      *                                 cluster info per node will be available
-     *                                 in the output
+     *                                 in the output.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
@@ -657,9 +657,9 @@ public class SolveGraphRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#ASTAR ASTAR}: Employs
      *                                 A-STAR heuristics to speed up the
-     *                                 shortest path traversal
+     *                                 shortest path traversal.
      *                             <li>{@link Options#NONE NONE}: No heuristics
-     *                                 are applied
+     *                                 are applied.
      *                         </ul>
      *                         The default value is {@link Options#NONE NONE}.
      *                     <li>{@link Options#ASTAR_RADIUS ASTAR_RADIUS}: For
@@ -1107,9 +1107,9 @@ public class SolveGraphRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: An additional column
-     *                 'CLUSTER' will be added for each node
+     *                 'CLUSTER' will be added for each node.
      *             <li>{@link Options#FALSE FALSE}: No extra cluster info per
-     *                 node will be available in the output
+     *                 node will be available in the output.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#SOLVE_HEURISTIC SOLVE_HEURISTIC}: Specify
@@ -1118,8 +1118,8 @@ public class SolveGraphRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#ASTAR ASTAR}: Employs A-STAR heuristics
-     *                 to speed up the shortest path traversal
-     *             <li>{@link Options#NONE NONE}: No heuristics are applied
+     *                 to speed up the shortest path traversal.
+     *             <li>{@link Options#NONE NONE}: No heuristics are applied.
      *         </ul>
      *         The default value is {@link Options#NONE NONE}.
      *     <li>{@link Options#ASTAR_RADIUS ASTAR_RADIUS}: For path solvers only
@@ -1256,9 +1256,9 @@ public class SolveGraphRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: An additional column
-     *                 'CLUSTER' will be added for each node
+     *                 'CLUSTER' will be added for each node.
      *             <li>{@link Options#FALSE FALSE}: No extra cluster info per
-     *                 node will be available in the output
+     *                 node will be available in the output.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#SOLVE_HEURISTIC SOLVE_HEURISTIC}: Specify
@@ -1267,8 +1267,8 @@ public class SolveGraphRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#ASTAR ASTAR}: Employs A-STAR heuristics
-     *                 to speed up the shortest path traversal
-     *             <li>{@link Options#NONE NONE}: No heuristics are applied
+     *                 to speed up the shortest path traversal.
+     *             <li>{@link Options#NONE NONE}: No heuristics are applied.
      *         </ul>
      *         The default value is {@link Options#NONE NONE}.
      *     <li>{@link Options#ASTAR_RADIUS ASTAR_RADIUS}: For path solvers only

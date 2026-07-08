@@ -97,9 +97,9 @@ public class RawInsertRecordsRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: Upsert new records when primary
-         *         keys match existing records
+         *         keys match existing records.
          *     <li>{@link Options#FALSE FALSE}: Reject new records when primary
-         *         keys match existing records
+         *         keys match existing records.
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
@@ -107,6 +107,24 @@ public class RawInsertRecordsRequest implements IndexedRecord {
 
         public static final String TRUE = "true";
         public static final String FALSE = "false";
+
+        /**
+         * Applies only when upserting (when {@link
+         * Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK} is {@link
+         * Options#TRUE TRUE}). If set to {@link Options#TRUE TRUE}, an
+         * existing record matched by primary key is modified in place. If set
+         * to {@link Options#FALSE FALSE}, it is updated by deleting the
+         * existing record and inserting a replacement (delete and insert),
+         * which prevents the change from being reflected in dependent
+         * materialized views until they are refreshed.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#TRUE TRUE}.
+         */
+        public static final String ENABLE_INPLACE_UPDATES = "enable_inplace_updates";
 
         /**
          * Specifies the record collision error-suppression policy for
@@ -129,10 +147,10 @@ public class RawInsertRecordsRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: Ignore new records whose primary
-         *         key values collide with those of existing records
+         *         key values collide with those of existing records.
          *     <li>{@link Options#FALSE FALSE}: Treat as errors any new records
          *         whose primary key values collide with those of existing
-         *         records
+         *         records.
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
@@ -178,8 +196,8 @@ public class RawInsertRecordsRequest implements IndexedRecord {
          * If set to {@link Options#TRUE TRUE}, success will always be
          * returned, and any errors found will be included in the info map.
          * The "bad_record_indices" entry is a comma-separated list of bad
-         * records (0-based).  And if so, there will also be an "error_N" entry
-         * for each record with an error, where N is the index (0-based).
+         * records (0-based).  If so, there will also be an "error_N" entry for
+         * each record with an error, where N is the index (0-based).
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}
@@ -214,6 +232,29 @@ public class RawInsertRecordsRequest implements IndexedRecord {
          * The default value is {@link Options#FALSE FALSE}.
          */
         public static final String DRY_RUN = "dry_run";
+
+        /**
+         * Type schema of  {@link #getList() list} (when {@link
+         * #getListEncoding() listEncoding} is {@link ListEncoding#BINARY
+         * BINARY}), in [["{column_name}","{column_type}"]] format. When
+         * non-empty and different from the table's schema, the server remaps
+         * the incoming records to the table's full schema.  Columns present in
+         * the table but absent from this schema are filled using their default
+         * values, NULL (if nullable), or an error is returned.  If empty,
+         * records must match the table's full schema. The default value is ''.
+         */
+        public static final String REQUEST_SCHEMA_STR = "request_schema_str";
+
+        /**
+         * Comma-separated expressions, one per target table column.  Each
+         * expression is evaluated per record.  Empty entries (two consecutive
+         * commas) mean no transformation for that column -- the value is
+         * resolved from the input record, table default, NULL, or an error.
+         * Expressions may reference input columns by name or by position ($1
+         * for the first input column, $2 for the second, etc.). The default
+         * value is ''.
+         */
+        public static final String TRANSFORMATIONS = "transformations";
 
         private Options() {  }
     }
@@ -276,13 +317,32 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Upsert new
      *                                 records when primary keys match existing
-     *                                 records
+     *                                 records.
      *                             <li>{@link Options#FALSE FALSE}: Reject new
      *                                 records when primary keys match existing
-     *                                 records
+     *                                 records.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#ENABLE_INPLACE_UPDATES
+     *                         ENABLE_INPLACE_UPDATES}: Applies only when
+     *                         upserting (when {@link
+     *                         Options#UPDATE_ON_EXISTING_PK
+     *                         UPDATE_ON_EXISTING_PK} is {@link Options#TRUE
+     *                         TRUE}). If set to {@link Options#TRUE TRUE}, an
+     *                         existing record matched by primary key is
+     *                         modified in place. If set to {@link
+     *                         Options#FALSE FALSE}, it is updated by deleting
+     *                         the existing record and inserting a replacement
+     *                         (delete and insert), which prevents the change
+     *                         from being reflected in dependent materialized
+     *                         views until they are refreshed.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#IGNORE_EXISTING_PK
      *                         IGNORE_EXISTING_PK}: Specifies the record
      *                         collision error-suppression policy for inserting
@@ -313,11 +373,11 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Ignore new
      *                                 records whose primary key values collide
-     *                                 with those of existing records
+     *                                 with those of existing records.
      *                             <li>{@link Options#FALSE FALSE}: Treat as
      *                                 errors any new records whose primary key
      *                                 values collide with those of existing
-     *                                 records
+     *                                 records.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
@@ -360,7 +420,7 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                         returned, and any errors found will be included
      *                         in the info map.  The "bad_record_indices" entry
      *                         is a comma-separated list of bad records
-     *                         (0-based).  And if so, there will also be an
+     *                         (0-based).  If so, there will also be an
      *                         "error_N" entry for each record with an error,
      *                         where N is the index (0-based).
      *                         Supported values:
@@ -393,6 +453,29 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#REQUEST_SCHEMA_STR
+     *                         REQUEST_SCHEMA_STR}: Type schema of  {@code
+     *                         list} (when {@code listEncoding} is {@link
+     *                         ListEncoding#BINARY BINARY}), in
+     *                         [["{column_name}","{column_type}"]] format. When
+     *                         non-empty and different from the table's schema,
+     *                         the server remaps the incoming records to the
+     *                         table's full schema.  Columns present in the
+     *                         table but absent from this schema are filled
+     *                         using their default values, NULL (if nullable),
+     *                         or an error is returned.  If empty, records must
+     *                         match the table's full schema. The default value
+     *                         is ''.
+     *                     <li>{@link Options#TRANSFORMATIONS TRANSFORMATIONS}:
+     *                         Comma-separated expressions, one per target
+     *                         table column.  Each expression is evaluated per
+     *                         record.  Empty entries (two consecutive commas)
+     *                         mean no transformation for that column -- the
+     *                         value is resolved from the input record, table
+     *                         default, NULL, or an error. Expressions may
+     *                         reference input columns by name or by position
+     *                         ($1 for the first input column, $2 for the
+     *                         second, etc.). The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -457,13 +540,32 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Upsert new
      *                                 records when primary keys match existing
-     *                                 records
+     *                                 records.
      *                             <li>{@link Options#FALSE FALSE}: Reject new
      *                                 records when primary keys match existing
-     *                                 records
+     *                                 records.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#ENABLE_INPLACE_UPDATES
+     *                         ENABLE_INPLACE_UPDATES}: Applies only when
+     *                         upserting (when {@link
+     *                         Options#UPDATE_ON_EXISTING_PK
+     *                         UPDATE_ON_EXISTING_PK} is {@link Options#TRUE
+     *                         TRUE}). If set to {@link Options#TRUE TRUE}, an
+     *                         existing record matched by primary key is
+     *                         modified in place. If set to {@link
+     *                         Options#FALSE FALSE}, it is updated by deleting
+     *                         the existing record and inserting a replacement
+     *                         (delete and insert), which prevents the change
+     *                         from being reflected in dependent materialized
+     *                         views until they are refreshed.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#IGNORE_EXISTING_PK
      *                         IGNORE_EXISTING_PK}: Specifies the record
      *                         collision error-suppression policy for inserting
@@ -494,11 +596,11 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Ignore new
      *                                 records whose primary key values collide
-     *                                 with those of existing records
+     *                                 with those of existing records.
      *                             <li>{@link Options#FALSE FALSE}: Treat as
      *                                 errors any new records whose primary key
      *                                 values collide with those of existing
-     *                                 records
+     *                                 records.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
@@ -541,7 +643,7 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                         returned, and any errors found will be included
      *                         in the info map.  The "bad_record_indices" entry
      *                         is a comma-separated list of bad records
-     *                         (0-based).  And if so, there will also be an
+     *                         (0-based).  If so, there will also be an
      *                         "error_N" entry for each record with an error,
      *                         where N is the index (0-based).
      *                         Supported values:
@@ -574,6 +676,29 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#REQUEST_SCHEMA_STR
+     *                         REQUEST_SCHEMA_STR}: Type schema of  {@code
+     *                         list} (when {@code listEncoding} is {@link
+     *                         ListEncoding#BINARY BINARY}), in
+     *                         [["{column_name}","{column_type}"]] format. When
+     *                         non-empty and different from the table's schema,
+     *                         the server remaps the incoming records to the
+     *                         table's full schema.  Columns present in the
+     *                         table but absent from this schema are filled
+     *                         using their default values, NULL (if nullable),
+     *                         or an error is returned.  If empty, records must
+     *                         match the table's full schema. The default value
+     *                         is ''.
+     *                     <li>{@link Options#TRANSFORMATIONS TRANSFORMATIONS}:
+     *                         Comma-separated expressions, one per target
+     *                         table column.  Each expression is evaluated per
+     *                         record.  Empty entries (two consecutive commas)
+     *                         mean no transformation for that column -- the
+     *                         value is resolved from the input record, table
+     *                         default, NULL, or an error. Expressions may
+     *                         reference input columns by name or by position
+     *                         ($1 for the first input column, $2 for the
+     *                         second, etc.). The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -717,11 +842,26 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Upsert new records when
-     *                 primary keys match existing records
+     *                 primary keys match existing records.
      *             <li>{@link Options#FALSE FALSE}: Reject new records when
-     *                 primary keys match existing records
+     *                 primary keys match existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#ENABLE_INPLACE_UPDATES ENABLE_INPLACE_UPDATES}:
+     *         Applies only when upserting (when {@link
+     *         Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK} is {@link
+     *         Options#TRUE TRUE}). If set to {@link Options#TRUE TRUE}, an
+     *         existing record matched by primary key is modified in place. If
+     *         set to {@link Options#FALSE FALSE}, it is updated by deleting
+     *         the existing record and inserting a replacement (delete and
+     *         insert), which prevents the change from being reflected in
+     *         dependent materialized views until they are refreshed.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}: Specifies
      *         the record collision error-suppression policy for inserting into
      *         a table with a <a
@@ -745,10 +885,10 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Ignore new records whose
      *                 primary key values collide with those of existing
-     *                 records
+     *                 records.
      *             <li>{@link Options#FALSE FALSE}: Treat as errors any new
      *                 records whose primary key values collide with those of
-     *                 existing records
+     *                 existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#PK_CONFLICT_PREDICATE_HIGHER
@@ -781,7 +921,7 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *         RETURN_INDIVIDUAL_ERRORS}: If set to {@link Options#TRUE TRUE},
      *         success will always be returned, and any errors found will be
      *         included in the info map.  The "bad_record_indices" entry is a
-     *         comma-separated list of bad records (0-based).  And if so, there
+     *         comma-separated list of bad records (0-based).  If so, there
      *         will also be an "error_N" entry for each record with an error,
      *         where N is the index (0-based).
      *         Supported values:
@@ -809,6 +949,24 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#REQUEST_SCHEMA_STR REQUEST_SCHEMA_STR}: Type
+     *         schema of  {@link #getList() list} (when {@link
+     *         #getListEncoding() listEncoding} is {@link ListEncoding#BINARY
+     *         BINARY}), in [["{column_name}","{column_type}"]] format. When
+     *         non-empty and different from the table's schema, the server
+     *         remaps the incoming records to the table's full schema.  Columns
+     *         present in the table but absent from this schema are filled
+     *         using their default values, NULL (if nullable), or an error is
+     *         returned.  If empty, records must match the table's full schema.
+     *         The default value is ''.
+     *     <li>{@link Options#TRANSFORMATIONS TRANSFORMATIONS}: Comma-separated
+     *         expressions, one per target table column.  Each expression is
+     *         evaluated per record.  Empty entries (two consecutive commas)
+     *         mean no transformation for that column -- the value is resolved
+     *         from the input record, table default, NULL, or an error.
+     *         Expressions may reference input columns by name or by position
+     *         ($1 for the first input column, $2 for the second, etc.). The
+     *         default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -840,11 +998,26 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Upsert new records when
-     *                 primary keys match existing records
+     *                 primary keys match existing records.
      *             <li>{@link Options#FALSE FALSE}: Reject new records when
-     *                 primary keys match existing records
+     *                 primary keys match existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#ENABLE_INPLACE_UPDATES ENABLE_INPLACE_UPDATES}:
+     *         Applies only when upserting (when {@link
+     *         Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK} is {@link
+     *         Options#TRUE TRUE}). If set to {@link Options#TRUE TRUE}, an
+     *         existing record matched by primary key is modified in place. If
+     *         set to {@link Options#FALSE FALSE}, it is updated by deleting
+     *         the existing record and inserting a replacement (delete and
+     *         insert), which prevents the change from being reflected in
+     *         dependent materialized views until they are refreshed.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}: Specifies
      *         the record collision error-suppression policy for inserting into
      *         a table with a <a
@@ -868,10 +1041,10 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Ignore new records whose
      *                 primary key values collide with those of existing
-     *                 records
+     *                 records.
      *             <li>{@link Options#FALSE FALSE}: Treat as errors any new
      *                 records whose primary key values collide with those of
-     *                 existing records
+     *                 existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#PK_CONFLICT_PREDICATE_HIGHER
@@ -904,7 +1077,7 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *         RETURN_INDIVIDUAL_ERRORS}: If set to {@link Options#TRUE TRUE},
      *         success will always be returned, and any errors found will be
      *         included in the info map.  The "bad_record_indices" entry is a
-     *         comma-separated list of bad records (0-based).  And if so, there
+     *         comma-separated list of bad records (0-based).  If so, there
      *         will also be an "error_N" entry for each record with an error,
      *         where N is the index (0-based).
      *         Supported values:
@@ -932,6 +1105,24 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#REQUEST_SCHEMA_STR REQUEST_SCHEMA_STR}: Type
+     *         schema of  {@link #getList() list} (when {@link
+     *         #getListEncoding() listEncoding} is {@link ListEncoding#BINARY
+     *         BINARY}), in [["{column_name}","{column_type}"]] format. When
+     *         non-empty and different from the table's schema, the server
+     *         remaps the incoming records to the table's full schema.  Columns
+     *         present in the table but absent from this schema are filled
+     *         using their default values, NULL (if nullable), or an error is
+     *         returned.  If empty, records must match the table's full schema.
+     *         The default value is ''.
+     *     <li>{@link Options#TRANSFORMATIONS TRANSFORMATIONS}: Comma-separated
+     *         expressions, one per target table column.  Each expression is
+     *         evaluated per record.  Empty entries (two consecutive commas)
+     *         mean no transformation for that column -- the value is resolved
+     *         from the input record, table default, NULL, or an error.
+     *         Expressions may reference input columns by name or by position
+     *         ($1 for the first input column, $2 for the second, etc.). The
+     *         default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      *

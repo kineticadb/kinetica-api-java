@@ -83,12 +83,12 @@ public class AlterCredentialRequest implements IndexedRecord {
         public static final String KAFKA = "kafka";
 
         /**
-         * New user for the credential
+         * New user for the credential.
          */
         public static final String IDENTITY = "identity";
 
         /**
-         * New password for the credential
+         * New password for the credential.
          */
         public static final String SECRET = "secret";
 
@@ -166,10 +166,10 @@ public class AlterCredentialRequest implements IndexedRecord {
      *                                  <li>{@link
      *                                      CredentialUpdatesMap#IDENTITY
      *                                      IDENTITY}: New user for the
-     *                                      credential
+     *                                      credential.
      *                                  <li>{@link CredentialUpdatesMap#SECRET
      *                                      SECRET}: New password for the
-     *                                      credential
+     *                                      credential.
      *                                  <li>{@link
      *                                      CredentialUpdatesMap#SCHEMA_NAME
      *                                      SCHEMA_NAME}: Updates the schema
@@ -235,9 +235,9 @@ public class AlterCredentialRequest implements IndexedRecord {
      *             <li>{@link CredentialUpdatesMap#KAFKA KAFKA}
      *         </ul>
      *     <li>{@link CredentialUpdatesMap#IDENTITY IDENTITY}: New user for the
-     *         credential
+     *         credential.
      *     <li>{@link CredentialUpdatesMap#SECRET SECRET}: New password for the
-     *         credential
+     *         credential.
      *     <li>{@link CredentialUpdatesMap#SCHEMA_NAME SCHEMA_NAME}: Updates
      *         the schema name.  If {@link CredentialUpdatesMap#SCHEMA_NAME
      *         SCHEMA_NAME} doesn't exist, an error will be thrown. If {@link
@@ -276,9 +276,9 @@ public class AlterCredentialRequest implements IndexedRecord {
      *             <li>{@link CredentialUpdatesMap#KAFKA KAFKA}
      *         </ul>
      *     <li>{@link CredentialUpdatesMap#IDENTITY IDENTITY}: New user for the
-     *         credential
+     *         credential.
      *     <li>{@link CredentialUpdatesMap#SECRET SECRET}: New password for the
-     *         credential
+     *         credential.
      *     <li>{@link CredentialUpdatesMap#SCHEMA_NAME SCHEMA_NAME}: Updates
      *         the schema name.  If {@link CredentialUpdatesMap#SCHEMA_NAME
      *         SCHEMA_NAME} doesn't exist, an error will be thrown. If {@link

@@ -85,7 +85,7 @@ public class FilterRequest implements IndexedRecord {
         public static final String COLLECTION_NAME = "collection_name";
 
         /**
-         * view this filtered-view is part of. The default value is ''.
+         * View this filtered-view is part of. The default value is ''.
          */
         public static final String VIEW_ID = "view_id";
 
@@ -163,7 +163,7 @@ public class FilterRequest implements IndexedRecord {
      *                         non-existent]  Name of a schema for the newly
      *                         created view. If the schema is non-existent, it
      *                         will be automatically created.
-     *                     <li>{@link Options#VIEW_ID VIEW_ID}: view this
+     *                     <li>{@link Options#VIEW_ID VIEW_ID}: View this
      *                         filtered-view is part of. The default value is
      *                         ''.
      *                     <li>{@link Options#TTL TTL}: Sets the <a
@@ -291,7 +291,7 @@ public class FilterRequest implements IndexedRecord {
      *         GPUdb.createSchema} to create the schema if non-existent]  Name
      *         of a schema for the newly created view. If the schema is
      *         non-existent, it will be automatically created.
-     *     <li>{@link Options#VIEW_ID VIEW_ID}: view this filtered-view is part
+     *     <li>{@link Options#VIEW_ID VIEW_ID}: View this filtered-view is part
      *         of. The default value is ''.
      *     <li>{@link Options#TTL TTL}: Sets the <a
      *         href="../../../../../../concepts/ttl/" target="_top">TTL</a> of
@@ -329,7 +329,7 @@ public class FilterRequest implements IndexedRecord {
      *         GPUdb.createSchema} to create the schema if non-existent]  Name
      *         of a schema for the newly created view. If the schema is
      *         non-existent, it will be automatically created.
-     *     <li>{@link Options#VIEW_ID VIEW_ID}: view this filtered-view is part
+     *     <li>{@link Options#VIEW_ID VIEW_ID}: View this filtered-view is part
      *         of. The default value is ''.
      *     <li>{@link Options#TTL TTL}: Sets the <a
      *         href="../../../../../../concepts/ttl/" target="_top">TTL</a> of

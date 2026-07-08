@@ -48,7 +48,7 @@ public class AlterWalRequest implements IndexedRecord {
      */
     public static final class Options {
         /**
-         * Maximum size of an individual segment file
+         * Maximum size of an individual segment file.
          */
         public static final String MAX_SEGMENT_SIZE = "max_segment_size";
 
@@ -62,36 +62,36 @@ public class AlterWalRequest implements IndexedRecord {
          * Maximum size of an individual segment file.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#NONE NONE}: Disables the WAL
+         *     <li>{@link Options#NONE NONE}: Disables the WAL.
          *     <li>{@link Options#BACKGROUND BACKGROUND}: WAL entries are
          *         periodically written instead of immediately after each
-         *         operation
+         *         operation.
          *     <li>{@link Options#FLUSH FLUSH}: Protects entries in the event
-         *         of a database crash
+         *         of a database crash.
          *     <li>{@link Options#FSYNC FSYNC}: Protects entries in the event
-         *         of an OS crash
+         *         of an OS crash.
          * </ul>
          */
         public static final String SYNC_POLICY = "sync_policy";
 
         /**
-         * Disables the WAL
+         * Disables the WAL.
          */
         public static final String NONE = "none";
 
         /**
          * WAL entries are periodically written instead of immediately after
-         * each operation
+         * each operation.
          */
         public static final String BACKGROUND = "background";
 
         /**
-         * Protects entries in the event of a database crash
+         * Protects entries in the event of a database crash.
          */
         public static final String FLUSH = "flush";
 
         /**
-         * Protects entries in the event of an OS crash
+         * Protects entries in the event of an OS crash.
          */
         public static final String FSYNC = "fsync";
 
@@ -179,7 +179,7 @@ public class AlterWalRequest implements IndexedRecord {
      *                 <ul>
      *                     <li>{@link Options#MAX_SEGMENT_SIZE
      *                         MAX_SEGMENT_SIZE}: Maximum size of an individual
-     *                         segment file
+     *                         segment file.
      *                     <li>{@link Options#SEGMENT_COUNT SEGMENT_COUNT}:
      *                         Approximate number of segment files to split the
      *                         WAL across. Must be at least two.
@@ -188,15 +188,16 @@ public class AlterWalRequest implements IndexedRecord {
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#NONE NONE}: Disables the
-     *                                 WAL
+     *                                 WAL.
      *                             <li>{@link Options#BACKGROUND BACKGROUND}:
      *                                 WAL entries are periodically written
      *                                 instead of immediately after each
-     *                                 operation
+     *                                 operation.
      *                             <li>{@link Options#FLUSH FLUSH}: Protects
-     *                                 entries in the event of a database crash
+     *                                 entries in the event of a database
+     *                                 crash.
      *                             <li>{@link Options#FSYNC FSYNC}: Protects
-     *                                 entries in the event of an OS crash
+     *                                 entries in the event of an OS crash.
      *                         </ul>
      *                     <li>{@link Options#FLUSH_FREQUENCY FLUSH_FREQUENCY}:
      *                         Specifies how frequently WAL entries are written
@@ -281,21 +282,21 @@ public class AlterWalRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *     <li>{@link Options#MAX_SEGMENT_SIZE MAX_SEGMENT_SIZE}: Maximum size
-     *         of an individual segment file
+     *         of an individual segment file.
      *     <li>{@link Options#SEGMENT_COUNT SEGMENT_COUNT}: Approximate number
      *         of segment files to split the WAL across. Must be at least two.
      *     <li>{@link Options#SYNC_POLICY SYNC_POLICY}: Maximum size of an
      *         individual segment file.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#NONE NONE}: Disables the WAL
+     *             <li>{@link Options#NONE NONE}: Disables the WAL.
      *             <li>{@link Options#BACKGROUND BACKGROUND}: WAL entries are
      *                 periodically written instead of immediately after each
-     *                 operation
+     *                 operation.
      *             <li>{@link Options#FLUSH FLUSH}: Protects entries in the
-     *                 event of a database crash
+     *                 event of a database crash.
      *             <li>{@link Options#FSYNC FSYNC}: Protects entries in the
-     *                 event of an OS crash
+     *                 event of an OS crash.
      *         </ul>
      *     <li>{@link Options#FLUSH_FREQUENCY FLUSH_FREQUENCY}: Specifies how
      *         frequently WAL entries are written with background sync. This is
@@ -352,21 +353,21 @@ public class AlterWalRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *     <li>{@link Options#MAX_SEGMENT_SIZE MAX_SEGMENT_SIZE}: Maximum size
-     *         of an individual segment file
+     *         of an individual segment file.
      *     <li>{@link Options#SEGMENT_COUNT SEGMENT_COUNT}: Approximate number
      *         of segment files to split the WAL across. Must be at least two.
      *     <li>{@link Options#SYNC_POLICY SYNC_POLICY}: Maximum size of an
      *         individual segment file.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#NONE NONE}: Disables the WAL
+     *             <li>{@link Options#NONE NONE}: Disables the WAL.
      *             <li>{@link Options#BACKGROUND BACKGROUND}: WAL entries are
      *                 periodically written instead of immediately after each
-     *                 operation
+     *                 operation.
      *             <li>{@link Options#FLUSH FLUSH}: Protects entries in the
-     *                 event of a database crash
+     *                 event of a database crash.
      *             <li>{@link Options#FSYNC FSYNC}: Protects entries in the
-     *                 event of an OS crash
+     *                 event of an OS crash.
      *         </ul>
      *     <li>{@link Options#FLUSH_FREQUENCY FLUSH_FREQUENCY}: Specifies how
      *         frequently WAL entries are written with background sync. This is

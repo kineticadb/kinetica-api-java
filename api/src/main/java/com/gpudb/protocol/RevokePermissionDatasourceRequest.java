@@ -46,16 +46,16 @@ public class RevokePermissionDatasourceRequest implements IndexedRecord {
      * RevokePermissionDatasourceRequest} parameter {@link #getPermission()
      * permission}.
      * <p>
-     * Permission to revoke from the user or role
+     * Permission to revoke from the user or role.
      */
     public static final class Permission {
         /**
-         * Admin access on the given data source
+         * Admin access on the given data source.
          */
         public static final String ADMIN = "admin";
 
         /**
-         * Connect access on the given data source
+         * Connect access on the given data source.
          */
         public static final String CONNECT = "connect";
 
@@ -88,9 +88,9 @@ public class RevokePermissionDatasourceRequest implements IndexedRecord {
      *                    Supported values:
      *                    <ul>
      *                        <li>{@link Permission#ADMIN ADMIN}: Admin access
-     *                            on the given data source
+     *                            on the given data source.
      *                        <li>{@link Permission#CONNECT CONNECT}: Connect
-     *                            access on the given data source
+     *                            access on the given data source.
      *                    </ul>
      * @param datasourceName  Name of the data source on which the permission
      *                        will be revoked. Must be an existing data source,
@@ -134,9 +134,9 @@ public class RevokePermissionDatasourceRequest implements IndexedRecord {
      * Supported values:
      * <ul>
      *     <li>{@link Permission#ADMIN ADMIN}: Admin access on the given data
-     *         source
+     *         source.
      *     <li>{@link Permission#CONNECT CONNECT}: Connect access on the given
-     *         data source
+     *         data source.
      * </ul>
      *
      * @return The current value of {@code permission}.
@@ -150,9 +150,9 @@ public class RevokePermissionDatasourceRequest implements IndexedRecord {
      * Supported values:
      * <ul>
      *     <li>{@link Permission#ADMIN ADMIN}: Admin access on the given data
-     *         source
+     *         source.
      *     <li>{@link Permission#CONNECT CONNECT}: Connect access on the given
-     *         data source
+     *         data source.
      * </ul>
      *
      * @param permission  The new value for {@code permission}.

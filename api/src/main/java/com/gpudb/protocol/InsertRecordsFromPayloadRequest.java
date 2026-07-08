@@ -54,7 +54,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * <p>
      * Options used when creating the target table. Includes type to use. The
      * other options match those in {@link
-     * com.gpudb.GPUdb#createTable(CreateTableRequest) GPUdb.createTable}
+     * com.gpudb.GPUdb#createTable(CreateTableRequest) GPUdb.createTable}.
      */
     public static final class CreateTableOptions {
         /**
@@ -286,15 +286,15 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      */
     public static final class Options {
         /**
-         * Optional name of a table to which records that were rejected are
-         * written.  The bad-record-table has the following columns:
-         * line_number (long), line_rejected (string), error_message (string).
+         * Name of a table to which records that were rejected are written.
+         * The bad-record-table has the following columns: line_number (long),
+         * line_rejected (string), error_message (string).
          */
         public static final String BAD_RECORD_TABLE_NAME = "bad_record_table_name";
 
         /**
          * A positive integer indicating the maximum number of records that can
-         * be  written to the bad-record-table.   Default value is 10000
+         * be  written to the bad-record-table.   Default value is 10000.
          */
         public static final String BAD_RECORD_TABLE_LIMIT = "bad_record_table_limit";
 
@@ -303,7 +303,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * of records that can be written to the bad-record-table per
          * file/payload. Default value will be 'bad_record_table_limit' and
          * total size of the table per rank is limited to
-         * 'bad_record_table_limit'
+         * 'bad_record_table_limit'.
          */
         public static final String BAD_RECORD_TABLE_LIMIT_PER_INPUT = "bad_record_table_limit_per_input";
 
@@ -367,12 +367,12 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String COLUMNS_TO_SKIP = "columns_to_skip";
 
         /**
-         * Optional: payload compression type.
+         * Payload compression type.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#NONE NONE}: Uncompressed
+         *     <li>{@link Options#NONE NONE}: Uncompressed.
          *     <li>{@link Options#AUTO AUTO}: Default. Auto detect compression
-         *         type
+         *         type.
          *     <li>{@link Options#GZIP GZIP}: gzip file compression.
          *     <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
          * </ul>
@@ -381,12 +381,12 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String COMPRESSION_TYPE = "compression_type";
 
         /**
-         * Uncompressed
+         * Uncompressed.
          */
         public static final String NONE = "none";
 
         /**
-         * Default. Auto detect compression type
+         * Default. Auto detect compression type.
          */
         public static final String AUTO = "auto";
 
@@ -470,20 +470,20 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * Specifies the type of the file(s) whose records will be inserted.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#AVRO AVRO}: Avro file format
+         *     <li>{@link Options#AVRO AVRO}: Avro file format.
          *     <li>{@link Options#DELIMITED_TEXT DELIMITED_TEXT}: Delimited
          *         text file format; e.g., CSV, TSV, PSV, etc.
-         *     <li>{@link Options#GDB GDB}: Esri/GDB file format
-         *     <li>{@link Options#JSON JSON}: Json file format
-         *     <li>{@link Options#PARQUET PARQUET}: Apache Parquet file format
-         *     <li>{@link Options#SHAPEFILE SHAPEFILE}: ShapeFile file format
+         *     <li>{@link Options#GDB GDB}: Esri/GDB file format.
+         *     <li>{@link Options#JSON JSON}: JSON file format.
+         *     <li>{@link Options#PARQUET PARQUET}: Apache Parquet file format.
+         *     <li>{@link Options#SHAPEFILE SHAPEFILE}: ShapeFile file format.
          * </ul>
          * The default value is {@link Options#DELIMITED_TEXT DELIMITED_TEXT}.
          */
         public static final String FILE_TYPE = "file_type";
 
         /**
-         * Avro file format
+         * Avro file format.
          */
         public static final String AVRO = "avro";
 
@@ -493,22 +493,22 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String DELIMITED_TEXT = "delimited_text";
 
         /**
-         * Esri/GDB file format
+         * Esri/GDB file format.
          */
         public static final String GDB = "gdb";
 
         /**
-         * Json file format
+         * JSON file format.
          */
         public static final String JSON = "json";
 
         /**
-         * Apache Parquet file format
+         * Apache Parquet file format.
          */
         public static final String PARQUET = "parquet";
 
         /**
-         * ShapeFile file format
+         * ShapeFile file format.
          */
         public static final String SHAPEFILE = "shapefile";
 
@@ -517,21 +517,21 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: Break up nested columns to
-         *         multiple columns
-         *     <li>{@link Options#FALSE FALSE}: Treat nested columns as json
-         *         columns instead of flattening
+         *         multiple columns.
+         *     <li>{@link Options#FALSE FALSE}: Treat nested columns as JSON
+         *         columns instead of flattening.
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
         public static final String FLATTEN_COLUMNS = "flatten_columns";
 
         /**
-         * Upsert new records when primary keys match existing records
+         * Upsert new records when primary keys match existing records.
          */
         public static final String TRUE = "true";
 
         /**
-         * Reject new records when primary keys match existing records
+         * Reject new records when primary keys match existing records.
          */
         public static final String FALSE = "false";
 
@@ -561,10 +561,10 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: Ignore new records whose primary
-         *         key values collide with those of existing records
+         *         key values collide with those of existing records.
          *     <li>{@link Options#FALSE FALSE}: Treat as errors any new records
          *         whose primary key values collide with those of existing
-         *         records
+         *         records.
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
@@ -576,7 +576,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#FULL FULL}: Run a type inference on the
-         *         source data (if needed) and ingest
+         *         source data (if needed) and ingest.
          *     <li>{@link Options#DRY_RUN DRY_RUN}: Does not load data, but
          *         walks through the source data and determines the number of
          *         valid records, taking into account the current mode of
@@ -591,7 +591,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String INGESTION_MODE = "ingestion_mode";
 
         /**
-         * Run a type inference on the source data (if needed) and ingest
+         * Run a type inference on the source data (if needed) and ingest.
          */
         public static final String FULL = "full";
 
@@ -609,8 +609,8 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String TYPE_INFERENCE_ONLY = "type_inference_only";
 
         /**
-         * Optional: geo files layer(s) name(s): comma separated. The default
-         * value is ''.
+         * Geo files layer(s) name(s): comma separated. The default value is
+         * ''.
          */
         public static final String LAYER = "layer";
 
@@ -690,7 +690,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String DISTRIBUTED_LOCAL = "distributed_local";
 
         /**
-         * For Avro local timestamp columns
+         * For Avro local timestamp columns.
          */
         public static final String LOCAL_TIME_OFFSET = "local_time_offset";
 
@@ -703,8 +703,22 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String MAX_RECORDS_TO_LOAD = "max_records_to_load";
 
         /**
-         * Optional: number of tasks for reading file per rank. Default will be
-         * external_file_reader_num_tasks
+         * Specifies a comma-delimited list of column names to be used as the
+         * source-data column names.  If the payload has a header row (i.e.,
+         * {@link Options#TEXT_HAS_HEADER TEXT_HAS_HEADER} is {@link
+         * Options#TRUE TRUE}), these names override the payload's header
+         * names.  If the payload has no header row, these names are used as
+         * the source-data column names. Either way, the i-th name in this list
+         * applies to the i-th column in the payload, enabling name-based
+         * matching against the target table's columns (and use with {@link
+         * Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD} / {@link
+         * Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP}).
+         */
+        public static final String NAME_COLUMNS_FROM_FILE = "name_columns_from_file";
+
+        /**
+         * Number of tasks for reading file per rank. Default will be
+         * external_file_reader_num_tasks.
          */
         public static final String NUM_TASKS_PER_RANK = "num_tasks_per_rank";
 
@@ -717,28 +731,28 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String POLL_INTERVAL = "poll_interval";
 
         /**
-         * Optional: comma separated list of column names, to set as primary
-         * keys, when not specified in the type. The default value is ''.
+         * Comma separated list of column names, to set as primary keys, when
+         * not specified in the type. The default value is ''.
          */
         public static final String PRIMARY_KEYS = "primary_keys";
 
         /**
-         * Confluent Schema registry connection timeout (in Secs)
+         * Confluent Schema registry connection timeout (in secs).
          */
         public static final String SCHEMA_REGISTRY_CONNECTION_RETRIES = "schema_registry_connection_retries";
 
         /**
-         * Confluent Schema registry connection timeout (in Secs)
+         * Confluent Schema registry connection timeout (in secs).
          */
         public static final String SCHEMA_REGISTRY_CONNECTION_TIMEOUT = "schema_registry_connection_timeout";
 
         /**
-         * Max records to skip due to SR connection failures, before failing
+         * Max records to skip due to SR connection failures, before failing.
          */
         public static final String SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES = "schema_registry_max_consecutive_connection_failures";
 
         /**
-         * Max records to skip due to schema related errors, before failing
+         * Max records to skip due to schema related errors, before failing.
          */
         public static final String MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE = "max_consecutive_invalid_schema_failure";
 
@@ -749,8 +763,8 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String SCHEMA_REGISTRY_SCHEMA_NAME = "schema_registry_schema_name";
 
         /**
-         * Optional: comma separated list of column names, to set as primary
-         * keys, when not specified in the type. The default value is ''.
+         * Comma separated list of column names, to set as shard keys, when not
+         * specified in the type. The default value is ''.
          */
         public static final String SHARD_KEYS = "shard_keys";
 
@@ -772,9 +786,9 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String SUBSCRIBE = "subscribe";
 
         /**
-         * Optional: table_insert_mode. When inserting records from multiple
-         * files: if table_per_file then insert from each file into a new
-         * table. Currently supported only for shapefiles.
+         * When inserting records from multiple files: if {@link
+         * Options#TABLE_PER_FILE TABLE_PER_FILE}, then insert from each file
+         * into a new table. Currently supported only for shapefiles.
          * Supported values:
          * <ul>
          *     <li>{@link Options#SINGLE SINGLE}
@@ -878,7 +892,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * Add 'text_search' property to internally inferenced string columns.
          * Comma separated list of column names or '*' for all columns. To add
          * text_search property only to string columns of minimum size, set
-         * also the option 'text_search_min_column_length'
+         * also the option 'text_search_min_column_length'.
          */
         public static final String TEXT_SEARCH_COLUMNS = "text_search_columns";
 
@@ -930,14 +944,14 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String TYPE_INFERENCE_MAX_RECORDS_READ = "type_inference_max_records_read";
 
         /**
-         * optimize type inference for:
+         * Optimize type inference mode.
          * Supported values:
          * <ul>
          *     <li>{@link Options#ACCURACY ACCURACY}: Scans data to get
          *         exactly-typed and sized columns for all data scanned.
          *     <li>{@link Options#SPEED SPEED}: Scans data and picks the widest
          *         possible column types so that 'all' values will fit with
-         *         minimum data scanned
+         *         minimum data scanned.
          * </ul>
          * The default value is {@link Options#ACCURACY ACCURACY}.
          */
@@ -951,9 +965,25 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
 
         /**
          * Scans data and picks the widest possible column types so that 'all'
-         * values will fit with minimum data scanned
+         * values will fit with minimum data scanned.
          */
         public static final String SPEED = "speed";
+
+        /**
+         * Applies only when upserting (when update_on_existing_pk is true). If
+         * set to true (the default), an existing record matched by primary key
+         * is modified in place. If set to false, the matched record is updated
+         * by deleting it and inserting a replacement (delete and insert),
+         * which prevents the change from being reflected in dependent
+         * materialized views until they are refreshed.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#TRUE TRUE}.
+         */
+        public static final String ENABLE_INPLACE_UPDATES = "enable_inplace_updates";
 
         /**
          * Specifies the record collision policy for inserting into a table
@@ -971,13 +1001,24 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: Upsert new records when primary
-         *         keys match existing records
+         *         keys match existing records.
          *     <li>{@link Options#FALSE FALSE}: Reject new records when primary
-         *         keys match existing records
+         *         keys match existing records.
          * </ul>
          * The default value is {@link Options#FALSE FALSE}.
          */
         public static final String UPDATE_ON_EXISTING_PK = "update_on_existing_pk";
+
+        /**
+         * Comma-separated expressions, one per target table column.  Each
+         * expression is evaluated per record.  Empty entries (two consecutive
+         * commas) mean no transformation for that column -- the value is
+         * resolved from the input record, table default, NULL, or an error.
+         * Expressions may reference input columns by name or by position ($1
+         * for the first input column, $2 for the second, etc.). The default
+         * value is ''.
+         */
+        public static final String TRANSFORMATIONS = "transformations";
 
         private Options() {  }
     }
@@ -1017,8 +1058,8 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                   table name will have to meet standard <a
      *                   href="../../../../../../concepts/tables/#table-naming-criteria"
      *                   target="_top">table naming criteria</a>.
-     * @param dataText  Records formatted as delimited text
-     * @param dataBytes  Records formatted as binary data
+     * @param dataText  Records formatted as delimited text.
+     * @param dataBytes  Records formatted as binary data.
      * @param modifyColumns  Not implemented yet. The default value is an empty
      *                       {@link Map}.
      * @param createTableOptions  Options used when creating the target table.
@@ -1256,16 +1297,16 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link Options#BAD_RECORD_TABLE_NAME
-     *                         BAD_RECORD_TABLE_NAME}: Optional name of a table
-     *                         to which records that were rejected are written.
-     *                         The bad-record-table has the following columns:
+     *                         BAD_RECORD_TABLE_NAME}: Name of a table to which
+     *                         records that were rejected are written.  The
+     *                         bad-record-table has the following columns:
      *                         line_number (long), line_rejected (string),
      *                         error_message (string).
      *                     <li>{@link Options#BAD_RECORD_TABLE_LIMIT
      *                         BAD_RECORD_TABLE_LIMIT}: A positive integer
      *                         indicating the maximum number of records that
      *                         can be  written to the bad-record-table.
-     *                         Default value is 10000
+     *                         Default value is 10000.
      *                     <li>{@link Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
      *                         BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For
      *                         subscriptions: A positive integer indicating the
@@ -1273,7 +1314,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         the bad-record-table per file/payload. Default
      *                         value will be 'bad_record_table_limit' and total
      *                         size of the table per rank is limited to
-     *                         'bad_record_table_limit'
+     *                         'bad_record_table_limit'.
      *                     <li>{@link Options#BATCH_SIZE BATCH_SIZE}: Internal
      *                         tuning parameter--number of records per batch
      *                         when inserting data.
@@ -1329,13 +1370,12 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         with {@link Options#COLUMNS_TO_LOAD
      *                         COLUMNS_TO_LOAD}.
      *                     <li>{@link Options#COMPRESSION_TYPE
-     *                         COMPRESSION_TYPE}: Optional: payload compression
-     *                         type.
+     *                         COMPRESSION_TYPE}: Payload compression type.
      *                         Supported values:
      *                         <ul>
-     *                             <li>{@link Options#NONE NONE}: Uncompressed
+     *                             <li>{@link Options#NONE NONE}: Uncompressed.
      *                             <li>{@link Options#AUTO AUTO}: Default. Auto
-     *                                 detect compression type
+     *                                 detect compression type.
      *                             <li>{@link Options#GZIP GZIP}: gzip file
      *                                 compression.
      *                             <li>{@link Options#BZIP2 BZIP2}: bzip2 file
@@ -1404,18 +1444,18 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#AVRO AVRO}: Avro file
-     *                                 format
+     *                                 format.
      *                             <li>{@link Options#DELIMITED_TEXT
      *                                 DELIMITED_TEXT}: Delimited text file
      *                                 format; e.g., CSV, TSV, PSV, etc.
      *                             <li>{@link Options#GDB GDB}: Esri/GDB file
-     *                                 format
-     *                             <li>{@link Options#JSON JSON}: Json file
-     *                                 format
+     *                                 format.
+     *                             <li>{@link Options#JSON JSON}: JSON file
+     *                                 format.
      *                             <li>{@link Options#PARQUET PARQUET}: Apache
-     *                                 Parquet file format
+     *                                 Parquet file format.
      *                             <li>{@link Options#SHAPEFILE SHAPEFILE}:
-     *                                 ShapeFile file format
+     *                                 ShapeFile file format.
      *                         </ul>
      *                         The default value is {@link
      *                         Options#DELIMITED_TEXT DELIMITED_TEXT}.
@@ -1424,10 +1464,10 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Break up
-     *                                 nested columns to multiple columns
+     *                                 nested columns to multiple columns.
      *                             <li>{@link Options#FALSE FALSE}: Treat
-     *                                 nested columns as json columns instead
-     *                                 of flattening
+     *                                 nested columns as JSON columns instead
+     *                                 of flattening.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
@@ -1462,11 +1502,11 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Ignore new
      *                                 records whose primary key values collide
-     *                                 with those of existing records
+     *                                 with those of existing records.
      *                             <li>{@link Options#FALSE FALSE}: Treat as
      *                                 errors any new records whose primary key
      *                                 values collide with those of existing
-     *                                 records
+     *                                 records.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
@@ -1477,7 +1517,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#FULL FULL}: Run a type
      *                                 inference on the source data (if needed)
-     *                                 and ingest
+     *                                 and ingest.
      *                             <li>{@link Options#DRY_RUN DRY_RUN}: Does
      *                                 not load data, but walks through the
      *                                 source data and determines the number of
@@ -1491,9 +1531,9 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                                 is returned in the response.
      *                         </ul>
      *                         The default value is {@link Options#FULL FULL}.
-     *                     <li>{@link Options#LAYER LAYER}: Optional: geo files
-     *                         layer(s) name(s): comma separated. The default
-     *                         value is ''.
+     *                     <li>{@link Options#LAYER LAYER}: Geo files layer(s)
+     *                         name(s): comma separated. The default value is
+     *                         ''.
      *                     <li>{@link Options#LOADING_MODE LOADING_MODE}:
      *                         Scheme for distributing the extraction and
      *                         loading of data from the source data file(s).
@@ -1544,7 +1584,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         The default value is {@link Options#HEAD HEAD}.
      *                     <li>{@link Options#LOCAL_TIME_OFFSET
      *                         LOCAL_TIME_OFFSET}: For Avro local timestamp
-     *                         columns
+     *                         columns.
      *                     <li>{@link Options#MAX_RECORDS_TO_LOAD
      *                         MAX_RECORDS_TO_LOAD}: Limit the number of
      *                         records to load in this request: If this number
@@ -1552,10 +1592,26 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         records loaded will be limited to the next whole
      *                         number of batch_size (per working thread). The
      *                         default value is ''.
+     *                     <li>{@link Options#NAME_COLUMNS_FROM_FILE
+     *                         NAME_COLUMNS_FROM_FILE}: Specifies a
+     *                         comma-delimited list of column names to be used
+     *                         as the source-data column names.  If the payload
+     *                         has a header row (i.e., {@link
+     *                         Options#TEXT_HAS_HEADER TEXT_HAS_HEADER} is
+     *                         {@link Options#TRUE TRUE}), these names override
+     *                         the payload's header names.  If the payload has
+     *                         no header row, these names are used as the
+     *                         source-data column names. Either way, the i-th
+     *                         name in this list applies to the i-th column in
+     *                         the payload, enabling name-based matching
+     *                         against the target table's columns (and use with
+     *                         {@link Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD}
+     *                         / {@link Options#COLUMNS_TO_SKIP
+     *                         COLUMNS_TO_SKIP}).
      *                     <li>{@link Options#NUM_TASKS_PER_RANK
-     *                         NUM_TASKS_PER_RANK}: Optional: number of tasks
-     *                         for reading file per rank. Default will be
-     *                         external_file_reader_num_tasks
+     *                         NUM_TASKS_PER_RANK}: Number of tasks for reading
+     *                         file per rank. Default will be
+     *                         external_file_reader_num_tasks.
      *                     <li>{@link Options#POLL_INTERVAL POLL_INTERVAL}: If
      *                         {@link Options#TRUE TRUE}, the number of seconds
      *                         between attempts to load external files into the
@@ -1563,36 +1619,36 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         long as data is found.  If no data is found, the
      *                         interval will steadily increase to a maximum of
      *                         60 seconds.
-     *                     <li>{@link Options#PRIMARY_KEYS PRIMARY_KEYS}:
-     *                         Optional: comma separated list of column names,
-     *                         to set as primary keys, when not specified in
-     *                         the type. The default value is ''.
+     *                     <li>{@link Options#PRIMARY_KEYS PRIMARY_KEYS}: Comma
+     *                         separated list of column names, to set as
+     *                         primary keys, when not specified in the type.
+     *                         The default value is ''.
      *                     <li>{@link
      *                         Options#SCHEMA_REGISTRY_CONNECTION_RETRIES
      *                         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent
-     *                         Schema registry connection timeout (in Secs)
+     *                         Schema registry connection timeout (in secs).
      *                     <li>{@link
      *                         Options#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
      *                         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent
-     *                         Schema registry connection timeout (in Secs)
+     *                         Schema registry connection timeout (in secs).
      *                     <li>{@link
      *                         Options#SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES
      *                         SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES}:
      *                         Max records to skip due to SR connection
-     *                         failures, before failing
+     *                         failures, before failing.
      *                     <li>{@link
      *                         Options#MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE
      *                         MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE}: Max
      *                         records to skip due to schema related errors,
-     *                         before failing
+     *                         before failing.
      *                     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_NAME
      *                         SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro
      *                         schema in the schema registry to use when
      *                         reading Avro records.
-     *                     <li>{@link Options#SHARD_KEYS SHARD_KEYS}: Optional:
-     *                         comma separated list of column names, to set as
-     *                         primary keys, when not specified in the type.
-     *                         The default value is ''.
+     *                     <li>{@link Options#SHARD_KEYS SHARD_KEYS}: Comma
+     *                         separated list of column names, to set as shard
+     *                         keys, when not specified in the type. The
+     *                         default value is ''.
      *                     <li>{@link Options#SKIP_LINES SKIP_LINES}: Skip a
      *                         number of lines from the beginning of the file.
      *                     <li>{@link Options#SUBSCRIBE SUBSCRIBE}:
@@ -1606,10 +1662,10 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
      *                     <li>{@link Options#TABLE_INSERT_MODE
-     *                         TABLE_INSERT_MODE}: Optional: table_insert_mode.
-     *                         When inserting records from multiple files: if
-     *                         table_per_file then insert from each file into a
-     *                         new table. Currently supported only for
+     *                         TABLE_INSERT_MODE}: When inserting records from
+     *                         multiple files: if {@link Options#TABLE_PER_FILE
+     *                         TABLE_PER_FILE}, then insert from each file into
+     *                         a new table. Currently supported only for
      *                         shapefiles.
      *                         Supported values:
      *                         <ul>
@@ -1699,7 +1755,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         separated list of column names or '*' for all
      *                         columns. To add text_search property only to
      *                         string columns of minimum size, set also the
-     *                         option 'text_search_min_column_length'
+     *                         option 'text_search_min_column_length'.
      *                     <li>{@link Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
      *                         TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum
      *                         column size. Used only when
@@ -1740,8 +1796,8 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         TYPE_INFERENCE_MAX_RECORDS_READ}: The default
      *                         value is ''.
      *                     <li>{@link Options#TYPE_INFERENCE_MODE
-     *                         TYPE_INFERENCE_MODE}: optimize type inference
-     *                         for:
+     *                         TYPE_INFERENCE_MODE}: Optimize type inference
+     *                         mode.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#ACCURACY ACCURACY}: Scans
@@ -1750,10 +1806,26 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                             <li>{@link Options#SPEED SPEED}: Scans data
      *                                 and picks the widest possible column
      *                                 types so that 'all' values will fit with
-     *                                 minimum data scanned
+     *                                 minimum data scanned.
      *                         </ul>
      *                         The default value is {@link Options#ACCURACY
      *                         ACCURACY}.
+     *                     <li>{@link Options#ENABLE_INPLACE_UPDATES
+     *                         ENABLE_INPLACE_UPDATES}: Applies only when
+     *                         upserting (when update_on_existing_pk is true).
+     *                         If set to true (the default), an existing record
+     *                         matched by primary key is modified in place. If
+     *                         set to false, the matched record is updated by
+     *                         deleting it and inserting a replacement (delete
+     *                         and insert), which prevents the change from
+     *                         being reflected in dependent materialized views
+     *                         until they are refreshed.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#UPDATE_ON_EXISTING_PK
      *                         UPDATE_ON_EXISTING_PK}: Specifies the record
      *                         collision policy for inserting into a table with
@@ -1778,13 +1850,23 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Upsert new
      *                                 records when primary keys match existing
-     *                                 records
+     *                                 records.
      *                             <li>{@link Options#FALSE FALSE}: Reject new
      *                                 records when primary keys match existing
-     *                                 records
+     *                                 records.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#TRANSFORMATIONS TRANSFORMATIONS}:
+     *                         Comma-separated expressions, one per target
+     *                         table column.  Each expression is evaluated per
+     *                         record.  Empty entries (two consecutive commas)
+     *                         mean no transformation for that column -- the
+     *                         value is resolved from the input record, table
+     *                         default, NULL, or an error. Expressions may
+     *                         reference input columns by name or by position
+     *                         ($1 for the first input column, $2 for the
+     *                         second, etc.). The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -1835,7 +1917,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
     }
 
     /**
-     * Records formatted as delimited text
+     * Records formatted as delimited text.
      *
      * @return The current value of {@code dataText}.
      */
@@ -1844,7 +1926,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
     }
 
     /**
-     * Records formatted as delimited text
+     * Records formatted as delimited text.
      *
      * @param dataText  The new value for {@code dataText}.
      *
@@ -1856,7 +1938,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
     }
 
     /**
-     * Records formatted as binary data
+     * Records formatted as binary data.
      *
      * @return The current value of {@code dataBytes}.
      */
@@ -1865,7 +1947,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
     }
 
     /**
-     * Records formatted as binary data
+     * Records formatted as binary data.
      *
      * @param dataBytes  The new value for {@code dataBytes}.
      *
@@ -2196,20 +2278,19 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *     <li>{@link Options#BAD_RECORD_TABLE_NAME BAD_RECORD_TABLE_NAME}:
-     *         Optional name of a table to which records that were rejected are
-     *         written.  The bad-record-table has the following columns:
-     *         line_number (long), line_rejected (string), error_message
-     *         (string).
+     *         Name of a table to which records that were rejected are written.
+     *         The bad-record-table has the following columns: line_number
+     *         (long), line_rejected (string), error_message (string).
      *     <li>{@link Options#BAD_RECORD_TABLE_LIMIT BAD_RECORD_TABLE_LIMIT}: A
      *         positive integer indicating the maximum number of records that
      *         can be  written to the bad-record-table.   Default value is
-     *         10000
+     *         10000.
      *     <li>{@link Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
      *         BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions: A positive
      *         integer indicating the maximum number of records that can be
      *         written to the bad-record-table per file/payload. Default value
      *         will be 'bad_record_table_limit' and total size of the table per
-     *         rank is limited to 'bad_record_table_limit'
+     *         rank is limited to 'bad_record_table_limit'.
      *     <li>{@link Options#BATCH_SIZE BATCH_SIZE}: Internal tuning
      *         parameter--number of records per batch when inserting data.
      *     <li>{@link Options#COLUMN_FORMATS COLUMN_FORMATS}: For each target
@@ -2250,13 +2331,13 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         comma-delimited list of columns from the source data to skip.
      *         Mutually exclusive with {@link Options#COLUMNS_TO_LOAD
      *         COLUMNS_TO_LOAD}.
-     *     <li>{@link Options#COMPRESSION_TYPE COMPRESSION_TYPE}: Optional:
-     *         payload compression type.
+     *     <li>{@link Options#COMPRESSION_TYPE COMPRESSION_TYPE}: Payload
+     *         compression type.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#NONE NONE}: Uncompressed
+     *             <li>{@link Options#NONE NONE}: Uncompressed.
      *             <li>{@link Options#AUTO AUTO}: Default. Auto detect
-     *                 compression type
+     *                 compression type.
      *             <li>{@link Options#GZIP GZIP}: gzip file compression.
      *             <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
      *         </ul>
@@ -2306,15 +2387,15 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         file(s) whose records will be inserted.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#AVRO AVRO}: Avro file format
+     *             <li>{@link Options#AVRO AVRO}: Avro file format.
      *             <li>{@link Options#DELIMITED_TEXT DELIMITED_TEXT}: Delimited
      *                 text file format; e.g., CSV, TSV, PSV, etc.
-     *             <li>{@link Options#GDB GDB}: Esri/GDB file format
-     *             <li>{@link Options#JSON JSON}: Json file format
+     *             <li>{@link Options#GDB GDB}: Esri/GDB file format.
+     *             <li>{@link Options#JSON JSON}: JSON file format.
      *             <li>{@link Options#PARQUET PARQUET}: Apache Parquet file
-     *                 format
+     *                 format.
      *             <li>{@link Options#SHAPEFILE SHAPEFILE}: ShapeFile file
-     *                 format
+     *                 format.
      *         </ul>
      *         The default value is {@link Options#DELIMITED_TEXT
      *         DELIMITED_TEXT}.
@@ -2323,9 +2404,9 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Break up nested columns to
-     *                 multiple columns
+     *                 multiple columns.
      *             <li>{@link Options#FALSE FALSE}: Treat nested columns as
-     *                 json columns instead of flattening
+     *                 JSON columns instead of flattening.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#GDAL_CONFIGURATION_OPTIONS
@@ -2354,10 +2435,10 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Ignore new records whose
      *                 primary key values collide with those of existing
-     *                 records
+     *                 records.
      *             <li>{@link Options#FALSE FALSE}: Treat as errors any new
      *                 records whose primary key values collide with those of
-     *                 existing records
+     *                 existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#INGESTION_MODE INGESTION_MODE}: Whether to do a
@@ -2366,7 +2447,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#FULL FULL}: Run a type inference on the
-     *                 source data (if needed) and ingest
+     *                 source data (if needed) and ingest.
      *             <li>{@link Options#DRY_RUN DRY_RUN}: Does not load data, but
      *                 walks through the source data and determines the number
      *                 of valid records, taking into account the current mode
@@ -2377,8 +2458,8 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 the response.
      *         </ul>
      *         The default value is {@link Options#FULL FULL}.
-     *     <li>{@link Options#LAYER LAYER}: Optional: geo files layer(s)
-     *         name(s): comma separated. The default value is ''.
+     *     <li>{@link Options#LAYER LAYER}: Geo files layer(s) name(s): comma
+     *         separated. The default value is ''.
      *     <li>{@link Options#LOADING_MODE LOADING_MODE}: Scheme for
      *         distributing the extraction and loading of data from the source
      *         data file(s). This option applies only when loading files that
@@ -2414,42 +2495,53 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#HEAD HEAD}.
      *     <li>{@link Options#LOCAL_TIME_OFFSET LOCAL_TIME_OFFSET}: For Avro
-     *         local timestamp columns
+     *         local timestamp columns.
      *     <li>{@link Options#MAX_RECORDS_TO_LOAD MAX_RECORDS_TO_LOAD}: Limit
      *         the number of records to load in this request: If this number is
      *         larger than a batch_size, then the number of records loaded will
      *         be limited to the next whole number of batch_size (per working
      *         thread). The default value is ''.
-     *     <li>{@link Options#NUM_TASKS_PER_RANK NUM_TASKS_PER_RANK}: Optional:
-     *         number of tasks for reading file per rank. Default will be
-     *         external_file_reader_num_tasks
+     *     <li>{@link Options#NAME_COLUMNS_FROM_FILE NAME_COLUMNS_FROM_FILE}:
+     *         Specifies a comma-delimited list of column names to be used as
+     *         the source-data column names.  If the payload has a header row
+     *         (i.e., {@link Options#TEXT_HAS_HEADER TEXT_HAS_HEADER} is {@link
+     *         Options#TRUE TRUE}), these names override the payload's header
+     *         names.  If the payload has no header row, these names are used
+     *         as the source-data column names. Either way, the i-th name in
+     *         this list applies to the i-th column in the payload, enabling
+     *         name-based matching against the target table's columns (and use
+     *         with {@link Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD} / {@link
+     *         Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP}).
+     *     <li>{@link Options#NUM_TASKS_PER_RANK NUM_TASKS_PER_RANK}: Number of
+     *         tasks for reading file per rank. Default will be
+     *         external_file_reader_num_tasks.
      *     <li>{@link Options#POLL_INTERVAL POLL_INTERVAL}: If {@link
      *         Options#TRUE TRUE}, the number of seconds between attempts to
      *         load external files into the table.  If zero, polling will be
      *         continuous as long as data is found.  If no data is found, the
      *         interval will steadily increase to a maximum of 60 seconds.
-     *     <li>{@link Options#PRIMARY_KEYS PRIMARY_KEYS}: Optional: comma
-     *         separated list of column names, to set as primary keys, when not
-     *         specified in the type. The default value is ''.
+     *     <li>{@link Options#PRIMARY_KEYS PRIMARY_KEYS}: Comma separated list
+     *         of column names, to set as primary keys, when not specified in
+     *         the type. The default value is ''.
      *     <li>{@link Options#SCHEMA_REGISTRY_CONNECTION_RETRIES
      *         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent Schema registry
-     *         connection timeout (in Secs)
+     *         connection timeout (in secs).
      *     <li>{@link Options#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
      *         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent Schema registry
-     *         connection timeout (in Secs)
+     *         connection timeout (in secs).
      *     <li>{@link
      *         Options#SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES
      *         SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES}: Max
-     *         records to skip due to SR connection failures, before failing
+     *         records to skip due to SR connection failures, before failing.
      *     <li>{@link Options#MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE
      *         MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE}: Max records to skip due
-     *         to schema related errors, before failing
+     *         to schema related errors, before failing.
      *     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_NAME
      *         SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro schema in the
      *         schema registry to use when reading Avro records.
-     *     <li>{@link Options#SHARD_KEYS SHARD_KEYS}: Optional: comma separated
-     *         list of column names, to set as primary keys, when not specified
-     *         in the type. The default value is ''.
+     *     <li>{@link Options#SHARD_KEYS SHARD_KEYS}: Comma separated list of
+     *         column names, to set as shard keys, when not specified in the
+     *         type. The default value is ''.
      *     <li>{@link Options#SKIP_LINES SKIP_LINES}: Skip a number of lines
      *         from the beginning of the file.
      *     <li>{@link Options#SUBSCRIBE SUBSCRIBE}: Continuously poll the data
@@ -2460,10 +2552,10 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#TABLE_INSERT_MODE TABLE_INSERT_MODE}: Optional:
-     *         table_insert_mode. When inserting records from multiple files:
-     *         if table_per_file then insert from each file into a new table.
-     *         Currently supported only for shapefiles.
+     *     <li>{@link Options#TABLE_INSERT_MODE TABLE_INSERT_MODE}: When
+     *         inserting records from multiple files: if {@link
+     *         Options#TABLE_PER_FILE TABLE_PER_FILE}, then insert from each
+     *         file into a new table. Currently supported only for shapefiles.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#SINGLE SINGLE}
@@ -2531,7 +2623,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         'text_search' property to internally inferenced string columns.
      *         Comma separated list of column names or '*' for all columns. To
      *         add text_search property only to string columns of minimum size,
-     *         set also the option 'text_search_min_column_length'
+     *         set also the option 'text_search_min_column_length'.
      *     <li>{@link Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
      *         TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used
      *         only when 'text_search_columns' has a value.
@@ -2565,16 +2657,30 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *     <li>{@link Options#TYPE_INFERENCE_MAX_RECORDS_READ
      *         TYPE_INFERENCE_MAX_RECORDS_READ}: The default value is ''.
      *     <li>{@link Options#TYPE_INFERENCE_MODE TYPE_INFERENCE_MODE}:
-     *         optimize type inference for:
+     *         Optimize type inference mode.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#ACCURACY ACCURACY}: Scans data to get
      *                 exactly-typed and sized columns for all data scanned.
      *             <li>{@link Options#SPEED SPEED}: Scans data and picks the
      *                 widest possible column types so that 'all' values will
-     *                 fit with minimum data scanned
+     *                 fit with minimum data scanned.
      *         </ul>
      *         The default value is {@link Options#ACCURACY ACCURACY}.
+     *     <li>{@link Options#ENABLE_INPLACE_UPDATES ENABLE_INPLACE_UPDATES}:
+     *         Applies only when upserting (when update_on_existing_pk is
+     *         true). If set to true (the default), an existing record matched
+     *         by primary key is modified in place. If set to false, the
+     *         matched record is updated by deleting it and inserting a
+     *         replacement (delete and insert), which prevents the change from
+     *         being reflected in dependent materialized views until they are
+     *         refreshed.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK}:
      *         Specifies the record collision policy for inserting into a table
      *         with a <a href="../../../../../../concepts/tables/#primary-keys"
@@ -2592,11 +2698,19 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Upsert new records when
-     *                 primary keys match existing records
+     *                 primary keys match existing records.
      *             <li>{@link Options#FALSE FALSE}: Reject new records when
-     *                 primary keys match existing records
+     *                 primary keys match existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#TRANSFORMATIONS TRANSFORMATIONS}: Comma-separated
+     *         expressions, one per target table column.  Each expression is
+     *         evaluated per record.  Empty entries (two consecutive commas)
+     *         mean no transformation for that column -- the value is resolved
+     *         from the input record, table default, NULL, or an error.
+     *         Expressions may reference input columns by name or by position
+     *         ($1 for the first input column, $2 for the second, etc.). The
+     *         default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -2610,20 +2724,19 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *     <li>{@link Options#BAD_RECORD_TABLE_NAME BAD_RECORD_TABLE_NAME}:
-     *         Optional name of a table to which records that were rejected are
-     *         written.  The bad-record-table has the following columns:
-     *         line_number (long), line_rejected (string), error_message
-     *         (string).
+     *         Name of a table to which records that were rejected are written.
+     *         The bad-record-table has the following columns: line_number
+     *         (long), line_rejected (string), error_message (string).
      *     <li>{@link Options#BAD_RECORD_TABLE_LIMIT BAD_RECORD_TABLE_LIMIT}: A
      *         positive integer indicating the maximum number of records that
      *         can be  written to the bad-record-table.   Default value is
-     *         10000
+     *         10000.
      *     <li>{@link Options#BAD_RECORD_TABLE_LIMIT_PER_INPUT
      *         BAD_RECORD_TABLE_LIMIT_PER_INPUT}: For subscriptions: A positive
      *         integer indicating the maximum number of records that can be
      *         written to the bad-record-table per file/payload. Default value
      *         will be 'bad_record_table_limit' and total size of the table per
-     *         rank is limited to 'bad_record_table_limit'
+     *         rank is limited to 'bad_record_table_limit'.
      *     <li>{@link Options#BATCH_SIZE BATCH_SIZE}: Internal tuning
      *         parameter--number of records per batch when inserting data.
      *     <li>{@link Options#COLUMN_FORMATS COLUMN_FORMATS}: For each target
@@ -2664,13 +2777,13 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         comma-delimited list of columns from the source data to skip.
      *         Mutually exclusive with {@link Options#COLUMNS_TO_LOAD
      *         COLUMNS_TO_LOAD}.
-     *     <li>{@link Options#COMPRESSION_TYPE COMPRESSION_TYPE}: Optional:
-     *         payload compression type.
+     *     <li>{@link Options#COMPRESSION_TYPE COMPRESSION_TYPE}: Payload
+     *         compression type.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#NONE NONE}: Uncompressed
+     *             <li>{@link Options#NONE NONE}: Uncompressed.
      *             <li>{@link Options#AUTO AUTO}: Default. Auto detect
-     *                 compression type
+     *                 compression type.
      *             <li>{@link Options#GZIP GZIP}: gzip file compression.
      *             <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
      *         </ul>
@@ -2720,15 +2833,15 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         file(s) whose records will be inserted.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#AVRO AVRO}: Avro file format
+     *             <li>{@link Options#AVRO AVRO}: Avro file format.
      *             <li>{@link Options#DELIMITED_TEXT DELIMITED_TEXT}: Delimited
      *                 text file format; e.g., CSV, TSV, PSV, etc.
-     *             <li>{@link Options#GDB GDB}: Esri/GDB file format
-     *             <li>{@link Options#JSON JSON}: Json file format
+     *             <li>{@link Options#GDB GDB}: Esri/GDB file format.
+     *             <li>{@link Options#JSON JSON}: JSON file format.
      *             <li>{@link Options#PARQUET PARQUET}: Apache Parquet file
-     *                 format
+     *                 format.
      *             <li>{@link Options#SHAPEFILE SHAPEFILE}: ShapeFile file
-     *                 format
+     *                 format.
      *         </ul>
      *         The default value is {@link Options#DELIMITED_TEXT
      *         DELIMITED_TEXT}.
@@ -2737,9 +2850,9 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Break up nested columns to
-     *                 multiple columns
+     *                 multiple columns.
      *             <li>{@link Options#FALSE FALSE}: Treat nested columns as
-     *                 json columns instead of flattening
+     *                 JSON columns instead of flattening.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#GDAL_CONFIGURATION_OPTIONS
@@ -2768,10 +2881,10 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Ignore new records whose
      *                 primary key values collide with those of existing
-     *                 records
+     *                 records.
      *             <li>{@link Options#FALSE FALSE}: Treat as errors any new
      *                 records whose primary key values collide with those of
-     *                 existing records
+     *                 existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#INGESTION_MODE INGESTION_MODE}: Whether to do a
@@ -2780,7 +2893,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#FULL FULL}: Run a type inference on the
-     *                 source data (if needed) and ingest
+     *                 source data (if needed) and ingest.
      *             <li>{@link Options#DRY_RUN DRY_RUN}: Does not load data, but
      *                 walks through the source data and determines the number
      *                 of valid records, taking into account the current mode
@@ -2791,8 +2904,8 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 the response.
      *         </ul>
      *         The default value is {@link Options#FULL FULL}.
-     *     <li>{@link Options#LAYER LAYER}: Optional: geo files layer(s)
-     *         name(s): comma separated. The default value is ''.
+     *     <li>{@link Options#LAYER LAYER}: Geo files layer(s) name(s): comma
+     *         separated. The default value is ''.
      *     <li>{@link Options#LOADING_MODE LOADING_MODE}: Scheme for
      *         distributing the extraction and loading of data from the source
      *         data file(s). This option applies only when loading files that
@@ -2828,42 +2941,53 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#HEAD HEAD}.
      *     <li>{@link Options#LOCAL_TIME_OFFSET LOCAL_TIME_OFFSET}: For Avro
-     *         local timestamp columns
+     *         local timestamp columns.
      *     <li>{@link Options#MAX_RECORDS_TO_LOAD MAX_RECORDS_TO_LOAD}: Limit
      *         the number of records to load in this request: If this number is
      *         larger than a batch_size, then the number of records loaded will
      *         be limited to the next whole number of batch_size (per working
      *         thread). The default value is ''.
-     *     <li>{@link Options#NUM_TASKS_PER_RANK NUM_TASKS_PER_RANK}: Optional:
-     *         number of tasks for reading file per rank. Default will be
-     *         external_file_reader_num_tasks
+     *     <li>{@link Options#NAME_COLUMNS_FROM_FILE NAME_COLUMNS_FROM_FILE}:
+     *         Specifies a comma-delimited list of column names to be used as
+     *         the source-data column names.  If the payload has a header row
+     *         (i.e., {@link Options#TEXT_HAS_HEADER TEXT_HAS_HEADER} is {@link
+     *         Options#TRUE TRUE}), these names override the payload's header
+     *         names.  If the payload has no header row, these names are used
+     *         as the source-data column names. Either way, the i-th name in
+     *         this list applies to the i-th column in the payload, enabling
+     *         name-based matching against the target table's columns (and use
+     *         with {@link Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD} / {@link
+     *         Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP}).
+     *     <li>{@link Options#NUM_TASKS_PER_RANK NUM_TASKS_PER_RANK}: Number of
+     *         tasks for reading file per rank. Default will be
+     *         external_file_reader_num_tasks.
      *     <li>{@link Options#POLL_INTERVAL POLL_INTERVAL}: If {@link
      *         Options#TRUE TRUE}, the number of seconds between attempts to
      *         load external files into the table.  If zero, polling will be
      *         continuous as long as data is found.  If no data is found, the
      *         interval will steadily increase to a maximum of 60 seconds.
-     *     <li>{@link Options#PRIMARY_KEYS PRIMARY_KEYS}: Optional: comma
-     *         separated list of column names, to set as primary keys, when not
-     *         specified in the type. The default value is ''.
+     *     <li>{@link Options#PRIMARY_KEYS PRIMARY_KEYS}: Comma separated list
+     *         of column names, to set as primary keys, when not specified in
+     *         the type. The default value is ''.
      *     <li>{@link Options#SCHEMA_REGISTRY_CONNECTION_RETRIES
      *         SCHEMA_REGISTRY_CONNECTION_RETRIES}: Confluent Schema registry
-     *         connection timeout (in Secs)
+     *         connection timeout (in secs).
      *     <li>{@link Options#SCHEMA_REGISTRY_CONNECTION_TIMEOUT
      *         SCHEMA_REGISTRY_CONNECTION_TIMEOUT}: Confluent Schema registry
-     *         connection timeout (in Secs)
+     *         connection timeout (in secs).
      *     <li>{@link
      *         Options#SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES
      *         SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES}: Max
-     *         records to skip due to SR connection failures, before failing
+     *         records to skip due to SR connection failures, before failing.
      *     <li>{@link Options#MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE
      *         MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE}: Max records to skip due
-     *         to schema related errors, before failing
+     *         to schema related errors, before failing.
      *     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_NAME
      *         SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro schema in the
      *         schema registry to use when reading Avro records.
-     *     <li>{@link Options#SHARD_KEYS SHARD_KEYS}: Optional: comma separated
-     *         list of column names, to set as primary keys, when not specified
-     *         in the type. The default value is ''.
+     *     <li>{@link Options#SHARD_KEYS SHARD_KEYS}: Comma separated list of
+     *         column names, to set as shard keys, when not specified in the
+     *         type. The default value is ''.
      *     <li>{@link Options#SKIP_LINES SKIP_LINES}: Skip a number of lines
      *         from the beginning of the file.
      *     <li>{@link Options#SUBSCRIBE SUBSCRIBE}: Continuously poll the data
@@ -2874,10 +2998,10 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#TABLE_INSERT_MODE TABLE_INSERT_MODE}: Optional:
-     *         table_insert_mode. When inserting records from multiple files:
-     *         if table_per_file then insert from each file into a new table.
-     *         Currently supported only for shapefiles.
+     *     <li>{@link Options#TABLE_INSERT_MODE TABLE_INSERT_MODE}: When
+     *         inserting records from multiple files: if {@link
+     *         Options#TABLE_PER_FILE TABLE_PER_FILE}, then insert from each
+     *         file into a new table. Currently supported only for shapefiles.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#SINGLE SINGLE}
@@ -2945,7 +3069,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         'text_search' property to internally inferenced string columns.
      *         Comma separated list of column names or '*' for all columns. To
      *         add text_search property only to string columns of minimum size,
-     *         set also the option 'text_search_min_column_length'
+     *         set also the option 'text_search_min_column_length'.
      *     <li>{@link Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
      *         TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used
      *         only when 'text_search_columns' has a value.
@@ -2979,16 +3103,30 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *     <li>{@link Options#TYPE_INFERENCE_MAX_RECORDS_READ
      *         TYPE_INFERENCE_MAX_RECORDS_READ}: The default value is ''.
      *     <li>{@link Options#TYPE_INFERENCE_MODE TYPE_INFERENCE_MODE}:
-     *         optimize type inference for:
+     *         Optimize type inference mode.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#ACCURACY ACCURACY}: Scans data to get
      *                 exactly-typed and sized columns for all data scanned.
      *             <li>{@link Options#SPEED SPEED}: Scans data and picks the
      *                 widest possible column types so that 'all' values will
-     *                 fit with minimum data scanned
+     *                 fit with minimum data scanned.
      *         </ul>
      *         The default value is {@link Options#ACCURACY ACCURACY}.
+     *     <li>{@link Options#ENABLE_INPLACE_UPDATES ENABLE_INPLACE_UPDATES}:
+     *         Applies only when upserting (when update_on_existing_pk is
+     *         true). If set to true (the default), an existing record matched
+     *         by primary key is modified in place. If set to false, the
+     *         matched record is updated by deleting it and inserting a
+     *         replacement (delete and insert), which prevents the change from
+     *         being reflected in dependent materialized views until they are
+     *         refreshed.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK}:
      *         Specifies the record collision policy for inserting into a table
      *         with a <a href="../../../../../../concepts/tables/#primary-keys"
@@ -3006,11 +3144,19 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Upsert new records when
-     *                 primary keys match existing records
+     *                 primary keys match existing records.
      *             <li>{@link Options#FALSE FALSE}: Reject new records when
-     *                 primary keys match existing records
+     *                 primary keys match existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#TRANSFORMATIONS TRANSFORMATIONS}: Comma-separated
+     *         expressions, one per target table column.  Each expression is
+     *         evaluated per record.  Empty entries (two consecutive commas)
+     *         mean no transformation for that column -- the value is resolved
+     *         from the input record, table default, NULL, or an error.
+     *         Expressions may reference input columns by name or by position
+     *         ($1 for the first input column, $2 for the second, etc.). The
+     *         default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      *

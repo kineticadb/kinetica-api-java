@@ -151,7 +151,7 @@ public class FilterByListRequest implements IndexedRecord {
      *                  an already existing table or view. The default value is
      *                  ''.
      * @param columnValuesMap  List of values for the corresponding column in
-     *                         the table
+     *                         the table.
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link Options#CREATE_TEMP_TABLE
@@ -267,7 +267,7 @@ public class FilterByListRequest implements IndexedRecord {
     }
 
     /**
-     * List of values for the corresponding column in the table
+     * List of values for the corresponding column in the table.
      *
      * @return The current value of {@code columnValuesMap}.
      */
@@ -276,7 +276,7 @@ public class FilterByListRequest implements IndexedRecord {
     }
 
     /**
-     * List of values for the corresponding column in the table
+     * List of values for the corresponding column in the table.
      *
      * @param columnValuesMap  The new value for {@code columnValuesMap}.
      *

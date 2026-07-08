@@ -54,7 +54,7 @@ public class AggregateMinMaxResponse implements IndexedRecord {
         /**
          * The maximum value of {@link
          * com.gpudb.protocol.AggregateMinMaxRequest#getColumnName()
-         * columnName}, stored as a byte vector
+         * columnName}, stored as a byte vector.
          */
         public static final String MAX_STRING = "max_string";
 
@@ -125,7 +125,7 @@ public class AggregateMinMaxResponse implements IndexedRecord {
      *         columnName}, stored as a byte vector.
      *     <li>{@link Info#MAX_STRING MAX_STRING}: The maximum value of {@link
      *         com.gpudb.protocol.AggregateMinMaxRequest#getColumnName()
-     *         columnName}, stored as a byte vector
+     *         columnName}, stored as a byte vector.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -143,7 +143,7 @@ public class AggregateMinMaxResponse implements IndexedRecord {
      *         columnName}, stored as a byte vector.
      *     <li>{@link Info#MAX_STRING MAX_STRING}: The maximum value of {@link
      *         com.gpudb.protocol.AggregateMinMaxRequest#getColumnName()
-     *         columnName}, stored as a byte vector
+     *         columnName}, stored as a byte vector.
      * </ul>
      * The default value is an empty {@link Map}.
      *

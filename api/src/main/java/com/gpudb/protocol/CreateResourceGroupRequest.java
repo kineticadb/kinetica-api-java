@@ -73,24 +73,26 @@ public class CreateResourceGroupRequest implements IndexedRecord {
      */
     public static final class Ranking {
         /**
-         * Make this resource group the new first one in the ordering
+         * Make this resource group the new first one in the ordering.
          */
         public static final String FIRST = "first";
 
         /**
-         * Make this resource group the new last one in the ordering
+         * Make this resource group the new last one in the ordering.
          */
         public static final String LAST = "last";
 
         /**
          * Place this resource group before the one specified by {@link
-         * #getAdjoiningResourceGroup() adjoiningResourceGroup} in the ordering
+         * #getAdjoiningResourceGroup() adjoiningResourceGroup} in the
+         * ordering.
          */
         public static final String BEFORE = "before";
 
         /**
          * Place this resource group after the one specified by {@link
-         * #getAdjoiningResourceGroup() adjoiningResourceGroup} in the ordering
+         * #getAdjoiningResourceGroup() adjoiningResourceGroup} in the
+         * ordering.
          */
         public static final String AFTER = "after";
 
@@ -179,15 +181,15 @@ public class CreateResourceGroupRequest implements IndexedRecord {
      *                 Supported values:
      *                 <ul>
      *                     <li>{@link Ranking#FIRST FIRST}: Make this resource
-     *                         group the new first one in the ordering
+     *                         group the new first one in the ordering.
      *                     <li>{@link Ranking#LAST LAST}: Make this resource
-     *                         group the new last one in the ordering
+     *                         group the new last one in the ordering.
      *                     <li>{@link Ranking#BEFORE BEFORE}: Place this
      *                         resource group before the one specified by
-     *                         {@code adjoiningResourceGroup} in the ordering
+     *                         {@code adjoiningResourceGroup} in the ordering.
      *                     <li>{@link Ranking#AFTER AFTER}: Place this resource
      *                         group after the one specified by {@code
-     *                         adjoiningResourceGroup} in the ordering
+     *                         adjoiningResourceGroup} in the ordering.
      *                 </ul>
      * @param adjoiningResourceGroup  If {@code ranking} is {@link
      *                                Ranking#BEFORE BEFORE} or {@link
@@ -308,15 +310,15 @@ public class CreateResourceGroupRequest implements IndexedRecord {
      * Supported values:
      * <ul>
      *     <li>{@link Ranking#FIRST FIRST}: Make this resource group the new
-     *         first one in the ordering
+     *         first one in the ordering.
      *     <li>{@link Ranking#LAST LAST}: Make this resource group the new last
-     *         one in the ordering
+     *         one in the ordering.
      *     <li>{@link Ranking#BEFORE BEFORE}: Place this resource group before
      *         the one specified by {@link #getAdjoiningResourceGroup()
-     *         adjoiningResourceGroup} in the ordering
+     *         adjoiningResourceGroup} in the ordering.
      *     <li>{@link Ranking#AFTER AFTER}: Place this resource group after the
      *         one specified by {@link #getAdjoiningResourceGroup()
-     *         adjoiningResourceGroup} in the ordering
+     *         adjoiningResourceGroup} in the ordering.
      * </ul>
      *
      * @return The current value of {@code ranking}.
@@ -331,15 +333,15 @@ public class CreateResourceGroupRequest implements IndexedRecord {
      * Supported values:
      * <ul>
      *     <li>{@link Ranking#FIRST FIRST}: Make this resource group the new
-     *         first one in the ordering
+     *         first one in the ordering.
      *     <li>{@link Ranking#LAST LAST}: Make this resource group the new last
-     *         one in the ordering
+     *         one in the ordering.
      *     <li>{@link Ranking#BEFORE BEFORE}: Place this resource group before
      *         the one specified by {@link #getAdjoiningResourceGroup()
-     *         adjoiningResourceGroup} in the ordering
+     *         adjoiningResourceGroup} in the ordering.
      *     <li>{@link Ranking#AFTER AFTER}: Place this resource group after the
      *         one specified by {@link #getAdjoiningResourceGroup()
-     *         adjoiningResourceGroup} in the ordering
+     *         adjoiningResourceGroup} in the ordering.
      * </ul>
      *
      * @param ranking  The new value for {@code ranking}.

@@ -48,7 +48,7 @@ public class ShowResourceObjectsResponse implements IndexedRecord {
     /**
      * Tier usage across ranks. Layout is:
      * response.rank_usage[rank_number][resource_group_name] = group_usage (as
-     * stringified json)
+     * stringified JSON).
      *
      * @return The current value of {@code rankObjects}.
      */
@@ -59,7 +59,7 @@ public class ShowResourceObjectsResponse implements IndexedRecord {
     /**
      * Tier usage across ranks. Layout is:
      * response.rank_usage[rank_number][resource_group_name] = group_usage (as
-     * stringified json)
+     * stringified JSON).
      *
      * @param rankObjects  The new value for {@code rankObjects}.
      *

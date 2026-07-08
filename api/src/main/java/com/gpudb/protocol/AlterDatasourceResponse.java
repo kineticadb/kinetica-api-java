@@ -46,7 +46,7 @@ public class AlterDatasourceResponse implements IndexedRecord {
     }
 
     /**
-     * Map of values updated
+     * Map of values updated.
      *
      * @return The current value of {@code updatedPropertiesMap}.
      */
@@ -55,7 +55,7 @@ public class AlterDatasourceResponse implements IndexedRecord {
     }
 
     /**
-     * Map of values updated
+     * Map of values updated.
      *
      * @param updatedPropertiesMap  The new value for {@code
      *                              updatedPropertiesMap}.

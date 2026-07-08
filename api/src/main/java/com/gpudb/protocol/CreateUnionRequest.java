@@ -349,7 +349,7 @@ public class CreateUnionRequest implements IndexedRecord {
 
         /**
          * Return a count of 0 for the union table response to avoid the cost
-         * of counting; optimization needed for many chunk virtual_union's. The
+         * of counting; optimization needed for many chunk virtual unions. The
          * default value is 'false'.
          */
         public static final String NO_COUNT = "no_count";
@@ -582,7 +582,7 @@ public class CreateUnionRequest implements IndexedRecord {
      *                     <li>{@link Options#NO_COUNT NO_COUNT}: Return a
      *                         count of 0 for the union table response to avoid
      *                         the cost of counting; optimization needed for
-     *                         many chunk virtual_union's. The default value is
+     *                         many chunk virtual unions. The default value is
      *                         'false'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
@@ -848,7 +848,7 @@ public class CreateUnionRequest implements IndexedRecord {
      *         target="_top">compression codec</a> for this table's columns.
      *     <li>{@link Options#NO_COUNT NO_COUNT}: Return a count of 0 for the
      *         union table response to avoid the cost of counting; optimization
-     *         needed for many chunk virtual_union's. The default value is
+     *         needed for many chunk virtual unions. The default value is
      *         'false'.
      * </ul>
      * The default value is an empty {@link Map}.
@@ -1010,7 +1010,7 @@ public class CreateUnionRequest implements IndexedRecord {
      *         target="_top">compression codec</a> for this table's columns.
      *     <li>{@link Options#NO_COUNT NO_COUNT}: Return a count of 0 for the
      *         union table response to avoid the cost of counting; optimization
-     *         needed for many chunk virtual_union's. The default value is
+     *         needed for many chunk virtual unions. The default value is
      *         'false'.
      * </ul>
      * The default value is an empty {@link Map}.

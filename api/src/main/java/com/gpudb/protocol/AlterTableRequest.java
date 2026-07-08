@@ -93,7 +93,7 @@ public class AlterTableRequest implements IndexedRecord {
      * A set of string constants for the {@link AlterTableRequest} parameter
      * {@link #getAction() action}.
      * <p>
-     * Modification operation to be applied
+     * Modification operation to be applied.
      */
     public static final class Action {
         /**
@@ -213,6 +213,20 @@ public class AlterTableRequest implements IndexedRecord {
          * table specified in {@link #getTableName() tableName}.
          */
         public static final String DELETE_COLUMN = "delete_column";
+
+        /**
+         * Sets or replaces the default value expression for the column
+         * specified in {@link #getValue() value}.  The new default is taken
+         * from {@link Options#ADD_COLUMN_EXPRESSION ADD_COLUMN_EXPRESSION}.
+         * Existing properties on the column are preserved.
+         */
+        public static final String SET_DEFAULT = "set_default";
+
+        /**
+         * Removes the default value expression from the column specified in
+         * {@link #getValue() value}.  Other column properties are preserved.
+         */
+        public static final String DELETE_DEFAULT = "delete_default";
 
         /**
          * Creates a <a href="../../../../../../concepts/tables/#foreign-key"
@@ -386,7 +400,7 @@ public class AlterTableRequest implements IndexedRecord {
          * Set startup data loading scheme for the table; see description of
          * 'load_vectors_policy' in {@link
          * com.gpudb.GPUdb#createTable(CreateTableRequest) GPUdb.createTable}
-         * for possible values for {@link #getValue() value}
+         * for possible values for {@link #getValue() value}.
          */
         public static final String SET_LOAD_VECTORS_POLICY = "set_load_vectors_policy";
 
@@ -394,7 +408,7 @@ public class AlterTableRequest implements IndexedRecord {
          * Set startup primary key generation scheme for the table; see
          * description of 'build_pk_index_policy' in {@link
          * com.gpudb.GPUdb#createTable(CreateTableRequest) GPUdb.createTable}
-         * for possible values for {@link #getValue() value}
+         * for possible values for {@link #getValue() value}.
          */
         public static final String SET_BUILD_PK_INDEX_POLICY = "set_build_pk_index_policy";
 
@@ -403,7 +417,7 @@ public class AlterTableRequest implements IndexedRecord {
          * description of 'build_materialized_view_policy' in {@link
          * com.gpudb.GPUdb#createMaterializedView(CreateMaterializedViewRequest)
          * GPUdb.createMaterializedView} for possible values for {@link
-         * #getValue() value}
+         * #getValue() value}.
          */
         public static final String SET_BUILD_MATERIALIZED_VIEW_POLICY = "set_build_materialized_view_policy";
 
@@ -422,9 +436,10 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String TABLE_NAME = "table_name";
 
         /**
-         * When adding a column, set a default value for existing records.  For
-         * nullable columns, the default value will be null, regardless of data
-         * type.
+         * When adding a column, set a literal default value for existing
+         * records.  For nullable columns, the default value will be null,
+         * regardless of data type.  Also persisted as the column's default for
+         * future inserts that omit the column.
          */
         public static final String COLUMN_DEFAULT_VALUE = "column_default_value";
 
@@ -441,8 +456,8 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String COLUMN_TYPE = "column_type";
 
         /**
-         * [DEPRECATED--please use {@link Options#ADD_COLUMN_EXPRESSION
-         * ADD_COLUMN_EXPRESSION} instead.]
+         * [DEPRECATED]  Please use {@link Options#ADD_COLUMN_EXPRESSION
+         * ADD_COLUMN_EXPRESSION} instead.
          */
         public static final String COPY_VALUES_FROM_COLUMN = "copy_values_from_column";
 
@@ -494,14 +509,26 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String UPDATE_LAST_ACCESS_TIME = "update_last_access_time";
 
         /**
-         * When adding a column, an optional expression to use for the new
-         * column's values. Any valid expression may be used, including one
-         * containing references to existing columns in the same table.
+         * When adding a column or setting a new default with {@link
+         * #getAction() action} set to {@link Action#SET_DEFAULT SET_DEFAULT},
+         * the new default expression (GPUdb-syntax) for the column.  Any valid
+         * expression may be used, including one containing references to
+         * existing columns in the same table.  Persisted as the column's
+         * default for future inserts that omit the column; for add_column,
+         * also used to backfill existing rows.
          */
         public static final String ADD_COLUMN_EXPRESSION = "add_column_expression";
 
         /**
-         * Optional parameter for specifying the <a
+         * Optional SQL-syntax form of {@link Options#ADD_COLUMN_EXPRESSION
+         * ADD_COLUMN_EXPRESSION}, used only when the SQL syntax differs from
+         * the GPUdb syntax.  Persisted alongside the GPUdb form so SHOW CREATE
+         * TABLE / information_schema can reproduce the original SQL.
+         */
+        public static final String ADD_COLUMN_EXPRESSION_SQL = "add_column_expression_sql";
+
+        /**
+         * Parameter for specifying the <a
          * href="../../../../../../rm/concepts/#tier-strategies"
          * target="_top">tier strategy</a> for the table and its columns when
          * {@link #getAction() action} is {@link Action#SET_STRATEGY_DEFINITION
@@ -529,17 +556,17 @@ public class AlterTableRequest implements IndexedRecord {
          *         target="_top">chunk skip index</a>.
          *     <li>{@link Options#GEOSPATIAL GEOSPATIAL}: Create or delete a <a
          *         href="../../../../../../concepts/indexes/#geospatial-index"
-         *         target="_top">geospatial index</a>
+         *         target="_top">geospatial index</a>.
          *     <li>{@link Options#CAGRA CAGRA}: Create or delete a <a
          *         href="../../../../../../concepts/indexes/#cagra-index"
          *         target="_top">CAGRA index</a> on a <a
          *         href="../../../../../../vector_search/#vector-type"
-         *         target="_top">vector column</a>
+         *         target="_top">vector column</a>.
          *     <li>{@link Options#HNSW HNSW}: Create or delete an <a
          *         href="../../../../../../concepts/indexes/#hnsw-index"
          *         target="_top">HNSW index</a> on a <a
          *         href="../../../../../../vector_search/#vector-type"
-         *         target="_top">vector column</a>
+         *         target="_top">vector column</a>.
          * </ul>
          * The default value is {@link Options#COLUMN COLUMN}.
          */
@@ -569,7 +596,7 @@ public class AlterTableRequest implements IndexedRecord {
         /**
          * Create or delete a <a
          * href="../../../../../../concepts/indexes/#geospatial-index"
-         * target="_top">geospatial index</a>
+         * target="_top">geospatial index</a>.
          */
         public static final String GEOSPATIAL = "geospatial";
 
@@ -578,7 +605,7 @@ public class AlterTableRequest implements IndexedRecord {
          * href="../../../../../../concepts/indexes/#cagra-index"
          * target="_top">CAGRA index</a> on a <a
          * href="../../../../../../vector_search/#vector-type"
-         * target="_top">vector column</a>
+         * target="_top">vector column</a>.
          */
         public static final String CAGRA = "cagra";
 
@@ -587,7 +614,7 @@ public class AlterTableRequest implements IndexedRecord {
          * href="../../../../../../concepts/indexes/#hnsw-index"
          * target="_top">HNSW index</a> on a <a
          * href="../../../../../../vector_search/#vector-type"
-         * target="_top">vector column</a>
+         * target="_top">vector column</a>.
          */
         public static final String HNSW = "hnsw";
 
@@ -724,6 +751,17 @@ public class AlterTableRequest implements IndexedRecord {
      *                    <li>{@link Action#DELETE_COLUMN DELETE_COLUMN}:
      *                        Deletes the column specified in {@code value}
      *                        from the table specified in {@code tableName}.
+     *                    <li>{@link Action#SET_DEFAULT SET_DEFAULT}: Sets or
+     *                        replaces the default value expression for the
+     *                        column specified in {@code value}.  The new
+     *                        default is taken from {@link
+     *                        Options#ADD_COLUMN_EXPRESSION
+     *                        ADD_COLUMN_EXPRESSION}.  Existing properties on
+     *                        the column are preserved.
+     *                    <li>{@link Action#DELETE_DEFAULT DELETE_DEFAULT}:
+     *                        Removes the default value expression from the
+     *                        column specified in {@code value}.  Other column
+     *                        properties are preserved.
      *                    <li>{@link Action#CREATE_FOREIGN_KEY
      *                        CREATE_FOREIGN_KEY}: Creates a <a
      *                        href="../../../../../../concepts/tables/#foreign-key"
@@ -864,14 +902,14 @@ public class AlterTableRequest implements IndexedRecord {
      *                        'load_vectors_policy' in {@link
      *                        com.gpudb.GPUdb#createTable(CreateTableRequest)
      *                        GPUdb.createTable} for possible values for {@code
-     *                        value}
+     *                        value}.
      *                    <li>{@link Action#SET_BUILD_PK_INDEX_POLICY
      *                        SET_BUILD_PK_INDEX_POLICY}: Set startup primary
      *                        key generation scheme for the table; see
      *                        description of 'build_pk_index_policy' in {@link
      *                        com.gpudb.GPUdb#createTable(CreateTableRequest)
      *                        GPUdb.createTable} for possible values for {@code
-     *                        value}
+     *                        value}.
      *                    <li>{@link Action#SET_BUILD_MATERIALIZED_VIEW_POLICY
      *                        SET_BUILD_MATERIALIZED_VIEW_POLICY}: Set startup
      *                        rebuilding scheme for the materialized view; see
@@ -879,7 +917,7 @@ public class AlterTableRequest implements IndexedRecord {
      *                        in {@link
      *                        com.gpudb.GPUdb#createMaterializedView(CreateMaterializedViewRequest)
      *                        GPUdb.createMaterializedView} for possible values
-     *                        for {@code value}
+     *                        for {@code value}.
      *                </ul>
      * @param value  The value of the modification, depending on {@code
      *               action}. For example, if {@code action} is {@link
@@ -900,9 +938,11 @@ public class AlterTableRequest implements IndexedRecord {
      *                     <li>{@link Options#TABLE_NAME TABLE_NAME}
      *                     <li>{@link Options#COLUMN_DEFAULT_VALUE
      *                         COLUMN_DEFAULT_VALUE}: When adding a column, set
-     *                         a default value for existing records.  For
-     *                         nullable columns, the default value will be
-     *                         null, regardless of data type.
+     *                         a literal default value for existing records.
+     *                         For nullable columns, the default value will be
+     *                         null, regardless of data type.  Also persisted
+     *                         as the column's default for future inserts that
+     *                         omit the column.
      *                     <li>{@link Options#COLUMN_PROPERTIES
      *                         COLUMN_PROPERTIES}: When adding or changing a
      *                         column, set the column properties (strings,
@@ -913,9 +953,9 @@ public class AlterTableRequest implements IndexedRecord {
      *                         (strings, separated by a comma: int, double,
      *                         string, null etc).
      *                     <li>{@link Options#COPY_VALUES_FROM_COLUMN
-     *                         COPY_VALUES_FROM_COLUMN}: [DEPRECATED--please
+     *                         COPY_VALUES_FROM_COLUMN}: [DEPRECATED]  Please
      *                         use {@link Options#ADD_COLUMN_EXPRESSION
-     *                         ADD_COLUMN_EXPRESSION} instead.]
+     *                         ADD_COLUMN_EXPRESSION} instead.
      *                     <li>{@link Options#RENAME_COLUMN RENAME_COLUMN}:
      *                         When changing a column, specify new column name.
      *                     <li>{@link Options#VALIDATE_CHANGE_COLUMN
@@ -950,14 +990,27 @@ public class AlterTableRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#ADD_COLUMN_EXPRESSION
-     *                         ADD_COLUMN_EXPRESSION}: When adding a column, an
-     *                         optional expression to use for the new column's
-     *                         values. Any valid expression may be used,
+     *                         ADD_COLUMN_EXPRESSION}: When adding a column or
+     *                         setting a new default with {@code action} set to
+     *                         {@link Action#SET_DEFAULT SET_DEFAULT}, the new
+     *                         default expression (GPUdb-syntax) for the
+     *                         column.  Any valid expression may be used,
      *                         including one containing references to existing
-     *                         columns in the same table.
+     *                         columns in the same table.  Persisted as the
+     *                         column's default for future inserts that omit
+     *                         the column; for add_column, also used to
+     *                         backfill existing rows.
+     *                     <li>{@link Options#ADD_COLUMN_EXPRESSION_SQL
+     *                         ADD_COLUMN_EXPRESSION_SQL}: Optional SQL-syntax
+     *                         form of {@link Options#ADD_COLUMN_EXPRESSION
+     *                         ADD_COLUMN_EXPRESSION}, used only when the SQL
+     *                         syntax differs from the GPUdb syntax.  Persisted
+     *                         alongside the GPUdb form so SHOW CREATE TABLE /
+     *                         information_schema can reproduce the original
+     *                         SQL.
      *                     <li>{@link Options#STRATEGY_DEFINITION
-     *                         STRATEGY_DEFINITION}: Optional parameter for
-     *                         specifying the <a
+     *                         STRATEGY_DEFINITION}: Parameter for specifying
+     *                         the <a
      *                         href="../../../../../../rm/concepts/#tier-strategies"
      *                         target="_top">tier strategy</a> for the table
      *                         and its columns when {@code action} is {@link
@@ -990,19 +1043,19 @@ public class AlterTableRequest implements IndexedRecord {
      *                             <li>{@link Options#GEOSPATIAL GEOSPATIAL}:
      *                                 Create or delete a <a
      *                                 href="../../../../../../concepts/indexes/#geospatial-index"
-     *                                 target="_top">geospatial index</a>
+     *                                 target="_top">geospatial index</a>.
      *                             <li>{@link Options#CAGRA CAGRA}: Create or
      *                                 delete a <a
      *                                 href="../../../../../../concepts/indexes/#cagra-index"
      *                                 target="_top">CAGRA index</a> on a <a
      *                                 href="../../../../../../vector_search/#vector-type"
-     *                                 target="_top">vector column</a>
+     *                                 target="_top">vector column</a>.
      *                             <li>{@link Options#HNSW HNSW}: Create or
      *                                 delete an <a
      *                                 href="../../../../../../concepts/indexes/#hnsw-index"
      *                                 target="_top">HNSW index</a> on a <a
      *                                 href="../../../../../../vector_search/#vector-type"
-     *                                 target="_top">vector column</a>
+     *                                 target="_top">vector column</a>.
      *                         </ul>
      *                         The default value is {@link Options#COLUMN
      *                         COLUMN}.
@@ -1138,6 +1191,14 @@ public class AlterTableRequest implements IndexedRecord {
      *     <li>{@link Action#DELETE_COLUMN DELETE_COLUMN}: Deletes the column
      *         specified in {@link #getValue() value} from the table specified
      *         in {@link #getTableName() tableName}.
+     *     <li>{@link Action#SET_DEFAULT SET_DEFAULT}: Sets or replaces the
+     *         default value expression for the column specified in {@link
+     *         #getValue() value}.  The new default is taken from {@link
+     *         Options#ADD_COLUMN_EXPRESSION ADD_COLUMN_EXPRESSION}.  Existing
+     *         properties on the column are preserved.
+     *     <li>{@link Action#DELETE_DEFAULT DELETE_DEFAULT}: Removes the
+     *         default value expression from the column specified in {@link
+     *         #getValue() value}.  Other column properties are preserved.
      *     <li>{@link Action#CREATE_FOREIGN_KEY CREATE_FOREIGN_KEY}: Creates a
      *         <a href="../../../../../../concepts/tables/#foreign-key"
      *         target="_top">foreign key</a> specified in {@link #getValue()
@@ -1255,20 +1316,20 @@ public class AlterTableRequest implements IndexedRecord {
      *         of 'load_vectors_policy' in {@link
      *         com.gpudb.GPUdb#createTable(CreateTableRequest)
      *         GPUdb.createTable} for possible values for {@link #getValue()
-     *         value}
+     *         value}.
      *     <li>{@link Action#SET_BUILD_PK_INDEX_POLICY
      *         SET_BUILD_PK_INDEX_POLICY}: Set startup primary key generation
      *         scheme for the table; see description of 'build_pk_index_policy'
      *         in {@link com.gpudb.GPUdb#createTable(CreateTableRequest)
      *         GPUdb.createTable} for possible values for {@link #getValue()
-     *         value}
+     *         value}.
      *     <li>{@link Action#SET_BUILD_MATERIALIZED_VIEW_POLICY
      *         SET_BUILD_MATERIALIZED_VIEW_POLICY}: Set startup rebuilding
      *         scheme for the materialized view; see description of
      *         'build_materialized_view_policy' in {@link
      *         com.gpudb.GPUdb#createMaterializedView(CreateMaterializedViewRequest)
      *         GPUdb.createMaterializedView} for possible values for {@link
-     *         #getValue() value}
+     *         #getValue() value}.
      * </ul>
      *
      * @return The current value of {@code action}.
@@ -1366,6 +1427,14 @@ public class AlterTableRequest implements IndexedRecord {
      *     <li>{@link Action#DELETE_COLUMN DELETE_COLUMN}: Deletes the column
      *         specified in {@link #getValue() value} from the table specified
      *         in {@link #getTableName() tableName}.
+     *     <li>{@link Action#SET_DEFAULT SET_DEFAULT}: Sets or replaces the
+     *         default value expression for the column specified in {@link
+     *         #getValue() value}.  The new default is taken from {@link
+     *         Options#ADD_COLUMN_EXPRESSION ADD_COLUMN_EXPRESSION}.  Existing
+     *         properties on the column are preserved.
+     *     <li>{@link Action#DELETE_DEFAULT DELETE_DEFAULT}: Removes the
+     *         default value expression from the column specified in {@link
+     *         #getValue() value}.  Other column properties are preserved.
      *     <li>{@link Action#CREATE_FOREIGN_KEY CREATE_FOREIGN_KEY}: Creates a
      *         <a href="../../../../../../concepts/tables/#foreign-key"
      *         target="_top">foreign key</a> specified in {@link #getValue()
@@ -1483,20 +1552,20 @@ public class AlterTableRequest implements IndexedRecord {
      *         of 'load_vectors_policy' in {@link
      *         com.gpudb.GPUdb#createTable(CreateTableRequest)
      *         GPUdb.createTable} for possible values for {@link #getValue()
-     *         value}
+     *         value}.
      *     <li>{@link Action#SET_BUILD_PK_INDEX_POLICY
      *         SET_BUILD_PK_INDEX_POLICY}: Set startup primary key generation
      *         scheme for the table; see description of 'build_pk_index_policy'
      *         in {@link com.gpudb.GPUdb#createTable(CreateTableRequest)
      *         GPUdb.createTable} for possible values for {@link #getValue()
-     *         value}
+     *         value}.
      *     <li>{@link Action#SET_BUILD_MATERIALIZED_VIEW_POLICY
      *         SET_BUILD_MATERIALIZED_VIEW_POLICY}: Set startup rebuilding
      *         scheme for the materialized view; see description of
      *         'build_materialized_view_policy' in {@link
      *         com.gpudb.GPUdb#createMaterializedView(CreateMaterializedViewRequest)
      *         GPUdb.createMaterializedView} for possible values for {@link
-     *         #getValue() value}
+     *         #getValue() value}.
      * </ul>
      *
      * @param action  The new value for {@code action}.
@@ -1556,9 +1625,10 @@ public class AlterTableRequest implements IndexedRecord {
      *     <li>{@link Options#COLUMN_NAME COLUMN_NAME}
      *     <li>{@link Options#TABLE_NAME TABLE_NAME}
      *     <li>{@link Options#COLUMN_DEFAULT_VALUE COLUMN_DEFAULT_VALUE}: When
-     *         adding a column, set a default value for existing records.  For
-     *         nullable columns, the default value will be null, regardless of
-     *         data type.
+     *         adding a column, set a literal default value for existing
+     *         records.  For nullable columns, the default value will be null,
+     *         regardless of data type.  Also persisted as the column's default
+     *         for future inserts that omit the column.
      *     <li>{@link Options#COLUMN_PROPERTIES COLUMN_PROPERTIES}: When adding
      *         or changing a column, set the column properties (strings,
      *         separated by a comma: data, text_search, char8, int8 etc).
@@ -1566,8 +1636,8 @@ public class AlterTableRequest implements IndexedRecord {
      *         a column, set the column type (strings, separated by a comma:
      *         int, double, string, null etc).
      *     <li>{@link Options#COPY_VALUES_FROM_COLUMN COPY_VALUES_FROM_COLUMN}:
-     *         [DEPRECATED--please use {@link Options#ADD_COLUMN_EXPRESSION
-     *         ADD_COLUMN_EXPRESSION} instead.]
+     *         [DEPRECATED]  Please use {@link Options#ADD_COLUMN_EXPRESSION
+     *         ADD_COLUMN_EXPRESSION} instead.
      *     <li>{@link Options#RENAME_COLUMN RENAME_COLUMN}: When changing a
      *         column, specify new column name.
      *     <li>{@link Options#VALIDATE_CHANGE_COLUMN VALIDATE_CHANGE_COLUMN}:
@@ -1596,11 +1666,21 @@ public class AlterTableRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#ADD_COLUMN_EXPRESSION ADD_COLUMN_EXPRESSION}:
-     *         When adding a column, an optional expression to use for the new
-     *         column's values. Any valid expression may be used, including one
+     *         When adding a column or setting a new default with {@link
+     *         #getAction() action} set to {@link Action#SET_DEFAULT
+     *         SET_DEFAULT}, the new default expression (GPUdb-syntax) for the
+     *         column.  Any valid expression may be used, including one
      *         containing references to existing columns in the same table.
+     *         Persisted as the column's default for future inserts that omit
+     *         the column; for add_column, also used to backfill existing rows.
+     *     <li>{@link Options#ADD_COLUMN_EXPRESSION_SQL
+     *         ADD_COLUMN_EXPRESSION_SQL}: Optional SQL-syntax form of {@link
+     *         Options#ADD_COLUMN_EXPRESSION ADD_COLUMN_EXPRESSION}, used only
+     *         when the SQL syntax differs from the GPUdb syntax.  Persisted
+     *         alongside the GPUdb form so SHOW CREATE TABLE /
+     *         information_schema can reproduce the original SQL.
      *     <li>{@link Options#STRATEGY_DEFINITION STRATEGY_DEFINITION}:
-     *         Optional parameter for specifying the <a
+     *         Parameter for specifying the <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns
      *         when {@link #getAction() action} is {@link
@@ -1629,17 +1709,17 @@ public class AlterTableRequest implements IndexedRecord {
      *             <li>{@link Options#GEOSPATIAL GEOSPATIAL}: Create or delete
      *                 a <a
      *                 href="../../../../../../concepts/indexes/#geospatial-index"
-     *                 target="_top">geospatial index</a>
+     *                 target="_top">geospatial index</a>.
      *             <li>{@link Options#CAGRA CAGRA}: Create or delete a <a
      *                 href="../../../../../../concepts/indexes/#cagra-index"
      *                 target="_top">CAGRA index</a> on a <a
      *                 href="../../../../../../vector_search/#vector-type"
-     *                 target="_top">vector column</a>
+     *                 target="_top">vector column</a>.
      *             <li>{@link Options#HNSW HNSW}: Create or delete an <a
      *                 href="../../../../../../concepts/indexes/#hnsw-index"
      *                 target="_top">HNSW index</a> on a <a
      *                 href="../../../../../../vector_search/#vector-type"
-     *                 target="_top">vector column</a>
+     *                 target="_top">vector column</a>.
      *         </ul>
      *         The default value is {@link Options#COLUMN COLUMN}.
      *     <li>{@link Options#INDEX_OPTIONS INDEX_OPTIONS}: Options to use when
@@ -1661,9 +1741,10 @@ public class AlterTableRequest implements IndexedRecord {
      *     <li>{@link Options#COLUMN_NAME COLUMN_NAME}
      *     <li>{@link Options#TABLE_NAME TABLE_NAME}
      *     <li>{@link Options#COLUMN_DEFAULT_VALUE COLUMN_DEFAULT_VALUE}: When
-     *         adding a column, set a default value for existing records.  For
-     *         nullable columns, the default value will be null, regardless of
-     *         data type.
+     *         adding a column, set a literal default value for existing
+     *         records.  For nullable columns, the default value will be null,
+     *         regardless of data type.  Also persisted as the column's default
+     *         for future inserts that omit the column.
      *     <li>{@link Options#COLUMN_PROPERTIES COLUMN_PROPERTIES}: When adding
      *         or changing a column, set the column properties (strings,
      *         separated by a comma: data, text_search, char8, int8 etc).
@@ -1671,8 +1752,8 @@ public class AlterTableRequest implements IndexedRecord {
      *         a column, set the column type (strings, separated by a comma:
      *         int, double, string, null etc).
      *     <li>{@link Options#COPY_VALUES_FROM_COLUMN COPY_VALUES_FROM_COLUMN}:
-     *         [DEPRECATED--please use {@link Options#ADD_COLUMN_EXPRESSION
-     *         ADD_COLUMN_EXPRESSION} instead.]
+     *         [DEPRECATED]  Please use {@link Options#ADD_COLUMN_EXPRESSION
+     *         ADD_COLUMN_EXPRESSION} instead.
      *     <li>{@link Options#RENAME_COLUMN RENAME_COLUMN}: When changing a
      *         column, specify new column name.
      *     <li>{@link Options#VALIDATE_CHANGE_COLUMN VALIDATE_CHANGE_COLUMN}:
@@ -1701,11 +1782,21 @@ public class AlterTableRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#ADD_COLUMN_EXPRESSION ADD_COLUMN_EXPRESSION}:
-     *         When adding a column, an optional expression to use for the new
-     *         column's values. Any valid expression may be used, including one
+     *         When adding a column or setting a new default with {@link
+     *         #getAction() action} set to {@link Action#SET_DEFAULT
+     *         SET_DEFAULT}, the new default expression (GPUdb-syntax) for the
+     *         column.  Any valid expression may be used, including one
      *         containing references to existing columns in the same table.
+     *         Persisted as the column's default for future inserts that omit
+     *         the column; for add_column, also used to backfill existing rows.
+     *     <li>{@link Options#ADD_COLUMN_EXPRESSION_SQL
+     *         ADD_COLUMN_EXPRESSION_SQL}: Optional SQL-syntax form of {@link
+     *         Options#ADD_COLUMN_EXPRESSION ADD_COLUMN_EXPRESSION}, used only
+     *         when the SQL syntax differs from the GPUdb syntax.  Persisted
+     *         alongside the GPUdb form so SHOW CREATE TABLE /
+     *         information_schema can reproduce the original SQL.
      *     <li>{@link Options#STRATEGY_DEFINITION STRATEGY_DEFINITION}:
-     *         Optional parameter for specifying the <a
+     *         Parameter for specifying the <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns
      *         when {@link #getAction() action} is {@link
@@ -1734,17 +1825,17 @@ public class AlterTableRequest implements IndexedRecord {
      *             <li>{@link Options#GEOSPATIAL GEOSPATIAL}: Create or delete
      *                 a <a
      *                 href="../../../../../../concepts/indexes/#geospatial-index"
-     *                 target="_top">geospatial index</a>
+     *                 target="_top">geospatial index</a>.
      *             <li>{@link Options#CAGRA CAGRA}: Create or delete a <a
      *                 href="../../../../../../concepts/indexes/#cagra-index"
      *                 target="_top">CAGRA index</a> on a <a
      *                 href="../../../../../../vector_search/#vector-type"
-     *                 target="_top">vector column</a>
+     *                 target="_top">vector column</a>.
      *             <li>{@link Options#HNSW HNSW}: Create or delete an <a
      *                 href="../../../../../../concepts/indexes/#hnsw-index"
      *                 target="_top">HNSW index</a> on a <a
      *                 href="../../../../../../vector_search/#vector-type"
-     *                 target="_top">vector column</a>
+     *                 target="_top">vector column</a>.
      *         </ul>
      *         The default value is {@link Options#COLUMN COLUMN}.
      *     <li>{@link Options#INDEX_OPTIONS INDEX_OPTIONS}: Options to use when

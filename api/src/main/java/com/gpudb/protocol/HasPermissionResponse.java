@@ -49,12 +49,12 @@ public class HasPermissionResponse implements IndexedRecord {
      */
     public static final class HasPermission {
         /**
-         * User has the effective queried permission
+         * User has the effective queried permission.
          */
         public static final String TRUE = "true";
 
         /**
-         * User does not have the queried permission
+         * User does not have the queried permission.
          */
         public static final String FALSE = "false";
 
@@ -77,7 +77,7 @@ public class HasPermissionResponse implements IndexedRecord {
 
     /**
      * Value of {@link com.gpudb.protocol.HasPermissionRequest#getPrincipal()
-     * principal}
+     * principal}.
      *
      * @return The current value of {@code principal}.
      */
@@ -87,7 +87,7 @@ public class HasPermissionResponse implements IndexedRecord {
 
     /**
      * Value of {@link com.gpudb.protocol.HasPermissionRequest#getPrincipal()
-     * principal}
+     * principal}.
      *
      * @param principal  The new value for {@code principal}.
      *
@@ -100,7 +100,7 @@ public class HasPermissionResponse implements IndexedRecord {
 
     /**
      * Fully-qualified value of {@link
-     * com.gpudb.protocol.HasPermissionRequest#getObject() object}
+     * com.gpudb.protocol.HasPermissionRequest#getObject() object}.
      *
      * @return The current value of {@code object}.
      */
@@ -110,7 +110,7 @@ public class HasPermissionResponse implements IndexedRecord {
 
     /**
      * Fully-qualified value of {@link
-     * com.gpudb.protocol.HasPermissionRequest#getObject() object}
+     * com.gpudb.protocol.HasPermissionRequest#getObject() object}.
      *
      * @param object  The new value for {@code object}.
      *
@@ -123,7 +123,7 @@ public class HasPermissionResponse implements IndexedRecord {
 
     /**
      * Value of {@link com.gpudb.protocol.HasPermissionRequest#getObjectType()
-     * objectType}
+     * objectType}.
      *
      * @return The current value of {@code objectType}.
      */
@@ -133,7 +133,7 @@ public class HasPermissionResponse implements IndexedRecord {
 
     /**
      * Value of {@link com.gpudb.protocol.HasPermissionRequest#getObjectType()
-     * objectType}
+     * objectType}.
      *
      * @param objectType  The new value for {@code objectType}.
      *
@@ -146,7 +146,7 @@ public class HasPermissionResponse implements IndexedRecord {
 
     /**
      * Value of {@link com.gpudb.protocol.HasPermissionRequest#getPermission()
-     * permission}
+     * permission}.
      *
      * @return The current value of {@code permission}.
      */
@@ -156,7 +156,7 @@ public class HasPermissionResponse implements IndexedRecord {
 
     /**
      * Value of {@link com.gpudb.protocol.HasPermissionRequest#getPermission()
-     * permission}
+     * permission}.
      *
      * @param permission  The new value for {@code permission}.
      *
@@ -172,8 +172,8 @@ public class HasPermissionResponse implements IndexedRecord {
      * specified target.
      * Supported values:
      * <ul>
-     *     <li>{@code true}: User has the effective queried permission
-     *     <li>{@code false}: User does not have the queried permission
+     *     <li>{@code true}: User has the effective queried permission.
+     *     <li>{@code false}: User does not have the queried permission.
      * </ul>
      *
      * @return The current value of {@code hasPermission}.
@@ -187,8 +187,8 @@ public class HasPermissionResponse implements IndexedRecord {
      * specified target.
      * Supported values:
      * <ul>
-     *     <li>{@code true}: User has the effective queried permission
-     *     <li>{@code false}: User does not have the queried permission
+     *     <li>{@code true}: User has the effective queried permission.
+     *     <li>{@code false}: User does not have the queried permission.
      * </ul>
      *
      * @param hasPermission  The new value for {@code hasPermission}.

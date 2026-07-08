@@ -61,7 +61,7 @@ public class HasProcResponse implements IndexedRecord {
 
     /**
      * Value of {@link com.gpudb.protocol.HasProcRequest#getProcName()
-     * procName}
+     * procName}.
      *
      * @return The current value of {@code procName}.
      */
@@ -71,7 +71,7 @@ public class HasProcResponse implements IndexedRecord {
 
     /**
      * Value of {@link com.gpudb.protocol.HasProcRequest#getProcName()
-     * procName}
+     * procName}.
      *
      * @param procName  The new value for {@code procName}.
      *

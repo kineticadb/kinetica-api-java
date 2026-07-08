@@ -105,7 +105,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
         public static final String TTL = "ttl";
 
         /**
-         * view this projection is part of. The default value is ''.
+         * View this projection is part of. The default value is ''.
          */
         public static final String VIEW_ID = "view_id";
 
@@ -119,7 +119,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
 
         /**
          * Maximum number of records per joined-chunk for this table. Defaults
-         * to the gpudb.conf file chunk size
+         * to the gpudb.conf file chunk size.
          */
         public static final String CHUNK_SIZE = "chunk_size";
 
@@ -144,7 +144,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
         public static final String MIN_VIRTUAL_CHUNK_SIZE = "min_virtual_chunk_size";
 
         /**
-         * materialize virtual chunks with only non-deleted values. The default
+         * Materialize virtual chunks with only non-deleted values. The default
          * value is 'false'.
          */
         public static final String ENABLE_SPARSE_VIRTUAL_CHUNKING = "enable_sparse_virtual_chunking";
@@ -153,7 +153,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
          * Allow using the lazy result store to cache computation of one side
          * of a multichunk equi-join.  Reduces computation but also reduces
          * parallelism to the number of chunks on the other side of the
-         * equi-join
+         * equi-join.
          */
         public static final String ENABLE_EQUI_JOIN_LAZY_RESULT_STORE = "enable_equi_join_lazy_result_store";
 
@@ -161,13 +161,13 @@ public class CreateJoinTableRequest implements IndexedRecord {
          * Allow using the lazy result store to cache computation of one side
          * of a multichunk predicate-equi-join. Reduces computation but also
          * reduces parallelism to the number of chunks on the other side of the
-         * equi-join
+         * equi-join.
          */
         public static final String ENABLE_PREDICATE_EQUI_JOIN_LAZY_RESULT_STORE = "enable_predicate_equi_join_lazy_result_store";
 
         /**
-         * Use equi-join to do primary key joins rather than using
-         * primary-key-index
+         * Use equi-join to do primary key joins rather than using primary key
+         * index.
          */
         public static final String ENABLE_PK_EQUI_JOIN = "enable_pk_equi_join";
 
@@ -263,7 +263,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                         href="../../../../../../concepts/ttl/"
      *                         target="_top">TTL</a> of the join table
      *                         specified in {@code joinTableName}.
-     *                     <li>{@link Options#VIEW_ID VIEW_ID}: view this
+     *                     <li>{@link Options#VIEW_ID VIEW_ID}: View this
      *                         projection is part of. The default value is ''.
      *                     <li>{@link Options#NO_COUNT NO_COUNT}: Return a
      *                         count of 0 for the join table for logging and
@@ -275,7 +275,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                     <li>{@link Options#CHUNK_SIZE CHUNK_SIZE}: Maximum
      *                         number of records per joined-chunk for this
      *                         table. Defaults to the gpudb.conf file chunk
-     *                         size
+     *                         size.
      *                     <li>{@link Options#ENABLE_VIRTUAL_CHUNKING
      *                         ENABLE_VIRTUAL_CHUNKING}: Collect chunks with
      *                         accumulated size less than chunk_size into a
@@ -291,7 +291,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                         virtual chunking. Defaults to chunk_size if
      *                         virtual chunking otherwise enabled.
      *                     <li>{@link Options#ENABLE_SPARSE_VIRTUAL_CHUNKING
-     *                         ENABLE_SPARSE_VIRTUAL_CHUNKING}: materialize
+     *                         ENABLE_SPARSE_VIRTUAL_CHUNKING}: Materialize
      *                         virtual chunks with only non-deleted values. The
      *                         default value is 'false'.
      *                     <li>{@link
@@ -301,7 +301,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                         one side of a multichunk equi-join.  Reduces
      *                         computation but also reduces parallelism to the
      *                         number of chunks on the other side of the
-     *                         equi-join
+     *                         equi-join.
      *                     <li>{@link
      *                         Options#ENABLE_PREDICATE_EQUI_JOIN_LAZY_RESULT_STORE
      *                         ENABLE_PREDICATE_EQUI_JOIN_LAZY_RESULT_STORE}:
@@ -309,11 +309,11 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                         computation of one side of a multichunk
      *                         predicate-equi-join. Reduces computation but
      *                         also reduces parallelism to the number of chunks
-     *                         on the other side of the equi-join
+     *                         on the other side of the equi-join.
      *                     <li>{@link Options#ENABLE_PK_EQUI_JOIN
      *                         ENABLE_PK_EQUI_JOIN}: Use equi-join to do
-     *                         primary key joins rather than using
-     *                         primary-key-index
+     *                         primary key joins rather than using primary key
+     *                         index.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -482,7 +482,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         href="../../../../../../concepts/ttl/" target="_top">TTL</a> of
      *         the join table specified in {@link #getJoinTableName()
      *         joinTableName}.
-     *     <li>{@link Options#VIEW_ID VIEW_ID}: view this projection is part
+     *     <li>{@link Options#VIEW_ID VIEW_ID}: View this projection is part
      *         of. The default value is ''.
      *     <li>{@link Options#NO_COUNT NO_COUNT}: Return a count of 0 for the
      *         join table for logging and for {@link
@@ -491,7 +491,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         default value is 'false'.
      *     <li>{@link Options#CHUNK_SIZE CHUNK_SIZE}: Maximum number of records
      *         per joined-chunk for this table. Defaults to the gpudb.conf file
-     *         chunk size
+     *         chunk size.
      *     <li>{@link Options#ENABLE_VIRTUAL_CHUNKING ENABLE_VIRTUAL_CHUNKING}:
      *         Collect chunks with accumulated size less than chunk_size into a
      *         single chunk. The default value is 'false'.
@@ -504,22 +504,22 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         virtual chunking. Defaults to chunk_size if virtual chunking
      *         otherwise enabled.
      *     <li>{@link Options#ENABLE_SPARSE_VIRTUAL_CHUNKING
-     *         ENABLE_SPARSE_VIRTUAL_CHUNKING}: materialize virtual chunks with
+     *         ENABLE_SPARSE_VIRTUAL_CHUNKING}: Materialize virtual chunks with
      *         only non-deleted values. The default value is 'false'.
      *     <li>{@link Options#ENABLE_EQUI_JOIN_LAZY_RESULT_STORE
      *         ENABLE_EQUI_JOIN_LAZY_RESULT_STORE}: Allow using the lazy result
      *         store to cache computation of one side of a multichunk
      *         equi-join.  Reduces computation but also reduces parallelism to
-     *         the number of chunks on the other side of the equi-join
+     *         the number of chunks on the other side of the equi-join.
      *     <li>{@link Options#ENABLE_PREDICATE_EQUI_JOIN_LAZY_RESULT_STORE
      *         ENABLE_PREDICATE_EQUI_JOIN_LAZY_RESULT_STORE}: Allow using the
      *         lazy result store to cache computation of one side of a
      *         multichunk predicate-equi-join. Reduces computation but also
      *         reduces parallelism to the number of chunks on the other side of
-     *         the equi-join
+     *         the equi-join.
      *     <li>{@link Options#ENABLE_PK_EQUI_JOIN ENABLE_PK_EQUI_JOIN}: Use
-     *         equi-join to do primary key joins rather than using
-     *         primary-key-index
+     *         equi-join to do primary key joins rather than using primary key
+     *         index.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -562,7 +562,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         href="../../../../../../concepts/ttl/" target="_top">TTL</a> of
      *         the join table specified in {@link #getJoinTableName()
      *         joinTableName}.
-     *     <li>{@link Options#VIEW_ID VIEW_ID}: view this projection is part
+     *     <li>{@link Options#VIEW_ID VIEW_ID}: View this projection is part
      *         of. The default value is ''.
      *     <li>{@link Options#NO_COUNT NO_COUNT}: Return a count of 0 for the
      *         join table for logging and for {@link
@@ -571,7 +571,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         default value is 'false'.
      *     <li>{@link Options#CHUNK_SIZE CHUNK_SIZE}: Maximum number of records
      *         per joined-chunk for this table. Defaults to the gpudb.conf file
-     *         chunk size
+     *         chunk size.
      *     <li>{@link Options#ENABLE_VIRTUAL_CHUNKING ENABLE_VIRTUAL_CHUNKING}:
      *         Collect chunks with accumulated size less than chunk_size into a
      *         single chunk. The default value is 'false'.
@@ -584,22 +584,22 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         virtual chunking. Defaults to chunk_size if virtual chunking
      *         otherwise enabled.
      *     <li>{@link Options#ENABLE_SPARSE_VIRTUAL_CHUNKING
-     *         ENABLE_SPARSE_VIRTUAL_CHUNKING}: materialize virtual chunks with
+     *         ENABLE_SPARSE_VIRTUAL_CHUNKING}: Materialize virtual chunks with
      *         only non-deleted values. The default value is 'false'.
      *     <li>{@link Options#ENABLE_EQUI_JOIN_LAZY_RESULT_STORE
      *         ENABLE_EQUI_JOIN_LAZY_RESULT_STORE}: Allow using the lazy result
      *         store to cache computation of one side of a multichunk
      *         equi-join.  Reduces computation but also reduces parallelism to
-     *         the number of chunks on the other side of the equi-join
+     *         the number of chunks on the other side of the equi-join.
      *     <li>{@link Options#ENABLE_PREDICATE_EQUI_JOIN_LAZY_RESULT_STORE
      *         ENABLE_PREDICATE_EQUI_JOIN_LAZY_RESULT_STORE}: Allow using the
      *         lazy result store to cache computation of one side of a
      *         multichunk predicate-equi-join. Reduces computation but also
      *         reduces parallelism to the number of chunks on the other side of
-     *         the equi-join
+     *         the equi-join.
      *     <li>{@link Options#ENABLE_PK_EQUI_JOIN ENABLE_PK_EQUI_JOIN}: Use
-     *         equi-join to do primary key joins rather than using
-     *         primary-key-index
+     *         equi-join to do primary key joins rather than using primary key
+     *         index.
      * </ul>
      * The default value is an empty {@link Map}.
      *

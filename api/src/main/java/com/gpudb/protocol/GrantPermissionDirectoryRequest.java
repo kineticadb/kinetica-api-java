@@ -51,13 +51,13 @@ public class GrantPermissionDirectoryRequest implements IndexedRecord {
     public static final class Permission {
         /**
          * For files in the directory, access to list files, download files, or
-         * use files in server side functions
+         * use files in server side functions.
          */
         public static final String DIRECTORY_READ = "directory_read";
 
         /**
          * Access to upload files to, or delete files from, the directory. A
-         * user or role with write access automatically has read access
+         * user or role with write access automatically has read access.
          */
         public static final String DIRECTORY_WRITE = "directory_write";
 
@@ -92,16 +92,16 @@ public class GrantPermissionDirectoryRequest implements IndexedRecord {
      *                        <li>{@link Permission#DIRECTORY_READ
      *                            DIRECTORY_READ}: For files in the directory,
      *                            access to list files, download files, or use
-     *                            files in server side functions
+     *                            files in server side functions.
      *                        <li>{@link Permission#DIRECTORY_WRITE
      *                            DIRECTORY_WRITE}: Access to upload files to,
      *                            or delete files from, the directory. A user
      *                            or role with write access automatically has
-     *                            read access
+     *                            read access.
      *                    </ul>
      * @param directoryName  Name of the KiFS directory to which the permission
      *                       grants access. An empty directory name grants
-     *                       access to all KiFS directories
+     *                       access to all KiFS directories.
      * @param options  Optional parameters. The default value is an empty
      *                 {@link Map}.
      */
@@ -141,10 +141,10 @@ public class GrantPermissionDirectoryRequest implements IndexedRecord {
      * <ul>
      *     <li>{@link Permission#DIRECTORY_READ DIRECTORY_READ}: For files in
      *         the directory, access to list files, download files, or use
-     *         files in server side functions
+     *         files in server side functions.
      *     <li>{@link Permission#DIRECTORY_WRITE DIRECTORY_WRITE}: Access to
      *         upload files to, or delete files from, the directory. A user or
-     *         role with write access automatically has read access
+     *         role with write access automatically has read access.
      * </ul>
      *
      * @return The current value of {@code permission}.
@@ -159,10 +159,10 @@ public class GrantPermissionDirectoryRequest implements IndexedRecord {
      * <ul>
      *     <li>{@link Permission#DIRECTORY_READ DIRECTORY_READ}: For files in
      *         the directory, access to list files, download files, or use
-     *         files in server side functions
+     *         files in server side functions.
      *     <li>{@link Permission#DIRECTORY_WRITE DIRECTORY_WRITE}: Access to
      *         upload files to, or delete files from, the directory. A user or
-     *         role with write access automatically has read access
+     *         role with write access automatically has read access.
      * </ul>
      *
      * @param permission  The new value for {@code permission}.
@@ -176,7 +176,7 @@ public class GrantPermissionDirectoryRequest implements IndexedRecord {
 
     /**
      * Name of the KiFS directory to which the permission grants access. An
-     * empty directory name grants access to all KiFS directories
+     * empty directory name grants access to all KiFS directories.
      *
      * @return The current value of {@code directoryName}.
      */
@@ -186,7 +186,7 @@ public class GrantPermissionDirectoryRequest implements IndexedRecord {
 
     /**
      * Name of the KiFS directory to which the permission grants access. An
-     * empty directory name grants access to all KiFS directories
+     * empty directory name grants access to all KiFS directories.
      *
      * @param directoryName  The new value for {@code directoryName}.
      *

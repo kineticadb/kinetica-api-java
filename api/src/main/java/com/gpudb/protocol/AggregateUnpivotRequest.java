@@ -74,7 +74,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
         public static final String BINARY = "binary";
 
         /**
-         * Indicates that the returned records should be json encoded.
+         * Indicates that the returned records should be JSON-encoded.
          */
         public static final String JSON = "json";
 
@@ -202,7 +202,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
         public static final String TTL = "ttl";
 
         /**
-         * view this result table is part of. The default value is ''.
+         * View this result table is part of. The default value is ''.
          */
         public static final String VIEW_ID = "view_id";
 
@@ -370,7 +370,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                         href="../../../../../../concepts/ttl/"
      *                         target="_top">TTL</a> of the table specified in
      *                         {@link Options#RESULT_TABLE RESULT_TABLE}.
-     *                     <li>{@link Options#VIEW_ID VIEW_ID}: view this
+     *                     <li>{@link Options#VIEW_ID VIEW_ID}: View this
      *                         result table is part of. The default value is
      *                         ''.
      *                     <li>{@link Options#CREATE_INDEXES CREATE_INDEXES}:
@@ -431,7 +431,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                      <li>{@link Encoding#BINARY BINARY}: Indicates that
      *                          the returned records should be binary encoded.
      *                      <li>{@link Encoding#JSON JSON}: Indicates that the
-     *                          returned records should be json encoded.
+     *                          returned records should be JSON-encoded.
      *                  </ul>
      *                  The default value is {@link Encoding#BINARY BINARY}.
      * @param options  Optional parameters.
@@ -533,7 +533,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                         href="../../../../../../concepts/ttl/"
      *                         target="_top">TTL</a> of the table specified in
      *                         {@link Options#RESULT_TABLE RESULT_TABLE}.
-     *                     <li>{@link Options#VIEW_ID VIEW_ID}: view this
+     *                     <li>{@link Options#VIEW_ID VIEW_ID}: View this
      *                         result table is part of. The default value is
      *                         ''.
      *                     <li>{@link Options#CREATE_INDEXES CREATE_INDEXES}:
@@ -691,7 +691,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *     <li>{@link Encoding#BINARY BINARY}: Indicates that the returned
      *         records should be binary encoded.
      *     <li>{@link Encoding#JSON JSON}: Indicates that the returned records
-     *         should be json encoded.
+     *         should be JSON-encoded.
      * </ul>
      * The default value is {@link Encoding#BINARY BINARY}.
      *
@@ -708,7 +708,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *     <li>{@link Encoding#BINARY BINARY}: Indicates that the returned
      *         records should be binary encoded.
      *     <li>{@link Encoding#JSON JSON}: Indicates that the returned records
-     *         should be json encoded.
+     *         should be JSON-encoded.
      * </ul>
      * The default value is {@link Encoding#BINARY BINARY}.
      *
@@ -799,7 +799,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *         href="../../../../../../concepts/ttl/" target="_top">TTL</a> of
      *         the table specified in {@link Options#RESULT_TABLE
      *         RESULT_TABLE}.
-     *     <li>{@link Options#VIEW_ID VIEW_ID}: view this result table is part
+     *     <li>{@link Options#VIEW_ID VIEW_ID}: View this result table is part
      *         of. The default value is ''.
      *     <li>{@link Options#CREATE_INDEXES CREATE_INDEXES}: Comma-separated
      *         list of columns on which to create indexes on the table
@@ -904,7 +904,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *         href="../../../../../../concepts/ttl/" target="_top">TTL</a> of
      *         the table specified in {@link Options#RESULT_TABLE
      *         RESULT_TABLE}.
-     *     <li>{@link Options#VIEW_ID VIEW_ID}: view this result table is part
+     *     <li>{@link Options#VIEW_ID VIEW_ID}: View this result table is part
      *         of. The default value is ''.
      *     <li>{@link Options#CREATE_INDEXES CREATE_INDEXES}: Comma-separated
      *         list of columns on which to create indexes on the table
