@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.gpudb</groupId>
     <artifactId>gpudb-api</artifactId>
-    <version>7.2.3.20</version>
+    <version>7.2.3.21</version>
     <packaging>jar</packaging>
     <name>Kinetica Java API</name>
     <description>Java-based client API for connecting to and managing a Kinetica database</description>
@@ -258,11 +258,60 @@
             <plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.5.0</version>
+                <version>0.9.0</version>
                 <extensions>true</extensions>
                 <configuration>
                     <publishingServerId>central</publishingServerId>
                 </configuration>
+            </plugin>
+            <!-- Check if version already exists on Maven Central before deploying -->
+            <!-- This prevents duplicate publishing from Maven and Gradle -->
+            <!-- Only runs during deploy phase, skip with: mvn deploy -Dskip.central.check=true -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>check-maven-central-version</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <property name="artifact.url" value="https://repo1.maven.org/maven2/com/gpudb/gpudb-api/${project.version}/gpudb-api-${project.version}.pom"/>
+                                <echo message=""/>
+                                <echo message="=========================================================="/>
+                                <echo message="Checking if version ${project.version} exists on Maven Central..."/>
+                                <echo message="URL: ${artifact.url}"/>
+                                <echo message="=========================================================="/>
+                                <!-- Try to get the artifact; if it exists, fail the build -->
+                                <condition property="version.exists">
+                                    <http url="${artifact.url}"/>
+                                </condition>
+                                <fail if="version.exists">
+
+==========================================================
+ERROR: Version ${project.version} already exists on Maven Central!
+==========================================================
+
+This version may have been published using Gradle or a previous Maven deploy.
+
+Options:
+  1. Bump the version in pom.xml before deploying
+  2. If this is intentional, skip with: mvn deploy -Dskip.central.check=true
+
+Maven Central URL: ${artifact.url}
+==========================================================
+                                </fail>
+                                <echo message="Version ${project.version} not found on Maven Central. Safe to deploy."/>
+                                <echo message=""/>
+                            </target>
+                            <skip>${skip.central.check}</skip>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
         <resources>

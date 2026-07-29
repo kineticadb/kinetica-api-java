@@ -24,6 +24,7 @@ public class AlterBackupResponse implements IndexedRecord {
                 .name("backupName").type().stringType().noDefault()
                 .name("backupId").type().longType().noDefault()
                 .name("totalBytes").type().longType().noDefault()
+                .name("totalFiles").type().longType().noDefault()
                 .name("totalNumberOfRecords").type().longType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
@@ -41,6 +42,7 @@ public class AlterBackupResponse implements IndexedRecord {
     private String backupName;
     private long backupId;
     private long totalBytes;
+    private long totalFiles;
     private long totalNumberOfRecords;
     private Map<String, String> info;
 
@@ -112,6 +114,27 @@ public class AlterBackupResponse implements IndexedRecord {
      */
     public AlterBackupResponse setTotalBytes(long totalBytes) {
         this.totalBytes = totalBytes;
+        return this;
+    }
+
+    /**
+     * Total number of files affected by the alter operation.
+     *
+     * @return The current value of {@code totalFiles}.
+     */
+    public long getTotalFiles() {
+        return totalFiles;
+    }
+
+    /**
+     * Total number of files affected by the alter operation.
+     *
+     * @param totalFiles  The new value for {@code totalFiles}.
+     *
+     * @return {@code this} to mimic the builder pattern.
+     */
+    public AlterBackupResponse setTotalFiles(long totalFiles) {
+        this.totalFiles = totalFiles;
         return this;
     }
 
@@ -192,9 +215,12 @@ public class AlterBackupResponse implements IndexedRecord {
                 return this.totalBytes;
 
             case 3:
-                return this.totalNumberOfRecords;
+                return this.totalFiles;
 
             case 4:
+                return this.totalNumberOfRecords;
+
+            case 5:
                 return this.info;
 
             default:
@@ -228,10 +254,14 @@ public class AlterBackupResponse implements IndexedRecord {
                 break;
 
             case 3:
-                this.totalNumberOfRecords = (Long)value;
+                this.totalFiles = (Long)value;
                 break;
 
             case 4:
+                this.totalNumberOfRecords = (Long)value;
+                break;
+
+            case 5:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -255,6 +285,7 @@ public class AlterBackupResponse implements IndexedRecord {
         return ( this.backupName.equals( that.backupName )
                  && ( this.backupId == that.backupId )
                  && ( this.totalBytes == that.totalBytes )
+                 && ( this.totalFiles == that.totalFiles )
                  && ( this.totalNumberOfRecords == that.totalNumberOfRecords )
                  && this.info.equals( that.info ) );
     }
@@ -276,6 +307,10 @@ public class AlterBackupResponse implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.totalBytes ) );
         builder.append( ", " );
+        builder.append( gd.toString( "totalFiles" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.totalFiles ) );
+        builder.append( ", " );
         builder.append( gd.toString( "totalNumberOfRecords" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.totalNumberOfRecords ) );
@@ -294,6 +329,7 @@ public class AlterBackupResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.backupName.hashCode();
         hashCode = (31 * hashCode) + ((Long)this.backupId).hashCode();
         hashCode = (31 * hashCode) + ((Long)this.totalBytes).hashCode();
+        hashCode = (31 * hashCode) + ((Long)this.totalFiles).hashCode();
         hashCode = (31 * hashCode) + ((Long)this.totalNumberOfRecords).hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;

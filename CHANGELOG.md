@@ -2,6 +2,19 @@
 
 ## Version 7.2
 
+### Version 7.2.3.21 - 2026-07-29
+
+#### Added
+-   Gradle build support.
+
+#### Changed
+-   More consistent error handling support via `error_handling` option to DML
+    methods.
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
 ### Version 7.2.3.20 - 2026-07-08
 
 #### Added

@@ -903,15 +903,23 @@ public class BulkInserter<T> implements AutoCloseable {
             throw new GPUdbException(ex.getMessage(), ex);
         }
 
-        // If caller specified RETURN_INDIVIDUAL_ERRORS without ALLOW_PARTIAL_BATCH
-        // then we will need to do our own error handling
-        this.returnIndividualErrors = (options != null)
+        // The client only does its own "stop on error" emulation when the caller
+        // asked for individual errors to be returned (so the server sends the
+        // per-record errors it collects).
+        boolean wantIndividualErrors = (options != null)
                 && options.containsKey(InsertRecordsRequest.Options.RETURN_INDIVIDUAL_ERRORS)
                 && options.get(InsertRecordsRequest.Options.RETURN_INDIVIDUAL_ERRORS)
-                            .equals(InsertRecordsRequest.Options.TRUE)
-                && (!options.containsKey(InsertRecordsRequest.Options.ALLOW_PARTIAL_BATCH)
-                    || !options.get(InsertRecordsRequest.Options.ALLOW_PARTIAL_BATCH)
-                            .equals(InsertRecordsRequest.Options.TRUE));
+                            .equals(InsertRecordsRequest.Options.TRUE);
+        String errorHandling = (options != null) ? options.get("error_handling") : null;
+        if (errorHandling != null && !errorHandling.isEmpty()) {
+            this.returnIndividualErrors = wantIndividualErrors &&
+                                          errorHandling.equalsIgnoreCase("abort");
+        } else {
+            this.returnIndividualErrors = wantIndividualErrors
+                    && (!options.containsKey(InsertRecordsRequest.Options.ALLOW_PARTIAL_BATCH)
+                        || !options.get(InsertRecordsRequest.Options.ALLOW_PARTIAL_BATCH)
+                                .equals(InsertRecordsRequest.Options.TRUE));
+        }
 
         // Create the scheduler only if the flush interval has been set to a valid value by the user.
         // The default value is -1 to indicate that automatic flush is not called for

@@ -82,6 +82,50 @@ public class AppendRecordsRequest implements IndexedRecord {
         public static final String ORDER_BY = "order_by";
 
         /**
+         * Specifies how record errors are handled while appending source table
+         * records into the target table.  Currently this governs primary-key
+         * collision behavior: {@link Options#SKIP SKIP} and {@link
+         * Options#PERMISSIVE PERMISSIVE} drop the colliding source records and
+         * continue, while {@link Options#ABORT ABORT} rejects the batch.
+         * Explicit {@link Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK}
+         * or {@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK} take
+         * precedence over this option.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#PERMISSIVE PERMISSIVE}: Source records that
+         *         cannot be appended (e.g. a primary-key collision) are
+         *         skipped and reported; the rest of the batch is appended.
+         *     <li>{@link Options#SKIP SKIP}: Source records that cannot be
+         *         appended are skipped and reported; the rest of the batch is
+         *         appended.
+         *     <li>{@link Options#ABORT ABORT}: A source record that cannot be
+         *         appended (e.g. a primary-key collision) raises an error.
+         *         This is the default.
+         * </ul>
+         * The default value is {@link Options#ABORT ABORT}.
+         */
+        public static final String ERROR_HANDLING = "error_handling";
+
+        /**
+         * Source records that cannot be appended (e.g.&nbsp;a primary-key
+         * collision) are skipped and reported; the rest of the batch is
+         * appended.
+         */
+        public static final String PERMISSIVE = "permissive";
+
+        /**
+         * Source records that cannot be appended are skipped and reported; the
+         * rest of the batch is appended.
+         */
+        public static final String SKIP = "skip";
+
+        /**
+         * A source record that cannot be appended (e.g.&nbsp;a primary-key
+         * collision) raises an error.  This is the default.
+         */
+        public static final String ABORT = "abort";
+
+        /**
          * Specifies the record collision policy for inserting source table
          * records (specified by {@link #getSourceTableName() sourceTableName})
          * into a target table (specified by {@link #getTableName() tableName})
@@ -250,6 +294,36 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                         desc'. The {@link Options#ORDER_BY ORDER_BY}
      *                         columns do not have to be present in {@code
      *                         fieldMap}. The default value is ''.
+     *                     <li>{@link Options#ERROR_HANDLING ERROR_HANDLING}:
+     *                         Specifies how record errors are handled while
+     *                         appending source table records into the target
+     *                         table.  Currently this governs primary-key
+     *                         collision behavior: {@link Options#SKIP SKIP}
+     *                         and {@link Options#PERMISSIVE PERMISSIVE} drop
+     *                         the colliding source records and continue, while
+     *                         {@link Options#ABORT ABORT} rejects the batch.
+     *                         Explicit {@link Options#UPDATE_ON_EXISTING_PK
+     *                         UPDATE_ON_EXISTING_PK} or {@link
+     *                         Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}
+     *                         take precedence over this option.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#PERMISSIVE PERMISSIVE}:
+     *                                 Source records that cannot be appended
+     *                                 (e.g. a primary-key collision) are
+     *                                 skipped and reported; the rest of the
+     *                                 batch is appended.
+     *                             <li>{@link Options#SKIP SKIP}: Source
+     *                                 records that cannot be appended are
+     *                                 skipped and reported; the rest of the
+     *                                 batch is appended.
+     *                             <li>{@link Options#ABORT ABORT}: A source
+     *                                 record that cannot be appended (e.g. a
+     *                                 primary-key collision) raises an error.
+     *                                 This is the default.
+     *                         </ul>
+     *                         The default value is {@link Options#ABORT
+     *                         ABORT}.
      *                     <li>{@link Options#UPDATE_ON_EXISTING_PK
      *                         UPDATE_ON_EXISTING_PK}: Specifies the record
      *                         collision policy for inserting source table
@@ -484,6 +558,29 @@ public class AppendRecordsRequest implements IndexedRecord {
      *         desc'. The {@link Options#ORDER_BY ORDER_BY} columns do not have
      *         to be present in {@link #getFieldMap() fieldMap}. The default
      *         value is ''.
+     *     <li>{@link Options#ERROR_HANDLING ERROR_HANDLING}: Specifies how
+     *         record errors are handled while appending source table records
+     *         into the target table.  Currently this governs primary-key
+     *         collision behavior: {@link Options#SKIP SKIP} and {@link
+     *         Options#PERMISSIVE PERMISSIVE} drop the colliding source records
+     *         and continue, while {@link Options#ABORT ABORT} rejects the
+     *         batch.  Explicit {@link Options#UPDATE_ON_EXISTING_PK
+     *         UPDATE_ON_EXISTING_PK} or {@link Options#IGNORE_EXISTING_PK
+     *         IGNORE_EXISTING_PK} take precedence over this option.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#PERMISSIVE PERMISSIVE}: Source records
+     *                 that cannot be appended (e.g. a primary-key collision)
+     *                 are skipped and reported; the rest of the batch is
+     *                 appended.
+     *             <li>{@link Options#SKIP SKIP}: Source records that cannot be
+     *                 appended are skipped and reported; the rest of the batch
+     *                 is appended.
+     *             <li>{@link Options#ABORT ABORT}: A source record that cannot
+     *                 be appended (e.g. a primary-key collision) raises an
+     *                 error.  This is the default.
+     *         </ul>
+     *         The default value is {@link Options#ABORT ABORT}.
      *     <li>{@link Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK}:
      *         Specifies the record collision policy for inserting source table
      *         records (specified by {@link #getSourceTableName()
@@ -602,6 +699,29 @@ public class AppendRecordsRequest implements IndexedRecord {
      *         desc'. The {@link Options#ORDER_BY ORDER_BY} columns do not have
      *         to be present in {@link #getFieldMap() fieldMap}. The default
      *         value is ''.
+     *     <li>{@link Options#ERROR_HANDLING ERROR_HANDLING}: Specifies how
+     *         record errors are handled while appending source table records
+     *         into the target table.  Currently this governs primary-key
+     *         collision behavior: {@link Options#SKIP SKIP} and {@link
+     *         Options#PERMISSIVE PERMISSIVE} drop the colliding source records
+     *         and continue, while {@link Options#ABORT ABORT} rejects the
+     *         batch.  Explicit {@link Options#UPDATE_ON_EXISTING_PK
+     *         UPDATE_ON_EXISTING_PK} or {@link Options#IGNORE_EXISTING_PK
+     *         IGNORE_EXISTING_PK} take precedence over this option.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#PERMISSIVE PERMISSIVE}: Source records
+     *                 that cannot be appended (e.g. a primary-key collision)
+     *                 are skipped and reported; the rest of the batch is
+     *                 appended.
+     *             <li>{@link Options#SKIP SKIP}: Source records that cannot be
+     *                 appended are skipped and reported; the rest of the batch
+     *                 is appended.
+     *             <li>{@link Options#ABORT ABORT}: A source record that cannot
+     *                 be appended (e.g. a primary-key collision) raises an
+     *                 error.  This is the default.
+     *         </ul>
+     *         The default value is {@link Options#ABORT ABORT}.
      *     <li>{@link Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK}:
      *         Specifies the record collision policy for inserting source table
      *         records (specified by {@link #getSourceTableName()

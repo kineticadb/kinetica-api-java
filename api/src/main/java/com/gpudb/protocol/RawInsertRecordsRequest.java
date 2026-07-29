@@ -222,6 +222,46 @@ public class RawInsertRecordsRequest implements IndexedRecord {
         public static final String ALLOW_PARTIAL_BATCH = "allow_partial_batch";
 
         /**
+         * Specifies how errors should be handled upon insertion.  When set,
+         * this option is authoritative; supplying a contradictory {@link
+         * Options#ALLOW_PARTIAL_BATCH ALLOW_PARTIAL_BATCH} is an error.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#PERMISSIVE PERMISSIVE}: Records with bad
+         *         column values are kept when possible: the offending column
+         *         is filled with its default value if one exists, otherwise
+         *         with null if the column is nullable; if neither is possible
+         *         the record is skipped and reported.
+         *     <li>{@link Options#SKIP SKIP}: Records with bad values are
+         *         skipped and reported; the rest of the batch is inserted.
+         *     <li>{@link Options#ABORT ABORT}: Stops the insertion and rejects
+         *         the remaining batch when any record is incorrect.
+         * </ul>
+         * The default value is {@link Options#ABORT ABORT}.
+         */
+        public static final String ERROR_HANDLING = "error_handling";
+
+        /**
+         * Records with bad column values are kept when possible: the offending
+         * column is filled with its default value if one exists, otherwise
+         * with null if the column is nullable; if neither is possible the
+         * record is skipped and reported.
+         */
+        public static final String PERMISSIVE = "permissive";
+
+        /**
+         * Records with bad values are skipped and reported; the rest of the
+         * batch is inserted.
+         */
+        public static final String SKIP = "skip";
+
+        /**
+         * Stops the insertion and rejects the remaining batch when any record
+         * is incorrect.
+         */
+        public static final String ABORT = "abort";
+
+        /**
          * If set to {@link Options#TRUE TRUE}, no data will be saved and any
          * errors will be returned.
          * Supported values:
@@ -443,6 +483,31 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#ERROR_HANDLING ERROR_HANDLING}:
+     *                         Specifies how errors should be handled upon
+     *                         insertion.  When set, this option is
+     *                         authoritative; supplying a contradictory {@link
+     *                         Options#ALLOW_PARTIAL_BATCH ALLOW_PARTIAL_BATCH}
+     *                         is an error.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#PERMISSIVE PERMISSIVE}:
+     *                                 Records with bad column values are kept
+     *                                 when possible: the offending column is
+     *                                 filled with its default value if one
+     *                                 exists, otherwise with null if the
+     *                                 column is nullable; if neither is
+     *                                 possible the record is skipped and
+     *                                 reported.
+     *                             <li>{@link Options#SKIP SKIP}: Records with
+     *                                 bad values are skipped and reported; the
+     *                                 rest of the batch is inserted.
+     *                             <li>{@link Options#ABORT ABORT}: Stops the
+     *                                 insertion and rejects the remaining
+     *                                 batch when any record is incorrect.
+     *                         </ul>
+     *                         The default value is {@link Options#ABORT
+     *                         ABORT}.
      *                     <li>{@link Options#DRY_RUN DRY_RUN}: If set to
      *                         {@link Options#TRUE TRUE}, no data will be saved
      *                         and any errors will be returned.
@@ -666,6 +731,31 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#ERROR_HANDLING ERROR_HANDLING}:
+     *                         Specifies how errors should be handled upon
+     *                         insertion.  When set, this option is
+     *                         authoritative; supplying a contradictory {@link
+     *                         Options#ALLOW_PARTIAL_BATCH ALLOW_PARTIAL_BATCH}
+     *                         is an error.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#PERMISSIVE PERMISSIVE}:
+     *                                 Records with bad column values are kept
+     *                                 when possible: the offending column is
+     *                                 filled with its default value if one
+     *                                 exists, otherwise with null if the
+     *                                 column is nullable; if neither is
+     *                                 possible the record is skipped and
+     *                                 reported.
+     *                             <li>{@link Options#SKIP SKIP}: Records with
+     *                                 bad values are skipped and reported; the
+     *                                 rest of the batch is inserted.
+     *                             <li>{@link Options#ABORT ABORT}: Stops the
+     *                                 insertion and rejects the remaining
+     *                                 batch when any record is incorrect.
+     *                         </ul>
+     *                         The default value is {@link Options#ABORT
+     *                         ABORT}.
      *                     <li>{@link Options#DRY_RUN DRY_RUN}: If set to
      *                         {@link Options#TRUE TRUE}, no data will be saved
      *                         and any errors will be returned.
@@ -941,6 +1031,24 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#ERROR_HANDLING ERROR_HANDLING}: Specifies how
+     *         errors should be handled upon insertion.  When set, this option
+     *         is authoritative; supplying a contradictory {@link
+     *         Options#ALLOW_PARTIAL_BATCH ALLOW_PARTIAL_BATCH} is an error.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#PERMISSIVE PERMISSIVE}: Records with bad
+     *                 column values are kept when possible: the offending
+     *                 column is filled with its default value if one exists,
+     *                 otherwise with null if the column is nullable; if
+     *                 neither is possible the record is skipped and reported.
+     *             <li>{@link Options#SKIP SKIP}: Records with bad values are
+     *                 skipped and reported; the rest of the batch is inserted.
+     *             <li>{@link Options#ABORT ABORT}: Stops the insertion and
+     *                 rejects the remaining batch when any record is
+     *                 incorrect.
+     *         </ul>
+     *         The default value is {@link Options#ABORT ABORT}.
      *     <li>{@link Options#DRY_RUN DRY_RUN}: If set to {@link Options#TRUE
      *         TRUE}, no data will be saved and any errors will be returned.
      *         Supported values:
@@ -1097,6 +1205,24 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#ERROR_HANDLING ERROR_HANDLING}: Specifies how
+     *         errors should be handled upon insertion.  When set, this option
+     *         is authoritative; supplying a contradictory {@link
+     *         Options#ALLOW_PARTIAL_BATCH ALLOW_PARTIAL_BATCH} is an error.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#PERMISSIVE PERMISSIVE}: Records with bad
+     *                 column values are kept when possible: the offending
+     *                 column is filled with its default value if one exists,
+     *                 otherwise with null if the column is nullable; if
+     *                 neither is possible the record is skipped and reported.
+     *             <li>{@link Options#SKIP SKIP}: Records with bad values are
+     *                 skipped and reported; the rest of the batch is inserted.
+     *             <li>{@link Options#ABORT ABORT}: Stops the insertion and
+     *                 rejects the remaining batch when any record is
+     *                 incorrect.
+     *         </ul>
+     *         The default value is {@link Options#ABORT ABORT}.
      *     <li>{@link Options#DRY_RUN DRY_RUN}: If set to {@link Options#TRUE
      *         TRUE}, no data will be saved and any errors will be returned.
      *         Supported values:

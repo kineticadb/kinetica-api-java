@@ -196,6 +196,23 @@ public class CreateBackupRequest implements IndexedRecord {
      */
     public static final class Options {
         /**
+         * Whether or not to block all mutations on target tables while they
+         * are being backed up.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}: Block all mutations on target
+         *         tables while they are being backed up.
+         *     <li>{@link Options#FALSE FALSE}: Only block mutations on a
+         *         target table at the point a disk eviction is necessary.
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String BLOCK_TABLE_MUTATIONS = "block_table_mutations";
+
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
          * Whether or not to calculate checksums for backup files.
          * Supported values:
          * <ul>
@@ -205,9 +222,6 @@ public class CreateBackupRequest implements IndexedRecord {
          * The default value is {@link Options#FALSE FALSE}.
          */
         public static final String CHECKSUM = "checksum";
-
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
 
         /**
          * Comments to store with this backup.
@@ -397,6 +411,21 @@ public class CreateBackupRequest implements IndexedRecord {
      * @param datasinkName  Data sink through which the backup will be stored.
      * @param options  Optional parameters.
      *                 <ul>
+     *                     <li>{@link Options#BLOCK_TABLE_MUTATIONS
+     *                         BLOCK_TABLE_MUTATIONS}: Whether or not to block
+     *                         all mutations on target tables while they are
+     *                         being backed up.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}: Block all
+     *                                 mutations on target tables while they
+     *                                 are being backed up.
+     *                             <li>{@link Options#FALSE FALSE}: Only block
+     *                                 mutations on a target table at the point
+     *                                 a disk eviction is necessary.
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
      *                     <li>{@link Options#CHECKSUM CHECKSUM}: Whether or
      *                         not to calculate checksums for backup files.
      *                         Supported values:
@@ -704,6 +733,17 @@ public class CreateBackupRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
+     *     <li>{@link Options#BLOCK_TABLE_MUTATIONS BLOCK_TABLE_MUTATIONS}:
+     *         Whether or not to block all mutations on target tables while
+     *         they are being backed up.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}: Block all mutations on target
+     *                 tables while they are being backed up.
+     *             <li>{@link Options#FALSE FALSE}: Only block mutations on a
+     *                 target table at the point a disk eviction is necessary.
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#CHECKSUM CHECKSUM}: Whether or not to calculate
      *         checksums for backup files.
      *         Supported values:
@@ -767,6 +807,17 @@ public class CreateBackupRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
+     *     <li>{@link Options#BLOCK_TABLE_MUTATIONS BLOCK_TABLE_MUTATIONS}:
+     *         Whether or not to block all mutations on target tables while
+     *         they are being backed up.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}: Block all mutations on target
+     *                 tables while they are being backed up.
+     *             <li>{@link Options#FALSE FALSE}: Only block mutations on a
+     *                 target table at the point a disk eviction is necessary.
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#CHECKSUM CHECKSUM}: Whether or not to calculate
      *         checksums for backup files.
      *         Supported values:

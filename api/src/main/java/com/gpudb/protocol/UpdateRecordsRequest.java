@@ -83,6 +83,49 @@ public class UpdateRecordsRequest<T> {
         public static final String FALSE = "false";
 
         /**
+         * Specifies how record errors are handled during the update's reinsert
+         * (including any alternate insert records supplied via {@link
+         * #getData() data}).  When set, this option is authoritative for the
+         * reinsert.  Primary-key collision behavior is governed by {@link
+         * Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK} and {@link
+         * Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#PERMISSIVE PERMISSIVE}: Records with bad
+         *         column values are kept when possible: the offending column
+         *         is filled with its default value if one exists, otherwise
+         *         with null if the column is nullable; if neither is possible
+         *         the record is skipped and reported.
+         *     <li>{@link Options#SKIP SKIP}: Records with bad values are
+         *         skipped and reported; the rest of the batch is applied.
+         *     <li>{@link Options#ABORT ABORT}: Stops the update and rejects
+         *         the remaining batch when any record is incorrect.
+         * </ul>
+         * The default value is {@link Options#ABORT ABORT}.
+         */
+        public static final String ERROR_HANDLING = "error_handling";
+
+        /**
+         * Records with bad column values are kept when possible: the offending
+         * column is filled with its default value if one exists, otherwise
+         * with null if the column is nullable; if neither is possible the
+         * record is skipped and reported.
+         */
+        public static final String PERMISSIVE = "permissive";
+
+        /**
+         * Records with bad values are skipped and reported; the rest of the
+         * batch is applied.
+         */
+        public static final String SKIP = "skip";
+
+        /**
+         * Stops the update and rejects the remaining batch when any record is
+         * incorrect.
+         */
+        public static final String ABORT = "abort";
+
+        /**
          * Specifies the record collision policy for updating a table with a <a
          * href="../../../../../../concepts/tables/#primary-keys"
          * target="_top">primary key</a>.  There are two ways that a record
@@ -126,6 +169,18 @@ public class UpdateRecordsRequest<T> {
          * The default value is {@link Options#FALSE FALSE}.
          */
         public static final String UPDATE_ON_EXISTING_PK = "update_on_existing_pk";
+
+        /**
+         * The record with higher value for the column resolves the primary-key
+         * insert conflict. The default value is ''.
+         */
+        public static final String PK_CONFLICT_PREDICATE_HIGHER = "pk_conflict_predicate_higher";
+
+        /**
+         * The record with lower value for the column resolves the primary-key
+         * insert conflict. The default value is ''.
+         */
+        public static final String PK_CONFLICT_PREDICATE_LOWER = "pk_conflict_predicate_lower";
 
         /**
          * Specifies the record collision error-suppression policy for updating
@@ -301,6 +356,34 @@ public class UpdateRecordsRequest<T> {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#ERROR_HANDLING ERROR_HANDLING}:
+     *                         Specifies how record errors are handled during
+     *                         the update's reinsert (including any alternate
+     *                         insert records supplied via {@code data}).  When
+     *                         set, this option is authoritative for the
+     *                         reinsert.  Primary-key collision behavior is
+     *                         governed by {@link Options#UPDATE_ON_EXISTING_PK
+     *                         UPDATE_ON_EXISTING_PK} and {@link
+     *                         Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#PERMISSIVE PERMISSIVE}:
+     *                                 Records with bad column values are kept
+     *                                 when possible: the offending column is
+     *                                 filled with its default value if one
+     *                                 exists, otherwise with null if the
+     *                                 column is nullable; if neither is
+     *                                 possible the record is skipped and
+     *                                 reported.
+     *                             <li>{@link Options#SKIP SKIP}: Records with
+     *                                 bad values are skipped and reported; the
+     *                                 rest of the batch is applied.
+     *                             <li>{@link Options#ABORT ABORT}: Stops the
+     *                                 update and rejects the remaining batch
+     *                                 when any record is incorrect.
+     *                         </ul>
+     *                         The default value is {@link Options#ABORT
+     *                         ABORT}.
      *                     <li>{@link Options#UPDATE_ON_EXISTING_PK
      *                         UPDATE_ON_EXISTING_PK}: Specifies the record
      *                         collision policy for updating a table with a <a
@@ -352,6 +435,16 @@ public class UpdateRecordsRequest<T> {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link Options#PK_CONFLICT_PREDICATE_HIGHER
+     *                         PK_CONFLICT_PREDICATE_HIGHER}: The record with
+     *                         higher value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
+     *                     <li>{@link Options#PK_CONFLICT_PREDICATE_LOWER
+     *                         PK_CONFLICT_PREDICATE_LOWER}: The record with
+     *                         lower value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
      *                     <li>{@link Options#IGNORE_EXISTING_PK
      *                         IGNORE_EXISTING_PK}: Specifies the record
      *                         collision error-suppression policy for updating
@@ -609,6 +702,27 @@ public class UpdateRecordsRequest<T> {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#ERROR_HANDLING ERROR_HANDLING}: Specifies how
+     *         record errors are handled during the update's reinsert
+     *         (including any alternate insert records supplied via {@link
+     *         #getData() data}).  When set, this option is authoritative for
+     *         the reinsert.  Primary-key collision behavior is governed by
+     *         {@link Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK} and
+     *         {@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#PERMISSIVE PERMISSIVE}: Records with bad
+     *                 column values are kept when possible: the offending
+     *                 column is filled with its default value if one exists,
+     *                 otherwise with null if the column is nullable; if
+     *                 neither is possible the record is skipped and reported.
+     *             <li>{@link Options#SKIP SKIP}: Records with bad values are
+     *                 skipped and reported; the rest of the batch is applied.
+     *             <li>{@link Options#ABORT ABORT}: Stops the update and
+     *                 rejects the remaining batch when any record is
+     *                 incorrect.
+     *         </ul>
+     *         The default value is {@link Options#ABORT ABORT}.
      *     <li>{@link Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK}:
      *         Specifies the record collision policy for updating a table with
      *         a <a href="../../../../../../concepts/tables/#primary-keys"
@@ -647,6 +761,14 @@ public class UpdateRecordsRequest<T> {
      *                 updated/inserted and an existing record in the table
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#PK_CONFLICT_PREDICATE_HIGHER
+     *         PK_CONFLICT_PREDICATE_HIGHER}: The record with higher value for
+     *         the column resolves the primary-key insert conflict. The default
+     *         value is ''.
+     *     <li>{@link Options#PK_CONFLICT_PREDICATE_LOWER
+     *         PK_CONFLICT_PREDICATE_LOWER}: The record with lower value for
+     *         the column resolves the primary-key insert conflict. The default
+     *         value is ''.
      *     <li>{@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}: Specifies
      *         the record collision error-suppression policy for updating a
      *         table with a <a
@@ -767,6 +889,27 @@ public class UpdateRecordsRequest<T> {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#ERROR_HANDLING ERROR_HANDLING}: Specifies how
+     *         record errors are handled during the update's reinsert
+     *         (including any alternate insert records supplied via {@link
+     *         #getData() data}).  When set, this option is authoritative for
+     *         the reinsert.  Primary-key collision behavior is governed by
+     *         {@link Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK} and
+     *         {@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#PERMISSIVE PERMISSIVE}: Records with bad
+     *                 column values are kept when possible: the offending
+     *                 column is filled with its default value if one exists,
+     *                 otherwise with null if the column is nullable; if
+     *                 neither is possible the record is skipped and reported.
+     *             <li>{@link Options#SKIP SKIP}: Records with bad values are
+     *                 skipped and reported; the rest of the batch is applied.
+     *             <li>{@link Options#ABORT ABORT}: Stops the update and
+     *                 rejects the remaining batch when any record is
+     *                 incorrect.
+     *         </ul>
+     *         The default value is {@link Options#ABORT ABORT}.
      *     <li>{@link Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK}:
      *         Specifies the record collision policy for updating a table with
      *         a <a href="../../../../../../concepts/tables/#primary-keys"
@@ -805,6 +948,14 @@ public class UpdateRecordsRequest<T> {
      *                 updated/inserted and an existing record in the table
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#PK_CONFLICT_PREDICATE_HIGHER
+     *         PK_CONFLICT_PREDICATE_HIGHER}: The record with higher value for
+     *         the column resolves the primary-key insert conflict. The default
+     *         value is ''.
+     *     <li>{@link Options#PK_CONFLICT_PREDICATE_LOWER
+     *         PK_CONFLICT_PREDICATE_LOWER}: The record with lower value for
+     *         the column resolves the primary-key insert conflict. The default
+     *         value is ''.
      *     <li>{@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}: Specifies
      *         the record collision error-suppression policy for updating a
      *         table with a <a

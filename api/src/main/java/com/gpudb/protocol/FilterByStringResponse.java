@@ -5,6 +5,7 @@
  */
 package com.gpudb.protocol;
 
+import java.nio.ByteBuffer;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.apache.avro.Schema;
@@ -23,6 +24,7 @@ public class FilterByStringResponse implements IndexedRecord {
             .fields()
                 .name("count").type().longType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
+                .name("statsData").type().bytesType().noDefault()
             .endRecord();
 
     /**
@@ -53,6 +55,7 @@ public class FilterByStringResponse implements IndexedRecord {
 
     private long count;
     private Map<String, String> info;
+    private ByteBuffer statsData;
 
     /**
      * Constructs a FilterByStringResponse object with default parameters.
@@ -113,6 +116,41 @@ public class FilterByStringResponse implements IndexedRecord {
     }
 
     /**
+     * Serialized cross-shard BM25 corpus statistics, populated for {@link
+     * com.gpudb.protocol.FilterByStringRequest.Mode#SEARCH_STATS SEARCH_STATS}
+     * mode and empty otherwise. Wire format matches the merged BM25GlobalStats
+     * blob the BM25 stats worker produces internally (max_doc, doc_count,
+     * sum_total_term_freq, sum_doc_freq, num_terms, then per term: term,
+     * doc_freq, total_term_freq). Clients that consume this perform their own
+     * scoring; the gpudb client library will expose a parser as a future
+     * convenience. The default value is ''.
+     *
+     * @return The current value of {@code statsData}.
+     */
+    public ByteBuffer getStatsData() {
+        return statsData;
+    }
+
+    /**
+     * Serialized cross-shard BM25 corpus statistics, populated for {@link
+     * com.gpudb.protocol.FilterByStringRequest.Mode#SEARCH_STATS SEARCH_STATS}
+     * mode and empty otherwise. Wire format matches the merged BM25GlobalStats
+     * blob the BM25 stats worker produces internally (max_doc, doc_count,
+     * sum_total_term_freq, sum_doc_freq, num_terms, then per term: term,
+     * doc_freq, total_term_freq). Clients that consume this perform their own
+     * scoring; the gpudb client library will expose a parser as a future
+     * convenience. The default value is ''.
+     *
+     * @param statsData  The new value for {@code statsData}.
+     *
+     * @return {@code this} to mimic the builder pattern.
+     */
+    public FilterByStringResponse setStatsData(ByteBuffer statsData) {
+        this.statsData = (statsData == null) ? ByteBuffer.wrap( new byte[0] ) : statsData;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      *
@@ -142,6 +180,9 @@ public class FilterByStringResponse implements IndexedRecord {
             case 1:
                 return this.info;
 
+            case 2:
+                return this.statsData;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -168,6 +209,10 @@ public class FilterByStringResponse implements IndexedRecord {
                 this.info = (Map<String, String>)value;
                 break;
 
+            case 2:
+                this.statsData = (ByteBuffer)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -186,7 +231,8 @@ public class FilterByStringResponse implements IndexedRecord {
         FilterByStringResponse that = (FilterByStringResponse)obj;
 
         return ( ( this.count == that.count )
-                 && this.info.equals( that.info ) );
+                 && this.info.equals( that.info )
+                 && this.statsData.equals( that.statsData ) );
     }
 
     @Override
@@ -201,6 +247,10 @@ public class FilterByStringResponse implements IndexedRecord {
         builder.append( gd.toString( "info" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.info ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "statsData" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.statsData ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -211,6 +261,7 @@ public class FilterByStringResponse implements IndexedRecord {
         int hashCode = 1;
         hashCode = (31 * hashCode) + ((Long)this.count).hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
+        hashCode = (31 * hashCode) + this.statsData.hashCode();
         return hashCode;
     }
 }

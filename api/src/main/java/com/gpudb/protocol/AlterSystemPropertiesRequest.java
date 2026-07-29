@@ -196,6 +196,37 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String KAFKA_WAIT_TIME = "kafka_wait_time";
 
         /**
+         * Enable caching of datalake table metadata.
+         */
+        public static final String DATALAKE_TABLE_METADATA_CACHE_ENABLED = "datalake_table_metadata_cache_enabled";
+
+        /**
+         * Maximum number of datalake table metadata entries to cache.
+         */
+        public static final String DATALAKE_TABLE_METADATA_CACHE_SIZE = "datalake_table_metadata_cache_size";
+
+        /**
+         * Time-to-live (seconds) for cached datalake table metadata entries.
+         */
+        public static final String DATALAKE_TABLE_METADATA_CACHE_TTL = "datalake_table_metadata_cache_ttl";
+
+        /**
+         * When enabled, check the current datalake snapshot on cache hits and
+         * invalidate entries that have changed.
+         */
+        public static final String DATALAKE_TABLE_METADATA_CACHE_SNAPSHOT_CHECK = "datalake_table_metadata_cache_snapshot_check";
+
+        /**
+         * Maximum number of cached datalake REST catalog connections.
+         */
+        public static final String DATALAKE_CATALOG_CONNECTION_CACHE_SIZE = "datalake_catalog_connection_cache_size";
+
+        /**
+         * Enable caching of parsed Iceberg manifest and manifest-list files.
+         */
+        public static final String ICEBERG_MANIFEST_CACHE_ENABLED = "iceberg_manifest_cache_enabled";
+
+        /**
          * Parquet file compression type.
          * Supported values:
          * <ul>
@@ -245,6 +276,13 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          * allowed value is '2'. The maximum allowed value is '8192'.
          */
         public static final String TPS_PER_TOM = "tps_per_tom";
+
+        /**
+         * Size of the worker rank IO thread pool. This is used for blocking IO
+         * operations such as reads from object storage or external file
+         * systems.
+         */
+        public static final String REMOTE_IO_THREADS = "remote_io_threads";
 
         /**
          * Size of the worker rank background thread pool. This includes
@@ -555,6 +593,37 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    allowed value is '1'. The maximum
      *                                    allowed value is '120'.
      *                                <li>{@link
+     *                                    PropertyUpdatesMap#DATALAKE_TABLE_METADATA_CACHE_ENABLED
+     *                                    DATALAKE_TABLE_METADATA_CACHE_ENABLED}:
+     *                                    Enable caching of datalake table
+     *                                    metadata.
+     *                                <li>{@link
+     *                                    PropertyUpdatesMap#DATALAKE_TABLE_METADATA_CACHE_SIZE
+     *                                    DATALAKE_TABLE_METADATA_CACHE_SIZE}:
+     *                                    Maximum number of datalake table
+     *                                    metadata entries to cache.
+     *                                <li>{@link
+     *                                    PropertyUpdatesMap#DATALAKE_TABLE_METADATA_CACHE_TTL
+     *                                    DATALAKE_TABLE_METADATA_CACHE_TTL}:
+     *                                    Time-to-live (seconds) for cached
+     *                                    datalake table metadata entries.
+     *                                <li>{@link
+     *                                    PropertyUpdatesMap#DATALAKE_TABLE_METADATA_CACHE_SNAPSHOT_CHECK
+     *                                    DATALAKE_TABLE_METADATA_CACHE_SNAPSHOT_CHECK}:
+     *                                    When enabled, check the current
+     *                                    datalake snapshot on cache hits and
+     *                                    invalidate entries that have changed.
+     *                                <li>{@link
+     *                                    PropertyUpdatesMap#DATALAKE_CATALOG_CONNECTION_CACHE_SIZE
+     *                                    DATALAKE_CATALOG_CONNECTION_CACHE_SIZE}:
+     *                                    Maximum number of cached datalake
+     *                                    REST catalog connections.
+     *                                <li>{@link
+     *                                    PropertyUpdatesMap#ICEBERG_MANIFEST_CACHE_ENABLED
+     *                                    ICEBERG_MANIFEST_CACHE_ENABLED}:
+     *                                    Enable caching of parsed Iceberg
+     *                                    manifest and manifest-list files.
+     *                                <li>{@link
      *                                    PropertyUpdatesMap#EGRESS_PARQUET_COMPRESSION
      *                                    EGRESS_PARQUET_COMPRESSION}: Parquet
      *                                    file compression type.
@@ -611,6 +680,13 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    by this limit. The minimum allowed
      *                                    value is '2'. The maximum allowed
      *                                    value is '8192'.
+     *                                <li>{@link
+     *                                    PropertyUpdatesMap#REMOTE_IO_THREADS
+     *                                    REMOTE_IO_THREADS}: Size of the
+     *                                    worker rank IO thread pool. This is
+     *                                    used for blocking IO operations such
+     *                                    as reads from object storage or
+     *                                    external file systems.
      *                                <li>{@link
      *                                    PropertyUpdatesMap#BACKGROUND_WORKER_THREADS
      *                                    BACKGROUND_WORKER_THREADS}: Size of
@@ -824,6 +900,26 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         Maximum time (seconds) to buffer records received from Kafka
      *         before ingestion. The default value is '30'. The minimum allowed
      *         value is '1'. The maximum allowed value is '120'.
+     *     <li>{@link PropertyUpdatesMap#DATALAKE_TABLE_METADATA_CACHE_ENABLED
+     *         DATALAKE_TABLE_METADATA_CACHE_ENABLED}: Enable caching of
+     *         datalake table metadata.
+     *     <li>{@link PropertyUpdatesMap#DATALAKE_TABLE_METADATA_CACHE_SIZE
+     *         DATALAKE_TABLE_METADATA_CACHE_SIZE}: Maximum number of datalake
+     *         table metadata entries to cache.
+     *     <li>{@link PropertyUpdatesMap#DATALAKE_TABLE_METADATA_CACHE_TTL
+     *         DATALAKE_TABLE_METADATA_CACHE_TTL}: Time-to-live (seconds) for
+     *         cached datalake table metadata entries.
+     *     <li>{@link
+     *         PropertyUpdatesMap#DATALAKE_TABLE_METADATA_CACHE_SNAPSHOT_CHECK
+     *         DATALAKE_TABLE_METADATA_CACHE_SNAPSHOT_CHECK}: When enabled,
+     *         check the current datalake snapshot on cache hits and invalidate
+     *         entries that have changed.
+     *     <li>{@link PropertyUpdatesMap#DATALAKE_CATALOG_CONNECTION_CACHE_SIZE
+     *         DATALAKE_CATALOG_CONNECTION_CACHE_SIZE}: Maximum number of
+     *         cached datalake REST catalog connections.
+     *     <li>{@link PropertyUpdatesMap#ICEBERG_MANIFEST_CACHE_ENABLED
+     *         ICEBERG_MANIFEST_CACHE_ENABLED}: Enable caching of parsed
+     *         Iceberg manifest and manifest-list files.
      *     <li>{@link PropertyUpdatesMap#EGRESS_PARQUET_COMPRESSION
      *         EGRESS_PARQUET_COMPRESSION}: Parquet file compression type.
      *         Supported values:
@@ -856,6 +952,10 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         operations such as inserts, updates, and deletes on table data.
      *         Multi-head inserts are not affected by this limit. The minimum
      *         allowed value is '2'. The maximum allowed value is '8192'.
+     *     <li>{@link PropertyUpdatesMap#REMOTE_IO_THREADS REMOTE_IO_THREADS}:
+     *         Size of the worker rank IO thread pool. This is used for
+     *         blocking IO operations such as reads from object storage or
+     *         external file systems.
      *     <li>{@link PropertyUpdatesMap#BACKGROUND_WORKER_THREADS
      *         BACKGROUND_WORKER_THREADS}: Size of the worker rank background
      *         thread pool. This includes background operations such as
@@ -1006,6 +1106,26 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         Maximum time (seconds) to buffer records received from Kafka
      *         before ingestion. The default value is '30'. The minimum allowed
      *         value is '1'. The maximum allowed value is '120'.
+     *     <li>{@link PropertyUpdatesMap#DATALAKE_TABLE_METADATA_CACHE_ENABLED
+     *         DATALAKE_TABLE_METADATA_CACHE_ENABLED}: Enable caching of
+     *         datalake table metadata.
+     *     <li>{@link PropertyUpdatesMap#DATALAKE_TABLE_METADATA_CACHE_SIZE
+     *         DATALAKE_TABLE_METADATA_CACHE_SIZE}: Maximum number of datalake
+     *         table metadata entries to cache.
+     *     <li>{@link PropertyUpdatesMap#DATALAKE_TABLE_METADATA_CACHE_TTL
+     *         DATALAKE_TABLE_METADATA_CACHE_TTL}: Time-to-live (seconds) for
+     *         cached datalake table metadata entries.
+     *     <li>{@link
+     *         PropertyUpdatesMap#DATALAKE_TABLE_METADATA_CACHE_SNAPSHOT_CHECK
+     *         DATALAKE_TABLE_METADATA_CACHE_SNAPSHOT_CHECK}: When enabled,
+     *         check the current datalake snapshot on cache hits and invalidate
+     *         entries that have changed.
+     *     <li>{@link PropertyUpdatesMap#DATALAKE_CATALOG_CONNECTION_CACHE_SIZE
+     *         DATALAKE_CATALOG_CONNECTION_CACHE_SIZE}: Maximum number of
+     *         cached datalake REST catalog connections.
+     *     <li>{@link PropertyUpdatesMap#ICEBERG_MANIFEST_CACHE_ENABLED
+     *         ICEBERG_MANIFEST_CACHE_ENABLED}: Enable caching of parsed
+     *         Iceberg manifest and manifest-list files.
      *     <li>{@link PropertyUpdatesMap#EGRESS_PARQUET_COMPRESSION
      *         EGRESS_PARQUET_COMPRESSION}: Parquet file compression type.
      *         Supported values:
@@ -1038,6 +1158,10 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         operations such as inserts, updates, and deletes on table data.
      *         Multi-head inserts are not affected by this limit. The minimum
      *         allowed value is '2'. The maximum allowed value is '8192'.
+     *     <li>{@link PropertyUpdatesMap#REMOTE_IO_THREADS REMOTE_IO_THREADS}:
+     *         Size of the worker rank IO thread pool. This is used for
+     *         blocking IO operations such as reads from object storage or
+     *         external file systems.
      *     <li>{@link PropertyUpdatesMap#BACKGROUND_WORKER_THREADS
      *         BACKGROUND_WORKER_THREADS}: Size of the worker rank background
      *         thread pool. This includes background operations such as

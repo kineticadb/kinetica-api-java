@@ -437,8 +437,9 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          *     <li>{@link Options#PERMISSIVE PERMISSIVE}: Records with missing
          *         columns are populated with nulls if possible; otherwise, the
          *         malformed records are skipped.
+         *     <li>{@link Options#SKIP SKIP}: Malformed records are skipped.
          *     <li>{@link Options#IGNORE_BAD_RECORDS IGNORE_BAD_RECORDS}:
-         *         Malformed records are skipped.
+         *         Deprecated. Alias for {@link Options#SKIP SKIP}.
          *     <li>{@link Options#ABORT ABORT}: Stops current insertion and
          *         aborts entire operation when an error is encountered.
          *         Primary key collisions are considered abortable errors in
@@ -456,6 +457,11 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
 
         /**
          * Malformed records are skipped.
+         */
+        public static final String SKIP = "skip";
+
+        /**
+         * Deprecated. Alias for {@link Options#SKIP SKIP}.
          */
         public static final String IGNORE_BAD_RECORDS = "ignore_bad_records";
 
@@ -540,6 +546,18 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * requests: key=value. The default value is ''.
          */
         public static final String GDAL_CONFIGURATION_OPTIONS = "gdal_configuration_options";
+
+        /**
+         * The record with higher value for the column resolves the primary-key
+         * insert conflict. The default value is ''.
+         */
+        public static final String PK_CONFLICT_PREDICATE_HIGHER = "pk_conflict_predicate_higher";
+
+        /**
+         * The record with lower value for the column resolves the primary-key
+         * insert conflict. The default value is ''.
+         */
+        public static final String PK_CONFLICT_PREDICATE_LOWER = "pk_conflict_predicate_lower";
 
         /**
          * Specifies the record collision error-suppression policy for
@@ -1427,9 +1445,11 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                                 populated with nulls if possible;
      *                                 otherwise, the malformed records are
      *                                 skipped.
+     *                             <li>{@link Options#SKIP SKIP}: Malformed
+     *                                 records are skipped.
      *                             <li>{@link Options#IGNORE_BAD_RECORDS
-     *                                 IGNORE_BAD_RECORDS}: Malformed records
-     *                                 are skipped.
+     *                                 IGNORE_BAD_RECORDS}: Deprecated. Alias
+     *                                 for {@link Options#SKIP SKIP}.
      *                             <li>{@link Options#ABORT ABORT}: Stops
      *                                 current insertion and aborts entire
      *                                 operation when an error is encountered.
@@ -1475,6 +1495,16 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         GDAL_CONFIGURATION_OPTIONS}: Comma separated
      *                         list of gdal conf options, for the specific
      *                         requests: key=value. The default value is ''.
+     *                     <li>{@link Options#PK_CONFLICT_PREDICATE_HIGHER
+     *                         PK_CONFLICT_PREDICATE_HIGHER}: The record with
+     *                         higher value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
+     *                     <li>{@link Options#PK_CONFLICT_PREDICATE_LOWER
+     *                         PK_CONFLICT_PREDICATE_LOWER}: The record with
+     *                         lower value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
      *                     <li>{@link Options#IGNORE_EXISTING_PK
      *                         IGNORE_EXISTING_PK}: Specifies the record
      *                         collision error-suppression policy for inserting
@@ -2375,8 +2405,10 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *             <li>{@link Options#PERMISSIVE PERMISSIVE}: Records with
      *                 missing columns are populated with nulls if possible;
      *                 otherwise, the malformed records are skipped.
+     *             <li>{@link Options#SKIP SKIP}: Malformed records are
+     *                 skipped.
      *             <li>{@link Options#IGNORE_BAD_RECORDS IGNORE_BAD_RECORDS}:
-     *                 Malformed records are skipped.
+     *                 Deprecated. Alias for {@link Options#SKIP SKIP}.
      *             <li>{@link Options#ABORT ABORT}: Stops current insertion and
      *                 aborts entire operation when an error is encountered.
      *                 Primary key collisions are considered abortable errors
@@ -2413,6 +2445,14 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         GDAL_CONFIGURATION_OPTIONS}: Comma separated list of gdal conf
      *         options, for the specific requests: key=value. The default value
      *         is ''.
+     *     <li>{@link Options#PK_CONFLICT_PREDICATE_HIGHER
+     *         PK_CONFLICT_PREDICATE_HIGHER}: The record with higher value for
+     *         the column resolves the primary-key insert conflict. The default
+     *         value is ''.
+     *     <li>{@link Options#PK_CONFLICT_PREDICATE_LOWER
+     *         PK_CONFLICT_PREDICATE_LOWER}: The record with lower value for
+     *         the column resolves the primary-key insert conflict. The default
+     *         value is ''.
      *     <li>{@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}: Specifies
      *         the record collision error-suppression policy for inserting into
      *         a table with a <a
@@ -2821,8 +2861,10 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *             <li>{@link Options#PERMISSIVE PERMISSIVE}: Records with
      *                 missing columns are populated with nulls if possible;
      *                 otherwise, the malformed records are skipped.
+     *             <li>{@link Options#SKIP SKIP}: Malformed records are
+     *                 skipped.
      *             <li>{@link Options#IGNORE_BAD_RECORDS IGNORE_BAD_RECORDS}:
-     *                 Malformed records are skipped.
+     *                 Deprecated. Alias for {@link Options#SKIP SKIP}.
      *             <li>{@link Options#ABORT ABORT}: Stops current insertion and
      *                 aborts entire operation when an error is encountered.
      *                 Primary key collisions are considered abortable errors
@@ -2859,6 +2901,14 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         GDAL_CONFIGURATION_OPTIONS}: Comma separated list of gdal conf
      *         options, for the specific requests: key=value. The default value
      *         is ''.
+     *     <li>{@link Options#PK_CONFLICT_PREDICATE_HIGHER
+     *         PK_CONFLICT_PREDICATE_HIGHER}: The record with higher value for
+     *         the column resolves the primary-key insert conflict. The default
+     *         value is ''.
+     *     <li>{@link Options#PK_CONFLICT_PREDICATE_LOWER
+     *         PK_CONFLICT_PREDICATE_LOWER}: The record with lower value for
+     *         the column resolves the primary-key insert conflict. The default
+     *         value is ''.
      *     <li>{@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}: Specifies
      *         the record collision error-suppression policy for inserting into
      *         a table with a <a

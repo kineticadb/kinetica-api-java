@@ -58,6 +58,11 @@ public class RestoreBackupRequest implements IndexedRecord {
         public static final String ALL = "all";
 
         /**
+         * Data Lake catalog that is external to the database.
+         */
+        public static final String CATALOG = "catalog";
+
+        /**
          * <a href="../../../../../../sql-gpt/concepts/#sql-gpt-context"
          * target="_top">Context(s)</a>.
          */
@@ -329,6 +334,17 @@ public class RestoreBackupRequest implements IndexedRecord {
          */
         public static final String RENAME = "rename";
 
+        /**
+         * Restore schema-based objects to alternate schema. Value is a comma
+         * delimitted list of key:value pairs mapping the original (source)
+         * schema name as it exists in the backup to a target (destination)
+         * schema namespace: "src: dst [, src: dst [, ...]]". Note that schema
+         * names are case sensitive and must adhere to the database schema <a
+         * href="../../../../../../concepts/schemas/" target="_top">naming
+         * criteria</a>. The default value is ''.
+         */
+        public static final String TARGET_SCHEMA_MAP = "target_schema_map";
+
         private Options() {  }
     }
 
@@ -360,6 +376,9 @@ public class RestoreBackupRequest implements IndexedRecord {
      *                                   given <a
      *                                   href="../../../../../../concepts/schemas/"
      *                                   target="_top">schema(s)</a>.
+     *                               <li>{@link RestoreObjectsMap#CATALOG
+     *                                   CATALOG}: Data Lake catalog that is
+     *                                   external to the database.
      *                               <li>{@link RestoreObjectsMap#CONTEXT
      *                                   CONTEXT}: <a
      *                                   href="../../../../../../sql-gpt/concepts/#sql-gpt-context"
@@ -563,6 +582,18 @@ public class RestoreBackupRequest implements IndexedRecord {
      *                                 does not apply to non-schema objects.
      *                         </ul>
      *                         The default value is {@link Options#NONE NONE}.
+     *                     <li>{@link Options#TARGET_SCHEMA_MAP
+     *                         TARGET_SCHEMA_MAP}: Restore schema-based objects
+     *                         to alternate schema. Value is a comma delimitted
+     *                         list of key:value pairs mapping the original
+     *                         (source) schema name as it exists in the backup
+     *                         to a target (destination) schema namespace:
+     *                         "src: dst [, src: dst [, ...]]". Note that
+     *                         schema names are case sensitive and must adhere
+     *                         to the database  schema <a
+     *                         href="../../../../../../concepts/schemas/"
+     *                         target="_top">naming criteria</a>. The default
+     *                         value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -603,6 +634,8 @@ public class RestoreBackupRequest implements IndexedRecord {
      *         contained in the given <a
      *         href="../../../../../../concepts/schemas/"
      *         target="_top">schema(s)</a>.
+     *     <li>{@link RestoreObjectsMap#CATALOG CATALOG}: Data Lake catalog
+     *         that is external to the database.
      *     <li>{@link RestoreObjectsMap#CONTEXT CONTEXT}: <a
      *         href="../../../../../../sql-gpt/concepts/#sql-gpt-context"
      *         target="_top">Context(s)</a>.
@@ -671,6 +704,8 @@ public class RestoreBackupRequest implements IndexedRecord {
      *         contained in the given <a
      *         href="../../../../../../concepts/schemas/"
      *         target="_top">schema(s)</a>.
+     *     <li>{@link RestoreObjectsMap#CATALOG CATALOG}: Data Lake catalog
+     *         that is external to the database.
      *     <li>{@link RestoreObjectsMap#CONTEXT CONTEXT}: <a
      *         href="../../../../../../sql-gpt/concepts/#sql-gpt-context"
      *         target="_top">Context(s)</a>.
@@ -857,6 +892,14 @@ public class RestoreBackupRequest implements IndexedRecord {
      *                 This policy does not apply to non-schema objects.
      *         </ul>
      *         The default value is {@link Options#NONE NONE}.
+     *     <li>{@link Options#TARGET_SCHEMA_MAP TARGET_SCHEMA_MAP}: Restore
+     *         schema-based objects to alternate schema. Value is a comma
+     *         delimitted list of key:value pairs mapping the original (source)
+     *         schema name as it exists in the backup to a target (destination)
+     *         schema namespace:  "src: dst [, src: dst [, ...]]". Note that
+     *         schema names are case sensitive and must adhere to the database
+     *         schema <a href="../../../../../../concepts/schemas/"
+     *         target="_top">naming criteria</a>. The default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -967,6 +1010,14 @@ public class RestoreBackupRequest implements IndexedRecord {
      *                 This policy does not apply to non-schema objects.
      *         </ul>
      *         The default value is {@link Options#NONE NONE}.
+     *     <li>{@link Options#TARGET_SCHEMA_MAP TARGET_SCHEMA_MAP}: Restore
+     *         schema-based objects to alternate schema. Value is a comma
+     *         delimitted list of key:value pairs mapping the original (source)
+     *         schema name as it exists in the backup to a target (destination)
+     *         schema namespace:  "src: dst [, src: dst [, ...]]". Note that
+     *         schema names are case sensitive and must adhere to the database
+     *         schema <a href="../../../../../../concepts/schemas/"
+     *         target="_top">naming criteria</a>. The default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      *

@@ -5649,6 +5649,37 @@ public class GPUdb extends GPUdbBase {
      *                                    allowed value is '1'. The maximum
      *                                    allowed value is '120'.
      *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#DATALAKE_TABLE_METADATA_CACHE_ENABLED
+     *                                    DATALAKE_TABLE_METADATA_CACHE_ENABLED}:
+     *                                    Enable caching of datalake table
+     *                                    metadata.
+     *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#DATALAKE_TABLE_METADATA_CACHE_SIZE
+     *                                    DATALAKE_TABLE_METADATA_CACHE_SIZE}:
+     *                                    Maximum number of datalake table
+     *                                    metadata entries to cache.
+     *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#DATALAKE_TABLE_METADATA_CACHE_TTL
+     *                                    DATALAKE_TABLE_METADATA_CACHE_TTL}:
+     *                                    Time-to-live (seconds) for cached
+     *                                    datalake table metadata entries.
+     *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#DATALAKE_TABLE_METADATA_CACHE_SNAPSHOT_CHECK
+     *                                    DATALAKE_TABLE_METADATA_CACHE_SNAPSHOT_CHECK}:
+     *                                    When enabled, check the current
+     *                                    datalake snapshot on cache hits and
+     *                                    invalidate entries that have changed.
+     *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#DATALAKE_CATALOG_CONNECTION_CACHE_SIZE
+     *                                    DATALAKE_CATALOG_CONNECTION_CACHE_SIZE}:
+     *                                    Maximum number of cached datalake
+     *                                    REST catalog connections.
+     *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ICEBERG_MANIFEST_CACHE_ENABLED
+     *                                    ICEBERG_MANIFEST_CACHE_ENABLED}:
+     *                                    Enable caching of parsed Iceberg
+     *                                    manifest and manifest-list files.
+     *                                <li>{@link
      *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EGRESS_PARQUET_COMPRESSION
      *                                    EGRESS_PARQUET_COMPRESSION}: Parquet
      *                                    file compression type.
@@ -5709,6 +5740,13 @@ public class GPUdb extends GPUdbBase {
      *                                    by this limit. The minimum allowed
      *                                    value is '2'. The maximum allowed
      *                                    value is '8192'.
+     *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#REMOTE_IO_THREADS
+     *                                    REMOTE_IO_THREADS}: Size of the
+     *                                    worker rank IO thread pool. This is
+     *                                    used for blocking IO operations such
+     *                                    as reads from object storage or
+     *                                    external file systems.
      *                                <li>{@link
      *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#BACKGROUND_WORKER_THREADS
      *                                    BACKGROUND_WORKER_THREADS}: Size of
@@ -6311,6 +6349,24 @@ public class GPUdb extends GPUdbBase {
      *                        in {@link GPUdb#createMaterializedView(String,
      *                        Map) createMaterializedView} for possible values
      *                        for {@code value}.
+     *                    <li>{@link
+     *                        com.gpudb.protocol.AlterTableRequest.Action#REBUILD_TEXT_SEARCH_INDEX
+     *                        REBUILD_TEXT_SEARCH_INDEX}: Drops and rebuilds
+     *                        the <a
+     *                        href="../../../../../concepts/full_text_search/"
+     *                        target="_top">text search</a> index for the table
+     *                        from current type metadata and chunk storage. Use
+     *                        this to repair a text-search index left
+     *                        incomplete by an interrupted or failed rebuild
+     *                        (for example, after a crash during an add-column
+     *                        that requested text search): re-running the
+     *                        original add_column will not work because the
+     *                        column already exists. This action is also
+     *                        dispatched automatically by {@link
+     *                        GPUdb#alterTableColumns(String, List, Map)
+     *                        alterTableColumns} after add_column completions
+     *                        that require a full re-index. The {@code value}
+     *                        is ignored.
      *                </ul>
      * @param value  The value of the modification, depending on {@code
      *               action}. For example, if {@code action} is {@link
@@ -7187,6 +7243,46 @@ public class GPUdb extends GPUdbBase {
      *                         ORDER_BY} columns do not have to be present in
      *                         {@code fieldMap}. The default value is ''.
      *                     <li>{@link
+     *                         com.gpudb.protocol.AppendRecordsRequest.Options#ERROR_HANDLING
+     *                         ERROR_HANDLING}: Specifies how record errors are
+     *                         handled while appending source table records
+     *                         into the target table.  Currently this governs
+     *                         primary-key collision behavior: {@link
+     *                         com.gpudb.protocol.AppendRecordsRequest.Options#SKIP
+     *                         SKIP} and {@link
+     *                         com.gpudb.protocol.AppendRecordsRequest.Options#PERMISSIVE
+     *                         PERMISSIVE} drop the colliding source records
+     *                         and continue, while {@link
+     *                         com.gpudb.protocol.AppendRecordsRequest.Options#ABORT
+     *                         ABORT} rejects the batch.  Explicit {@link
+     *                         com.gpudb.protocol.AppendRecordsRequest.Options#UPDATE_ON_EXISTING_PK
+     *                         UPDATE_ON_EXISTING_PK} or {@link
+     *                         com.gpudb.protocol.AppendRecordsRequest.Options#IGNORE_EXISTING_PK
+     *                         IGNORE_EXISTING_PK} take precedence over this
+     *                         option.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.AppendRecordsRequest.Options#PERMISSIVE
+     *                                 PERMISSIVE}: Source records that cannot
+     *                                 be appended (e.g. a primary-key
+     *                                 collision) are skipped and reported; the
+     *                                 rest of the batch is appended.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.AppendRecordsRequest.Options#SKIP
+     *                                 SKIP}: Source records that cannot be
+     *                                 appended are skipped and reported; the
+     *                                 rest of the batch is appended.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.AppendRecordsRequest.Options#ABORT
+     *                                 ABORT}: A source record that cannot be
+     *                                 appended (e.g. a primary-key collision)
+     *                                 raises an error.  This is the default.
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.AppendRecordsRequest.Options#ABORT
+     *                         ABORT}.
+     *                     <li>{@link
      *                         com.gpudb.protocol.AppendRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                         UPDATE_ON_EXISTING_PK}: Specifies the record
      *                         collision policy for inserting source table
@@ -7466,16 +7562,16 @@ public class GPUdb extends GPUdbBase {
      *                   using standard <a
      *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>. Must be an
-     *                   existing table.  A value of {@code _*} clears
-     *                   statistics on every user table the caller may read
-     *                   (excluding system schemas, views, and temporary
-     *                   tables); when used, {@code columnName} must be empty.
-     *                   The default value is ''.
+     *                   existing table.  A value of '*' clears statistics on
+     *                   every user table the caller may read (excluding system
+     *                   schemas, views, and temporary tables); when used,
+     *                   {@code columnName} must be empty. The default value is
+     *                   ''.
      * @param columnName  Name of the column in {@code tableName} for which to
      *                    clear statistics. The column must be from an existing
      *                    table. An empty string clears statistics for all
      *                    columns in the table.  Must be empty when {@code
-     *                    tableName} is {@code _*}. The default value is ''.
+     *                    tableName} is '*'. The default value is ''.
      * @param options  Optional parameters. The default value is an empty
      *                 {@link Map}.
      *
@@ -7975,6 +8071,26 @@ public class GPUdb extends GPUdbBase {
      * @param datasinkName  Data sink through which the backup will be stored.
      * @param options  Optional parameters.
      *                 <ul>
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateBackupRequest.Options#BLOCK_TABLE_MUTATIONS
+     *                         BLOCK_TABLE_MUTATIONS}: Whether or not to block
+     *                         all mutations on target tables while they are
+     *                         being backed up.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateBackupRequest.Options#TRUE
+     *                                 TRUE}: Block all mutations on target
+     *                                 tables while they are being backed up.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateBackupRequest.Options#FALSE
+     *                                 FALSE}: Only block mutations on a target
+     *                                 table at the point a disk eviction is
+     *                                 necessary.
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.CreateBackupRequest.Options#FALSE
+     *                         FALSE}.
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateBackupRequest.Options#CHECKSUM
      *                         CHECKSUM}: Whether or not to calculate checksums
@@ -11562,9 +11678,14 @@ public class GPUdb extends GPUdbBase {
      *                                 possible; otherwise, the malformed
      *                                 records are skipped.
      *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateTableExternalRequest.Options#SKIP
+     *                                 SKIP}: Malformed records are skipped.
+     *                             <li>{@link
      *                                 com.gpudb.protocol.CreateTableExternalRequest.Options#IGNORE_BAD_RECORDS
-     *                                 IGNORE_BAD_RECORDS}: Malformed records
-     *                                 are skipped.
+     *                                 IGNORE_BAD_RECORDS}: Deprecated. Alias
+     *                                 for {@link
+     *                                 com.gpudb.protocol.CreateTableExternalRequest.Options#SKIP
+     *                                 SKIP}.
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateTableExternalRequest.Options#ABORT
      *                                 ABORT}: Stops current insertion and
@@ -11651,6 +11772,18 @@ public class GPUdb extends GPUdbBase {
      *                         GDAL_CONFIGURATION_OPTIONS}: Comma separated
      *                         list of gdal conf options, for the specific
      *                         requests: key=value.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateTableExternalRequest.Options#PK_CONFLICT_PREDICATE_HIGHER
+     *                         PK_CONFLICT_PREDICATE_HIGHER}: The record with
+     *                         higher value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.CreateTableExternalRequest.Options#PK_CONFLICT_PREDICATE_LOWER
+     *                         PK_CONFLICT_PREDICATE_LOWER}: The record with
+     *                         lower value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateTableExternalRequest.Options#IGNORE_EXISTING_PK
      *                         IGNORE_EXISTING_PK}: Specifies the record
@@ -17471,6 +17604,19 @@ public class GPUdb extends GPUdbBase {
      *                      accelerated). If the column is a string type
      *                      (non-charN) and the number of records is too large,
      *                      it will return 0.
+     *                  <li>{@link
+     *                      com.gpudb.protocol.FilterByStringRequest.Mode#SEARCH_STATS
+     *                      SEARCH_STATS}: Cross-shard BM25 corpus statistics
+     *                      for one (column, query) pair. Returns the merged
+     *                      BM25 statistics (max_doc, doc_count,
+     *                      sum_total_term_freq, per-term doc_freq /
+     *                      total_term_freq) needed by callers that score
+     *                      documents themselves (e.g. text_match_bm25_global
+     *                      SQL function pre-pass). Requires {@code
+     *                      COLUMN_NAMES} to contain exactly one column with
+     *                      text search enabled. The {@code VIEW_NAME} field is
+     *                      ignored — this mode does not produce a result
+     *                      table.
      *              </ul>
      * @param columnNames  List of columns on which to apply the filter.
      *                     Ignored for {@link
@@ -20520,6 +20666,39 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.InsertRecordsRequest.Options#FALSE
      *                         FALSE}.
      *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsRequest.Options#ERROR_HANDLING
+     *                         ERROR_HANDLING}: Specifies how errors should be
+     *                         handled upon insertion.  When set, this option
+     *                         is authoritative; supplying a contradictory
+     *                         {@link
+     *                         com.gpudb.protocol.InsertRecordsRequest.Options#ALLOW_PARTIAL_BATCH
+     *                         ALLOW_PARTIAL_BATCH} is an error.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.InsertRecordsRequest.Options#PERMISSIVE
+     *                                 PERMISSIVE}: Records with bad column
+     *                                 values are kept when possible: the
+     *                                 offending column is filled with its
+     *                                 default value if one exists, otherwise
+     *                                 with null if the column is nullable; if
+     *                                 neither is possible the record is
+     *                                 skipped and reported.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.InsertRecordsRequest.Options#SKIP
+     *                                 SKIP}: Records with bad values are
+     *                                 skipped and reported; the rest of the
+     *                                 batch is inserted.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.InsertRecordsRequest.Options#ABORT
+     *                                 ABORT}: Stops the insertion and rejects
+     *                                 the remaining batch when any record is
+     *                                 incorrect.
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.InsertRecordsRequest.Options#ABORT
+     *                         ABORT}.
+     *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsRequest.Options#DRY_RUN
      *                         DRY_RUN}: If set to {@link
      *                         com.gpudb.protocol.InsertRecordsRequest.Options#TRUE
@@ -20822,6 +21001,39 @@ public class GPUdb extends GPUdbBase {
      *                         The default value is {@link
      *                         com.gpudb.protocol.InsertRecordsRequest.Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsRequest.Options#ERROR_HANDLING
+     *                         ERROR_HANDLING}: Specifies how errors should be
+     *                         handled upon insertion.  When set, this option
+     *                         is authoritative; supplying a contradictory
+     *                         {@link
+     *                         com.gpudb.protocol.InsertRecordsRequest.Options#ALLOW_PARTIAL_BATCH
+     *                         ALLOW_PARTIAL_BATCH} is an error.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.InsertRecordsRequest.Options#PERMISSIVE
+     *                                 PERMISSIVE}: Records with bad column
+     *                                 values are kept when possible: the
+     *                                 offending column is filled with its
+     *                                 default value if one exists, otherwise
+     *                                 with null if the column is nullable; if
+     *                                 neither is possible the record is
+     *                                 skipped and reported.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.InsertRecordsRequest.Options#SKIP
+     *                                 SKIP}: Records with bad values are
+     *                                 skipped and reported; the rest of the
+     *                                 batch is inserted.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.InsertRecordsRequest.Options#ABORT
+     *                                 ABORT}: Stops the insertion and rejects
+     *                                 the remaining batch when any record is
+     *                                 incorrect.
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.InsertRecordsRequest.Options#ABORT
+     *                         ABORT}.
      *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsRequest.Options#DRY_RUN
      *                         DRY_RUN}: If set to {@link
@@ -21426,9 +21638,14 @@ public class GPUdb extends GPUdbBase {
      *                                 possible; otherwise, the malformed
      *                                 records are skipped.
      *                             <li>{@link
+     *                                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SKIP
+     *                                 SKIP}: Malformed records are skipped.
+     *                             <li>{@link
      *                                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#IGNORE_BAD_RECORDS
-     *                                 IGNORE_BAD_RECORDS}: Malformed records
-     *                                 are skipped.
+     *                                 IGNORE_BAD_RECORDS}: Deprecated. Alias
+     *                                 for {@link
+     *                                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SKIP
+     *                                 SKIP}.
      *                             <li>{@link
      *                                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ABORT
      *                                 ABORT}: Stops current insertion and
@@ -21492,6 +21709,18 @@ public class GPUdb extends GPUdbBase {
      *                         GDAL_CONFIGURATION_OPTIONS}: Comma separated
      *                         list of gdal conf options, for the specific
      *                         requests: key=value.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PK_CONFLICT_PREDICATE_HIGHER
+     *                         PK_CONFLICT_PREDICATE_HIGHER}: The record with
+     *                         higher value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PK_CONFLICT_PREDICATE_LOWER
+     *                         PK_CONFLICT_PREDICATE_LOWER}: The record with
+     *                         lower value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
      *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#IGNORE_EXISTING_PK
      *                         IGNORE_EXISTING_PK}: Specifies the record
@@ -22540,9 +22769,14 @@ public class GPUdb extends GPUdbBase {
      *                                 possible; otherwise, the malformed
      *                                 records are skipped.
      *                             <li>{@link
+     *                                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SKIP
+     *                                 SKIP}: Malformed records are skipped.
+     *                             <li>{@link
      *                                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#IGNORE_BAD_RECORDS
-     *                                 IGNORE_BAD_RECORDS}: Malformed records
-     *                                 are skipped.
+     *                                 IGNORE_BAD_RECORDS}: Deprecated. Alias
+     *                                 for {@link
+     *                                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SKIP
+     *                                 SKIP}.
      *                             <li>{@link
      *                                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#ABORT
      *                                 ABORT}: Stops current insertion and
@@ -22606,6 +22840,18 @@ public class GPUdb extends GPUdbBase {
      *                         GDAL_CONFIGURATION_OPTIONS}: Comma separated
      *                         list of gdal conf options, for the specific
      *                         requests: key=value. The default value is ''.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PK_CONFLICT_PREDICATE_HIGHER
+     *                         PK_CONFLICT_PREDICATE_HIGHER}: The record with
+     *                         higher value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PK_CONFLICT_PREDICATE_LOWER
+     *                         PK_CONFLICT_PREDICATE_LOWER}: The record with
+     *                         lower value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
      *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#IGNORE_EXISTING_PK
      *                         IGNORE_EXISTING_PK}: Specifies the record
@@ -23444,9 +23690,14 @@ public class GPUdb extends GPUdbBase {
      *                                 possible; otherwise, the malformed
      *                                 records are skipped.
      *                             <li>{@link
+     *                                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#SKIP
+     *                                 SKIP}: Malformed records are skipped.
+     *                             <li>{@link
      *                                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#IGNORE_BAD_RECORDS
-     *                                 IGNORE_BAD_RECORDS}: Malformed records
-     *                                 are skipped.
+     *                                 IGNORE_BAD_RECORDS}: Deprecated. Alias
+     *                                 for {@link
+     *                                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#SKIP
+     *                                 SKIP}.
      *                             <li>{@link
      *                                 com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#ABORT
      *                                 ABORT}: Stops current insertion and
@@ -23458,6 +23709,18 @@ public class GPUdb extends GPUdbBase {
      *                         The default value is {@link
      *                         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#ABORT
      *                         ABORT}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#PK_CONFLICT_PREDICATE_HIGHER
+     *                         PK_CONFLICT_PREDICATE_HIGHER}: The record with
+     *                         higher value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#PK_CONFLICT_PREDICATE_LOWER
+     *                         PK_CONFLICT_PREDICATE_LOWER}: The record with
+     *                         lower value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
      *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#IGNORE_EXISTING_PK
      *                         IGNORE_EXISTING_PK}: Specifies the record
@@ -25908,6 +26171,10 @@ public class GPUdb extends GPUdbBase {
      *                                   href="../../../../../concepts/schemas/"
      *                                   target="_top">schema(s)</a>.
      *                               <li>{@link
+     *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#CATALOG
+     *                                   CATALOG}: Data Lake catalog that is
+     *                                   external to the database.
+     *                               <li>{@link
      *                                   com.gpudb.protocol.RestoreBackupRequest.RestoreObjectsMap#CONTEXT
      *                                   CONTEXT}: <a
      *                                   href="../../../../../sql-gpt/concepts/#sql-gpt-context"
@@ -26173,6 +26440,19 @@ public class GPUdb extends GPUdbBase {
      *                         The default value is {@link
      *                         com.gpudb.protocol.RestoreBackupRequest.Options#NONE
      *                         NONE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#TARGET_SCHEMA_MAP
+     *                         TARGET_SCHEMA_MAP}: Restore schema-based objects
+     *                         to alternate schema. Value is a comma delimitted
+     *                         list of key:value pairs mapping the original
+     *                         (source) schema name as it exists in the backup
+     *                         to a target (destination) schema namespace:
+     *                         "src: dst [, src: dst [, ...]]". Note that
+     *                         schema names are case sensitive and must adhere
+     *                         to the database  schema <a
+     *                         href="../../../../../concepts/schemas/"
+     *                         target="_top">naming criteria</a>. The default
+     *                         value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      *
@@ -29411,6 +29691,43 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.UpdateRecordsRequest.Options#FALSE
      *                         FALSE}.
      *                     <li>{@link
+     *                         com.gpudb.protocol.UpdateRecordsRequest.Options#ERROR_HANDLING
+     *                         ERROR_HANDLING}: Specifies how record errors are
+     *                         handled during the update's reinsert (including
+     *                         any alternate insert records supplied via {@code
+     *                         data}).  When set, this option is authoritative
+     *                         for the reinsert.  Primary-key collision
+     *                         behavior is governed by {@link
+     *                         com.gpudb.protocol.UpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
+     *                         UPDATE_ON_EXISTING_PK} and {@link
+     *                         com.gpudb.protocol.UpdateRecordsRequest.Options#IGNORE_EXISTING_PK
+     *                         IGNORE_EXISTING_PK}.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.UpdateRecordsRequest.Options#PERMISSIVE
+     *                                 PERMISSIVE}: Records with bad column
+     *                                 values are kept when possible: the
+     *                                 offending column is filled with its
+     *                                 default value if one exists, otherwise
+     *                                 with null if the column is nullable; if
+     *                                 neither is possible the record is
+     *                                 skipped and reported.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.UpdateRecordsRequest.Options#SKIP
+     *                                 SKIP}: Records with bad values are
+     *                                 skipped and reported; the rest of the
+     *                                 batch is applied.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.UpdateRecordsRequest.Options#ABORT
+     *                                 ABORT}: Stops the update and rejects the
+     *                                 remaining batch when any record is
+     *                                 incorrect.
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.UpdateRecordsRequest.Options#ABORT
+     *                         ABORT}.
+     *                     <li>{@link
      *                         com.gpudb.protocol.UpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                         UPDATE_ON_EXISTING_PK}: Specifies the record
      *                         collision policy for updating a table with a <a
@@ -29468,6 +29785,18 @@ public class GPUdb extends GPUdbBase {
      *                         The default value is {@link
      *                         com.gpudb.protocol.UpdateRecordsRequest.Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.UpdateRecordsRequest.Options#PK_CONFLICT_PREDICATE_HIGHER
+     *                         PK_CONFLICT_PREDICATE_HIGHER}: The record with
+     *                         higher value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.UpdateRecordsRequest.Options#PK_CONFLICT_PREDICATE_LOWER
+     *                         PK_CONFLICT_PREDICATE_LOWER}: The record with
+     *                         lower value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
      *                     <li>{@link
      *                         com.gpudb.protocol.UpdateRecordsRequest.Options#IGNORE_EXISTING_PK
      *                         IGNORE_EXISTING_PK}: Specifies the record
@@ -29733,6 +30062,43 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.UpdateRecordsRequest.Options#FALSE
      *                         FALSE}.
      *                     <li>{@link
+     *                         com.gpudb.protocol.UpdateRecordsRequest.Options#ERROR_HANDLING
+     *                         ERROR_HANDLING}: Specifies how record errors are
+     *                         handled during the update's reinsert (including
+     *                         any alternate insert records supplied via {@code
+     *                         data}).  When set, this option is authoritative
+     *                         for the reinsert.  Primary-key collision
+     *                         behavior is governed by {@link
+     *                         com.gpudb.protocol.UpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
+     *                         UPDATE_ON_EXISTING_PK} and {@link
+     *                         com.gpudb.protocol.UpdateRecordsRequest.Options#IGNORE_EXISTING_PK
+     *                         IGNORE_EXISTING_PK}.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.UpdateRecordsRequest.Options#PERMISSIVE
+     *                                 PERMISSIVE}: Records with bad column
+     *                                 values are kept when possible: the
+     *                                 offending column is filled with its
+     *                                 default value if one exists, otherwise
+     *                                 with null if the column is nullable; if
+     *                                 neither is possible the record is
+     *                                 skipped and reported.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.UpdateRecordsRequest.Options#SKIP
+     *                                 SKIP}: Records with bad values are
+     *                                 skipped and reported; the rest of the
+     *                                 batch is applied.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.UpdateRecordsRequest.Options#ABORT
+     *                                 ABORT}: Stops the update and rejects the
+     *                                 remaining batch when any record is
+     *                                 incorrect.
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.UpdateRecordsRequest.Options#ABORT
+     *                         ABORT}.
+     *                     <li>{@link
      *                         com.gpudb.protocol.UpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                         UPDATE_ON_EXISTING_PK}: Specifies the record
      *                         collision policy for updating a table with a <a
@@ -29790,6 +30156,18 @@ public class GPUdb extends GPUdbBase {
      *                         The default value is {@link
      *                         com.gpudb.protocol.UpdateRecordsRequest.Options#FALSE
      *                         FALSE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.UpdateRecordsRequest.Options#PK_CONFLICT_PREDICATE_HIGHER
+     *                         PK_CONFLICT_PREDICATE_HIGHER}: The record with
+     *                         higher value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.UpdateRecordsRequest.Options#PK_CONFLICT_PREDICATE_LOWER
+     *                         PK_CONFLICT_PREDICATE_LOWER}: The record with
+     *                         lower value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
      *                     <li>{@link
      *                         com.gpudb.protocol.UpdateRecordsRequest.Options#IGNORE_EXISTING_PK
      *                         IGNORE_EXISTING_PK}: Specifies the record

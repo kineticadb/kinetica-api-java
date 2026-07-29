@@ -421,6 +421,21 @@ public class AlterTableRequest implements IndexedRecord {
          */
         public static final String SET_BUILD_MATERIALIZED_VIEW_POLICY = "set_build_materialized_view_policy";
 
+        /**
+         * Drops and rebuilds the <a
+         * href="../../../../../../concepts/full_text_search/"
+         * target="_top">text search</a> index for the table from current type
+         * metadata and chunk storage. Use this to repair a text-search index
+         * left incomplete by an interrupted or failed rebuild (for example,
+         * after a crash during an add-column that requested text search):
+         * re-running the original add_column will not work because the column
+         * already exists. This action is also dispatched automatically by
+         * {@link com.gpudb.GPUdb#alterTableColumns(AlterTableColumnsRequest)
+         * GPUdb.alterTableColumns} after add_column completions that require a
+         * full re-index. The {@link #getValue() value} is ignored.
+         */
+        public static final String REBUILD_TEXT_SEARCH_INDEX = "rebuild_text_search_index";
+
         private Action() {  }
     }
 
@@ -918,6 +933,23 @@ public class AlterTableRequest implements IndexedRecord {
      *                        com.gpudb.GPUdb#createMaterializedView(CreateMaterializedViewRequest)
      *                        GPUdb.createMaterializedView} for possible values
      *                        for {@code value}.
+     *                    <li>{@link Action#REBUILD_TEXT_SEARCH_INDEX
+     *                        REBUILD_TEXT_SEARCH_INDEX}: Drops and rebuilds
+     *                        the <a
+     *                        href="../../../../../../concepts/full_text_search/"
+     *                        target="_top">text search</a> index for the table
+     *                        from current type metadata and chunk storage. Use
+     *                        this to repair a text-search index left
+     *                        incomplete by an interrupted or failed rebuild
+     *                        (for example, after a crash during an add-column
+     *                        that requested text search): re-running the
+     *                        original add_column will not work because the
+     *                        column already exists. This action is also
+     *                        dispatched automatically by {@link
+     *                        com.gpudb.GPUdb#alterTableColumns(AlterTableColumnsRequest)
+     *                        GPUdb.alterTableColumns} after add_column
+     *                        completions that require a full re-index. The
+     *                        {@code value} is ignored.
      *                </ul>
      * @param value  The value of the modification, depending on {@code
      *               action}. For example, if {@code action} is {@link
@@ -1330,6 +1362,20 @@ public class AlterTableRequest implements IndexedRecord {
      *         com.gpudb.GPUdb#createMaterializedView(CreateMaterializedViewRequest)
      *         GPUdb.createMaterializedView} for possible values for {@link
      *         #getValue() value}.
+     *     <li>{@link Action#REBUILD_TEXT_SEARCH_INDEX
+     *         REBUILD_TEXT_SEARCH_INDEX}: Drops and rebuilds the <a
+     *         href="../../../../../../concepts/full_text_search/"
+     *         target="_top">text search</a> index for the table from current
+     *         type metadata and chunk storage. Use this to repair a
+     *         text-search index left incomplete by an interrupted or failed
+     *         rebuild (for example, after a crash during an add-column that
+     *         requested text search): re-running the original add_column will
+     *         not work because the column already exists. This action is also
+     *         dispatched automatically by {@link
+     *         com.gpudb.GPUdb#alterTableColumns(AlterTableColumnsRequest)
+     *         GPUdb.alterTableColumns} after add_column completions that
+     *         require a full re-index. The {@link #getValue() value} is
+     *         ignored.
      * </ul>
      *
      * @return The current value of {@code action}.
@@ -1566,6 +1612,20 @@ public class AlterTableRequest implements IndexedRecord {
      *         com.gpudb.GPUdb#createMaterializedView(CreateMaterializedViewRequest)
      *         GPUdb.createMaterializedView} for possible values for {@link
      *         #getValue() value}.
+     *     <li>{@link Action#REBUILD_TEXT_SEARCH_INDEX
+     *         REBUILD_TEXT_SEARCH_INDEX}: Drops and rebuilds the <a
+     *         href="../../../../../../concepts/full_text_search/"
+     *         target="_top">text search</a> index for the table from current
+     *         type metadata and chunk storage. Use this to repair a
+     *         text-search index left incomplete by an interrupted or failed
+     *         rebuild (for example, after a crash during an add-column that
+     *         requested text search): re-running the original add_column will
+     *         not work because the column already exists. This action is also
+     *         dispatched automatically by {@link
+     *         com.gpudb.GPUdb#alterTableColumns(AlterTableColumnsRequest)
+     *         GPUdb.alterTableColumns} after add_column completions that
+     *         require a full re-index. The {@link #getValue() value} is
+     *         ignored.
      * </ul>
      *
      * @param action  The new value for {@code action}.

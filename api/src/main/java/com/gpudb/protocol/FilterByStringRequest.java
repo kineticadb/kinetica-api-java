@@ -89,6 +89,18 @@ public class FilterByStringRequest implements IndexedRecord {
          */
         public static final String REGEX = "regex";
 
+        /**
+         * Cross-shard BM25 corpus statistics for one (column, query) pair.
+         * Returns the merged BM25 statistics (max_doc, doc_count,
+         * sum_total_term_freq, per-term doc_freq / total_term_freq) needed by
+         * callers that score documents themselves
+         * (e.g.&nbsp;text_match_bm25_global SQL function pre-pass). Requires
+         * {@code COLUMN_NAMES} to contain exactly one column with text search
+         * enabled. The {@code VIEW_NAME} field is ignored — this mode does not
+         * produce a result table.
+         */
+        public static final String SEARCH_STATS = "search_stats";
+
         private Mode() {  }
     }
 
@@ -204,6 +216,17 @@ public class FilterByStringRequest implements IndexedRecord {
      *                      search (not accelerated). If the column is a string
      *                      type (non-charN) and the number of records is too
      *                      large, it will return 0.
+     *                  <li>{@link Mode#SEARCH_STATS SEARCH_STATS}: Cross-shard
+     *                      BM25 corpus statistics for one (column, query)
+     *                      pair. Returns the merged BM25 statistics (max_doc,
+     *                      doc_count, sum_total_term_freq, per-term doc_freq /
+     *                      total_term_freq) needed by callers that score
+     *                      documents themselves (e.g. text_match_bm25_global
+     *                      SQL function pre-pass). Requires {@code
+     *                      COLUMN_NAMES} to contain exactly one column with
+     *                      text search enabled. The {@code VIEW_NAME} field is
+     *                      ignored — this mode does not produce a result
+     *                      table.
      *              </ul>
      * @param columnNames  List of columns on which to apply the filter.
      *                     Ignored for {@link Mode#SEARCH SEARCH} mode.
@@ -361,6 +384,14 @@ public class FilterByStringRequest implements IndexedRecord {
      *     <li>{@link Mode#REGEX REGEX}: Full regular expression search (not
      *         accelerated). If the column is a string type (non-charN) and the
      *         number of records is too large, it will return 0.
+     *     <li>{@link Mode#SEARCH_STATS SEARCH_STATS}: Cross-shard BM25 corpus
+     *         statistics for one (column, query) pair. Returns the merged BM25
+     *         statistics (max_doc, doc_count, sum_total_term_freq, per-term
+     *         doc_freq / total_term_freq) needed by callers that score
+     *         documents themselves (e.g. text_match_bm25_global SQL function
+     *         pre-pass). Requires {@code COLUMN_NAMES} to contain exactly one
+     *         column with text search enabled. The {@code VIEW_NAME} field is
+     *         ignored — this mode does not produce a result table.
      * </ul>
      *
      * @return The current value of {@code mode}.
@@ -390,6 +421,14 @@ public class FilterByStringRequest implements IndexedRecord {
      *     <li>{@link Mode#REGEX REGEX}: Full regular expression search (not
      *         accelerated). If the column is a string type (non-charN) and the
      *         number of records is too large, it will return 0.
+     *     <li>{@link Mode#SEARCH_STATS SEARCH_STATS}: Cross-shard BM25 corpus
+     *         statistics for one (column, query) pair. Returns the merged BM25
+     *         statistics (max_doc, doc_count, sum_total_term_freq, per-term
+     *         doc_freq / total_term_freq) needed by callers that score
+     *         documents themselves (e.g. text_match_bm25_global SQL function
+     *         pre-pass). Requires {@code COLUMN_NAMES} to contain exactly one
+     *         column with text search enabled. The {@code VIEW_NAME} field is
+     *         ignored — this mode does not produce a result table.
      * </ul>
      *
      * @param mode  The new value for {@code mode}.
