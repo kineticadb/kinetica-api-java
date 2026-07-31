@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.gpudb</groupId>
     <artifactId>gpudb-api</artifactId>
-    <version>7.2.3.21</version>
+    <version>7.2.3.22</version>
     <packaging>jar</packaging>
     <name>Kinetica Java API</name>
     <description>Java-based client API for connecting to and managing a Kinetica database</description>
@@ -29,31 +29,57 @@
         <developerConnection>scm:git:https://github.com/kineticadb/kinetica-api-java.git</developerConnection>
         <url>https://github.com/kineticadb/kinetica-api-java</url>
     </scm>
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <target.build.dir>target</target.build.dir> <!-- override on cmd-line -->
+        <!-- SECURITY: do not downgrade without checking advisories per version.
+             2.22.1 is the earliest release with no outstanding advisory against
+             jackson-core, -databind or -annotations.  Notably it clears
+             GHSA-72hv-8253-57qq and its HIGH follow-up GHSA-r7wm-3cxj-wff9
+             (async parser maxNumberLength bypass).  Avro 1.12.1 builds against
+             jackson-bom 2.20.0, which is affected by both; this deliberately
+             overrides Avro's transitive Jackson upward.
+             Deliberately not named "jackson.version": that name is also used by
+             build-extension plugins (central-publishing-maven-plugin), and a
+             -Djackson.version=... on the command line would bleed into their
+             dependency resolution and fail the build before the project is read. -->
+        <kinetica.jackson.version>2.22.1</kinetica.jackson.version>
+    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <!-- Pins every Jackson artifact (including Avro's transitive ones) to a
+                 single consistent version.  Do not add <version> to the individual
+                 Jackson dependencies below; the BOM governs them. -->
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${kinetica.jackson.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>org.apache.avro</groupId>
             <artifactId>avro</artifactId>
             <version>1.12.1</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-databind</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId> <!--Security update for avro -->
-            <artifactId>jackson-core</artifactId>
-            <version>2.18.6</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>  <!--Security update for avro -->
-            <version>2.18.8</version>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <!-- Used directly (JsonProperty, JsonInclude, JsonIgnoreProperties); declared
+                 explicitly rather than relied upon transitively through jackson-databind. -->
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -104,12 +130,6 @@
             <version>20240303</version>
         </dependency>
     </dependencies>
-    <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <target.build.dir>target</target.build.dir> <!-- override on cmd-line -->
-    </properties>
     <profiles>
         <profile>
             <id>ConfigureTargetBuildDir</id>

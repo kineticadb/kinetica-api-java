@@ -165,20 +165,10 @@ class UploadIoJob {
             // If the task succeeded, add it to the list
             this.resultList.add( taskResult );
 
-            // If callback exists, post the corresponding message to this op
-            if( this.callback != null ) {
-                switch (task.getMultiPartUploadInfo().getPartOperation()) {
-                    case UPLOAD_PART:
-                        this.callback.onPartUpload( taskResult );
-                        break;
-                    case CANCEL:
-                    case COMPLETE:
-                        this.callback.onMultiPartUploadComplete( this.resultList );
-                        break;
-                    default:
-                        break;
-                }
-            }
+            notifyListener( this.callback,
+                    task.getMultiPartUploadInfo().getPartOperation(),
+                    taskResult,
+                    this.resultList );
         } catch (InterruptedException | ExecutionException e) {
             // If interrupted, cancel the running task to free the thread
             if (e instanceof InterruptedException) {
@@ -188,6 +178,42 @@ class UploadIoJob {
 
             throw new GPUdbException(String.format("Could not complete upload stage - %s : %s",
                     task.getMultiPartUploadInfo().getPartOperation().getValue(), e.getMessage()));
+        }
+    }
+
+    /**
+     * Posts the message corresponding to a completed upload stage to the given
+     * listener, if one is configured.
+     * <p>
+     * A COMPLETE stage means the whole file was committed, whereas a CANCEL
+     * stage means the job was aborted after an earlier stage failed; the two
+     * must therefore be reported through different callbacks. INIT carries no
+     * information a listener can act on and is not reported at all.
+     *
+     * @param callback  listener to notify, may be null
+     * @param operation stage of the job that just completed
+     * @param taskResult  the {@link Result} for that stage
+     * @param resultList  every stage of the job so far, including this one
+     */
+    static void notifyListener( FileUploadListener callback,
+                                MultiPartUploadInfo.MultiPartOperation operation,
+                                Result taskResult,
+                                List<Result> resultList ) {
+        if( callback == null )
+            return;
+
+        switch (operation) {
+            case UPLOAD_PART:
+                callback.onPartUpload( taskResult );
+                break;
+            case CANCEL:
+                callback.onMultiPartUploadCancel( resultList );
+                break;
+            case COMPLETE:
+                callback.onMultiPartUploadComplete( resultList );
+                break;
+            default:
+                break;
         }
     }
 

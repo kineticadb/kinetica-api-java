@@ -3,6 +3,7 @@ package com.gpudb.filesystem.common;
 import com.gpudb.filesystem.MultiPartDownloadInfo;
 import com.gpudb.filesystem.MultiPartUploadInfo;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -30,8 +31,13 @@ public class Result {
 
     /**
      * Names of all file in case the current upload operation is full file upload
+     * <p>
+     * Only the stages of a multi-part operation that actually commit a file
+     * populate this list, so it is initialized to an empty list rather than
+     * left null: callbacks receive a {@link Result} for every stage of a job
+     * and must be able to read this field on all of them without a null check.
      */
-    private List<String> fullFileNames;
+    private List<String> fullFileNames = new ArrayList<>();
 
     /**
      * Whether the upload/download is successful or not
@@ -84,7 +90,8 @@ public class Result {
     }
 
     public void setFullFileNames(List<String> fullFileNames) {
-        this.fullFileNames = fullFileNames;
+        // Preserve the never-null invariant that callbacks rely on
+        this.fullFileNames = ( fullFileNames == null ) ? new ArrayList<>() : fullFileNames;
     }
 
     public boolean isSuccessful() {
@@ -160,8 +167,8 @@ public class Result {
         Result result = (Result) o;
         return isSuccessful() == result.isSuccessful()
                 && isMultiPart() == result.isMultiPart()
-                && getFileName().equals(result.getFileName())
-                && getErrorMessage().equals(result.getErrorMessage())
+                && Objects.equals(getFileName(), result.getFileName())
+                && Objects.equals(getErrorMessage(), result.getErrorMessage())
                 && getOpMode() == result.getOpMode();
     }
 

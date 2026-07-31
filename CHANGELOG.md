@@ -2,6 +2,15 @@
 
 ## Version 7.2
 
+### Version 7.2.3.22 - 2026-07-31
+
+#### Changed
+-   Upgraded Jackson libraries to 2.22.1.
+
+#### Fixed
+-   Issue with reporting uploaded file names with large multi-part file uploads.
+
+
 ### Version 7.2.3.21 - 2026-07-29
 
 #### Added
@@ -23,7 +32,7 @@
 -   Support for default column values in the `BulkInserter`.
 
 #### Changed
--   Upgraded jackson-databind library to 2.18.8
+-   Upgraded jackson-databind library to 2.18.8.
 
 #### Notes
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.

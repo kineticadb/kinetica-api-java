@@ -221,6 +221,11 @@ class IoTask implements Callable<Result> {
         result.setOpMode( this.opMode );
         result.setUploadInfo( this.multiPartUploadInfo );
         result.setMultiPart(true);
+        // Set fullFileNames for COMPLETE operation to maintain consistency with
+        // full-file upload path and prevent NPE in callbacks that expect this field
+        if ( this.multiPartUploadInfo.getPartOperation() == MultiPartUploadInfo.MultiPartOperation.COMPLETE ) {
+            result.setFullFileNames( Collections.singletonList( this.fileName ) );
+        }
         return result;
     }
 
