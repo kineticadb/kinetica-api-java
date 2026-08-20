@@ -152,7 +152,7 @@ public class FilterBySeriesRequest implements IndexedRecord {
      *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>. Must be a
      *                   currently existing table with a <a
-     *                   href="../../../../../../geospatial/geo_objects/"
+     *                   href="../../../../../../location_intelligence/geo_objects/"
      *                   target="_top">track</a> present.
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results, in [schema_name.]view_name
@@ -238,7 +238,8 @@ public class FilterBySeriesRequest implements IndexedRecord {
      * performed, in [schema_name.]table_name format, using standard <a
      * href="../../../../../../concepts/tables/#table-name-resolution"
      * target="_top">name resolution rules</a>. Must be a currently existing
-     * table with a <a href="../../../../../../geospatial/geo_objects/"
+     * table with a <a
+     * href="../../../../../../location_intelligence/geo_objects/"
      * target="_top">track</a> present.
      *
      * @return The current value of {@code tableName}.
@@ -252,7 +253,8 @@ public class FilterBySeriesRequest implements IndexedRecord {
      * performed, in [schema_name.]table_name format, using standard <a
      * href="../../../../../../concepts/tables/#table-name-resolution"
      * target="_top">name resolution rules</a>. Must be a currently existing
-     * table with a <a href="../../../../../../geospatial/geo_objects/"
+     * table with a <a
+     * href="../../../../../../location_intelligence/geo_objects/"
      * target="_top">track</a> present.
      *
      * @param tableName  The new value for {@code tableName}.

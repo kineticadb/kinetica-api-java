@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.gpudb</groupId>
     <artifactId>gpudb-api</artifactId>
-    <version>7.2.3.22</version>
+    <version>7.2.3.23</version>
     <packaging>jar</packaging>
     <name>Kinetica Java API</name>
     <description>Java-based client API for connecting to and managing a Kinetica database</description>
@@ -102,11 +102,6 @@
             <version>1.17.0</version>
         </dependency>
         <dependency>
-            <groupId>org.threeten</groupId>
-            <artifactId>threetenbp</artifactId>
-            <version>1.6.9</version>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>2.0.13</version>
@@ -127,7 +122,7 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20240303</version>
+            <version>20260814</version>
         </dependency>
     </dependencies>
     <profiles>
@@ -208,8 +203,8 @@
                                     <shadedPattern>com.gpudb.apache</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>org.threeten</pattern>
-                                    <shadedPattern>com.gpudb.threeten</shadedPattern>
+                                    <pattern>org.json</pattern>
+                                    <shadedPattern>com.gpudb.json</shadedPattern>
                                 </relocation>
                             </relocations>
                             <shadedArtifactAttached>true</shadedArtifactAttached>

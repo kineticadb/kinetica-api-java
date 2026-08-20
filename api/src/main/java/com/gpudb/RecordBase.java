@@ -2,6 +2,18 @@ package com.gpudb;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAccessor;
 import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Collection;
@@ -16,18 +28,6 @@ import java.util.stream.IntStream;
 
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.LocalDateTime;
-import org.threeten.bp.LocalTime;
-import org.threeten.bp.OffsetTime;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.ZonedDateTime;
-import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeFormatterBuilder;
-import org.threeten.bp.format.DateTimeParseException;
-import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.TemporalAccessor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -722,7 +722,7 @@ public abstract class RecordBase implements Record {
      *   HH:mm[:ss][.S[S][S][S][S][S]][ ][XXX][Z][z][VV][x]
      *
      * In other words, the date component can be any of YMD, MDY, or DMY pattern
-     * withh '-', '.', or '/' as the separator.  And, the time component must have
+     * with '-', '.', or '/' as the separator.  And, the time component must have
      * hours and minutes, but can optionally have seconds, fraction of a second
      * (up to six digits) and some form of a timezone identifier.
      *
@@ -763,9 +763,9 @@ public abstract class RecordBase implements Record {
                     for ( int i = 0; i < acceptedDateTimeFormats.length; ++i ) {
                         try {
                             TemporalAccessor ta = acceptedDateTimeFormats[i].parseBest( (String)value,
-                                                                                        ZonedDateTime.FROM,
-                                                                                        LocalDateTime.FROM,
-                                                                                        LocalDate.FROM );
+                                                                                        ZonedDateTime::from,
+                                                                                        LocalDateTime::from,
+                                                                                        LocalDate::from );
                             // See if this format matched the input
                             if ( ta instanceof ZonedDateTime ) {
                                 // Get the appropriate zone ID
@@ -810,8 +810,8 @@ public abstract class RecordBase implements Record {
                 case TIME: {
                     // Parse the input time string with the best matching format
                     TemporalAccessor ta = acceptedTimeFormat.parseBest( (String)value,
-                                                                        OffsetTime.FROM,
-                                                                        LocalTime.FROM );
+                                                                        OffsetTime::from,
+                                                                        LocalTime::from );
                     if ( ta instanceof OffsetTime ) {
                         // Got an offset; but first parse the time as is
                         OffsetTime offsetTime = OffsetTime.from( ta );
@@ -840,9 +840,9 @@ public abstract class RecordBase implements Record {
                     for ( int i = 0; i < acceptedDateTimeFormats.length; ++i ) {
                         try {
                             TemporalAccessor ta = acceptedDateTimeFormats[i].parseBest( (String)value,
-                                                                                        ZonedDateTime.FROM,
-                                                                                        LocalDateTime.FROM,
-                                                                                        LocalDate.FROM );
+                                                                                        ZonedDateTime::from,
+                                                                                        LocalDateTime::from,
+                                                                                        LocalDate::from );
                             // See if this format matched the input
                             if ( ta instanceof ZonedDateTime ) {
                                 // Get the appropriate zone ID

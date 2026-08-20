@@ -17,8 +17,11 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#revokePermissionDirectory(RevokePermissionDirectoryRequest)
  * GPUdb.revokePermissionDirectory}.
  * <p>
- * Revokes a <a href="../../../../../../tools/kifs/" target="_top">KiFS</a>
- * directory-level permission from a user or role.
+ * [DEPRECATED--please use {@link
+ * com.gpudb.GPUdb#revokePermission(RevokePermissionRequest)
+ * GPUdb.revokePermission} instead]  Revokes a <a
+ * href="../../../../../../tools/kifs/" target="_top">KiFS</a> directory-level
+ * permission from a user or role.
  */
 public class RevokePermissionDirectoryRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

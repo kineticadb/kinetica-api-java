@@ -17,8 +17,11 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#revokePermissionDatasource(RevokePermissionDatasourceRequest)
  * GPUdb.revokePermissionDatasource}.
  * <p>
- * Revokes a <a href="../../../../../../concepts/data_sources/"
- * target="_top">data source</a> permission from a user or role.
+ * [DEPRECATED--please use {@link
+ * com.gpudb.GPUdb#revokePermission(RevokePermissionRequest)
+ * GPUdb.revokePermission} instead]  Revokes a <a
+ * href="../../../../../../concepts/data_sources/" target="_top">data
+ * source</a> permission from a user or role.
  */
 public class RevokePermissionDatasourceRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

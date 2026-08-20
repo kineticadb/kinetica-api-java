@@ -17,8 +17,11 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#grantPermissionDatasource(GrantPermissionDatasourceRequest)
  * GPUdb.grantPermissionDatasource}.
  * <p>
- * Grants a <a href="../../../../../../concepts/data_sources/"
- * target="_top">data source</a> permission to a user or role.
+ * [DEPRECATED--please use {@link
+ * com.gpudb.GPUdb#grantPermission(GrantPermissionRequest)
+ * GPUdb.grantPermission} instead]  Grants a <a
+ * href="../../../../../../concepts/data_sources/" target="_top">data
+ * source</a> permission to a user or role.
  */
 public class GrantPermissionDatasourceRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

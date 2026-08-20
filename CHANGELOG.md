@@ -2,6 +2,26 @@
 
 ## Version 7.2
 
+### Version 7.2.3.23 - 2026-08-13
+
+#### Changed
+-   Multi-head retrieval by key now reports an unparseable shard key value,
+    such as a malformed UUID, rather than returning no records for it.
+-   Replaced the ThreeTen Backport (`org.threeten:threetenbp`) date/time
+    library with the built-in `java.time` package, removing the dependency.
+-   Upgraded json library to 20260814.
+-   Shaded json library.
+
+#### Fixed
+-   Shard key calculation for `timestamp` columns holding a value outside the
+    supported year range of 1000-2900, which was encoded as though it were in
+    range; a BC timestamp no longer yields the same shard key as the AD
+    timestamp of the same year.
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
 ### Version 7.2.3.22 - 2026-07-31
 
 #### Changed

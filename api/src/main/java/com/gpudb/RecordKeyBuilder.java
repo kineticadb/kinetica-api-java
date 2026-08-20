@@ -361,6 +361,10 @@ final class RecordKeyBuilder<T> {
      *
      * @return         a {@link RecordKey} instance for this table, which can be
      *                 used to determine the rank from which to request data
+     *
+     * @throws IllegalArgumentException if the wrong number of key values is
+     *                 given, or if one of them cannot be parsed as its column's
+     *                 type
      */
     public RecordKey build(List<Object> values) {
         if (this.bufferSize == 0) {
@@ -375,6 +379,15 @@ final class RecordKeyBuilder<T> {
 
         for (int i = 0; i < this.tableShardColumnIndexes.size(); i++) {
             addValue(key, i, values.get(i));
+        }
+
+        // Unlike build(T object), which is given a whole record to ingest and
+        // must tolerate placeholders for self-initializing columns, the values
+        // here were handed over by the caller expressly to be looked up.
+        // Nothing will substitute a usable value for an unparseable one, so
+        // report it rather than routing the lookup on a meaningless hash.
+        if (key.getInvalidReason() != null) {
+            throw new IllegalArgumentException(key.getInvalidReason());
         }
 
         key.computeHashes();

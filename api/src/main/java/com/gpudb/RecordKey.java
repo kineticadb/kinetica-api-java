@@ -25,16 +25,53 @@ final class RecordKey {
     private static final Pattern TIME_REGEX = Pattern.compile("\\A(\\d{1,2}):(\\d{2}):(\\d{2})(?:\\.(\\d{3}))?$");
     private static final Pattern UUID_REGEX = Pattern.compile("\\A([0-9a-fA-F]{8})-?([0-9a-fA-F]{4})-?([0-9a-fA-F]{4})-?([0-9a-fA-F]{4})-?([0-9a-fA-F]{4})([0-9a-fA-F]{8})$"); // Final group of 12 split into two sections 123e4567-e89b-12d3-a456-426614174000
     private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
-    
+
+    // The server supports years in this range; a date or timestamp outside it
+    // cannot be encoded into a key
+    private static final int MIN_SUPPORTED_YEAR = 1000;
+    private static final int MAX_SUPPORTED_YEAR = 2900;
+
     private final ByteBuffer buffer;
     private int hashCode;
     private long routingHash;
     private boolean isValid;
+    private String invalidReason;
 
     public RecordKey(int size) {
         this.buffer = ByteBuffer.allocate(size);
         this.buffer.order(ByteOrder.LITTLE_ENDIAN);
         this.isValid = true;
+    }
+
+    /**
+     * Flags the key as unusable, recording why.
+     *
+     * <p>When a record is being <i>ingested</i>, the value
+     * may be a deliberate placeholder for a column that initializes itself
+     * server-side ({@code init_with_now}, {@code init_with_uuid}), in which
+     * case there is nothing to report and nothing to route on -- the server
+     * assigns the real value and shards on that.  When a key is being
+     * <i>looked up</i>, on the other hand, the caller supplied the value
+     * directly and an unparseable one is simply an error.  Recording the reason
+     * here lets the lookup path throw.
+     *
+     * @param reason  what was wrong with the value
+     */
+    private void markInvalid(String reason) {
+        this.isValid = false;
+
+        // Keep the first reason; it is the one closest to the actual problem
+        if (this.invalidReason == null) {
+            this.invalidReason = reason;
+        }
+    }
+
+    /**
+     * @return why this key is unusable, or {@code null} if it is usable or the
+     *         reason is not worth reporting
+     */
+    public String getInvalidReason() {
+        return this.invalidReason;
     }
 
     public void addBoolean(Boolean value) {
@@ -103,7 +140,7 @@ final class RecordKey {
             return;
         }
 
-        if (year < 1000 || year > 2900) {
+        if (year < MIN_SUPPORTED_YEAR || year > MAX_SUPPORTED_YEAR) {
             this.buffer.putInt(0);
             this.isValid = false;
             return;
@@ -162,7 +199,7 @@ final class RecordKey {
             return;
         }
 
-        if (year < 1000 || year > 2900) {
+        if (year < MIN_SUPPORTED_YEAR || year > MAX_SUPPORTED_YEAR) {
             this.buffer.putLong(0);
             this.isValid = false;
             return;
@@ -447,6 +484,29 @@ final class RecordKey {
         GregorianCalendar calendar = new GregorianCalendar(UTC);
         calendar.setGregorianChange(MIN_DATE);
         calendar.setTimeInMillis(value);
+
+        // Anything outside the supported year range is an invalid timestamp,
+        // which is exactly what a column with the 'init_with_now' property is
+        // given to make the server substitute NOW() at insertion time.  Bail
+        // out here the same way addDate() does for an out-of-range date.
+        //
+        // Note that Calendar.YEAR is the year *within the era*, so a BC
+        // timestamp reports a positive year: the init_with_now sentinel of
+        // -99990224000000 comes back as year 1200 BC, which would sail through
+        // a naive range check and then encode identically to 1200 AD.  Convert
+        // to an astronomical year (1 BC -> 0, 2 BC -> -1) before comparing.
+        int year = calendar.get(Calendar.YEAR);
+
+        if (calendar.get(Calendar.ERA) == GregorianCalendar.BC) {
+            year = 1 - year;
+        }
+
+        if (year < MIN_SUPPORTED_YEAR || year > MAX_SUPPORTED_YEAR) {
+            this.buffer.putLong(0l);
+            this.isValid = false;
+            return;
+        }
+
         this.buffer.putLong(((long)(calendar.get(Calendar.YEAR) - 1900) << 53)
                 | ((long)(calendar.get(Calendar.MONTH) + 1) << 49)
                 | ((long)calendar.get(Calendar.DAY_OF_MONTH) << 44)
@@ -532,7 +592,7 @@ final class RecordKey {
         if (!matcher.matches()) {
             this.buffer.putLong(0);
             this.buffer.putLong(0);
-            this.isValid = false;
+            markInvalid("Value '" + value + "' could not be parsed as a UUID!");
             return;
         }
 
@@ -543,7 +603,7 @@ final class RecordKey {
         } catch (Exception ex) {
             this.buffer.putLong(0);
             this.buffer.putLong(0);
-            this.isValid = false;
+            markInvalid("Value '" + value + "' could not be parsed as a UUID!");
             return;
         }
 

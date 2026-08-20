@@ -17,7 +17,9 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#grantPermissionCredential(GrantPermissionCredentialRequest)
  * GPUdb.grantPermissionCredential}.
  * <p>
- * Grants a <a
+ * [DEPRECATED--please use {@link
+ * com.gpudb.GPUdb#grantPermission(GrantPermissionRequest)
+ * GPUdb.grantPermission} instead]  Grants a <a
  * href="../../../../../../security/sec_concepts/#security-concepts-permissions-credential"
  * target="_top">credential-level permission</a> to a user or role.
  */

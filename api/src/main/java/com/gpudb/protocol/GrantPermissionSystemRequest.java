@@ -17,7 +17,10 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#grantPermissionSystem(GrantPermissionSystemRequest)
  * GPUdb.grantPermissionSystem}.
  * <p>
- * Grants a system-level permission to a user or role.
+ * [DEPRECATED--please use {@link
+ * com.gpudb.GPUdb#grantPermission(GrantPermissionRequest)
+ * GPUdb.grantPermission} instead]  Grants a system-level permission to a user
+ * or role.
  */
 public class GrantPermissionSystemRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

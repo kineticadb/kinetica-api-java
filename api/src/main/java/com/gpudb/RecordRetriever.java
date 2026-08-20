@@ -911,7 +911,7 @@ public class RecordRetriever<T> {
                     try {
                         shardKey = this.shardKeyBuilder.build( keyValues );
                     } catch (Exception ex) {
-                        throw new GPUdbException( "Unable to calculate the shard value; please check data for unshardable values");
+                        throw new GPUdbException( "Unable to calculate the shard value; please check data for unshardable values: " + ex.getMessage(), ex );
                     }
 
                     url = this.workerUrls.get( shardKey.route( this.routingTable ) );
@@ -1186,7 +1186,7 @@ public class RecordRetriever<T> {
                     try {
                         shardKey = this.shardKeyBuilder.build( keyValues );
                     } catch (Exception ex) {
-                        throw new GPUdbException( "Unable to calculate the shard value; please check data for unshardable values");
+                        throw new GPUdbException( "Unable to calculate the shard value; please check data for unshardable values: " + ex.getMessage(), ex );
                     }
 
                     url = this.workerUrls.get( shardKey.route( this.routingTable ) );

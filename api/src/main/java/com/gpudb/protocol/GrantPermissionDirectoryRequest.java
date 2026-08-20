@@ -17,8 +17,11 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#grantPermissionDirectory(GrantPermissionDirectoryRequest)
  * GPUdb.grantPermissionDirectory}.
  * <p>
- * Grants a <a href="../../../../../../tools/kifs/" target="_top">KiFS</a>
- * directory-level permission to a user or role.
+ * [DEPRECATED--please use {@link
+ * com.gpudb.GPUdb#grantPermission(GrantPermissionRequest)
+ * GPUdb.grantPermission} instead]  Grants a <a
+ * href="../../../../../../tools/kifs/" target="_top">KiFS</a> directory-level
+ * permission to a user or role.
  */
 public class GrantPermissionDirectoryRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

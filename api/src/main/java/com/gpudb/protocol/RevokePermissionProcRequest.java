@@ -17,7 +17,10 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#revokePermissionProc(RevokePermissionProcRequest)
  * GPUdb.revokePermissionProc}.
  * <p>
- * Revokes a proc-level permission from a user or role.
+ * [DEPRECATED--please use {@link
+ * com.gpudb.GPUdb#revokePermission(RevokePermissionRequest)
+ * GPUdb.revokePermission} instead]  Revokes a proc-level permission from a
+ * user or role.
  */
 public class RevokePermissionProcRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

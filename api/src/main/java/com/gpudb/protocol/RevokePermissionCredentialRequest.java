@@ -17,7 +17,9 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#revokePermissionCredential(RevokePermissionCredentialRequest)
  * GPUdb.revokePermissionCredential}.
  * <p>
- * Revokes a <a
+ * [DEPRECATED--please use {@link
+ * com.gpudb.GPUdb#revokePermission(RevokePermissionRequest)
+ * GPUdb.revokePermission} instead]  Revokes a <a
  * href="../../../../../../security/sec_concepts/#security-concepts-permissions-credential"
  * target="_top">credential-level permission</a> from a user or role.
  */

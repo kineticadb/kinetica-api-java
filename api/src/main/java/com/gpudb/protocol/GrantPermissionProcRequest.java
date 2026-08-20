@@ -17,7 +17,10 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#grantPermissionProc(GrantPermissionProcRequest)
  * GPUdb.grantPermissionProc}.
  * <p>
- * Grants a proc-level permission to a user or role.
+ * [DEPRECATED--please use {@link
+ * com.gpudb.GPUdb#grantPermission(GrantPermissionRequest)
+ * GPUdb.grantPermission} instead]  Grants a proc-level permission to a user or
+ * role.
  */
 public class GrantPermissionProcRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

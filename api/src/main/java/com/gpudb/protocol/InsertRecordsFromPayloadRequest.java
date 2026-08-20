@@ -58,17 +58,49 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      */
     public static final class CreateTableOptions {
         /**
-         * ID of a currently registered <a
-         * href="../../../../../../concepts/types/" target="_top">type</a>. The
-         * default value is ''.
+         * Indicates the target maximum data size for each column in a chunk to
+         * be used for this table.
          */
-        public static final String TYPE_ID = "type_id";
+        public static final String CHUNK_COLUMN_MAX_MEMORY = "chunk_column_max_memory";
 
         /**
-         * If {@link CreateTableOptions#TRUE TRUE}, prevents an error from
-         * occurring if the table already exists and is of the given type.  If
-         * a table with the same ID but a different type exists, it is still an
-         * error.
+         * Indicates the target maximum data size for all columns in a chunk to
+         * be used for this table.
+         */
+        public static final String CHUNK_MAX_MEMORY = "chunk_max_memory";
+
+        /**
+         * Indicates the number of records per chunk to be used for this table.
+         */
+        public static final String CHUNK_SIZE = "chunk_size";
+
+        /**
+         * The default <a href="../../../../../../concepts/column_compression/"
+         * target="_top">compression codec</a> for this table's columns.
+         */
+        public static final String COMPRESSION_CODEC = "compression_codec";
+
+        /**
+         * Semicolon-separated list of <a
+         * href="../../../../../../concepts/tables/#foreign-keys"
+         * target="_top">foreign keys</a>, of the format '(source_column_name
+         * [, ...]) references target_table_name(primary_key_column_name [,
+         * ...]) [as foreign_key_name]'.
+         */
+        public static final String FOREIGN_KEYS = "foreign_keys";
+
+        /**
+         * Foreign shard key of the format 'source_column references
+         * shard_by_column from target_table(primary_key_column)'.
+         */
+        public static final String FOREIGN_SHARD_KEY = "foreign_shard_key";
+
+        /**
+         * If {@link CreateTableOptions#TRUE TRUE}, a new partition will be
+         * created for values which don't fall into an existing partition.
+         * Currently only supported for <a
+         * href="../../../../../../concepts/tables/#partitioning-by-list"
+         * target="_top">list partitions</a>.
          * Supported values:
          * <ul>
          *     <li>{@link CreateTableOptions#TRUE TRUE}
@@ -76,7 +108,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * </ul>
          * The default value is {@link CreateTableOptions#FALSE FALSE}.
          */
-        public static final String NO_ERROR_IF_EXISTS = "no_error_if_exists";
+        public static final String IS_AUTOMATIC_PARTITION = "is_automatic_partition";
 
         public static final String TRUE = "true";
         public static final String FALSE = "false";
@@ -108,19 +140,60 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String IS_REPLICATED = "is_replicated";
 
         /**
-         * Semicolon-separated list of <a
-         * href="../../../../../../concepts/tables/#foreign-keys"
-         * target="_top">foreign keys</a>, of the format '(source_column_name
-         * [, ...]) references target_table_name(primary_key_column_name [,
-         * ...]) [as foreign_key_name]'.
+         * Indicates whether the table is a <a
+         * href="../../../../../../concepts/tables_memory_only/"
+         * target="_top">memory-only table</a>. A result table cannot contain
+         * columns with text_search <a
+         * href="../../../../../../concepts/types/#data-handling"
+         * target="_top">data-handling</a>, and it will not be retained if the
+         * server is restarted.
+         * Supported values:
+         * <ul>
+         *     <li>{@link CreateTableOptions#TRUE TRUE}
+         *     <li>{@link CreateTableOptions#FALSE FALSE}
+         * </ul>
+         * The default value is {@link CreateTableOptions#FALSE FALSE}.
          */
-        public static final String FOREIGN_KEYS = "foreign_keys";
+        public static final String IS_RESULT_TABLE = "is_result_table";
 
         /**
-         * Foreign shard key of the format 'source_column references
-         * shard_by_column from target_table(primary_key_column)'.
+         * If {@link CreateTableOptions#TRUE TRUE}, prevents an error from
+         * occurring if the table already exists and is of the given type.  If
+         * a table with the same ID but a different type exists, it is still an
+         * error.
+         * Supported values:
+         * <ul>
+         *     <li>{@link CreateTableOptions#TRUE TRUE}
+         *     <li>{@link CreateTableOptions#FALSE FALSE}
+         * </ul>
+         * The default value is {@link CreateTableOptions#FALSE FALSE}.
          */
-        public static final String FOREIGN_SHARD_KEY = "foreign_shard_key";
+        public static final String NO_ERROR_IF_EXISTS = "no_error_if_exists";
+
+        /**
+         * Comma-separated list of partition definitions, whose format depends
+         * on the choice of {@link CreateTableOptions#PARTITION_TYPE
+         * PARTITION_TYPE}.  See <a
+         * href="../../../../../../concepts/tables/#partitioning-by-range"
+         * target="_top">range partitioning</a>, <a
+         * href="../../../../../../concepts/tables/#partitioning-by-interval"
+         * target="_top">interval partitioning</a>, <a
+         * href="../../../../../../concepts/tables/#partitioning-by-list"
+         * target="_top">list partitioning</a>, <a
+         * href="../../../../../../concepts/tables/#partitioning-by-hash"
+         * target="_top">hash partitioning</a>, or <a
+         * href="../../../../../../concepts/tables/#partitioning-by-series"
+         * target="_top">series partitioning</a> for example formats.
+         */
+        public static final String PARTITION_DEFINITIONS = "partition_definitions";
+
+        /**
+         * Comma-separated list of partition keys, which are the columns or
+         * column expressions by which records will be assigned to partitions
+         * defined by {@link CreateTableOptions#PARTITION_DEFINITIONS
+         * PARTITION_DEFINITIONS}.
+         */
+        public static final String PARTITION_KEYS = "partition_keys";
 
         /**
          * <a href="../../../../../../concepts/tables/#partitioning"
@@ -182,44 +255,10 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String SERIES = "SERIES";
 
         /**
-         * Comma-separated list of partition keys, which are the columns or
-         * column expressions by which records will be assigned to partitions
-         * defined by {@link CreateTableOptions#PARTITION_DEFINITIONS
-         * PARTITION_DEFINITIONS}.
+         * The <a href="../../../../../../rm/concepts/#tier-strategies"
+         * target="_top">tier strategy</a> for the table and its columns.
          */
-        public static final String PARTITION_KEYS = "partition_keys";
-
-        /**
-         * Comma-separated list of partition definitions, whose format depends
-         * on the choice of {@link CreateTableOptions#PARTITION_TYPE
-         * PARTITION_TYPE}.  See <a
-         * href="../../../../../../concepts/tables/#partitioning-by-range"
-         * target="_top">range partitioning</a>, <a
-         * href="../../../../../../concepts/tables/#partitioning-by-interval"
-         * target="_top">interval partitioning</a>, <a
-         * href="../../../../../../concepts/tables/#partitioning-by-list"
-         * target="_top">list partitioning</a>, <a
-         * href="../../../../../../concepts/tables/#partitioning-by-hash"
-         * target="_top">hash partitioning</a>, or <a
-         * href="../../../../../../concepts/tables/#partitioning-by-series"
-         * target="_top">series partitioning</a> for example formats.
-         */
-        public static final String PARTITION_DEFINITIONS = "partition_definitions";
-
-        /**
-         * If {@link CreateTableOptions#TRUE TRUE}, a new partition will be
-         * created for values which don't fall into an existing partition.
-         * Currently only supported for <a
-         * href="../../../../../../concepts/tables/#partitioning-by-list"
-         * target="_top">list partitions</a>.
-         * Supported values:
-         * <ul>
-         *     <li>{@link CreateTableOptions#TRUE TRUE}
-         *     <li>{@link CreateTableOptions#FALSE FALSE}
-         * </ul>
-         * The default value is {@link CreateTableOptions#FALSE FALSE}.
-         */
-        public static final String IS_AUTOMATIC_PARTITION = "is_automatic_partition";
+        public static final String STRATEGY_DEFINITION = "strategy_definition";
 
         /**
          * Sets the <a href="../../../../../../concepts/ttl/"
@@ -229,50 +268,11 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String TTL = "ttl";
 
         /**
-         * Indicates the number of records per chunk to be used for this table.
+         * ID of a currently registered <a
+         * href="../../../../../../concepts/types/" target="_top">type</a>. The
+         * default value is ''.
          */
-        public static final String CHUNK_SIZE = "chunk_size";
-
-        /**
-         * Indicates the target maximum data size for each column in a chunk to
-         * be used for this table.
-         */
-        public static final String CHUNK_COLUMN_MAX_MEMORY = "chunk_column_max_memory";
-
-        /**
-         * Indicates the target maximum data size for all columns in a chunk to
-         * be used for this table.
-         */
-        public static final String CHUNK_MAX_MEMORY = "chunk_max_memory";
-
-        /**
-         * Indicates whether the table is a <a
-         * href="../../../../../../concepts/tables_memory_only/"
-         * target="_top">memory-only table</a>. A result table cannot contain
-         * columns with text_search <a
-         * href="../../../../../../concepts/types/#data-handling"
-         * target="_top">data-handling</a>, and it will not be retained if the
-         * server is restarted.
-         * Supported values:
-         * <ul>
-         *     <li>{@link CreateTableOptions#TRUE TRUE}
-         *     <li>{@link CreateTableOptions#FALSE FALSE}
-         * </ul>
-         * The default value is {@link CreateTableOptions#FALSE FALSE}.
-         */
-        public static final String IS_RESULT_TABLE = "is_result_table";
-
-        /**
-         * The <a href="../../../../../../rm/concepts/#tier-strategies"
-         * target="_top">tier strategy</a> for the table and its columns.
-         */
-        public static final String STRATEGY_DEFINITION = "strategy_definition";
-
-        /**
-         * The default <a href="../../../../../../concepts/column_compression/"
-         * target="_top">compression codec</a> for this table's columns.
-         */
-        public static final String COMPRESSION_CODEC = "compression_codec";
+        public static final String TYPE_ID = "type_id";
 
         private CreateTableOptions() {  }
     }
@@ -286,11 +286,16 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      */
     public static final class Options {
         /**
-         * Name of a table to which records that were rejected are written.
-         * The bad-record-table has the following columns: line_number (long),
-         * line_rejected (string), error_message (string).
+         * String representing the Avro schema, for data that includes only
+         * records (i.e.&nbsp;does not embed its own schema).
          */
-        public static final String BAD_RECORD_TABLE_NAME = "bad_record_table_name";
+        public static final String AVRO_SCHEMA = "avro_schema";
+
+        /**
+         * Create table solely from the Avro schema definition, when {@link
+         * Options#AVRO_SCHEMA AVRO_SCHEMA} exists; do not infer from data.
+         */
+        public static final String AVRO_SCHEMA_NO_INFERENCE = "avro_schema_no_inference";
 
         /**
          * A positive integer indicating the maximum number of records that can
@@ -306,6 +311,13 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * 'bad_record_table_limit'.
          */
         public static final String BAD_RECORD_TABLE_LIMIT_PER_INPUT = "bad_record_table_limit_per_input";
+
+        /**
+         * Name of a table to which records that were rejected are written.
+         * The bad-record-table has the following columns: line_number (long),
+         * line_rejected (string), error_message (string).
+         */
+        public static final String BAD_RECORD_TABLE_NAME = "bad_record_table_name";
 
         /**
          * Internal tuning parameter--number of records per batch when
@@ -330,39 +342,100 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String COLUMN_FORMATS = "column_formats";
 
         /**
-         * Specifies a comma-delimited list of columns from the source data to
-         * load.  If more than one file is being loaded, this list applies to
-         * all files.
-         * <p>
-         * Column numbers can be specified discretely or as a range.  For
-         * example, a value of '5,7,1..3' will insert values from the fifth
-         * column in the source data into the first column in the target table,
-         * from the seventh column in the source data into the second column in
-         * the target table, and from the first through third columns in the
-         * source data into the third through fifth columns in the target
-         * table.
-         * <p>
-         * If the source data contains a header, column names matching the file
-         * header names may be provided instead of column numbers.  If the
-         * target table doesn't exist, the table will be created with the
-         * columns in this order.  If the target table does exist with columns
-         * in a different order than the source data, this list can be used to
-         * match the order of the target table.  For example, a value of 'C, B,
-         * A' will create a three column table with column C, followed by
-         * column B, followed by column A; or will insert those fields in that
-         * order into a table created with columns in that order.  If the
-         * target table exists, the column names must match the source data
-         * field names for a name-mapping to be successful.
+         * Specifies a comma-delimited list of source-data columns that supply
+         * the target table's columns. If more than one file is being loaded,
+         * this list applies to all files.
          * <p>
          * Mutually exclusive with {@link Options#COLUMNS_TO_SKIP
          * COLUMNS_TO_SKIP}.
+         * <p>
+         * This list is a positional mapping onto the target table rather than
+         * a filter: the i-th entry identifies the source column that feeds the
+         * i-th column of the target table.
+         * <p>
+         * Entries may be column numbers, column names, or empty.
+         * <p>
+         * Column numbers are 1-based, specified discretely or as a range. For
+         * example, '5,7,,1..3' inserts the fifth source column into the first
+         * target column, the seventh into the second, null into the third, and
+         * the first through third into the fourth through sixth. A range may
+         * descend ('3..1') to reverse that group's order.  Zero is not a valid
+         * column number. Numbers are supported only for delimited-text and
+         * Avro sources.
+         * <p>
+         * Column names are strings, matching the source-data field names --
+         * either the file's header names or the names supplied by {@link
+         * Options#NAME_COLUMNS_FROM_FILE NAME_COLUMNS_FROM_FILE}. Requires
+         * that the source data have column names. Names are matched
+         * case-sensitively, and a name not present in the source will fail.
+         * <p>
+         * An empty entry, acting as a placeholder meaning that no source
+         * column feeds the corresponding target column.
+         * <p>
+         * Numbers and names cannot be mixed: a single non-numeric entry causes
+         * the entire list to be interpreted as names.
+         * <p>
+         * If the target table does not exist, it is created with these columns
+         * in this order, and the list may name any subset of the source
+         * columns.
+         * <p>
+         * If the target table already exists, the number of entries must equal
+         * the target table's column count. Use empty entries to pad the list
+         * to the target's width. Because the mapping is positional, this
+         * option can also reorder source columns into the target's column
+         * order -- for example 'C, B, A' for a target table whose columns are
+         * C, B, A.
+         * <p>
+         * Note: specifying {@link Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD}
+         * disables server-side population of target columns that no source
+         * column feeds. Such columns receive NULL instead of their default
+         * value, 'init_with_now', or 'init_with_uuid' value; if the column is
+         * non-nullable, the record is rejected. To have unfed target columns
+         * take their defaults, omit {@link Options#COLUMNS_TO_LOAD
+         * COLUMNS_TO_LOAD} and rely on name-based matching, optionally with
+         * {@link Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP}.
          */
         public static final String COLUMNS_TO_LOAD = "columns_to_load";
 
         /**
-         * Specifies a comma-delimited list of columns from the source data to
-         * skip.  Mutually exclusive with {@link Options#COLUMNS_TO_LOAD
+         * Specifies a comma-delimited list of source-data columns to exclude
+         * from the load. If more than one file is being loaded, this list
+         * applies to all files.
+         * <p>
+         * Mutually exclusive with {@link Options#COLUMNS_TO_LOAD
          * COLUMNS_TO_LOAD}.
+         * <p>
+         * Entries may be column names matching the source-data field names
+         * (the file's header names, or the names supplied by {@link
+         * Options#NAME_COLUMNS_FROM_FILE NAME_COLUMNS_FROM_FILE}, matched
+         * case-sensitively), or 1-based column numbers. Numbers are supported
+         * only for delimited-text sources. Name-based entries require the
+         * source data to have column names.
+         * <p>
+         * Unlike {@link Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD}, this option
+         * does not change how the remaining source columns are matched to the
+         * target table. Matching remains by name and is case-insensitive, so
+         * the order and number of source columns need not correspond to the
+         * target table's columns.
+         * <p>
+         * Excluding a source column that corresponds to a target table column
+         * causes that target column to be populated from its default value,
+         * 'init_with_*' property, or null.  This makes {@link
+         * Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP} the means of preferring a
+         * target column's default over a value present in the source data.
+         * <p>
+         * Source columns that don't correspond to any target table column need
+         * not be listed; they are ignored.
+         * <p>
+         * If the target table does not exist, the non-excluded source columns
+         * define the new table's columns, in source-data order.
+         * <p>
+         * If the source data has no column names (no header row and no {@link
+         * Options#NAME_COLUMNS_FROM_FILE NAME_COLUMNS_FROM_FILE}) and this
+         * option is given as numbers, the remaining source columns are matched
+         * to target columns by position; the source column count must then
+         * equal the target table's column count plus the number of columns
+         * skipped.
          */
         public static final String COLUMNS_TO_SKIP = "columns_to_skip";
 
@@ -429,6 +502,32 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * text as "05/04/2000 12:12:11"
          */
         public static final String DEFAULT_COLUMN_FORMATS = "default_column_formats";
+
+        /**
+         * Applies only when upserting (when update_on_existing_pk is true). If
+         * set to true (the default), an existing record matched by primary key
+         * is modified in place. If set to false, the matched record is updated
+         * by deleting it and inserting a replacement (delete and insert),
+         * which prevents the change from being reflected in dependent
+         * materialized views until they are refreshed.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#TRUE TRUE}.
+         */
+        public static final String ENABLE_INPLACE_UPDATES = "enable_inplace_updates";
+
+        /**
+         * Upsert new records when primary keys match existing records.
+         */
+        public static final String TRUE = "true";
+
+        /**
+         * Reject new records when primary keys match existing records.
+         */
+        public static final String FALSE = "false";
 
         /**
          * Specifies how errors should be handled upon insertion.
@@ -532,32 +631,10 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String FLATTEN_COLUMNS = "flatten_columns";
 
         /**
-         * Upsert new records when primary keys match existing records.
-         */
-        public static final String TRUE = "true";
-
-        /**
-         * Reject new records when primary keys match existing records.
-         */
-        public static final String FALSE = "false";
-
-        /**
          * Comma separated list of gdal conf options, for the specific
          * requests: key=value. The default value is ''.
          */
         public static final String GDAL_CONFIGURATION_OPTIONS = "gdal_configuration_options";
-
-        /**
-         * The record with higher value for the column resolves the primary-key
-         * insert conflict. The default value is ''.
-         */
-        public static final String PK_CONFLICT_PREDICATE_HIGHER = "pk_conflict_predicate_higher";
-
-        /**
-         * The record with lower value for the column resolves the primary-key
-         * insert conflict. The default value is ''.
-         */
-        public static final String PK_CONFLICT_PREDICATE_LOWER = "pk_conflict_predicate_lower";
 
         /**
          * Specifies the record collision error-suppression policy for
@@ -713,6 +790,11 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String LOCAL_TIME_OFFSET = "local_time_offset";
 
         /**
+         * Max records to skip due to schema related errors, before failing.
+         */
+        public static final String MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE = "max_consecutive_invalid_schema_failure";
+
+        /**
          * Limit the number of records to load in this request: If this number
          * is larger than a batch_size, then the number of records loaded will
          * be limited to the next whole number of batch_size (per working
@@ -722,15 +804,28 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
 
         /**
          * Specifies a comma-delimited list of column names to be used as the
-         * source-data column names.  If the payload has a header row (i.e.,
-         * {@link Options#TEXT_HAS_HEADER TEXT_HAS_HEADER} is {@link
-         * Options#TRUE TRUE}), these names override the payload's header
-         * names.  If the payload has no header row, these names are used as
-         * the source-data column names. Either way, the i-th name in this list
-         * applies to the i-th column in the payload, enabling name-based
-         * matching against the target table's columns (and use with {@link
+         * source-data column names. Supported for delimited-text sources only.
+         * <p>
+         * The i-th name in this list applies to the i-th column in the file.
+         * If the file has a header row (i.e., {@link Options#TEXT_HAS_HEADER
+         * TEXT_HAS_HEADER} is {@link Options#TRUE TRUE}), these names override
+         * the file's header names. If the file has no header row, these names
+         * become the source-data column names.
+         * <p>
+         * Naming the source columns enables name-based matching against the
+         * target table's columns, and permits name-based {@link
          * Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD} / {@link
-         * Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP}).
+         * Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP}, which otherwise require a
+         * header row.
+         * <p>
+         * Note: for a source with no header row, supplying this option changes
+         * how source columns are matched to target columns -- from positional
+         * matching to matching by name. Target columns with no matching source
+         * column are then populated from their defaults or null rather than
+         * being filled positionally.
+         * <p>
+         * The list is not validated against the file's actual column count. If
+         * it is shorter, the trailing source columns are left unnamed.
          */
         public static final String NAME_COLUMNS_FROM_FILE = "name_columns_from_file";
 
@@ -739,6 +834,18 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * external_file_reader_num_tasks.
          */
         public static final String NUM_TASKS_PER_RANK = "num_tasks_per_rank";
+
+        /**
+         * The record with higher value for the column resolves the primary-key
+         * insert conflict. The default value is ''.
+         */
+        public static final String PK_CONFLICT_PREDICATE_HIGHER = "pk_conflict_predicate_higher";
+
+        /**
+         * The record with lower value for the column resolves the primary-key
+         * insert conflict. The default value is ''.
+         */
+        public static final String PK_CONFLICT_PREDICATE_LOWER = "pk_conflict_predicate_lower";
 
         /**
          * If {@link Options#TRUE TRUE}, the number of seconds between attempts
@@ -768,11 +875,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * Max records to skip due to SR connection failures, before failing.
          */
         public static final String SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES = "schema_registry_max_consecutive_connection_failures";
-
-        /**
-         * Max records to skip due to schema related errors, before failing.
-         */
-        public static final String MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE = "max_consecutive_invalid_schema_failure";
 
         /**
          * Name of the Avro schema in the schema registry to use when reading
@@ -921,6 +1023,17 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String TEXT_SEARCH_MIN_COLUMN_LENGTH = "text_search_min_column_length";
 
         /**
+         * Comma-separated expressions, one per target table column.  Each
+         * expression is evaluated per record.  Empty entries (two consecutive
+         * commas) mean no transformation for that column -- the value is
+         * resolved from the input record, table default, NULL, or an error.
+         * Expressions may reference input columns by name or by position ($1
+         * for the first input column, $2 for the second, etc.). The default
+         * value is ''.
+         */
+        public static final String TRANSFORMATIONS = "transformations";
+
+        /**
          * If set to {@link Options#TRUE TRUE}, remove leading or trailing
          * space from fields.
          * Supported values:
@@ -988,22 +1101,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String SPEED = "speed";
 
         /**
-         * Applies only when upserting (when update_on_existing_pk is true). If
-         * set to true (the default), an existing record matched by primary key
-         * is modified in place. If set to false, the matched record is updated
-         * by deleting it and inserting a replacement (delete and insert),
-         * which prevents the change from being reflected in dependent
-         * materialized views until they are refreshed.
-         * Supported values:
-         * <ul>
-         *     <li>{@link Options#TRUE TRUE}
-         *     <li>{@link Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link Options#TRUE TRUE}.
-         */
-        public static final String ENABLE_INPLACE_UPDATES = "enable_inplace_updates";
-
-        /**
          * Specifies the record collision policy for inserting into a table
          * with a <a href="../../../../../../concepts/tables/#primary-keys"
          * target="_top">primary key</a>. If set to {@link Options#TRUE TRUE},
@@ -1026,17 +1123,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * The default value is {@link Options#FALSE FALSE}.
          */
         public static final String UPDATE_ON_EXISTING_PK = "update_on_existing_pk";
-
-        /**
-         * Comma-separated expressions, one per target table column.  Each
-         * expression is evaluated per record.  Empty entries (two consecutive
-         * commas) mean no transformation for that column -- the value is
-         * resolved from the input record, table default, NULL, or an error.
-         * Expressions may reference input columns by name or by position ($1
-         * for the first input column, $2 for the second, etc.). The default
-         * value is ''.
-         */
-        public static final String TRANSFORMATIONS = "transformations";
 
         private Options() {  }
     }
@@ -1086,21 +1172,54 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                            com.gpudb.GPUdb#createTable(CreateTableRequest)
      *                            GPUdb.createTable}.
      *                            <ul>
-     *                                <li>{@link CreateTableOptions#TYPE_ID
-     *                                    TYPE_ID}: ID of a currently
-     *                                    registered <a
-     *                                    href="../../../../../../concepts/types/"
-     *                                    target="_top">type</a>. The default
-     *                                    value is ''.
      *                                <li>{@link
-     *                                    CreateTableOptions#NO_ERROR_IF_EXISTS
-     *                                    NO_ERROR_IF_EXISTS}: If {@link
-     *                                    CreateTableOptions#TRUE TRUE},
-     *                                    prevents an error from occurring if
-     *                                    the table already exists and is of
-     *                                    the given type.  If a table with the
-     *                                    same ID but a different type exists,
-     *                                    it is still an error.
+     *                                    CreateTableOptions#CHUNK_COLUMN_MAX_MEMORY
+     *                                    CHUNK_COLUMN_MAX_MEMORY}: Indicates
+     *                                    the target maximum data size for each
+     *                                    column in a chunk to be used for this
+     *                                    table.
+     *                                <li>{@link
+     *                                    CreateTableOptions#CHUNK_MAX_MEMORY
+     *                                    CHUNK_MAX_MEMORY}: Indicates the
+     *                                    target maximum data size for all
+     *                                    columns in a chunk to be used for
+     *                                    this table.
+     *                                <li>{@link CreateTableOptions#CHUNK_SIZE
+     *                                    CHUNK_SIZE}: Indicates the number of
+     *                                    records per chunk to be used for this
+     *                                    table.
+     *                                <li>{@link
+     *                                    CreateTableOptions#COMPRESSION_CODEC
+     *                                    COMPRESSION_CODEC}: The default <a
+     *                                    href="../../../../../../concepts/column_compression/"
+     *                                    target="_top">compression codec</a>
+     *                                    for this table's columns.
+     *                                <li>{@link
+     *                                    CreateTableOptions#FOREIGN_KEYS
+     *                                    FOREIGN_KEYS}: Semicolon-separated
+     *                                    list of <a
+     *                                    href="../../../../../../concepts/tables/#foreign-keys"
+     *                                    target="_top">foreign keys</a>, of
+     *                                    the format '(source_column_name [,
+     *                                    ...]) references
+     *                                    target_table_name(primary_key_column_name
+     *                                    [, ...]) [as foreign_key_name]'.
+     *                                <li>{@link
+     *                                    CreateTableOptions#FOREIGN_SHARD_KEY
+     *                                    FOREIGN_SHARD_KEY}: Foreign shard key
+     *                                    of the format 'source_column
+     *                                    references shard_by_column from
+     *                                    target_table(primary_key_column)'.
+     *                                <li>{@link
+     *                                    CreateTableOptions#IS_AUTOMATIC_PARTITION
+     *                                    IS_AUTOMATIC_PARTITION}: If {@link
+     *                                    CreateTableOptions#TRUE TRUE}, a new
+     *                                    partition will be created for values
+     *                                    which don't fall into an existing
+     *                                    partition.  Currently only supported
+     *                                    for <a
+     *                                    href="../../../../../../concepts/tables/#partitioning-by-list"
+     *                                    target="_top">list partitions</a>.
      *                                    Supported values:
      *                                    <ul>
      *                                        <li>{@link
@@ -1149,21 +1268,78 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                                    The default value is {@link
      *                                    CreateTableOptions#FALSE FALSE}.
      *                                <li>{@link
-     *                                    CreateTableOptions#FOREIGN_KEYS
-     *                                    FOREIGN_KEYS}: Semicolon-separated
-     *                                    list of <a
-     *                                    href="../../../../../../concepts/tables/#foreign-keys"
-     *                                    target="_top">foreign keys</a>, of
-     *                                    the format '(source_column_name [,
-     *                                    ...]) references
-     *                                    target_table_name(primary_key_column_name
-     *                                    [, ...]) [as foreign_key_name]'.
+     *                                    CreateTableOptions#IS_RESULT_TABLE
+     *                                    IS_RESULT_TABLE}: Indicates whether
+     *                                    the table is a <a
+     *                                    href="../../../../../../concepts/tables_memory_only/"
+     *                                    target="_top">memory-only table</a>.
+     *                                    A result table cannot contain columns
+     *                                    with text_search <a
+     *                                    href="../../../../../../concepts/types/#data-handling"
+     *                                    target="_top">data-handling</a>, and
+     *                                    it will not be retained if the server
+     *                                    is restarted.
+     *                                    Supported values:
+     *                                    <ul>
+     *                                        <li>{@link
+     *                                            CreateTableOptions#TRUE TRUE}
+     *                                        <li>{@link
+     *                                            CreateTableOptions#FALSE
+     *                                            FALSE}
+     *                                    </ul>
+     *                                    The default value is {@link
+     *                                    CreateTableOptions#FALSE FALSE}.
      *                                <li>{@link
-     *                                    CreateTableOptions#FOREIGN_SHARD_KEY
-     *                                    FOREIGN_SHARD_KEY}: Foreign shard key
-     *                                    of the format 'source_column
-     *                                    references shard_by_column from
-     *                                    target_table(primary_key_column)'.
+     *                                    CreateTableOptions#NO_ERROR_IF_EXISTS
+     *                                    NO_ERROR_IF_EXISTS}: If {@link
+     *                                    CreateTableOptions#TRUE TRUE},
+     *                                    prevents an error from occurring if
+     *                                    the table already exists and is of
+     *                                    the given type.  If a table with the
+     *                                    same ID but a different type exists,
+     *                                    it is still an error.
+     *                                    Supported values:
+     *                                    <ul>
+     *                                        <li>{@link
+     *                                            CreateTableOptions#TRUE TRUE}
+     *                                        <li>{@link
+     *                                            CreateTableOptions#FALSE
+     *                                            FALSE}
+     *                                    </ul>
+     *                                    The default value is {@link
+     *                                    CreateTableOptions#FALSE FALSE}.
+     *                                <li>{@link
+     *                                    CreateTableOptions#PARTITION_DEFINITIONS
+     *                                    PARTITION_DEFINITIONS}:
+     *                                    Comma-separated list of partition
+     *                                    definitions, whose format depends on
+     *                                    the choice of {@link
+     *                                    CreateTableOptions#PARTITION_TYPE
+     *                                    PARTITION_TYPE}.  See <a
+     *                                    href="../../../../../../concepts/tables/#partitioning-by-range"
+     *                                    target="_top">range partitioning</a>,
+     *                                    <a
+     *                                    href="../../../../../../concepts/tables/#partitioning-by-interval"
+     *                                    target="_top">interval
+     *                                    partitioning</a>, <a
+     *                                    href="../../../../../../concepts/tables/#partitioning-by-list"
+     *                                    target="_top">list partitioning</a>,
+     *                                    <a
+     *                                    href="../../../../../../concepts/tables/#partitioning-by-hash"
+     *                                    target="_top">hash partitioning</a>,
+     *                                    or <a
+     *                                    href="../../../../../../concepts/tables/#partitioning-by-series"
+     *                                    target="_top">series partitioning</a>
+     *                                    for example formats.
+     *                                <li>{@link
+     *                                    CreateTableOptions#PARTITION_KEYS
+     *                                    PARTITION_KEYS}: Comma-separated list
+     *                                    of partition keys, which are the
+     *                                    columns or column expressions by
+     *                                    which records will be assigned to
+     *                                    partitions defined by {@link
+     *                                    CreateTableOptions#PARTITION_DEFINITIONS
+     *                                    PARTITION_DEFINITIONS}.
      *                                <li>{@link
      *                                    CreateTableOptions#PARTITION_TYPE
      *                                    PARTITION_TYPE}: <a
@@ -1204,122 +1380,35 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                                            partitioning</a>.
      *                                    </ul>
      *                                <li>{@link
-     *                                    CreateTableOptions#PARTITION_KEYS
-     *                                    PARTITION_KEYS}: Comma-separated list
-     *                                    of partition keys, which are the
-     *                                    columns or column expressions by
-     *                                    which records will be assigned to
-     *                                    partitions defined by {@link
-     *                                    CreateTableOptions#PARTITION_DEFINITIONS
-     *                                    PARTITION_DEFINITIONS}.
-     *                                <li>{@link
-     *                                    CreateTableOptions#PARTITION_DEFINITIONS
-     *                                    PARTITION_DEFINITIONS}:
-     *                                    Comma-separated list of partition
-     *                                    definitions, whose format depends on
-     *                                    the choice of {@link
-     *                                    CreateTableOptions#PARTITION_TYPE
-     *                                    PARTITION_TYPE}.  See <a
-     *                                    href="../../../../../../concepts/tables/#partitioning-by-range"
-     *                                    target="_top">range partitioning</a>,
-     *                                    <a
-     *                                    href="../../../../../../concepts/tables/#partitioning-by-interval"
-     *                                    target="_top">interval
-     *                                    partitioning</a>, <a
-     *                                    href="../../../../../../concepts/tables/#partitioning-by-list"
-     *                                    target="_top">list partitioning</a>,
-     *                                    <a
-     *                                    href="../../../../../../concepts/tables/#partitioning-by-hash"
-     *                                    target="_top">hash partitioning</a>,
-     *                                    or <a
-     *                                    href="../../../../../../concepts/tables/#partitioning-by-series"
-     *                                    target="_top">series partitioning</a>
-     *                                    for example formats.
-     *                                <li>{@link
-     *                                    CreateTableOptions#IS_AUTOMATIC_PARTITION
-     *                                    IS_AUTOMATIC_PARTITION}: If {@link
-     *                                    CreateTableOptions#TRUE TRUE}, a new
-     *                                    partition will be created for values
-     *                                    which don't fall into an existing
-     *                                    partition.  Currently only supported
-     *                                    for <a
-     *                                    href="../../../../../../concepts/tables/#partitioning-by-list"
-     *                                    target="_top">list partitions</a>.
-     *                                    Supported values:
-     *                                    <ul>
-     *                                        <li>{@link
-     *                                            CreateTableOptions#TRUE TRUE}
-     *                                        <li>{@link
-     *                                            CreateTableOptions#FALSE
-     *                                            FALSE}
-     *                                    </ul>
-     *                                    The default value is {@link
-     *                                    CreateTableOptions#FALSE FALSE}.
-     *                                <li>{@link CreateTableOptions#TTL TTL}:
-     *                                    Sets the <a
-     *                                    href="../../../../../../concepts/ttl/"
-     *                                    target="_top">TTL</a> of the table
-     *                                    specified in {@code tableName}.
-     *                                <li>{@link CreateTableOptions#CHUNK_SIZE
-     *                                    CHUNK_SIZE}: Indicates the number of
-     *                                    records per chunk to be used for this
-     *                                    table.
-     *                                <li>{@link
-     *                                    CreateTableOptions#CHUNK_COLUMN_MAX_MEMORY
-     *                                    CHUNK_COLUMN_MAX_MEMORY}: Indicates
-     *                                    the target maximum data size for each
-     *                                    column in a chunk to be used for this
-     *                                    table.
-     *                                <li>{@link
-     *                                    CreateTableOptions#CHUNK_MAX_MEMORY
-     *                                    CHUNK_MAX_MEMORY}: Indicates the
-     *                                    target maximum data size for all
-     *                                    columns in a chunk to be used for
-     *                                    this table.
-     *                                <li>{@link
-     *                                    CreateTableOptions#IS_RESULT_TABLE
-     *                                    IS_RESULT_TABLE}: Indicates whether
-     *                                    the table is a <a
-     *                                    href="../../../../../../concepts/tables_memory_only/"
-     *                                    target="_top">memory-only table</a>.
-     *                                    A result table cannot contain columns
-     *                                    with text_search <a
-     *                                    href="../../../../../../concepts/types/#data-handling"
-     *                                    target="_top">data-handling</a>, and
-     *                                    it will not be retained if the server
-     *                                    is restarted.
-     *                                    Supported values:
-     *                                    <ul>
-     *                                        <li>{@link
-     *                                            CreateTableOptions#TRUE TRUE}
-     *                                        <li>{@link
-     *                                            CreateTableOptions#FALSE
-     *                                            FALSE}
-     *                                    </ul>
-     *                                    The default value is {@link
-     *                                    CreateTableOptions#FALSE FALSE}.
-     *                                <li>{@link
      *                                    CreateTableOptions#STRATEGY_DEFINITION
      *                                    STRATEGY_DEFINITION}: The <a
      *                                    href="../../../../../../rm/concepts/#tier-strategies"
      *                                    target="_top">tier strategy</a> for
      *                                    the table and its columns.
-     *                                <li>{@link
-     *                                    CreateTableOptions#COMPRESSION_CODEC
-     *                                    COMPRESSION_CODEC}: The default <a
-     *                                    href="../../../../../../concepts/column_compression/"
-     *                                    target="_top">compression codec</a>
-     *                                    for this table's columns.
+     *                                <li>{@link CreateTableOptions#TTL TTL}:
+     *                                    Sets the <a
+     *                                    href="../../../../../../concepts/ttl/"
+     *                                    target="_top">TTL</a> of the table
+     *                                    specified in {@code tableName}.
+     *                                <li>{@link CreateTableOptions#TYPE_ID
+     *                                    TYPE_ID}: ID of a currently
+     *                                    registered <a
+     *                                    href="../../../../../../concepts/types/"
+     *                                    target="_top">type</a>. The default
+     *                                    value is ''.
      *                            </ul>
      *                            The default value is an empty {@link Map}.
      * @param options  Optional parameters.
      *                 <ul>
-     *                     <li>{@link Options#BAD_RECORD_TABLE_NAME
-     *                         BAD_RECORD_TABLE_NAME}: Name of a table to which
-     *                         records that were rejected are written.  The
-     *                         bad-record-table has the following columns:
-     *                         line_number (long), line_rejected (string),
-     *                         error_message (string).
+     *                     <li>{@link Options#AVRO_SCHEMA AVRO_SCHEMA}: String
+     *                         representing the Avro schema, for data that
+     *                         includes only records (i.e. does not embed its
+     *                         own schema).
+     *                     <li>{@link Options#AVRO_SCHEMA_NO_INFERENCE
+     *                         AVRO_SCHEMA_NO_INFERENCE}: Create table solely
+     *                         from the Avro schema definition, when {@link
+     *                         Options#AVRO_SCHEMA AVRO_SCHEMA} exists; do not
+     *                         infer from data.
      *                     <li>{@link Options#BAD_RECORD_TABLE_LIMIT
      *                         BAD_RECORD_TABLE_LIMIT}: A positive integer
      *                         indicating the maximum number of records that
@@ -1333,6 +1422,12 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         value will be 'bad_record_table_limit' and total
      *                         size of the table per rank is limited to
      *                         'bad_record_table_limit'.
+     *                     <li>{@link Options#BAD_RECORD_TABLE_NAME
+     *                         BAD_RECORD_TABLE_NAME}: Name of a table to which
+     *                         records that were rejected are written.  The
+     *                         bad-record-table has the following columns:
+     *                         line_number (long), line_rejected (string),
+     *                         error_message (string).
      *                     <li>{@link Options#BATCH_SIZE BATCH_SIZE}: Internal
      *                         tuning parameter--number of records per batch
      *                         when inserting data.
@@ -1353,40 +1448,101 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         Options#DEFAULT_COLUMN_FORMATS
      *                         DEFAULT_COLUMN_FORMATS} for valid format syntax.
      *                     <li>{@link Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD}:
-     *                         Specifies a comma-delimited list of columns from
-     *                         the source data to load.  If more than one file
-     *                         is being loaded, this list applies to all files.
-     *                         Column numbers can be specified discretely or as
-     *                         a range.  For example, a value of '5,7,1..3'
-     *                         will insert values from the fifth column in the
-     *                         source data into the first column in the target
-     *                         table, from the seventh column in the source
-     *                         data into the second column in the target table,
-     *                         and from the first through third columns in the
-     *                         source data into the third through fifth columns
-     *                         in the target table.  If the source data
-     *                         contains a header, column names matching the
-     *                         file header names may be provided instead of
-     *                         column numbers.  If the target table doesn't
-     *                         exist, the table will be created with the
-     *                         columns in this order.  If the target table does
-     *                         exist with columns in a different order than the
-     *                         source data, this list can be used to match the
-     *                         order of the target table.  For example, a value
-     *                         of 'C, B, A' will create a three column table
-     *                         with column C, followed by column B, followed by
-     *                         column A; or will insert those fields in that
-     *                         order into a table created with columns in that
-     *                         order.  If the target table exists, the column
-     *                         names must match the source data field names for
-     *                         a name-mapping to be successful.  Mutually
-     *                         exclusive with {@link Options#COLUMNS_TO_SKIP
-     *                         COLUMNS_TO_SKIP}.
+     *                         Specifies a comma-delimited list of source-data
+     *                         columns that supply the target table's columns.
+     *                         If more than one file is being loaded, this list
+     *                         applies to all files.  Mutually exclusive with
+     *                         {@link Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP}.
+     *                         This list is a positional mapping onto the
+     *                         target table rather than a filter: the i-th
+     *                         entry identifies the source column that feeds
+     *                         the i-th column of the target table.  Entries
+     *                         may be column numbers, column names, or empty.
+     *                         Column numbers are 1-based, specified discretely
+     *                         or as a range. For example, '5,7,,1..3' inserts
+     *                         the fifth source column into the first target
+     *                         column, the seventh into the second, null into
+     *                         the third, and the first through third into the
+     *                         fourth through sixth. A range may descend
+     *                         ('3..1') to reverse that group's order.  Zero is
+     *                         not a valid column number. Numbers are supported
+     *                         only for delimited-text and Avro sources.
+     *                         Column names are strings, matching the
+     *                         source-data field names -- either the file's
+     *                         header names or the names supplied by {@link
+     *                         Options#NAME_COLUMNS_FROM_FILE
+     *                         NAME_COLUMNS_FROM_FILE}. Requires that the
+     *                         source data have column names. Names are matched
+     *                         case-sensitively, and a name not present in the
+     *                         source will fail.  An empty entry, acting as a
+     *                         placeholder meaning that no source column feeds
+     *                         the corresponding target column.  Numbers and
+     *                         names cannot be mixed: a single non-numeric
+     *                         entry causes the entire list to be interpreted
+     *                         as names.  If the target table does not exist,
+     *                         it is created with these columns in this order,
+     *                         and the list may name any subset of the source
+     *                         columns.  If the target table already exists,
+     *                         the number of entries must equal the target
+     *                         table's column count. Use empty entries to pad
+     *                         the list to the target's width. Because the
+     *                         mapping is positional, this option can also
+     *                         reorder source columns into the target's column
+     *                         order -- for example 'C, B, A' for a target
+     *                         table whose columns are C, B, A.  Note:
+     *                         specifying {@link Options#COLUMNS_TO_LOAD
+     *                         COLUMNS_TO_LOAD} disables server-side population
+     *                         of target columns that no source column feeds.
+     *                         Such columns receive NULL instead of their
+     *                         default value, 'init_with_now', or
+     *                         'init_with_uuid' value; if the column is
+     *                         non-nullable, the record is rejected. To have
+     *                         unfed target columns take their defaults, omit
+     *                         {@link Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD}
+     *                         and rely on name-based matching, optionally with
+     *                         {@link Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP}.
      *                     <li>{@link Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP}:
-     *                         Specifies a comma-delimited list of columns from
-     *                         the source data to skip.  Mutually exclusive
-     *                         with {@link Options#COLUMNS_TO_LOAD
-     *                         COLUMNS_TO_LOAD}.
+     *                         Specifies a comma-delimited list of source-data
+     *                         columns to exclude from the load. If more than
+     *                         one file is being loaded, this list applies to
+     *                         all files.  Mutually exclusive with {@link
+     *                         Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD}.
+     *                         Entries may be column names matching the
+     *                         source-data field names (the file's header
+     *                         names, or the names supplied by {@link
+     *                         Options#NAME_COLUMNS_FROM_FILE
+     *                         NAME_COLUMNS_FROM_FILE}, matched
+     *                         case-sensitively), or 1-based column numbers.
+     *                         Numbers are supported only for delimited-text
+     *                         sources. Name-based entries require the source
+     *                         data to have column names.  Unlike {@link
+     *                         Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD}, this
+     *                         option does not change how the remaining source
+     *                         columns are matched to the target table.
+     *                         Matching remains by name and is
+     *                         case-insensitive, so the order and number of
+     *                         source columns need not correspond to the target
+     *                         table's columns.  Excluding a source column that
+     *                         corresponds to a target table column causes that
+     *                         target column to be populated from its default
+     *                         value, 'init_with_*' property, or null.  This
+     *                         makes {@link Options#COLUMNS_TO_SKIP
+     *                         COLUMNS_TO_SKIP} the means of preferring a
+     *                         target column's default over a value present in
+     *                         the source data.  Source columns that don't
+     *                         correspond to any target table column need not
+     *                         be listed; they are ignored.  If the target
+     *                         table does not exist, the non-excluded source
+     *                         columns define the new table's columns, in
+     *                         source-data order.  If the source data has no
+     *                         column names (no header row and no {@link
+     *                         Options#NAME_COLUMNS_FROM_FILE
+     *                         NAME_COLUMNS_FROM_FILE}) and this option is
+     *                         given as numbers, the remaining source columns
+     *                         are matched to target columns by position; the
+     *                         source column count must then equal the target
+     *                         table's column count plus the number of columns
+     *                         skipped.
      *                     <li>{@link Options#COMPRESSION_TYPE
      *                         COMPRESSION_TYPE}: Payload compression type.
      *                         Supported values:
@@ -1435,6 +1591,22 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         example, '{"datetime" : "%m/%d/%Y %H:%M:%S" }'
      *                         would be used to interpret text as "05/04/2000
      *                         12:12:11"
+     *                     <li>{@link Options#ENABLE_INPLACE_UPDATES
+     *                         ENABLE_INPLACE_UPDATES}: Applies only when
+     *                         upserting (when update_on_existing_pk is true).
+     *                         If set to true (the default), an existing record
+     *                         matched by primary key is modified in place. If
+     *                         set to false, the matched record is updated by
+     *                         deleting it and inserting a replacement (delete
+     *                         and insert), which prevents the change from
+     *                         being reflected in dependent materialized views
+     *                         until they are refreshed.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#ERROR_HANDLING ERROR_HANDLING}:
      *                         Specifies how errors should be handled upon
      *                         insertion.
@@ -1495,16 +1667,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         GDAL_CONFIGURATION_OPTIONS}: Comma separated
      *                         list of gdal conf options, for the specific
      *                         requests: key=value. The default value is ''.
-     *                     <li>{@link Options#PK_CONFLICT_PREDICATE_HIGHER
-     *                         PK_CONFLICT_PREDICATE_HIGHER}: The record with
-     *                         higher value for the column resolves the
-     *                         primary-key insert conflict. The default value
-     *                         is ''.
-     *                     <li>{@link Options#PK_CONFLICT_PREDICATE_LOWER
-     *                         PK_CONFLICT_PREDICATE_LOWER}: The record with
-     *                         lower value for the column resolves the
-     *                         primary-key insert conflict. The default value
-     *                         is ''.
      *                     <li>{@link Options#IGNORE_EXISTING_PK
      *                         IGNORE_EXISTING_PK}: Specifies the record
      *                         collision error-suppression policy for inserting
@@ -1615,6 +1777,11 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                     <li>{@link Options#LOCAL_TIME_OFFSET
      *                         LOCAL_TIME_OFFSET}: For Avro local timestamp
      *                         columns.
+     *                     <li>{@link
+     *                         Options#MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE
+     *                         MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE}: Max
+     *                         records to skip due to schema related errors,
+     *                         before failing.
      *                     <li>{@link Options#MAX_RECORDS_TO_LOAD
      *                         MAX_RECORDS_TO_LOAD}: Limit the number of
      *                         records to load in this request: If this number
@@ -1625,23 +1792,44 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                     <li>{@link Options#NAME_COLUMNS_FROM_FILE
      *                         NAME_COLUMNS_FROM_FILE}: Specifies a
      *                         comma-delimited list of column names to be used
-     *                         as the source-data column names.  If the payload
-     *                         has a header row (i.e., {@link
+     *                         as the source-data column names. Supported for
+     *                         delimited-text sources only.  The i-th name in
+     *                         this list applies to the i-th column in the
+     *                         file. If the file has a header row (i.e., {@link
      *                         Options#TEXT_HAS_HEADER TEXT_HAS_HEADER} is
      *                         {@link Options#TRUE TRUE}), these names override
-     *                         the payload's header names.  If the payload has
-     *                         no header row, these names are used as the
-     *                         source-data column names. Either way, the i-th
-     *                         name in this list applies to the i-th column in
-     *                         the payload, enabling name-based matching
-     *                         against the target table's columns (and use with
-     *                         {@link Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD}
-     *                         / {@link Options#COLUMNS_TO_SKIP
-     *                         COLUMNS_TO_SKIP}).
+     *                         the file's header names. If the file has no
+     *                         header row, these names become the source-data
+     *                         column names.  Naming the source columns enables
+     *                         name-based matching against the target table's
+     *                         columns, and permits name-based {@link
+     *                         Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD} /
+     *                         {@link Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP},
+     *                         which otherwise require a header row.  Note: for
+     *                         a source with no header row, supplying this
+     *                         option changes how source columns are matched to
+     *                         target columns -- from positional matching to
+     *                         matching by name. Target columns with no
+     *                         matching source column are then populated from
+     *                         their defaults or null rather than being filled
+     *                         positionally.  The list is not validated against
+     *                         the file's actual column count. If it is
+     *                         shorter, the trailing source columns are left
+     *                         unnamed.
      *                     <li>{@link Options#NUM_TASKS_PER_RANK
      *                         NUM_TASKS_PER_RANK}: Number of tasks for reading
      *                         file per rank. Default will be
      *                         external_file_reader_num_tasks.
+     *                     <li>{@link Options#PK_CONFLICT_PREDICATE_HIGHER
+     *                         PK_CONFLICT_PREDICATE_HIGHER}: The record with
+     *                         higher value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
+     *                     <li>{@link Options#PK_CONFLICT_PREDICATE_LOWER
+     *                         PK_CONFLICT_PREDICATE_LOWER}: The record with
+     *                         lower value for the column resolves the
+     *                         primary-key insert conflict. The default value
+     *                         is ''.
      *                     <li>{@link Options#POLL_INTERVAL POLL_INTERVAL}: If
      *                         {@link Options#TRUE TRUE}, the number of seconds
      *                         between attempts to load external files into the
@@ -1666,11 +1854,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES}:
      *                         Max records to skip due to SR connection
      *                         failures, before failing.
-     *                     <li>{@link
-     *                         Options#MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE
-     *                         MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE}: Max
-     *                         records to skip due to schema related errors,
-     *                         before failing.
      *                     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_NAME
      *                         SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro
      *                         schema in the schema registry to use when
@@ -1790,6 +1973,16 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum
      *                         column size. Used only when
      *                         'text_search_columns' has a value.
+     *                     <li>{@link Options#TRANSFORMATIONS TRANSFORMATIONS}:
+     *                         Comma-separated expressions, one per target
+     *                         table column.  Each expression is evaluated per
+     *                         record.  Empty entries (two consecutive commas)
+     *                         mean no transformation for that column -- the
+     *                         value is resolved from the input record, table
+     *                         default, NULL, or an error. Expressions may
+     *                         reference input columns by name or by position
+     *                         ($1 for the first input column, $2 for the
+     *                         second, etc.). The default value is ''.
      *                     <li>{@link Options#TRIM_SPACE TRIM_SPACE}: If set to
      *                         {@link Options#TRUE TRUE}, remove leading or
      *                         trailing space from fields.
@@ -1840,22 +2033,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#ACCURACY
      *                         ACCURACY}.
-     *                     <li>{@link Options#ENABLE_INPLACE_UPDATES
-     *                         ENABLE_INPLACE_UPDATES}: Applies only when
-     *                         upserting (when update_on_existing_pk is true).
-     *                         If set to true (the default), an existing record
-     *                         matched by primary key is modified in place. If
-     *                         set to false, the matched record is updated by
-     *                         deleting it and inserting a replacement (delete
-     *                         and insert), which prevents the change from
-     *                         being reflected in dependent materialized views
-     *                         until they are refreshed.
-     *                         Supported values:
-     *                         <ul>
-     *                             <li>{@link Options#TRUE TRUE}
-     *                             <li>{@link Options#FALSE FALSE}
-     *                         </ul>
-     *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#UPDATE_ON_EXISTING_PK
      *                         UPDATE_ON_EXISTING_PK}: Specifies the record
      *                         collision policy for inserting into a table with
@@ -1887,16 +2064,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
-     *                     <li>{@link Options#TRANSFORMATIONS TRANSFORMATIONS}:
-     *                         Comma-separated expressions, one per target
-     *                         table column.  Each expression is evaluated per
-     *                         record.  Empty entries (two consecutive commas)
-     *                         mean no transformation for that column -- the
-     *                         value is resolved from the input record, table
-     *                         default, NULL, or an error. Expressions may
-     *                         reference input columns by name or by position
-     *                         ($1 for the first input column, $2 for the
-     *                         second, etc.). The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      */
@@ -2014,14 +2181,35 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * other options match those in {@link
      * com.gpudb.GPUdb#createTable(CreateTableRequest) GPUdb.createTable}.
      * <ul>
-     *     <li>{@link CreateTableOptions#TYPE_ID TYPE_ID}: ID of a currently
-     *         registered <a href="../../../../../../concepts/types/"
-     *         target="_top">type</a>. The default value is ''.
-     *     <li>{@link CreateTableOptions#NO_ERROR_IF_EXISTS
-     *         NO_ERROR_IF_EXISTS}: If {@link CreateTableOptions#TRUE TRUE},
-     *         prevents an error from occurring if the table already exists and
-     *         is of the given type.  If a table with the same ID but a
-     *         different type exists, it is still an error.
+     *     <li>{@link CreateTableOptions#CHUNK_COLUMN_MAX_MEMORY
+     *         CHUNK_COLUMN_MAX_MEMORY}: Indicates the target maximum data size
+     *         for each column in a chunk to be used for this table.
+     *     <li>{@link CreateTableOptions#CHUNK_MAX_MEMORY CHUNK_MAX_MEMORY}:
+     *         Indicates the target maximum data size for all columns in a
+     *         chunk to be used for this table.
+     *     <li>{@link CreateTableOptions#CHUNK_SIZE CHUNK_SIZE}: Indicates the
+     *         number of records per chunk to be used for this table.
+     *     <li>{@link CreateTableOptions#COMPRESSION_CODEC COMPRESSION_CODEC}:
+     *         The default <a
+     *         href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression codec</a> for this table's columns.
+     *     <li>{@link CreateTableOptions#FOREIGN_KEYS FOREIGN_KEYS}:
+     *         Semicolon-separated list of <a
+     *         href="../../../../../../concepts/tables/#foreign-keys"
+     *         target="_top">foreign keys</a>, of the format
+     *         '(source_column_name [, ...]) references
+     *         target_table_name(primary_key_column_name [, ...]) [as
+     *         foreign_key_name]'.
+     *     <li>{@link CreateTableOptions#FOREIGN_SHARD_KEY FOREIGN_SHARD_KEY}:
+     *         Foreign shard key of the format 'source_column references
+     *         shard_by_column from target_table(primary_key_column)'.
+     *     <li>{@link CreateTableOptions#IS_AUTOMATIC_PARTITION
+     *         IS_AUTOMATIC_PARTITION}: If {@link CreateTableOptions#TRUE
+     *         TRUE}, a new partition will be created for values which don't
+     *         fall into an existing partition.  Currently only supported for
+     *         <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-list"
+     *         target="_top">list partitions</a>.
      *         Supported values:
      *         <ul>
      *             <li>{@link CreateTableOptions#TRUE TRUE}
@@ -2050,16 +2238,50 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *             <li>{@link CreateTableOptions#FALSE FALSE}
      *         </ul>
      *         The default value is {@link CreateTableOptions#FALSE FALSE}.
-     *     <li>{@link CreateTableOptions#FOREIGN_KEYS FOREIGN_KEYS}:
-     *         Semicolon-separated list of <a
-     *         href="../../../../../../concepts/tables/#foreign-keys"
-     *         target="_top">foreign keys</a>, of the format
-     *         '(source_column_name [, ...]) references
-     *         target_table_name(primary_key_column_name [, ...]) [as
-     *         foreign_key_name]'.
-     *     <li>{@link CreateTableOptions#FOREIGN_SHARD_KEY FOREIGN_SHARD_KEY}:
-     *         Foreign shard key of the format 'source_column references
-     *         shard_by_column from target_table(primary_key_column)'.
+     *     <li>{@link CreateTableOptions#IS_RESULT_TABLE IS_RESULT_TABLE}:
+     *         Indicates whether the table is a <a
+     *         href="../../../../../../concepts/tables_memory_only/"
+     *         target="_top">memory-only table</a>. A result table cannot
+     *         contain columns with text_search <a
+     *         href="../../../../../../concepts/types/#data-handling"
+     *         target="_top">data-handling</a>, and it will not be retained if
+     *         the server is restarted.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link CreateTableOptions#TRUE TRUE}
+     *             <li>{@link CreateTableOptions#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link CreateTableOptions#FALSE FALSE}.
+     *     <li>{@link CreateTableOptions#NO_ERROR_IF_EXISTS
+     *         NO_ERROR_IF_EXISTS}: If {@link CreateTableOptions#TRUE TRUE},
+     *         prevents an error from occurring if the table already exists and
+     *         is of the given type.  If a table with the same ID but a
+     *         different type exists, it is still an error.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link CreateTableOptions#TRUE TRUE}
+     *             <li>{@link CreateTableOptions#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link CreateTableOptions#FALSE FALSE}.
+     *     <li>{@link CreateTableOptions#PARTITION_DEFINITIONS
+     *         PARTITION_DEFINITIONS}: Comma-separated list of partition
+     *         definitions, whose format depends on the choice of {@link
+     *         CreateTableOptions#PARTITION_TYPE PARTITION_TYPE}.  See <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-range"
+     *         target="_top">range partitioning</a>, <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-interval"
+     *         target="_top">interval partitioning</a>, <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-list"
+     *         target="_top">list partitioning</a>, <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-hash"
+     *         target="_top">hash partitioning</a>, or <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-series"
+     *         target="_top">series partitioning</a> for example formats.
+     *     <li>{@link CreateTableOptions#PARTITION_KEYS PARTITION_KEYS}:
+     *         Comma-separated list of partition keys, which are the columns or
+     *         column expressions by which records will be assigned to
+     *         partitions defined by {@link
+     *         CreateTableOptions#PARTITION_DEFINITIONS PARTITION_DEFINITIONS}.
      *     <li>{@link CreateTableOptions#PARTITION_TYPE PARTITION_TYPE}: <a
      *         href="../../../../../../concepts/tables/#partitioning"
      *         target="_top">Partitioning</a> scheme to use.
@@ -2081,71 +2303,16 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 href="../../../../../../concepts/tables/#partitioning-by-series"
      *                 target="_top">series partitioning</a>.
      *         </ul>
-     *     <li>{@link CreateTableOptions#PARTITION_KEYS PARTITION_KEYS}:
-     *         Comma-separated list of partition keys, which are the columns or
-     *         column expressions by which records will be assigned to
-     *         partitions defined by {@link
-     *         CreateTableOptions#PARTITION_DEFINITIONS PARTITION_DEFINITIONS}.
-     *     <li>{@link CreateTableOptions#PARTITION_DEFINITIONS
-     *         PARTITION_DEFINITIONS}: Comma-separated list of partition
-     *         definitions, whose format depends on the choice of {@link
-     *         CreateTableOptions#PARTITION_TYPE PARTITION_TYPE}.  See <a
-     *         href="../../../../../../concepts/tables/#partitioning-by-range"
-     *         target="_top">range partitioning</a>, <a
-     *         href="../../../../../../concepts/tables/#partitioning-by-interval"
-     *         target="_top">interval partitioning</a>, <a
-     *         href="../../../../../../concepts/tables/#partitioning-by-list"
-     *         target="_top">list partitioning</a>, <a
-     *         href="../../../../../../concepts/tables/#partitioning-by-hash"
-     *         target="_top">hash partitioning</a>, or <a
-     *         href="../../../../../../concepts/tables/#partitioning-by-series"
-     *         target="_top">series partitioning</a> for example formats.
-     *     <li>{@link CreateTableOptions#IS_AUTOMATIC_PARTITION
-     *         IS_AUTOMATIC_PARTITION}: If {@link CreateTableOptions#TRUE
-     *         TRUE}, a new partition will be created for values which don't
-     *         fall into an existing partition.  Currently only supported for
-     *         <a
-     *         href="../../../../../../concepts/tables/#partitioning-by-list"
-     *         target="_top">list partitions</a>.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link CreateTableOptions#TRUE TRUE}
-     *             <li>{@link CreateTableOptions#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link CreateTableOptions#FALSE FALSE}.
-     *     <li>{@link CreateTableOptions#TTL TTL}: Sets the <a
-     *         href="../../../../../../concepts/ttl/" target="_top">TTL</a> of
-     *         the table specified in {@link #getTableName() tableName}.
-     *     <li>{@link CreateTableOptions#CHUNK_SIZE CHUNK_SIZE}: Indicates the
-     *         number of records per chunk to be used for this table.
-     *     <li>{@link CreateTableOptions#CHUNK_COLUMN_MAX_MEMORY
-     *         CHUNK_COLUMN_MAX_MEMORY}: Indicates the target maximum data size
-     *         for each column in a chunk to be used for this table.
-     *     <li>{@link CreateTableOptions#CHUNK_MAX_MEMORY CHUNK_MAX_MEMORY}:
-     *         Indicates the target maximum data size for all columns in a
-     *         chunk to be used for this table.
-     *     <li>{@link CreateTableOptions#IS_RESULT_TABLE IS_RESULT_TABLE}:
-     *         Indicates whether the table is a <a
-     *         href="../../../../../../concepts/tables_memory_only/"
-     *         target="_top">memory-only table</a>. A result table cannot
-     *         contain columns with text_search <a
-     *         href="../../../../../../concepts/types/#data-handling"
-     *         target="_top">data-handling</a>, and it will not be retained if
-     *         the server is restarted.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link CreateTableOptions#TRUE TRUE}
-     *             <li>{@link CreateTableOptions#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link CreateTableOptions#FALSE FALSE}.
      *     <li>{@link CreateTableOptions#STRATEGY_DEFINITION
      *         STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
-     *     <li>{@link CreateTableOptions#COMPRESSION_CODEC COMPRESSION_CODEC}:
-     *         The default <a
-     *         href="../../../../../../concepts/column_compression/"
-     *         target="_top">compression codec</a> for this table's columns.
+     *     <li>{@link CreateTableOptions#TTL TTL}: Sets the <a
+     *         href="../../../../../../concepts/ttl/" target="_top">TTL</a> of
+     *         the table specified in {@link #getTableName() tableName}.
+     *     <li>{@link CreateTableOptions#TYPE_ID TYPE_ID}: ID of a currently
+     *         registered <a href="../../../../../../concepts/types/"
+     *         target="_top">type</a>. The default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -2160,14 +2327,35 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * other options match those in {@link
      * com.gpudb.GPUdb#createTable(CreateTableRequest) GPUdb.createTable}.
      * <ul>
-     *     <li>{@link CreateTableOptions#TYPE_ID TYPE_ID}: ID of a currently
-     *         registered <a href="../../../../../../concepts/types/"
-     *         target="_top">type</a>. The default value is ''.
-     *     <li>{@link CreateTableOptions#NO_ERROR_IF_EXISTS
-     *         NO_ERROR_IF_EXISTS}: If {@link CreateTableOptions#TRUE TRUE},
-     *         prevents an error from occurring if the table already exists and
-     *         is of the given type.  If a table with the same ID but a
-     *         different type exists, it is still an error.
+     *     <li>{@link CreateTableOptions#CHUNK_COLUMN_MAX_MEMORY
+     *         CHUNK_COLUMN_MAX_MEMORY}: Indicates the target maximum data size
+     *         for each column in a chunk to be used for this table.
+     *     <li>{@link CreateTableOptions#CHUNK_MAX_MEMORY CHUNK_MAX_MEMORY}:
+     *         Indicates the target maximum data size for all columns in a
+     *         chunk to be used for this table.
+     *     <li>{@link CreateTableOptions#CHUNK_SIZE CHUNK_SIZE}: Indicates the
+     *         number of records per chunk to be used for this table.
+     *     <li>{@link CreateTableOptions#COMPRESSION_CODEC COMPRESSION_CODEC}:
+     *         The default <a
+     *         href="../../../../../../concepts/column_compression/"
+     *         target="_top">compression codec</a> for this table's columns.
+     *     <li>{@link CreateTableOptions#FOREIGN_KEYS FOREIGN_KEYS}:
+     *         Semicolon-separated list of <a
+     *         href="../../../../../../concepts/tables/#foreign-keys"
+     *         target="_top">foreign keys</a>, of the format
+     *         '(source_column_name [, ...]) references
+     *         target_table_name(primary_key_column_name [, ...]) [as
+     *         foreign_key_name]'.
+     *     <li>{@link CreateTableOptions#FOREIGN_SHARD_KEY FOREIGN_SHARD_KEY}:
+     *         Foreign shard key of the format 'source_column references
+     *         shard_by_column from target_table(primary_key_column)'.
+     *     <li>{@link CreateTableOptions#IS_AUTOMATIC_PARTITION
+     *         IS_AUTOMATIC_PARTITION}: If {@link CreateTableOptions#TRUE
+     *         TRUE}, a new partition will be created for values which don't
+     *         fall into an existing partition.  Currently only supported for
+     *         <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-list"
+     *         target="_top">list partitions</a>.
      *         Supported values:
      *         <ul>
      *             <li>{@link CreateTableOptions#TRUE TRUE}
@@ -2196,16 +2384,50 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *             <li>{@link CreateTableOptions#FALSE FALSE}
      *         </ul>
      *         The default value is {@link CreateTableOptions#FALSE FALSE}.
-     *     <li>{@link CreateTableOptions#FOREIGN_KEYS FOREIGN_KEYS}:
-     *         Semicolon-separated list of <a
-     *         href="../../../../../../concepts/tables/#foreign-keys"
-     *         target="_top">foreign keys</a>, of the format
-     *         '(source_column_name [, ...]) references
-     *         target_table_name(primary_key_column_name [, ...]) [as
-     *         foreign_key_name]'.
-     *     <li>{@link CreateTableOptions#FOREIGN_SHARD_KEY FOREIGN_SHARD_KEY}:
-     *         Foreign shard key of the format 'source_column references
-     *         shard_by_column from target_table(primary_key_column)'.
+     *     <li>{@link CreateTableOptions#IS_RESULT_TABLE IS_RESULT_TABLE}:
+     *         Indicates whether the table is a <a
+     *         href="../../../../../../concepts/tables_memory_only/"
+     *         target="_top">memory-only table</a>. A result table cannot
+     *         contain columns with text_search <a
+     *         href="../../../../../../concepts/types/#data-handling"
+     *         target="_top">data-handling</a>, and it will not be retained if
+     *         the server is restarted.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link CreateTableOptions#TRUE TRUE}
+     *             <li>{@link CreateTableOptions#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link CreateTableOptions#FALSE FALSE}.
+     *     <li>{@link CreateTableOptions#NO_ERROR_IF_EXISTS
+     *         NO_ERROR_IF_EXISTS}: If {@link CreateTableOptions#TRUE TRUE},
+     *         prevents an error from occurring if the table already exists and
+     *         is of the given type.  If a table with the same ID but a
+     *         different type exists, it is still an error.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link CreateTableOptions#TRUE TRUE}
+     *             <li>{@link CreateTableOptions#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link CreateTableOptions#FALSE FALSE}.
+     *     <li>{@link CreateTableOptions#PARTITION_DEFINITIONS
+     *         PARTITION_DEFINITIONS}: Comma-separated list of partition
+     *         definitions, whose format depends on the choice of {@link
+     *         CreateTableOptions#PARTITION_TYPE PARTITION_TYPE}.  See <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-range"
+     *         target="_top">range partitioning</a>, <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-interval"
+     *         target="_top">interval partitioning</a>, <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-list"
+     *         target="_top">list partitioning</a>, <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-hash"
+     *         target="_top">hash partitioning</a>, or <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-series"
+     *         target="_top">series partitioning</a> for example formats.
+     *     <li>{@link CreateTableOptions#PARTITION_KEYS PARTITION_KEYS}:
+     *         Comma-separated list of partition keys, which are the columns or
+     *         column expressions by which records will be assigned to
+     *         partitions defined by {@link
+     *         CreateTableOptions#PARTITION_DEFINITIONS PARTITION_DEFINITIONS}.
      *     <li>{@link CreateTableOptions#PARTITION_TYPE PARTITION_TYPE}: <a
      *         href="../../../../../../concepts/tables/#partitioning"
      *         target="_top">Partitioning</a> scheme to use.
@@ -2227,71 +2449,16 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 href="../../../../../../concepts/tables/#partitioning-by-series"
      *                 target="_top">series partitioning</a>.
      *         </ul>
-     *     <li>{@link CreateTableOptions#PARTITION_KEYS PARTITION_KEYS}:
-     *         Comma-separated list of partition keys, which are the columns or
-     *         column expressions by which records will be assigned to
-     *         partitions defined by {@link
-     *         CreateTableOptions#PARTITION_DEFINITIONS PARTITION_DEFINITIONS}.
-     *     <li>{@link CreateTableOptions#PARTITION_DEFINITIONS
-     *         PARTITION_DEFINITIONS}: Comma-separated list of partition
-     *         definitions, whose format depends on the choice of {@link
-     *         CreateTableOptions#PARTITION_TYPE PARTITION_TYPE}.  See <a
-     *         href="../../../../../../concepts/tables/#partitioning-by-range"
-     *         target="_top">range partitioning</a>, <a
-     *         href="../../../../../../concepts/tables/#partitioning-by-interval"
-     *         target="_top">interval partitioning</a>, <a
-     *         href="../../../../../../concepts/tables/#partitioning-by-list"
-     *         target="_top">list partitioning</a>, <a
-     *         href="../../../../../../concepts/tables/#partitioning-by-hash"
-     *         target="_top">hash partitioning</a>, or <a
-     *         href="../../../../../../concepts/tables/#partitioning-by-series"
-     *         target="_top">series partitioning</a> for example formats.
-     *     <li>{@link CreateTableOptions#IS_AUTOMATIC_PARTITION
-     *         IS_AUTOMATIC_PARTITION}: If {@link CreateTableOptions#TRUE
-     *         TRUE}, a new partition will be created for values which don't
-     *         fall into an existing partition.  Currently only supported for
-     *         <a
-     *         href="../../../../../../concepts/tables/#partitioning-by-list"
-     *         target="_top">list partitions</a>.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link CreateTableOptions#TRUE TRUE}
-     *             <li>{@link CreateTableOptions#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link CreateTableOptions#FALSE FALSE}.
-     *     <li>{@link CreateTableOptions#TTL TTL}: Sets the <a
-     *         href="../../../../../../concepts/ttl/" target="_top">TTL</a> of
-     *         the table specified in {@link #getTableName() tableName}.
-     *     <li>{@link CreateTableOptions#CHUNK_SIZE CHUNK_SIZE}: Indicates the
-     *         number of records per chunk to be used for this table.
-     *     <li>{@link CreateTableOptions#CHUNK_COLUMN_MAX_MEMORY
-     *         CHUNK_COLUMN_MAX_MEMORY}: Indicates the target maximum data size
-     *         for each column in a chunk to be used for this table.
-     *     <li>{@link CreateTableOptions#CHUNK_MAX_MEMORY CHUNK_MAX_MEMORY}:
-     *         Indicates the target maximum data size for all columns in a
-     *         chunk to be used for this table.
-     *     <li>{@link CreateTableOptions#IS_RESULT_TABLE IS_RESULT_TABLE}:
-     *         Indicates whether the table is a <a
-     *         href="../../../../../../concepts/tables_memory_only/"
-     *         target="_top">memory-only table</a>. A result table cannot
-     *         contain columns with text_search <a
-     *         href="../../../../../../concepts/types/#data-handling"
-     *         target="_top">data-handling</a>, and it will not be retained if
-     *         the server is restarted.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link CreateTableOptions#TRUE TRUE}
-     *             <li>{@link CreateTableOptions#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link CreateTableOptions#FALSE FALSE}.
      *     <li>{@link CreateTableOptions#STRATEGY_DEFINITION
      *         STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
-     *     <li>{@link CreateTableOptions#COMPRESSION_CODEC COMPRESSION_CODEC}:
-     *         The default <a
-     *         href="../../../../../../concepts/column_compression/"
-     *         target="_top">compression codec</a> for this table's columns.
+     *     <li>{@link CreateTableOptions#TTL TTL}: Sets the <a
+     *         href="../../../../../../concepts/ttl/" target="_top">TTL</a> of
+     *         the table specified in {@link #getTableName() tableName}.
+     *     <li>{@link CreateTableOptions#TYPE_ID TYPE_ID}: ID of a currently
+     *         registered <a href="../../../../../../concepts/types/"
+     *         target="_top">type</a>. The default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -2307,10 +2474,13 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#BAD_RECORD_TABLE_NAME BAD_RECORD_TABLE_NAME}:
-     *         Name of a table to which records that were rejected are written.
-     *         The bad-record-table has the following columns: line_number
-     *         (long), line_rejected (string), error_message (string).
+     *     <li>{@link Options#AVRO_SCHEMA AVRO_SCHEMA}: String representing the
+     *         Avro schema, for data that includes only records (i.e. does not
+     *         embed its own schema).
+     *     <li>{@link Options#AVRO_SCHEMA_NO_INFERENCE
+     *         AVRO_SCHEMA_NO_INFERENCE}: Create table solely from the Avro
+     *         schema definition, when {@link Options#AVRO_SCHEMA AVRO_SCHEMA}
+     *         exists; do not infer from data.
      *     <li>{@link Options#BAD_RECORD_TABLE_LIMIT BAD_RECORD_TABLE_LIMIT}: A
      *         positive integer indicating the maximum number of records that
      *         can be  written to the bad-record-table.   Default value is
@@ -2321,6 +2491,10 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         written to the bad-record-table per file/payload. Default value
      *         will be 'bad_record_table_limit' and total size of the table per
      *         rank is limited to 'bad_record_table_limit'.
+     *     <li>{@link Options#BAD_RECORD_TABLE_NAME BAD_RECORD_TABLE_NAME}:
+     *         Name of a table to which records that were rejected are written.
+     *         The bad-record-table has the following columns: line_number
+     *         (long), line_rejected (string), error_message (string).
      *     <li>{@link Options#BATCH_SIZE BATCH_SIZE}: Internal tuning
      *         parameter--number of records per batch when inserting data.
      *     <li>{@link Options#COLUMN_FORMATS COLUMN_FORMATS}: For each target
@@ -2336,31 +2510,75 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         Options#DEFAULT_COLUMN_FORMATS DEFAULT_COLUMN_FORMATS} for valid
      *         format syntax.
      *     <li>{@link Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD}: Specifies a
-     *         comma-delimited list of columns from the source data to load.
-     *         If more than one file is being loaded, this list applies to all
-     *         files.  Column numbers can be specified discretely or as a
-     *         range.  For example, a value of '5,7,1..3' will insert values
-     *         from the fifth column in the source data into the first column
-     *         in the target table, from the seventh column in the source data
-     *         into the second column in the target table, and from the first
-     *         through third columns in the source data into the third through
-     *         fifth columns in the target table.  If the source data contains
-     *         a header, column names matching the file header names may be
-     *         provided instead of column numbers.  If the target table doesn't
-     *         exist, the table will be created with the columns in this order.
-     *         If the target table does exist with columns in a different order
-     *         than the source data, this list can be used to match the order
-     *         of the target table.  For example, a value of 'C, B, A' will
-     *         create a three column table with column C, followed by column B,
-     *         followed by column A; or will insert those fields in that order
-     *         into a table created with columns in that order.  If the target
-     *         table exists, the column names must match the source data field
-     *         names for a name-mapping to be successful.  Mutually exclusive
+     *         comma-delimited list of source-data columns that supply the
+     *         target table's columns. If more than one file is being loaded,
+     *         this list applies to all files.  Mutually exclusive with {@link
+     *         Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP}.  This list is a
+     *         positional mapping onto the target table rather than a filter:
+     *         the i-th entry identifies the source column that feeds the i-th
+     *         column of the target table.  Entries may be column numbers,
+     *         column names, or empty.  Column numbers are 1-based, specified
+     *         discretely or as a range. For example, '5,7,,1..3' inserts the
+     *         fifth source column into the first target column, the seventh
+     *         into the second, null into the third, and the first through
+     *         third into the fourth through sixth. A range may descend
+     *         ('3..1') to reverse that group's order.  Zero is not a valid
+     *         column number. Numbers are supported only for delimited-text and
+     *         Avro sources.  Column names are strings, matching the
+     *         source-data field names -- either the file's header names or the
+     *         names supplied by {@link Options#NAME_COLUMNS_FROM_FILE
+     *         NAME_COLUMNS_FROM_FILE}. Requires that the source data have
+     *         column names. Names are matched case-sensitively, and a name not
+     *         present in the source will fail.  An empty entry, acting as a
+     *         placeholder meaning that no source column feeds the
+     *         corresponding target column.  Numbers and names cannot be mixed:
+     *         a single non-numeric entry causes the entire list to be
+     *         interpreted as names.  If the target table does not exist, it is
+     *         created with these columns in this order, and the list may name
+     *         any subset of the source columns.  If the target table already
+     *         exists, the number of entries must equal the target table's
+     *         column count. Use empty entries to pad the list to the target's
+     *         width. Because the mapping is positional, this option can also
+     *         reorder source columns into the target's column order -- for
+     *         example 'C, B, A' for a target table whose columns are C, B, A.
+     *         Note: specifying {@link Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD}
+     *         disables server-side population of target columns that no source
+     *         column feeds. Such columns receive NULL instead of their default
+     *         value, 'init_with_now', or 'init_with_uuid' value; if the column
+     *         is non-nullable, the record is rejected. To have unfed target
+     *         columns take their defaults, omit {@link Options#COLUMNS_TO_LOAD
+     *         COLUMNS_TO_LOAD} and rely on name-based matching, optionally
      *         with {@link Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP}.
      *     <li>{@link Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP}: Specifies a
-     *         comma-delimited list of columns from the source data to skip.
-     *         Mutually exclusive with {@link Options#COLUMNS_TO_LOAD
-     *         COLUMNS_TO_LOAD}.
+     *         comma-delimited list of source-data columns to exclude from the
+     *         load. If more than one file is being loaded, this list applies
+     *         to all files.  Mutually exclusive with {@link
+     *         Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD}.  Entries may be column
+     *         names matching the source-data field names (the file's header
+     *         names, or the names supplied by {@link
+     *         Options#NAME_COLUMNS_FROM_FILE NAME_COLUMNS_FROM_FILE}, matched
+     *         case-sensitively), or 1-based column numbers. Numbers are
+     *         supported only for delimited-text sources. Name-based entries
+     *         require the source data to have column names.  Unlike {@link
+     *         Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD}, this option does not
+     *         change how the remaining source columns are matched to the
+     *         target table. Matching remains by name and is case-insensitive,
+     *         so the order and number of source columns need not correspond to
+     *         the target table's columns.  Excluding a source column that
+     *         corresponds to a target table column causes that target column
+     *         to be populated from its default value, 'init_with_*' property,
+     *         or null.  This makes {@link Options#COLUMNS_TO_SKIP
+     *         COLUMNS_TO_SKIP} the means of preferring a target column's
+     *         default over a value present in the source data.  Source columns
+     *         that don't correspond to any target table column need not be
+     *         listed; they are ignored.  If the target table does not exist,
+     *         the non-excluded source columns define the new table's columns,
+     *         in source-data order.  If the source data has no column names
+     *         (no header row and no {@link Options#NAME_COLUMNS_FROM_FILE
+     *         NAME_COLUMNS_FROM_FILE}) and this option is given as numbers,
+     *         the remaining source columns are matched to target columns by
+     *         position; the source column count must then equal the target
+     *         table's column count plus the number of columns skipped.
      *     <li>{@link Options#COMPRESSION_TYPE COMPRESSION_TYPE}: Payload
      *         compression type.
      *         Supported values:
@@ -2398,6 +2616,20 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         both the 'date' and 'time' control character requirements. For
      *         example, '{"datetime" : "%m/%d/%Y %H:%M:%S" }' would be used to
      *         interpret text as "05/04/2000 12:12:11"
+     *     <li>{@link Options#ENABLE_INPLACE_UPDATES ENABLE_INPLACE_UPDATES}:
+     *         Applies only when upserting (when update_on_existing_pk is
+     *         true). If set to true (the default), an existing record matched
+     *         by primary key is modified in place. If set to false, the
+     *         matched record is updated by deleting it and inserting a
+     *         replacement (delete and insert), which prevents the change from
+     *         being reflected in dependent materialized views until they are
+     *         refreshed.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#ERROR_HANDLING ERROR_HANDLING}: Specifies how
      *         errors should be handled upon insertion.
      *         Supported values:
@@ -2445,14 +2677,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         GDAL_CONFIGURATION_OPTIONS}: Comma separated list of gdal conf
      *         options, for the specific requests: key=value. The default value
      *         is ''.
-     *     <li>{@link Options#PK_CONFLICT_PREDICATE_HIGHER
-     *         PK_CONFLICT_PREDICATE_HIGHER}: The record with higher value for
-     *         the column resolves the primary-key insert conflict. The default
-     *         value is ''.
-     *     <li>{@link Options#PK_CONFLICT_PREDICATE_LOWER
-     *         PK_CONFLICT_PREDICATE_LOWER}: The record with lower value for
-     *         the column resolves the primary-key insert conflict. The default
-     *         value is ''.
      *     <li>{@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}: Specifies
      *         the record collision error-suppression policy for inserting into
      *         a table with a <a
@@ -2536,6 +2760,9 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         The default value is {@link Options#HEAD HEAD}.
      *     <li>{@link Options#LOCAL_TIME_OFFSET LOCAL_TIME_OFFSET}: For Avro
      *         local timestamp columns.
+     *     <li>{@link Options#MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE
+     *         MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE}: Max records to skip due
+     *         to schema related errors, before failing.
      *     <li>{@link Options#MAX_RECORDS_TO_LOAD MAX_RECORDS_TO_LOAD}: Limit
      *         the number of records to load in this request: If this number is
      *         larger than a batch_size, then the number of records loaded will
@@ -2543,18 +2770,35 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         thread). The default value is ''.
      *     <li>{@link Options#NAME_COLUMNS_FROM_FILE NAME_COLUMNS_FROM_FILE}:
      *         Specifies a comma-delimited list of column names to be used as
-     *         the source-data column names.  If the payload has a header row
-     *         (i.e., {@link Options#TEXT_HAS_HEADER TEXT_HAS_HEADER} is {@link
-     *         Options#TRUE TRUE}), these names override the payload's header
-     *         names.  If the payload has no header row, these names are used
-     *         as the source-data column names. Either way, the i-th name in
-     *         this list applies to the i-th column in the payload, enabling
-     *         name-based matching against the target table's columns (and use
-     *         with {@link Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD} / {@link
-     *         Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP}).
+     *         the source-data column names. Supported for delimited-text
+     *         sources only.  The i-th name in this list applies to the i-th
+     *         column in the file. If the file has a header row (i.e., {@link
+     *         Options#TEXT_HAS_HEADER TEXT_HAS_HEADER} is {@link Options#TRUE
+     *         TRUE}), these names override the file's header names. If the
+     *         file has no header row, these names become the source-data
+     *         column names.  Naming the source columns enables name-based
+     *         matching against the target table's columns, and permits
+     *         name-based {@link Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD} /
+     *         {@link Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP}, which otherwise
+     *         require a header row.  Note: for a source with no header row,
+     *         supplying this option changes how source columns are matched to
+     *         target columns -- from positional matching to matching by name.
+     *         Target columns with no matching source column are then populated
+     *         from their defaults or null rather than being filled
+     *         positionally.  The list is not validated against the file's
+     *         actual column count. If it is shorter, the trailing source
+     *         columns are left unnamed.
      *     <li>{@link Options#NUM_TASKS_PER_RANK NUM_TASKS_PER_RANK}: Number of
      *         tasks for reading file per rank. Default will be
      *         external_file_reader_num_tasks.
+     *     <li>{@link Options#PK_CONFLICT_PREDICATE_HIGHER
+     *         PK_CONFLICT_PREDICATE_HIGHER}: The record with higher value for
+     *         the column resolves the primary-key insert conflict. The default
+     *         value is ''.
+     *     <li>{@link Options#PK_CONFLICT_PREDICATE_LOWER
+     *         PK_CONFLICT_PREDICATE_LOWER}: The record with lower value for
+     *         the column resolves the primary-key insert conflict. The default
+     *         value is ''.
      *     <li>{@link Options#POLL_INTERVAL POLL_INTERVAL}: If {@link
      *         Options#TRUE TRUE}, the number of seconds between attempts to
      *         load external files into the table.  If zero, polling will be
@@ -2573,9 +2817,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         Options#SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES
      *         SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES}: Max
      *         records to skip due to SR connection failures, before failing.
-     *     <li>{@link Options#MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE
-     *         MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE}: Max records to skip due
-     *         to schema related errors, before failing.
      *     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_NAME
      *         SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro schema in the
      *         schema registry to use when reading Avro records.
@@ -2667,6 +2908,14 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *     <li>{@link Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
      *         TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used
      *         only when 'text_search_columns' has a value.
+     *     <li>{@link Options#TRANSFORMATIONS TRANSFORMATIONS}: Comma-separated
+     *         expressions, one per target table column.  Each expression is
+     *         evaluated per record.  Empty entries (two consecutive commas)
+     *         mean no transformation for that column -- the value is resolved
+     *         from the input record, table default, NULL, or an error.
+     *         Expressions may reference input columns by name or by position
+     *         ($1 for the first input column, $2 for the second, etc.). The
+     *         default value is ''.
      *     <li>{@link Options#TRIM_SPACE TRIM_SPACE}: If set to {@link
      *         Options#TRUE TRUE}, remove leading or trailing space from
      *         fields.
@@ -2707,20 +2956,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 fit with minimum data scanned.
      *         </ul>
      *         The default value is {@link Options#ACCURACY ACCURACY}.
-     *     <li>{@link Options#ENABLE_INPLACE_UPDATES ENABLE_INPLACE_UPDATES}:
-     *         Applies only when upserting (when update_on_existing_pk is
-     *         true). If set to true (the default), an existing record matched
-     *         by primary key is modified in place. If set to false, the
-     *         matched record is updated by deleting it and inserting a
-     *         replacement (delete and insert), which prevents the change from
-     *         being reflected in dependent materialized views until they are
-     *         refreshed.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK}:
      *         Specifies the record collision policy for inserting into a table
      *         with a <a href="../../../../../../concepts/tables/#primary-keys"
@@ -2743,14 +2978,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 primary keys match existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#TRANSFORMATIONS TRANSFORMATIONS}: Comma-separated
-     *         expressions, one per target table column.  Each expression is
-     *         evaluated per record.  Empty entries (two consecutive commas)
-     *         mean no transformation for that column -- the value is resolved
-     *         from the input record, table default, NULL, or an error.
-     *         Expressions may reference input columns by name or by position
-     *         ($1 for the first input column, $2 for the second, etc.). The
-     *         default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -2763,10 +2990,13 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *     <li>{@link Options#BAD_RECORD_TABLE_NAME BAD_RECORD_TABLE_NAME}:
-     *         Name of a table to which records that were rejected are written.
-     *         The bad-record-table has the following columns: line_number
-     *         (long), line_rejected (string), error_message (string).
+     *     <li>{@link Options#AVRO_SCHEMA AVRO_SCHEMA}: String representing the
+     *         Avro schema, for data that includes only records (i.e. does not
+     *         embed its own schema).
+     *     <li>{@link Options#AVRO_SCHEMA_NO_INFERENCE
+     *         AVRO_SCHEMA_NO_INFERENCE}: Create table solely from the Avro
+     *         schema definition, when {@link Options#AVRO_SCHEMA AVRO_SCHEMA}
+     *         exists; do not infer from data.
      *     <li>{@link Options#BAD_RECORD_TABLE_LIMIT BAD_RECORD_TABLE_LIMIT}: A
      *         positive integer indicating the maximum number of records that
      *         can be  written to the bad-record-table.   Default value is
@@ -2777,6 +3007,10 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         written to the bad-record-table per file/payload. Default value
      *         will be 'bad_record_table_limit' and total size of the table per
      *         rank is limited to 'bad_record_table_limit'.
+     *     <li>{@link Options#BAD_RECORD_TABLE_NAME BAD_RECORD_TABLE_NAME}:
+     *         Name of a table to which records that were rejected are written.
+     *         The bad-record-table has the following columns: line_number
+     *         (long), line_rejected (string), error_message (string).
      *     <li>{@link Options#BATCH_SIZE BATCH_SIZE}: Internal tuning
      *         parameter--number of records per batch when inserting data.
      *     <li>{@link Options#COLUMN_FORMATS COLUMN_FORMATS}: For each target
@@ -2792,31 +3026,75 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         Options#DEFAULT_COLUMN_FORMATS DEFAULT_COLUMN_FORMATS} for valid
      *         format syntax.
      *     <li>{@link Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD}: Specifies a
-     *         comma-delimited list of columns from the source data to load.
-     *         If more than one file is being loaded, this list applies to all
-     *         files.  Column numbers can be specified discretely or as a
-     *         range.  For example, a value of '5,7,1..3' will insert values
-     *         from the fifth column in the source data into the first column
-     *         in the target table, from the seventh column in the source data
-     *         into the second column in the target table, and from the first
-     *         through third columns in the source data into the third through
-     *         fifth columns in the target table.  If the source data contains
-     *         a header, column names matching the file header names may be
-     *         provided instead of column numbers.  If the target table doesn't
-     *         exist, the table will be created with the columns in this order.
-     *         If the target table does exist with columns in a different order
-     *         than the source data, this list can be used to match the order
-     *         of the target table.  For example, a value of 'C, B, A' will
-     *         create a three column table with column C, followed by column B,
-     *         followed by column A; or will insert those fields in that order
-     *         into a table created with columns in that order.  If the target
-     *         table exists, the column names must match the source data field
-     *         names for a name-mapping to be successful.  Mutually exclusive
+     *         comma-delimited list of source-data columns that supply the
+     *         target table's columns. If more than one file is being loaded,
+     *         this list applies to all files.  Mutually exclusive with {@link
+     *         Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP}.  This list is a
+     *         positional mapping onto the target table rather than a filter:
+     *         the i-th entry identifies the source column that feeds the i-th
+     *         column of the target table.  Entries may be column numbers,
+     *         column names, or empty.  Column numbers are 1-based, specified
+     *         discretely or as a range. For example, '5,7,,1..3' inserts the
+     *         fifth source column into the first target column, the seventh
+     *         into the second, null into the third, and the first through
+     *         third into the fourth through sixth. A range may descend
+     *         ('3..1') to reverse that group's order.  Zero is not a valid
+     *         column number. Numbers are supported only for delimited-text and
+     *         Avro sources.  Column names are strings, matching the
+     *         source-data field names -- either the file's header names or the
+     *         names supplied by {@link Options#NAME_COLUMNS_FROM_FILE
+     *         NAME_COLUMNS_FROM_FILE}. Requires that the source data have
+     *         column names. Names are matched case-sensitively, and a name not
+     *         present in the source will fail.  An empty entry, acting as a
+     *         placeholder meaning that no source column feeds the
+     *         corresponding target column.  Numbers and names cannot be mixed:
+     *         a single non-numeric entry causes the entire list to be
+     *         interpreted as names.  If the target table does not exist, it is
+     *         created with these columns in this order, and the list may name
+     *         any subset of the source columns.  If the target table already
+     *         exists, the number of entries must equal the target table's
+     *         column count. Use empty entries to pad the list to the target's
+     *         width. Because the mapping is positional, this option can also
+     *         reorder source columns into the target's column order -- for
+     *         example 'C, B, A' for a target table whose columns are C, B, A.
+     *         Note: specifying {@link Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD}
+     *         disables server-side population of target columns that no source
+     *         column feeds. Such columns receive NULL instead of their default
+     *         value, 'init_with_now', or 'init_with_uuid' value; if the column
+     *         is non-nullable, the record is rejected. To have unfed target
+     *         columns take their defaults, omit {@link Options#COLUMNS_TO_LOAD
+     *         COLUMNS_TO_LOAD} and rely on name-based matching, optionally
      *         with {@link Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP}.
      *     <li>{@link Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP}: Specifies a
-     *         comma-delimited list of columns from the source data to skip.
-     *         Mutually exclusive with {@link Options#COLUMNS_TO_LOAD
-     *         COLUMNS_TO_LOAD}.
+     *         comma-delimited list of source-data columns to exclude from the
+     *         load. If more than one file is being loaded, this list applies
+     *         to all files.  Mutually exclusive with {@link
+     *         Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD}.  Entries may be column
+     *         names matching the source-data field names (the file's header
+     *         names, or the names supplied by {@link
+     *         Options#NAME_COLUMNS_FROM_FILE NAME_COLUMNS_FROM_FILE}, matched
+     *         case-sensitively), or 1-based column numbers. Numbers are
+     *         supported only for delimited-text sources. Name-based entries
+     *         require the source data to have column names.  Unlike {@link
+     *         Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD}, this option does not
+     *         change how the remaining source columns are matched to the
+     *         target table. Matching remains by name and is case-insensitive,
+     *         so the order and number of source columns need not correspond to
+     *         the target table's columns.  Excluding a source column that
+     *         corresponds to a target table column causes that target column
+     *         to be populated from its default value, 'init_with_*' property,
+     *         or null.  This makes {@link Options#COLUMNS_TO_SKIP
+     *         COLUMNS_TO_SKIP} the means of preferring a target column's
+     *         default over a value present in the source data.  Source columns
+     *         that don't correspond to any target table column need not be
+     *         listed; they are ignored.  If the target table does not exist,
+     *         the non-excluded source columns define the new table's columns,
+     *         in source-data order.  If the source data has no column names
+     *         (no header row and no {@link Options#NAME_COLUMNS_FROM_FILE
+     *         NAME_COLUMNS_FROM_FILE}) and this option is given as numbers,
+     *         the remaining source columns are matched to target columns by
+     *         position; the source column count must then equal the target
+     *         table's column count plus the number of columns skipped.
      *     <li>{@link Options#COMPRESSION_TYPE COMPRESSION_TYPE}: Payload
      *         compression type.
      *         Supported values:
@@ -2854,6 +3132,20 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         both the 'date' and 'time' control character requirements. For
      *         example, '{"datetime" : "%m/%d/%Y %H:%M:%S" }' would be used to
      *         interpret text as "05/04/2000 12:12:11"
+     *     <li>{@link Options#ENABLE_INPLACE_UPDATES ENABLE_INPLACE_UPDATES}:
+     *         Applies only when upserting (when update_on_existing_pk is
+     *         true). If set to true (the default), an existing record matched
+     *         by primary key is modified in place. If set to false, the
+     *         matched record is updated by deleting it and inserting a
+     *         replacement (delete and insert), which prevents the change from
+     *         being reflected in dependent materialized views until they are
+     *         refreshed.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#ERROR_HANDLING ERROR_HANDLING}: Specifies how
      *         errors should be handled upon insertion.
      *         Supported values:
@@ -2901,14 +3193,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         GDAL_CONFIGURATION_OPTIONS}: Comma separated list of gdal conf
      *         options, for the specific requests: key=value. The default value
      *         is ''.
-     *     <li>{@link Options#PK_CONFLICT_PREDICATE_HIGHER
-     *         PK_CONFLICT_PREDICATE_HIGHER}: The record with higher value for
-     *         the column resolves the primary-key insert conflict. The default
-     *         value is ''.
-     *     <li>{@link Options#PK_CONFLICT_PREDICATE_LOWER
-     *         PK_CONFLICT_PREDICATE_LOWER}: The record with lower value for
-     *         the column resolves the primary-key insert conflict. The default
-     *         value is ''.
      *     <li>{@link Options#IGNORE_EXISTING_PK IGNORE_EXISTING_PK}: Specifies
      *         the record collision error-suppression policy for inserting into
      *         a table with a <a
@@ -2992,6 +3276,9 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         The default value is {@link Options#HEAD HEAD}.
      *     <li>{@link Options#LOCAL_TIME_OFFSET LOCAL_TIME_OFFSET}: For Avro
      *         local timestamp columns.
+     *     <li>{@link Options#MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE
+     *         MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE}: Max records to skip due
+     *         to schema related errors, before failing.
      *     <li>{@link Options#MAX_RECORDS_TO_LOAD MAX_RECORDS_TO_LOAD}: Limit
      *         the number of records to load in this request: If this number is
      *         larger than a batch_size, then the number of records loaded will
@@ -2999,18 +3286,35 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         thread). The default value is ''.
      *     <li>{@link Options#NAME_COLUMNS_FROM_FILE NAME_COLUMNS_FROM_FILE}:
      *         Specifies a comma-delimited list of column names to be used as
-     *         the source-data column names.  If the payload has a header row
-     *         (i.e., {@link Options#TEXT_HAS_HEADER TEXT_HAS_HEADER} is {@link
-     *         Options#TRUE TRUE}), these names override the payload's header
-     *         names.  If the payload has no header row, these names are used
-     *         as the source-data column names. Either way, the i-th name in
-     *         this list applies to the i-th column in the payload, enabling
-     *         name-based matching against the target table's columns (and use
-     *         with {@link Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD} / {@link
-     *         Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP}).
+     *         the source-data column names. Supported for delimited-text
+     *         sources only.  The i-th name in this list applies to the i-th
+     *         column in the file. If the file has a header row (i.e., {@link
+     *         Options#TEXT_HAS_HEADER TEXT_HAS_HEADER} is {@link Options#TRUE
+     *         TRUE}), these names override the file's header names. If the
+     *         file has no header row, these names become the source-data
+     *         column names.  Naming the source columns enables name-based
+     *         matching against the target table's columns, and permits
+     *         name-based {@link Options#COLUMNS_TO_LOAD COLUMNS_TO_LOAD} /
+     *         {@link Options#COLUMNS_TO_SKIP COLUMNS_TO_SKIP}, which otherwise
+     *         require a header row.  Note: for a source with no header row,
+     *         supplying this option changes how source columns are matched to
+     *         target columns -- from positional matching to matching by name.
+     *         Target columns with no matching source column are then populated
+     *         from their defaults or null rather than being filled
+     *         positionally.  The list is not validated against the file's
+     *         actual column count. If it is shorter, the trailing source
+     *         columns are left unnamed.
      *     <li>{@link Options#NUM_TASKS_PER_RANK NUM_TASKS_PER_RANK}: Number of
      *         tasks for reading file per rank. Default will be
      *         external_file_reader_num_tasks.
+     *     <li>{@link Options#PK_CONFLICT_PREDICATE_HIGHER
+     *         PK_CONFLICT_PREDICATE_HIGHER}: The record with higher value for
+     *         the column resolves the primary-key insert conflict. The default
+     *         value is ''.
+     *     <li>{@link Options#PK_CONFLICT_PREDICATE_LOWER
+     *         PK_CONFLICT_PREDICATE_LOWER}: The record with lower value for
+     *         the column resolves the primary-key insert conflict. The default
+     *         value is ''.
      *     <li>{@link Options#POLL_INTERVAL POLL_INTERVAL}: If {@link
      *         Options#TRUE TRUE}, the number of seconds between attempts to
      *         load external files into the table.  If zero, polling will be
@@ -3029,9 +3333,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         Options#SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES
      *         SCHEMA_REGISTRY_MAX_CONSECUTIVE_CONNECTION_FAILURES}: Max
      *         records to skip due to SR connection failures, before failing.
-     *     <li>{@link Options#MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE
-     *         MAX_CONSECUTIVE_INVALID_SCHEMA_FAILURE}: Max records to skip due
-     *         to schema related errors, before failing.
      *     <li>{@link Options#SCHEMA_REGISTRY_SCHEMA_NAME
      *         SCHEMA_REGISTRY_SCHEMA_NAME}: Name of the Avro schema in the
      *         schema registry to use when reading Avro records.
@@ -3123,6 +3424,14 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *     <li>{@link Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
      *         TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used
      *         only when 'text_search_columns' has a value.
+     *     <li>{@link Options#TRANSFORMATIONS TRANSFORMATIONS}: Comma-separated
+     *         expressions, one per target table column.  Each expression is
+     *         evaluated per record.  Empty entries (two consecutive commas)
+     *         mean no transformation for that column -- the value is resolved
+     *         from the input record, table default, NULL, or an error.
+     *         Expressions may reference input columns by name or by position
+     *         ($1 for the first input column, $2 for the second, etc.). The
+     *         default value is ''.
      *     <li>{@link Options#TRIM_SPACE TRIM_SPACE}: If set to {@link
      *         Options#TRUE TRUE}, remove leading or trailing space from
      *         fields.
@@ -3163,20 +3472,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 fit with minimum data scanned.
      *         </ul>
      *         The default value is {@link Options#ACCURACY ACCURACY}.
-     *     <li>{@link Options#ENABLE_INPLACE_UPDATES ENABLE_INPLACE_UPDATES}:
-     *         Applies only when upserting (when update_on_existing_pk is
-     *         true). If set to true (the default), an existing record matched
-     *         by primary key is modified in place. If set to false, the
-     *         matched record is updated by deleting it and inserting a
-     *         replacement (delete and insert), which prevents the change from
-     *         being reflected in dependent materialized views until they are
-     *         refreshed.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#UPDATE_ON_EXISTING_PK UPDATE_ON_EXISTING_PK}:
      *         Specifies the record collision policy for inserting into a table
      *         with a <a href="../../../../../../concepts/tables/#primary-keys"
@@ -3199,14 +3494,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 primary keys match existing records.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#TRANSFORMATIONS TRANSFORMATIONS}: Comma-separated
-     *         expressions, one per target table column.  Each expression is
-     *         evaluated per record.  Empty entries (two consecutive commas)
-     *         mean no transformation for that column -- the value is resolved
-     *         from the input record, table default, NULL, or an error.
-     *         Expressions may reference input columns by name or by position
-     *         ($1 for the first input column, $2 for the second, etc.). The
-     *         default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      *

@@ -17,7 +17,10 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#revokePermissionTable(RevokePermissionTableRequest)
  * GPUdb.revokePermissionTable}.
  * <p>
- * Revokes a table-level permission from a user or role.
+ * [DEPRECATED--please use {@link
+ * com.gpudb.GPUdb#revokePermission(RevokePermissionRequest)
+ * GPUdb.revokePermission} instead]  Revokes a table-level permission from a
+ * user or role.
  */
 public class RevokePermissionTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
