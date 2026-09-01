@@ -31,3 +31,4 @@ tests/.settings/
 
 # For netbeans
 nbproject
+/.project
