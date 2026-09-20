@@ -15,6 +15,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,21 +36,54 @@ public class RecordRetriever<T> {
     private final String tableName;
     private final Type type;
     private final TypeObjectMap<T> typeObjectMap;
-    private Map<String, String> options;
+    private volatile Map<String,String> options;
     private boolean tableReplicated;
+
+    /**
+     * The multi-head config the worker list was last built from, compared by
+     * <b>identity</b> to detect that the connection's addresses have been
+     * replaced -- by a move to another cluster, or by a fresh probe of the one
+     * it is already on.
+     */
+    private GPUdbBase.MultiHeadSnapshot lastMultiHeadSnapshot;
+
+
 
     // Sharding members
     private com.gpudb.WorkerList workerList;
-    private List<URL> workerUrls;
-    private final boolean multiHeadEnabled;
-    private boolean workerLookupSupported;
+
+    /**
+     * Where lookups get routed, published as a single immutable value.
+     *
+     * <p>The destination of a lookup depends on several things that must agree:
+     * whether multi-head is usable at all, the worker URL per rank, which of
+     * those slots hold a live worker, and the shard mapping.  Holding them in
+     * one immutable object behind one {@code volatile} reference means a
+     * rebuild cannot be observed part way through: a reader sees either the
+     * whole old state or the whole new one, and gets the happens-before edge
+     * that makes what it finds safe to use.
+     *
+     * <p>Every read on the lookup path must take this reference <i>once</i>
+     * into a local and use that local throughout.  Re-reading the field
+     * mid-decision reintroduces exactly the inconsistency the snapshot exists
+     * to prevent.
+     *
+     * <p>Mirrors {@code BulkInserter.routing}; see {@link Routing} for where
+     * the two intentionally differ.
+     */
+    private volatile Routing routing;
+
+    /**
+     * The shard mapping most recently fetched from the server, which may not
+     * have been published yet.  Only ever touched while holding this object's
+     * monitor, and never read on the lookup path.
+     */
+    private List<Integer> pendingRoutingTable;
     private final RecordKeyBuilder<T> shardKeyBuilder;
     private long shardVersion;
     private MutableLong shardUpdateTime;
-    private List<Integer> routingTable;
     
     // HA members
-    private final int dbHARingSize;
     private int numClusterSwitches;
     private URL currentHeadNodeURL;
     private URL lastUsedUrl;
@@ -118,8 +152,13 @@ public class RecordRetriever<T> {
      * @param gpudb      the {@link GPUdb} instance to retrieve records from
      * @param tableName  the table to retrieve records from
      * @param type       the {@link Type} of records being retrieved
-     * @param workers    worker list for multi-head retrieval ({@code null} to
-     *                   disable multi-head retrieval)
+     * @param workers    worker list for multi-head retrieval; pass an empty
+     *                   list ({@code new WorkerList()}) to disable multi-head
+     *                   for this retriever, which leaves the connection's
+     *                   fail-over intact and is not undone by a later rebuild.
+     *                   Passing {@code null} does <i>not</i> disable it -- the
+     *                   list is then derived from the connection's own worker
+     *                   addresses, which is the default behavior
      *
      * @throws GPUdbException if a configuration error occurs
      *
@@ -137,8 +176,13 @@ public class RecordRetriever<T> {
      * @param gpudb      the {@link GPUdb} instance to retrieve records from
      * @param tableName  the table to retrieve records from
      * @param type       the {@link Type} of records being retrieved
-     * @param workers    worker list for multi-head retrieval ({@code null} to
-     *                   disable multi-head retrieval)
+     * @param workers    worker list for multi-head retrieval; pass an empty
+     *                   list ({@code new WorkerList()}) to disable multi-head
+     *                   for this retriever, which leaves the connection's
+     *                   fail-over intact and is not undone by a later rebuild.
+     *                   Passing {@code null} does <i>not</i> disable it -- the
+     *                   list is then derived from the connection's own worker
+     *                   addresses, which is the default behavior
      * @param options    optional parameters to pass to GPUdb while retrieving
      *                   ({@code null} for no parameters)
      *                   <br/>
@@ -319,10 +363,6 @@ public class RecordRetriever<T> {
         this.shardVersion = 0;
         this.shardUpdateTime = new MutableLong();
 
-        // We need to know how many clusters are in the HA ring (for failover
-        // purposes)
-        this.dbHARingSize = gpudb.getHARingSize();
-
         // Keep track of how many times the DB client has switched HA clusters
         // in order to decide later if it's time to update the worker queues
         this.numClusterSwitches = gpudb.getNumClusterSwitches();
@@ -345,65 +385,77 @@ public class RecordRetriever<T> {
             // object--quite possibly before creating the table.  So no worries.
         }
 
-        // If no worker list is given, attempt to create one, by default
+        // If no worker list is given, use the rank URLs the connection has
+        // already resolved, which is the route BulkInserter takes.
+        //
+        // Those URLs were filtered through the user's hostname regex when the
+        // cluster was discovered (GPUdbBase.getRankURLs), and they already carry
+        // the null placeholders for ranks removed from the cluster.  Building
+        // from them therefore honors setHostnameRegex -- and it avoids a
+        // second /show/system/properties round trip that could itself fail.
         if (this.workerList == null) {
-            try {
-                this.workerList = new WorkerList(this.gpudb);
-            }
-            catch (GPUdbException e) {
-                GPUdbLogger.info("Could not create default worker list for record retrieval; using head node instead.");
-            }
+            this.workerList = new WorkerList( this.gpudb.getCurrentMultiHeadSnapshot() );
+
+            if (this.workerList.isEmpty())
+                GPUdbLogger.info("No worker rank URLs available for record retrieval; using head node instead.");
         }
 
-        // Set if multi-head I/O is turned on at the server and rank URLs are accessible
-        this.multiHeadEnabled = ( (this.workerList != null) && !this.workerList.isEmpty() );
-
-        // If no rank URLs are provided, use the head rank
-        this.workerLookupSupported = this.multiHeadEnabled;
+        // Multi-head lookups are usable if they are turned on at the server and
+        // the rank URLs are reachable from this client
+        boolean isMultiHeadEnabled = ( (this.workerList != null) && !this.workerList.isEmpty() );
 
         this.shardKeyBuilder = new RecordKeyBuilder<>(type, typeObjectMap);
 
-        this.workerUrls = new ArrayList<>();
+        List<URL> workerUrls = new ArrayList<>();
 
-        if ( this.multiHeadEnabled ) {
+        if ( isMultiHeadEnabled ) {
             try {
                 for (URL url : this.workerList) {
                     if (url == null) {
                         // Handle removed ranks
-                        this.workerUrls.add( null );
+                        workerUrls.add( null );
                     } else { // add a URL for an active rank
-                        this.workerUrls.add(GPUdbBase.appendPathToURL(url, "/get/records"));
+                        workerUrls.add(GPUdbBase.appendPathToURL(url, "/get/records"));
                     }
                 }
             } catch (MalformedURLException ex) {
                 throw new GPUdbException(ex.getMessage(), ex);
             }
+        }
 
-            // Update the worker queues, if needed
-            updateWorkerQueues( this.numClusterSwitches, false );
+        // Remember the initial multi-head state in order to detect changes to
+        // the multi-head state after failover/failback/rebalance.
+        this.lastMultiHeadSnapshot = this.gpudb.getCurrentMultiHeadSnapshot();
 
-            // If ranks have not been assigned by updateWorkerQueues,
-            // this is a randomly-sharded table; use head rank
-            if (this.routingTable == null)
-                this.workerLookupSupported = false;
+        // Publish the initial routing state as one value, before anything can
+        // read it.  The shard mapping is not known yet; it is fetched below and
+        // published as a snapshot of its own.  The live-worker indices are
+        // derived inside Routing from the URL list, so the two cannot disagree.
+        this.routing = new Routing( isMultiHeadEnabled, workerUrls, null );
+
+        if ( isMultiHeadEnabled ) {
+            // Fetch the shard mapping that goes with these URLs
+            updateWorkerQueues( false );
         }
     }
 
 
     /**
-     * Use the current head node URL in a thread-safe manner.
+     * Use the current head node URL in a thread-safe manner, guarded by the HA
+     * failover lock.
      */
     private URL getCurrentHeadNodeURL() {
-        synchronized ( this.currentHeadNodeURL ) {
+        synchronized ( this.haFailoverLock ) {
             return this.currentHeadNodeURL;
         }
     }
 
     /**
-     * Sets the current head node URL in a thread-safe manner.
+     * Sets the current head node URL in a thread-safe manner, guarded by the HA
+     * failover lock.
      */
     private void setCurrentHeadNodeURL(URL newCurrURL) {
-        synchronized ( this.currentHeadNodeURL ) {
+        synchronized ( this.haFailoverLock ) {
             this.currentHeadNodeURL = newCurrURL;
         }
     }
@@ -428,83 +480,27 @@ public class RecordRetriever<T> {
 
 
     /**
-     * Force a high-availability cluster failover.  Check the health of the
-     * cluster (either head node only, or head node and worker ranks, based on
-     * the retriever configuration), and use it if healthy.  If no healthy cluster
-     * is found, then throw an error.  Otherwise, stop at the first healthy cluster.
+     * Asks the connection to fail over to another cluster, and records
+     * where it ended up.
      *
-     * @returns whether a successful failover recovery happened.
+     * <p>The selection is entirely the connection's: {@code switchURL} walks the
+     * HA ring, and returns the first one it has found usable.  This method
+     * contributes the caller's vantage point -- the URL it was using and the
+     * switch count it last saw -- which is what lets the connection tell a
+     * first failover from a thread piggybacking on one already in progress.
+     *
+     * @param oldURL  the URL this object was using when the failure occurred
+     * @param oldClusterSwitchCount  the connection's switch count as this object
+     *                               last saw it, before the failing request
      *
      * @throws GPUdbException if a successful failover could not be achieved.
      */
     private synchronized void forceFailover(URL oldURL, int oldClusterSwitchCount) throws GPUdbException {
-        GPUdbLogger.debug_with_info( "Forced failover begin..." );
-        // The whole failover scenario needs to happen in a thread-safe
-        // manner; since this happens only upon failure, it's OK to
-        // synchronize the whole method
+        this.gpudb.switchURL( oldURL, oldClusterSwitchCount );
 
-        // We'll need to know which URL we're using at the moment
-        URL currURL = oldURL;
-        int currClusterSwitchCount = oldClusterSwitchCount;
-
-        // Try to fail over as many times as there are clusters
-        for (int i = 0; i < this.dbHARingSize; ++i) {
-            // Try to switch to a new cluster
-            try {
-                GPUdbLogger.debug_with_info( "Forced HA failover attempt #" + i );
-                this.gpudb.switchURL( currURL, currClusterSwitchCount );
-            } catch (GPUdbBase.GPUdbHAUnavailableException ex ) {
-                // Have tried all clusters; back to square 1
-                throw ex;
-            } catch (GPUdbBase.GPUdbFailoverDisabledException ex) {
-                // Failover is disabled
-                throw ex;
-            }
-
-            // Update the reference points
-            currURL                = this.gpudb.getURL();
-            currClusterSwitchCount = this.gpudb.getNumClusterSwitches();
-
-            // We did switch to a different cluster; now check the health
-            // of the cluster, starting with the head node
-            if ( !this.gpudb.isSystemRunning( currURL ) ) {
-                continue; // try the next cluster because this head node is down
-            }
-
-            boolean isClusterHealthy = true;
-            if ( this.multiHeadEnabled ) {
-                // Obtain the worker rank addresses
-                com.gpudb.WorkerList workerRanks;
-                try {
-                    workerRanks = new com.gpudb.WorkerList( this.gpudb,
-                                                            this.workerList.getIpRegex() );
-                } catch (GPUdbException ex) {
-                    // Some problem occurred; move to the next cluster
-                    continue;
-                }
-
-                // Check the health of all the worker ranks
-                for ( URL workerRank : workerRanks) {
-                    if ( !this.gpudb.isSystemRunning( workerRank ) ) {
-                        isClusterHealthy = false;
-                    }
-                }
-            }
-
-            if ( isClusterHealthy ) {
-                // Save the healthy cluster's URL as the current head node URL
-                this.setCurrentHeadNodeURL( currURL );
-                this.setCurrentClusterSwitchCount( currClusterSwitchCount );
-                return;
-            }
-        }   // end for
-
-        // If we get here, it means we've failed over across the whole HA ring at least
-        // once (could be more times if other threads are causing failover, too)
-        String errorMsg = ("HA failover could not find any healthy cluster (all GPUdb clusters with "
-                           + "head nodes [" + currURL.toString()
-                           + "] tried)");
-        throw new GPUdbException( errorMsg );
+        // Record where the connection ended up
+        this.setCurrentHeadNodeURL( this.gpudb.getURL() );
+        this.setCurrentClusterSwitchCount( this.gpudb.getNumClusterSwitches() );
     }   // end forceFailover
 
 
@@ -514,8 +510,8 @@ public class RecordRetriever<T> {
      *
      * @return  whether the shard mapping was updated or not.
      */
-    private boolean updateWorkerQueues( int countClusterSwitches ) throws GPUdbException {
-        return this.updateWorkerQueues( countClusterSwitches, true );
+    private boolean updateWorkerQueues() throws GPUdbException {
+        return this.updateWorkerQueues( true );
     }
 
 
@@ -528,18 +524,40 @@ public class RecordRetriever<T> {
      *
      * @return  a boolean indicating whether the shard mapping was updated.
      */
-    private synchronized boolean updateWorkerQueues( int countClusterSwitches, boolean doReconstructWorkerURLs ) throws GPUdbException {
+    private synchronized boolean updateWorkerQueues( boolean doReconstructWorkerURLs ) throws GPUdbException {
+        return updateWorkerQueues( doReconstructWorkerURLs, true );
+    }
+
+
+    /**
+     * Updates the shard mapping and, optionally, reconstructs the worker rank
+     * URLs.
+     *
+     * @param doReconstructWorkerURLs  whether the worker URLs should be rebuilt
+     * @param publishShardMapping  whether a newly fetched shard mapping should
+     *                             be published on its own.  A caller about to
+     *                             publish a complete routing state of its own
+     *                             -- {@link #reconstructWorkerURLs()} -- passes
+     *                             {@code false} and takes the mapping from
+     *                             {@link #pendingRoutingTable}, so a new mapping
+     *                             is never published alongside URLs it does not
+     *                             describe.
+     *
+     * @return  whether the shard mapping was updated.
+     */
+    private synchronized boolean updateWorkerQueues( boolean doReconstructWorkerURLs,
+                                                     boolean publishShardMapping ) throws GPUdbException {
 
         // Flag for if the worker rank URLs need to be re-constructed when asked
         // for iff multi-head i/o is enabled and the caller asked for it.
         boolean reconstructWorkerURLS = ( doReconstructWorkerURLs
-                                          && this.multiHeadEnabled );
+                                          && this.routing.multiHeadEnabled );
         GPUdbLogger.debug_with_info( "Reconstruct worker URLs?: "
                                      + reconstructWorkerURLS );
 
-        // The entire worker queue update process should happen in a thread-safe
-        // manner; since this happens only upon failover, the time penalty for
-        // single-threading this part is acceptable
+        // Whether the shard mapping has changed since the last snapshot.
+        boolean shardMappingChanged = false;
+
         try {
             // Get the latest shard mapping information; note that this endpoint
             // call might trigger an HA failover in the GPUdb object
@@ -548,19 +566,23 @@ public class RecordRetriever<T> {
             // Get the shard version
             long newShardVersion = shardInfo.getVersion();
 
+            shardMappingChanged = (this.shardVersion != newShardVersion);
+
             // No-op if the shard version hasn't changed (and it's not the first time)
             if (this.shardVersion == newShardVersion) {
-                // Also check if the database client has failed over to a
-                // different HA ring node
-                int currNumClusterSwitches = this.gpudb.getNumClusterSwitches();
-                if ( countClusterSwitches == currNumClusterSwitches ) {
-                    GPUdbLogger.debug_with_info( "# cluster switches and shard versions the same" );
+                // Also check whether the connection moved to a different
+                // cluster -- by fail-over or by fail-back -- since this object
+                // last built its worker list.
+                GPUdbBase.MultiHeadSnapshot currSnapshot =
+                        this.gpudb.getCurrentMultiHeadSnapshot();
+                if ( currSnapshot == this.lastMultiHeadSnapshot ) {
+                    GPUdbLogger.debug_with_info( "Same cluster and shard version" );
 
                     if ( reconstructWorkerURLS )
                     {
                         // The caller needs to know if we ended up updating the
                         // worker rank URLs
-                        return reconstructWorkerURLs();
+                        return reconstructWorkerURLs( false );
                     }
 
                     // Not appropriate to update worker URLs; then no change
@@ -569,8 +591,10 @@ public class RecordRetriever<T> {
                     return false;
                 }
 
-                // Update the HA ring node switch counter
-                this.setCurrentClusterSwitchCount( currNumClusterSwitches );
+                // Record the cluster now current, so the next call compares
+                // against it rather than against the one left behind.
+                this.lastMultiHeadSnapshot = currSnapshot;
+                this.setCurrentClusterSwitchCount( this.gpudb.getNumClusterSwitches() );
             }
 
             // Save the new shard version and also when we're updating the mapping
@@ -578,8 +602,13 @@ public class RecordRetriever<T> {
 
             this.shardUpdateTime.setValue( new Timestamp( System.currentTimeMillis() ).getTime() );
 
-            // Update the routing table
-            this.routingTable = shardInfo.getRank();
+            // Record the newly fetched shard mapping.  It is published here only
+            // when the caller is not about to publish a routing state of its
+            // own; see the publishShardMapping parameter.
+            this.pendingRoutingTable = shardInfo.getRank();
+
+            if ( publishShardMapping )
+                this.routing = this.routing.withRoutingTable( this.pendingRoutingTable );
         } catch (GPUdbException ex) {
             // Couldn't get the current shard assignment info; see if this is due
             // to cluster failure
@@ -604,7 +633,7 @@ public class RecordRetriever<T> {
         // iff multi-head i/o is enabled and the table is not replicated
         if ( reconstructWorkerURLS )
         {
-            reconstructWorkerURLs();
+            reconstructWorkerURLs( shardMappingChanged );
         }
 
         GPUdbLogger.debug_with_info( "Returning true" );
@@ -615,16 +644,36 @@ public class RecordRetriever<T> {
     /**
      * Reconstructs the list of worker URLs.
      *
-     * @returns whether we ended up reconstructing the worker queues or not.
+     * @param topologyMayHaveMoved  what this rebuild observed, not what it wants
+     *                              done: {@code true} where the server reported
+     *                              a shard mapping change, which can move rank
+     *                              addresses without moving the connection, so
+     *                              the connection re-acquires before answering;
+     *                              {@code false} after a cluster change, which
+     *                              the switch itself already probed
+     *
+     * @return  whether we ended up reconstructing the worker URLs or not
      */
-    private synchronized boolean reconstructWorkerURLs() throws GPUdbException {
+    private synchronized boolean reconstructWorkerURLs( boolean topologyMayHaveMoved )
+            throws GPUdbException {
 
-        // Get the latest worker list (use whatever IP regex was used initially)
         if ( this.workerList == null )
             throw new GPUdbException( "No worker list exists!" );
 
-        com.gpudb.WorkerList newWorkerList = new com.gpudb.WorkerList( this.gpudb,
-                                                                       this.workerList.getIpRegex() );
+        if ( this.workerList.disablesMultiHead() ) {
+            GPUdbLogger.debug_with_info( "Worker list declines multi-head; not rebuilding" );
+            return false;
+        }
+
+
+        // Ask the connection for the current cluster's addresses.
+        GPUdbBase.MultiHeadSnapshot snapshot =
+                this.gpudb.acquireMultiHeadSnapshot( topologyMayHaveMoved );
+
+
+        // Adopt the addresses of whichever cluster the connection is on now;
+        // see the matching note in BulkInserter.reconstructWorkerQueues().
+        com.gpudb.WorkerList newWorkerList = new com.gpudb.WorkerList( snapshot );
         GPUdbLogger.debug_with_info( "Current worker list: " + this.workerList.toString() );
         GPUdbLogger.debug_with_info( "New worker list:     " + newWorkerList.toString() );
         if ( newWorkerList.equals( this.workerList ) ) {
@@ -635,17 +684,26 @@ public class RecordRetriever<T> {
         // Update the worker list
         this.workerList = newWorkerList;
 
-        // Create worker queues per worker URL
-        List<URL> newWorkerUrls = new ArrayList<>();
+        // Remember the exact answer these addresses came from -- not the
+        // cluster.  The next updateWorkerQueues() compares by identity, so a
+        // re-probe of the same cluster counts as a change; that is what makes
+        // leaving a cluster and returning to it visible.
+        this.lastMultiHeadSnapshot = snapshot;
+
+        // Recompute whether multi-head is still usable.
+        boolean isMultiHeadEnabled = ( (this.workerList != null) && !this.workerList.isEmpty() );
+
+        // Create a URL per worker rank
+        List<URL> workerUrls = new ArrayList<>();
         for ( URL url : this.workerList) {
             try {
                 // Handle removed ranks
                 if (url == null) {
-                    newWorkerUrls.add( null );
+                    workerUrls.add( null );
                 }
                 else {
                     // Add a queue for a currently active rank
-                    newWorkerUrls.add( GPUdbBase.appendPathToURL(url, "/get/records") );
+                    workerUrls.add( GPUdbBase.appendPathToURL(url, "/get/records") );
                 }
             } catch (MalformedURLException ex) {
                 throw new GPUdbException( ex.getMessage(), ex );
@@ -654,12 +712,192 @@ public class RecordRetriever<T> {
             }
         }
 
-        // Save the new URLs for future use
-        this.workerUrls = newWorkerUrls;
+        // Refresh the shard mapping for the new URL set without letting it be
+        // published on its own, so it is never paired with the URLs still in
+        // place.  The fetch is a no-op when the shard version has not moved, in
+        // which case it leaves pendingRoutingTable alone; clearing it first is
+        // what distinguishes "nothing new was fetched" from a mapping left over
+        // from an earlier fetch.
+        List<Integer> newRoutingTable = this.routing.routingTable;
+        if ( isMultiHeadEnabled ) {
+            this.pendingRoutingTable = null;
+            updateWorkerQueues( false, false );
+            if ( this.pendingRoutingTable != null )
+                newRoutingTable = this.pendingRoutingTable;
+        }
+
+        // Publish the whole new routing state with one volatile write, so a
+        // concurrent lookup sees either all of the old state or all of the new
+        // one.  The live-worker indices are derived inside Routing from the URL
+        // list it is given, so they cannot lag behind it.
+        this.routing = new Routing( isMultiHeadEnabled, workerUrls, newRoutingTable );
 
         GPUdbLogger.debug_with_info( "Worker list was updated, returning true" );
         return true; // we did change the URLs!
     }  // end reconstructWorkerURLs
+
+
+    /**
+     * Returns the indices of the slots of the given worker URL list that hold
+     * a live worker.
+     *
+     * A rank that has been removed from the cluster keeps its slot in the
+     * worker list--as {@code null}--so that the worker indices produced by the
+     * server's routing table stay aligned with the rank numbering.  Such a
+     * slot holds no URL, so it must never be handed a lookup.
+     *
+     * @param workerUrls  the worker URL list, holes included
+     *
+     * @return the indices of the slots holding a live worker
+     */
+    private static List<Integer> computeLiveWorkerIndices( List<URL> workerUrls ) {
+        List<Integer> liveIndices = new ArrayList<>();
+
+        for ( int i = 0; i < workerUrls.size(); ++i ) {
+            if ( workerUrls.get( i ) != null )
+                liveIndices.add( i );
+        }
+
+        return liveIndices;
+    }  // end computeLiveWorkerIndices
+
+
+    /**
+     * An immutable snapshot of where lookups get routed.
+     *
+     * <p>The counterpart of {@code BulkInserter.Routing}, with two deliberate
+     * differences:
+     *
+     * <ul>
+     *   <li>There is no {@code useHeadNode}.  {@code BulkInserter} sends a
+     *       replicated table's records to the head node; retrieval instead
+     *       picks any live worker, since every worker holds the whole table.
+     *       So for retrieval "not using multi-head" is exactly
+     *       {@code !multiHeadEnabled}, and a second flag could only disagree
+     *       with the first.</li>
+     *   <li>{@code liveWorkerIndices} is <i>derived</i> here rather than passed
+     *       in and validated.  It holds indices <i>into</i> {@code workerUrls},
+     *       so computing it from that list inside the constructor makes a
+     *       mismatched pair unconstructible rather than merely rejected.</li>
+     * </ul>
+     */
+    private static final class Routing {
+
+        /** Whether multi-head lookups are usable for this retriever. */
+        final boolean multiHeadEnabled;
+
+        /**
+         * The {@code /get/records} URL per rank; unmodifiable.  Entry {@code i}
+         * is rank {@code i + 1}, and a rank removed from the cluster keeps its
+         * slot as {@code null} so the indices stay aligned with the rank
+         * numbering the shard routing table refers to.
+         */
+        final List<URL> workerUrls;
+
+        /**
+         * The indices of {@link #workerUrls} holding a live worker;
+         * unmodifiable.  Derived from {@code workerUrls}, never supplied.
+         */
+        final List<Integer> liveWorkerIndices;
+
+        /**
+         * The shard-to-rank mapping; unmodifiable, and {@code null} when not
+         * yet known.
+         */
+        final List<Integer> routingTable;
+
+        Routing( boolean multiHeadEnabled, List<URL> workerUrls, List<Integer> routingTable ) {
+            this.multiHeadEnabled = multiHeadEnabled;
+            this.workerUrls = Collections.unmodifiableList(
+                    new ArrayList<URL>( (workerUrls == null) ? new ArrayList<URL>() : workerUrls ) );
+            this.liveWorkerIndices = Collections.unmodifiableList(
+                    computeLiveWorkerIndices( this.workerUrls ) );
+            this.routingTable = (routingTable == null)
+                                ? null
+                                : Collections.unmodifiableList( new ArrayList<Integer>( routingTable ) );
+        }
+
+        /**
+         * Returns a copy carrying a different shard mapping.  The URLs are
+         * unchanged, so the derived live-worker indices come out identical.
+         */
+        Routing withRoutingTable( List<Integer> newRoutingTable ) {
+            return new Routing( this.multiHeadEnabled, this.workerUrls, newRoutingTable );
+        }
+
+        @Override
+        public String toString() {
+            return "Routing{multiHeadEnabled=" + this.multiHeadEnabled
+                   + ", workerUrls=" + this.workerUrls.size()
+                   + ", live=" + this.liveWorkerIndices.size()
+                   + ", routingTable=" + ((this.routingTable == null)
+                                          ? "null"
+                                          : (this.routingTable.size() + " shards"))
+                   + "}";
+        }
+    }   // end class Routing
+
+
+    /**
+     * Returns the URL of a randomly chosen <b>live</b> worker rank, for
+     * lookups that are not routed by a shard key (i.e. on replicated tables,
+     * where every live rank holds the whole table).
+     *
+     * @return the URL of a randomly chosen live worker rank
+     *
+     * @throws GPUdbException if no rank slot holds a live worker
+     */
+    private URL getRandomLiveWorkerUrl( Routing routing ) throws GPUdbException {
+        if ( (routing.liveWorkerIndices == null) || routing.liveWorkerIndices.isEmpty() ) {
+            throw new GPUdbException( "No live worker rank is available for "
+                                      + "record retrieval; all "
+                                      + routing.workerUrls.size()
+                                      + " worker rank slot(s) are empty "
+                                      + "(removed ranks)" );
+        }
+
+        int liveIndex = routing.liveWorkerIndices.get(
+                ThreadLocalRandom.current().nextInt( routing.liveWorkerIndices.size() ) );
+
+        return routing.workerUrls.get( liveIndex );
+    }  // end getRandomLiveWorkerUrl
+
+
+    /**
+     * Returns the URL of the worker rank at the given index.
+     *
+     * Validates both ends of the contract: an index past the end of the worker
+     * list, and an index naming the empty slot that a removed rank leaves
+     * behind so that routing-table indices stay aligned with the rank
+     * numbering.
+     *
+     * @param workerIndex  the index of the worker rank, as produced by the
+     *                     shard routing table
+     *
+     * @return the URL of the worker rank at the given index
+     *
+     * @throws GPUdbException if the index does not name a live worker
+     */
+    private URL getLiveWorkerUrl( Routing routing, int workerIndex ) throws GPUdbException {
+        if ( (workerIndex < 0) || (workerIndex >= routing.workerUrls.size()) ) {
+            throw new GPUdbException( "Sharded worker index is out of bound: "
+                                      + workerIndex + " (# worker ranks "
+                                      + routing.workerUrls.size() + ")" );
+        }
+
+        URL url = routing.workerUrls.get( workerIndex );
+
+        if ( url == null ) {
+            throw new GPUdbException( "Worker rank with index " + workerIndex
+                                      + " has been removed from the cluster; "
+                                      + "it cannot serve records (# worker "
+                                      + "ranks " + routing.workerUrls.size()
+                                      + "); the shard mapping may need to be "
+                                      + "updated" );
+        }
+
+        return url;
+    }  // end getLiveWorkerUrl
 
 
     /**
@@ -687,7 +925,7 @@ public class RecordRetriever<T> {
      *          multi-head (the worker ranks) for key lookup (false value).
      */
     public boolean isUsingHeadRank() {
-        return !this.workerLookupSupported;
+        return !this.routing.multiHeadEnabled;
     }
 
     /**
@@ -698,7 +936,7 @@ public class RecordRetriever<T> {
      *          where only an expression is supplied and the table is sharded.
      */
     public boolean isDoingWorkerLookup() {
-        return this.workerLookupSupported;
+        return this.routing.multiHeadEnabled;
     }
 
     /**
@@ -726,8 +964,10 @@ public class RecordRetriever<T> {
      * @see com.gpudb.protocol.GetRecordsRequest.Options#EXPRESSION
      */
     public RecordRetriever<T> setOptions( Map<String, String> options ) {
-        // Set the options in a thread-safe manner
-        synchronized (this.options) {
+        // The field is volatile and is only ever REPLACED, never mutated in
+        // place, so the reference write publishes the map safely and no lock is
+        // needed.
+        {
             if (options != null) {
                 this.options = new HashMap<>(options);
             } else {
@@ -823,7 +1063,12 @@ public class RecordRetriever<T> {
     public GetRecordsResponse<T> getByKey(List<Object> keyValues, String expression,
         long offset) throws GPUdbException {
 
-        boolean doWorkerLookup = this.workerLookupSupported;
+        // Take the routing state once and route this lookup entirely from that
+        // snapshot.  A rebuild running concurrently publishes a new one; this
+        // lookup then goes wherever the state it was routed against said, which
+        // is consistent, rather than to a destination assembled from both.
+        final Routing routing = this.routing;
+        boolean doWorkerLookup = routing.multiHeadEnabled;
         String compositeExpression = expression;
         boolean keyValuesSpecified = keyValues != null && !keyValues.isEmpty();
 
@@ -901,7 +1146,7 @@ public class RecordRetriever<T> {
                     if (this.lastUsedUrl != null)
                         url = this.lastUsedUrl;
                     else {
-                        url = this.workerUrls.get( ThreadLocalRandom.current().nextInt( this.workerUrls.size() ) );
+                        url = getRandomLiveWorkerUrl( routing );
                         this.lastUsedUrl = url; // Remember for next time
                     }
                 } else {
@@ -914,7 +1159,15 @@ public class RecordRetriever<T> {
                         throw new GPUdbException( "Unable to calculate the shard value; please check data for unshardable values: " + ex.getMessage(), ex );
                     }
 
-                    url = this.workerUrls.get( shardKey.route( this.routingTable ) );
+                    // Routing by key requires the shard mapping.  If the
+                    // server could not supply one, surface it.
+                    if ( (routing.routingTable == null) || routing.routingTable.isEmpty() ) {
+                        throw new GPUdbException( "No shard mapping is available "
+                                + "for table '" + this.tableName + "'; cannot route "
+                                + "the lookup to a worker rank." );
+                    }
+
+                    url = getLiveWorkerUrl( routing, shardKey.route( routing.routingTable ) );
                 }
 
                 GPUdbLogger.debug_with_info( "Retrieving records from <" + url.toString() + "> with <" + compositeExpression + ">" );
@@ -923,8 +1176,8 @@ public class RecordRetriever<T> {
 
             // Check if shard re-balancing is under way at the server; if so,
             // we need to update the shard mapping
-            if ( response.getInfo().get( "data_rerouted" ) == "true" )
-                updateWorkerQueues( currentCountClusterSwitches );
+            if ( "true".equals( response.getInfo().get( GPUdbBase.RESPONSE_INFO_DATA_REROUTED ) ) )
+                updateWorkerQueues();
 
             // Set up the decoded response
             decodedResponse.setTableName(  response.getTableName()  );
@@ -957,7 +1210,7 @@ public class RecordRetriever<T> {
                     // We've now tried all the HA clusters and circled back;
                     // propagate the error to the user
                     String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
-                    throw new GPUdbException( originalCause + "; " + ex2.getMessage(), true );
+                    throw new GPUdbException( originalCause + "; " + ex2.getMessage(), ex, true );
                 }
             } else {
                 // For debugging purposes only (can be very useful!)
@@ -968,7 +1221,17 @@ public class RecordRetriever<T> {
             // Update the worker queues since we've failed over to a
             // different cluster
             GPUdbLogger.debug_with_info( "Updating worker queues" );
-            boolean updatedWorkerQueues = updateWorkerQueues( currentCountClusterSwitches );
+
+            // A failure to rebuild must not displace the error we are
+            // recovering from; record it and carry on to the retry decision
+            // with the queues left unchanged.
+            boolean updatedWorkerQueues = false;
+            try {
+                updatedWorkerQueues = updateWorkerQueues();
+            } catch ( Exception rebuildEx ) {
+                GPUdbLogger.warn( "Could not update the worker queues while recovering from <"
+                                  + ex.getMessage() + ">: " + rebuildEx.getMessage() );
+            }
             GPUdbLogger.debug_with_info( "Did we update the worker queue? " + updatedWorkerQueues );
             boolean retry = false;
             synchronized ( this.shardUpdateTime ) {
@@ -983,18 +1246,32 @@ public class RecordRetriever<T> {
                     // Don't use the modified expression;use the original one
                     return this.getByKey( keyValues, expression );
                 } catch (Exception ex2) {
-                    // Re-setting the exception since we may re-try again
-                    throw new GPUdbException( ex2.getMessage() );
+                    // Keep the original failure.  It is the diagnosis; the
+                    // retry's own failure is usually a consequence of it, and
+                    // replacing it loses the only useful message.
+                    throw new GPUdbException( ex.getMessage()
+                                              + "; the retry after recovery also failed: "
+                                              + ex2.getMessage(), ex );
                 }
             }
-            throw new GPUdbException( ex.getMessage() );
+            throw new GPUdbException( ex.getMessage(), ex );
         } catch (Exception ex) {
             GPUdbLogger.debug_with_info( "Caught java exception: " + ex.getMessage() );
             // Retrieval failed, but maybe due to shard mapping changes (due to
             // cluster reconfiguration)? Check if the mapping needs to be updated
             // or has been updated by another thread already after the
             // insertion was attempted
-            boolean updatedWorkerQueues = updateWorkerQueues( currentCountClusterSwitches );
+            // A failure to rebuild must not displace the error we are
+            // recovering from; record it and carry on with the queues left
+            // unchanged.
+            boolean updatedWorkerQueues = false;
+            try {
+                updatedWorkerQueues = updateWorkerQueues();
+            } catch ( Exception rebuildEx ) {
+                GPUdbLogger.warn( "Could not update the worker queues while recovering from <"
+                                  + ex.getMessage() + ">: " + rebuildEx.getMessage() );
+            }
+
             boolean retry = false;
             synchronized ( this.shardUpdateTime ) {
                 retry = ( updatedWorkerQueues
@@ -1005,11 +1282,15 @@ public class RecordRetriever<T> {
                 try {
                     return this.getByKey( keyValues, expression );
                 } catch (Exception ex2) {
-                    // Re-setting the exception since we may re-try again
-                    throw new GPUdbException( ex2.getMessage() );
+                    // Keep the original failure.  It is the diagnosis; the
+                    // retry's own failure is usually a consequence of it, and
+                    // replacing it loses the only useful message.
+                    throw new GPUdbException( ex.getMessage()
+                                              + "; the retry after recovery also failed: "
+                                              + ex2.getMessage(), ex );
                 }
             }
-            throw new GPUdbException( ex.getMessage() );
+            throw new GPUdbException( ex.getMessage(), ex );
         }
 
         return decodedResponse;
@@ -1103,7 +1384,12 @@ public class RecordRetriever<T> {
     public GetRecordsByColumnResponse getColumnsByKey(List<String> columns, List<Object> keyValues,
         String expression, long offset) throws GPUdbException {
 
-        boolean doWorkerLookup = this.workerLookupSupported;
+        // Take the routing state once and route this lookup entirely from that
+        // snapshot.  A rebuild running concurrently publishes a new one; this
+        // lookup then goes wherever the state it was routed against said, which
+        // is consistent, rather than to a destination assembled from both.
+        final Routing routing = this.routing;
+        boolean doWorkerLookup = routing.multiHeadEnabled;
         String compositeExpression = expression;
         boolean keyValuesSpecified = keyValues != null && !keyValues.isEmpty();
 
@@ -1176,7 +1462,7 @@ public class RecordRetriever<T> {
                     if (this.lastUsedUrl != null)
                         url = this.lastUsedUrl;
                     else {
-                        url = this.workerUrls.get( ThreadLocalRandom.current().nextInt( this.workerUrls.size() ) );
+                        url = getRandomLiveWorkerUrl( routing );
                         this.lastUsedUrl = url; // Remember for next time
                     }
                 } else {
@@ -1189,7 +1475,15 @@ public class RecordRetriever<T> {
                         throw new GPUdbException( "Unable to calculate the shard value; please check data for unshardable values: " + ex.getMessage(), ex );
                     }
 
-                    url = this.workerUrls.get( shardKey.route( this.routingTable ) );
+                    // Routing by key requires the shard mapping.  If the
+                    // server could not supply one, surface it.
+                    if ( (routing.routingTable == null) || routing.routingTable.isEmpty() ) {
+                        throw new GPUdbException( "No shard mapping is available "
+                                + "for table '" + this.tableName + "'; cannot route "
+                                + "the lookup to a worker rank." );
+                    }
+
+                    url = getLiveWorkerUrl( routing, shardKey.route( routing.routingTable ) );
                 }
 
                 GPUdbLogger.debug_with_info( "Retrieving records from <" + url + "/bycolumn> with <" + compositeExpression + ">" );
@@ -1198,8 +1492,8 @@ public class RecordRetriever<T> {
 
             // Check if shard re-balancing is under way at the server; if so,
             // we need to update the shard mapping
-            if ( response.getInfo().get( "data_rerouted" ) == "true" )
-                updateWorkerQueues( currentCountClusterSwitches );
+            if ( "true".equals( response.getInfo().get( GPUdbBase.RESPONSE_INFO_DATA_REROUTED ) ) )
+                updateWorkerQueues();
 
             // Set up the decoded response
             decodedResponse.setTableName(response.getTableName());
@@ -1226,7 +1520,7 @@ public class RecordRetriever<T> {
                     // We've now tried all the HA clusters and circled back;
                     // propagate the error to the user
                     String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
-                    throw new GPUdbException( originalCause + "; " + ex2.getMessage(), true );
+                    throw new GPUdbException( originalCause + "; " + ex2.getMessage(), ex, true );
                 }
             } else {
                 // For debugging purposes only (can be very useful!)
@@ -1237,7 +1531,17 @@ public class RecordRetriever<T> {
             // Update the worker queues since we've failed over to a
             // different cluster
             GPUdbLogger.debug_with_info( "Updating worker queues" );
-            boolean updatedWorkerQueues = updateWorkerQueues( currentCountClusterSwitches );
+
+            // A failure to rebuild must not displace the error we are
+            // recovering from; record it and carry on to the retry decision
+            // with the queues left unchanged.
+            boolean updatedWorkerQueues = false;
+            try {
+                updatedWorkerQueues = updateWorkerQueues();
+            } catch ( Exception rebuildEx ) {
+                GPUdbLogger.warn( "Could not update the worker queues while recovering from <"
+                                  + ex.getMessage() + ">: " + rebuildEx.getMessage() );
+            }
             GPUdbLogger.debug_with_info( "Did we update the worker queue? " + updatedWorkerQueues );
             boolean retry = false;
             synchronized ( this.shardUpdateTime ) {
@@ -1252,18 +1556,32 @@ public class RecordRetriever<T> {
                     // Don't use the modified expression;use the original one
                     return this.getColumnsByKey( columns, keyValues, expression );
                 } catch (Exception ex2) {
-                    // Re-setting the exception since we may re-try again
-                    throw new GPUdbException( ex2.getMessage() );
+                    // Keep the original failure.  It is the diagnosis; the
+                    // retry's own failure is usually a consequence of it, and
+                    // replacing it loses the only useful message.
+                    throw new GPUdbException( ex.getMessage()
+                                              + "; the retry after recovery also failed: "
+                                              + ex2.getMessage(), ex );
                 }
             }
-            throw new GPUdbException( ex.getMessage() );
+            throw new GPUdbException( ex.getMessage(), ex );
         } catch (Exception ex) {
             GPUdbLogger.debug_with_info( "Caught java exception: " + ex.getMessage() );
             // Retrieval failed, but maybe due to shard mapping changes (due to
             // cluster reconfiguration)? Check if the mapping needs to be updated
             // or has been updated by another thread already after the
             // insertion was attempted
-            boolean updatedWorkerQueues = updateWorkerQueues( currentCountClusterSwitches );
+            // A failure to rebuild must not displace the error we are
+            // recovering from; record it and carry on with the queues left
+            // unchanged.
+            boolean updatedWorkerQueues = false;
+            try {
+                updatedWorkerQueues = updateWorkerQueues();
+            } catch ( Exception rebuildEx ) {
+                GPUdbLogger.warn( "Could not update the worker queues while recovering from <"
+                                  + ex.getMessage() + ">: " + rebuildEx.getMessage() );
+            }
+
             boolean retry = false;
             synchronized ( this.shardUpdateTime ) {
                 retry = ( updatedWorkerQueues
@@ -1274,11 +1592,15 @@ public class RecordRetriever<T> {
                 try {
                     return this.getColumnsByKey( columns, keyValues, expression );
                 } catch (Exception ex2) {
-                    // Re-setting the exception since we may re-try again
-                    throw new GPUdbException( ex2.getMessage() );
+                    // Keep the original failure.  It is the diagnosis; the
+                    // retry's own failure is usually a consequence of it, and
+                    // replacing it loses the only useful message.
+                    throw new GPUdbException( ex.getMessage()
+                                              + "; the retry after recovery also failed: "
+                                              + ex2.getMessage(), ex );
                 }
             }
-            throw new GPUdbException( ex.getMessage() );
+            throw new GPUdbException( ex.getMessage(), ex );
         }
 
         return decodedResponse;

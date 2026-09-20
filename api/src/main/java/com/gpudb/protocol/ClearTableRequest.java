@@ -89,9 +89,11 @@ public class ClearTableRequest implements IndexedRecord {
      *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>. Must be an
      *                   existing table. Empty string clears all available
-     *                   tables, though this behavior is be prevented by
-     *                   default via gpudb.conf parameter 'disable_clear_all'.
-     *                   The default value is ''.
+     *                   tables, though this behavior is prevented by default
+     *                   via system configuration parameter <a
+     *                   href="../../../../../../config/#config-main-general"
+     *                   target="_top">disable_clear_all</a>. The default value
+     *                   is ''.
      * @param authorization  No longer used. User can pass an empty string. The
      *                       default value is ''.
      * @param options  Optional parameters.
@@ -124,9 +126,10 @@ public class ClearTableRequest implements IndexedRecord {
      * using standard <a
      * href="../../../../../../concepts/tables/#table-name-resolution"
      * target="_top">name resolution rules</a>. Must be an existing table.
-     * Empty string clears all available tables, though this behavior is be
-     * prevented by default via gpudb.conf parameter 'disable_clear_all'. The
-     * default value is ''.
+     * Empty string clears all available tables, though this behavior is
+     * prevented by default via system configuration parameter <a
+     * href="../../../../../../config/#config-main-general"
+     * target="_top">disable_clear_all</a>. The default value is ''.
      *
      * @return The current value of {@code tableName}.
      */
@@ -139,9 +142,10 @@ public class ClearTableRequest implements IndexedRecord {
      * using standard <a
      * href="../../../../../../concepts/tables/#table-name-resolution"
      * target="_top">name resolution rules</a>. Must be an existing table.
-     * Empty string clears all available tables, though this behavior is be
-     * prevented by default via gpudb.conf parameter 'disable_clear_all'. The
-     * default value is ''.
+     * Empty string clears all available tables, though this behavior is
+     * prevented by default via system configuration parameter <a
+     * href="../../../../../../config/#config-main-general"
+     * target="_top">disable_clear_all</a>. The default value is ''.
      *
      * @param tableName  The new value for {@code tableName}.
      *

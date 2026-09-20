@@ -312,8 +312,23 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         /**
          * Create table solely from the Avro schema definition, when {@link
          * Options#AVRO_SCHEMA AVRO_SCHEMA} exists; do not infer from data.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
          */
         public static final String AVRO_SCHEMA_NO_INFERENCE = "avro_schema_no_inference";
+
+        /**
+         * Upsert new records when primary keys match existing records.
+         */
+        public static final String TRUE = "true";
+
+        /**
+         * Reject new records when primary keys match existing records.
+         */
+        public static final String FALSE = "false";
 
         /**
          * A positive integer indicating the maximum number of records that can
@@ -544,16 +559,6 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * The default value is {@link Options#TRUE TRUE}.
          */
         public static final String ENABLE_INPLACE_UPDATES = "enable_inplace_updates";
-
-        /**
-         * Upsert new records when primary keys match existing records.
-         */
-        public static final String TRUE = "true";
-
-        /**
-         * Reject new records when primary keys match existing records.
-         */
-        public static final String FALSE = "false";
 
         /**
          * Specifies how errors should be handled upon insertion.
@@ -907,7 +912,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
 
         /**
          * Number of tasks for reading file per rank. Default will be system
-         * configuration parameter, external_file_reader_num_tasks.
+         * configuration parameter, <a
+         * href="../../../../../../config/#config-main-external-files"
+         * target="_top">external_file_reader_num_tasks</a>.
          */
         public static final String NUM_TASKS_PER_RANK = "num_tasks_per_rank";
 
@@ -1523,6 +1530,11 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                         from the Avro schema definition, when {@link
      *                         Options#AVRO_SCHEMA AVRO_SCHEMA} exists; do not
      *                         infer from data.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
      *                     <li>{@link Options#BAD_RECORD_TABLE_LIMIT
      *                         BAD_RECORD_TABLE_LIMIT}: A positive integer
      *                         indicating the maximum number of records that
@@ -1984,8 +1996,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                     <li>{@link Options#NUM_TASKS_PER_RANK
      *                         NUM_TASKS_PER_RANK}: Number of tasks for reading
      *                         file per rank. Default will be system
-     *                         configuration parameter,
-     *                         external_file_reader_num_tasks.
+     *                         configuration parameter, <a
+     *                         href="../../../../../../config/#config-main-external-files"
+     *                         target="_top">external_file_reader_num_tasks</a>.
      *                     <li>{@link Options#PK_CONFLICT_PREDICATE_HIGHER
      *                         PK_CONFLICT_PREDICATE_HIGHER}: The record with
      *                         higher value for the column resolves the
@@ -2682,6 +2695,11 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         AVRO_SCHEMA_NO_INFERENCE}: Create table solely from the Avro
      *         schema definition, when {@link Options#AVRO_SCHEMA AVRO_SCHEMA}
      *         exists; do not infer from data.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
      *     <li>{@link Options#BAD_RECORD_TABLE_LIMIT BAD_RECORD_TABLE_LIMIT}: A
      *         positive integer indicating the maximum number of records that
      *         can be written to the bad-record-table. The default value is
@@ -3030,7 +3048,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         columns are left unnamed.
      *     <li>{@link Options#NUM_TASKS_PER_RANK NUM_TASKS_PER_RANK}: Number of
      *         tasks for reading file per rank. Default will be system
-     *         configuration parameter, external_file_reader_num_tasks.
+     *         configuration parameter, <a
+     *         href="../../../../../../config/#config-main-external-files"
+     *         target="_top">external_file_reader_num_tasks</a>.
      *     <li>{@link Options#PK_CONFLICT_PREDICATE_HIGHER
      *         PK_CONFLICT_PREDICATE_HIGHER}: The record with higher value for
      *         the column resolves the primary-key insert conflict. The default
@@ -3246,6 +3266,11 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         AVRO_SCHEMA_NO_INFERENCE}: Create table solely from the Avro
      *         schema definition, when {@link Options#AVRO_SCHEMA AVRO_SCHEMA}
      *         exists; do not infer from data.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
      *     <li>{@link Options#BAD_RECORD_TABLE_LIMIT BAD_RECORD_TABLE_LIMIT}: A
      *         positive integer indicating the maximum number of records that
      *         can be written to the bad-record-table. The default value is
@@ -3594,7 +3619,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         columns are left unnamed.
      *     <li>{@link Options#NUM_TASKS_PER_RANK NUM_TASKS_PER_RANK}: Number of
      *         tasks for reading file per rank. Default will be system
-     *         configuration parameter, external_file_reader_num_tasks.
+     *         configuration parameter, <a
+     *         href="../../../../../../config/#config-main-external-files"
+     *         target="_top">external_file_reader_num_tasks</a>.
      *     <li>{@link Options#PK_CONFLICT_PREDICATE_HIGHER
      *         PK_CONFLICT_PREDICATE_HIGHER}: The record with higher value for
      *         the column resolves the primary-key insert conflict. The default

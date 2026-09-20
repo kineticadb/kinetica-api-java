@@ -52,8 +52,8 @@ class FailbackPollerService {
                         try {
                             GPUdbLogger.debug_with_info("Polling...");
                             if (poll()) {
+                                this.gpudb.failBackToPrimaryCluster();
                                 GPUdbLogger.debug_with_info("Poll successful. Stopping the poller...");
-                                resetClusterPointers();
                                 stop(); // Stop if polling operation is successful
                                 break;
                             }
@@ -139,10 +139,6 @@ class FailbackPollerService {
             GPUdbLogger.info(String.format("Failback to primary cluster at [%s] succeeded", this.primaryURL));
 
         return kineticaRunning;
-    }
-
-    private void resetClusterPointers() {
-        this.gpudb.setCurrClusterIndexPointer(0);
     }
 
     // Handle specific exceptions that require warnings

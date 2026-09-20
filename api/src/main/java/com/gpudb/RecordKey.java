@@ -320,13 +320,45 @@ final class RecordKey {
         addDecimal(value, Type.Column.DEFAULT_DECIMAL_PRECISION, Type.Column.DEFAULT_DECIMAL_SCALE);
     }
 
+    /**
+     * Maps every encoding of a floating point value to one representative:
+     * -0.0 becomes +0.0 and every NaN becomes one quiet NaN.  This matches what
+     * the server does when it builds a shard key.  The key's bytes are hashed to
+     * pick a shard, so two values that compare equal have to produce the same
+     * bytes or they are routed to different shards.  Infinities have a single
+     * encoding each and are returned unchanged.
+     */
+    private static double canonicalizeFloatKey(double value) {
+        if (value == 0.0) {  // catches -0.0 and +0.0, returns the positive one
+            return 0.0;
+        }
+
+        if (Double.isNaN(value)) {
+            return Double.NaN;
+        }
+
+        return value;
+    }
+
+    private static float canonicalizeFloatKey(float value) {
+        if (value == 0.0f) {
+            return 0.0f;
+        }
+
+        if (Float.isNaN(value)) {
+            return Float.NaN;
+        }
+
+        return value;
+    }
+
     public void addDouble(Double value) {
         if (value == null) {
             this.buffer.putDouble(0.0);
             return;
         }
 
-        this.buffer.putDouble(value);
+        this.buffer.putDouble(canonicalizeFloatKey(value.doubleValue()));
     }
 
     public void addFloat(Float value) {
@@ -335,7 +367,7 @@ final class RecordKey {
             return;
         }
 
-        this.buffer.putFloat(value);
+        this.buffer.putFloat(canonicalizeFloatKey(value.floatValue()));
     }
 
     public void addInt(Integer value) {

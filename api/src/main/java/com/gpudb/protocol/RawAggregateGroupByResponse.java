@@ -49,6 +49,16 @@ public class RawAggregateGroupByResponse implements IndexedRecord {
      */
     public static final class Info {
         /**
+         * Number of records written to the result table.  Present only when
+         * {@link
+         * com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
+         * RESULT_TABLE} was given.  Unlike {@link #getTotalNumberOfRecords()
+         * totalNumberOfRecords}, this is the post-limit/offset count,
+         * i.e.&nbsp;the number of records the result table actually holds.
+         */
+        public static final String COUNT = "count";
+
+        /**
          * The fully qualified name of the table (i.e.&nbsp;including the
          * schema) used to store the results.
          */
@@ -187,6 +197,13 @@ public class RawAggregateGroupByResponse implements IndexedRecord {
     /**
      * Additional information.
      * <ul>
+     *     <li>{@link Info#COUNT COUNT}: Number of records written to the
+     *         result table.  Present only when {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
+     *         RESULT_TABLE} was given.  Unlike {@link
+     *         #getTotalNumberOfRecords() totalNumberOfRecords}, this is the
+     *         post-limit/offset count, i.e. the number of records the result
+     *         table actually holds.
      *     <li>{@link Info#QUALIFIED_RESULT_TABLE_NAME
      *         QUALIFIED_RESULT_TABLE_NAME}: The fully qualified name of the
      *         table (i.e. including the schema) used to store the results.
@@ -202,6 +219,13 @@ public class RawAggregateGroupByResponse implements IndexedRecord {
     /**
      * Additional information.
      * <ul>
+     *     <li>{@link Info#COUNT COUNT}: Number of records written to the
+     *         result table.  Present only when {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
+     *         RESULT_TABLE} was given.  Unlike {@link
+     *         #getTotalNumberOfRecords() totalNumberOfRecords}, this is the
+     *         post-limit/offset count, i.e. the number of records the result
+     *         table actually holds.
      *     <li>{@link Info#QUALIFIED_RESULT_TABLE_NAME
      *         QUALIFIED_RESULT_TABLE_NAME}: The fully qualified name of the
      *         table (i.e. including the schema) used to store the results.

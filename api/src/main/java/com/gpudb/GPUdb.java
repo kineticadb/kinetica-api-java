@@ -5579,6 +5579,19 @@ public class GPUdb extends GPUdbBase {
      *                                    The minimum allowed value is '0'. The
      *                                    maximum allowed value is '1000000'.
      *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ALLOW_ALTERNATE_DATE_FORMATS
+     *                                    ALLOW_ALTERNATE_DATE_FORMATS}: Accept
+     *                                    additional date formats when
+     *                                    ingesting and casting strings to
+     *                                    dates, datetimes, and timestamps:
+     *                                    'YYYYMMDD', 'YYYY/MM/DD', and
+     *                                    month-name forms like 'Aug 20 2026'
+     *                                    or '20 August 2026', each optionally
+     *                                    followed by a time of day.  Explicit
+     *                                    formats given to TO_DATE(), etc. are
+     *                                    unaffected. The default value is
+     *                                    'false'.
+     *                                <li>{@link
      *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_AUDIT
      *                                    ENABLE_AUDIT}: Enable or disable
      *                                    auditing.
@@ -5600,20 +5613,48 @@ public class GPUdb extends GPUdbBase {
      *                                    auditing of response information.
      *                                <li>{@link
      *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_AGG_SIZE
-     *                                    SHADOW_AGG_SIZE}: Size of the shadow
-     *                                    aggregate chunk cache in bytes. The
-     *                                    default value is '10000000'. The
-     *                                    minimum allowed value is '0'. The
-     *                                    maximum allowed value is
-     *                                    '2147483647'.
+     *                                    SHADOW_AGG_SIZE}: [DEPRECATED--use
+     *                                    {@link
+     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_CUBE_SIZE
+     *                                    SHADOW_CUBE_SIZE} instead] Size of
+     *                                    the shadow aggregate chunk cache in
+     *                                    bytes. The minimum allowed value is
+     *                                    '0'. The maximum allowed value is
+     *                                    '16000000000'.
      *                                <li>{@link
      *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_FILTER_SIZE
-     *                                    SHADOW_FILTER_SIZE}: Size of the
-     *                                    shadow filter chunk cache in bytes.
-     *                                    The default value is '10000000'. The
+     *                                    SHADOW_FILTER_SIZE}: [DEPRECATED--use
+     *                                    {@link
+     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_CUBE_SIZE
+     *                                    SHADOW_CUBE_SIZE} instead] Size of
+     *                                    the shadow filter chunk cache in
+     *                                    bytes. The minimum allowed value is
+     *                                    '0'. The maximum allowed value is
+     *                                    '16000000000'.
+     *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_CUBE_SIZE
+     *                                    SHADOW_CUBE_SIZE}: Size of the shadow
+     *                                    cube chunk cache in bytes, shared by
+     *                                    aggregate and filter responses.
+     *                                    Replaces the deprecated {@link
+     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_AGG_SIZE
+     *                                    SHADOW_AGG_SIZE} / {@link
+     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_FILTER_SIZE
+     *                                    SHADOW_FILTER_SIZE} options. The
+     *                                    default value is '1000000000'. The
      *                                    minimum allowed value is '0'. The
      *                                    maximum allowed value is
-     *                                    '2147483647'.
+     *                                    '32000000000'.
+     *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_CUBE_PROBATION_PERCENT
+     *                                    SHADOW_CUBE_PROBATION_PERCENT}:
+     *                                    Shadow cube probation segment memory
+     *                                    ceiling, as a percent of the
+     *                                    protected byte budget; the probation
+     *                                    entry cap is derived from it. The
+     *                                    default value is '5'. The minimum
+     *                                    allowed value is '1'. The maximum
+     *                                    allowed value is '10'.
      *                                <li>{@link
      *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_OVERLAPPED_EQUI_JOIN
      *                                    ENABLE_OVERLAPPED_EQUI_JOIN}: Enable
@@ -5709,16 +5750,18 @@ public class GPUdb extends GPUdbBase {
      *                                    '200000'.
      *                                <li>{@link
      *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MAX_CONCURRENT_KERNELS
-     *                                    MAX_CONCURRENT_KERNELS}: Sets the
-     *                                    max_concurrent_kernels value of the
-     *                                    conf. The minimum allowed value is
-     *                                    '0'. The maximum allowed value is
-     *                                    '256'.
+     *                                    MAX_CONCURRENT_KERNELS}: Sets the <a
+     *                                    href="../../../../../config/#config-main-general"
+     *                                    target="_top">max_concurrent_kernels</a>
+     *                                    value of the conf. The minimum
+     *                                    allowed value is '0'. The maximum
+     *                                    allowed value is '256'.
      *                                <li>{@link
      *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SYSTEM_METADATA_RETENTION_PERIOD
      *                                    SYSTEM_METADATA_RETENTION_PERIOD}:
-     *                                    Sets the
-     *                                    system_metadata.retention_period
+     *                                    Sets the <a
+     *                                    href="../../../../../config/#config-main-external-files"
+     *                                    target="_top">system_metadata.retention_period</a>
      *                                    value of the conf. The minimum
      *                                    allowed value is '1'.
      *                                <li>{@link
@@ -5807,7 +5850,7 @@ public class GPUdb extends GPUdbBase {
      *                                <li>{@link
      *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#POSTGRES_PROXY_KEEP_ALIVE
      *                                    POSTGRES_PROXY_KEEP_ALIVE}: Enable
-     *                                    postgres proxy keep alive. The
+     *                                    PostgreSQL proxy keep alive. The
      *                                    default value is 'false'.
      *                                <li>{@link
      *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KIFS_DIRECTORY_DATA_LIMIT
@@ -7618,9 +7661,11 @@ public class GPUdb extends GPUdbBase {
      *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>. Must be an
      *                   existing table. Empty string clears all available
-     *                   tables, though this behavior is be prevented by
-     *                   default via gpudb.conf parameter 'disable_clear_all'.
-     *                   The default value is ''.
+     *                   tables, though this behavior is prevented by default
+     *                   via system configuration parameter <a
+     *                   href="../../../../../config/#config-main-general"
+     *                   target="_top">disable_clear_all</a>. The default value
+     *                   is ''.
      * @param authorization  No longer used. User can pass an empty string. The
      *                       default value is ''.
      * @param options  Optional parameters.
@@ -7779,9 +7824,11 @@ public class GPUdb extends GPUdbBase {
      *                    href="../../../../../concepts/tables/#table-name-resolution"
      *                    target="_top">name resolution rules</a>. Must be
      *                    existing tables. Empty list clears all available
-     *                    tables, though this behavior is be prevented by
-     *                    default via gpudb.conf parameter 'disable_clear_all'.
-     *                    The default value is an empty {@link List}.
+     *                    tables, though this behavior is prevented by default
+     *                    via system configuration parameter <a
+     *                    href="../../../../../config/#config-main-general"
+     *                    target="_top">disable_clear_all</a>. The default
+     *                    value is an empty {@link List}.
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link
@@ -11509,6 +11556,15 @@ public class GPUdb extends GPUdbBase {
      *                         from the Avro schema definition, when {@link
      *                         com.gpudb.protocol.CreateTableExternalRequest.Options#AVRO_SCHEMA
      *                         AVRO_SCHEMA} exists; do not infer from data.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateTableExternalRequest.Options#BAD_RECORD_TABLE_LIMIT
      *                         BAD_RECORD_TABLE_LIMIT}: A positive integer
@@ -12123,8 +12179,9 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.CreateTableExternalRequest.Options#NUM_TASKS_PER_RANK
      *                         NUM_TASKS_PER_RANK}: Number of tasks for reading
      *                         file per rank. Default will be system
-     *                         configuration parameter,
-     *                         external_file_reader_num_tasks.
+     *                         configuration parameter, <a
+     *                         href="../../../../../config/#config-main-external-files"
+     *                         target="_top">external_file_reader_num_tasks</a>.
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateTableExternalRequest.Options#PK_CONFLICT_PREDICATE_HIGHER
      *                         PK_CONFLICT_PREDICATE_HIGHER}: The record with
@@ -21593,6 +21650,15 @@ public class GPUdb extends GPUdbBase {
      *                         from the Avro schema definition, when {@link
      *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AVRO_SCHEMA
      *                         AVRO_SCHEMA} exists; do not infer from data.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
      *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BAD_RECORD_TABLE_LIMIT
      *                         BAD_RECORD_TABLE_LIMIT}: A positive integer
@@ -22166,8 +22232,9 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NUM_TASKS_PER_RANK
      *                         NUM_TASKS_PER_RANK}: Number of tasks for reading
      *                         file per rank. Default will be system
-     *                         configuration parameter,
-     *                         external_file_reader_num_tasks.
+     *                         configuration parameter, <a
+     *                         href="../../../../../config/#config-main-external-files"
+     *                         target="_top">external_file_reader_num_tasks</a>.
      *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PK_CONFLICT_PREDICATE_HIGHER
      *                         PK_CONFLICT_PREDICATE_HIGHER}: The record with
@@ -22824,6 +22891,15 @@ public class GPUdb extends GPUdbBase {
      *                         from the Avro schema definition, when {@link
      *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AVRO_SCHEMA
      *                         AVRO_SCHEMA} exists; do not infer from data.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
      *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BAD_RECORD_TABLE_LIMIT
      *                         BAD_RECORD_TABLE_LIMIT}: A positive integer
@@ -23326,8 +23402,9 @@ public class GPUdb extends GPUdbBase {
      *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NUM_TASKS_PER_RANK
      *                         NUM_TASKS_PER_RANK}: Number of tasks for reading
-     *                         file per rank. Default will be
-     *                         external_file_reader_num_tasks.
+     *                         file per rank. Default will be <a
+     *                         href="../../../../../config/#config-main-external-files"
+     *                         target="_top">external_file_reader_num_tasks</a>.
      *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PK_CONFLICT_PREDICATE_HIGHER
      *                         PK_CONFLICT_PREDICATE_HIGHER}: The record with
@@ -24098,14 +24175,16 @@ public class GPUdb extends GPUdbBase {
      *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#NUM_SPLITS_PER_RANK
      *                         NUM_SPLITS_PER_RANK}: Number of splits for
-     *                         reading data per rank. Default will be
-     *                         external_file_reader_num_tasks. The default
-     *                         value is ''.
+     *                         reading data per rank. Default will be <a
+     *                         href="../../../../../config/#config-main-external-files"
+     *                         target="_top">external_file_reader_num_tasks</a>.
+     *                         The default value is ''.
      *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#NUM_TASKS_PER_RANK
      *                         NUM_TASKS_PER_RANK}: Number of tasks for reading
-     *                         data per rank. Default will be
-     *                         external_file_reader_num_tasks.
+     *                         data per rank. Default will be <a
+     *                         href="../../../../../config/#config-main-external-files"
+     *                         target="_top">external_file_reader_num_tasks</a>.
      *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsFromQueryRequest.Options#PRIMARY_KEYS
      *                         PRIMARY_KEYS}: Comma separated list of column
@@ -26573,6 +26652,35 @@ public class GPUdb extends GPUdbBase {
      *                             <li>{@link
      *                                 com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
      *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#CASCADE_FOREIGN_KEYS
+     *                         CASCADE_FOREIGN_KEYS}: Whether to drop live
+     *                         foreign-key-referencing tables that are not
+     *                         themselves part of the backup, when the table
+     *                         they reference is being replaced. Only applies
+     *                         when @{key of options restore_policy} is
+     *                         @{choice of input.options.restore_policy
+     *                         replace}.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#TRUE
+     *                                 TRUE}: Drop any live table whose foreign
+     *                                 key references a table being replaced,
+     *                                 even when that table is not in the
+     *                                 backup and therefore will not be
+     *                                 restored.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
+     *                                 FALSE}: Fail the restore of a table that
+     *                                 is referenced by a live foreign-key
+     *                                 table which is not part of the backup,
+     *                                 rather than destroying data the backup
+     *                                 cannot restore.
      *                         </ul>
      *                         The default value is {@link
      *                         com.gpudb.protocol.RestoreBackupRequest.Options#FALSE
@@ -30193,32 +30301,6 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.UpdateRecordsRequest.Options#TRUE
      *                         TRUE}.
      *                     <li>{@link
-     *                         com.gpudb.protocol.UpdateRecordsRequest.Options#ENABLE_WORKER_OOP_UPDATE
-     *                         ENABLE_WORKER_OOP_UPDATE}: For an out-of-place
-     *                         update (delete and insert), controls where the
-     *                         replacement records are reinserted. If set to
-     *                         {@link
-     *                         com.gpudb.protocol.UpdateRecordsRequest.Options#TRUE
-     *                         TRUE}, the workers that own the data reinsert
-     *                         them directly, avoiding a round trip through the
-     *                         head node; a shard-key change reshards the
-     *                         replacements to their new owning workers. If set
-     *                         to {@link
-     *                         com.gpudb.protocol.UpdateRecordsRequest.Options#FALSE
-     *                         FALSE}, the replacement records are reinserted
-     *                         from the head node. Overrides the
-     *                         {feature.enable_worker_oop_update}@
-     *                         configuration default.
-     *                         Supported values:
-     *                         <ul>
-     *                             <li>{@link
-     *                                 com.gpudb.protocol.UpdateRecordsRequest.Options#TRUE
-     *                                 TRUE}
-     *                             <li>{@link
-     *                                 com.gpudb.protocol.UpdateRecordsRequest.Options#FALSE
-     *                                 FALSE}
-     *                         </ul>
-     *                     <li>{@link
      *                         com.gpudb.protocol.UpdateRecordsRequest.Options#TRUNCATE_STRINGS
      *                         TRUNCATE_STRINGS}: If set to {@link
      *                         com.gpudb.protocol.UpdateRecordsRequest.Options#TRUE
@@ -30563,32 +30645,6 @@ public class GPUdb extends GPUdbBase {
      *                         The default value is {@link
      *                         com.gpudb.protocol.UpdateRecordsRequest.Options#TRUE
      *                         TRUE}.
-     *                     <li>{@link
-     *                         com.gpudb.protocol.UpdateRecordsRequest.Options#ENABLE_WORKER_OOP_UPDATE
-     *                         ENABLE_WORKER_OOP_UPDATE}: For an out-of-place
-     *                         update (delete and insert), controls where the
-     *                         replacement records are reinserted. If set to
-     *                         {@link
-     *                         com.gpudb.protocol.UpdateRecordsRequest.Options#TRUE
-     *                         TRUE}, the workers that own the data reinsert
-     *                         them directly, avoiding a round trip through the
-     *                         head node; a shard-key change reshards the
-     *                         replacements to their new owning workers. If set
-     *                         to {@link
-     *                         com.gpudb.protocol.UpdateRecordsRequest.Options#FALSE
-     *                         FALSE}, the replacement records are reinserted
-     *                         from the head node. Overrides the
-     *                         {feature.enable_worker_oop_update}@
-     *                         configuration default.
-     *                         Supported values:
-     *                         <ul>
-     *                             <li>{@link
-     *                                 com.gpudb.protocol.UpdateRecordsRequest.Options#TRUE
-     *                                 TRUE}
-     *                             <li>{@link
-     *                                 com.gpudb.protocol.UpdateRecordsRequest.Options#FALSE
-     *                                 FALSE}
-     *                         </ul>
      *                     <li>{@link
      *                         com.gpudb.protocol.UpdateRecordsRequest.Options#TRUNCATE_STRINGS
      *                         TRUNCATE_STRINGS}: If set to {@link

@@ -236,23 +236,6 @@ public class UpdateRecordsRequest<T> {
         public static final String ENABLE_INPLACE_UPDATES = "enable_inplace_updates";
 
         /**
-         * For an out-of-place update (delete and insert), controls where the
-         * replacement records are reinserted. If set to {@link Options#TRUE
-         * TRUE}, the workers that own the data reinsert them directly,
-         * avoiding a round trip through the head node; a shard-key change
-         * reshards the replacements to their new owning workers. If set to
-         * {@link Options#FALSE FALSE}, the replacement records are reinserted
-         * from the head node. Overrides the
-         * {feature.enable_worker_oop_update}@ configuration default.
-         * Supported values:
-         * <ul>
-         *     <li>{@link Options#TRUE TRUE}
-         *     <li>{@link Options#FALSE FALSE}
-         * </ul>
-         */
-        public static final String ENABLE_WORKER_OOP_UPDATE = "enable_worker_oop_update";
-
-        /**
          * If set to {@link Options#TRUE TRUE}, any strings which are too long
          * for their charN string fields will be truncated to fit.
          * Supported values:
@@ -504,24 +487,6 @@ public class UpdateRecordsRequest<T> {
      *                             <li>{@link Options#FALSE FALSE}
      *                         </ul>
      *                         The default value is {@link Options#TRUE TRUE}.
-     *                     <li>{@link Options#ENABLE_WORKER_OOP_UPDATE
-     *                         ENABLE_WORKER_OOP_UPDATE}: For an out-of-place
-     *                         update (delete and insert), controls where the
-     *                         replacement records are reinserted. If set to
-     *                         {@link Options#TRUE TRUE}, the workers that own
-     *                         the data reinsert them directly, avoiding a
-     *                         round trip through the head node; a shard-key
-     *                         change reshards the replacements to their new
-     *                         owning workers. If set to {@link Options#FALSE
-     *                         FALSE}, the replacement records are reinserted
-     *                         from the head node. Overrides the
-     *                         {feature.enable_worker_oop_update}@
-     *                         configuration default.
-     *                         Supported values:
-     *                         <ul>
-     *                             <li>{@link Options#TRUE TRUE}
-     *                             <li>{@link Options#FALSE FALSE}
-     *                         </ul>
      *                     <li>{@link Options#TRUNCATE_STRINGS
      *                         TRUNCATE_STRINGS}: If set to {@link Options#TRUE
      *                         TRUE}, any strings which are too long for their
@@ -815,21 +780,6 @@ public class UpdateRecordsRequest<T> {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
-     *     <li>{@link Options#ENABLE_WORKER_OOP_UPDATE
-     *         ENABLE_WORKER_OOP_UPDATE}: For an out-of-place update (delete
-     *         and insert), controls where the replacement records are
-     *         reinserted. If set to {@link Options#TRUE TRUE}, the workers
-     *         that own the data reinsert them directly, avoiding a round trip
-     *         through the head node; a shard-key change reshards the
-     *         replacements to their new owning workers. If set to {@link
-     *         Options#FALSE FALSE}, the replacement records are reinserted
-     *         from the head node. Overrides the
-     *         {feature.enable_worker_oop_update}@ configuration default.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
-     *         </ul>
      *     <li>{@link Options#TRUNCATE_STRINGS TRUNCATE_STRINGS}: If set to
      *         {@link Options#TRUE TRUE}, any strings which are too long for
      *         their charN string fields will be truncated to fit.
@@ -1002,21 +952,6 @@ public class UpdateRecordsRequest<T> {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#TRUE TRUE}.
-     *     <li>{@link Options#ENABLE_WORKER_OOP_UPDATE
-     *         ENABLE_WORKER_OOP_UPDATE}: For an out-of-place update (delete
-     *         and insert), controls where the replacement records are
-     *         reinserted. If set to {@link Options#TRUE TRUE}, the workers
-     *         that own the data reinsert them directly, avoiding a round trip
-     *         through the head node; a shard-key change reshards the
-     *         replacements to their new owning workers. If set to {@link
-     *         Options#FALSE FALSE}, the replacement records are reinserted
-     *         from the head node. Overrides the
-     *         {feature.enable_worker_oop_update}@ configuration default.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
-     *         </ul>
      *     <li>{@link Options#TRUNCATE_STRINGS TRUNCATE_STRINGS}: If set to
      *         {@link Options#TRUE TRUE}, any strings which are too long for
      *         their charN string fields will be truncated to fit.

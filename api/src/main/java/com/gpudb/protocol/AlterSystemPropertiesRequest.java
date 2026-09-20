@@ -125,6 +125,15 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String MAX_GET_RECORDS_SIZE = "max_get_records_size";
 
         /**
+         * Accept additional date formats when ingesting and casting strings to
+         * dates, datetimes, and timestamps: 'YYYYMMDD', 'YYYY/MM/DD', and
+         * month-name forms like 'Aug 20 2026' or '20 August 2026', each
+         * optionally followed by a time of day.  Explicit formats given to
+         * TO_DATE(), etc. are unaffected. The default value is 'false'.
+         */
+        public static final String ALLOW_ALTERNATE_DATE_FORMATS = "allow_alternate_date_formats";
+
+        /**
          * Enable or disable auditing.
          */
         public static final String ENABLE_AUDIT = "enable_audit";
@@ -150,18 +159,38 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String AUDIT_RESPONSE = "audit_response";
 
         /**
-         * Size of the shadow aggregate chunk cache in bytes. The default value
-         * is '10000000'. The minimum allowed value is '0'. The maximum allowed
-         * value is '2147483647'.
+         * [DEPRECATED--use {@link PropertyUpdatesMap#SHADOW_CUBE_SIZE
+         * SHADOW_CUBE_SIZE} instead] Size of the shadow aggregate chunk cache
+         * in bytes. The minimum allowed value is '0'. The maximum allowed
+         * value is '16000000000'.
          */
         public static final String SHADOW_AGG_SIZE = "shadow_agg_size";
 
         /**
-         * Size of the shadow filter chunk cache in bytes. The default value is
-         * '10000000'. The minimum allowed value is '0'. The maximum allowed
-         * value is '2147483647'.
+         * [DEPRECATED--use {@link PropertyUpdatesMap#SHADOW_CUBE_SIZE
+         * SHADOW_CUBE_SIZE} instead] Size of the shadow filter chunk cache in
+         * bytes. The minimum allowed value is '0'. The maximum allowed value
+         * is '16000000000'.
          */
         public static final String SHADOW_FILTER_SIZE = "shadow_filter_size";
+
+        /**
+         * Size of the shadow cube chunk cache in bytes, shared by aggregate
+         * and filter responses. Replaces the deprecated {@link
+         * PropertyUpdatesMap#SHADOW_AGG_SIZE SHADOW_AGG_SIZE} / {@link
+         * PropertyUpdatesMap#SHADOW_FILTER_SIZE SHADOW_FILTER_SIZE} options.
+         * The default value is '1000000000'. The minimum allowed value is '0'.
+         * The maximum allowed value is '32000000000'.
+         */
+        public static final String SHADOW_CUBE_SIZE = "shadow_cube_size";
+
+        /**
+         * Shadow cube probation segment memory ceiling, as a percent of the
+         * protected byte budget; the probation entry cap is derived from it.
+         * The default value is '5'. The minimum allowed value is '1'. The
+         * maximum allowed value is '10'.
+         */
+        public static final String SHADOW_CUBE_PROBATION_PERCENT = "shadow_cube_probation_percent";
 
         /**
          * Enable overlapped-equi-join filter. The default value is 'true'.
@@ -250,14 +279,17 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String EGRESS_SINGLE_FILE_MAX_SIZE = "egress_single_file_max_size";
 
         /**
-         * Sets the max_concurrent_kernels value of the conf. The minimum
-         * allowed value is '0'. The maximum allowed value is '256'.
+         * Sets the <a href="../../../../../../config/#config-main-general"
+         * target="_top">max_concurrent_kernels</a> value of the conf. The
+         * minimum allowed value is '0'. The maximum allowed value is '256'.
          */
         public static final String MAX_CONCURRENT_KERNELS = "max_concurrent_kernels";
 
         /**
-         * Sets the system_metadata.retention_period value of the conf. The
-         * minimum allowed value is '1'.
+         * Sets the <a
+         * href="../../../../../../config/#config-main-external-files"
+         * target="_top">system_metadata.retention_period</a> value of the
+         * conf. The minimum allowed value is '1'.
          */
         public static final String SYSTEM_METADATA_RETENTION_PERIOD = "system_metadata_retention_period";
 
@@ -350,7 +382,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT = "postgres_proxy_idle_connection_timeout";
 
         /**
-         * Enable postgres proxy keep alive. The default value is 'false'.
+         * Enable PostgreSQL proxy keep alive. The default value is 'false'.
          */
         public static final String POSTGRES_PROXY_KEEP_ALIVE = "postgres_proxy_keep_alive";
 
@@ -525,6 +557,19 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    The minimum allowed value is '0'. The
      *                                    maximum allowed value is '1000000'.
      *                                <li>{@link
+     *                                    PropertyUpdatesMap#ALLOW_ALTERNATE_DATE_FORMATS
+     *                                    ALLOW_ALTERNATE_DATE_FORMATS}: Accept
+     *                                    additional date formats when
+     *                                    ingesting and casting strings to
+     *                                    dates, datetimes, and timestamps:
+     *                                    'YYYYMMDD', 'YYYY/MM/DD', and
+     *                                    month-name forms like 'Aug 20 2026'
+     *                                    or '20 August 2026', each optionally
+     *                                    followed by a time of day.  Explicit
+     *                                    formats given to TO_DATE(), etc. are
+     *                                    unaffected. The default value is
+     *                                    'false'.
+     *                                <li>{@link
      *                                    PropertyUpdatesMap#ENABLE_AUDIT
      *                                    ENABLE_AUDIT}: Enable or disable
      *                                    auditing.
@@ -544,20 +589,48 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    auditing of response information.
      *                                <li>{@link
      *                                    PropertyUpdatesMap#SHADOW_AGG_SIZE
-     *                                    SHADOW_AGG_SIZE}: Size of the shadow
-     *                                    aggregate chunk cache in bytes. The
-     *                                    default value is '10000000'. The
-     *                                    minimum allowed value is '0'. The
-     *                                    maximum allowed value is
-     *                                    '2147483647'.
+     *                                    SHADOW_AGG_SIZE}: [DEPRECATED--use
+     *                                    {@link
+     *                                    PropertyUpdatesMap#SHADOW_CUBE_SIZE
+     *                                    SHADOW_CUBE_SIZE} instead] Size of
+     *                                    the shadow aggregate chunk cache in
+     *                                    bytes. The minimum allowed value is
+     *                                    '0'. The maximum allowed value is
+     *                                    '16000000000'.
      *                                <li>{@link
      *                                    PropertyUpdatesMap#SHADOW_FILTER_SIZE
-     *                                    SHADOW_FILTER_SIZE}: Size of the
-     *                                    shadow filter chunk cache in bytes.
-     *                                    The default value is '10000000'. The
+     *                                    SHADOW_FILTER_SIZE}: [DEPRECATED--use
+     *                                    {@link
+     *                                    PropertyUpdatesMap#SHADOW_CUBE_SIZE
+     *                                    SHADOW_CUBE_SIZE} instead] Size of
+     *                                    the shadow filter chunk cache in
+     *                                    bytes. The minimum allowed value is
+     *                                    '0'. The maximum allowed value is
+     *                                    '16000000000'.
+     *                                <li>{@link
+     *                                    PropertyUpdatesMap#SHADOW_CUBE_SIZE
+     *                                    SHADOW_CUBE_SIZE}: Size of the shadow
+     *                                    cube chunk cache in bytes, shared by
+     *                                    aggregate and filter responses.
+     *                                    Replaces the deprecated {@link
+     *                                    PropertyUpdatesMap#SHADOW_AGG_SIZE
+     *                                    SHADOW_AGG_SIZE} / {@link
+     *                                    PropertyUpdatesMap#SHADOW_FILTER_SIZE
+     *                                    SHADOW_FILTER_SIZE} options. The
+     *                                    default value is '1000000000'. The
      *                                    minimum allowed value is '0'. The
      *                                    maximum allowed value is
-     *                                    '2147483647'.
+     *                                    '32000000000'.
+     *                                <li>{@link
+     *                                    PropertyUpdatesMap#SHADOW_CUBE_PROBATION_PERCENT
+     *                                    SHADOW_CUBE_PROBATION_PERCENT}:
+     *                                    Shadow cube probation segment memory
+     *                                    ceiling, as a percent of the
+     *                                    protected byte budget; the probation
+     *                                    entry cap is derived from it. The
+     *                                    default value is '5'. The minimum
+     *                                    allowed value is '1'. The maximum
+     *                                    allowed value is '10'.
      *                                <li>{@link
      *                                    PropertyUpdatesMap#ENABLE_OVERLAPPED_EQUI_JOIN
      *                                    ENABLE_OVERLAPPED_EQUI_JOIN}: Enable
@@ -651,16 +724,18 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    '200000'.
      *                                <li>{@link
      *                                    PropertyUpdatesMap#MAX_CONCURRENT_KERNELS
-     *                                    MAX_CONCURRENT_KERNELS}: Sets the
-     *                                    max_concurrent_kernels value of the
-     *                                    conf. The minimum allowed value is
-     *                                    '0'. The maximum allowed value is
-     *                                    '256'.
+     *                                    MAX_CONCURRENT_KERNELS}: Sets the <a
+     *                                    href="../../../../../../config/#config-main-general"
+     *                                    target="_top">max_concurrent_kernels</a>
+     *                                    value of the conf. The minimum
+     *                                    allowed value is '0'. The maximum
+     *                                    allowed value is '256'.
      *                                <li>{@link
      *                                    PropertyUpdatesMap#SYSTEM_METADATA_RETENTION_PERIOD
      *                                    SYSTEM_METADATA_RETENTION_PERIOD}:
-     *                                    Sets the
-     *                                    system_metadata.retention_period
+     *                                    Sets the <a
+     *                                    href="../../../../../../config/#config-main-external-files"
+     *                                    target="_top">system_metadata.retention_period</a>
      *                                    value of the conf. The minimum
      *                                    allowed value is '1'.
      *                                <li>{@link PropertyUpdatesMap#TCS_PER_TOM
@@ -745,7 +820,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                <li>{@link
      *                                    PropertyUpdatesMap#POSTGRES_PROXY_KEEP_ALIVE
      *                                    POSTGRES_PROXY_KEEP_ALIVE}: Enable
-     *                                    postgres proxy keep alive. The
+     *                                    PostgreSQL proxy keep alive. The
      *                                    default value is 'false'.
      *                                <li>{@link
      *                                    PropertyUpdatesMap#KIFS_DIRECTORY_DATA_LIMIT
@@ -864,6 +939,13 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         database will serve for a given data retrieval call. The default
      *         value is '20000'. The minimum allowed value is '0'. The maximum
      *         allowed value is '1000000'.
+     *     <li>{@link PropertyUpdatesMap#ALLOW_ALTERNATE_DATE_FORMATS
+     *         ALLOW_ALTERNATE_DATE_FORMATS}: Accept additional date formats
+     *         when ingesting and casting strings to dates, datetimes, and
+     *         timestamps: 'YYYYMMDD', 'YYYY/MM/DD', and month-name forms like
+     *         'Aug 20 2026' or '20 August 2026', each optionally followed by a
+     *         time of day.  Explicit formats given to TO_DATE(), etc. are
+     *         unaffected. The default value is 'false'.
      *     <li>{@link PropertyUpdatesMap#ENABLE_AUDIT ENABLE_AUDIT}: Enable or
      *         disable auditing.
      *     <li>{@link PropertyUpdatesMap#AUDIT_HEADERS AUDIT_HEADERS}: Enable
@@ -874,14 +956,30 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         disable auditing of request data.
      *     <li>{@link PropertyUpdatesMap#AUDIT_RESPONSE AUDIT_RESPONSE}: Enable
      *         or disable auditing of response information.
-     *     <li>{@link PropertyUpdatesMap#SHADOW_AGG_SIZE SHADOW_AGG_SIZE}: Size
-     *         of the shadow aggregate chunk cache in bytes. The default value
-     *         is '10000000'. The minimum allowed value is '0'. The maximum
-     *         allowed value is '2147483647'.
+     *     <li>{@link PropertyUpdatesMap#SHADOW_AGG_SIZE SHADOW_AGG_SIZE}:
+     *         [DEPRECATED--use {@link PropertyUpdatesMap#SHADOW_CUBE_SIZE
+     *         SHADOW_CUBE_SIZE} instead] Size of the shadow aggregate chunk
+     *         cache in bytes. The minimum allowed value is '0'. The maximum
+     *         allowed value is '16000000000'.
      *     <li>{@link PropertyUpdatesMap#SHADOW_FILTER_SIZE
-     *         SHADOW_FILTER_SIZE}: Size of the shadow filter chunk cache in
-     *         bytes. The default value is '10000000'. The minimum allowed
-     *         value is '0'. The maximum allowed value is '2147483647'.
+     *         SHADOW_FILTER_SIZE}: [DEPRECATED--use {@link
+     *         PropertyUpdatesMap#SHADOW_CUBE_SIZE SHADOW_CUBE_SIZE} instead]
+     *         Size of the shadow filter chunk cache in bytes. The minimum
+     *         allowed value is '0'. The maximum allowed value is
+     *         '16000000000'.
+     *     <li>{@link PropertyUpdatesMap#SHADOW_CUBE_SIZE SHADOW_CUBE_SIZE}:
+     *         Size of the shadow cube chunk cache in bytes, shared by
+     *         aggregate and filter responses. Replaces the deprecated {@link
+     *         PropertyUpdatesMap#SHADOW_AGG_SIZE SHADOW_AGG_SIZE} / {@link
+     *         PropertyUpdatesMap#SHADOW_FILTER_SIZE SHADOW_FILTER_SIZE}
+     *         options. The default value is '1000000000'. The minimum allowed
+     *         value is '0'. The maximum allowed value is '32000000000'.
+     *     <li>{@link PropertyUpdatesMap#SHADOW_CUBE_PROBATION_PERCENT
+     *         SHADOW_CUBE_PROBATION_PERCENT}: Shadow cube probation segment
+     *         memory ceiling, as a percent of the protected byte budget; the
+     *         probation entry cap is derived from it. The default value is
+     *         '5'. The minimum allowed value is '1'. The maximum allowed value
+     *         is '10'.
      *     <li>{@link PropertyUpdatesMap#ENABLE_OVERLAPPED_EQUI_JOIN
      *         ENABLE_OVERLAPPED_EQUI_JOIN}: Enable overlapped-equi-join
      *         filter. The default value is 'true'.
@@ -935,13 +1033,16 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         limitations. The default value is '10000'. The minimum allowed
      *         value is '1'. The maximum allowed value is '200000'.
      *     <li>{@link PropertyUpdatesMap#MAX_CONCURRENT_KERNELS
-     *         MAX_CONCURRENT_KERNELS}: Sets the max_concurrent_kernels value
-     *         of the conf. The minimum allowed value is '0'. The maximum
-     *         allowed value is '256'.
+     *         MAX_CONCURRENT_KERNELS}: Sets the <a
+     *         href="../../../../../../config/#config-main-general"
+     *         target="_top">max_concurrent_kernels</a> value of the conf. The
+     *         minimum allowed value is '0'. The maximum allowed value is
+     *         '256'.
      *     <li>{@link PropertyUpdatesMap#SYSTEM_METADATA_RETENTION_PERIOD
-     *         SYSTEM_METADATA_RETENTION_PERIOD}: Sets the
-     *         system_metadata.retention_period value of the conf. The minimum
-     *         allowed value is '1'.
+     *         SYSTEM_METADATA_RETENTION_PERIOD}: Sets the <a
+     *         href="../../../../../../config/#config-main-external-files"
+     *         target="_top">system_metadata.retention_period</a> value of the
+     *         conf. The minimum allowed value is '1'.
      *     <li>{@link PropertyUpdatesMap#TCS_PER_TOM TCS_PER_TOM}: Size of the
      *         worker rank data calculation thread pool.  This is primarily
      *         used for computation-based operations such as aggregates and
@@ -989,7 +1090,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT}: Idle connection timeout
      *         in seconds.
      *     <li>{@link PropertyUpdatesMap#POSTGRES_PROXY_KEEP_ALIVE
-     *         POSTGRES_PROXY_KEEP_ALIVE}: Enable postgres proxy keep alive.
+     *         POSTGRES_PROXY_KEEP_ALIVE}: Enable PostgreSQL proxy keep alive.
      *         The default value is 'false'.
      *     <li>{@link PropertyUpdatesMap#KIFS_DIRECTORY_DATA_LIMIT
      *         KIFS_DIRECTORY_DATA_LIMIT}: The default maximum capacity to
@@ -1070,6 +1171,13 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         database will serve for a given data retrieval call. The default
      *         value is '20000'. The minimum allowed value is '0'. The maximum
      *         allowed value is '1000000'.
+     *     <li>{@link PropertyUpdatesMap#ALLOW_ALTERNATE_DATE_FORMATS
+     *         ALLOW_ALTERNATE_DATE_FORMATS}: Accept additional date formats
+     *         when ingesting and casting strings to dates, datetimes, and
+     *         timestamps: 'YYYYMMDD', 'YYYY/MM/DD', and month-name forms like
+     *         'Aug 20 2026' or '20 August 2026', each optionally followed by a
+     *         time of day.  Explicit formats given to TO_DATE(), etc. are
+     *         unaffected. The default value is 'false'.
      *     <li>{@link PropertyUpdatesMap#ENABLE_AUDIT ENABLE_AUDIT}: Enable or
      *         disable auditing.
      *     <li>{@link PropertyUpdatesMap#AUDIT_HEADERS AUDIT_HEADERS}: Enable
@@ -1080,14 +1188,30 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         disable auditing of request data.
      *     <li>{@link PropertyUpdatesMap#AUDIT_RESPONSE AUDIT_RESPONSE}: Enable
      *         or disable auditing of response information.
-     *     <li>{@link PropertyUpdatesMap#SHADOW_AGG_SIZE SHADOW_AGG_SIZE}: Size
-     *         of the shadow aggregate chunk cache in bytes. The default value
-     *         is '10000000'. The minimum allowed value is '0'. The maximum
-     *         allowed value is '2147483647'.
+     *     <li>{@link PropertyUpdatesMap#SHADOW_AGG_SIZE SHADOW_AGG_SIZE}:
+     *         [DEPRECATED--use {@link PropertyUpdatesMap#SHADOW_CUBE_SIZE
+     *         SHADOW_CUBE_SIZE} instead] Size of the shadow aggregate chunk
+     *         cache in bytes. The minimum allowed value is '0'. The maximum
+     *         allowed value is '16000000000'.
      *     <li>{@link PropertyUpdatesMap#SHADOW_FILTER_SIZE
-     *         SHADOW_FILTER_SIZE}: Size of the shadow filter chunk cache in
-     *         bytes. The default value is '10000000'. The minimum allowed
-     *         value is '0'. The maximum allowed value is '2147483647'.
+     *         SHADOW_FILTER_SIZE}: [DEPRECATED--use {@link
+     *         PropertyUpdatesMap#SHADOW_CUBE_SIZE SHADOW_CUBE_SIZE} instead]
+     *         Size of the shadow filter chunk cache in bytes. The minimum
+     *         allowed value is '0'. The maximum allowed value is
+     *         '16000000000'.
+     *     <li>{@link PropertyUpdatesMap#SHADOW_CUBE_SIZE SHADOW_CUBE_SIZE}:
+     *         Size of the shadow cube chunk cache in bytes, shared by
+     *         aggregate and filter responses. Replaces the deprecated {@link
+     *         PropertyUpdatesMap#SHADOW_AGG_SIZE SHADOW_AGG_SIZE} / {@link
+     *         PropertyUpdatesMap#SHADOW_FILTER_SIZE SHADOW_FILTER_SIZE}
+     *         options. The default value is '1000000000'. The minimum allowed
+     *         value is '0'. The maximum allowed value is '32000000000'.
+     *     <li>{@link PropertyUpdatesMap#SHADOW_CUBE_PROBATION_PERCENT
+     *         SHADOW_CUBE_PROBATION_PERCENT}: Shadow cube probation segment
+     *         memory ceiling, as a percent of the protected byte budget; the
+     *         probation entry cap is derived from it. The default value is
+     *         '5'. The minimum allowed value is '1'. The maximum allowed value
+     *         is '10'.
      *     <li>{@link PropertyUpdatesMap#ENABLE_OVERLAPPED_EQUI_JOIN
      *         ENABLE_OVERLAPPED_EQUI_JOIN}: Enable overlapped-equi-join
      *         filter. The default value is 'true'.
@@ -1141,13 +1265,16 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         limitations. The default value is '10000'. The minimum allowed
      *         value is '1'. The maximum allowed value is '200000'.
      *     <li>{@link PropertyUpdatesMap#MAX_CONCURRENT_KERNELS
-     *         MAX_CONCURRENT_KERNELS}: Sets the max_concurrent_kernels value
-     *         of the conf. The minimum allowed value is '0'. The maximum
-     *         allowed value is '256'.
+     *         MAX_CONCURRENT_KERNELS}: Sets the <a
+     *         href="../../../../../../config/#config-main-general"
+     *         target="_top">max_concurrent_kernels</a> value of the conf. The
+     *         minimum allowed value is '0'. The maximum allowed value is
+     *         '256'.
      *     <li>{@link PropertyUpdatesMap#SYSTEM_METADATA_RETENTION_PERIOD
-     *         SYSTEM_METADATA_RETENTION_PERIOD}: Sets the
-     *         system_metadata.retention_period value of the conf. The minimum
-     *         allowed value is '1'.
+     *         SYSTEM_METADATA_RETENTION_PERIOD}: Sets the <a
+     *         href="../../../../../../config/#config-main-external-files"
+     *         target="_top">system_metadata.retention_period</a> value of the
+     *         conf. The minimum allowed value is '1'.
      *     <li>{@link PropertyUpdatesMap#TCS_PER_TOM TCS_PER_TOM}: Size of the
      *         worker rank data calculation thread pool.  This is primarily
      *         used for computation-based operations such as aggregates and
@@ -1195,7 +1322,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT}: Idle connection timeout
      *         in seconds.
      *     <li>{@link PropertyUpdatesMap#POSTGRES_PROXY_KEEP_ALIVE
-     *         POSTGRES_PROXY_KEEP_ALIVE}: Enable postgres proxy keep alive.
+     *         POSTGRES_PROXY_KEEP_ALIVE}: Enable PostgreSQL proxy keep alive.
      *         The default value is 'false'.
      *     <li>{@link PropertyUpdatesMap#KIFS_DIRECTORY_DATA_LIMIT
      *         KIFS_DIRECTORY_DATA_LIMIT}: The default maximum capacity to

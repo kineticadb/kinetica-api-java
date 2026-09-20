@@ -194,6 +194,25 @@ public class RestoreBackupRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
+         * Whether to drop live foreign-key-referencing tables that are not
+         * themselves part of the backup, when the table they reference is
+         * being replaced. Only applies when @{key of options restore_policy}
+         * is @{choice of input.options.restore_policy replace}.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}: Drop any live table whose foreign
+         *         key references a table being replaced, even when that table
+         *         is not in the backup and therefore will not be restored.
+         *     <li>{@link Options#FALSE FALSE}: Fail the restore of a table
+         *         that is referenced by a live foreign-key table which is not
+         *         part of the backup, rather than destroying data the backup
+         *         cannot restore.
+         * </ul>
+         * The default value is {@link Options#FALSE FALSE}.
+         */
+        public static final String CASCADE_FOREIGN_KEYS = "cascade_foreign_keys";
+
+        /**
          * Behavior to apply when the schema containing any database object to
          * restore does not already exist.
          * Supported values:
@@ -474,6 +493,30 @@ public class RestoreBackupRequest implements IndexedRecord {
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
      *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link Options#CASCADE_FOREIGN_KEYS
+     *                         CASCADE_FOREIGN_KEYS}: Whether to drop live
+     *                         foreign-key-referencing tables that are not
+     *                         themselves part of the backup, when the table
+     *                         they reference is being replaced. Only applies
+     *                         when @{key of options restore_policy} is
+     *                         @{choice of input.options.restore_policy
+     *                         replace}.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}: Drop any live
+     *                                 table whose foreign key references a
+     *                                 table being replaced, even when that
+     *                                 table is not in the backup and therefore
+     *                                 will not be restored.
+     *                             <li>{@link Options#FALSE FALSE}: Fail the
+     *                                 restore of a table that is referenced by
+     *                                 a live foreign-key table which is not
+     *                                 part of the backup, rather than
+     *                                 destroying data the backup cannot
+     *                                 restore.
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
@@ -805,6 +848,24 @@ public class RestoreBackupRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#CASCADE_FOREIGN_KEYS CASCADE_FOREIGN_KEYS}:
+     *         Whether to drop live foreign-key-referencing tables that are not
+     *         themselves part of the backup, when the table they reference is
+     *         being replaced. Only applies when @{key of options
+     *         restore_policy} is @{choice of input.options.restore_policy
+     *         replace}.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}: Drop any live table whose
+     *                 foreign key references a table being replaced, even when
+     *                 that table is not in the backup and therefore will not
+     *                 be restored.
+     *             <li>{@link Options#FALSE FALSE}: Fail the restore of a table
+     *                 that is referenced by a live foreign-key table which is
+     *                 not part of the backup, rather than destroying data the
+     *                 backup cannot restore.
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#CREATE_SCHEMA_IF_NOT_EXIST
      *         CREATE_SCHEMA_IF_NOT_EXIST}: Behavior to apply when the schema
      *         containing any database object to restore does not already
@@ -921,6 +982,24 @@ public class RestoreBackupRequest implements IndexedRecord {
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
      *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#FALSE FALSE}.
+     *     <li>{@link Options#CASCADE_FOREIGN_KEYS CASCADE_FOREIGN_KEYS}:
+     *         Whether to drop live foreign-key-referencing tables that are not
+     *         themselves part of the backup, when the table they reference is
+     *         being replaced. Only applies when @{key of options
+     *         restore_policy} is @{choice of input.options.restore_policy
+     *         replace}.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}: Drop any live table whose
+     *                 foreign key references a table being replaced, even when
+     *                 that table is not in the backup and therefore will not
+     *                 be restored.
+     *             <li>{@link Options#FALSE FALSE}: Fail the restore of a table
+     *                 that is referenced by a live foreign-key table which is
+     *                 not part of the backup, rather than destroying data the
+     *                 backup cannot restore.
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#CREATE_SCHEMA_IF_NOT_EXIST

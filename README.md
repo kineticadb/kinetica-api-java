@@ -57,6 +57,71 @@ changes to Kinetica functions, please refer to
 [CHANGELOG-FUNCTIONS.md](CHANGELOG-FUNCTIONS.md).
 
 
+### Connecting to a Cluster or HA Ring
+
+Give the API one or more head node URLs.  Everything else — the rest of the HA
+ring, and each cluster's worker ranks for multi-head I/O — is discovered from
+the server.
+
+```java
+GPUdbBase.Options options = new GPUdbBase.Options();
+options.setUsername( "user" );
+options.setPassword( "pass" );
+
+// One cluster, or any member of an HA ring
+GPUdb gpudb = new GPUdb( "http://hostA:9191", options );
+
+// Or several, when the ring members are known up front
+GPUdb gpudb = new GPUdb( Arrays.asList( "http://hostA:9191",
+                                        "http://hostB:9191" ), options );
+```
+
+The options that affect which cluster is used:
+
+| Option | Default | Effect |
+|---|---|---|
+| `setPrimaryUrl` | none | The preferred cluster.  Tried first, and the client fails *back* to it once it recovers.  Without it, no cluster is preferred and there is no failback. |
+| `setDisableFailover` | `false` | Pin the connection to one cluster and never switch. |
+| `setDisableAutoDiscovery` | `false` | Do not ask the server about the ring or the worker ranks.  Use the URLs given, head node only. |
+
+#### Failover and Failback
+
+If the active cluster becomes unreachable, the client moves to another cluster
+in the ring and retries the request.  If a primary URL is configured, a
+background poller returns the client to the referenced primary cluster once it
+is usable again.
+
+A cluster is eligible only if it is reachable, running, **and** not draining its
+HA queue — a draining cluster answers status checks but is not yet ready to
+serve.
+
+#### Degraded (Head Node Only) Mode
+
+Multi-head I/O needs the client to reach the worker addresses a cluster
+advertises.  When it cannot — the instance is in a container or using NAT'd
+address, for instance — the client runs in **degraded mode**: everything still
+works, routed through the head node, at lower throughput.  A warning is logged
+naming the cluster.
+
+Two things worth knowing about **degraded mode**:
+
+* **It is evaluated per target cluster, not once for the ring.** The client can
+  be degraded with respect to one cluster and still use multi-head against
+  another.
+* **It never prevents failover.** Failover needs only a reachable head node, so
+  the client will move to a cluster that can only serve head-node-only rather
+  than fail.  Capability is re-checked on arrival, so a cluster that was
+  degraded earlier may be used at full speed later and vice versa.
+
+If a run is slower than expected, check the log for a degraded-mode warning
+before looking elsewhere.  The worker addresses a cluster advertises are part of
+that cluster's configuration, and they are not necessarily routable from every
+client network.  Where a rank's host has several network interfaces, the cluster
+may advertise an address for each, and `setHostnameRegex` will select the one
+reachable from your network — this is what that option is for.  Where a rank
+advertises a single unreachable address, no client-side option will enable
+multi-head.
+
 ### KIFS File upload and download facility
 
 The purpose of this API is to facilitate uploading of files into KIFS from a

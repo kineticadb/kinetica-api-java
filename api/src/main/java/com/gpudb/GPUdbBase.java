@@ -166,12 +166,6 @@ public abstract class GPUdbBase {
     // The default port for host manager URLs
     private static final int DEFAULT_HOST_MANAGER_PORT = 9300;
 
-    // The number of times that the API will attempt to submit a host
-    // manager endpoint request.  We need this in case the user chose
-    // a bad host manager port.  We don't want to go into an infinite
-    // loop
-    private static final int HOST_MANAGER_SUBMIT_REQUEST_RETRY_COUNT = 3;
-
     // The timeout interval (in milliseconds) used when trying to establish a
     // connection to the database at GPUdb initialization time.  The default
     // is 0 (no retry).
@@ -590,23 +584,23 @@ public abstract class GPUdbBase {
         }
 
         /**
-         * Gets the value of the flag indicating whether TCP keepalive is
+         * Gets the value of the flag indicating whether TCP keep-alive is
          * enabled on sockets. When enabled, the operating system will send
-         * periodic keepalive probes on idle connections, which can help prevent
+         * periodic keep-alive probes on idle connections, which can help prevent
          * firewalls and NAT devices from silently dropping the connection
          * during long-running queries.
          *
-         * <p>The default is {@code true}. Disabling TCP keepalive may cause
+         * <p>The default is {@code true}. Disabling TCP keep-alive may cause
          * clients to hang indefinitely if an intermediary (firewall, NAT,
          * load balancer) silently drops an idle connection during a
          * long-running query.</p>
          *
-         * <p><b>Note:</b> TCP keepalive alone may not be sufficient. The
-         * keepalive interval is OS-controlled (default 2 hours on Linux).
+         * <p><b>Note:</b> TCP keep-alive alone may not be sufficient. The
+         * keep-alive interval is OS-controlled (default 2 hours on Linux).
          * For robust protection, also set a non-infinite timeout using
          * {@link #setTimeout(int)}.</p>
          *
-         * @return  {@code true} if TCP keepalive is enabled, {@code false} otherwise
+         * @return  {@code true} if TCP keep-alive is enabled, {@code false} otherwise
          *
          * @see #setTcpKeepAlive(boolean)
          * @see #setTimeout(int)
@@ -616,8 +610,8 @@ public abstract class GPUdbBase {
         }
 
         /**
-         * Gets the TCP keepalive idle time in seconds. This is the time a
-         * connection must be idle before the first keepalive probe is sent.
+         * Gets the TCP keep-alive idle time in seconds. This is the time a
+         * connection must be idle before the first keep-alive probe is sent.
          *
          * <p>A value of 0 (the default) means use the operating system default,
          * which is typically 7200 seconds (2 hours) on Linux.</p>
@@ -625,7 +619,7 @@ public abstract class GPUdbBase {
          * <p><b>Note:</b> This option requires Java 11+ and OS support for
          * {@code TCP_KEEPIDLE}. If not supported, the setting will be ignored.</p>
          *
-         * @return  the TCP keepalive idle time in seconds, or 0 for OS default
+         * @return  the TCP keep-alive idle time in seconds, or 0 for OS default
          *
          * @see #setTcpKeepIdle(int)
          * @see #getTcpKeepAlive()
@@ -635,8 +629,8 @@ public abstract class GPUdbBase {
         }
 
         /**
-         * Gets the TCP keepalive probe interval in seconds. This is the time
-         * between successive keepalive probes when no acknowledgment is received.
+         * Gets the TCP keep-alive probe interval in seconds. This is the time
+         * between successive keep-alive probes when no acknowledgment is received.
          *
          * <p>A value of 0 (the default) means use the operating system default,
          * which is typically 75 seconds on Linux.</p>
@@ -644,7 +638,7 @@ public abstract class GPUdbBase {
          * <p><b>Note:</b> This option requires Java 11+ and OS support for
          * {@code TCP_KEEPINTERVAL}. If not supported, the setting will be ignored.</p>
          *
-         * @return  the TCP keepalive interval in seconds, or 0 for OS default
+         * @return  the TCP keep-alive interval in seconds, or 0 for OS default
          *
          * @see #setTcpKeepInterval(int)
          * @see #getTcpKeepAlive()
@@ -654,7 +648,7 @@ public abstract class GPUdbBase {
         }
 
         /**
-         * Gets the TCP keepalive probe count. This is the number of unacknowledged
+         * Gets the TCP keep-alive probe count. This is the number of unacknowledged
          * probes to send before considering the connection dead.
          *
          * <p>A value of 0 (the default) means use the operating system default,
@@ -663,7 +657,7 @@ public abstract class GPUdbBase {
          * <p><b>Note:</b> This option requires Java 11+ and OS support for
          * {@code TCP_KEEPCOUNT}. If not supported, the setting will be ignored.</p>
          *
-         * @return  the TCP keepalive probe count, or 0 for OS default
+         * @return  the TCP keep-alive probe count, or 0 for OS default
          *
          * @see #setTcpKeepCount(int)
          * @see #getTcpKeepAlive()
@@ -760,7 +754,8 @@ public abstract class GPUdbBase {
          * retry, the API will sleep for two minutes, the next sleep interval
          * would be four minutes, and onward.
          *
-         * @return  the initialConnectionAttemptTimeout value
+         * @return  the initial connection attempt timeout, in milliseconds;
+         *          0 means the connection is not re-attempted
          *
          * @see #setInitialConnectionAttemptTimeout(long)
          */
@@ -1226,22 +1221,22 @@ public abstract class GPUdbBase {
         }
 
         /**
-         * Sets whether TCP keepalive is enabled on sockets. When enabled, the
-         * operating system will send periodic keepalive probes on idle
+         * Sets whether TCP keep-alive is enabled on sockets. When enabled, the
+         * operating system will send periodic keep-alive probes on idle
          * connections, which can help prevent firewalls and NAT devices from
          * silently dropping the connection during long-running queries.
          *
-         * <p>The default is {@code true}. Disabling TCP keepalive may cause
+         * <p>The default is {@code true}. Disabling TCP keep-alive may cause
          * clients to hang indefinitely if an intermediary (firewall, NAT,
          * load balancer) silently drops an idle connection during a
          * long-running query.</p>
          *
-         * <p><b>Important:</b> TCP keepalive alone may not be sufficient to
-         * prevent hangs. The keepalive interval is controlled at the operating
+         * <p><b>Important:</b> TCP keep-alive alone may not be sufficient to
+         * prevent hangs. The keep-alive interval is controlled at the operating
          * system level (e.g., {@code tcp_keepalive_time} on Linux, which
          * defaults to 2 hours). If the firewall's idle timeout is shorter than
-         * the OS keepalive interval, the connection may still be dropped before
-         * the first keepalive probe is sent.</p>
+         * the OS keep-alive interval, the connection may still be dropped before
+         * the first keep-alive probe is sent.</p>
          *
          * <p>For robust protection against connection drops during long-running
          * queries, you should also set a non-infinite socket timeout using
@@ -1249,14 +1244,14 @@ public abstract class GPUdbBase {
          * receive a {@code SocketTimeoutException} rather than hanging forever,
          * allowing the application to detect the issue and retry.</p>
          *
-         * <p>To tune OS-level keepalive parameters on Linux:</p>
+         * <p>To tune OS-level keep-alive parameters on Linux:</p>
          * <ul>
          *   <li>{@code tcp_keepalive_time} - seconds before first probe (default: 7200)</li>
          *   <li>{@code tcp_keepalive_intvl} - seconds between probes (default: 75)</li>
          *   <li>{@code tcp_keepalive_probes} - number of probes before giving up (default: 9)</li>
          * </ul>
          *
-         * @param value  {@code true} to enable TCP keepalive, {@code false} to disable
+         * @param value  {@code true} to enable TCP keep-alive, {@code false} to disable
          * @return       the current {@link Options} instance
          *
          * @see #getTcpKeepAlive()
@@ -1268,8 +1263,8 @@ public abstract class GPUdbBase {
         }
 
         /**
-         * Sets the TCP keepalive idle time in seconds. This is the time a
-         * connection must be idle before the first keepalive probe is sent.
+         * Sets the TCP keep-alive idle time in seconds. This is the time a
+         * connection must be idle before the first keep-alive probe is sent.
          *
          * <p>A value of 0 (the default) means use the operating system default,
          * which is typically 7200 seconds (2 hours) on Linux. Setting a lower
@@ -1282,7 +1277,7 @@ public abstract class GPUdbBase {
          * If not supported on the current platform, the setting will be silently
          * ignored.</p>
          *
-         * <p><b>Important:</b> TCP keepalive must be enabled via
+         * <p><b>Important:</b> TCP keep-alive must be enabled via
          * {@link #setTcpKeepAlive(boolean)} for this setting to have any effect.
          * If {@code tcpKeepAlive} is {@code false} and this option is set to a
          * non-zero value, a warning will be logged and the setting will be ignored.</p>
@@ -1298,26 +1293,26 @@ public abstract class GPUdbBase {
          */
         public Options setTcpKeepIdle(int seconds) {
             if (seconds < 0) {
-                throw new IllegalArgumentException("TCP keepalive idle time must be >= 0");
+                throw new IllegalArgumentException("TCP keep-alive idle time must be >= 0");
             }
             this.tcpKeepIdle = seconds;
             return this;
         }
 
         /**
-         * Sets the TCP keepalive probe interval in seconds. This is the time
-         * between successive keepalive probes when no acknowledgment is received.
+         * Sets the TCP keep-alive probe interval in seconds. This is the time
+         * between successive keep-alive probes when no acknowledgment is received.
          *
          * <p>A value of 0 (the default) means use the operating system default,
          * which is typically 75 seconds on Linux. Setting a lower value can help
-         * detect dead connections more quickly once keepalive probing has started.</p>
+         * detect dead connections more quickly once keep-alive probing has started.</p>
          *
          * <p><b>Note:</b> This option requires Java 11+ and OS support for
          * {@code TCP_KEEPINTERVAL} (equivalent to Linux's {@code tcp_keepalive_intvl}).
          * If not supported on the current platform, the setting will be silently
          * ignored.</p>
          *
-         * <p><b>Important:</b> TCP keepalive must be enabled via
+         * <p><b>Important:</b> TCP keep-alive must be enabled via
          * {@link #setTcpKeepAlive(boolean)} for this setting to have any effect.
          * If {@code tcpKeepAlive} is {@code false} and this option is set to a
          * non-zero value, a warning will be logged and the setting will be ignored.</p>
@@ -1333,14 +1328,14 @@ public abstract class GPUdbBase {
          */
         public Options setTcpKeepInterval(int seconds) {
             if (seconds < 0) {
-                throw new IllegalArgumentException("TCP keepalive interval must be >= 0");
+                throw new IllegalArgumentException("TCP keep-alive interval must be >= 0");
             }
             this.tcpKeepInterval = seconds;
             return this;
         }
 
         /**
-         * Sets the TCP keepalive probe count. This is the number of unacknowledged
+         * Sets the TCP keep-alive probe count. This is the number of unacknowledged
          * probes to send before considering the connection dead.
          *
          * <p>A value of 0 (the default) means use the operating system default,
@@ -1352,7 +1347,7 @@ public abstract class GPUdbBase {
          * If not supported on the current platform, the setting will be silently
          * ignored.</p>
          *
-         * <p><b>Important:</b> TCP keepalive must be enabled via
+         * <p><b>Important:</b> TCP keep-alive must be enabled via
          * {@link #setTcpKeepAlive(boolean)} for this setting to have any effect.
          * If {@code tcpKeepAlive} is {@code false} and this option is set to a
          * non-zero value, a warning will be logged and the setting will be ignored.</p>
@@ -1368,7 +1363,7 @@ public abstract class GPUdbBase {
          */
         public Options setTcpKeepCount(int count) {
             if (count < 0) {
-                throw new IllegalArgumentException("TCP keepalive count must be >= 0");
+                throw new IllegalArgumentException("TCP keep-alive count must be >= 0");
             }
             this.tcpKeepCount = count;
             return this;
@@ -1521,7 +1516,8 @@ public abstract class GPUdbBase {
          * The default is 0, meaning the connection will NOT be re-attempted
          * upon failure.
          *
-         * @param value  the initialConnectionAttemptTimeout value
+         * @param value  the initial connection attempt timeout, in
+         *               milliseconds; 0 to not re-attempt the connection
          * @return       the current {@link Options} instance
          *
          * @see #getInitialConnectionAttemptTimeout()
@@ -2658,7 +2654,6 @@ public abstract class GPUdbBase {
      * number of results should be returned.
      */
     public static final long END_OF_SET = -9999;
-    private static final String DB_HM_OFFLINE_ERROR_MESSAGE         = "System is offline";
     private static final String DB_OFFLINE_ERROR_MESSAGE            = "Kinetica is offline";
     private static final String DB_CONNECTION_RESET_ERROR_MESSAGE   = "Connection reset";
     private static final String DB_CONNECTION_REFUSED_ERROR_MESSAGE = "Connection refused";
@@ -2684,6 +2679,16 @@ public abstract class GPUdbBase {
     private static final String SYSTEM_PROPERTIES_RESPONSE_HEAD_NODE_URLS  = "conf.ha_ring_head_nodes_full";
     private static final String SYSTEM_PROPERTIES_RESPONSE_SERVER_URLS     = "conf.worker_http_server_urls";
     private static final String SYSTEM_PROPERTIES_RESPONSE_TRUE            = "TRUE";
+
+    // Keys of the 'info' map returned with an endpoint response.  Shared with
+    // the multi-head classes in this package.
+    /**
+     * Key of the response 'info' entry that tells the client the server routed
+     * the request's data somewhere other than where the client's shard mapping
+     * said it should go--i.e. shard re-balancing is under way and the client's
+     * mapping is stale.  The value is the string {@code "true"} when set.
+     */
+    protected static final String RESPONSE_INFO_DATA_REROUTED = "data_rerouted";
 
     // Internally used headers (make sure to add them to PROTECTED_HEADERS)
     protected static final String HEADER_HA_SYNC_MODE  = "X-Kinetica-Group";
@@ -2714,6 +2719,39 @@ public abstract class GPUdbBase {
     // ----------------
 
     /**
+     * What one capability probe established about one cluster: its worker rank
+     * addresses and whether multi-head is usable there.
+     *
+     * <p><b>Immutable, and replaced rather than edited.</b>
+     *
+     * <p><b>Its identity is the change signal.</b>  Multi-head objects decide
+     * whether to rebuild by comparing the snapshot they last built from against
+     * the current one, by reference.  That works only because a probe publishes
+     * a <i>new</i> instance: while these facts were edited in place, a cluster
+     * left and returned to was indistinguishable from one never left, so an
+     * object that sat out the excursion kept routing to pre-excursion
+     * addresses.
+     *
+     * <p><b>So never share an instance between clusters</b> -- not even an
+     * empty one for the not-yet-probed case.  Each {@link ClusterAddressInfo}
+     * constructs its own, because a shared instance would make two different
+     * clusters compare as no change at all.
+     */
+    static final class MultiHeadSnapshot {
+        private final List<URL> workerRankUrls;
+        private final boolean   multiHeadAvailable;
+
+        MultiHeadSnapshot( List<URL> workerRankUrls, boolean multiHeadAvailable ) {
+            this.workerRankUrls     = workerRankUrls;
+            this.multiHeadAvailable = multiHeadAvailable;
+        }
+
+        List<URL> getWorkerRankUrls()  { return this.workerRankUrls; }
+        boolean   isMultiHeadAvailable() { return this.multiHeadAvailable; }
+    }
+
+
+    /**
      * Helper class which contains all possible address related information
      * for a given Kinetica cluster.  Used to keep track of the multiple
      * Kinetica clusters' addresses.
@@ -2722,7 +2760,14 @@ public abstract class GPUdbBase {
         // Members
         private URL                activeHeadNodeUrl;
         private Map<String,String> systemProperties;
-        private List<URL>          workerRankUrls;
+        // The multi-head addresses and capability verdict, as one value; see
+        // MultiHeadSnapshot.  Volatile because it is written by
+        // probeCurrentClusterMultiHead() and read by every multi-head object on
+        // other threads with no lock in common.
+        private volatile MultiHeadSnapshot multiHeadSnapshot;
+        // Whether this cluster still owes a capability probe for the current
+        // visit to it; see isProbeOwed()
+        private volatile boolean   probeOwed = true;
         private Set<String>        hostNames;  // could have IPs, too
         private URL                hostManagerUrl;
         private boolean            isPrimaryCluster = false;
@@ -2742,7 +2787,7 @@ public abstract class GPUdbBase {
                                       URL hostManagerUrl) {
             this.activeHeadNodeUrl = activeHeadNodeUrl;
             this.systemProperties  = systemProperties;
-            this.workerRankUrls    = workerRankUrls;
+            this.multiHeadSnapshot = new MultiHeadSnapshot( workerRankUrls, true );
             this.hostNames         = hostNames;
             this.hostManagerUrl    = hostManagerUrl;
 
@@ -2762,7 +2807,7 @@ public abstract class GPUdbBase {
                                       boolean isPrimaryCluster) {
             this.activeHeadNodeUrl = activeHeadNodeUrl;
             this.systemProperties  = new HashMap<>();
-            this.workerRankUrls    = workerRankUrls;
+            this.multiHeadSnapshot = new MultiHeadSnapshot( workerRankUrls, true );
             this.hostNames         = hostNames;
             this.hostManagerUrl    = hostManagerUrl;
             this.isPrimaryCluster  = isPrimaryCluster;
@@ -2797,21 +2842,29 @@ public abstract class GPUdbBase {
             this.activeHeadNodeUrl = activeHeadNodeUrl;
 
             // Set default values for the rest of the members
-            this.systemProperties = new HashMap<>();
-            this.workerRankUrls   = new ArrayList<>();
-            this.hostNames        = new HashSet<>();
+            this.systemProperties  = new HashMap<>();
+            // No addresses, and therefore no claim to multi-head.  This
+            // constructor is the bare one -- used for a cluster that was down at
+            // discovery, whose properties lookup failed, or that was built with
+            // auto-discovery off -- so nothing is known about its workers.  The
+            // first probe sets the real answer; until then this is the honest one.
+            this.multiHeadSnapshot = new MultiHeadSnapshot( new ArrayList<>(), false );
+            this.hostNames         = new HashSet<>();
 
             // Create a host manager URL with the given port for host managers
             try {
                 if ( !activeHeadNodeUrl.getPath().isEmpty() ) {
-                    // If we're using HTTPD, then use the appropriate URL
-                    // (likely, http[s]://hostname_or_IP:port/gpudb-host-manager)
-                    // Also, use the default httpd port (8082, usually)
+                    // Behind httpd the host manager is proxied on the head
+                    // node's OWN port, beside it in the path -- the host manager
+                    // port is not involved.
+                    //
+                    // Httpd is inferred from the path alone here, where the
+                    // discovery path also consults conf.enable_httpd_proxy.
                     this.hostManagerUrl = new URL(
                             activeHeadNodeUrl.getProtocol(),
                             activeHeadNodeUrl.getHost(),
-                            hostManagerPort,
-                            "/gpudb-host-manager"
+                            activeHeadNodeUrl.getPort(),
+                            hostManagerPathFor( activeHeadNodeUrl )
                     );
                 } else {
                     // The host manager URL shouldn't use any path and
@@ -2844,8 +2897,39 @@ public abstract class GPUdbBase {
             return this.systemProperties;
         }
 
+        /**
+         * Gets the URLs of the cluster's worker ranks, indexed such that entry
+         * {@code i} is rank {@code i + 1}; the head rank is not included.
+         *
+         * <p>A rank that has been removed from the cluster keeps its slot in
+         * this list, as {@code null}.  That slot is load-bearing: the worker
+         * indices produced by the server's shard routing table are rank
+         * numbers, so dropping it would shift every rank above the removed one
+         * and silently misroute sharded records.  Code that walks this list
+         * must skip {@code null} entries rather than dereference them.
+         *
+         * @return  the worker rank URLs, with a {@code null} at the slot of
+         *          every removed rank
+         */
         public List<URL> getWorkerRankUrls() {
-            return this.workerRankUrls;
+            return this.multiHeadSnapshot.getWorkerRankUrls();
+        }
+
+
+        /**
+         * Gets the multi-head addresses and capability verdict as one value,
+         * for change detection by reference.
+         */
+        MultiHeadSnapshot getMultiHeadSnapshot() {
+            return this.multiHeadSnapshot;
+        }
+
+
+        /** Sets the multi-head addresses and capability verdict as one value,
+         * for change detection by reference.
+         */
+        void setMultiHeadSnapshot( MultiHeadSnapshot value ) {
+            this.multiHeadSnapshot = value;
         }
 
         public Set<String> getHostNames() {
@@ -2859,6 +2943,52 @@ public abstract class GPUdbBase {
         @Deprecated(since = "7.2.2", forRemoval = true)
         public boolean getIsPrimaryCluster() {
             return this.isPrimaryCluster;
+        }
+
+        /**
+         * Whether multi-head operations are available on <i>this</i> cluster
+         * from <i>this</i> client.
+         *
+         * <p>Distinct from the {@code disableAutoDiscovery} option, which
+         * records what the user asked for and applies to the whole HA ring.
+         * This records what was actually observed for one cluster: a cluster
+         * whose worker addresses this client cannot reach is usable through
+         * its head node, and that loss of capability belongs to the cluster,
+         * not to the connection.
+         *
+         * @return  whether multi-head is available on this cluster
+         */
+        public boolean isMultiHeadAvailable() {
+            return this.multiHeadSnapshot.isMultiHeadAvailable();
+        }
+
+        public ClusterAddressInfo setMultiHeadAvailable( boolean value ) {
+            // See setWorkerRankUrls(List) on why the probe uses neither setter.
+            this.multiHeadSnapshot = new MultiHeadSnapshot( this.multiHeadSnapshot.getWorkerRankUrls(), value );
+            return this;
+        }
+
+        /**
+         * Whether this cluster still owes a capability probe for the client's
+         * current visit to it.
+         *
+         * <p>Set when the connection arrives on the cluster and cleared by the
+         * probe that runs for that arrival.
+         *
+         * <p>It exists because the probe runs <i>outside</i>
+         * {@code urlLock} -- it must, or it would invert the lock order and
+         * deadlock -- so a thread that piggybacked on someone else's switch can
+         * return and ask for addresses before that switch's probe has published
+         * any.  Without this marker such a thread reads whatever the last visit
+         * to this cluster left behind, and, because the probe mutates this
+         * object rather than replacing it, nothing downstream ever notices.
+         */
+        boolean isProbeOwed() {
+            return this.probeOwed;
+        }
+
+        void setProbeOwed( boolean value ) {
+            this.probeOwed = value;
         }
 
         /**
@@ -2920,7 +3050,10 @@ public abstract class GPUdbBase {
          * chain operations.
          */
         public ClusterAddressInfo setWorkerRankUrls( List<URL> value ) {
-            this.workerRankUrls = value;
+            // Carries the current verdict onto a new snapshot.  Setting one
+            // half at a time is why the probe does not use these setters: it
+            // builds the pair and publishes it once.
+            this.multiHeadSnapshot = new MultiHeadSnapshot( value, this.multiHeadSnapshot.isMultiHeadAvailable() );
             return this;
         }
 
@@ -2991,7 +3124,12 @@ public abstract class GPUdbBase {
 
             // Put each worker rank's hostname in the saved hostnames (only if
             // it doesn't exist there already)
-            for (URL workerRank : this.workerRankUrls) {
+            for (URL workerRank : getWorkerRankUrls()) {
+                // Skip the empty slot kept for a rank removed from the cluster
+                if (workerRank == null) {
+                    continue;
+                }
+
                 // Check if this worker rank's host is already accounted for
                 if (!doesClusterContainNode(workerRank.getHost())) {
                     String workerRankHostname = workerRank.getHost();
@@ -3050,7 +3188,7 @@ public abstract class GPUdbBase {
             return (
                     this.activeHeadNodeUrl.equals( that.activeHeadNodeUrl )
                     // The order of the worker ranks matter
-                    && this.workerRankUrls.equals( that.workerRankUrls )
+                    && getWorkerRankUrls().equals( that.getWorkerRankUrls() )
                     // The order of the hostnames do NOT matter
                     && this.hostNames.equals( that.hostNames )
                     && (this.isPrimaryCluster == that.isPrimaryCluster)
@@ -3062,7 +3200,7 @@ public abstract class GPUdbBase {
         public int hashCode() {
             int hashCode = 1;
             hashCode = (31 * hashCode) + this.activeHeadNodeUrl.hashCode();
-            hashCode = (31 * hashCode) + this.workerRankUrls.hashCode();
+            hashCode = (31 * hashCode) + getWorkerRankUrls().hashCode();
             hashCode = (31 * hashCode) + this.hostNames.hashCode();
             hashCode = (31 * hashCode) + this.hostManagerUrl.hashCode();
             // Java uses 1231 for true and 1237 for false for boolean hashcodes
@@ -3078,7 +3216,7 @@ public abstract class GPUdbBase {
             return "{ activeHeadNodeUrl: " +
                     this.activeHeadNodeUrl.toString() +
                     ", workerRankUrls: " +
-                    Arrays.toString(this.workerRankUrls.toArray()) +
+                    Arrays.toString(getWorkerRankUrls().toArray()) +
                     ", hostNames: " +
                     Arrays.toString(this.hostNames.toArray()) +
                     ", hostManagerUrl: " +
@@ -3095,9 +3233,41 @@ public abstract class GPUdbBase {
     private Options       options;
     private String        primaryUrlHostname = "";
     private final Object  urlLock;
+
+    /**
+     * Serializes {@link #probeCurrentClusterMultiHead()}.
+     *
+     * <p>Deliberately <b>not</b> {@code urlLock} and not the connection itself.
+     * The probe does network I/O -- a system-properties query plus a health
+     * check per rank -- and {@code selectNextCluster()} synchronizes on
+     * {@code this}, so probing under either of those monitors would block
+     * failover for the duration of that I/O.
+     *
+     * <p><b>What it serializes now.</b>  Multi-head objects no longer probe --
+     * they ask, and the connection decides.  Two probers remain and can still
+     * collide:
+     *
+     * <ul>
+     *   <li>the thread that performed a switch, probing the cluster it landed
+     *       on, against a thread that piggybacked on that switch and is waiting
+     *       out the same arrival's probe in {@code awaitArrivalProbe()}; and</li>
+     *   <li>two objects that each observed a shard version change, which is the
+     *       one observation that legitimately makes each of them re-acquire.</li>
+     * </ul>
+     *
+     * <p>In the first case the lock does deduplicate -- whichever thread arrives
+     * second finds the arrival's marker already cleared and does no work.  In the
+     * second it only serializes: both probes are warranted, and each runs.
+     */
+    private final Object  probeLock = new Object();
     private List<Integer> haUrlIndices;
     private int           currentClusterIndexPointer;
-    private int           numClusterSwitches;
+    // Volatile: incremented under urlLock, but read by getNumClusterSwitches()
+    // with no lock at all -- every fail-over caller captures its baseline that
+    // way before entering switchURL().  A stale baseline makes the piggyback
+    // arithmetic wrong in both directions: too large and the caller is told the
+    // ring is exhausted, too small and it believes it is the first to switch.
+    private volatile int  numClusterSwitches;
     private String        username;
     private String        password;
     private String        oauthToken;
@@ -3301,19 +3471,19 @@ public abstract class GPUdbBase {
 
         // Initiate the HttpClient object
         // ------------------------------
-        // Get TCP keepalive options for custom socket factories
+        // Get TCP keep-alive options for custom socket factories
         final boolean tcpKeepAlive = this.options.getTcpKeepAlive();
         final int tcpKeepIdle = this.options.getTcpKeepIdle();
         final int tcpKeepInterval = this.options.getTcpKeepInterval();
         final int tcpKeepCount = this.options.getTcpKeepCount();
         final boolean hasExtendedTcpOptions = (tcpKeepIdle > 0 || tcpKeepInterval > 0 || tcpKeepCount > 0);
 
-        // Extended TCP keepalive options only apply when tcpKeepAlive is enabled
+        // Extended TCP keep-alive options only apply when tcpKeepAlive is enabled
         final boolean useTcpKeepaliveOptions = tcpKeepAlive && hasExtendedTcpOptions;
 
         // Warn if extended options are set but tcpKeepAlive is disabled (they will be ignored)
         if (!tcpKeepAlive && hasExtendedTcpOptions) {
-            GPUdbLogger.warn("TCP keepalive is disabled (tcpKeepAlive=false), but extended TCP keepalive options are set. " +
+            GPUdbLogger.warn("TCP keep-alive is disabled (tcpKeepAlive=false), but extended TCP keep-alive options are set. " +
                     "These options will be ignored: tcpKeepIdle=" + tcpKeepIdle +
                     ", tcpKeepInterval=" + tcpKeepInterval +
                     ", tcpKeepCount=" + tcpKeepCount +
@@ -3434,7 +3604,7 @@ public abstract class GPUdbBase {
 
         }
 
-        // If TCP keepalive options are set but we're using the default SSL factory,
+        // If TCP keep-alive options are set but we're using the default SSL factory,
         // we need to wrap it with our custom factory
         if (useTcpKeepaliveOptions && secureSocketFactory == SSLConnectionSocketFactory.getSocketFactory()) {
             try {
@@ -3442,7 +3612,7 @@ public abstract class GPUdbBase {
                 secureSocketFactory = new TcpKeepaliveAwareSSLSocketFactory(defaultSslContext,
                         tcpKeepIdle, tcpKeepInterval, tcpKeepCount);
             } catch (NoSuchAlgorithmException e) {
-                GPUdbLogger.warn("Could not create TCP keepalive aware SSL factory: " + e.getMessage());
+                GPUdbLogger.warn("Could not create TCP keep-alive aware SSL factory: " + e.getMessage());
             }
         }
 
@@ -3474,7 +3644,7 @@ public abstract class GPUdbBase {
 
         // SO timeout here controls read timeouts within cloud cluster
         //   environments, and must be set explicitly.
-        // TCP keepalive prevents firewalls/NATs from silently dropping idle
+        // TCP keep-alive prevents firewalls/NATs from silently dropping idle
         //   connections during long-running queries.
         connectionManager.setDefaultSocketConfig(SocketConfig.custom()
             .setSoTimeout(Timeout.ofMilliseconds(this.options.getTimeout()))
@@ -3482,11 +3652,11 @@ public abstract class GPUdbBase {
             .build());
 
         GPUdbLogger.debug("Setting SO timeout to <" + this.options.getTimeout() + "> ms");
-        GPUdbLogger.debug("Setting TCP keepalive to <" + this.options.getTcpKeepAlive() + ">");
+        GPUdbLogger.debug("Setting TCP keep-alive to <" + this.options.getTcpKeepAlive() + ">");
         if (useTcpKeepaliveOptions) {
-            GPUdbLogger.debug("Setting TCP keepalive idle to <" + tcpKeepIdle + "> seconds (0 = OS default)");
-            GPUdbLogger.debug("Setting TCP keepalive interval to <" + tcpKeepInterval + "> seconds (0 = OS default)");
-            GPUdbLogger.debug("Setting TCP keepalive count to <" + tcpKeepCount + "> (0 = OS default)");
+            GPUdbLogger.debug("Setting TCP keep-alive idle to <" + tcpKeepIdle + "> seconds (0 = OS default)");
+            GPUdbLogger.debug("Setting TCP keep-alive interval to <" + tcpKeepInterval + "> seconds (0 = OS default)");
+            GPUdbLogger.debug("Setting TCP keep-alive count to <" + tcpKeepCount + "> (0 = OS default)");
         }
 
         // Socket timeout here controls read timeouts within non-cloud cluster
@@ -3768,13 +3938,10 @@ public abstract class GPUdbBase {
     }
 
     /**
-     * Gets the list of URLs for the GPUdb host manager. At any given time, one
-     * URL will be active and used for all GPUdb calls (call {@link #getHmURL
-     * getHmURL} to determine which one), but in the event of failure, the
-     * other URLs will be tried in order, and if a working one is found
-     * it will become the new active URL.
+     * Gets the host manager URL of every cluster in the HA ring, one per
+     * cluster, derived from that cluster's head node address.
      *
-     * @return  the list of URLs
+     * @return  the list of URLs, in ring order
      */
     public List<URL> getHmURLs() {
         List<URL> hmURLs = new ArrayList<>();
@@ -3820,7 +3987,30 @@ public abstract class GPUdbBase {
     }
 
     /**
-     * Gets the active URL of the GPUdb host manager.
+     * The host-manager path for a head node URL that is being reached through
+     * httpd: the head node's own path with its <i>last segment replaced</i> by
+     * {@code gpudb-host-manager}.
+     *
+     * @param headNodeUrl  the head node URL to derive from
+     *
+     * @return  the path component for the host manager URL
+     */
+    private static String hostManagerPathFor( URL headNodeUrl ) {
+        String path      = headNodeUrl.getPath();
+        int    lastSlash = path.lastIndexOf( '/' );
+
+        return (lastSlash < 0)
+               ? "/gpudb-host-manager"
+               : path.substring( 0, lastSlash + 1 ) + "gpudb-host-manager";
+    }
+
+
+    /**
+     * Gets the active URL of the GPUdb host manager -- the one on the current
+     * cluster's head node.
+     *
+     * <p>Assembled from that head node's own URL rather than discovered, and
+     * never health-checked: the host manager is assumed to be running there.
      *
      * @return  the URL
      */
@@ -3975,7 +4165,7 @@ public abstract class GPUdbBase {
     }
 
     /**
-     * Applies TCP keepalive extended socket options to a socket.
+     * Applies TCP keep-alive extended socket options to a socket.
      * These options are only available on Java 11+ and require OS support.
      * If the options are not supported, they are silently ignored.
      *
@@ -4019,7 +4209,7 @@ public abstract class GPUdbBase {
     }
 
     /**
-     * Custom PlainConnectionSocketFactory that applies TCP keepalive extended options.
+     * Custom PlainConnectionSocketFactory that applies TCP keep-alive extended options.
      */
     private static class TcpKeepaliveAwarePlainSocketFactory extends PlainConnectionSocketFactory {
         private final int keepIdle;
@@ -4041,7 +4231,7 @@ public abstract class GPUdbBase {
     }
 
     /**
-     * Custom SSLConnectionSocketFactory that applies TCP keepalive extended options.
+     * Custom SSLConnectionSocketFactory that applies TCP keep-alive extended options.
      */
     private static class TcpKeepaliveAwareSSLSocketFactory extends SSLConnectionSocketFactory {
         private final int keepIdle;
@@ -4167,6 +4357,150 @@ public abstract class GPUdbBase {
     public boolean isAutoDiscoveryEnabled() {
         return !this.disableAutoDiscovery;
     }
+
+    /**
+     * Whether multi-head operations can be used against the cluster currently
+     * being talked to.
+     *
+     * <p>Two independent things have to hold: the user must not have disabled
+     * auto-discovery (a connection-wide choice), and the current cluster must
+     * actually have given us usable worker addresses (an observation about
+     * that one cluster).
+     *
+     * @return  whether multi-head is available right now
+     */
+    public boolean isMultiHeadAvailable() {
+        if ( this.disableAutoDiscovery )
+            return false;
+
+        ClusterAddressInfo current = getClusterInfo();
+        return (current == null) || current.isMultiHeadAvailable();
+    }
+
+
+    /**
+     * Re-reads the current cluster's worker rank addresses from that cluster's
+     * own system properties and records whether multi-head operations are
+     * usable there.
+     *
+     * <p>This is a <i>capability probe</i>, not a health check: a cluster whose
+     * head node is up is usable whatever its workers are doing, and the answer
+     * here only decides multi-head versus head-node-only.  Callers in the
+     * failover path must not treat {@code false} as a reason to reject the
+     * cluster -- doing so kills a failover to a cluster that would have
+     * accepted the work through its head node.
+     *
+     * <p>The refresh matters because the cluster list is populated once during
+     * connection setup and never refreshed per failover; without it the probe
+     * would validate a construction-time snapshot of a topology that may have
+     * moved since.
+     *
+     * <p><b>Why it re-contacts the ranks rather than only re-reading their
+     * addresses.</b>  Refreshing the addresses without reaching them would adopt
+     * addresses this client has never reached while leaving multi-head engaged
+     * -- unreachable-and-assumed-good rather than unreachable-and-known, which
+     * is worse than degrading.  Where the addresses cannot be acquired or
+     * reached, head-node-only is the only answer that can be guaranteed correct.
+     *
+     * <p>Until 7.2.3.25 this was covered incidentally: {@code WorkerList(GPUdb)}
+     * issued its own {@code showSystemProperties} call on every construction, so
+     * every rebuild re-queried.  That constructor now reads the connection's
+     * cache, which only this probe refreshes -- which is why the probe has to
+     * exist rather than being an optimization.
+     *
+     * <p>Resolves addresses with the <i>connection's</i> hostname regex, never a
+     * caller's.  What this writes -- the cluster's worker addresses and whether
+     * multi-head is available there -- is connection-scoped state that every
+     * multi-head object reads, so letting one object's filter decide it would
+     * let that object's address selection determine a fact about the cluster for
+     * all of them.
+     *
+     * @return  whether multi-head operations are available on the current
+     *          cluster
+     */
+    boolean probeCurrentClusterMultiHead() {
+        // One probe per connection at a time.  Two writes are published here --
+        // the cluster's rank addresses and whether multi-head is usable there --
+        // and they are not a pair that can be interleaved: a reader that sees
+        // fresh addresses with the previous verdict, or the reverse, routes on a
+        // mixture of two probes.  The callers cannot provide this themselves;
+        // reconstructWorkerQueues() and reconstructWorkerURLs() are each
+        // synchronized on their own object, which are different monitors.
+        synchronized ( this.probeLock ) {
+        ClusterAddressInfo cluster = getClusterInfo();
+        if ( cluster == null )
+            return false;
+
+        boolean wasAvailable = cluster.isMultiHeadAvailable();
+        List<URL> workerUrls;
+
+        try {
+            Map<String, String> properties = getSystemProperties( cluster.getActiveHeadNodeUrl() );
+            List<URL> rankUrls = new ArrayList<>(
+                    getRankURLs( properties, this.hostnameRegex ) );
+
+            // Drop the rank-0 slot unconditionally so that index i is rank i+1;
+            // see the placeholder convention documented on getWorkerRankUrls()
+            if ( !rankUrls.isEmpty() )
+                rankUrls.remove( 0 );
+
+            workerUrls = rankUrls;
+        } catch ( Exception ex ) {
+            GPUdbLogger.debug_with_info( "Could not refresh worker addresses for cluster <"
+                                         + cluster.getActiveHeadNodeUrl() + ">: " + ex.getMessage() );
+            workerUrls = cluster.getWorkerRankUrls();
+        }
+
+        boolean available;
+        if ( (workerUrls == null) || workerUrls.isEmpty() ) {
+            available = false;
+        } else {
+            available = true;
+            for ( URL workerRank : workerUrls ) {
+                if ( workerRank == null )
+                    continue;   // empty slot kept for a rank removed from the cluster
+
+                try {
+                    if ( !isSystemRunning( workerRank ) ) {
+                        available = false;
+                        break;
+                    }
+                } catch ( GPUdbException ex ) {
+                    // Could not determine it; treat as unreachable, which is
+                    // the safe direction: it costs multi-head, not the failover
+                    GPUdbLogger.debug_with_info( "Worker rank <" + workerRank
+                                                 + "> could not be probed: " + ex.getMessage() );
+                    available = false;
+                    break;
+                }
+            }
+        }
+
+        // The single publication: one volatile write of a new immutable
+        // instance carries the addresses and the verdict together, and its
+        // identity is what tells every multi-head object that this cluster's
+        // answer has been replaced.
+        cluster.setMultiHeadSnapshot( new MultiHeadSnapshot( workerUrls, available ) );
+
+        // This arrival's probe is done.  Cleared after the publication above, so
+        // a thread that sees the marker clear sees the snapshot that goes with
+        // it.
+        cluster.setProbeOwed( false );
+
+        // Announce only the transition.  A cluster already known to be degraded
+        // is reported by switchURL() when the switch happens; warning again here
+        // would double up on every failover onto it.
+        if ( wasAvailable && !available ) {
+            GPUdbLogger.warn( String.format(
+                    "Multi-head operations are no longer available on cluster <%s>:"
+                    + " its worker addresses are not reachable from this client."
+                    + "  Operations will use the head node only.",
+                    cluster.getActiveHeadNodeUrl() ) );
+        }
+
+        return available;
+        }   // end synchronized ( probeLock )
+    }   // end probeCurrentClusterMultiHead
 
     /**
      * Gets the number of threads used during data encoding and decoding
@@ -4439,14 +4773,40 @@ public abstract class GPUdbBase {
                 "Cluster switch #%s to cluster #%s (%s)",
                 getNumClusterSwitches(), getCurrClusterIndexPointer() + 1, getURL()
         ));
+
+        // Announce a switch that lands on a cluster which cannot give this
+        // client multi-head.  This is the failover counterpart of the notice
+        // at the end of processClusterInformationForAllUrls(), which covers the
+        // cluster first connected to: capability is per cluster, so a failover
+        // can silently reduce a connection that was running multi-head to
+        // head-node-only.
+        // Skipped while the cluster still owes a probe: "not available" is then
+        // only "not yet established", and this message names a cause -- worker
+        // addresses unreachable -- that nothing has tested.  selectNextCluster()
+        // also runs for every step of a ring walk, so without this guard a walk
+        // would warn about clusters it merely passed through.
+        if ( !this.hostAddresses.isEmpty() ) {
+            ClusterAddressInfo newCluster = getClusterInfo();
+            if ( (newCluster != null) && !newCluster.isProbeOwed()
+                    && !newCluster.isMultiHeadAvailable() ) {
+                GPUdbLogger.warn( String.format(
+                        "Failed over to a cluster with no multi-head available <%s>:"
+                        + " its worker addresses are not reachable from this client."
+                        + "  Operations will use the head node only.",
+                        newCluster.getActiveHeadNodeUrl() ) );
+            }
+        }
     }
 
 
     /**
      * Switches the URL of the HA ring cluster.  Check if we've circled back to
-     * the old URL.  If we've circled back to it, then re-shuffle the list of
-     * indices so that the next time, we pick up HA clusters in a different random
-     * manner and throw an exception.
+     * the old URL; if so, reset the ring walk and throw.     *
+     * <p>On circling back the pointer is reset to index 0 -- the primary -- so a
+     * walk which gave up does not leave it parked where it stopped: the next
+     * fail-over starts from the primary rather than resuming from the far side
+     * of a ring that just failed.  The ring <i>order</i> is not disturbed; it is
+     * established once at construction and does not change thereafter.
      *
      * @param oldURL
      *            the head rank URL in use at the time of the failover that
@@ -4469,6 +4829,8 @@ public abstract class GPUdbBase {
             GPUdbLogger.debug_with_info( "Failover is disabled; throwing exception" );
             throw new GPUdbFailoverDisabledException( "Failover is disabled!" );
         }
+
+        URL switchedTo;
 
         synchronized (this.urlLock) {
             // If there is only one URL, then we can't switch URLs
@@ -4502,10 +4864,47 @@ public abstract class GPUdbBase {
 
             // Check if another thread beat us to switching the URL
             if ( !getURL().equals( oldURL ) && (countClusterSwitchesSinceInvocation > 0) ) {
-                GPUdbLogger.debug_with_info( "Already failed over to URL: " + getURL().toString() );
-                // Another thread must have already switched the URL; use the
-                // new current URL
-                return getURL();
+                // Another thread must have already switched the URL; adopt the
+                // new current one -- but only once it is known to be usable.
+                //
+                // This method's postcondition is that it returns a cluster it
+                // has found usable, and the piggyback exit is the one that could
+                // break it.  Three reasons it is checked here, none of them
+                // hypothetical:
+                //
+                // 1. The circle-back path moves the index without vetting
+                //    anything.  It resets the pointer to 0 and throws, so the
+                //    connection is left pointing at a cluster in a ring just
+                //    found entirely unusable.  A caller whose baseline was
+                //    captured partway through that walk sees a delta below the
+                //    ring size, skips the exhaustion throw above, and arrives
+                //    here.
+                //
+                // 2. The switching thread's own check can be arbitrarily old.
+                //    This branch is reached by any caller whose baseline
+                //    predates the switch, including a multi-head object idle for
+                //    minutes.  Adopting on a vet performed minutes ago is
+                //    adopting on stale evidence.
+                //
+                // 3. The callers no longer re-check.  Both multi-head classes
+                //    used to wrap this call in a ring-sized loop that re-tested
+                //    the returned URL and called back in on failure; that loop
+                //    was removed because this method guarantees the result.
+                //    Removing this check would retract the guarantee and make
+                //    that removal a regression.
+                //
+                // Fail-back is covered by other means: the poller confirms the
+                // primary is running, not draining, and answers a query before
+                // moving the index.
+                if ( isClusterUsable( getURL(), true ) ) {
+                    GPUdbLogger.debug_with_info( "Already failed over to URL: " + getURL().toString() );
+                    return getURL();
+                }
+
+                GPUdbLogger.debug_with_info(
+                        "Already failed over to URL: " + getURL().toString()
+                        + ", but it is not usable; continuing to switch" );
+                // Fall through and keep looking, exactly as a caller's retry did
             }
 
             // This thread is the first one here--select the next cluster to use
@@ -4521,8 +4920,14 @@ public abstract class GPUdbBase {
                             "Current URL is the same as the original URL: %s; randomizing URLs and throwing exception",
                             oldURL
                     ));
-                    // Re-shuffle and set the index counter to zero
-                    randomizeURLs();
+                    // Reset the ring walk to its starting position -- index 0,
+                    // the primary -- so that a walk which gave up does not leave
+                    // the pointer parked where it stopped, and the next fail-over
+                    // starts from the primary rather than resuming from the far
+                    // side of a ring that just failed.
+                    setCurrClusterIndexPointer( 0 );
+
+                    markArrivalOwesProbe();
 
                     // Let the user know that we've circled back
                     throw new GPUdbHAUnavailableException("Circled back to original URL; no clusters available for fail-over among these: " + getURLs().toString());
@@ -4530,7 +4935,7 @@ public abstract class GPUdbBase {
             }
             while(!isClusterUsable(getURL(), true));
 
-            // Haven't circled back to the old URL; so return the new one
+            // Haven't circled back to the old URL; so keep the new one
             GPUdbLogger.warn("Switched to fail-over URL: " +  getURL());
 
             // Invoke the fail-back poller here
@@ -4547,108 +4952,162 @@ public abstract class GPUdbBase {
                 }
             }
 
-            return getURL();
+            // Mark the arrival before releasing the lock.  The probe below runs
+            // outside it, so a thread piggybacking on this switch can return and
+            // ask for addresses first; the marker is what makes it wait for this
+            // arrival's probe instead of reading the last visit's addresses.
+            markArrivalOwesProbe();
+            switchedTo = getURL();
         }
+
+        // Establish multi-head on the cluster just switched to.
+        //
+        // Here rather than in the callers, for three reasons.  It runs once per
+        // switch instead of once per multi-head object; it runs for *every*
+        // switch, including one driven by an ordinary request that uses no
+        // multi-head at all, so a BulkInserter or RecordRetriever created later
+        // finds addresses that have already been verified; and a thread that
+        // piggybacked on someone else's switch returned above without probing,
+        // because the switch it adopted was probed by whoever performed it.
+        //
+        // OUTSIDE the urlLock block, deliberately.  The probe takes probeLock and
+        // then urlLock (through getClusterInfo, when the ring holds more than one
+        // cluster).  Probing while holding urlLock would invert that order
+        // against every other prober and deadlock, and would hold urlLock --
+        // which guards the cluster index and getURL -- across a properties query
+        // plus one health check per rank.
+        probeCurrentClusterMultiHead();
+
+        return switchedTo;
     }  // end switchURL
+
+
+    /**
+     * The current cluster's multi-head snapshot, or {@code null} where there is
+     * no current cluster.
+     *
+     * <p>Multi-head objects hold the one they last built from and compare by
+     * reference.  A new instance means the cluster's answer has been replaced --
+     * by a different cluster, or by a fresh probe of the same one -- and is the
+     * only rebuild signal they need.
+     */
+    MultiHeadSnapshot getCurrentMultiHeadSnapshot() {
+        ClusterAddressInfo cluster = getClusterInfo();
+        return (cluster == null) ? null : cluster.getMultiHeadSnapshot();
+    }
+
+
+    /**
+     * Records that the cluster now current has been newly arrived on and so
+     * owes a capability probe.  Called from inside {@code urlLock} by every
+     * path that moves the connection to a different cluster.
+     */
+    private void markArrivalOwesProbe() {
+        ClusterAddressInfo cluster = getClusterInfo();
+        if ( cluster != null )
+            cluster.setProbeOwed( true );
+    }
+
+
+    /**
+     * Answers with the current cluster's multi-head snapshot: its rank addresses
+     * and whether multi-head is usable there, as one value.
+     *
+     * <p>This is the only way a multi-head object obtains rank addresses, and it
+     * is deliberately a <i>question</i> rather than a command: the caller says
+     * what it observed and the connection decides what that costs.  The caller
+     * cannot ask for a probe and cannot skip one.
+     *
+     * <p><b>Probe once per target cluster.</b>  Arriving at a cluster probes it,
+     * in {@link #switchURL} or {@link #failBackToPrimaryCluster}.  Every object
+     * that then asks receives that same result rather than repeating the work:
+     * one fail-over with an inserter and a retriever attached used to cost three
+     * probes, because each object probed again as it rebuilt.
+     *
+     * @param topologyMayHaveMoved  {@code true} where the caller saw something
+     *                              that can move rank addresses without moving
+     *                              the connection -- in practice a change of
+     *                              shard version, which a rebalance produces.
+     *                              The connection re-acquires before answering.
+     *                              {@code false} otherwise, which is answered
+     *                              from what the connection already holds unless
+     *                              this arrival's own probe is still outstanding
+     *
+     * @return  the current cluster's snapshot, or {@code null} where there is no
+     *          current cluster
+     */
+    MultiHeadSnapshot acquireMultiHeadSnapshot( boolean topologyMayHaveMoved ) {
+        if ( topologyMayHaveMoved )
+            probeCurrentClusterMultiHead();
+        else
+            awaitArrivalProbe();
+
+        return getCurrentMultiHeadSnapshot();
+    }
+
+
+    /**
+     * Ensures this arrival's capability probe has happened before the caller
+     * reads addresses, without performing a second one.
+     *
+     * <p>The common case costs a volatile read: the switching thread has
+     * already probed and cleared the marker.  Otherwise the caller contends on
+     * {@code probeLock} and re-checks, so it either waits out the switching
+     * thread's probe or, if it got there first, performs the probe that arrival
+     * owed.  Either way the cluster is probed once per arrival.
+     */
+    private void awaitArrivalProbe() {
+        ClusterAddressInfo cluster = getClusterInfo();
+        if ( (cluster == null) || !cluster.isProbeOwed() )
+            return;
+
+        synchronized ( this.probeLock ) {
+            cluster = getClusterInfo();
+            if ( (cluster != null) && cluster.isProbeOwed() )
+                probeCurrentClusterMultiHead();
+        }
+    }
+
+
+    /**
+     * Returns the connection to the primary cluster after a successful
+     * fail-back poll, and re-establishes multi-head there.
+     *
+     * <p>This is the third way the connection's cluster can change, alongside
+     * {@link #switchURL}
+     *
+     * <p>It does <b>not</b> touch {@code numClusterSwitches}.  That counter is
+     * not a record of cluster changes; it is the baseline for {@code switchURL}'s
+     * per-caller arithmetic -- how many clusters a thread has burned through
+     * during <i>its</i> fail-over -- and incrementing it here would consume one
+     * of every in-flight caller's attempts, so a cluster coming back could make
+     * another thread conclude the ring was exhausted.  Multi-head objects detect
+     * this change by the identity of the {@link MultiHeadSnapshot} they last
+     * built from, which the probe below replaces for a fail-back exactly as it
+     * does for a fail-over.
+     *
+     * <p>The pointer move is taken under {@code urlLock} so it cannot interleave
+     * with a fail-over's own index arithmetic; the probe is issued after that
+     * lock is released, for the ordering reason given in {@link #switchURL}.
+     */
+    void failBackToPrimaryCluster() {
+        synchronized ( this.urlLock ) {
+            // Index 0 is the primary: initializeHAFailoverURLs() keeps the primary's index
+            // first precisely so that circling back lands on it again.
+            setCurrClusterIndexPointer( 0 );
+
+            // An arrival, exactly as a fail-over is; see switchURL()
+            markArrivalOwesProbe();
+        }
+
+        GPUdbLogger.info( "Failed back to the primary cluster; re-establishing multi-head" );
+        probeCurrentClusterMultiHead();
+    }
 
 
     private boolean checkFailbackConditions() {
         return getPrimaryUrl() != null && !getPrimaryUrl().toExternalForm().isEmpty() && getHARingSize() > 1;
     }
-
-    /**
-     * Switches the host manager  URL of the HA ring cluster.  Check if we've
-     * circled back to the old URL.  If we've circled back to it, then
-     * re-shuffle the list of indices so that the next time, we pick up HA
-     * clusters in a different random manner and throw an exception.
-     *
-     * @param oldURL
-     *            the host manager URL in use at the time of the failover that
-     *            initiated this switch
-     * @param oldNumClusterSwitches
-     *            the total number of cluster switches that have occurred
-     *            up to the moment before this thread's switch was initiated;
-     *            this will be used to determine whether another thread is
-     *            already trying to fail over to the next cluster and that
-     *            this thread should stand down
-     * 
-     * @return    the next host manager {@link URL} to try
-     */
-    private URL switchHmURL(URL oldURL, int oldNumClusterSwitches) throws GPUdbFailoverDisabledException, GPUdbHAUnavailableException {
-
-        GPUdbLogger.debug_with_info(String.format(
-                "Attempting to switch Host Manager URLs, from: %s; originally failing URL: %s",
-                getHmURL().toString(), oldURL.toString()));
-
-        if ( this.disableFailover ) {
-            GPUdbLogger.debug_with_info( "Failover is disabled; throwing exception" );
-            throw new GPUdbFailoverDisabledException( "Failover is disabled!" );
-        }
-
-        synchronized (this.urlLock) {
-            // If there is only one URL, then we can't switch URLs
-            if ( getHARingSize() == 1 ) {
-                GPUdbLogger.debug_with_info( "Only one cluster in ring--no fail-over cluster available");
-                throw new GPUdbHAUnavailableException("Only one cluster in ring; HA failover unavailable");
-            }
-
-            // Get how many more times other threads have switched clusters
-            // since the caller called this function.  If the situation is:
-            //
-            // count = 0             -> the calling thread is the first to get
-            //                          here; switch to the next cluster
-            // 0 < count < ring size -> another thread is either in the process
-            //                          of switching clusters or has switched to
-            //                          a working one; use the new current one
-            // count >= ring size    -> another thread has already tried all
-            //                          failover clusters; throw exception
-            int countClusterSwitchesSinceInvocation = (getNumClusterSwitches() - oldNumClusterSwitches);
-
-            // Check if another thread has tried all the clusters in the HA ring
-            boolean haveSwitchedClustersAcrossTheRing = countClusterSwitchesSinceInvocation >= getHARingSize();
-            GPUdbLogger.debug_with_info(String.format(
-                    "Host Manager cluster fail-over attempts across all threads vs. total clusters in ring:  %s vs. %s",
-                    countClusterSwitchesSinceInvocation,
-                    getHARingSize()
-            ));
-            if ( haveSwitchedClustersAcrossTheRing ) {
-                throw new GPUdbHAUnavailableException("Host Manager fail-over attempted as many times as clusters in the ring; URLs attempted: " + getURLs().toString());
-            }
-
-            // Check if another thread beat us to switching the URL
-            if ( !getHmURL().equals( oldURL )
-                && (countClusterSwitchesSinceInvocation > 0) ) {
-                GPUdbLogger.debug_with_info( "Already failed over to Host Manager URL: " + getHmURL().toString() );
-                // Another thread must have already switched the URL; use the
-                // new current URL
-                return getHmURL();
-            }
-
-            // This thread is the first one here--select the next cluster to use
-            // during this HA failover
-            this.selectNextCluster();
-
-            // If we've circled back, shuffle the indices again so that future
-            // requests go to a different randomly selected cluster, but also
-            // let the caller know that we've circled back
-            if ( getHmURL().equals( oldURL ) ) {
-                GPUdbLogger.debug_with_info(String.format(
-                        "Current Host Manager URL is the same as the original URL: %s; randomizing URLs and throwing exception",
-                        oldURL
-                ));
-                // Re-shuffle and set the index counter to zero
-                randomizeURLs();
-
-                // Let the user know that we've circled back
-                throw new GPUdbHAUnavailableException("Circled back to original URL; no clusters available for Host Manager fail-over among these: " + getHmURLs().toString());
-            }
-
-            // Haven't circled back to the old URL; so return the new one
-            GPUdbLogger.warn("Switched to Host Manager fail-over URL: " +  getHmURL().toString());
-            return getHmURL();
-        }
-    }   // end switchHmUrl
-
 
     /**
      * Create and initialize an HTTP connection object with the request headers
@@ -5530,6 +5989,131 @@ public abstract class GPUdbBase {
     }
 
     /**
+     * Whether a parsed address can actually be connected to.
+     *
+     * <p>{@link URL} accepts strings that parse cleanly but name no host:
+     * {@code http://:9191} yields an empty host and would otherwise be stored
+     * as a live worker.  Such an entry fails only at first use, and presents as
+     * the rank being down rather than as an address problem -- so the operator
+     * investigates a healthy rank and never suspects the parse.
+     *
+     * <p>This deliberately does <i>not</i> validate the host's form.  A rank
+     * address may be an IPv4 literal, an IPv6 literal or a hostname, and an
+     * operator-set {@code rankN.public_url} is copied verbatim by the server,
+     * so anything a URL can carry can legitimately arrive here.  Nor does it
+     * require a port: a port is mandatory where one is built from
+     * {@code conf.worker_http_server_ports} (see {@code WorkerList}), but a
+     * whole URL advertised behind an ingress may correctly omit it and rely on
+     * the protocol default.
+     *
+     * @param url  the parsed address, or {@code null}
+     *
+     * @return  whether the address names a host that can be connected to
+     */
+    static boolean hasUsableHost( URL url ) {
+        return (url != null)
+                && (url.getHost() != null)
+                && !url.getHost().isEmpty();
+    }
+
+
+    /**
+     * Whether a host, as bare text, names something that can be connected to.
+     *
+     * <p>The string-level counterpart of {@link #hasUsableHost(URL)}, for the
+     * one parser whose input may be a bare host name with no scheme and so
+     * cannot be handed to {@link URL} at all.  It rejects the same two shapes:
+     * an empty entry, and one that carries a port but no host.
+     *
+     * <p>Like its sibling it does not constrain the host's <i>form</i>: an IPv4
+     * literal, a bracketed IPv6 literal and a host name are all legitimate.
+     *
+     * @param host  the host text, already stripped of any scheme
+     *
+     * @return  whether the text names a host
+     */
+    static boolean hasUsableHostText( String host ) {
+        return (host != null)
+                && !host.isEmpty()
+                && !host.startsWith( ":" );
+    }
+
+
+    /**
+     * Extracts the host component of an advertised address, whatever form it
+     * arrives in.
+     *
+     * <p>Exists so that every resolver matches the hostname regex against the
+     * same thing.  The properties do not agree on form: some carry whole URLs,
+     * one carries bare addresses, and an operator-set value may carry a port or
+     * a path.  Reducing all of them to a host through {@link URL} gives one
+     * answer, including the brackets {@code getHost()} reports for an IPv6
+     * literal -- which is where a hand-rolled string split diverges.
+     *
+     * <p>A scheme is synthesized when the text has none, since {@link URL}
+     * requires one and a bare host name is a legitimate value here.
+     *
+     * @param address  the advertised address text
+     *
+     * @return  the host component, or {@code null} if the text cannot be parsed
+     *          as an address at all
+     */
+    static String hostOf( String address ) {
+        if ( address == null )
+            return null;
+
+        String withScheme = address.contains( "://" ) ? address : ("http://" + address);
+        try {
+            return new URL( withScheme ).getHost();
+        } catch ( MalformedURLException ex ) {
+            // Not an address; the caller treats a null host as unusable
+            return null;
+        }
+    }
+
+
+    /**
+     * Names a rank for a user-facing message.
+     *
+     * @param rankIndex  index into the server's rank list, where 0 is the head
+     *
+     * @return  a phrase naming that rank
+     */
+    static String rankLabel( int rankIndex ) {
+        return (rankIndex == 0) ? "the head rank" : ("worker rank " + rankIndex);
+    }
+
+
+    /**
+     * Applies the hostname regex to one candidate address.
+     *
+     * <p>The match is a <b>prefix</b> match: the pattern is anchored at the
+     * start of the candidate and unanchored at the end, so {@code 172\.17\.}
+     * selects every address in that range without a trailing {@code .*}.  This
+     * is {@link java.util.regex.Matcher#lookingAt lookingAt} rather than
+     * {@link java.util.regex.Matcher#matches matches}.
+     *
+     * <p>Note the consequence: a pattern is <i>not</i> implicitly anchored at
+     * the end, so {@code 10\.0\.0\.1} also selects {@code 10.0.0.10} and
+     * {@code 10.0.0.123}.  A pattern meant to name exactly one address must say
+     * so, with a trailing {@code $}.
+     *
+     * <p>Every code path that resolves addresses matches through here, so the
+     * semantics cannot differ between them.
+     *
+     * @param regex      the user-given pattern; never {@code null} here --
+     *                   callers test for a null pattern first, since no pattern
+     *                   means "take the first address" rather than "match all"
+     * @param candidate  the address text to test
+     *
+     * @return  whether the candidate is selected by the pattern
+     */
+    static boolean hostnameRegexMatches( Pattern regex, String candidate ) {
+        return regex.matcher( candidate ).lookingAt();
+    }
+
+
+    /**
      * Given system properties and a hostname regex, extract the head and worker
      * rank root URLs.  If distributed I/O is disabled on the server, no URLs
      * are found in the server's list, or none of the URLs match the given
@@ -5574,8 +6158,13 @@ public abstract class GPUdbBase {
             // empty slot for a removed rank)
             for (int i = 0; i < urlLists.length; ++i) {
 
-                // Handle removed ranks
+                // Handle removed ranks.  Keep an empty slot for the rank so
+                // that this list's indices stay aligned with the rank
+                // numbering; that is the numbering the shard routing table
+                // refers to, so compacting the list here would silently
+                // misroute every rank above the removed one.
                 if ( urlLists[i].isEmpty() ) {
+                    rankURLs.add( null );
                     continue;
                 }
 
@@ -5583,17 +6172,33 @@ public abstract class GPUdbBase {
                 String[] urls = urlLists[i].split(",");
                 boolean found = false;
 
+                // Whether the regex is genuinely why nothing was found: at least
+                // one address was usable and the regex rejected it.
+                boolean sawUsableUnmatched = false;
+
                 // Look through the URLs associated with this rank for a valid one that matches the regex,
                 //   or just use the first valid one in the list if there's no regex
                 for (String urlString : urls) {
                     URL url;
                     boolean doAdd = false;
 
-                    // Ensure it's a valid URL
+                    // An unusable alternate is skipped, not fatal.  This loop's job is
+                    // to find a usable address for this rank among the ones advertised
+                    // for it; failing the whole list over one bad entry would abandon
+                    // the good entries beside it, and the !found check below already
+                    // reports the rank when none of them works.
                     try {
                         url = new URL(urlString);
                     } catch (MalformedURLException ex) {
-                        throw new GPUdbException(ex.getMessage(), ex);
+                        GPUdbLogger.debug_with_info("Skipping unusable rank URL <" + urlString
+                                                    + ">: " + ex.getMessage());
+                        continue;
+                    }
+
+                    if (!hasUsableHost(url)) {
+                        GPUdbLogger.debug_with_info("Skipping rank URL naming no host <"
+                                                    + urlString + ">");
+                        continue;
                     }
 
                     if (hostnameRegex == null) {
@@ -5602,11 +6207,13 @@ public abstract class GPUdbBase {
                         doAdd = true;
                     } else {
                         // Check if this URL matches the given regex
-                        doAdd = hostnameRegex.matcher(url.getHost()).matches();
-                        if (doAdd)
+                        doAdd = hostnameRegexMatches(hostnameRegex, url.getHost());
+                        if (doAdd) {
                             GPUdbLogger.debug_with_info("Keeping matching rank URL: " + url);
-                        else
+                        } else {
+                            sawUsableUnmatched = true;
                             GPUdbLogger.debug_with_info("Skipping non-matching rank URL: " + url);
+                        }
                     }
 
                     if (doAdd) {
@@ -5618,14 +6225,17 @@ public abstract class GPUdbBase {
                 }
 
                 if (!found) {
-                    // If there's no valid URL matching the regex throw a match error
-                    if (hostnameRegex != null) {
+                    // Blame the regex only when it is actually to blame
+                    if ( (hostnameRegex != null) && sawUsableUnmatched ) {
                         throw new GPUdbHostnameRegexFailureException(
-                                "No valid matching IP/hostname found for worker: " + i
+                                "No valid matching IP/hostname found for " + rankLabel( i )
                         );
                     }
-                    // If there's no valid URL throw an error
-                    throw new GPUdbException("No valid IP/hostname found for worker: " + i);
+                    // Nothing usable was advertised for this rank, whether or not a
+                    // regex was given.  Reported as an ordinary failure so that the
+                    // connection degrades rather than being refused for a cause the
+                    // regex did not create.
+                    throw new GPUdbException("No valid IP/hostname found for " + rankLabel( i ));
                 }
             }
         } else {
@@ -5712,13 +6322,25 @@ public abstract class GPUdbBase {
                     host = splitHostname[ 0 ];
                 }
 
+                // Match against the HOST only, per the rule that every resolver
+                // matches the same thing.  `host` here still carries any port and
+                // path, because that is what this parser stores and its public
+                // getter has always returned; only the match target changes.
+                String hostForMatching = hostOf( host );
+
+                if (!hasUsableHostText( host ) || !hasUsableHostText( hostForMatching )) {
+                    GPUdbLogger.debug_with_info("Skipping host entry naming no host <"
+                                                + hostname + ">");
+                    continue;
+                }
+
                 if (hostnameRegex == null) {
                     // No regex given, so take the first one
                     GPUdbLogger.debug_with_info("Keeping hostname: " + host);
                     doAdd = true;
                 } else {
                     // Check if this hostname matches the regex
-                    doAdd = hostnameRegex.matcher( host ).matches();
+                    doAdd = hostnameRegexMatches( hostnameRegex, hostForMatching );
                     if (doAdd)
                         GPUdbLogger.debug_with_info("Keeping matching hostname: " + host);
                     else
@@ -5773,13 +6395,19 @@ public abstract class GPUdbBase {
         URL activeHeadNodeUrl;
         List<URL> rankURLs = getRankURLs( systemProperties, this.hostnameRegex );
 
-        // Get the head node URL and keep it separately
+        // Get the head node URL and keep it separately.  Note that the
+        // rank-0 slot must be removed whatever it holds, so that the indices
+        // of the remaining worker URLs stay aligned with the rank numbering.
         if ( !rankURLs.isEmpty() ) {
             GPUdbLogger.debug_with_info( String.format(
                     "Assigning head rank URL %s from server-known rank URLs: %s",
                     rankURLs.get(0),
                     Arrays.toString( rankURLs.toArray() ) ));
-            activeHeadNodeUrl = rankURLs.remove( 0 );
+            URL headRankUrl = rankURLs.remove( 0 );
+
+            // Rank 0 cannot be removed from a cluster, but do not hand out a
+            // null head URL should the server ever report a blank slot for it
+            activeHeadNodeUrl = (headRankUrl != null) ? headRankUrl : url;
         } else {
             GPUdbLogger.debug_with_info( String.format(
                     "Assigning head rank URL to the user-given one %s, as no server-known worker rank URLs found",
@@ -5806,7 +6434,7 @@ public abstract class GPUdbBase {
                         // head rank's; we'll just use a
                         // different path
                         activeHeadNodeUrl.getPort(),
-                        "/gpudb-host-manager"
+                        hostManagerPathFor( activeHeadNodeUrl )
                 );
             } else {
                 // The host manager URL shouldn't use any path and
@@ -5852,7 +6480,8 @@ public abstract class GPUdbBase {
      * @return a list of full URLs for each of the head node in the
      * high availability cluster, if any is set up.
      */
-    private List<URL> getHARingHeadNodeURLs( Map<String, String> systemProperties )
+    private static List<URL> getHARingHeadNodeURLs( Map<String, String> systemProperties,
+                                                   Pattern hostnameRegex )
         throws GPUdbHostnameRegexFailureException, GPUdbException {
 
         List<URL> haRingHeadNodeURLs = new ArrayList<>();
@@ -5877,6 +6506,7 @@ public abstract class GPUdbBase {
                     // associated with it
                     String[] urls = haRingHeadNodeUrlLists[i].split(",");
                     boolean found = false;
+                    boolean sawUsableUnmatched = false;   // see the note in getRankURLs()
 
                     for (String urlString : urls) {
                         // If a regex is given, get a matching URL--if there isn't
@@ -5885,24 +6515,36 @@ public abstract class GPUdbBase {
                         URL url;
                         boolean doAdd = false;
 
-                        // Ensure it's a valid URL
+                        // An unusable alternate is skipped, not fatal; see the
+                        // matching note in getRankURLs().  The !found check below
+                        // reports the cluster when none of its URLs works.
                         try {
                             url = new URL(urlString);
                         } catch (MalformedURLException ex) {
-                            throw new GPUdbException(ex.getMessage(), ex);
+                            GPUdbLogger.debug_with_info("Skipping unusable head node URL <"
+                                                        + urlString + ">: " + ex.getMessage());
+                            continue;
                         }
 
-                        if (this.hostnameRegex == null) {
+                        if (!hasUsableHost(url)) {
+                            GPUdbLogger.debug_with_info("Skipping head node URL naming no host <"
+                                                        + urlString + ">");
+                            continue;
+                        }
+
+                        if (hostnameRegex == null) {
                             // No regex is given, so we'll take the first one
                             GPUdbLogger.debug_with_info("Keeping head node URL: " + url);
                             doAdd = true;
                         } else {
                             // Check if this URL matches the given regex
-                            doAdd = this.hostnameRegex.matcher(url.getHost()).matches();
-                            if (doAdd)
+                            doAdd = hostnameRegexMatches(hostnameRegex, url.getHost());
+                            if (doAdd) {
                                 GPUdbLogger.debug_with_info("Keeping matching head node URL: " + url);
-                            else
+                            } else {
+                                sawUsableUnmatched = true;
                                 GPUdbLogger.debug_with_info("Skipping non-matching head node URL: " + url);
+                            }
                         }
 
                         if (doAdd) {
@@ -5915,12 +6557,12 @@ public abstract class GPUdbBase {
 
                     if (!found) {
                         // No eligible hostname found!
-                        if (this.hostnameRegex != null) {
+                        if ( (hostnameRegex != null) && sawUsableUnmatched ) {
                             // The reason we don't have a URL is because it didn't
                             // match the given regex
                             throw new GPUdbHostnameRegexFailureException(String.format(
                                     "No matching IP/hostname found for cluster with head node URLs %s (given hostname regex %s)",
-                                    haRingHeadNodeUrlLists[i], this.hostnameRegex));
+                                    haRingHeadNodeUrlLists[i], hostnameRegex));
                         }
                         throw new GPUdbException("No matching IP/hostname found for cluster with head node URLs " + haRingHeadNodeUrlLists[i] );
                     }
@@ -5981,7 +6623,11 @@ public abstract class GPUdbBase {
 
                 // If the user does not want us to retry, parse the URLs as is
                 if ( this.initialConnectionAttemptTimeoutNS == 0 ) {
-                    GPUdbLogger.debug_with_info( "Initial connection attempt timeout set to 0; parse the given URLs without auto discovery." );
+                    // Report the demotion; multi-head is being given up
+                    // because discovery failed and no retry was budgeted.
+                    GPUdbLogger.warn( "Disabling auto-discovery & multi-head operations for this connection"
+                                      + " (no retry: the initial connection attempt timeout is 0): "
+                                      + ex.getMessage() );
                     this.disableAutoDiscovery = true;
                 } else {
                     // Do we keep trying another time?  Has enough time passed?
@@ -6014,7 +6660,7 @@ public abstract class GPUdbBase {
             GPUdbLogger.debug_with_info( "No cluster found!" );
             throw new GPUdbException( "Could not connect to any working Kinetica server! " + "Given URLs: " + urls.toString() );
         }
-    }   // end parseUrls
+    }   // end processUrls
 
 
 
@@ -6204,19 +6850,34 @@ public abstract class GPUdbBase {
                     // disabled, so that the user can issue database commands,
                     // but where multi-head operations will not be available.
                     if ( !isSystemRunning( clusterHeadNodeUrl ) ) {
-    
-                        GPUdbLogger.warn(String.format(
-                                "Disabling auto-discovery & multi-head operations--cluster reachable with user-given URL <%s> but not with server-known URL <%s>",
+
+                        // Recorded, not announced: this may be a cluster we
+                        // never connect to, and the ring is enumerated in full
+                        // at construction.  The check at the end of this method
+                        // warns if the cluster we actually end up using is the
+                        // degraded one.
+                        GPUdbLogger.debug_with_info(String.format(
+                                "Multi-head operations unavailable for the cluster reached via <%s>:"
+                                + " reachable with the user-given URL but not with its server-known URL <%s>",
                                 urlStr, clusterHeadNodeUrl
                         ));
-    
-                        // Disable auto-discovery and throw exception to reprocess user-given URLs
-                        this.disableAutoDiscovery = true;
-    
-                        throw new GPUdbException(String.format(
-                                "Could not connect to user-given URL %s via server-known head node URL %s",
-                                urlStr, clusterHeadNodeUrl
-                        ));
+
+                        // Record the lost capability against THIS cluster only,
+                        // keyed on the URL that does work, and carry on to the
+                        // next one.  Throwing here used to send processUrls()
+                        // back to reprocess every user-given URL with
+                        // auto-discovery disabled, so one unreachable cluster
+                        // cost multi-head on every other cluster in the ring --
+                        // including clusters that were perfectly reachable.
+                        ClusterAddressInfo degraded =
+                                new ClusterAddressInfo( url, this.hostManagerPort );
+                        degraded.setHaStatus( haStatusFromStatusCheck );
+                        degraded.setMultiHeadAvailable( false );
+
+                        clusterIndicesOfUserGivenURLs.add( this.hostAddresses.size() );
+                        this.hostAddresses.add( degraded );
+
+                        continue;
                     }
     
                     GPUdbLogger.debug_with_info(String.format(
@@ -6236,7 +6897,7 @@ public abstract class GPUdbBase {
             // Parse the HA ring head nodes in the properties and add them
             // to this queue (only if we haven't processed them already).
             // This could fail due to a hostname regex mismatch.
-            List<URL> haRingHeadNodeURLs = getHARingHeadNodeURLs( systemProperties );
+            List<URL> haRingHeadNodeURLs = getHARingHeadNodeURLs( systemProperties, this.hostnameRegex );
             GPUdbLogger.debug_with_info( "Got HA ring head node URLs: " + Arrays.toString(haRingHeadNodeURLs.toArray()) );
             for (URL haUrl : haRingHeadNodeURLs) {
                 if (getIndexOfClusterContainingNode(haUrl.getHost()) == -1) {
@@ -6340,18 +7001,44 @@ public abstract class GPUdbBase {
 
         // Randomize the URL indices taking care that the primary cluster is
         // always at the front
-        randomizeURLs();
-    }   // end parseUrlsOnce
+        initializeHAFailoverURLs();
+
+        // Announce a degraded connection exactly once, and only for the
+        // cluster we are actually going to talk to.  Per-cluster capability is
+        // discovered for the whole ring above, but a cluster we never connect
+        // to is not worth warning about; switchURL() announces one we later
+        // fail over to.
+        //
+        // Note this method can run twice for one connection: processUrls()
+        // calls it again after its catch-all disables auto-discovery, and that
+        // second pass builds every cluster bare.  This check must stay silent on
+        // that reprocess so it does not double up with the warning processUrls()
+        // already emitted -- which is also why that warning cannot be dropped in
+        // favor of this one: nothing marks a cluster degraded on that path.  The
+        // two cover different things: processUrls() reports a connection that
+        // lost discovery involuntarily, this reports one cluster that cannot do
+        // multi-head.
+        if ( !this.hostAddresses.isEmpty() ) {
+            ClusterAddressInfo activeCluster = getClusterInfo();
+            if ( (activeCluster != null) && !activeCluster.isProbeOwed()
+                    && !activeCluster.isMultiHeadAvailable() ) {
+                GPUdbLogger.warn( String.format(
+                        "Multi-head operations unavailable for the cluster being connected to <%s>:"
+                        + " its worker addresses are not reachable from this client."
+                        + "  Operations will use the head node only.",
+                        activeCluster.getActiveHeadNodeUrl() ) );
+            }
+        }
+    }   // end processClusterInformationForAllUrls
 
 
     /**
-     * Randomly shuffles the list of high availability URL indices so that HA
-     * failover happens at a random fashion.  One caveat is when a primary host
-     * is given by the user; in that case, we need to keep the primary host's
-     * index as the first one in the list so that upon failover, when we circle
-     * back, we always pick the first/primary host up again.
+     * Construct the list of high availability URL indices for fail-over.
+     * 
+     * If using a random fail-over scheme, shuffle the URLs, not including the
+     * URL for the primary cluster (in the first slot), if given.
      */
-    private void randomizeURLs() {
+    private void initializeHAFailoverURLs() {
         synchronized (this.haUrlIndices) {
             // Re-create the list of HA URL indices (automatically in an
             // monotonically increasing order)
@@ -6383,7 +7070,7 @@ public abstract class GPUdbBase {
         // This will keep track of which cluster to pick next (an index of
         // randomly shuffled indices)
         setCurrClusterIndexPointer( 0 );
-    }   // end randomizeURLs
+    }   // end initializeHAFailoverURLs
 
 
     /**
@@ -7228,146 +7915,31 @@ public abstract class GPUdbBase {
                                                           IndexedRecord request,
                                                           T response,
                                                           boolean enableCompression ) throws SubmitException, GPUdbException {
-        // Send the request to the host manager
-        URL hmUrl = getHmURL();
-        URL originalURL = hmUrl;
-
-        GPUdbException originalException = null;
-
-        for (int i = 0; i < HOST_MANAGER_SUBMIT_REQUEST_RETRY_COUNT; ++i) {
-            // We need a snapshot of the current state re: HA failover.  When
-            // multiple threads work on this object, we'll need to know how
-            // many times we've switched clusters *before* attempting another
-            // request submission.
-            int currentClusterSwitchCount = getNumClusterSwitches();
-
-            try {
-                return submitRequest(appendPathToURL(hmUrl, endpoint), request, response, enableCompression);
-            } catch (MalformedURLException ex) {
-                // Save the original exception for later use
-                if (originalException == null) {
-                    originalException = new GPUdbException( ex.getMessage() );
-                }
-
-                // There's an error in creating the URL
-                throw new GPUdbRuntimeException(ex.getMessage(), ex);
-            } catch (GPUdbExitException ex) {
-                // Save the original exception for later use
-                if (originalException == null) {
-                    originalException = ex;
-                }
-
-                // Upon failure, try to use other clusters
-                try {
-                    hmUrl = switchHmURL( originalURL, currentClusterSwitchCount );
-                    GPUdbLogger.debug_with_info( "Switched to " + hmUrl.toString() );
-                } catch (GPUdbHAUnavailableException ha_ex) {
-                    // We've now tried all the HA clusters and circled back
-                    // Get the original cause to propagate to the user
-                    String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
-                    throw new GPUdbException( originalCause + "; " + ha_ex.getMessage(), true );
-                } catch (GPUdbFailoverDisabledException ha_ex) {
-                    // Failover is disabled; return the original cause
-                    String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
-                    throw new GPUdbException( originalCause + "; " + ha_ex.getMessage(), true );
-                }
-            } catch (SubmitException ex) {
-                // Save the original exception for later use
-                if (originalException == null) {
-                    originalException = ex;
-                }
-
-                // Upon failure, try to use other clusters
-                try {
-                    hmUrl = switchHmURL( originalURL, currentClusterSwitchCount );
-                    GPUdbLogger.debug_with_info( "Switched to " + hmUrl.toString() );
-                } catch (GPUdbHAUnavailableException ha_ex) {
-                    // We've now tried all the HA clusters and circled back
-                    // Get the original cause to propagate to the user
-                    String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
-                    throw new SubmitException(
-                            null,
-                            ex.getRequest(),
-                            ex.getRequestSize(),
-                            originalCause + "; " + ha_ex.getMessage(),
-                            ex.getCause(),
-                            true
-                    );
-                } catch (GPUdbFailoverDisabledException ha_ex) {
-                    // Failover is disabled; return the original cause
-                    String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
-                    throw new SubmitException(
-                            null,
-                            ex.getRequest(),
-                            ex.getRequestSize(),
-                            originalCause + "; " + ha_ex.getMessage(),
-                            ex.getCause(),
-                            true
-                    );
-                }
-            } catch (GPUdbException ex) {
-                // Save the original exception for later use
-                if (originalException == null) {
-                    originalException = ex;
-                }
-
-                // the host manager can still be going even if the database is down
-                if ( ex.getMessage().contains( DB_HM_OFFLINE_ERROR_MESSAGE ) ) {
-                    try {
-                        hmUrl = switchHmURL( originalURL, currentClusterSwitchCount );
-                        GPUdbLogger.debug_with_info( "Switched to " + hmUrl.toString() );
-                    } catch (GPUdbHAUnavailableException ha_ex) {
-                        // We've now tried all the HA clusters and circled back
-                        // Get the original cause to propagate to the user
-                        String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
-                        throw new GPUdbException( originalCause + "; " + ha_ex.getMessage(), true );
-                    } catch (GPUdbFailoverDisabledException ha_ex) {
-                        // Failover is disabled; return the original cause
-                        String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
-                        throw new GPUdbException( originalCause + "; " + ha_ex.getMessage(), true );
-                    }
-                }
-                else {
-                    // Any other GPUdbException is a valid failure
-                    throw ex;
-                }
-            } catch (Exception ex) {
-                // Save the original exception for later use
-                if (originalException == null) {
-                    originalException = new GPUdbException( ex.getMessage() );
-                }
-
-                // And other random exceptions probably are also connection errors
-                try {
-                    hmUrl = switchHmURL( originalURL, currentClusterSwitchCount );
-                    GPUdbLogger.debug_with_info( "Switched to " + hmUrl.toString() );
-                } catch (GPUdbHAUnavailableException ha_ex) {
-                    // We've now tried all the HA clusters and circled back
-                    // Get the original cause to propagate to the user
-                    String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
-                    throw new GPUdbException( originalCause + "; " + ha_ex.getMessage(), true );
-                } catch (GPUdbFailoverDisabledException ha_ex) {
-                    // Failover is disabled; return the original cause
-                    String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
-                    throw new GPUdbException( originalCause + "; " + ha_ex.getMessage(), true );
-                }
-            }
-        } // end for
-
-        // If we reach here, then something went wrong
-        final String exceededRetryCountError = 
-                "Failed to submit host manager endpoint; "
-                + "exceeded retry count " + HOST_MANAGER_SUBMIT_REQUEST_RETRY_COUNT
-                + "; original exception: '" + (originalException == null ? "" : originalException.getMessage())
-                + "'; please check if the host manager port is wrong: " + hmUrl.toString();
-
-        GPUdbLogger.debug_with_info(exceededRetryCountError);
-
-        if (originalException != null)
-            throw originalException;
-
-        throw new GPUdbException(exceededRetryCountError);
-    } // end submitRequestToHM
+        // No fail-over, and no retry loop of its own.
+        //
+        // The host manager runs on the head node, is not health-checked, and is
+        // reached at an address derived from the head node's URL.  A host
+        // manager request that fails is therefore a hard failure of this
+        // cluster's host manager, and there is nowhere else it could correctly
+        // be sent: these endpoints name hosts and ranks *within* the cluster
+        // they are addressed to, and resolve those names against whichever
+        // cluster receives them.
+        //
+        // This method used to walk the HA ring on failure and replay the
+        // request against the next cluster's host manager.  That could apply a
+        // management operation -- /admin/remove/host among them -- to a cluster
+        // the caller never named, and report success.  The rules now say plainly
+        // that a host manager failure goes back to the caller.
+        //
+        // Ordinary transport retries still apply: they happen inside
+        // submitRequest(), at the HTTP layer, and are not this method's concern.
+        try {
+            return submitRequest( appendPathToURL( getHmURL(), endpoint ),
+                                  request, response, enableCompression );
+        } catch (MalformedURLException ex) {
+            throw new GPUdbRuntimeException( ex.getMessage(), ex );
+        }
+    }   // end submitRequestToHM
 
 
     /**
@@ -7834,6 +8406,13 @@ public abstract class GPUdbBase {
      * IMPORTANT:  This method will *not* attempt to fail over to an available
      * cluster if the current one goes down.
      *
+     * IMPORTANT:  This method serves <i>reachability probes only</i> -- its sole
+     * caller is {@link #getSystemStatusResponse}, reached when {@code quickCheck}
+     * is set.  Because a failed request here is an expected outcome rather than a
+     * fault, the connection failure below is logged at debug rather than error.
+     * A caller that treats a failure as a genuine error must not use this method
+     * without revisiting that, or real errors will be logged at debug.
+     *
      * @param <T>                the type of the response object
      * @param url                the URL to send the request to
      * @param request            the request object
@@ -7910,7 +8489,14 @@ public abstract class GPUdbBase {
             } catch (Exception ex) {
                 // Trigger an HA failover at the caller level
                 requestTime = System.currentTimeMillis() - requestTime;
-                GPUdbLogger.error( ex, "Throwing exit exception after " + requestTime + "ms due to ");
+                // Logged at debug:  this is a reachability probe, so a failure
+                // here is a *result* -- the probe reports the URL unreachable,
+                // while the root cause is kept in the message; the exit
+                // exception below carries it to callers that do treat it as a
+                // failure.
+                GPUdbLogger.debug_with_info( "Throwing exit exception after " + requestTime
+                                             + "ms due to: "
+                                             + ExceptionUtils.getRootCauseMessage( ex ) );
 
                 String errorMessage = "Error submitting endpoint <%s> request after <%d>ms due to: %s";
                 throw new GPUdbExitException(String.format(errorMessage, url.toString(), requestTime, ExceptionUtils.getRootCauseMessage(ex)));

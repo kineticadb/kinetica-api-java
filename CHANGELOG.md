@@ -2,13 +2,145 @@
 
 ## Version 7.2
 
+### Version 7.2.3.25 - 2026-09-20
+
+#### Changed
+
+-   A cluster whose worker addresses cannot be reached from the client no
+    longer induces degraded (head-node only) mode on the other clusters in the
+    HA ring.
+-   Failover now depends only on a cluster's head node being reachable.
+-   Host manager requests no longer fail over.  A failed request now returns
+    its error instead of being retried against another cluster; reissue it
+    against the cluster you intend.  The retry it replaces could apply a
+    management operation to a cluster the caller never named.
+-   Removed support for server-advertised worker IPs/ports.
+-   A `WorkerList` now uses the addresses the connection discovered for the
+    cluster it is on.  A list passed to a `BulkInserter` or `RecordRetriever` is
+    used as given, but is replaced with the new cluster's addresses after a
+    fail-over.
+-   `WorkerList(GPUdb)` no longer reports an error when a cluster names no
+    worker addresses; the list is empty and the object uses the head node.
+-   `isMultiHeadAvailable()` now returns `false` for a cluster the client has
+    never reached -- one that was down when the connection was made, or whose
+    configuration could not be read.  It previously returned `true` about worker
+    addresses that had never been contacted.  Routing is unaffected: such a
+    cluster yielded an empty worker list before and still does.  Check any code
+    that reads this to distinguish states rather than to ask "can I use
+    multi-head here" -- it no longer separates "never discovered" from "the
+    server has no worker servers", which both now report `false`.  To tell
+    whether a connection lost clusters while connecting, compare
+    `getHARingSize()` or `getURLs()` against the ring you expect;
+    `isAutoDiscoveryEnabled()` does not report it, since it reflects the option
+    you set rather than what discovery achieved.
+-   `WorkerList.isQueriedUrlList()` was removed from the public interface and
+    converted to an internal method, as it was not needed by end users.
+-   The hostname regex parameter usage has been updated:
+
+    - it is now applied to the head rank's address as well as the worker ranks',
+      wherever worker addresses are resolved
+    - it is now used for distributed key look-ups (`RecordRetriever`)
+    - it is now matched against the host part of an address only, never the
+      scheme, port or path
+    - it is now used as a prefix match, so a pattern of `172\.17\.` selects
+      every address in the `172.17.*.*` range
+
+      Note the consequence for an existing pattern: matching is no longer
+      implicitly anchored at the end of the address, so `10\.0\.0\.1` now also
+      selects `10.0.0.10` and `10.0.0.123`.  A pattern intended to name exactly
+      one address should be given a trailing `$`.
+
+#### Deprecated
+-   `WorkerList(GPUdb, Pattern)` and `WorkerList(GPUdb, String)`.  The filter is
+    ignored, with a warning, because one given here cannot survive a fail-over.
+    Use `Options.setHostnameRegex` on the connection instead.  Both otherwise
+    behave as `WorkerList(GPUdb)`.
+-   `WorkerList(List)`, which is for internal use.  Pass `null` to a
+    `BulkInserter` or `RecordRetriever` to use the connection's own worker
+    addresses, or an empty `WorkerList` to decline multi-head for that object.
+-   `WorkerList.getIpRegex()`, which now always returns `null`.  A worker list
+    has no filter of its own; see `Options.getHostnameRegex`.
+
+#### Fixed
+-   Multi-head ingestion on a cluster with a rank removed via
+    `/admin/remove/ranks` sent records to the wrong rank, and failed outright
+    for records routed to the highest rank.
+-   Multi-head ingestion lost queued records when the worker list was rebuilt
+    and the client fell back to the head node.
+-   Multi-head ingestion could send a record to a worker rank when it should
+    have gone to the head node, if the record was inserted at the moment the
+    inserter switched to head-node-only routing.
+-   Multi-head retrieval from a replicated table could send a lookup to a
+    removed rank.
+-   Multi-head retrieval could not fail over to any cluster that had a removed
+    rank.
+-   Multi-head retrieval now refreshes its shard mapping when the server
+    reports that data was re-routed while shards were being rebalanced.
+-   Multi-head retrieval could not fall back to the head node when a cluster
+    stopped advertising worker addresses this client can reach, and went on
+    using addresses it had been told were gone.
+-   Multi-head retrieval could send a lookup to the wrong rank, or fail
+    outright, if it happened at the moment the worker list was rebuilt.
+-   Multi-head ingestion and retrieval went on routing to worker ranks that a
+    shard rebalance had moved out of reach, instead of falling back to the head
+    node.  Worker reachability is now re-checked whenever the worker list is
+    rebuilt, not only when the connection switches clusters.
+-   A single unusable server-advertised address no longer costs the whole
+    connection its multi-head operations.
+-   A rank address naming no host is no longer used.  Such a rank appeared to
+    be down rather than misconfigured, since the address could never connect.
+    An address without a port is still accepted, since one behind a proxy may
+    rely on the protocol default.
+-   `getHostNames()` no longer reports entries that name no host.
+-   Host manager requests went to an address that does not exist when the head
+    node is reached through a path prefix, such as a proxied
+    `https://host:8082/gpudb-0`.  The host manager path is now derived from the
+    head node's own path instead of being assumed to sit at the root.
+-   A cluster advertising no usable address could refuse the connection,
+    blaming a hostname regex that was correct.  Such a cluster now connects
+    without multi-head operations.
+-   A failure to find a usable address for the head rank named it as `worker: 0`,
+    so a correct hostname regex could be rejected by an error naming a worker
+    that does not exist.  The head rank is now named as the head rank.
+-   Failing over to a cluster that names no usable worker addresses reported an
+    error instead of continuing through its head node.
+-   An empty worker list, passed to turn multi-head off for one `BulkInserter`
+    or `RecordRetriever`, was discarded on the first shard rebalance or
+    fail-back, silently turning multi-head back on.  The choice now holds for
+    the life of the object, and is the way to decline multi-head while keeping
+    fail-over -- which disabling auto-discovery does not.
+-   `RecordRetriever` documented passing `null` as the way to disable multi-head
+    retrieval, which does the opposite -- the worker list is then taken from the
+    connection and multi-head is used.  Pass an empty worker list instead; the
+    documentation now says so.
+-   Building with Gradle failed on a fresh clone with a missing
+    `org.gradle.wrapper.GradleWrapperMain`; the wrapper is now checked in.
+
+#### Notes
+-   A connection that cannot use multi-head operations now says so, once, for
+    the cluster it is actually using -- when first connecting, and each time a
+    failover lands on a cluster whose workers this client cannot reach.
+-   Auto-discovery and multi-head operations being disabled for a connection
+    after the initial cluster lookup fails is now reported as a warning naming
+    the cause.
+-   A connection failure while checking whether a worker rank is reachable is no
+    longer logged as an error.  That check is how a client discovers it must use
+    the head node only, so a failure there is an expected result rather than a
+    fault; it is logged at debug, and the outcome is still reported as a warning.
+-   Multi-head ingestion and retrieval now report an error naming the table
+    when the shard mapping cannot be retrieved from the server.  Retrieval
+    previously fell back to the head node without reporting it.
+-   Multi-head retrieval now reports the failure that actually caused a lookup
+    to fail, with the underlying exception attached.
+
+
 ### Version 7.2.3.24 - 2026-08-20
 
 #### Changed
 -   Upgraded httpclient5 library to 5.6.4 to fix CVE-2026-64607.
 
 
-### Version 7.2.3.23 - 2026-08-13
+### Version 7.2.3.23 - 2026-08-19
 
 #### Changed
 -   Multi-head retrieval by key now reports an unparseable shard key value,

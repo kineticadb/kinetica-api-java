@@ -62,18 +62,46 @@ public class BulkInserter<T> implements AutoCloseable {
 
     // Sharding members
     private com.gpudb.WorkerList workerList;
-    private List<WorkerQueue<T>> workerQueues;
-    private boolean multiHeadEnabled;
-    private boolean useHeadNode;
     private final RecordKeyBuilder<T> shardKeyBuilder;
     private long shardVersion;
     private MutableLong shardUpdateTime;
-    private List<Integer> routingTable;
+
+    /**
+     * Where records get routed, published as a single immutable value.
+     * <p>
+     * The destination of a record depends on three things that have to agree
+     * with one another: whether to use the head node, the list of worker
+     * queues, and the shard mapping.  Holding them in one immutable object
+     * behind one {@code volatile} reference means a rebuild cannot be observed
+     * part way through: a reader sees either the whole old state or the whole
+     * new one, and gets the happens-before edge that makes the queues it finds
+     * safe to use.
+     * <p>
+     * Every read on the insert path must take this reference <i>once</i> into a
+     * local and use that local throughout.  Re-reading the field mid-decision
+     * reintroduces exactly the inconsistency the snapshot exists to prevent.
+     */
+    private volatile Routing<T> routing;
+
+    /**
+     * The shard mapping most recently fetched from the server, which may not
+     * have been published yet; see
+     * {@link #updateWorkerQueues(boolean, boolean)}.  Only ever touched
+     * while holding this object's monitor, and never read on the insert path.
+     */
+    private List<Integer> pendingRoutingTable;
 
     // HA members
-    private final int dbHARingSize;
-    private int numClusterSwitches;
     private URL currentHeadNodeURL;
+
+    /**
+     * The multi-head config the worker list was last built from, compared by
+     * <b>identity</b> to detect that the connection's addresses have been
+     * replaced -- by a move to another cluster, or by a fresh probe of the one
+     * it is already on.
+     */
+    private GPUdbBase.MultiHeadSnapshot lastMultiHeadSnapshot;
+
     private final Object haFailoverLock;
 
     // Version that supports column defaults
@@ -159,6 +187,8 @@ public class BulkInserter<T> implements AutoCloseable {
      *                     {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
      * @param workers      worker list for multi-head ingest; use an empty worker
      *                     list ({@code new WorkerList()}) to disable multi-head
+     *                     for this inserter, which leaves the connection's
+     *                     fail-over intact and is not undone by a later rebuild
      *
      * @throws GPUdbException if a configuration error occurs
      *
@@ -192,6 +222,8 @@ public class BulkInserter<T> implements AutoCloseable {
      *                     {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
      * @param workers      worker list for multi-head ingest; use an empty worker
      *                     list ({@code new WorkerList()}) to disable multi-head
+     *                     for this inserter, which leaves the connection's
+     *                     fail-over intact and is not undone by a later rebuild
      * @param flushOptions {@link FlushOptions} to use for timed flush operation
      *
      * @throws GPUdbException if a configuration error occurs
@@ -228,6 +260,8 @@ public class BulkInserter<T> implements AutoCloseable {
      *                     {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
      * @param workers      worker list for multi-head ingest; use an empty worker
      *                     list ({@code new WorkerList()}) to disable multi-head
+     *                     for this inserter, which leaves the connection's
+     *                     fail-over intact and is not undone by a later rebuild
      * @param jsonOptions  {@link GPUdbBase.JsonOptions} to use for JSON ingest
      *
      * @throws GPUdbException if a configuration error occurs
@@ -265,6 +299,8 @@ public class BulkInserter<T> implements AutoCloseable {
      *                     {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
      * @param workers      worker list for multi-head ingest; use an empty worker
      *                     list ({@code new WorkerList()}) to disable multi-head
+     *                     for this inserter, which leaves the connection's
+     *                     fail-over intact and is not undone by a later rebuild
      * @param flushOptions {@link FlushOptions} to use for timed flush operation
      * @param jsonOptions  {@link GPUdbBase.JsonOptions} to use for JSON ingest
      *
@@ -371,6 +407,8 @@ public class BulkInserter<T> implements AutoCloseable {
      *                     {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
      * @param workers      worker list for multi-head ingest; use an empty worker
      *                     list ({@code new WorkerList()}) to disable multi-head
+     *                     for this inserter, which leaves the connection's
+     *                     fail-over intact and is not undone by a later rebuild
      *
      * @throws GPUdbException if a configuration error occurs
      *
@@ -406,6 +444,8 @@ public class BulkInserter<T> implements AutoCloseable {
      *                     {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
      * @param workers      worker list for multi-head ingest; use an empty worker
      *                     list ({@code new WorkerList()}) to disable multi-head
+     *                     for this inserter, which leaves the connection's
+     *                     fail-over intact and is not undone by a later rebuild
      * @param flushOptions {@link FlushOptions} to use for timed flush operation
      *
      * @throws GPUdbException if a configuration error occurs
@@ -444,6 +484,8 @@ public class BulkInserter<T> implements AutoCloseable {
      *                     {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
      * @param workers      worker list for multi-head ingest; use an empty worker
      *                     list ({@code new WorkerList()}) to disable multi-head
+     *                     for this inserter, which leaves the connection's
+     *                     fail-over intact and is not undone by a later rebuild
      * @param jsonOptions  {@link GPUdbBase.JsonOptions} to use for JSON ingest
      *
      * @throws GPUdbException if a configuration error occurs
@@ -483,6 +525,8 @@ public class BulkInserter<T> implements AutoCloseable {
      *                     {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
      * @param workers      worker list for multi-head ingest; use an empty worker
      *                     list ({@code new WorkerList()}) to disable multi-head
+     *                     for this inserter, which leaves the connection's
+     *                     fail-over intact and is not undone by a later rebuild
      * @param flushOptions {@link FlushOptions} to use for timed flush operation
      * @param jsonOptions  {@link GPUdbBase.JsonOptions} to use for JSON ingest
      *
@@ -593,6 +637,8 @@ public class BulkInserter<T> implements AutoCloseable {
      *                      {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
      * @param workers       worker list for multi-head ingest; use an empty worker
      *                      list ({@code new WorkerList()}) to disable multi-head
+     *                      for this inserter, which leaves the connection's
+     *                      fail-over intact and is not undone by a later rebuild
      *
      * @throws GPUdbException if a configuration error occurs
      *
@@ -629,6 +675,8 @@ public class BulkInserter<T> implements AutoCloseable {
      *                      {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
      * @param workers       worker list for multi-head ingest; use an empty worker
      *                      list ({@code new WorkerList()}) to disable multi-head
+     *                      for this inserter, which leaves the connection's
+     *                      fail-over intact and is not undone by a later rebuild
      * @param flushOptions  {@link FlushOptions} to use for timed flush operation
      *
      * @throws GPUdbException if a configuration error occurs
@@ -669,6 +717,8 @@ public class BulkInserter<T> implements AutoCloseable {
      *                      {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
      * @param workers       worker list for multi-head ingest; use an empty worker
      *                      list ({@code new WorkerList()}) to disable multi-head
+     *                      for this inserter, which leaves the connection's
+     *                      fail-over intact and is not undone by a later rebuild
      * @param jsonOptions   {@link GPUdbBase.JsonOptions} to use for JSON ingest
      *
      * @throws GPUdbException if a configuration error occurs
@@ -709,6 +759,8 @@ public class BulkInserter<T> implements AutoCloseable {
      *                      {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
      * @param workers       worker list for multi-head ingest; use an empty worker
      *                      list ({@code new WorkerList()}) to disable multi-head
+     *                      for this inserter, which leaves the connection's
+     *                      fail-over intact and is not undone by a later rebuild
      * @param flushOptions  {@link FlushOptions} to use for timed flush operation
      * @param jsonOptions   {@link GPUdbBase.JsonOptions} to use for JSON ingest
      *
@@ -753,6 +805,8 @@ public class BulkInserter<T> implements AutoCloseable {
      *                      {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
      * @param workers       worker list for multi-head ingest; use an empty worker
      *                      list ({@code new WorkerList()}) to disable multi-head
+     *                      for this inserter, which leaves the connection's
+     *                      fail-over intact and is not undone by a later rebuild
      * @param flushOptions  {@link FlushOptions} to use for timed flush operation
      * @param jsonOptions   {@link GPUdbBase.JsonOptions} to use for JSON ingest
      *
@@ -821,14 +875,6 @@ public class BulkInserter<T> implements AutoCloseable {
         this.shardVersion = 0;
         this.shardUpdateTime = new MutableLong();
 
-        // We need to know how many clusters are in the HA ring (for failover
-        // purposes)
-        this.dbHARingSize = gpudb.getHARingSize();
-
-        // Keep track of how many times the DB client has switched HA clusters
-        // in order to decide later if it's time to update the worker queues
-        this.numClusterSwitches = gpudb.getNumClusterSwitches();
-
         // Keep track of which cluster we're using (helpful in knowing if an
         // HA failover has happened)
         this.currentHeadNodeURL = gpudb.getURL();
@@ -846,32 +892,34 @@ public class BulkInserter<T> implements AutoCloseable {
         // If no worker list is given, attempt to create one, by default, using
         // the given connection's work rank list
         if (this.workerList == null)
-            this.workerList = new com.gpudb.WorkerList(this.gpudb.getClusterInfo().getWorkerRankUrls());
+            this.workerList = new com.gpudb.WorkerList( this.gpudb.getCurrentMultiHeadSnapshot() );
 
         // Set if multi-head I/O is turned on at the server and rank URLs are accessible
-        this.multiHeadEnabled = ( (this.workerList != null) && !this.workerList.isEmpty() );
+        boolean isMultiHeadEnabled = ( (this.workerList != null) && !this.workerList.isEmpty() );
 
         // We should use the head node if multi-head is turned off at the server
-        // or if we're working with a replicated table
-        this.useHeadNode = ( !this.multiHeadEnabled || this.isTableReplicated);
+        // or if we're working with a replicated table.  Routing states that rule;
+        // it is needed here because it decides whether per-rank queues get built
+        // at all, before any Routing exists to ask.
+        boolean useHeadNode = Routing.useHeadNodeFor( isMultiHeadEnabled, this.isTableReplicated );
 
         this.shardKeyBuilder = (type == null ? null : new RecordKeyBuilder<>(type, typeObjectMap));
 
-        this.workerQueues = new ArrayList<>();
+        List< WorkerQueue<T> > workerQueues = new ArrayList<>();
 
         try {
 
             // If we have multiple workers, then use those (unless the table
             // is replicated)
-            if ( !this.useHeadNode ) {
+            if ( !useHeadNode ) {
 
                 for (URL url : this.workerList) {
                     if (url == null) {
                         // Handle removed ranks
-                        this.workerQueues.add( null );
+                        workerQueues.add( null );
                     } else {
                         URL insertURL = GPUdbBase.appendPathToURL( url, "/insert/records" );
-                        this.workerQueues.add(new WorkerQueue<>(
+                        workerQueues.add(new WorkerQueue<>(
                                 this.gpudb,
                                 insertURL,
                                 this.tableName,
@@ -882,13 +930,10 @@ public class BulkInserter<T> implements AutoCloseable {
                         ));
                     }
                 }
-
-                // Update the worker queues, if needed
-                updateWorkerQueues( this.numClusterSwitches, false );
             } else { // use the head node only for insertion
                 URL insertURL = GPUdbBase.appendPathToURL( this.gpudb.getURL(), "/insert/records" );
 
-                this.workerQueues.add(new WorkerQueue<>(
+                workerQueues.add(new WorkerQueue<>(
                         this.gpudb,
                         insertURL,
                         this.tableName,
@@ -897,10 +942,25 @@ public class BulkInserter<T> implements AutoCloseable {
                         (this.isJson ? this.jsonOptions : null),
                         this.typeObjectMap
                 ));
-                this.routingTable = null;
             }
         } catch (MalformedURLException ex) {
             throw new GPUdbException(ex.getMessage(), ex);
+        }
+
+        // Remember the initial multi-head state in order to detect changes to
+        // the multi-head state after failover/failback/rebalance.
+        this.lastMultiHeadSnapshot = this.gpudb.getCurrentMultiHeadSnapshot();
+
+        // Publish the initial routing state as one value, before anything can
+        // read it.  The shard mapping is not known yet; it is fetched below and
+        // published as a snapshot of its own.
+        this.routing = new Routing<>( isMultiHeadEnabled, this.isTableReplicated,
+                                      workerQueues, null );
+
+        if ( !useHeadNode ) {
+            // Fetch the shard mapping that goes with these queues; don't
+        	// rebuild the queues themselves
+            updateWorkerQueues( false );
         }
 
         // The client only does its own "stop on error" emulation when the caller
@@ -1376,7 +1436,7 @@ public class BulkInserter<T> implements AutoCloseable {
 
                 // Check if shard re-balancing is under way at the server; if so,
                 // we need to update the shard mapping
-                if ( "true".equals( response.getInfo().get( "data_rerouted" ) ) ) {
+                if ( "true".equals( response.getInfo().get( GPUdbBase.RESPONSE_INFO_DATA_REROUTED ) ) ) {
                     doUpdateWorkers = true;
                 }
 
@@ -1562,6 +1622,104 @@ public class BulkInserter<T> implements AutoCloseable {
             return this.insertUrl;
         }
     }   // end class WorkerQueue
+
+
+    /**
+     * An immutable snapshot of where records get routed.
+     * <p>
+     * Constructing one validates the relationship between its fields, so an
+     * inconsistent routing state cannot be built, let alone published.  See
+     * {@link BulkInserter#routing}.
+     */
+    private static final class Routing<T> {
+
+        /** Whether records go to the head node rather than to worker ranks. */
+        final boolean useHeadNode;
+
+        /** Whether multi-head I/O is available for this inserter. */
+        final boolean multiHeadEnabled;
+
+        /**
+         * The queue per destination; unmodifiable.  When {@link #useHeadNode}
+         * is set this holds exactly one queue, for the head node.  Otherwise
+         * entry {@code i} is worker rank {@code i + 1}, and a rank that has
+         * been removed from the cluster keeps its slot as {@code null} so that
+         * the indices stay aligned with {@link #routingTable}.
+         */
+        final List< WorkerQueue<T> > queues;
+
+        /**
+         * The shard-to-rank mapping; unmodifiable, and {@code null} when it is
+         * not applicable (head-node routing) or not yet known.
+         */
+        final List<Integer> routingTable;
+
+        /** Whether the table is replicated, kept so the rule can be re-applied. */
+        final boolean tableReplicated;
+
+        /**
+         * The one statement of when routing goes to the head node: multi-head is
+         * unusable, or the table is replicated.
+         *
+         * <p><b>The replicated case is a cost choice, not a safety requirement.</b>
+         * A direct-to-rank insert on a replicated table is processed correctly,
+         * but by being passed to the head rank for redistribution to the
+         * workers.  Sending replicated table inserts directly to the head node
+         * saves the extra redirection hit on the workers.
+         */
+        static boolean useHeadNodeFor( boolean multiHeadEnabled, boolean tableReplicated ) {
+            return !multiHeadEnabled || tableReplicated;
+        }
+
+        Routing( boolean multiHeadEnabled,
+                 boolean tableReplicated,
+                 List< WorkerQueue<T> > queues,
+                 List<Integer> routingTable ) {
+
+            boolean doUseHeadNode = useHeadNodeFor( multiHeadEnabled, tableReplicated );
+
+            if ( queues == null || queues.isEmpty() )
+                throw new IllegalArgumentException( "Routing needs at least one queue" );
+
+            // The insert path resolves head-node routing to queues.get( 0 ),
+            // so this has to be the only queue there is.
+            if ( doUseHeadNode && (queues.size() != 1) )
+                throw new IllegalArgumentException(
+                        "Head-node routing needs exactly one queue, got "
+                        + queues.size() );
+
+            if ( doUseHeadNode && (queues.get( 0 ) == null) )
+                throw new IllegalArgumentException( "The head-node queue cannot be null" );
+
+            this.useHeadNode      = doUseHeadNode;
+            this.multiHeadEnabled = multiHeadEnabled;
+            this.tableReplicated  = tableReplicated;
+            this.queues           = Collections.unmodifiableList( new ArrayList<>( queues ) );
+            this.routingTable     = (routingTable == null)
+                                    ? null
+                                    : Collections.unmodifiableList( new ArrayList<>( routingTable ) );
+        }
+
+        /**
+         * Returns a copy of this routing state carrying a different shard
+         * mapping.  The queues are shared, not rebuilt.
+         */
+        Routing<T> withRoutingTable( List<Integer> newRoutingTable ) {
+            return new Routing<>( this.multiHeadEnabled, this.tableReplicated,
+                                  this.queues, newRoutingTable );
+        }
+
+        @Override
+        public String toString() {
+            return "Routing{useHeadNode=" + this.useHeadNode
+                   + ", multiHeadEnabled=" + this.multiHeadEnabled
+                   + ", queues=" + this.queues.size()
+                   + ", routingTable=" + ((this.routingTable == null)
+                                          ? "null"
+                                          : (this.routingTable.size() + " shards"))
+                   + "}";
+        }
+    }   // end class Routing
 
 
 
@@ -1896,101 +2054,46 @@ public class BulkInserter<T> implements AutoCloseable {
 
 
     /**
-     * Use the current head node URL in a thread-safe manner.
+     * Use the current head node URL in a thread-safe manner, guarded by the HA
+     * failover lock.
      */
     private URL getCurrentHeadNodeURL() {
-        synchronized ( this.currentHeadNodeURL ) {
+        synchronized ( this.haFailoverLock ) {
             return this.currentHeadNodeURL;
         }
     }
 
     /**
-     * Sets the current head node URL in a thread-safe manner.
+     * Sets the current head node URL in a thread-safe manner, guarded by the HA
+     * failover lock.
      */
     private void setCurrentHeadNodeURL(URL newCurrURL) {
-        synchronized ( this.currentHeadNodeURL ) {
+        synchronized ( this.haFailoverLock ) {
             this.currentHeadNodeURL = newCurrURL;
         }
     }
 
     /**
-     * Set the current count of HA failover events in a thread-safe manner.
-     */
-    private void setCurrentClusterSwitchCount(int value) {
-        synchronized ( this.haFailoverLock ) {
-            this.numClusterSwitches = value;
-        }
-    }
-
-
-    /**
-     * Force a high-availability cluster failover.  Check the health of the
-     * cluster (either head node only, or head node and worker ranks, based on
-     * the retriever configuration), and use it if healthy.  If no healthy cluster
-     * is found, then throw an error.  Otherwise, stop at the first healthy cluster.
+     * Asks the connection to fail over to another cluster, and records
+     * where it ended up.
+     *
+     * <p>The selection is entirely the connection's: {@code switchURL} walks the
+     * HA ring, and returns the first one it has found usable.  This method
+     * contributes the caller's vantage point -- the URL it was using and the
+     * switch count it last saw -- which is what lets the connection tell a
+     * first failover from a thread piggybacking on one already in progress.
+     *
+     * @param oldURL  the URL this object was using when the failure occurred
+     * @param oldClusterSwitchCount  the connection's switch count as this object
+     *                               last saw it, before the failing request
      *
      * @throws GPUdbException if a successful failover could not be achieved.
      */
     private synchronized void forceFailover(URL oldURL, int oldClusterSwitchCount) throws GPUdbException {
+        this.gpudb.switchURL( oldURL, oldClusterSwitchCount );
 
-        // We'll need to know which URL we're using at the moment
-        URL currURL = oldURL;
-        int currClusterSwitchCount = oldClusterSwitchCount;
-
-        // Try to fail over as many times as there are clusters
-        for (int i = 0; i < this.dbHARingSize; ++i) {
-            // Try to switch to a new cluster
-            try {
-                GPUdbLogger.debug_with_info( "Forced HA failover attempt #" + i );
-                this.gpudb.switchURL( currURL, currClusterSwitchCount );
-            } catch (GPUdbBase.GPUdbHAUnavailableException ex ) {
-                // Have tried all clusters; back to square 1
-                throw ex;
-            } catch (GPUdbBase.GPUdbFailoverDisabledException ex) {
-                // Failover is disabled
-                throw ex;
-            }
-
-            // Update the reference points
-            currURL                = this.gpudb.getURL();
-            currClusterSwitchCount = this.gpudb.getNumClusterSwitches();
-
-            // We did switch to a different cluster; now check the health
-            // of the cluster, starting with the head node
-            if ( !this.gpudb.isSystemRunning( currURL ) ) {
-                continue; // try the next cluster because this head node is down
-            }
-
-            boolean isClusterHealthy = true;
-            com.gpudb.WorkerList workerRanks = null;
-
-            // Obtain the worker rank addresses
-            if (this.workerList.isQueriedUrlList())
-                workerRanks = new com.gpudb.WorkerList(this.gpudb, this.workerList.getIpRegex());
-            else
-                workerRanks = new com.gpudb.WorkerList(this.gpudb.getClusterInfo().getWorkerRankUrls());
-
-            // Check the health of all the worker ranks
-            for ( URL workerRank : workerRanks) {
-                if ( !this.gpudb.isSystemRunning( workerRank ) ) {
-                    isClusterHealthy = false;
-                }
-            }
-
-            if ( isClusterHealthy ) {
-                // Save the healthy cluster's URL as the current head node URL
-                this.setCurrentHeadNodeURL( currURL );
-                this.setCurrentClusterSwitchCount( currClusterSwitchCount );
-                return;
-            }
-        }   // end for loop
-
-        // If we get here, it means we've failed over across the whole HA ring at least
-        // once (could be more times if other threads are causing failover, too)
-        String errorMsg = ("HA failover could not find any healthy cluster (all GPUdb clusters with "
-                           + "head nodes [" + this.gpudb.getURLs().toString()
-                           + "] tried)");
-        throw new GPUdbException( errorMsg );
+        // Record where the connection ended up
+        this.setCurrentHeadNodeURL( this.gpudb.getURL() );
     }   // end forceFailover
 
 
@@ -2000,8 +2103,8 @@ public class BulkInserter<T> implements AutoCloseable {
      *
      * @return  a boolean indicating whether the shard mapping was updated.
      */
-    private boolean updateWorkerQueues( int countClusterSwitches ) throws GPUdbException {
-        return this.updateWorkerQueues( countClusterSwitches, true );
+    private boolean updateWorkerQueues() throws GPUdbException {
+        return this.updateWorkerQueues( true );
     }
 
 
@@ -2010,20 +2113,45 @@ public class BulkInserter<T> implements AutoCloseable {
      * cluster configuration.   Optionally, also reconstructs the worker
      * queues based on the new sharding.
      *
-     * @param countClusterSwitches  Integer keeping track of how many times HA
-     *                              has happened.
      * @param doReconstructWorkerQueues  Boolean flag indicating if the worker
      *                                   queues ought to be re-built.
      *
      * @return  a boolean indicating whether the shard mapping was updated.
      */
-    private synchronized boolean updateWorkerQueues( int countClusterSwitches, boolean doReconstructWorkerQueues ) throws GPUdbException {
+    private synchronized boolean updateWorkerQueues( boolean doReconstructWorkerQueues ) throws GPUdbException {
+        return updateWorkerQueues( doReconstructWorkerQueues, true );
+    }
+
+
+    /**
+     * Updates the worker queues and the shard mapping based on the latest
+     * cluster configuration.   Optionally, also reconstructs the worker
+     * queues based on the new sharding.
+     *
+     * @param doReconstructWorkerQueues  Boolean flag indicating if the worker
+     *                                   queues ought to be re-built.
+     * @param publishShardMapping  Whether a newly fetched shard mapping should
+     *                             be published on its own.  A caller that is
+     *                             about to publish a complete routing state of
+     *                             its own -- {@link #reconstructWorkerQueues()}
+     *                             -- passes {@code false} and picks the mapping
+     *                             up from {@link #pendingRoutingTable},
+     *                             so that a new mapping is never published
+     *                             alongside the queues it does not describe.
+     *
+     * @return  a boolean indicating whether the shard mapping was updated.
+     */
+    private synchronized boolean updateWorkerQueues( boolean doReconstructWorkerQueues,
+                                                     boolean publishShardMapping ) throws GPUdbException {
 
         // Decide if the worker queues will need to be reconstructed (they will
         // only if multi-head is enabled, it is not a replicated table, and if
         // the user wants to)
         boolean reconstructWorkerQueues = ( doReconstructWorkerQueues
-                                            && !this.useHeadNode );
+                                            && !this.routing.useHeadNode );
+
+        // Whether the shard mapping has changed since the last snapshot.
+        boolean shardMappingChanged = false;
 
         try {
             // Get the latest shard mapping information; note that this endpoint
@@ -2033,19 +2161,23 @@ public class BulkInserter<T> implements AutoCloseable {
             // Get the shard version
             long newShardVersion = shardInfo.getVersion();
 
+            shardMappingChanged = (this.shardVersion != newShardVersion);
+
             // No-op if the shard version hasn't changed (and it's not the first time)
             if (this.shardVersion == newShardVersion) {
-                // Also check if the database client has failed over to a
-                // different HA ring node
-                int currNumClusterSwitches = this.gpudb.getNumClusterSwitches();
-                if ( countClusterSwitches == currNumClusterSwitches ) {
-                    GPUdbLogger.debug_with_info( "# cluster switches and shard versions the same" );
+                // Also check whether the connection moved to a different
+                // cluster -- by fail-over or by fail-back -- since this object
+                // last built its worker list.
+                GPUdbBase.MultiHeadSnapshot currSnapshot =
+                        this.gpudb.getCurrentMultiHeadSnapshot();
+                if ( currSnapshot == this.lastMultiHeadSnapshot ) {
+                    GPUdbLogger.debug_with_info( "Same cluster and shard version" );
 
                     if ( reconstructWorkerQueues )
                     {
                         // The caller needs to know if we ended up updating the
                         // queues
-                        boolean didRecontructWorkerQueues = reconstructWorkerQueues();
+                        boolean didRecontructWorkerQueues = reconstructWorkerQueues( false );
                         GPUdbLogger.debug_with_info( "Returning reconstruct "
                                                      + "worker queue return value: "
                                                      + didRecontructWorkerQueues );
@@ -2057,8 +2189,9 @@ public class BulkInserter<T> implements AutoCloseable {
                     return false;
                 }
 
-                // Update the HA ring node switch counter
-                this.setCurrentClusterSwitchCount( currNumClusterSwitches );
+                // Record the cluster now current, so the next call compares
+                // against it rather than against the one left behind.
+                this.lastMultiHeadSnapshot = currSnapshot;
             }
 
             // Save the new shard version
@@ -2067,8 +2200,13 @@ public class BulkInserter<T> implements AutoCloseable {
             // Save when we're updating the mapping
             this.shardUpdateTime.setValue( new Timestamp( System.currentTimeMillis() ).getTime() );
 
-            // Update the routing table
-            this.routingTable = shardInfo.getRank();
+            // Record the newly fetched shard mapping.  It is published here
+            // only when the caller is not about to publish a routing state of
+            // its own; see the publishShardMapping parameter.
+            this.pendingRoutingTable = shardInfo.getRank();
+
+            if ( publishShardMapping )
+                this.routing = this.routing.withRoutingTable( this.pendingRoutingTable );
         } catch (GPUdbException ex) {
             // Couldn't get the current shard assignment info; see if this is due
             // to cluster failure
@@ -2085,16 +2223,14 @@ public class BulkInserter<T> implements AutoCloseable {
         }
 
         // If we get here, then we may have done a cluster failover during
-        // /admin/show/shards; so update the current head node url & count of
-        // cluster switches
+        // /admin/show/shards; so update the current head node url
         this.setCurrentHeadNodeURL( this.gpudb.getURL() );
-        this.setCurrentClusterSwitchCount( this.gpudb.getNumClusterSwitches() );
 
         // The worker queues need to be re-constructed when asked for
         // iff multi-head i/o is enabled and the table is not replicated
         if ( reconstructWorkerQueues )
         {
-            reconstructWorkerQueues();
+            reconstructWorkerQueues( shardMappingChanged );
         }
 
         GPUdbLogger.debug_with_info( "Returning true" );
@@ -2106,20 +2242,40 @@ public class BulkInserter<T> implements AutoCloseable {
      * Reconstructs the worker queues and re-queues records in the old
      * queues.
      *
-     * @returns whether we ended up reconstructing the worker queues or not.
+     * @param topologyMayHaveMoved  what this rebuild observed, not what it wants
+     *                              done: {@code true} where the server reported
+     *                              a shard mapping change, which can move rank
+     *                              addresses without moving the connection, so
+     *                              the connection re-acquires before answering;
+     *                              {@code false} after a cluster change, which
+     *                              the switch itself already probed
+     *
+     * @return  whether we ended up reconstructing the worker queues or not
      */
-    private synchronized boolean reconstructWorkerQueues() throws GPUdbException {
+    private synchronized boolean reconstructWorkerQueues( boolean topologyMayHaveMoved )
+            throws GPUdbException {
 
         // Using the worker ranks for multi-head ingestion; so need to rebuild
         // the worker queues
         // --------------------------------------------------------------------
 
-        // Get the latest worker list (use whatever IP regex was used initially)
-        com.gpudb.WorkerList newWorkerList = null;
-        if (this.workerList.isQueriedUrlList())
-            newWorkerList = new com.gpudb.WorkerList(this.gpudb, this.workerList.getIpRegex());
-        else
-            newWorkerList = new com.gpudb.WorkerList(this.gpudb.getClusterInfo().getWorkerRankUrls());
+        if (this.workerList.disablesMultiHead()) {
+            GPUdbLogger.debug_with_info( "Worker list declines multi-head; not rebuilding" );
+            return false;
+        }
+
+
+        // Ask the connection for the current cluster's addresses.
+        GPUdbBase.MultiHeadSnapshot snapshot =
+                this.gpudb.acquireMultiHeadSnapshot( topologyMayHaveMoved );
+
+        // Adopt the addresses of whichever cluster the connection is on *now*.
+        // This is how an inserter follows a failover: the connection switches,
+        // and the next rebuild picks up the cluster it switched to.  Built from
+        // the snapshot taken above rather than from a fresh read, so the
+        // addresses and the reference recorded below cannot come from different
+        // probes.
+        com.gpudb.WorkerList newWorkerList = new com.gpudb.WorkerList( snapshot );
 
         GPUdbLogger.debug_with_info( "Current worker list: " + this.workerList.toString() );
         GPUdbLogger.debug_with_info( "New worker list:     " + newWorkerList.toString() );
@@ -2131,17 +2287,28 @@ public class BulkInserter<T> implements AutoCloseable {
         // Update the worker list
         this.workerList = newWorkerList;
 
+        // Remember the exact answer these addresses came from -- not the
+        // cluster.  The next updateWorkerQueues() compares by identity, so a
+        // re-probe of the same cluster counts as a change; that is what makes
+        // leaving a cluster and returning to it visible.
+        this.lastMultiHeadSnapshot = snapshot;
+
         // Set if multi-head I/O is turned on at the server and rank URLs are accessible
-        this.multiHeadEnabled = ( (this.workerList != null) && !this.workerList.isEmpty() );
+        boolean isMultiHeadEnabled = ( (this.workerList != null) && !this.workerList.isEmpty() );
 
         // We should use the head node if multi-head is turned off at the server
-        // or if we're working with a replicated table
-        this.useHeadNode = ( !this.multiHeadEnabled || this.isTableReplicated);
+        // or if we're working with a replicated table.  Routing states that rule;
+        // it is needed here because it decides whether per-rank queues get built
+        // at all, before any Routing exists to ask.
+        boolean useHeadNode = Routing.useHeadNodeFor( isMultiHeadEnabled, this.isTableReplicated );
 
+        // Everything below is built into locals and published in one go at the
+        // end to avoid concurrency issues.
         List< WorkerQueue<T> > newWorkerQueues = new ArrayList<>();
+        List<Integer>          newRoutingTable = null;
 
         try {
-            if (!this.useHeadNode) {
+            if (!useHeadNode) {
                 // Create worker queues per worker URL
                 for ( URL url : this.workerList) {
                     // Handle removed ranks
@@ -2162,13 +2329,28 @@ public class BulkInserter<T> implements AutoCloseable {
                         ));
                     }
                 }
-    
-                // Update the worker queues, if needed
-                updateWorkerQueues( this.numClusterSwitches, false );
+
+                // Fetch the shard mapping that goes with the new queues, but
+                // do not let it be published on its own -- it describes the new
+                // set of ranks, and pairing it with the queues still in place
+                // is the very mismatch this rebuild is avoiding.
+                //
+                // The fetch is a no-op when the shard version has not moved, in
+                // which case it leaves pendingRoutingTable alone; clearing it
+                // first is what distinguishes "nothing new was fetched" from a
+                // mapping left over from an earlier fetch.  Nothing new means
+                // the mapping currently in force still applies -- including
+                // when that is null, which insert() reports rather than
+                // guessing at.
+                this.pendingRoutingTable = null;
+                updateWorkerQueues( false, false );
+                newRoutingTable = ( this.pendingRoutingTable != null )
+                                  ? this.pendingRoutingTable
+                                  : this.routing.routingTable;
             } else {
                 URL insertURL = GPUdbBase.appendPathToURL( this.gpudb.getURL(), "/insert/records" );
-    
-                this.workerQueues.add(new WorkerQueue<>(
+
+                newWorkerQueues.add(new WorkerQueue<>(
                         this.gpudb,
                         insertURL,
                         this.tableName,
@@ -2177,16 +2359,18 @@ public class BulkInserter<T> implements AutoCloseable {
                         (this.isJson ? this.jsonOptions : null),
                         this.typeObjectMap
                 ));
-                this.routingTable = null;
             }
         } catch (MalformedURLException ex) {
             throw new GPUdbException(ex.getMessage(), ex);
         }
 
-        // Save the new queue for future use
-        List< WorkerQueue<T> > oldWorkerQueues;
-        oldWorkerQueues = this.workerQueues;
-        this.workerQueues = newWorkerQueues;
+        // Publish the whole new routing state with one volatile write, so that
+        // a concurrent insert() sees either all of the old state or all of the
+        // new one.  Must happen before the re-queue loop below, which inserts
+        // through this same routing state.
+        List< WorkerQueue<T> > oldWorkerQueues = this.routing.queues;
+        this.routing = new Routing<>( isMultiHeadEnabled, this.isTableReplicated,
+                                      newWorkerQueues, newRoutingTable );
 
         // Re-queue any existing queued records
         for ( WorkerQueue<T> oldQueue : oldWorkerQueues ) {
@@ -2243,7 +2427,7 @@ public class BulkInserter<T> implements AutoCloseable {
     }
 
     public boolean isMultiHeadEnabled() {
-        return this.multiHeadEnabled;
+        return this.routing.multiHeadEnabled;
     }
 
     /**
@@ -2398,7 +2582,7 @@ public class BulkInserter<T> implements AutoCloseable {
         // retry based on user configuration.  Note the last parameter
         // lets the called method know that the user is forcing this flush;
         // this is important for recursive calls.
-        for (WorkerQueue<T> workerQueue : this.workerQueues) {
+        for (WorkerQueue<T> workerQueue : this.routing.queues) {
 
             // Handle removed ranks
             if ( workerQueue == null)
@@ -2435,7 +2619,7 @@ public class BulkInserter<T> implements AutoCloseable {
     void flushFullQueues( int retryCount ) throws InsertException {
         List<WorkerQueue<T>> fullQueues = new ArrayList<>();
 
-        for (WorkerQueue<T> workerQueue : this.workerQueues) {
+        for (WorkerQueue<T> workerQueue : this.routing.queues) {
 
             // Handle removed ranks
             if ( workerQueue == null)
@@ -2494,7 +2678,7 @@ public class BulkInserter<T> implements AutoCloseable {
         synchronized (this.haFailoverLock) {
             if (this.currentHeadNodeURL != this.gpudb.getURL()) {
                 try {
-                    updateWorkerQueues(0);
+                    updateWorkerQueues();
                 }
                 catch (GPUdbException e)
                 {
@@ -2584,7 +2768,7 @@ public class BulkInserter<T> implements AutoCloseable {
 
                     // Check if shard re-balancing is under way at the server; if so,
                     // we need to update the shard mapping
-                    if ("true".equals(result.getInsertResponse().getInfo().get("data_rerouted"))) {
+                    if ("true".equals(result.getInsertResponse().getInfo().get(GPUdbBase.RESPONSE_INFO_DATA_REROUTED))) {
                         doUpdateWorkers = true;
                     }
                 }
@@ -2796,7 +2980,7 @@ public class BulkInserter<T> implements AutoCloseable {
             // mapping has to be updated (due to added/removed ranks)
             try {
                 GPUdbLogger.debug_with_info("Before calling updateWorkerQueues()");
-                updateWorkerQueues(latestCountClusterSwitches);
+                updateWorkerQueues();
             } catch (Exception ex) {
                 GPUdbLogger.debug_with_info("updateWorkerQueues() failed with "
                         + "exception: "
@@ -2876,12 +3060,36 @@ public class BulkInserter<T> implements AutoCloseable {
 
         WorkerQueue<T> workerQueue;
 
-        if (this.useHeadNode || (this.workerQueues.size() == 1))
-            workerQueue = this.workerQueues.get(0);
+        // Take the routing state once and route this record entirely from that
+        // snapshot.  A rebuild running concurrently publishes a new one; this
+        // record then goes wherever the state it was routed against said, which
+        // is consistent, rather than to a destination assembled from both.
+        final Routing<T> routing = this.routing;
+
+        if (routing.useHeadNode) {
+            // Head-node routing.  Routing<T> guarantees the head-node queue is
+            // the only queue, so index 0 is it.
+            workerQueue = routing.queues.get(0);
+        }
+        else if (routing.queues.size() == 1) {
+            // A single destination, so there is nothing to choose: skip the
+            // shard key work.  Note this is worker rank 1 -- not the head node,
+            // which the branch above handles.
+            workerQueue = routing.queues.get(0);
+        }
         else {
+            if ((routing.routingTable == null) || routing.routingTable.isEmpty()) {
+                List<T> queuedRecord = new ArrayList<>();
+                queuedRecord.add(record);
+                throw new InsertException((URL) null, queuedRecord,
+                        "No shard mapping is available for table '" + this.tableName
+                        + "'; cannot route the record to a worker rank.  Maybe "
+                        + "need to update the shard mapping.");
+            }
+
             if( this.isJson ) {
                 // Handle JSON records
-                workerQueue = this.workerQueues.get(this.routingTable.get(ThreadLocalRandom.current().nextInt(this.routingTable.size())) - 1);
+                workerQueue = routing.queues.get(routing.routingTable.get(ThreadLocalRandom.current().nextInt(routing.routingTable.size())) - 1);
             } else {
                 //Handle GenericRecords or RecordObjects
                 RecordKey shardKey = null;
@@ -2896,9 +3104,9 @@ public class BulkInserter<T> implements AutoCloseable {
                 }
 
                 if (shardKey == null)
-                    workerQueue = this.workerQueues.get(this.routingTable.get(ThreadLocalRandom.current().nextInt(this.routingTable.size())) - 1);
+                    workerQueue = routing.queues.get(routing.routingTable.get(ThreadLocalRandom.current().nextInt(routing.routingTable.size())) - 1);
                 else
-                    workerQueue = this.workerQueues.get(shardKey.route(this.routingTable));
+                    workerQueue = routing.queues.get(shardKey.route(routing.routingTable));
             }
         }
 

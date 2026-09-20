@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.gpudb</groupId>
     <artifactId>gpudb-api</artifactId>
-    <version>7.2.3.24</version>
+    <version>7.2.3.25</version>
     <packaging>jar</packaging>
     <name>Kinetica Java API</name>
     <description>Java-based client API for connecting to and managing a Kinetica database</description>
@@ -187,6 +187,29 @@
                                     <artifact>*:*</artifact>
                                     <excludes>
                                         <exclude>module-info.class</exclude> <!-- Silence warning from avro: "Discovered module-info.class. Shading will break its strong encapsulation" -->
+                                        <!--
+                                            Multi-release entries are dropped rather than shaded.  The
+                                            shade plugin does not relocate under META-INF/versions/, so
+                                            these survive as com/fasterxml/ paths in a JAR whose whole
+                                            purpose is to have none.
+
+                                            Dropping them costs nothing today.  jackson-core sets
+                                            Multi-Release: true in its own manifest, but the shaded
+                                            manifest does not carry it, so the JVM never consults these
+                                            classes in either build.  They are Jackson's FastDoubleParser
+                                            optimizations for JDK 11/17/21, inert since the day the
+                                            shaded JAR was first published.
+
+                                            Note this also catches META-INF/versions/9/module-info.class,
+                                            which the exclusion above was meant to remove and misses,
+                                            because that pattern matches only the root copy.
+
+                                            To ship a real multi-release JAR instead, both builds would
+                                            need to relocate the versioned entries AND emit
+                                            Multi-Release: true.  That is a behavior change, not a
+                                            consistency fix.
+                                        -->
+                                        <exclude>META-INF/versions/**</exclude>
                                         <exclude>META-INF/*.SF</exclude>
                                         <exclude>META-INF/*.DSA</exclude>
                                         <exclude>META-INF/*.RSA</exclude>
@@ -207,6 +230,22 @@
                                     <shadedPattern>com.gpudb.json</shadedPattern>
                                 </relocation>
                             </relocations>
+                            <transformers>
+                                <!-- Relocating classes does not rewrite
+                                     META-INF/services entries: neither the file
+                                     names, which are service interface names,
+                                     nor their contents, which are provider
+                                     class names.  Without this transformer the
+                                     shaded jar advertises providers under
+                                     packages it no longer contains, ServiceLoader
+                                     finds nothing, and the caller silently gets
+                                     a default instead.  Nothing fails at build
+                                     time, so verify on the jar rather than the
+                                     build log: every service file name should
+                                     carry the relocated prefix, and every class
+                                     it names should be present in the jar. -->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            </transformers>
                             <shadedArtifactAttached>true</shadedArtifactAttached>
                             <shadedClassifierName>shaded</shadedClassifierName>
                         </configuration>

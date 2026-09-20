@@ -89,9 +89,11 @@ public class ClearTablesRequest implements IndexedRecord {
      *                    href="../../../../../../concepts/tables/#table-name-resolution"
      *                    target="_top">name resolution rules</a>. Must be
      *                    existing tables. Empty list clears all available
-     *                    tables, though this behavior is be prevented by
-     *                    default via gpudb.conf parameter 'disable_clear_all'.
-     *                    The default value is an empty {@link List}.
+     *                    tables, though this behavior is prevented by default
+     *                    via system configuration parameter <a
+     *                    href="../../../../../../config/#config-main-general"
+     *                    target="_top">disable_clear_all</a>. The default
+     *                    value is an empty {@link List}.
      * @param options  Optional parameters.
      *                 <ul>
      *                     <li>{@link Options#NO_ERROR_IF_NOT_EXISTS
@@ -121,9 +123,11 @@ public class ClearTablesRequest implements IndexedRecord {
      * using standard <a
      * href="../../../../../../concepts/tables/#table-name-resolution"
      * target="_top">name resolution rules</a>. Must be existing tables. Empty
-     * list clears all available tables, though this behavior is be prevented
-     * by default via gpudb.conf parameter 'disable_clear_all'. The default
-     * value is an empty {@link List}.
+     * list clears all available tables, though this behavior is prevented by
+     * default via system configuration parameter <a
+     * href="../../../../../../config/#config-main-general"
+     * target="_top">disable_clear_all</a>. The default value is an empty
+     * {@link List}.
      *
      * @return The current value of {@code tableNames}.
      */
@@ -136,9 +140,11 @@ public class ClearTablesRequest implements IndexedRecord {
      * using standard <a
      * href="../../../../../../concepts/tables/#table-name-resolution"
      * target="_top">name resolution rules</a>. Must be existing tables. Empty
-     * list clears all available tables, though this behavior is be prevented
-     * by default via gpudb.conf parameter 'disable_clear_all'. The default
-     * value is an empty {@link List}.
+     * list clears all available tables, though this behavior is prevented by
+     * default via system configuration parameter <a
+     * href="../../../../../../config/#config-main-general"
+     * target="_top">disable_clear_all</a>. The default value is an empty
+     * {@link List}.
      *
      * @param tableNames  The new value for {@code tableNames}.
      *

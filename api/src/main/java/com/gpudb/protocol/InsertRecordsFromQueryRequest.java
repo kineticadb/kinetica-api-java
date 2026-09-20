@@ -433,14 +433,17 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
         public static final String JDBC_SESSION_INIT_STATEMENT = "jdbc_session_init_statement";
 
         /**
-         * Number of splits for reading data per rank. Default will be
-         * external_file_reader_num_tasks. The default value is ''.
+         * Number of splits for reading data per rank. Default will be <a
+         * href="../../../../../../config/#config-main-external-files"
+         * target="_top">external_file_reader_num_tasks</a>. The default value
+         * is ''.
          */
         public static final String NUM_SPLITS_PER_RANK = "num_splits_per_rank";
 
         /**
-         * Number of tasks for reading data per rank. Default will be
-         * external_file_reader_num_tasks.
+         * Number of tasks for reading data per rank. Default will be <a
+         * href="../../../../../../config/#config-main-external-files"
+         * target="_top">external_file_reader_num_tasks</a>.
          */
         public static final String NUM_TASKS_PER_RANK = "num_tasks_per_rank";
 
@@ -934,13 +937,15 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *                         actual load. The default value is ''.
      *                     <li>{@link Options#NUM_SPLITS_PER_RANK
      *                         NUM_SPLITS_PER_RANK}: Number of splits for
-     *                         reading data per rank. Default will be
-     *                         external_file_reader_num_tasks. The default
-     *                         value is ''.
+     *                         reading data per rank. Default will be <a
+     *                         href="../../../../../../config/#config-main-external-files"
+     *                         target="_top">external_file_reader_num_tasks</a>.
+     *                         The default value is ''.
      *                     <li>{@link Options#NUM_TASKS_PER_RANK
      *                         NUM_TASKS_PER_RANK}: Number of tasks for reading
-     *                         data per rank. Default will be
-     *                         external_file_reader_num_tasks.
+     *                         data per rank. Default will be <a
+     *                         href="../../../../../../config/#config-main-external-files"
+     *                         target="_top">external_file_reader_num_tasks</a>.
      *                     <li>{@link Options#PRIMARY_KEYS PRIMARY_KEYS}: Comma
      *                         separated list of column names, to set as
      *                         primary keys, when not specified in the type.
@@ -1512,11 +1517,14 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         JDBC_SESSION_INIT_STATEMENT}: Executes the statement per each
      *         JDBC session before doing actual load. The default value is ''.
      *     <li>{@link Options#NUM_SPLITS_PER_RANK NUM_SPLITS_PER_RANK}: Number
-     *         of splits for reading data per rank. Default will be
-     *         external_file_reader_num_tasks. The default value is ''.
+     *         of splits for reading data per rank. Default will be <a
+     *         href="../../../../../../config/#config-main-external-files"
+     *         target="_top">external_file_reader_num_tasks</a>. The default
+     *         value is ''.
      *     <li>{@link Options#NUM_TASKS_PER_RANK NUM_TASKS_PER_RANK}: Number of
-     *         tasks for reading data per rank. Default will be
-     *         external_file_reader_num_tasks.
+     *         tasks for reading data per rank. Default will be <a
+     *         href="../../../../../../config/#config-main-external-files"
+     *         target="_top">external_file_reader_num_tasks</a>.
      *     <li>{@link Options#PRIMARY_KEYS PRIMARY_KEYS}: Comma separated list
      *         of column names, to set as primary keys, when not specified in
      *         the type. The default value is ''.
@@ -1704,11 +1712,14 @@ public class InsertRecordsFromQueryRequest implements IndexedRecord {
      *         JDBC_SESSION_INIT_STATEMENT}: Executes the statement per each
      *         JDBC session before doing actual load. The default value is ''.
      *     <li>{@link Options#NUM_SPLITS_PER_RANK NUM_SPLITS_PER_RANK}: Number
-     *         of splits for reading data per rank. Default will be
-     *         external_file_reader_num_tasks. The default value is ''.
+     *         of splits for reading data per rank. Default will be <a
+     *         href="../../../../../../config/#config-main-external-files"
+     *         target="_top">external_file_reader_num_tasks</a>. The default
+     *         value is ''.
      *     <li>{@link Options#NUM_TASKS_PER_RANK NUM_TASKS_PER_RANK}: Number of
-     *         tasks for reading data per rank. Default will be
-     *         external_file_reader_num_tasks.
+     *         tasks for reading data per rank. Default will be <a
+     *         href="../../../../../../config/#config-main-external-files"
+     *         target="_top">external_file_reader_num_tasks</a>.
      *     <li>{@link Options#PRIMARY_KEYS PRIMARY_KEYS}: Comma separated list
      *         of column names, to set as primary keys, when not specified in
      *         the type. The default value is ''.
