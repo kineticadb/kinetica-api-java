@@ -2,10 +2,56 @@
 
 ## Version 7.2
 
+### Version 7.2.3.26 - 2026-09-28
+
+#### Added
+-   `GPUdbFileHandler.Options.setMaxUploadBytesInFlight(long)`, a ceiling on the
+    file payloads an upload holds in memory at once.  It defaults to a sixteenth
+    of the JVM's maximum heap, capped at 128 MB, so a smaller heap gets a
+    smaller budget.
+
+#### Changed
+-   Each multi-head rank address is now resolved from every address the cluster
+    names for it, which can include: the configured public URL, the configured
+    private URL, and the host's own interface addresses; the first that answers
+    is the one used, so a cluster that previously fell back to head-node-only
+    because the single address tried was unreachable might now use multi-head.
+    It may take longer to determine a cluster is unreachable now that all URLs
+    are tried.
+-   `hostname_regex` now keeps **every** address of a rank whose host it
+    matches, not just the first.
+-   A `hostname_regex` matching none of the addresses a cluster advertises no
+    longer fails the connection where it does match one of the user-given URLs.
+    The connection continues through that URL, head-node only, and warns that it
+    has.  When the pattern matches none of the user-given or server-advertised
+    URLs, the connection will fail.
+
+#### Fixed
+-   Uploading several files in one call could fail with `Cannot allocate memory`
+    when the files were large in total, even though each was small enough to be
+    sent whole and no single one came close to the heap.  Uploads now wait for
+    outstanding work before reading more files, holding a bounded amount at any
+    moment.  A large multi-file upload may take longer as a result; raise
+    `setMaxUploadBytesInFlight` to trade the memory back for throughput.
+-   Connecting with a hostname regex defined to a cluster with no reachable
+    addresses will no longer be reported as a hostname regex-based error.
+
+#### Notes
+-   `RecordRetriever.getByKey(keyValues, expression, offset)` now applies the
+    offset you pass.  Earlier servers ignored it and every multi-head lookup
+    started at the first record.  Nothing changed in this client -- Kinetica
+    7.2.3.21 began honoring the offset a multi-head lookup sends -- but code
+    that compensated by requesting from the start and skipping records itself
+    will now skip twice.
+-   A multi-head lookup whose result exceeds the server's `max_get_records_size`
+    now returns a page rather than the whole set, and sets `hasMoreRecords` on
+    the response.  Check that flag if you rely on a single lookup returning
+    everything.
+
+
 ### Version 7.2.3.25 - 2026-09-20
 
 #### Changed
-
 -   A cluster whose worker addresses cannot be reached from the client no
     longer induces degraded (head-node only) mode on the other clusters in the
     HA ring.

@@ -289,6 +289,7 @@ public abstract class GPUdbBase {
             this.executor             = other.executor;
         }
 
+
         /**
          * Returns the set of options as a JSON-style string
          * 
@@ -336,7 +337,8 @@ public abstract class GPUdbBase {
                             "}"
                     );
         }
-        
+
+
         /**
          * Returns an option's key/value pair in a format appropriate for use in
          * {@link #toString()}
@@ -365,6 +367,7 @@ public abstract class GPUdbBase {
             return String.join(": ", key, stringValue);
         }
 
+
         /**
          * Gets the URL of the primary cluster of the HA environment.
          *
@@ -375,6 +378,7 @@ public abstract class GPUdbBase {
         public String getPrimaryUrl() {
             return this.primaryUrl;
         }
+
 
         /**
          * Gets the username to be used for authentication to GPUdb.
@@ -387,6 +391,7 @@ public abstract class GPUdbBase {
             return this.username;
         }
 
+
         /**
          * Gets the password to be used for authentication to GPUdb.
          *
@@ -397,6 +402,7 @@ public abstract class GPUdbBase {
         public String getPassword() {
             return this.password;
         }
+
 
         /**
          * Gets the OAuth access token to be used for authentication to GPUdb.
@@ -409,6 +415,7 @@ public abstract class GPUdbBase {
             return this.oauthToken;
         }
 
+
         /**
          * Gets the regex pattern to be used to filter URLs of the servers.  If
          * null, then the first URL encountered per rank will be used.
@@ -420,6 +427,7 @@ public abstract class GPUdbBase {
         public Pattern getHostnameRegex() {
             return this.hostnameRegex;
         }
+
 
         /**
          * Gets the value of the flag indicating whether to use Snappy
@@ -434,6 +442,7 @@ public abstract class GPUdbBase {
             return this.useSnappy;
         }
 
+
         /**
          * Gets the value of the flag indicating whether to verify the SSL
          * certificate for HTTPS connections.
@@ -446,6 +455,7 @@ public abstract class GPUdbBase {
             return this.bypassSslCertCheck;
         }
 
+
         /**
          * Gets the value of the SSL trustStore file path
          * @return - a String - SSL trustStore file path
@@ -454,6 +464,7 @@ public abstract class GPUdbBase {
             return this.trustStoreFilePath;
         }
 
+
         /**
          * Gets the SSL trustStore file password
          * @return - a String - trustStore file password
@@ -461,6 +472,7 @@ public abstract class GPUdbBase {
         public String getTrustStorePassword() {
             return this.trustStorePassword;
         }
+
 
         /**
          * Gets the value of the flag indicating whether to disable failover
@@ -473,6 +485,7 @@ public abstract class GPUdbBase {
         public boolean getDisableFailover() {
             return this.disableFailover;
         }
+
 
         /**
          * Gets the value of the flag indicating whether to disable automatic
@@ -488,6 +501,7 @@ public abstract class GPUdbBase {
             return this.disableAutoDiscovery;
         }
 
+
         /**
          * Gets the current high availability failover order.  Default
          * is RANDOM.
@@ -499,6 +513,7 @@ public abstract class GPUdbBase {
         public HAFailoverOrder getHAFailoverOrder() {
             return this.haFailoverOrder;
         }
+
 
         /**
          * Gets the number of threads that will be used during data encoding and
@@ -512,6 +527,7 @@ public abstract class GPUdbBase {
         public int getThreadCount() {
             return this.threadCount;
         }
+
 
         /**
          * Gets the {@link ExecutorService executor service} used for managing
@@ -528,6 +544,7 @@ public abstract class GPUdbBase {
             return this.executor;
         }
 
+
         /**
          * Gets the map of additional HTTP headers to send to GPUdb with each
          * request. If empty, no additional headers will be sent.
@@ -541,6 +558,7 @@ public abstract class GPUdbBase {
             return this.httpHeaders;
         }
 
+
         /**
          * Gets the host manager port number. Some endpoints are supported only
          * at the host manager, rather than the head node of the database.
@@ -552,6 +570,7 @@ public abstract class GPUdbBase {
         public int getHostManagerPort() {
             return this.hmPort;
         }
+
 
         /**
          * Gets the period of inactivity (in milliseconds) after
@@ -566,6 +585,7 @@ public abstract class GPUdbBase {
         public int getConnectionInactivityValidationTimeout() {
             return this.connectionInactivityValidationTimeout;
         }
+
 
         /**
          * Gets the timeout value, in milliseconds, after which a lack of
@@ -582,6 +602,7 @@ public abstract class GPUdbBase {
         public int getTimeout() {
             return this.timeout;
         }
+
 
         /**
          * Gets the value of the flag indicating whether TCP keep-alive is
@@ -609,6 +630,7 @@ public abstract class GPUdbBase {
             return this.tcpKeepAlive;
         }
 
+
         /**
          * Gets the TCP keep-alive idle time in seconds. This is the time a
          * connection must be idle before the first keep-alive probe is sent.
@@ -627,6 +649,7 @@ public abstract class GPUdbBase {
         public int getTcpKeepIdle() {
             return this.tcpKeepIdle;
         }
+
 
         /**
          * Gets the TCP keep-alive probe interval in seconds. This is the time
@@ -647,6 +670,7 @@ public abstract class GPUdbBase {
             return this.tcpKeepInterval;
         }
 
+
         /**
          * Gets the TCP keep-alive probe count. This is the number of unacknowledged
          * probes to send before considering the connection dead.
@@ -665,6 +689,7 @@ public abstract class GPUdbBase {
         public int getTcpKeepCount() {
             return this.tcpKeepCount;
         }
+
 
         /**
          * Gets the server connection timeout value, in milliseconds, after
@@ -685,6 +710,7 @@ public abstract class GPUdbBase {
             return this.serverConnectionTimeout;
         }
 
+
         /**
          * Gets the maximum number of connections, across all hosts, allowed at
          * any given time.
@@ -696,6 +722,7 @@ public abstract class GPUdbBase {
         public int getMaxTotalConnections() {
             return this.maxTotalConnections;
         }
+
 
         /**
          * Gets the maximum number of connections, per host, allowed at
@@ -709,6 +736,7 @@ public abstract class GPUdbBase {
             return this.maxConnectionsPerHost;
         }
 
+
         /**
          * Gets the maximum number of retries for HTTP requests.
          *
@@ -719,6 +747,7 @@ public abstract class GPUdbBase {
         public int getMaxRetries() {
             return this.maxRetries;
         }
+
 
         /**
          * @deprecated
@@ -735,7 +764,6 @@ public abstract class GPUdbBase {
         public static int getClusterReconnectCount() {
             return 0;
         }
-
 
 
         /**
@@ -783,6 +811,7 @@ public abstract class GPUdbBase {
             return this.failbackOptions;
         }
 
+
         /**
          * Sets the URL of the primary cluster to use amongst the HA clusters.
          * This cluster will always be used first.  It can be part of the URLs
@@ -807,6 +836,7 @@ public abstract class GPUdbBase {
             return this;
         }
 
+
         /**
          * Sets the username to be used for authentication to GPUdb. This
          * username will be sent with every GPUdb request made via the API along
@@ -825,6 +855,7 @@ public abstract class GPUdbBase {
             this.username = value;
             return this;
         }
+
 
         /**
          * Sets the password to be used for authentication to GPUdb. This
@@ -919,6 +950,7 @@ public abstract class GPUdbBase {
             return this;
         }
 
+
         /**
          * Sets the flag indicating whether to use Snappy compression for
          * certain GPUdb requests that potentially submit large amounts of data.
@@ -934,6 +966,7 @@ public abstract class GPUdbBase {
             this.useSnappy = value;
             return this;
         }
+
 
         /**
          * Sets the flag indicating whether to verify the SSL certificate for
@@ -952,6 +985,7 @@ public abstract class GPUdbBase {
             this.bypassSslCertCheck = value;
             return this;
         }
+
 
         /**
          * Sets the SSL trustStore file path. This is useful if the user wants
@@ -974,6 +1008,7 @@ public abstract class GPUdbBase {
             return this;
         }
 
+
         /**
          * Sets the SSL trustStore file password. This is useful if the user wants
          * to pass in a self-signed certificate.
@@ -994,6 +1029,7 @@ public abstract class GPUdbBase {
             return this;
         }
 
+
         /**
          * Sets the value of the flag indicating whether to disable failover
          * upon failures.
@@ -1011,6 +1047,7 @@ public abstract class GPUdbBase {
             this.disableFailover = value;
             return this;
         }
+
 
         /**
          * Sets the value of the flag indicating whether to disable automatic
@@ -1043,6 +1080,7 @@ public abstract class GPUdbBase {
             return this;
         }
 
+
         /**
          * Sets the number of threads that will be used during data encoding and
          * decoding operations. If set to one (the default), all encoding and
@@ -1073,6 +1111,7 @@ public abstract class GPUdbBase {
             return this;
         }
 
+
         /**
          * Sets the {@link ExecutorService executor service} used for managing
          * threads during data encoding and decoding operations. If
@@ -1094,6 +1133,7 @@ public abstract class GPUdbBase {
             return this;
         }
 
+
         /**
          * Replaces the contents of the map of additional HTTP headers to send
          * to GPUdb with each request with the contents of the specified map.
@@ -1110,6 +1150,7 @@ public abstract class GPUdbBase {
             this.httpHeaders.putAll(value);
             return this;
         }
+
 
         /**
          * Adds an HTTP header to the map of additional HTTP headers to send to
@@ -1128,6 +1169,7 @@ public abstract class GPUdbBase {
             return this;
         }
 
+
         /**
          * Gets the client program name, or {@code null} if none has been set.
          *
@@ -1139,6 +1181,7 @@ public abstract class GPUdbBase {
             return this.clientName;
         }
 
+
         /**
          * Gets the client program version, or {@code null} if none has been set.
          *
@@ -1149,6 +1192,7 @@ public abstract class GPUdbBase {
         public String getClientVersion() {
             return this.clientVersion;
         }
+
 
         /**
          * Sets a client program name and version, which will be prepended to
@@ -1176,6 +1220,7 @@ public abstract class GPUdbBase {
             return this;
         }
 
+
         /**
          * Sets the host manager port number. Some endpoints are supported only
          * at the host manager, rather than the head node of the database.
@@ -1199,6 +1244,7 @@ public abstract class GPUdbBase {
             return this;
         }
 
+
         /**
          * Sets the timeout value, in milliseconds, after which a lack of
          * response from the GPUdb server will result in requests being aborted.
@@ -1219,6 +1265,7 @@ public abstract class GPUdbBase {
             this.timeout = value;
             return this;
         }
+
 
         /**
          * Sets whether TCP keep-alive is enabled on sockets. When enabled, the
@@ -1262,6 +1309,7 @@ public abstract class GPUdbBase {
             return this;
         }
 
+
         /**
          * Sets the TCP keep-alive idle time in seconds. This is the time a
          * connection must be idle before the first keep-alive probe is sent.
@@ -1299,6 +1347,7 @@ public abstract class GPUdbBase {
             return this;
         }
 
+
         /**
          * Sets the TCP keep-alive probe interval in seconds. This is the time
          * between successive keep-alive probes when no acknowledgment is received.
@@ -1334,6 +1383,7 @@ public abstract class GPUdbBase {
             return this;
         }
 
+
         /**
          * Sets the TCP keep-alive probe count. This is the number of unacknowledged
          * probes to send before considering the connection dead.
@@ -1368,6 +1418,7 @@ public abstract class GPUdbBase {
             this.tcpKeepCount = count;
             return this;
         }
+
 
         /**
          * Gets the server connection timeout value, in milliseconds, after
@@ -1405,6 +1456,7 @@ public abstract class GPUdbBase {
             return this;
         }
 
+
         /**
          * Sets the period of inactivity (in milliseconds) after
          * which connection validity would be checked before reusing it.
@@ -1425,6 +1477,7 @@ public abstract class GPUdbBase {
             this.connectionInactivityValidationTimeout = value;
             return this;
         }
+
 
         /**
          * Sets the maximum number of connections, across all hosts, allowed at
@@ -1463,6 +1516,7 @@ public abstract class GPUdbBase {
             return this;
         }
 
+
         /**
          * Sets the maximum number of retries for HTTP requests.
          * Must be 0 at a minimum.
@@ -1480,6 +1534,7 @@ public abstract class GPUdbBase {
             this.maxRetries = value;
             return this;
         }
+
 
         /**
          * @deprecated
@@ -1538,7 +1593,6 @@ public abstract class GPUdbBase {
         }
 
 
-
         /**
          * @deprecated
          * Sets the timeout used when trying to recover from an intra-cluster
@@ -1553,6 +1607,7 @@ public abstract class GPUdbBase {
         public Options setIntraClusterFailoverTimeout(long value) {
             return this;
         }
+
 
         public Options setFailbackOptions(FailbackOptions failbackOptions) {
             this.failbackOptions = failbackOptions;
@@ -1604,6 +1659,7 @@ public abstract class GPUdbBase {
             this(major, minor, revision, abiVersion, 0);
         }
 
+
         /**
          * Creates a {@link GPUdbBase.GPUdbVersion} with a 5-component version
          * number.
@@ -1622,6 +1678,7 @@ public abstract class GPUdbBase {
             this.build = build;
         }
 
+
         /**
          * Gets the major (first) component of the version.
          *
@@ -1630,6 +1687,7 @@ public abstract class GPUdbBase {
         public int getMajor() {
             return this.major;
         }
+
 
         /**
          * Gets the minor (second) component of the version.
@@ -1640,6 +1698,7 @@ public abstract class GPUdbBase {
             return this.minor;
         }
 
+
         /**
          * Gets the revision (third) component of the version.
          *
@@ -1648,6 +1707,7 @@ public abstract class GPUdbBase {
         public int getRevision() {
             return this.revision;
         }
+
 
         /**
          * Gets the ABI version (fourth) component of the version.
@@ -1669,7 +1729,7 @@ public abstract class GPUdbBase {
             return this.build;
         }
 
-        
+
         /**
          * Get the four-component version.
          *
@@ -1689,6 +1749,7 @@ public abstract class GPUdbBase {
                     "." +
                     this.abiVersion;
         }
+
 
         /**
          * Get the full five-component version.
@@ -1749,6 +1810,7 @@ public abstract class GPUdbBase {
             return this.major < otherMajor ? -1 : 1;
         }
 
+
         /**
          * Compare this version to the given version.
          * 
@@ -1761,7 +1823,7 @@ public abstract class GPUdbBase {
             return this.compareTo(otherVersion.major, otherVersion.minor, otherVersion.revision, otherVersion.abiVersion, otherVersion.build);
         }
 
-        
+
         /**
          * Determine whether this version is newer than the given version
          * (not equal to).
@@ -1773,6 +1835,7 @@ public abstract class GPUdbBase {
         public boolean isNewerThan( GPUdbVersion otherVersion ) {
             return this.isNewerThan(otherVersion.major, otherVersion.minor, otherVersion.revision, otherVersion.abiVersion, otherVersion.build);
         }
+
 
         /**
          * Determine whether this version is newer than the one represented by
@@ -1789,6 +1852,7 @@ public abstract class GPUdbBase {
         public boolean isNewerThan( int otherMajor, int otherMinor, int otherRevision, int otherAbiVersion ) {
             return this.isNewerThan(otherMajor, otherMinor, otherRevision, otherAbiVersion, 0);
         }
+
 
         /**
          * Determine whether this version is newer than the one represented by
@@ -1820,6 +1884,7 @@ public abstract class GPUdbBase {
             return this.isOlderThan(otherVersion.major, otherVersion.minor, otherVersion.revision, otherVersion.abiVersion, otherVersion.build);
         }
 
+
         /**
          * Determine whether this version is older than the one represented by
          * the four given version components (not equal to).
@@ -1835,6 +1900,7 @@ public abstract class GPUdbBase {
         public boolean isOlderThan( int otherMajor, int otherMinor, int otherRevision, int otherAbiVersion ) {
             return this.isOlderThan(otherMajor, otherMinor, otherRevision, otherAbiVersion, 0);
         }
+
 
         /**
          * Determine whether this version is older than the one represented by
@@ -1865,6 +1931,7 @@ public abstract class GPUdbBase {
             return this.isEqualTo(otherVersion.major, otherVersion.minor, otherVersion.revision, otherVersion.abiVersion, otherVersion.build);
         }
 
+
         /**
          * Determine whether this version is equal to the one represented by
          * the four given version components.
@@ -1880,6 +1947,7 @@ public abstract class GPUdbBase {
         public boolean isEqualTo( int otherMajor, int otherMinor, int otherRevision, int otherAbiVersion ) {
             return this.isEqualTo(otherMajor, otherMinor, otherRevision, otherAbiVersion, 0);
         }
+
 
         /**
          * Determine whether this version is equal to the one represented by
@@ -1917,11 +1985,13 @@ public abstract class GPUdbBase {
                 && (this.abiVersion == that.abiVersion) );
         }
 
+
         @Override
         public String toString() {
 
             return getVersion();
         }
+
 
         @Override
         public int hashCode() {
@@ -1938,69 +2008,83 @@ public abstract class GPUdbBase {
             return super.getTableName();
         }
 
+
         @Override
         public InsertRecordsFromPayloadRequest setTableName(String tableName) {
             return super.setTableName(tableName);
         }
+
 
         @Override
         public String getDataText() {
             return super.getDataText();
         }
 
+
         @Override
         public InsertRecordsFromPayloadRequest setDataText(String dataText) {
             return super.setDataText(dataText);
         }
+
 
         @Override
         public ByteBuffer getDataBytes() {
             throw new NotImplementedException("Method not available");
         }
 
+
         @Override
         public InsertRecordsFromPayloadRequest setDataBytes(ByteBuffer dataBytes) {
             throw new NotImplementedException("Method not available");
         }
+
 
         @Override
         public Map<String, Map<String, String>> getModifyColumns() {
             throw new NotImplementedException("Method not available");
         }
 
+
         @Override
         public InsertRecordsFromPayloadRequest setModifyColumns(Map<String, Map<String, String>> modifyColumns) {
             throw new NotImplementedException("Method not available");
         }
+
 
         @Override
         public Map<String, String> getCreateTableOptions() {
             return super.getCreateTableOptions();
         }
 
+
         @Override
         public InsertRecordsFromPayloadRequest setCreateTableOptions(Map<String, String> createTableOptions) {
             return super.setCreateTableOptions(createTableOptions);
         }
+
 
         @Override
         public Map<String, String> getOptions() {
             return super.getOptions();
         }
 
+
         @Override
         public InsertRecordsFromPayloadRequest setOptions(Map<String, String> options) {
             return super.setOptions(options);
         }
+
 
         @Override
         public Schema getSchema() {
             throw new NotImplementedException("Method not available");
         }
 
+
         public InsertRecordsJsonRequest() {
         }
     }
+
 
     /**
      * An exception that occurred during the submission of a request to GPUdb.
@@ -2059,6 +2143,7 @@ public abstract class GPUdbBase {
             this.url = url;
         }
 
+
         /**
          * Gets the URL that the failed request was submitted to, or
          * {@code null} if multiple failover URLs all failed.
@@ -2069,6 +2154,7 @@ public abstract class GPUdbBase {
             return this.url;
         }
 
+
         /**
          * Gets the failed request.
          *
@@ -2078,6 +2164,7 @@ public abstract class GPUdbBase {
             return this.request;
         }
 
+
         /**
          * Gets the payload used in {@link #insertRecordsFromJson} requests.
          *
@@ -2086,6 +2173,7 @@ public abstract class GPUdbBase {
         public String getPayload() {
             return this.payload;
         }
+
 
         /**
          * Gets the size in bytes of the encoded failed request, or -1 if the
@@ -2097,6 +2185,7 @@ public abstract class GPUdbBase {
             return this.requestSize;
         }
     }   // end class SubmitException
+
 
     /**
      * This class provides options to control JSON ingest using {@link BulkInserter}.
@@ -2119,6 +2208,7 @@ public abstract class GPUdbBase {
             return new JsonOptions();
         }
 
+
         /**
          * Default constructor
          */
@@ -2127,18 +2217,22 @@ public abstract class GPUdbBase {
             this.compressionOn = COMPRESSION_ON;
         }
 
+
         public JsonOptions(boolean validateJson, boolean compressionOn) {
             this.validateJson = validateJson;
             this.compressionOn = compressionOn;
         }
 
+
         public boolean isValidateJson() {
             return this.validateJson;
         }
 
+
         public boolean isCompressionOn() {
             return this.compressionOn;
         }
+
 
         @Override
         public boolean equals(Object o) {
@@ -2148,10 +2242,12 @@ public abstract class GPUdbBase {
             return isValidateJson() == that.isValidateJson() && isCompressionOn() == that.isCompressionOn();
         }
 
+
         @Override
         public int hashCode() {
             return Objects.hash(isValidateJson(), isCompressionOn());
         }
+
 
         @Override
         public String toString() {
@@ -2172,19 +2268,23 @@ public abstract class GPUdbBase {
         public static FailbackOptions defaultOptions() {
             return new FailbackOptions();
         }
-        
+
+
         public FailbackOptions() {
             this.pollingInterval = POLLING_INTERVAL;
         }
+
 
         public FailbackOptions(long pollingInterval) {
             this.pollingInterval = pollingInterval;
         }
 
+
         @Override
         public String toString() {
             return "FailbackOptions [pollingInterval=" + this.pollingInterval + "]";
         }
+
 
         public long getPollingInterval() {
             return this.pollingInterval;
@@ -2192,6 +2292,7 @@ public abstract class GPUdbBase {
 
         
     }
+
 
     /**
      * A special exception indicating the server is shutting down
@@ -2208,6 +2309,7 @@ public abstract class GPUdbBase {
             super(message);
         }
 
+
         /**
          * Creates a new {@link GPUdbExitException} with the specified message and
          * cause.
@@ -2220,6 +2322,7 @@ public abstract class GPUdbBase {
         }
     }
 
+
     public static final class GPUdbHAUnavailableException extends GPUdbException {
         private static final long serialVersionUID = 1L;
 
@@ -2231,6 +2334,7 @@ public abstract class GPUdbBase {
         public GPUdbHAUnavailableException(String message) {
             super(message);
         }
+
 
         /**
          * Creates a new {@link GPUdbHAUnavailableException} with the specified message and
@@ -2257,6 +2361,7 @@ public abstract class GPUdbBase {
             super(message);
         }
 
+
         /**
          * Creates a new {@link GPUdbFailoverDisabledException} with the specified message and
          * cause.
@@ -2282,6 +2387,7 @@ public abstract class GPUdbBase {
             super(message);
         }
 
+
         /**
          * Creates a new {@link GPUdbHostnameRegexFailureException} with the specified message and
          * cause.
@@ -2293,7 +2399,6 @@ public abstract class GPUdbBase {
             super(message, cause);
         }
     }
-
 
 
     /**
@@ -2312,6 +2417,7 @@ public abstract class GPUdbBase {
             super(message);
         }
 
+
         /**
          * Creates a new {@link GPUdbUnauthorizedAccessException} with the
          * specified message and cause.
@@ -2323,7 +2429,6 @@ public abstract class GPUdbBase {
             super(message, cause);
         }
     }
-
 
 
     /**
@@ -2373,6 +2478,7 @@ public abstract class GPUdbBase {
             this.syncMode = syncMode;
         }
 
+
         public String getMode() {
             return this.syncMode;
         }
@@ -2397,6 +2503,7 @@ public abstract class GPUdbBase {
             return null;
         }
 
+
         public static Vector<String> getValuesAsVector() {
             Vector<String> values = new Vector<>();
             for (HASynchronicityMode mode : HASynchronicityMode.values()) {
@@ -2404,6 +2511,7 @@ public abstract class GPUdbBase {
             }
             return values;
         }
+
 
         public static String getModeByEnum(HASynchronicityMode mode) {
             return mode != null ? mode.getMode() : null;
@@ -2425,19 +2533,23 @@ public abstract class GPUdbBase {
             this.outputStream = outputStream;
         }
 
+
         public int getByteCount() {
             return this.byteCount;
         }
+
 
         @Override
         public void close() throws IOException {
             this.outputStream.close();
         }
 
+
         @Override
         public void flush() throws IOException {
             this.outputStream.flush();
         }
+
 
         @Override
         public void write(byte[] b) throws IOException {
@@ -2445,11 +2557,13 @@ public abstract class GPUdbBase {
             this.byteCount += b.length;
         }
 
+
         @Override
         public void write(byte[] b, int off, int len) throws IOException {
             this.outputStream.write(b, off, len);
             this.byteCount += len;
         }
+
 
         @Override
         public void write(int b) throws IOException {
@@ -2457,6 +2571,7 @@ public abstract class GPUdbBase {
             this.byteCount++;
         }
     } // end class CountingOutputStream
+
 
     /**
      * Gets the version and build number of the GPUdb Java API.
@@ -2466,6 +2581,7 @@ public abstract class GPUdbBase {
     public static String getApiVersion() {
         return getApiVersion(true);
     }
+
 
     /**
      * Returns the API's release version (MAJOR.MINOR.REVISION.ABI).  The build
@@ -2489,6 +2605,7 @@ public abstract class GPUdbBase {
         return "unknown";
     }
 
+
     /**
      * Gets the API's release version (MAJOR.MINOR.REVISION.ABI) if it is set
      * appropriate for use in an HTTP header.
@@ -2501,6 +2618,7 @@ public abstract class GPUdbBase {
         return "unknown";
     }
 
+
     /**
      * Sanitizes a string for use as an HTTP {@code User-Agent} token by
      * replacing any character that is not in the RFC 7230 {@code tchar} set
@@ -2512,6 +2630,7 @@ public abstract class GPUdbBase {
         }
         return value.replaceAll("[^A-Za-z0-9!#$%&'*+.^_`|~-]", "_");
     }
+
 
     /**
      * Builds the {@code User-Agent} string sent with every request.  The base
@@ -2553,6 +2672,7 @@ public abstract class GPUdbBase {
         return sb.toString();
     }
 
+
     /**
      * Returns the {@code User-Agent} header value currently sent with each
      * request from this client.
@@ -2562,6 +2682,7 @@ public abstract class GPUdbBase {
     public String getUserAgent() {
         return this.httpHeaders.get(HEADER_USER_AGENT);
     }
+
 
     /**
      * Returns the client program name (the name portion of the leading product
@@ -2576,6 +2697,7 @@ public abstract class GPUdbBase {
     public String getClientName() {
         return this.clientName;
     }
+
 
     /**
      * Returns the client program version (the version portion of the leading
@@ -2620,6 +2742,7 @@ public abstract class GPUdbBase {
     public static <T> List<T> list(T... values) {
         return Arrays.asList(values);
     }
+
 
     /**
      * A utility method for creating a map of
@@ -2666,19 +2789,13 @@ public abstract class GPUdbBase {
 
     // Endpoints
     private static final String ENDPOINT_SHOW_SYSTEM_STATUS     = "/show/system/status";
-    private static final String ENDPOINT_SHOW_SYSTEM_PROPERTIES = "/show/system/properties";
+    static final String ENDPOINT_SHOW_SYSTEM_PROPERTIES = "/show/system/properties";
 
     // Constants used in endpoint responses
     private static final String SHOW_SYSTEM_STATUS_RESPONSE_SYSTEM  = "system";
     private static final String SHOW_SYSTEM_STATUS_RESPONSE_STATUS  = "status";
     private static final String SHOW_SYSTEM_STATUS_RESPONSE_RUNNING = "running";
 
-    private static final String SYSTEM_PROPERTIES_RESPONSE_ENABLE_HTTPD    = "conf.enable_httpd_proxy";
-    private static final String SYSTEM_PROPERTIES_RESPONSE_ENABLE_MH       = "conf.enable_worker_http_servers";
-    private static final String SYSTEM_PROPERTIES_RESPONSE_NUM_HOSTS       = "conf.number_of_hosts";
-    private static final String SYSTEM_PROPERTIES_RESPONSE_HEAD_NODE_URLS  = "conf.ha_ring_head_nodes_full";
-    private static final String SYSTEM_PROPERTIES_RESPONSE_SERVER_URLS     = "conf.worker_http_server_urls";
-    private static final String SYSTEM_PROPERTIES_RESPONSE_TRUE            = "TRUE";
 
     // Keys of the 'info' map returned with an endpoint response.  Shared with
     // the multi-head classes in this package.
@@ -2746,6 +2863,7 @@ public abstract class GPUdbBase {
             this.multiHeadAvailable = multiHeadAvailable;
         }
 
+
         List<URL> getWorkerRankUrls()  { return this.workerRankUrls; }
         boolean   isMultiHeadAvailable() { return this.multiHeadAvailable; }
     }
@@ -2795,6 +2913,7 @@ public abstract class GPUdbBase {
             updateHostnamesBasedOnRankUrls();
         }
 
+
         /**
          * @deprecated
          * Constructor for an active cluster
@@ -2815,6 +2934,7 @@ public abstract class GPUdbBase {
             // Ensure that all the known ranks' hostnames are also accounted for
             updateHostnamesBasedOnRankUrls();
         }
+
 
         /**
          * @deprecated
@@ -2864,7 +2984,7 @@ public abstract class GPUdbBase {
                             activeHeadNodeUrl.getProtocol(),
                             activeHeadNodeUrl.getHost(),
                             activeHeadNodeUrl.getPort(),
-                            hostManagerPathFor( activeHeadNodeUrl )
+                            AddressResolution.hostManagerPathFor( activeHeadNodeUrl )
                     );
                 } else {
                     // The host manager URL shouldn't use any path and
@@ -2893,9 +3013,11 @@ public abstract class GPUdbBase {
             return this.activeHeadNodeUrl;
         }
 
+
         public Map<String,String> getSystemProperties() {
             return this.systemProperties;
         }
+
 
         /**
          * Gets the URLs of the cluster's worker ranks, indexed such that entry
@@ -2932,18 +3054,22 @@ public abstract class GPUdbBase {
             this.multiHeadSnapshot = value;
         }
 
+
         public Set<String> getHostNames() {
             return this.hostNames;
         }
+
 
         public URL getHostManagerUrl() {
             return this.hostManagerUrl;
         }
 
+
         @Deprecated(since = "7.2.2", forRemoval = true)
         public boolean getIsPrimaryCluster() {
             return this.isPrimaryCluster;
         }
+
 
         /**
          * Whether multi-head operations are available on <i>this</i> cluster
@@ -2962,11 +3088,13 @@ public abstract class GPUdbBase {
             return this.multiHeadSnapshot.isMultiHeadAvailable();
         }
 
+
         public ClusterAddressInfo setMultiHeadAvailable( boolean value ) {
             // See setWorkerRankUrls(List) on why the probe uses neither setter.
             this.multiHeadSnapshot = new MultiHeadSnapshot( this.multiHeadSnapshot.getWorkerRankUrls(), value );
             return this;
         }
+
 
         /**
          * Whether this cluster still owes a capability probe for the client's
@@ -2991,6 +3119,7 @@ public abstract class GPUdbBase {
             this.probeOwed = value;
         }
 
+
         /**
          * @deprecated
          * Get whether intra-cluster failover is enabled
@@ -3000,12 +3129,14 @@ public abstract class GPUdbBase {
             return false;
         }
 
+
         /**
          * Another getter for the primary cluster boolean flag for convenience.
          */
         public boolean isPrimaryCluster() {
             return this.isPrimaryCluster;
         }
+
 
         /**
          * Get the HA status (drained value) for this cluster.
@@ -3014,6 +3145,7 @@ public abstract class GPUdbBase {
         public String getHaStatus() {
             return this.haStatus;
         }
+
 
         /**
          * @deprecated
@@ -3036,6 +3168,7 @@ public abstract class GPUdbBase {
             return this;
         }
 
+
         /**
          * Set the system properties.  Return this object to be able to
          * chain operations.
@@ -3044,6 +3177,7 @@ public abstract class GPUdbBase {
             this.systemProperties = value;
             return this;
         }
+
 
         /**
          * Set the worker rank URLs.  Return this object to be able to
@@ -3057,6 +3191,7 @@ public abstract class GPUdbBase {
             return this;
         }
 
+
         /**
          * Set the list of host names for all available machines (whether active
          * or passive).  Return this object to be able to chain operations.
@@ -3065,6 +3200,7 @@ public abstract class GPUdbBase {
             this.hostNames = value;
             return this;
         }
+
 
         /**
          * Set the host manager URL.  Return this object to be able to
@@ -3075,6 +3211,7 @@ public abstract class GPUdbBase {
             return this;
         }
 
+
         /**
          * Set whether this cluster is the primary one.  Return this object to
          * be able to chain operations.
@@ -3083,6 +3220,7 @@ public abstract class GPUdbBase {
             this.isPrimaryCluster = value;
             return this;
         }
+
 
         /**
          * Set the HA status (drained value) for this cluster.
@@ -3093,6 +3231,7 @@ public abstract class GPUdbBase {
             this.haStatus = value;
             return this;
         }
+
 
         /**
          * @deprecated
@@ -3337,6 +3476,7 @@ public abstract class GPUdbBase {
         init( urls, options );
     }
 
+
     protected GPUdbBase(URL url, Options options) throws GPUdbException {
         this.urlLock = new Object();
 
@@ -3354,6 +3494,7 @@ public abstract class GPUdbBase {
         // with the HA ring head node addresses
         init( list( url ), options );
     }
+
 
     protected GPUdbBase(List<URL> urls, Options options) throws GPUdbException {
         this.urlLock = new Object();
@@ -3708,6 +3849,7 @@ public abstract class GPUdbBase {
                         e instanceof ConnectionClosedException;
                 }
 
+
                 @Override
                 public boolean retryRequest(HttpResponse httpResponse, int executionCount, HttpContext httpContext) {
                     boolean doRetry =
@@ -3722,6 +3864,7 @@ public abstract class GPUdbBase {
 
                     return doRetry;
                 }
+
 
                 @Override
                 public TimeValue getRetryInterval(HttpResponse httpResponse, int i, HttpContext httpContext) {
@@ -3827,6 +3970,7 @@ public abstract class GPUdbBase {
         }
     }
 
+
     /**
      *  Choose and return the authentication mode based on the presence of
      *  options in this connection's options map.
@@ -3861,6 +4005,7 @@ public abstract class GPUdbBase {
         return null;
     }
 
+
     protected void getAuthorizationFromHttpHeaders() {
         String headerAuth = this.httpHeaders.get(HEADER_AUTHORIZATION);
         if (headerAuth != null) {
@@ -3880,6 +4025,7 @@ public abstract class GPUdbBase {
             }
         }
     }
+
 
     protected HASynchronicityMode createHASyncModeHeader() {
         String headerHASyncMode = this.httpHeaders.get(HEADER_HA_SYNC_MODE);
@@ -3921,6 +4067,7 @@ public abstract class GPUdbBase {
         return activeHeadNodeURLs;
     }
 
+
     /**
      * Gets the list of URLs of the active head ranks of all the clusters for
      * the GPUdb server. At any given time, one URL will be active and used for
@@ -3936,6 +4083,7 @@ public abstract class GPUdbBase {
             failoverUrls.add(this.hostAddresses.get(urlIndex).getActiveHeadNodeUrl());
         return failoverUrls;
     }
+
 
     /**
      * Gets the host manager URL of every cluster in the HA ring, one per
@@ -3966,6 +4114,7 @@ public abstract class GPUdbBase {
         }
     }
 
+
     /**
      * Gets the active cluster's system properties mapping.
      * 
@@ -3977,6 +4126,7 @@ public abstract class GPUdbBase {
         return this.getClusterInfo().getSystemProperties();
     }
 
+
     /**
      * Gets the active URL of the GPUdb server.
      *
@@ -3984,24 +4134,6 @@ public abstract class GPUdbBase {
      */
     public URL getURL() {
         return this.getClusterInfo().getActiveHeadNodeUrl();
-    }
-
-    /**
-     * The host-manager path for a head node URL that is being reached through
-     * httpd: the head node's own path with its <i>last segment replaced</i> by
-     * {@code gpudb-host-manager}.
-     *
-     * @param headNodeUrl  the head node URL to derive from
-     *
-     * @return  the path component for the host manager URL
-     */
-    private static String hostManagerPathFor( URL headNodeUrl ) {
-        String path      = headNodeUrl.getPath();
-        int    lastSlash = path.lastIndexOf( '/' );
-
-        return (lastSlash < 0)
-               ? "/gpudb-host-manager"
-               : path.substring( 0, lastSlash + 1 ) + "gpudb-host-manager";
     }
 
 
@@ -4017,6 +4149,7 @@ public abstract class GPUdbBase {
     public URL getHmURL() {
         return this.getClusterInfo().getHostManagerUrl();
     }
+
 
     /**
      * Gets the URL of the head node of the primary cluster of the HA
@@ -4046,6 +4179,52 @@ public abstract class GPUdbBase {
 
 
     /**
+     * Given the system properties, extract and return the server version.  If
+     * no server version was not able to parsed, throw an exception.
+     *
+     * @param systemProperties Properties {@link Map} containing the server version
+     *
+     * @return {@link GPUdbBase.GPUdbVersion} representing the server's version
+     */
+    private static GPUdbVersion parseServerVersion( Map<String, String> systemProperties )
+        throws GPUdbException {
+        // Get the server version in a string format
+        String serverVersionStr = systemProperties.get( DATABASE_SERVER_VERSION_KEY );
+        GPUdbVersion serverVersion = null;
+
+        if ( serverVersionStr == null ) {
+            throw new GPUdbException( "System properties does not have any entry for the '" + DATABASE_SERVER_VERSION_KEY + "' key" );
+        }
+
+        // Now parse the version string
+        try {
+            // Split on period (.); note that the expected format is
+            // A.B.C.D.datewithtimestamp.  We will extract all components.
+            int[] components = new int[4];
+            long componentBuild = 0;
+
+            // Need to escape the period since we're passing a regex
+            String[] componentStrings = serverVersionStr.split( "\\.", 5 );
+
+            // Check that we get at least four components
+            if ( componentStrings.length < 4 ) {
+                throw new GPUdbException( "Server version string in /show/system/properties response malformed (expected at least four components): " + serverVersionStr );
+            }
+            // Parse each primary component
+            for ( int i = 0; i < 4; ++i  )
+                components[ i ] = Integer.parseInt( componentStrings[ i ] );
+            componentBuild = Long.parseLong(componentStrings[4]);
+
+            serverVersion = new GPUdbVersion( components[0], components[1], components[2], components[3], componentBuild );
+        } catch (Exception ex) {
+            throw new GPUdbException( "Could not parse server version; error: " + ex.getMessage(), ex );
+        }
+        
+        return serverVersion;
+    }  // end parseServerVersion
+
+
+    /**
      * Gets the version of the database server that this client is connected
      * to.  If the server version was not successfully saved, then returns null.
      *
@@ -4067,6 +4246,7 @@ public abstract class GPUdbBase {
         return this.haSyncMode;
     }
 
+
     /**
      * Gets the username used for authentication to GPUdb. Will be an empty
      * string if none was provided to the {@link GPUdb#GPUdb(String,
@@ -4080,6 +4260,7 @@ public abstract class GPUdbBase {
         return this.username;
     }
 
+
     /**
      * Gets the password used for authentication to GPUdb. Will be an empty
      * string if none was provided to the {@link GPUdb#GPUdb(String,
@@ -4092,6 +4273,7 @@ public abstract class GPUdbBase {
     public String getPassword() {
         return this.password;
     }
+
 
     /**
      * Gets the value of the flag indicating whether Snappy compression will be
@@ -4107,6 +4289,7 @@ public abstract class GPUdbBase {
     public boolean getUseSnappy() {
         return this.useSnappy;
     }
+
 
     /**
      * Determines whether the given number of bytes can be compressed with
@@ -4133,6 +4316,7 @@ public abstract class GPUdbBase {
 
         return false;
     }
+
 
     /**
      * Checks whether Snappy is available on the host system, if requested.
@@ -4163,6 +4347,7 @@ public abstract class GPUdbBase {
 
         return false;
     }
+
 
     /**
      * Applies TCP keep-alive extended socket options to a socket.
@@ -4208,6 +4393,7 @@ public abstract class GPUdbBase {
         }
     }
 
+
     /**
      * Custom PlainConnectionSocketFactory that applies TCP keep-alive extended options.
      */
@@ -4222,6 +4408,7 @@ public abstract class GPUdbBase {
             this.keepCount = keepCount;
         }
 
+
         @Override
         public Socket createSocket(HttpContext context) throws IOException {
             Socket socket = super.createSocket(context);
@@ -4229,6 +4416,7 @@ public abstract class GPUdbBase {
             return socket;
         }
     }
+
 
     /**
      * Custom SSLConnectionSocketFactory that applies TCP keep-alive extended options.
@@ -4254,6 +4442,7 @@ public abstract class GPUdbBase {
             this.keepCount = keepCount;
         }
 
+
         @Override
         public Socket createSocket(HttpContext context) throws IOException {
             Socket socket = super.createSocket(context);
@@ -4261,6 +4450,7 @@ public abstract class GPUdbBase {
             return socket;
         }
     }
+
 
     /**
      * Result object containing system running status and HA status information.
@@ -4275,6 +4465,7 @@ public abstract class GPUdbBase {
             this.haStatus = haStatus;
         }
     }
+
 
     /**
      * Gets the system running status and HA status for a given URL in a single call.
@@ -4349,6 +4540,7 @@ public abstract class GPUdbBase {
         return new SystemStatusResult(systemRunning, haStatus);
     }
 
+
     /**
      * Gets whether auto-discovery is enabled or not on the current connection.
      *
@@ -4357,6 +4549,7 @@ public abstract class GPUdbBase {
     public boolean isAutoDiscoveryEnabled() {
         return !this.disableAutoDiscovery;
     }
+
 
     /**
      * Whether multi-head operations can be used against the cluster currently
@@ -4433,43 +4626,47 @@ public abstract class GPUdbBase {
 
         boolean wasAvailable = cluster.isMultiHeadAvailable();
         List<URL> workerUrls;
+        // Whether the probe below decided reachability for itself.  A refresh
+        // that failed leaves the previous addresses in place, and those must
+        // still be probed rather than inherited as good.
+        boolean probeDecided = false;
+        boolean available    = false;
 
         try {
             Map<String, String> properties = getSystemProperties( cluster.getActiveHeadNodeUrl() );
-            List<URL> rankUrls = new ArrayList<>(
-                    getRankURLs( properties, this.hostnameRegex ) );
 
-            // Drop the rank-0 slot unconditionally so that index i is rank i+1;
-            // see the placeholder convention documented on getWorkerRankUrls()
-            if ( !rankUrls.isEmpty() )
-                rankUrls.remove( 0 );
+            // Resolution draws on four properties, ordered so that addresses an
+            // operator configured are tried before ones the server discovered
+            // for itself, and probed so that a rank is only written off once
+            // every address advertised for it has failed.
+            List<List<URL>> retained = AddressResolution.retainMatchingRankCandidateUrls(
+                    AddressResolution.extractRankCandidateUrls( properties ), this.hostnameRegex );
 
-            workerUrls = rankUrls;
+            int[] rankHost = AddressResolution.extractRankHostMapping( properties, retained.size() );
+
+            List<URL> selected = new ArrayList<>();
+            available = probeRankCandidateUrls( retained, rankHost,
+                                             cluster.getActiveHeadNodeUrl(), selected );
+
+            workerUrls   = selected;
+            probeDecided = true;
         } catch ( Exception ex ) {
             GPUdbLogger.debug_with_info( "Could not refresh worker addresses for cluster <"
                                          + cluster.getActiveHeadNodeUrl() + ">: " + ex.getMessage() );
             workerUrls = cluster.getWorkerRankUrls();
         }
 
-        boolean available;
         if ( (workerUrls == null) || workerUrls.isEmpty() ) {
             available = false;
-        } else {
+        } else if ( !probeDecided ) {
+            // Fell back to the addresses already held, which carry no candidates
+            // to search: probe them as they are.
             available = true;
             for ( URL workerRank : workerUrls ) {
                 if ( workerRank == null )
                     continue;   // empty slot kept for a rank removed from the cluster
 
-                try {
-                    if ( !isSystemRunning( workerRank ) ) {
-                        available = false;
-                        break;
-                    }
-                } catch ( GPUdbException ex ) {
-                    // Could not determine it; treat as unreachable, which is
-                    // the safe direction: it costs multi-head, not the failover
-                    GPUdbLogger.debug_with_info( "Worker rank <" + workerRank
-                                                 + "> could not be probed: " + ex.getMessage() );
+                if ( !isRankRunning( workerRank ) ) {
                     available = false;
                     break;
                 }
@@ -4502,6 +4699,7 @@ public abstract class GPUdbBase {
         }   // end synchronized ( probeLock )
     }   // end probeCurrentClusterMultiHead
 
+
     /**
      * Gets the number of threads used during data encoding and decoding
      * operations. Will be one if not overridden using the {@link
@@ -4515,6 +4713,7 @@ public abstract class GPUdbBase {
     public int getThreadCount() {
         return this.threadCount;
     }
+
 
     /**
      * Gets the {@link ExecutorService executor service} used for managing
@@ -4531,6 +4730,7 @@ public abstract class GPUdbBase {
         return this.executor;
     }
 
+
     /**
      * Gets the map of additional HTTP headers that will be sent to GPUdb with
      * each request. Will be empty if none were provided to the {@link
@@ -4545,6 +4745,7 @@ public abstract class GPUdbBase {
     public Map<String, String> getHttpHeaders() {
         return this.httpHeaders;
     }
+
 
     /**
      * Gets the timeout value, in milliseconds, after which a lack of
@@ -4561,6 +4762,7 @@ public abstract class GPUdbBase {
         return this.timeout;
     }
 
+
     /**
      * Gets the maximum number of retries for HTTP requests.
      *
@@ -4571,6 +4773,7 @@ public abstract class GPUdbBase {
     public int getMaxRetries() {
         return this.maxRetries;
     }
+
 
     /**
      * Gets a copy of the list of ClusterAddressInfo objects that contain
@@ -4583,6 +4786,7 @@ public abstract class GPUdbBase {
         return new ArrayList<>(this.hostAddresses);
     }
 
+
     /**
      * Gets the size of the high availability ring (i.e. how many clusters
      * are in it).
@@ -4592,6 +4796,7 @@ public abstract class GPUdbBase {
     public int getHARingSize() {
         return this.hostAddresses.size();
     }
+
 
     public boolean getBypassSslCertCheck() {
         return this.bypassSslCertCheck;
@@ -4635,6 +4840,7 @@ public abstract class GPUdbBase {
         this.httpHeaders.put(header, value);
     }
 
+
     /**
      * Removes the given HTTP header from the map of additional HTTP headers to
      * send to GPUdb with each request. The user is not allowed
@@ -4671,6 +4877,7 @@ public abstract class GPUdbBase {
         return;
     }
 
+
     /**
      * Sets the current high availability synchronicity override mode.
      * Until it is changed, all subsequent endpoint calls made to the
@@ -4685,6 +4892,7 @@ public abstract class GPUdbBase {
     public void setHASyncMode( HASynchronicityMode syncMode) {
         this.haSyncMode = syncMode;
     }
+
 
     /**
      * @deprecated  As of version 7.1.0.0, this method will no longer be
@@ -4710,6 +4918,7 @@ public abstract class GPUdbBase {
         return this.numClusterSwitches;
     }
 
+
     /**
      * Gets the number of times the client has switched to a different
      * cluster amongst the high availability ring.
@@ -4730,6 +4939,7 @@ public abstract class GPUdbBase {
         }
     }
 
+
     /**
      * Set the pointer to the current URL index in a thread-safe manner.
      */
@@ -4747,9 +4957,11 @@ public abstract class GPUdbBase {
         return this.haUrlIndices.get( getCurrClusterIndexPointer() );
     }
 
+
     public List<ClusterAddressInfo> getHostAddresses() {
         return this.hostAddresses;
     }
+
 
     /**
      * Select the next cluster based on the HA failover priority set by the user.
@@ -5109,6 +5321,7 @@ public abstract class GPUdbBase {
         return getPrimaryUrl() != null && !getPrimaryUrl().toExternalForm().isEmpty() && getHARingSize() > 1;
     }
 
+
     /**
      * Create and initialize an HTTP connection object with the request headers
      *  (including authorization header), connection type, time out etc.
@@ -5178,6 +5391,7 @@ public abstract class GPUdbBase {
         return initializeHttpConnection( url, this.timeout );
     }
 
+
     /**
      * Create and initialize an HTTP connection object with the request headers
      *  (including authorization header), connection type, time out etc.
@@ -5226,7 +5440,6 @@ public abstract class GPUdbBase {
     }
 
 
-
     /**
      * Given a hostname or IP address, check if the known clusters
      * have/use/contain it.
@@ -5251,6 +5464,7 @@ public abstract class GPUdbBase {
         GPUdbLogger.debug_with_info( "Did not find any cluster with hostname <" + hostName + ">");
         return -1;
     }
+
 
     /**
      * Given a URL, return the system status information.
@@ -5287,6 +5501,7 @@ public abstract class GPUdbBase {
 
         return response;
     }   // end getSystemStatusResponse
+
 
     /**
      * Given a URL, return the system properties information
@@ -5368,6 +5583,7 @@ public abstract class GPUdbBase {
         return isSystemRunning( url, true );
     }
 
+
     /**
      * Given a URL, return whether the server is running at that address.
      *
@@ -5389,6 +5605,7 @@ public abstract class GPUdbBase {
         SystemStatusResult result = getSystemRunningStatus( url, quickCheck );
         return result.isRunning;
     }
+
 
     /**
      * Determines whether the cluster at the given URL is usable as the <i>active
@@ -5423,6 +5640,7 @@ public abstract class GPUdbBase {
         }
     }
 
+
     /**
      * This method inserts a JSON payload (either a single JSON record or an array) into a Kinetica table
      * @param insertRecordsJsonRequest - an instance of {@link InsertRecordsJsonRequest} class
@@ -5440,6 +5658,7 @@ public abstract class GPUdbBase {
                 insertRecordsJsonRequest.getOptions());
     }
 
+
     /**
      * This method inserts a JSON payload (either a single JSON record or an array) into a Kinetica table
      * with all default options
@@ -5453,6 +5672,7 @@ public abstract class GPUdbBase {
                                                      String tableName) throws GPUdbException {
         return insertRecordsFromJson(jsonRecords, tableName, null, null, null);
     }
+
 
     /**
      * This method inserts a JSON payload (either a single JSON record or an array) into a Kinetica table
@@ -5499,6 +5719,7 @@ public abstract class GPUdbBase {
 
         return Collections.unmodifiableMap(submitRequest(endpoint, jsonRecords, jOpts.isCompressionOn()));
     }
+
 
     /**
      * This method is used by the {@link BulkInserter} to insert a JSON payload
@@ -5548,6 +5769,7 @@ public abstract class GPUdbBase {
         return Collections.unmodifiableMap(submitRequest(endpointUrl, jsonRecords, jOpts.isCompressionOn()));
     }
 
+
     /**
      * This class models the response returned by the method {@link #getRecordsJson}
      * The default constructor is used to create instance whenever there is an error
@@ -5563,6 +5785,7 @@ public abstract class GPUdbBase {
         public GetRecordsJsonResponse() {
         }
 
+
         /**
          * All argument constructor
          * 
@@ -5576,17 +5799,21 @@ public abstract class GPUdbBase {
             this.jsonRecords = jsonRecords;
         }
 
+
         public int getTotalRecords() {
             return this.totalRecords;
         }
+
 
         public boolean hasMoreRecords() {
             return this.hasMoreRecords;
         }
 
+
         public String getJsonRecords() {
             return this.jsonRecords;
         }
+
 
         @Override
         public String toString() {
@@ -5816,6 +6043,7 @@ public abstract class GPUdbBase {
         return new GetRecordsJsonResponse(totalRecords, hasMoreRecords, jsonRecords);
     }
 
+
     /**
      * This method is used to send a SQL query to Kinetica and read the records in the returned
      * GPUdbSqlIterator object.  See {@link #query(String, Object, Map)} to execute a SQL statement without reading
@@ -5831,6 +6059,7 @@ public abstract class GPUdbBase {
     {
         return query(sql, null, null);
     }
+
 
     /**
      * This method is used to send a SQL query to Kinetica and read the records in the returned
@@ -5848,6 +6077,7 @@ public abstract class GPUdbBase {
     {
         return query(sql, parameters, null);
     }
+
 
     /**
      * This method is used to send a SQL query to Kinetica and read the records in the returned
@@ -5879,6 +6109,7 @@ public abstract class GPUdbBase {
         return new GPUdbSqlIterator<>((GPUdb)this, sql, sqlOpts);
     }
 
+
     /**
      * This method is used to execute a SQL statement (e.g., DML, DDL).  It returns the number of
      * rows affected by the statement.
@@ -5894,6 +6125,7 @@ public abstract class GPUdbBase {
     {
         return execute(sql, "", null);
     }
+
 
     /**
      * This method is used to execute a SQL statement (e.g., DML, DDL).  It returns the number of
@@ -5911,6 +6143,7 @@ public abstract class GPUdbBase {
     {
         return execute(sql, parameters, null);
     }
+
 
     /**
      * This method is used to execute a SQL statement (e.g., DML, DDL).  It returns the number of
@@ -5945,440 +6178,298 @@ public abstract class GPUdbBase {
 
 
     /**
-     * Retrieves the HTTPD proxy enabled configuration from the given system
-     * properties of a cluster.
-     * 
-     * @param systemProperties  A map containing all cluster system properties.
-     * @return  whether or not HTTPD proxy is enabled for the cluster.
+     * Probe each rank's candidate URLs and record the one that answered.
+     *
+     * <p>Ordered by <b>host</b> rather than by rank, so that the cost of
+     * discovering which host name/IP this client can reach is paid once for the
+     * host instead of once for every rank on it.  The first candidate URL that
+     * answers for any rank on a host will have its name/IP noted as that host's
+     * <b>preferred address</b>, and the host's remaining ranks try their
+     * candidate URL on that same address first.
+     *
+     * <p>Three rules govern what may be concluded, and the asymmetry between
+     * them is the whole design:
+     *
+     * <ul>
+     *   <li>A <b>success</b> settles the preferred address for the host, as
+     *       every rank binds on every one of its host's interfaces.  It settles
+     *       nothing about the other ranks: each has its own port, separately
+     *       firewallable, and its own process, separately down.  So every rank
+     *       is still probed.</li>
+     *   <li>A <b>failure</b> settles nothing at all.  A wrong URL, a blocked
+     *       port and a dead process are indistinguishable in the response, so a
+     *       failure is never generalized to the address, the host, or the
+     *       rank.</li>
+     *   <li>The preference is therefore an <b>ordering, not a restriction</b>:
+     *       a rank whose preferred address URL fails continues through its own
+     *       remaining candidates.</li>
+     * </ul>
+     *
+     * <p>The head node's own address seeds the preference for its host at no
+     * cost: this method is only reached by way of a successful properties query
+     * against it, so it is a known-good address for whatever host it is on.
+     *
+     * @param candidateUrls   per-rank candidates, null for a removed rank
+     * @param rankHost        rank slot to host index, -1 where not grouped
+     * @param headNodeUrl     the address this cluster was just queried through
+     * @param selectedOut     receives the worker slots, so that entry {@code i}
+     *                        is rank {@code i + 1}; a removed rank is null, and
+     *                        an unreachable rank keeps its first candidate so
+     *                        the published addresses stay meaningful
+     *
+     * @return whether every live rank answered on some candidate
      */
-    private static boolean getIsHttpdEnabled(Map<String, String> systemProperties) {
-        
-        boolean isHttpdEnabled = false;
+    private boolean probeRankCandidateUrls( List<List<URL>> candidateUrls, int[] rankHost, URL headNodeUrl, List<URL> selectedOut ) {
 
-        // Is HTTPD being used (helps in figuring out the host manager URL
-        String enableHttpd = systemProperties.get( SYSTEM_PROPERTIES_RESPONSE_ENABLE_HTTPD );
+        // Keyed by the full address text, never by URL equality: URL.equals
+        // resolves host names, which would make this a series of blocking DNS
+        // lookups under the probe lock.
+        final Map<String, Boolean> answeredByAddress = new HashMap<>();
+        final Map<Integer, String> preferredHostByHost = new HashMap<>();
 
-        // Figure out if we're using HTTPD
-        if ( (enableHttpd != null)
-            && (enableHttpd.compareToIgnoreCase( SYSTEM_PROPERTIES_RESPONSE_TRUE ) == 0 ) ) {
-            isHttpdEnabled = true;
+        // An address naming more than one host cannot stand for any of them
+        final Set<String> nonIdentifying = AddressResolution.getNonIdentifyingHosts( candidateUrls, rankHost );
+
+        if ( (rankHost.length > 0) && (rankHost[0] >= 0) && (headNodeUrl != null)
+             && !nonIdentifying.contains( headNodeUrl.getHost() ) )
+            preferredHostByHost.put( rankHost[0], headNodeUrl.getHost() );
+
+        boolean allReachable = true;
+
+        // Slot 0 is the head rank and is not a worker; it is not probed, and the
+        // list handed out starts at rank 1.  See the placeholder convention on
+        // getWorkerRankUrls().
+        for ( int rank = 1; rank < candidateUrls.size(); ++rank ) {
+
+            final List<URL> candidates = candidateUrls.get( rank );
+
+            if ( candidates == null ) {
+                selectedOut.add( null );   // slot kept for a removed rank
+                continue;
+            }
+
+
+            final int host = (rank < rankHost.length) ? rankHost[ rank ] : -1;
+            final String preferredHost = (host >= 0) ? preferredHostByHost.get( host ) : null;
+
+            final URL answered = getRunningRankUrl(
+                    AddressResolution.orderUrlsByPreferredHostFirst( candidates, preferredHost ),
+                    answeredByAddress,
+                    AddressResolution.rankLabel( rank ) );
+
+            if ( answered == null ) {
+                // Every candidate for this rank failed.  Keep the first so the
+                // published addresses still describe what would be used, and
+                // report the addresses tried -- a rank can advertise a single
+                // malformed address for reasons far removed from the symptom,
+                // and naming only the rank cannot be acted on.
+                GPUdbLogger.debug_with_info( AddressResolution.rankLabel( rank ) + " answered on none of " + candidates );
+                selectedOut.add( candidates.get( 0 ) );
+                allReachable = false;
+                continue;
+            }
+
+            selectedOut.add( answered );
+
+            // A success settles the address for the host, not the ranks -- and
+            // only where the address identifies that host in the first place.
+            if ( host >= 0 ) {
+                if ( nonIdentifying.contains( answered.getHost() ) )
+                    GPUdbLogger.debug_with_info(
+                            AddressResolution.rankLabel( rank ) + " answered at <" + answered + ">, which names"
+                            + " more than one host; using it for this rank only" );
+                else
+                    preferredHostByHost.putIfAbsent( host, answered.getHost() );
+            }
         }
 
-        return isHttpdEnabled;
-    }
+        return allReachable;
+    }  // end probeRankCandidateUrls
+
 
     /**
-     * Retrieves the multi-head I/O enabled configuration from the given system
-     * properties of a cluster.
-     * 
-     * @param systemProperties  A map containing all cluster system properties.
-     * @return  whether or not multi-head I/O is enabled for the cluster.
+     * The first of a rank's candidate URLs that answers, or null if none does.
+     *
+     * <p>The single implementation of "search this rank's addresses", shared by
+     * the head-rank check at connect and the per-rank search during a capability
+     * probe.  <b>Keep it single.</b>  A second copy is free to disagree about
+     * what a failure means -- whether an authorization error ends the search or
+     * counts as one unreachable address -- and the two callers would then
+     * classify the same cluster differently.
+     *
+     * <p>Candidates are tried in the order given; applying a host's preferred
+     * address is the caller's business, since only the probe has one.
+     *
+     * @param candidates         the addresses to try, in order
+     * @param answeredByAddress  memo shared across ranks, keyed by full address
+     *                           text; null where there is nothing to share.
+     *                           Never keyed by {@link URL} equality, which
+     *                           resolves host names and would make this a series
+     *                           of blocking DNS lookups under the probe lock
+     * @param what               what is being searched for, for logging
+     *
+     * @return the candidate that answered, or null if none did
      */
-    private static boolean getIsMultiHeadEnabled(Map<String, String> systemProperties) {
-        
-        boolean isMultiHeadEnabled = false;
+    private URL getRunningRankUrl( List<URL> candidates,
+                                         Map<String, Boolean> answeredByAddress,
+                                         String what ) {
 
-        String enableWorkerHttp = systemProperties.get( SYSTEM_PROPERTIES_RESPONSE_ENABLE_MH );
+        for ( URL candidate : candidates ) {
+            final String address = candidate.toString();
 
-        if ( (enableWorkerHttp != null)
-            && (enableWorkerHttp.compareToIgnoreCase( SYSTEM_PROPERTIES_RESPONSE_TRUE ) == 0 ) ) {
-            isMultiHeadEnabled = true;
+            Boolean answered = (answeredByAddress == null) ? null : answeredByAddress.get( address );
+
+            if ( answered == null ) {
+                answered = isRankRunning( candidate );
+
+                if ( answeredByAddress != null )
+                    answeredByAddress.put( address, answered );
+            }
+
+            if ( answered )
+                return candidate;
+
+            GPUdbLogger.debug_with_info( what + " did not answer at <" + candidate + ">" );
         }
 
-        return isMultiHeadEnabled;
-    }
-
-    /**
-     * Whether a parsed address can actually be connected to.
-     *
-     * <p>{@link URL} accepts strings that parse cleanly but name no host:
-     * {@code http://:9191} yields an empty host and would otherwise be stored
-     * as a live worker.  Such an entry fails only at first use, and presents as
-     * the rank being down rather than as an address problem -- so the operator
-     * investigates a healthy rank and never suspects the parse.
-     *
-     * <p>This deliberately does <i>not</i> validate the host's form.  A rank
-     * address may be an IPv4 literal, an IPv6 literal or a hostname, and an
-     * operator-set {@code rankN.public_url} is copied verbatim by the server,
-     * so anything a URL can carry can legitimately arrive here.  Nor does it
-     * require a port: a port is mandatory where one is built from
-     * {@code conf.worker_http_server_ports} (see {@code WorkerList}), but a
-     * whole URL advertised behind an ingress may correctly omit it and rely on
-     * the protocol default.
-     *
-     * @param url  the parsed address, or {@code null}
-     *
-     * @return  whether the address names a host that can be connected to
-     */
-    static boolean hasUsableHost( URL url ) {
-        return (url != null)
-                && (url.getHost() != null)
-                && !url.getHost().isEmpty();
-    }
+        return null;
+    }  // end getRunningRankUrl
 
 
     /**
-     * Whether a host, as bare text, names something that can be connected to.
+     * Whether a rank is running at the given URL; any error means not running.
      *
-     * <p>The string-level counterpart of {@link #hasUsableHost(URL)}, for the
-     * one parser whose input may be a bare host name with no scheme and so
-     * cannot be handed to {@link URL} at all.  It rejects the same two shapes:
-     * an empty entry, and one that carries a port but no host.
-     *
-     * <p>Like its sibling it does not constrain the host's <i>form</i>: an IPv4
-     * literal, a bracketed IPv6 literal and a host name are all legitimate.
-     *
-     * @param host  the host text, already stripped of any scheme
-     *
-     * @return  whether the text names a host
+     * <p>This absorbs an authorization failure along with everything else, which
+     * is safe rather than merely convenient: every path reaching here has
+     * already queried the cluster's properties through the same credentials, and
+     * a connection attempt with bad ones is refused outright before any address
+     * is searched.  Where credentials are revoked mid-session the caller's own
+     * requests fail loudly at the same time, so nothing is hidden by treating
+     * the probe's copy of that failure as unreachable.
      */
-    static boolean hasUsableHostText( String host ) {
-        return (host != null)
-                && !host.isEmpty()
-                && !host.startsWith( ":" );
-    }
-
-
-    /**
-     * Extracts the host component of an advertised address, whatever form it
-     * arrives in.
-     *
-     * <p>Exists so that every resolver matches the hostname regex against the
-     * same thing.  The properties do not agree on form: some carry whole URLs,
-     * one carries bare addresses, and an operator-set value may carry a port or
-     * a path.  Reducing all of them to a host through {@link URL} gives one
-     * answer, including the brackets {@code getHost()} reports for an IPv6
-     * literal -- which is where a hand-rolled string split diverges.
-     *
-     * <p>A scheme is synthesized when the text has none, since {@link URL}
-     * requires one and a bare host name is a legitimate value here.
-     *
-     * @param address  the advertised address text
-     *
-     * @return  the host component, or {@code null} if the text cannot be parsed
-     *          as an address at all
-     */
-    static String hostOf( String address ) {
-        if ( address == null )
-            return null;
-
-        String withScheme = address.contains( "://" ) ? address : ("http://" + address);
+    private boolean isRankRunning( URL rankUrl ) {
         try {
-            return new URL( withScheme ).getHost();
+            return isSystemRunning( rankUrl );
+        } catch ( GPUdbException ex ) {
+            // Could not determine it; treat as unreachable, which is the safe
+            // direction: it costs multi-head, not the failover.
+            GPUdbLogger.debug_with_info( "Rank address <" + rankUrl
+                                         + "> could not be probed: " + ex.getMessage() );
+            return false;
+        }
+    }
+
+
+    /**
+     * Assemble the host manager URL from the head node's URL.
+     *
+     * <p>Separate because it is done more than once: the head node address is
+     * not final until it has been shown to answer, and adopting a different one
+     * leaves a host manager URL derived from an address the client never
+     * reached.
+     *
+     * <p>Behind httpd the head node's protocol, host and <b>port</b> are kept
+     * and only the path's last segment is replaced -- appending a fixed path
+     * instead would drop any prefix a hosted deployment sits behind, and
+     * address nothing.  Otherwise the configured host manager port is used with
+     * no path at all.
+     *
+     * @param headNodeUrl     the address the head rank answers on
+     * @param isHttpdEnabled  whether the server reports an httpd proxy
+     */
+    private URL buildHostManagerUrl( URL headNodeUrl, boolean isHttpdEnabled )
+        throws GPUdbException {
+
+        try {
+            URL hostManagerUrl;
+
+            // Detecting httpd takes two signals: the server saying it exists,
+            // and this caller's own URL carrying a path -- a user on a cluster
+            // with httpd enabled may still be connected straight to the
+            // database port, and then there is no path to rewrite.
+            if ( isHttpdEnabled && !headNodeUrl.getPath().isEmpty() ) {
+                hostManagerUrl = new URL(
+                        headNodeUrl.getProtocol(),
+                        headNodeUrl.getHost(),
+                        // the port stays the head rank's; only the path differs
+                        headNodeUrl.getPort(),
+                        AddressResolution.hostManagerPathFor( headNodeUrl )
+                );
+            } else {
+                hostManagerUrl = new URL(
+                        headNodeUrl.getProtocol(),
+                        headNodeUrl.getHost(),
+                        this.hostManagerPort,
+                        ""
+                );
+            }
+
+            GPUdbLogger.debug_with_info( "Created host manager URL: " + hostManagerUrl );
+            return hostManagerUrl;
         } catch ( MalformedURLException ex ) {
-            // Not an address; the caller treats a null host as unusable
-            return null;
+            throw new GPUdbException( "Error creating the host manager URL: " + ex.getMessage(), ex );
         }
-    }
+    }  // end buildHostManagerUrl
 
 
     /**
-     * Names a rank for a user-facing message.
+     * The address the cluster's head rank answers on, searched across every
+     * address advertised for it rather than only the one selection preferred.
      *
-     * @param rankIndex  index into the server's rank list, where 0 is the head
+     * <p>This check gates the whole cluster -- failing it costs multi-head on
+     * every rank -- so it is the last place a single unreachable address should
+     * be taken as final.  The addresses are tried in the order selection
+     * established, so the first probe is the one that would have been made
+     * anyway and nothing changes for a cluster whose advertised head address
+     * works.
      *
-     * @return  a phrase naming that rank
+     * @param systemProperties  the cluster's properties, re-read for the head
+     *                          rank's alternates
+     * @param selected          the address selection chose, tried first
+     *
+     * @return the address that answered, or null if none of them did
      */
-    static String rankLabel( int rankIndex ) {
-        return (rankIndex == 0) ? "the head rank" : ("worker rank " + rankIndex);
-    }
+    private URL resolveReachableHeadNodeUrl( Map<String, String> systemProperties, URL selected ) {
 
+        List<URL> candidates = null;
 
-    /**
-     * Applies the hostname regex to one candidate address.
-     *
-     * <p>The match is a <b>prefix</b> match: the pattern is anchored at the
-     * start of the candidate and unanchored at the end, so {@code 172\.17\.}
-     * selects every address in that range without a trailing {@code .*}.  This
-     * is {@link java.util.regex.Matcher#lookingAt lookingAt} rather than
-     * {@link java.util.regex.Matcher#matches matches}.
-     *
-     * <p>Note the consequence: a pattern is <i>not</i> implicitly anchored at
-     * the end, so {@code 10\.0\.0\.1} also selects {@code 10.0.0.10} and
-     * {@code 10.0.0.123}.  A pattern meant to name exactly one address must say
-     * so, with a trailing {@code $}.
-     *
-     * <p>Every code path that resolves addresses matches through here, so the
-     * semantics cannot differ between them.
-     *
-     * @param regex      the user-given pattern; never {@code null} here --
-     *                   callers test for a null pattern first, since no pattern
-     *                   means "take the first address" rather than "match all"
-     * @param candidate  the address text to test
-     *
-     * @return  whether the candidate is selected by the pattern
-     */
-    static boolean hostnameRegexMatches( Pattern regex, String candidate ) {
-        return regex.matcher( candidate ).lookingAt();
-    }
-
-
-    /**
-     * Given system properties and a hostname regex, extract the head and worker
-     * rank root URLs.  If distributed I/O is disabled on the server, no URLs
-     * are found in the server's list, or none of the URLs match the given
-     * regex, an empty list will be returned.
-     *
-     * @param systemProperties  A map containing all relevant system properties.
-     * @param hostnameRegex     The regex to match the URLs against; if null,
-     *                          then use the first element of the list, if the
-     *                          system properties has multiple URLs for a given
-     *                          rank.
-     *
-     * @return a list of URLs, where the first entry is the rank-0 URL.  If no
-     *         worker URLs are found or match the regex, the list will be empty.
-     */
-    private static List<URL> getRankURLs( Map<String, String> systemProperties,
-                                   Pattern hostnameRegex )
-        throws GPUdbHostnameRegexFailureException, GPUdbException {
-
-        final List<URL> rankURLs = new ArrayList<>();
-
-        if (!getIsMultiHeadEnabled(systemProperties)) {
-            GPUdbLogger.debug_with_info("Distributed I/O not enabled on server; skipping rank URL retrieval.");
-            return rankURLs;
-        }
-
-        String propertyVal = systemProperties.get( SYSTEM_PROPERTIES_RESPONSE_SERVER_URLS );
-        if ( (propertyVal != null) && !propertyVal.isEmpty() ){
-            GPUdbLogger.debug_with_info(
-                    String.format(
-                            "Known rank URLs <%s> from server: %s%s",
-                            SYSTEM_PROPERTIES_RESPONSE_SERVER_URLS,
-                            propertyVal,
-                            hostnameRegex == null || hostnameRegex.pattern().isEmpty() ? "" : " vs. user-given regex: " + hostnameRegex.pattern()
-                    )
-            );
-
-            // Get the URL for each of the ranks
-            // ---------------------------------
-            String[] urlLists = propertyVal.split(";");
-
-            // Parse each entry (corresponds to a rank, could be an
-            // empty slot for a removed rank)
-            for (int i = 0; i < urlLists.length; ++i) {
-
-                // Handle removed ranks.  Keep an empty slot for the rank so
-                // that this list's indices stay aligned with the rank
-                // numbering; that is the numbering the shard routing table
-                // refers to, so compacting the list here would silently
-                // misroute every rank above the removed one.
-                if ( urlLists[i].isEmpty() ) {
-                    rankURLs.add( null );
-                    continue;
-                }
-
-                // Each rank can have multiple URLs (public/private) associated with it
-                String[] urls = urlLists[i].split(",");
-                boolean found = false;
-
-                // Whether the regex is genuinely why nothing was found: at least
-                // one address was usable and the regex rejected it.
-                boolean sawUsableUnmatched = false;
-
-                // Look through the URLs associated with this rank for a valid one that matches the regex,
-                //   or just use the first valid one in the list if there's no regex
-                for (String urlString : urls) {
-                    URL url;
-                    boolean doAdd = false;
-
-                    // An unusable alternate is skipped, not fatal.  This loop's job is
-                    // to find a usable address for this rank among the ones advertised
-                    // for it; failing the whole list over one bad entry would abandon
-                    // the good entries beside it, and the !found check below already
-                    // reports the rank when none of them works.
-                    try {
-                        url = new URL(urlString);
-                    } catch (MalformedURLException ex) {
-                        GPUdbLogger.debug_with_info("Skipping unusable rank URL <" + urlString
-                                                    + ">: " + ex.getMessage());
-                        continue;
-                    }
-
-                    if (!hasUsableHost(url)) {
-                        GPUdbLogger.debug_with_info("Skipping rank URL naming no host <"
-                                                    + urlString + ">");
-                        continue;
-                    }
-
-                    if (hostnameRegex == null) {
-                        // No regex is given, so we'll take the first one
-                        GPUdbLogger.debug_with_info("Keeping rank URL: " + url);
-                        doAdd = true;
-                    } else {
-                        // Check if this URL matches the given regex
-                        doAdd = hostnameRegexMatches(hostnameRegex, url.getHost());
-                        if (doAdd) {
-                            GPUdbLogger.debug_with_info("Keeping matching rank URL: " + url);
-                        } else {
-                            sawUsableUnmatched = true;
-                            GPUdbLogger.debug_with_info("Skipping non-matching rank URL: " + url);
-                        }
-                    }
-
-                    if (doAdd) {
-                        // Found a match (whether a regex is given or not)
-                        rankURLs.add(url);
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found) {
-                    // Blame the regex only when it is actually to blame
-                    if ( (hostnameRegex != null) && sawUsableUnmatched ) {
-                        throw new GPUdbHostnameRegexFailureException(
-                                "No valid matching IP/hostname found for " + rankLabel( i )
-                        );
-                    }
-                    // Nothing usable was advertised for this rank, whether or not a
-                    // regex was given.  Reported as an ordinary failure so that the
-                    // connection degrades rather than being refused for a cause the
-                    // regex did not create.
-                    throw new GPUdbException("No valid IP/hostname found for " + rankLabel( i ));
-                }
-            }
-        } else {
-            GPUdbLogger.debug_with_info(String.format("No entry for <%s> in %s response",
-                    SYSTEM_PROPERTIES_RESPONSE_SERVER_URLS, ENDPOINT_SHOW_SYSTEM_PROPERTIES));
-        }
-
-        return rankURLs;
-    }  // end getRankURLs
-
-
-
-    /**
-     * Given system properties, extract the hostnames or IP addresses of all the
-     * physical nodes (machines) used in the cluster, whether or not there are
-     * active ranks running on any of them.  Each string will contain the protocol
-     * and the hostname or the IP address, e.g. "http://abcd.com",
-     * "https://123.4.5.6". This method will strip the protocol part off the 
-     * hostnames/IP addresses received from the server.
-     *
-     * @param systemProperties  A map containing all relevant system properties.
-     * @param hostnameRegex     The regex to match the URLs again; if null, then
-     *                          use the first element of the list, if the system
-     *                          properties has multiple URLs for a given rank.
-     *
-     * @return a list of hostnames or IP addresses without the protocol part.
-     *         These are not full URLs.
-     */
-    private static Set<String> getHostNamesFromSystemProperties( Map<String, String> systemProperties,
-                                                          Pattern hostnameRegex )
-        throws GPUdbHostnameRegexFailureException, GPUdbException {
-
-        GPUdbLogger.debug_with_info(String.format(
-                "Extracting server-known host names from system properties%s",
-                hostnameRegex == null ? "" : " using user-given regex: " + hostnameRegex));
-        
-        // Get the total number of hosts/machines in the cluster
-        String numHostsStr = systemProperties.get( SYSTEM_PROPERTIES_RESPONSE_NUM_HOSTS );
-        if (numHostsStr == null) {
-            throw new GPUdbException( "Missing value for " + SYSTEM_PROPERTIES_RESPONSE_NUM_HOSTS );
-        }
-        int numHosts;
         try {
-            numHosts = Integer.parseInt( numHostsStr, 10 );
-        } catch ( NumberFormatException ex ) {
-            throw new GPUdbException( String.format(
-                    "Unparsable entry for '%s' (%s); need an integer",
-                    SYSTEM_PROPERTIES_RESPONSE_NUM_HOSTS, numHostsStr));
+            List<List<URL>> retained = AddressResolution.retainMatchingRankCandidateUrls( AddressResolution.extractRankCandidateUrls( systemProperties ), this.hostnameRegex );
+
+            if ( !retained.isEmpty() ) {
+                // An address naming several hosts must not be what a cluster
+                // comes to be addressed by, so try the ones that name a single
+                // host first.  This needs the whole cluster's candidates, not
+                // just the head rank's: an address is only ambiguous relative to
+                // the other hosts it also appears under.
+                final int[] rankHost = AddressResolution.extractRankHostMapping( systemProperties, retained.size() );
+
+                candidates = AddressResolution.orderUrlsByUniqueHostsFirst( retained.get( 0 ), AddressResolution.getNonIdentifyingHosts( retained, rankHost ) );
+            }
+        } catch ( GPUdbException ex ) {
+            // Selection already produced `selected` from these same properties,
+            // so a failure re-deriving them means only that there are no
+            // alternates to fall through -- not a new reason to refuse.
+            GPUdbLogger.debug_with_info( "Could not re-derive head rank candidates: " + ex.getMessage() );
         }
 
+        if ( (candidates == null) || candidates.isEmpty() )
+            candidates = Collections.singletonList( selected );
 
-        // Extract the hostnames from the system properties
-        Set<String> clusterHostnames = new HashSet<>();
-        for (int i = 0; i < numHosts; ++i) {
-            // Each hostname is listed individually in the system properties
-            // as 'conf.host<i>_public_urls'
-            String hostnameKey = String.format("conf.host%s_public_urls", i);
-
-            String hostnameStr = systemProperties.get( hostnameKey );
-            if (hostnameStr == null) {
-                throw new GPUdbException( String.format("Missing value for %sth hostname '%s'",
-                        i, hostnameKey));
-            }
-
-            // Each host can have multiple hostnames associated with it
-            String[] hostnames = hostnameStr.split(",");
-            boolean found = false;
-
-            // Try to find a usable hostname for this host
-            for (int j = 0; j < hostnames.length; ++j) {
-                String hostname = hostnames[ j ];
-
-                // If a regex is given, get a matching hostname--if there isn't
-                // a match, throw an error.  If no regex is given, take
-                // the first hostname.
-                boolean doAdd = false;
-                
-                // The hostname might have the protocol; strip that out
-                String[] splitHostname = hostname.split( "://" );
-                String host;
-                if ( splitHostname.length > 1 ) {
-                    host = splitHostname[ 1 ];
-                } else {
-                    host = splitHostname[ 0 ];
-                }
-
-                // Match against the HOST only, per the rule that every resolver
-                // matches the same thing.  `host` here still carries any port and
-                // path, because that is what this parser stores and its public
-                // getter has always returned; only the match target changes.
-                String hostForMatching = hostOf( host );
-
-                if (!hasUsableHostText( host ) || !hasUsableHostText( hostForMatching )) {
-                    GPUdbLogger.debug_with_info("Skipping host entry naming no host <"
-                                                + hostname + ">");
-                    continue;
-                }
-
-                if (hostnameRegex == null) {
-                    // No regex given, so take the first one
-                    GPUdbLogger.debug_with_info("Keeping hostname: " + host);
-                    doAdd = true;
-                } else {
-                    // Check if this hostname matches the regex
-                    doAdd = hostnameRegexMatches( hostnameRegex, hostForMatching );
-                    if (doAdd)
-                        GPUdbLogger.debug_with_info("Keeping matching hostname: " + host);
-                    else
-                        GPUdbLogger.debug_with_info("Skipping non-matching hostname: " + host);
-                }
-
-                if ( doAdd ) {
-                    // We've decided to use this hostname
-                    clusterHostnames.add( host );
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found) {
-                // No eligible hostname found!
-                if (hostnameRegex != null) {
-                    // The reason we don't have a URL is because it didn't
-                    // match the given regex
-                    throw new GPUdbHostnameRegexFailureException(String.format(
-                            "No matching hostname found for host #%s (given hostname regex %s)",
-                            i, hostnameRegex));
-                }
-                throw new GPUdbException("No matching hostname found for host #" + i + ".");
-            }
-        }
-
-        return clusterHostnames;
-    }  // getHostNamesFromSystemProperties
+        return getRunningRankUrl( candidates, null, "Head rank" );
+    }  // end resolveReachableHeadNodeUrl
 
 
     /**
      * Given system properties, extract all the relevant address information
      * about the cluster and create an object containing the following:
-     * -- active head rank URL
-     * -- all worker rank URLs
-     * -- host manager URL
-     * -- hostnames for all the nodes in the cluster
+     * 
+     * <ul>
+     *   <li>active head rank URL</li>
+     *   <li>all worker rank URLs</li>
+     *   <li>host manager URL</li>
+     *   <li>hostnames for all cluster nodes</li>
+     * </ul>
      *
      * @return a ClusterAddressInfo object
      *
@@ -6389,11 +6480,11 @@ public abstract class GPUdbBase {
 
         GPUdbLogger.debug_with_info( "Establishing a cluster record associated with URL: " + url );
 
-        boolean isHttpdEnabled = getIsHttpdEnabled(systemProperties);
+        boolean isHttpdEnabled = AddressResolution.getIsHttpdEnabled(systemProperties);
 
         // Get the rank URLs (head and worker ones)
         URL activeHeadNodeUrl;
-        List<URL> rankURLs = getRankURLs( systemProperties, this.hostnameRegex );
+        List<URL> rankURLs = AddressResolution.extractRankUrls( systemProperties, this.hostnameRegex );
 
         // Get the head node URL and keep it separately.  Note that the
         // rank-0 slot must be removed whatever it holds, so that the indices
@@ -6416,40 +6507,10 @@ public abstract class GPUdbBase {
         }
 
         // Get hostnames for all the nodes/machines in the cluster
-        Set<String> clusterHostnames = getHostNamesFromSystemProperties( systemProperties, this.hostnameRegex );
+        Set<String> clusterHostnames = AddressResolution.getHostNamesFromSystemProperties( systemProperties, this.hostnameRegex );
 
         // Create the host manager URL
-        URL hostManagerUrl;
-        try {
-            // Create the host manager URL using the user given (or default) port
-            if ( (isHttpdEnabled)
-                && !activeHeadNodeUrl.getPath().isEmpty() ) {
-                // We're using HTTPD, so use the appropriate URL
-                // (likely, http[s]://hostname_or_IP:port/gpudb-host-manager)
-                // Also, use the default httpd port (8082, usually)
-                hostManagerUrl = new URL(
-                        activeHeadNodeUrl.getProtocol(),
-                        activeHeadNodeUrl.getHost(),
-                        // the port will be the same as the
-                        // head rank's; we'll just use a
-                        // different path
-                        activeHeadNodeUrl.getPort(),
-                        hostManagerPathFor( activeHeadNodeUrl )
-                );
-            } else {
-                // The host manager URL shouldn't use any path and
-                // use the host manager port
-                hostManagerUrl = new URL(
-                        activeHeadNodeUrl.getProtocol(),
-                        activeHeadNodeUrl.getHost(),
-                        this.hostManagerPort,
-                        ""
-                );
-            }
-            GPUdbLogger.debug_with_info( "Created host manager URL: " + hostManagerUrl );
-        } catch ( MalformedURLException ex ) {
-            throw new GPUdbException( "Error creating the host manager URL: " + ex.getMessage(), ex );
-        }
+        URL hostManagerUrl = buildHostManagerUrl( activeHeadNodeUrl, isHttpdEnabled );
 
         // Create an object to store all the information about this cluster
         ClusterAddressInfo clusterInfo = new ClusterAddressInfo(
@@ -6470,109 +6531,6 @@ public abstract class GPUdbBase {
 
         return clusterInfo;
     }  // end createClusterAddressInfo
-
-
-
-    /**
-     * Given system properties, extract the head node URLs for the
-     * high-availability cluster.
-     *
-     * @return a list of full URLs for each of the head node in the
-     * high availability cluster, if any is set up.
-     */
-    private static List<URL> getHARingHeadNodeURLs( Map<String, String> systemProperties,
-                                                   Pattern hostnameRegex )
-        throws GPUdbHostnameRegexFailureException, GPUdbException {
-
-        List<URL> haRingHeadNodeURLs = new ArrayList<>();
-
-        // First, find out if the database has a high-availability ring set up
-        String is_ha_enabled_str = systemProperties.get( ShowSystemPropertiesResponse.PropertyMap.CONF_ENABLE_HA );
-
-        // Only attempt to parse the HA ring node addresses if HA is enabled
-        if ( (is_ha_enabled_str != null)
-            && (is_ha_enabled_str.compareToIgnoreCase( ShowSystemPropertiesResponse.PropertyMap.TRUE ) == 0 ) ) {
-
-            // Parse the HA ring head node addresses, if any
-            String ha_ring_head_nodes_str = systemProperties.get( SYSTEM_PROPERTIES_RESPONSE_HEAD_NODE_URLS );
-            if ( (ha_ring_head_nodes_str != null) && !ha_ring_head_nodes_str.isEmpty() ) {
-
-                String[] haRingHeadNodeUrlLists = ha_ring_head_nodes_str.split(";");
-
-                // Parse each entry (corresponds to a cluster)
-                for (int i = 0; i < haRingHeadNodeUrlLists.length; ++i) {
-
-                    // Each cluster's head node can have multiple URLs
-                    // associated with it
-                    String[] urls = haRingHeadNodeUrlLists[i].split(",");
-                    boolean found = false;
-                    boolean sawUsableUnmatched = false;   // see the note in getRankURLs()
-
-                    for (String urlString : urls) {
-                        // If a regex is given, get a matching URL--if there isn't
-                        // a match, throw an error.  If no regex is given, take
-                        // the first URL.
-                        URL url;
-                        boolean doAdd = false;
-
-                        // An unusable alternate is skipped, not fatal; see the
-                        // matching note in getRankURLs().  The !found check below
-                        // reports the cluster when none of its URLs works.
-                        try {
-                            url = new URL(urlString);
-                        } catch (MalformedURLException ex) {
-                            GPUdbLogger.debug_with_info("Skipping unusable head node URL <"
-                                                        + urlString + ">: " + ex.getMessage());
-                            continue;
-                        }
-
-                        if (!hasUsableHost(url)) {
-                            GPUdbLogger.debug_with_info("Skipping head node URL naming no host <"
-                                                        + urlString + ">");
-                            continue;
-                        }
-
-                        if (hostnameRegex == null) {
-                            // No regex is given, so we'll take the first one
-                            GPUdbLogger.debug_with_info("Keeping head node URL: " + url);
-                            doAdd = true;
-                        } else {
-                            // Check if this URL matches the given regex
-                            doAdd = hostnameRegexMatches(hostnameRegex, url.getHost());
-                            if (doAdd) {
-                                GPUdbLogger.debug_with_info("Keeping matching head node URL: " + url);
-                            } else {
-                                sawUsableUnmatched = true;
-                                GPUdbLogger.debug_with_info("Skipping non-matching head node URL: " + url);
-                            }
-                        }
-
-                        if (doAdd) {
-                            // Found a match (whether a regex is given or not)
-                            haRingHeadNodeURLs.add(url);
-                            found = true;
-                            break;
-                        }
-                    }
-
-                    if (!found) {
-                        // No eligible hostname found!
-                        if ( (hostnameRegex != null) && sawUsableUnmatched ) {
-                            // The reason we don't have a URL is because it didn't
-                            // match the given regex
-                            throw new GPUdbHostnameRegexFailureException(String.format(
-                                    "No matching IP/hostname found for cluster with head node URLs %s (given hostname regex %s)",
-                                    haRingHeadNodeUrlLists[i], hostnameRegex));
-                        }
-                        throw new GPUdbException("No matching IP/hostname found for cluster with head node URLs " + haRingHeadNodeUrlLists[i] );
-                    }
-                }   // end for
-            }   // end if
-        }   // nothing to do if this property isn't returned or is empty
-
-        return haRingHeadNodeURLs;
-    }  // getHARingHeadNodeURLs
-
 
 
     /**
@@ -6608,11 +6566,29 @@ public abstract class GPUdbBase {
                 GPUdbLogger.debug_with_info( "Processed the cluster URLs successfully: " + this.hostAddresses.toString() );
                 return; // one successful attempt is all we need
             } catch (GPUdbHostnameRegexFailureException ex) {
-                // There's no point in keep trying since the URLs aren't
-                // going to magically change
-                throw new GPUdbException(
-                        "Could not connect to any working Kinetica server due to hostname regex mismatch (given URLs: " + urls.toString() + "); " + ex.getMessage()
-                );
+
+            	List<URL> acceptedUrls =
+                        AddressResolution.urlsAcceptedByHostnameRegex( urls, this.hostnameRegex );
+
+                if ( acceptedUrls.isEmpty() ) {
+                    throw new GPUdbException(
+                            "Could not connect to any working Kinetica server due to hostname regex mismatch"
+                            + " (given URLs: " + urls.toString() + "): the pattern <"
+                            + this.hostnameRegex.pattern() + "> matches no address the server advertises"
+                            + " and none of the given URLs either; " + ex.getMessage()
+                    );
+                }
+
+                // If the hostname regex eliminates all server-advertised URLs,
+                // but matches the user-given URL, fall back to degraded mode.
+                GPUdbLogger.warn( "Disabling auto-discovery & multi-head operations for this connection:"
+                                  + " the hostname regex <" + this.hostnameRegex.pattern()
+                                  + "> matches no address the server advertises, but does match "
+                                  + acceptedUrls + ", which will be used directly; " + ex.getMessage() );
+
+                this.disableAutoDiscovery = true;
+                this.processClusterInformationForAllUrls( acceptedUrls );
+                return;
             } catch (GPUdbException ex ) {
                 if( ex instanceof GPUdbUnauthorizedAccessException ) {
                     GPUdbLogger.error("Got Unauthorized while communicating to server, cannot proceed ..");
@@ -6661,8 +6637,6 @@ public abstract class GPUdbBase {
             throw new GPUdbException( "Could not connect to any working Kinetica server! " + "Given URLs: " + urls.toString() );
         }
     }   // end processUrls
-
-
 
 
     /**
@@ -6842,20 +6816,14 @@ public abstract class GPUdbBase {
                 
                 if (!url.equals(clusterHeadNodeUrl)) {
 
-                    // Check if the server given head node address is reachable.
-                    // If so, use that URL instead of the user-given one.
-                    // If not, the user will not be able to use the server-known
-                    // address for connecting normally.  The API will need to
-                    // reprocess the user-given URLs with auto-discovery
-                    // disabled, so that the user can issue database commands,
-                    // but where multi-head operations will not be available.
-                    if ( !isSystemRunning( clusterHeadNodeUrl ) ) {
+                    // Check whether the head node is reachable, using every
+                	// server-advertised URL for it.  If not the client will
+                	// operate in degraded (head-node-only) mode.
+                    URL reachableHeadNodeUrl = resolveReachableHeadNodeUrl( systemProperties, clusterHeadNodeUrl );
 
-                        // Recorded, not announced: this may be a cluster we
-                        // never connect to, and the ring is enumerated in full
-                        // at construction.  The check at the end of this method
-                        // warns if the cluster we actually end up using is the
-                        // degraded one.
+                    if ( reachableHeadNodeUrl == null ) {
+
+                        // Don't issue a warning until a connection is attempted to this cluster.
                         GPUdbLogger.debug_with_info(String.format(
                                 "Multi-head operations unavailable for the cluster reached via <%s>:"
                                 + " reachable with the user-given URL but not with its server-known URL <%s>",
@@ -6864,13 +6832,8 @@ public abstract class GPUdbBase {
 
                         // Record the lost capability against THIS cluster only,
                         // keyed on the URL that does work, and carry on to the
-                        // next one.  Throwing here used to send processUrls()
-                        // back to reprocess every user-given URL with
-                        // auto-discovery disabled, so one unreachable cluster
-                        // cost multi-head on every other cluster in the ring --
-                        // including clusters that were perfectly reachable.
-                        ClusterAddressInfo degraded =
-                                new ClusterAddressInfo( url, this.hostManagerPort );
+                        // next one.
+                        ClusterAddressInfo degraded = new ClusterAddressInfo( url, this.hostManagerPort );
                         degraded.setHaStatus( haStatusFromStatusCheck );
                         degraded.setMultiHeadAvailable( false );
 
@@ -6880,6 +6843,20 @@ public abstract class GPUdbBase {
                         continue;
                     }
     
+                    // A later candidate answered, so the head rank is reachable
+                    // at an address other than the one selection preferred.
+                    // Adopt it, and rebuild the host manager URL with it.
+                    if ( !reachableHeadNodeUrl.equals( clusterHeadNodeUrl ) ) {
+                        GPUdbLogger.debug_with_info(String.format(
+                                "Head rank did not answer at its preferred address <%s> but did at <%s>; adopting the latter",
+                                clusterHeadNodeUrl, reachableHeadNodeUrl
+                        ));
+
+                        clusterInfo.setActiveHeadNodeUrl( reachableHeadNodeUrl );
+                        clusterInfo.setHostManagerUrl( buildHostManagerUrl( reachableHeadNodeUrl, AddressResolution.getIsHttpdEnabled( systemProperties ) ) );
+                        clusterHeadNodeUrl = reachableHeadNodeUrl;
+                    }
+
                     GPUdbLogger.debug_with_info(String.format(
                             "Verified connectivity with user-given URL %s at server-known URL %s; adding index %s to user-given processed cluster list",
                             urlStr, clusterHeadNodeUrl, this.hostAddresses.size()
@@ -6897,7 +6874,7 @@ public abstract class GPUdbBase {
             // Parse the HA ring head nodes in the properties and add them
             // to this queue (only if we haven't processed them already).
             // This could fail due to a hostname regex mismatch.
-            List<URL> haRingHeadNodeURLs = getHARingHeadNodeURLs( systemProperties, this.hostnameRegex );
+            List<URL> haRingHeadNodeURLs = AddressResolution.getHARingHeadNodeURLs( systemProperties, this.hostnameRegex );
             GPUdbLogger.debug_with_info( "Got HA ring head node URLs: " + Arrays.toString(haRingHeadNodeURLs.toArray()) );
             for (URL haUrl : haRingHeadNodeURLs) {
                 if (getIndexOfClusterContainingNode(haUrl.getHost()) == -1) {
@@ -7073,54 +7050,6 @@ public abstract class GPUdbBase {
     }   // end initializeHAFailoverURLs
 
 
-    /**
-     * Given the system properties, extract and return the server version.  If
-     * no server version was not able to parsed, throw an exception.
-     *
-     * @param systemProperties Properties {@link Map} containing the server version
-     *
-     * @return {@link GPUdbBase.GPUdbVersion} representing the server's version
-     */
-    private static GPUdbVersion parseServerVersion( Map<String, String> systemProperties )
-        throws GPUdbException {
-        // Get the server version in a string format
-        String serverVersionStr = systemProperties.get( DATABASE_SERVER_VERSION_KEY );
-        GPUdbVersion serverVersion = null;
-
-        if ( serverVersionStr == null ) {
-            throw new GPUdbException( "System properties does not have any entry for the '" + DATABASE_SERVER_VERSION_KEY + "' key" );
-        }
-
-        // Now parse the version string
-        try {
-            // Split on period (.); note that the expected format is
-            // A.B.C.D.datewithtimestamp.  We will extract all components.
-            int[] components = new int[4];
-            long componentBuild = 0;
-
-            // Need to escape the period since we're passing a regex
-            String[] componentStrings = serverVersionStr.split( "\\.", 5 );
-
-            // Check that we get at least four components
-            if ( componentStrings.length < 4 ) {
-                throw new GPUdbException( "Server version string in /show/system/properties response malformed (expected at least four components): " + serverVersionStr );
-            }
-            // Parse each primary component
-            for ( int i = 0; i < 4; ++i  )
-                components[ i ] = Integer.parseInt( componentStrings[ i ] );
-            componentBuild = Long.parseLong(componentStrings[4]);
-
-            serverVersion = new GPUdbVersion( components[0], components[1], components[2], components[3], componentBuild );
-        } catch (Exception ex) {
-            throw new GPUdbException( "Could not parse server version; error: " + ex.getMessage(), ex );
-        }
-        
-        return serverVersion;
-    }  // end parseServerVersion
-
-
-
-
 
     // Type Management
     // ---------------
@@ -7157,6 +7086,7 @@ public abstract class GPUdbBase {
                 throw new IllegalArgumentException("Type descriptor must be a Schema, Type, TypeObjectMap, or Class implementing IndexedRecord.");
     }
 
+
     /**
      * Adds a type object map for the specified class as a type descriptor for
      * a GPUdb type, identified by a type ID, to the known type list, and also
@@ -7176,6 +7106,7 @@ public abstract class GPUdbBase {
         addKnownType(typeId, typeObjectMap);
         addKnownTypeObjectMap(objectClass, typeObjectMap);
     }
+
 
     /**
      * Adds a type descriptor for the GPUdb type stored in the specified table
@@ -7229,6 +7160,7 @@ public abstract class GPUdbBase {
         }
     }
 
+
     /**
      * Adds a type object map for the specified class as a type descriptor for
      * the GPUdb type stored in the specified table to the known type list, and
@@ -7252,6 +7184,7 @@ public abstract class GPUdbBase {
         addKnownTypeFromTable(tableName, typeObjectMap);
         addKnownTypeObjectMap(objectClass, typeObjectMap);
     }
+
 
     /**
      * Adds a type object map for the specified class to the known type object
@@ -7279,9 +7212,11 @@ public abstract class GPUdbBase {
         return Avro.decode(typeDescriptor, data, this.threadCount, this.executor);
     }
 
+
     protected <T> List<T> decode(String typeId, List<ByteBuffer> data) throws GPUdbException {
         return Avro.decode(getTypeDescriptor(typeId), data, this.threadCount, this.executor);
     }
+
 
     protected <T> List<T> decode(List<String> typeIds, List<ByteBuffer> data) throws GPUdbException {
         List<T> result = new ArrayList<>(data.size());
@@ -7306,6 +7241,7 @@ public abstract class GPUdbBase {
         return result;
     }
 
+
     protected <T> List<List<T>> decodeMultiple(Object typeDescriptor, List<List<ByteBuffer>> data) throws GPUdbException {
         List<List<T>> result = new ArrayList<>(data.size());
 
@@ -7316,6 +7252,7 @@ public abstract class GPUdbBase {
         return result;
     }
 
+
     protected <T> List<List<T>> decodeMultiple(List<String> typeIds, List<List<ByteBuffer>> data) throws GPUdbException {
         List<List<T>> result = new ArrayList<>(data.size());
 
@@ -7325,6 +7262,7 @@ public abstract class GPUdbBase {
 
         return result;
     }
+
 
     @SuppressWarnings("unchecked")
     protected <T> List<ByteBuffer> encode(List<T> data) throws GPUdbException {
@@ -7340,9 +7278,11 @@ public abstract class GPUdbBase {
         return Avro.encode((TypeObjectMap<T>)getTypeObjectMap(object.getClass()), data, this.threadCount, this.executor).getLeft();
     }
 
+
     protected <T> List<ByteBuffer> encode(TypeObjectMap<T> typeObjectMap, List<T> data) throws GPUdbException {
         return Avro.encode(typeObjectMap, data == null ? new ArrayList<>() : data, this.threadCount, this.executor).getLeft();
     }
+
 
     protected Object getTypeDescriptor(String typeId) throws GPUdbException {
         Object typeDescriptor = this.knownTypes.get(typeId);
@@ -7362,6 +7302,7 @@ public abstract class GPUdbBase {
         return typeDescriptor;
     }
 
+
     @SuppressWarnings("unchecked")
     protected <T> TypeObjectMap<T> getTypeObjectMap(Class<T> objectClass) throws GPUdbException {
         TypeObjectMap<T> typeObjectMap = (TypeObjectMap<T>)this.knownTypeObjectMaps.get(objectClass);
@@ -7372,6 +7313,7 @@ public abstract class GPUdbBase {
 
         return typeObjectMap;
     }
+
 
     protected void setTypeDescriptorIfMissing(String typeId, String label, String typeSchema, Map<String, List<String>> properties) {
         // If the table is a collection, it does not have a proper type so
@@ -7418,6 +7360,7 @@ public abstract class GPUdbBase {
             throws SubmitException, GPUdbException {
         return submitRequest(endpoint, request, response, false);
     }
+
 
     /**
      * Submits an arbitrary request to GPUdb and saves the response into a
@@ -7545,6 +7488,7 @@ public abstract class GPUdbBase {
             }
         } // end while
     } // end submitRequest
+
 
     /**
      * Submits a JSON payload to GPUdb via the specified URL and returns the
@@ -7802,6 +7746,7 @@ public abstract class GPUdbBase {
         } // end while
     } // end submitRequest
 
+
     /**
      * Submits an arbitrary request to GPUdb via the specified URL and saves the
      * response into a pre-created response object, optionally compressing the
@@ -7870,6 +7815,8 @@ public abstract class GPUdbBase {
 
         return submitRequestRaw( url, payload, enableCompression );
     }
+
+
     /**
      * Submits an arbitrary request to the GPUdb host manager and saves the
      * response into a pre-created response object. The request and response
@@ -7978,6 +7925,7 @@ public abstract class GPUdbBase {
         return submitRequestRaw( url, request, response, enableCompression );
     }
 
+
     /**
      * Submits an arbitrary request to GPUdb via the specified URL and saves the
      * response into a pre-created response object, optionally compressing the
@@ -8017,6 +7965,7 @@ public abstract class GPUdbBase {
 
         return submitRequestRaw( url, request, response, enableCompression, responseTimeout );
     }
+
 
     /**
      * Submits an arbitrary request to GPUdb via the specified URL and saves the
@@ -8123,6 +8072,7 @@ public abstract class GPUdbBase {
         // Use the set timeout for the GPUdb object for the http connection
         return submitRequestRaw( url, enableCompression, this.timeout );
     }
+
 
     /**
      * Submits an arbitrary request to GPUdb via the specified URL and saves the
@@ -8388,6 +8338,7 @@ public abstract class GPUdbBase {
             }
         }
     }   // end submitRequestRaw
+
 
     /**
      * Submits an arbitrary request to GPUdb via the specified URL and saves the
@@ -8668,6 +8619,7 @@ public abstract class GPUdbBase {
             }
         }
     }   // end submitRequestRaw
+
 
     /**
      * Submits a JSON payload to GPUdb via the specified URL and returns the
@@ -9163,7 +9115,6 @@ public abstract class GPUdbBase {
             }
         }
     }   // ping URL
-
 
 
     /**

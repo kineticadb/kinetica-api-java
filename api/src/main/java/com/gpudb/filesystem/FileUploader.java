@@ -96,6 +96,9 @@ class FileUploader extends FileOperation {
         // then proceed with the next bunch of tasks if there are any
         int count = 0;
 
+        // Payload bytes submitted to the dispatcher but not yet collected.
+        long bytesInFlight = 0;
+
         // Iterate over each map in the list 'listOfFullFileNameToRemoteFileNameMap'
         // Each map contains
         // A. The key is the local file name
@@ -117,6 +120,10 @@ class FileUploader extends FileOperation {
             // Used to pass the payloads to the endpoint 'upload/files'
             List<ByteBuffer> payloads = new ArrayList<>( fullFileBatch.size() );
 
+            // Payload bytes this batch will hold, added to the in-flight total
+            // once the batch is submitted.
+            long batchBytes = 0;
+
             // Used to pass the file names to the endpoint 'upload/files'
             List<String> remoteFileNames = new ArrayList<>( fullFileBatch.size() );
 
@@ -125,6 +132,7 @@ class FileUploader extends FileOperation {
                 try {
                     ByteBuffer payload = ByteBuffer.wrap( Files.readAllBytes( Paths.get( fileName ) ) );
                     payloads.add( payload );
+                    batchBytes += payload.remaining();
                     remoteFileNames.add( batch.get( fileName ) );
 
                 } catch (IOException e) {
@@ -170,14 +178,29 @@ class FileUploader extends FileOperation {
             } // End of processing files in each partition
 
             count++;
-            // Check if the value of count has reached the size of the
-            // thread pool and if it has, get the Results of the
-            // operations and reset the payloads list and count.
-            if( count % this.fileHandlerOptions.getFullFileDispatcherThreadpoolSize() == 0 ) {
+            bytesInFlight += batchBytes;
+
+            // Upload on whichever ceiling is reached first: the dispatcher's
+            // thread count, or the payload bytes those threads are holding.
+            //
+            // The byte ceiling is the one that bounds memory.  Each batch is
+            // capped at fileSizeToSplit, but without this the dispatcher would
+            // hold up to one batch per thread before collecting -- many times
+            // bigger than the byte cap -- and every one of those payloads is
+            // resident until its upload completes.
+            boolean threadCeiling = ( count % this.fileHandlerOptions.getFullFileDispatcherThreadpoolSize() == 0 );
+            boolean byteCeiling   = ( bytesInFlight >= this.fileHandlerOptions.getMaxUploadBytesInFlight() );
+
+            if( threadCeiling || byteCeiling ) {
+                GPUdbLogger.debug_with_info( String.format(
+                        "Upload full-file batches: %s ceiling reached (%d batches, %d bytes in flight)",
+                        byteCeiling ? "byte" : "thread", count, bytesInFlight ) );
+
                 // Wait for the tasks to complete and collect results
                 List<Result> batchResults = fullFileDispatcher.collect();
                 allResults.addAll(batchResults);
                 count = 0;
+                bytesInFlight = 0;
                 payloads.clear();
             }
 

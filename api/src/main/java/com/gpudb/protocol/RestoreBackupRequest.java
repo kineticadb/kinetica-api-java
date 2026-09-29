@@ -196,8 +196,8 @@ public class RestoreBackupRequest implements IndexedRecord {
         /**
          * Whether to drop live foreign-key-referencing tables that are not
          * themselves part of the backup, when the table they reference is
-         * being replaced. Only applies when @{key of options restore_policy}
-         * is @{choice of input.options.restore_policy replace}.
+         * being replaced. Only applies when {@link Options#RESTORE_POLICY
+         * RESTORE_POLICY} is {@link Options#REPLACE REPLACE}.
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: Drop any live table whose foreign
@@ -501,9 +501,9 @@ public class RestoreBackupRequest implements IndexedRecord {
      *                         foreign-key-referencing tables that are not
      *                         themselves part of the backup, when the table
      *                         they reference is being replaced. Only applies
-     *                         when @{key of options restore_policy} is
-     *                         @{choice of input.options.restore_policy
-     *                         replace}.
+     *                         when {@link Options#RESTORE_POLICY
+     *                         RESTORE_POLICY} is {@link Options#REPLACE
+     *                         REPLACE}.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Drop any live
@@ -851,9 +851,8 @@ public class RestoreBackupRequest implements IndexedRecord {
      *     <li>{@link Options#CASCADE_FOREIGN_KEYS CASCADE_FOREIGN_KEYS}:
      *         Whether to drop live foreign-key-referencing tables that are not
      *         themselves part of the backup, when the table they reference is
-     *         being replaced. Only applies when @{key of options
-     *         restore_policy} is @{choice of input.options.restore_policy
-     *         replace}.
+     *         being replaced. Only applies when {@link Options#RESTORE_POLICY
+     *         RESTORE_POLICY} is {@link Options#REPLACE REPLACE}.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Drop any live table whose
@@ -987,9 +986,8 @@ public class RestoreBackupRequest implements IndexedRecord {
      *     <li>{@link Options#CASCADE_FOREIGN_KEYS CASCADE_FOREIGN_KEYS}:
      *         Whether to drop live foreign-key-referencing tables that are not
      *         themselves part of the backup, when the table they reference is
-     *         being replaced. Only applies when @{key of options
-     *         restore_policy} is @{choice of input.options.restore_policy
-     *         replace}.
+     *         being replaced. Only applies when {@link Options#RESTORE_POLICY
+     *         RESTORE_POLICY} is {@link Options#REPLACE REPLACE}.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Drop any live table whose

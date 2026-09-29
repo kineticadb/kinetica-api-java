@@ -26662,9 +26662,11 @@ public class GPUdb extends GPUdbBase {
      *                         foreign-key-referencing tables that are not
      *                         themselves part of the backup, when the table
      *                         they reference is being replaced. Only applies
-     *                         when @{key of options restore_policy} is
-     *                         @{choice of input.options.restore_policy
-     *                         replace}.
+     *                         when {@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#RESTORE_POLICY
+     *                         RESTORE_POLICY} is {@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#REPLACE
+     *                         REPLACE}.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link

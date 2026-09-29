@@ -61,7 +61,24 @@ public class GPUdbFileHandler {
 
     private static final int DEFAULT_FULL_FILE_DISPATCHER_THREADPOOL_SIZE = 5;
 
-    private static final long DEFAULT_FILE_SIZE_TO_SPLIT = 62914560; //60 MB
+    private static final long DEFAULT_FILE_SIZE_TO_SPLIT = 60L * 1024 * 1024;
+
+    /** Hard ceiling on the derived in-flight default, regardless of heap size. */
+    private static final long MAX_UPLOAD_BYTES_IN_FLIGHT_LIMIT = 128L * 1024 * 1024;
+
+    /**
+     * Ceiling on full-file upload payloads held in memory at once, across all
+     * batches submitted to the dispatcher but not yet collected; in play to
+     * avoid running out of memory when uploading large batches of small files
+     * (those under the DEFAULT_FILE_SIZE_TO_SPLIT cap) in parallel.
+     *
+     * <p><b>Derived from the heap, capped at MAX_UPLOAD_BYTES_IN_FLIGHT_LIMIT.</b>
+     * A small container gets a proportionally smaller budget while a large heap
+     * stops at the cap rather than growing without limit.
+     */
+    private static final long DEFAULT_MAX_UPLOAD_BYTES_IN_FLIGHT =
+            Math.min( Runtime.getRuntime().maxMemory() / 16,
+                      MAX_UPLOAD_BYTES_IN_FLIGHT_LIMIT );
 
     private final GPUdb db;
 
@@ -803,6 +820,7 @@ public class GPUdbFileHandler {
     public static final class Options {
 
         private long fileSizeToSplit;
+        private long maxUploadBytesInFlight;
         private int fullFileDispatcherThreadpoolSize;
 
         /**
@@ -811,6 +829,7 @@ public class GPUdbFileHandler {
         public Options() {
             this.fullFileDispatcherThreadpoolSize = DEFAULT_FULL_FILE_DISPATCHER_THREADPOOL_SIZE;
             this.fileSizeToSplit = DEFAULT_FILE_SIZE_TO_SPLIT;
+            this.maxUploadBytesInFlight = DEFAULT_MAX_UPLOAD_BYTES_IN_FLIGHT;
         }
 
         /**
@@ -821,6 +840,7 @@ public class GPUdbFileHandler {
         public Options( Options other ) {
             this.fullFileDispatcherThreadpoolSize = other.fullFileDispatcherThreadpoolSize;
             this.fileSizeToSplit = other.fileSizeToSplit;
+            this.maxUploadBytesInFlight = other.maxUploadBytesInFlight;
         }
 
         /**
@@ -876,6 +896,35 @@ public class GPUdbFileHandler {
          *
          * @param fileSizeToSplit  The file split size in bytes.
          */
+        /**
+         * Gets the ceiling on full-file upload payloads held in memory at once,
+         * across batches submitted to the dispatcher but not yet collected.
+         *
+         * @return  the maximum in-flight upload size in bytes.
+         *
+         * @see #setMaxUploadBytesInFlight(long)
+         */
+        public long getMaxUploadBytesInFlight() {
+            return this.maxUploadBytesInFlight;
+        }
+
+        /**
+         * Sets the ceiling on full-file upload payloads held in memory at once.
+         *
+         * <p>Lower it further than the default where memory is tight: an upload
+         * then waits for outstanding batches to finish more often, trading
+         * throughput for a smaller peak.  Raise it to enable more thoughput
+         * where memory is plentiful.
+         *
+         * @param maxUploadBytesInFlight  The ceiling in bytes; must be positive.
+         */
+        public void setMaxUploadBytesInFlight( long maxUploadBytesInFlight ) throws GPUdbException {
+            if( maxUploadBytesInFlight <= 0 ) {
+                throw new GPUdbException( String.format( "MaxUploadBytesInFlight : Value must be a positive value; got %s", maxUploadBytesInFlight ));
+            }
+            this.maxUploadBytesInFlight = maxUploadBytesInFlight;
+        }
+
         public void setFileSizeToSplit( long fileSizeToSplit ) throws GPUdbException {
             if( fileSizeToSplit <=0 || fileSizeToSplit > DEFAULT_FILE_SIZE_TO_SPLIT ) {
                 throw new GPUdbException( String.format( "FileSizeToSplit : Value must be a positive value less than or equal to %s", DEFAULT_FILE_SIZE_TO_SPLIT ));
