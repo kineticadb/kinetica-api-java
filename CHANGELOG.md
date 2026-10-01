@@ -2,6 +2,24 @@
 
 ## Version 7.2
 
+### Version 7.2.3.27 - 2026-09-30
+
+#### Fixed
+-   Sharing an options map between two simultaneous uses of `GPUdbSqlIterator`
+    would point both at one server-side result table.  Two statements running
+    at the same time raced to create it and one would fail; where they did not
+    overlap, either could return the other's rows instead of its own, with no
+    error.  The two also competed when cleaning the table up afterwards.  There
+    is now no contention.  A query whose result is read in a single page and
+    non-simultaneous uses of `GPUdbSqlIterator` were unaffected.
+-   `GPUdbSqlIterator` dropped each of its server-side tables once per page
+    read rather than once, so a long iteration closed with hundreds of
+    redundant requests.
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
 ### Version 7.2.3.26 - 2026-09-28
 
 #### Added

@@ -1865,6 +1865,54 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
      *                         FALSE}.
      *                     <li>{@link
+     *                         com.gpudb.protocol.AdminVerifyDbRequest.Options#REPAIR_REPLICATED_TABLES
+     *                         REPAIR_REPLICATED_TABLES}: When {@link
+     *                         com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     *                         TRUE}, replicated tables whose record counts
+     *                         differ across the worker ranks and toms are
+     *                         repaired: the copy with the most records is
+     *                         kept, and every other copy is replaced with it.
+     *                         That copy may include records from a load that
+     *                         did not complete, or records that a delete did
+     *                         not remove. A table whose copies all have the
+     *                         same number of records is not detected, even if
+     *                         their contents differ. The {@link
+     *                         com.gpudb.protocol.AdminVerifyDbResponse#getVerifiedOk()
+     *                         verifiedOk} flag and {@link
+     *                         com.gpudb.protocol.AdminVerifyDbResponse#getErrorList()
+     *                         errorList} still report the inconsistencies
+     *                         found before the repair; run the verification
+     *                         again to confirm the repair. Only the tables
+     *                         selected by {@link
+     *                         com.gpudb.protocol.AdminVerifyDbRequest.Options#TABLE_INCLUDES
+     *                         TABLE_INCLUDES} or {@link
+     *                         com.gpudb.protocol.AdminVerifyDbRequest.Options#TABLE_EXCLUDES
+     *                         TABLE_EXCLUDES} are repaired. Requires {@link
+     *                         com.gpudb.protocol.AdminVerifyDbRequest.Options#CONCURRENT_SAFE
+     *                         CONCURRENT_SAFE} to be {@link
+     *                         com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     *                         TRUE}, and cannot be used with {@link
+     *                         com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_ORPHANED_TABLES_ONLY
+     *                         VERIFY_ORPHANED_TABLES_ONLY}. The repaired
+     *                         tables are listed in the {@link
+     *                         com.gpudb.protocol.AdminVerifyDbResponse.Info#REPAIRED_REPLICATED_TABLES
+     *                         REPAIRED_REPLICATED_TABLES} entry of the
+     *                         response {@link
+     *                         com.gpudb.protocol.AdminVerifyDbResponse#getInfo()
+     *                         info} map.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                         FALSE}.
+     *                     <li>{@link
      *                         com.gpudb.protocol.AdminVerifyDbRequest.Options#TABLE_INCLUDES
      *                         TABLE_INCLUDES}: Comma-separated list of table
      *                         names to include when verifying table

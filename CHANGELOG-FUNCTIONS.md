@@ -1,5 +1,9 @@
 # Kinetica REST API Changelog
 
+## Version 7.2.3.22
+#### Added
+-   Added new option ``repair_replicated_tables`` to ``/admin/verifydb`` request, and ``repaired_replicated_tables`` to the ``info`` map of its response
+
 ## Version 7.2.3.21
 #### Added
 -   Added new option ``allow_alternate_date_formats`` to ``/alter/system/properties`` request

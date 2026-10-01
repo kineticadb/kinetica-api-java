@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.UUID;
 
 import com.gpudb.protocol.ClearTableRequest;
@@ -54,7 +56,16 @@ public class GPUdbSqlIterator<T extends Record> implements Iterable<T>, AutoClos
     private long totalCount;
     private boolean hasMoreRecords;
     private String pagingTableName;
-    private List<String> pagingTableNames = new ArrayList<>();
+
+    /**
+     * The server-side tables this iteration has created, to be dropped on
+     * {@link #close()}.
+     *
+     * <p>A set, not a list: the paging table is reported with every batch, so a
+     * long iteration names the same table once per batch and would otherwise be
+     * dropped that many times over.
+     */
+    private Set<String> pagingTableNames = new LinkedHashSet<>();
 
     /**
      * Constructor for {@link GPUdbSqlIterator}
@@ -96,7 +107,11 @@ public class GPUdbSqlIterator<T extends Record> implements Iterable<T>, AutoClos
      * @param db         - a {@link GPUdb} instance
      * @param sql        - the SQL statement to execute
      * @param batchSize  - the number of records to fetch
-     * @param sqlOptions - the SQL options to be passed in
+     * @param sqlOptions - the SQL options to be passed in.  Can be null.  The
+     *                     map is copied, so the caller's copy is not modified.
+     *                     Any {@code paging_table} entry in it is replaced:
+     *                     the iterator pages through a table of its own and
+     *                     drops it on {@link #close()}.
      * 
      * @see GPUdb#executeSql(String, long, long, String, List, Map)
      */
@@ -104,15 +119,27 @@ public class GPUdbSqlIterator<T extends Record> implements Iterable<T>, AutoClos
         this.db = db;
         this.sql = sql;
         this.batchSize = batchSize;
-        this.sqlOptions = sqlOptions;
+
+        this.sqlOptions = (sqlOptions == null) ? new HashMap<>()
+                                               : new HashMap<>(sqlOptions);
 
         this.pagingTableName = UUID.randomUUID().toString().replaceAll("-", "_");
-        sqlOptions.put(ExecuteSqlRequest.Options.PAGING_TABLE, this.pagingTableName);
+        this.sqlOptions.put(ExecuteSqlRequest.Options.PAGING_TABLE, this.pagingTableName);
         checkAndFetchRecords();
     }
 
+    /**
+     * Replaces the SQL options, keeping this iterator's paging table name.
+     *
+     * <p>The map is copied, and a {@code paging_table} entry in it is replaced,
+     * for the same reasons as in the constructor.
+     *
+     * @param sqlOptions - the SQL options to use from here on.  Can be null.
+     */
     public void setSqlOptions(Map<String, String> sqlOptions) {
-        this.sqlOptions = sqlOptions;
+        this.sqlOptions = (sqlOptions == null) ? new HashMap<>()
+                                               : new HashMap<>(sqlOptions);
+        this.sqlOptions.put(ExecuteSqlRequest.Options.PAGING_TABLE, this.pagingTableName);
     }
 
     public long size()
