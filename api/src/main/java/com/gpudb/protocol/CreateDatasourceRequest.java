@@ -120,7 +120,11 @@ public class CreateDatasourceRequest implements IndexedRecord {
 
         /**
          * Amazon IAM Role ARN which has required S3 permissions that can be
-         * assumed for the given S3 IAM user.
+         * assumed for the given S3 IAM user. Assuming the role requires access
+         * keys, from the {@link Options#CREDENTIAL CREDENTIAL} or the user
+         * name and password, or {@link Options#USE_MANAGED_CREDENTIALS
+         * USE_MANAGED_CREDENTIALS} set to true; with neither, connecting to
+         * the bucket fails.
          */
         public static final String S3_AWS_ROLE_ARN = "s3_aws_role_arn";
 
@@ -394,7 +398,12 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                     <li>{@link Options#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}:
      *                         Amazon IAM Role ARN which has required S3
      *                         permissions that can be assumed for the given S3
-     *                         IAM user.
+     *                         IAM user. Assuming the role requires access
+     *                         keys, from the {@link Options#CREDENTIAL
+     *                         CREDENTIAL} or the user name and password, or
+     *                         {@link Options#USE_MANAGED_CREDENTIALS
+     *                         USE_MANAGED_CREDENTIALS} set to true; with
+     *                         neither, connecting to the bucket fails.
      *                     <li>{@link Options#S3_ENCRYPTION_CUSTOMER_ALGORITHM
      *                         S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer
      *                         encryption algorithm used encrypting data.
@@ -678,7 +687,11 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}: Amazon IAM Role
      *         ARN which has required S3 permissions that can be assumed for
-     *         the given S3 IAM user.
+     *         the given S3 IAM user. Assuming the role requires access keys,
+     *         from the {@link Options#CREDENTIAL CREDENTIAL} or the user name
+     *         and password, or {@link Options#USE_MANAGED_CREDENTIALS
+     *         USE_MANAGED_CREDENTIALS} set to true; with neither, connecting
+     *         to the bucket fails.
      *     <li>{@link Options#S3_ENCRYPTION_CUSTOMER_ALGORITHM
      *         S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer encryption algorithm
      *         used encrypting data.
@@ -842,7 +855,11 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}: Amazon IAM Role
      *         ARN which has required S3 permissions that can be assumed for
-     *         the given S3 IAM user.
+     *         the given S3 IAM user. Assuming the role requires access keys,
+     *         from the {@link Options#CREDENTIAL CREDENTIAL} or the user name
+     *         and password, or {@link Options#USE_MANAGED_CREDENTIALS
+     *         USE_MANAGED_CREDENTIALS} set to true; with neither, connecting
+     *         to the bucket fails.
      *     <li>{@link Options#S3_ENCRYPTION_CUSTOMER_ALGORITHM
      *         S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer encryption algorithm
      *         used encrypting data.

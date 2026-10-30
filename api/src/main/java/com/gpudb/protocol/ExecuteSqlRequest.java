@@ -71,11 +71,19 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * A set of string constants for the {@link ExecuteSqlRequest} parameter
      * {@link #getEncoding() encoding}.
      * <p>
-     * Specifies the encoding for returned records; either 'binary' or 'json'.
+     * Specifies the encoding for returned records; one of 'binary', 'json' or
+     * 'arrow'.
      */
     public static final class Encoding {
         public static final String BINARY = "binary";
         public static final String JSON = "json";
+
+        /**
+         * Indicates that the returned records should be encoded as an Arrow
+         * IPC stream, returned in {@link
+         * com.gpudb.protocol.ExecuteSqlResponse#getData() data}.
+         */
+        public static final String ARROW = "arrow";
 
         private Encoding() {  }
     }
@@ -686,12 +694,17 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *               to be fetched, and {@code offset} and {@code limit} to
      *               request subsequent pages of results. The default value is
      *               -9999.
-     * @param encoding  Specifies the encoding for returned records; either
-     *                  'binary' or 'json'.
+     * @param encoding  Specifies the encoding for returned records; one of
+     *                  'binary', 'json' or 'arrow'.
      *                  Supported values:
      *                  <ul>
      *                      <li>{@link Encoding#BINARY BINARY}
      *                      <li>{@link Encoding#JSON JSON}
+     *                      <li>{@link Encoding#ARROW ARROW}: Indicates that
+     *                          the returned records should be encoded as an
+     *                          Arrow IPC stream, returned in {@link
+     *                          com.gpudb.protocol.ExecuteSqlResponse#getData()
+     *                          data}.
      *                  </ul>
      *                  The default value is {@link Encoding#BINARY BINARY}.
      * @param requestSchemaStr  Avro schema of {@code data}. The default value
@@ -1055,11 +1068,15 @@ public class ExecuteSqlRequest implements IndexedRecord {
     }
 
     /**
-     * Specifies the encoding for returned records; either 'binary' or 'json'.
+     * Specifies the encoding for returned records; one of 'binary', 'json' or
+     * 'arrow'.
      * Supported values:
      * <ul>
      *     <li>{@link Encoding#BINARY BINARY}
      *     <li>{@link Encoding#JSON JSON}
+     *     <li>{@link Encoding#ARROW ARROW}: Indicates that the returned
+     *         records should be encoded as an Arrow IPC stream, returned in
+     *         {@link com.gpudb.protocol.ExecuteSqlResponse#getData() data}.
      * </ul>
      * The default value is {@link Encoding#BINARY BINARY}.
      *
@@ -1070,11 +1087,15 @@ public class ExecuteSqlRequest implements IndexedRecord {
     }
 
     /**
-     * Specifies the encoding for returned records; either 'binary' or 'json'.
+     * Specifies the encoding for returned records; one of 'binary', 'json' or
+     * 'arrow'.
      * Supported values:
      * <ul>
      *     <li>{@link Encoding#BINARY BINARY}
      *     <li>{@link Encoding#JSON JSON}
+     *     <li>{@link Encoding#ARROW ARROW}: Indicates that the returned
+     *         records should be encoded as an Arrow IPC stream, returned in
+     *         {@link com.gpudb.protocol.ExecuteSqlResponse#getData() data}.
      * </ul>
      * The default value is {@link Encoding#BINARY BINARY}.
      *

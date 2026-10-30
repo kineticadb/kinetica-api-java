@@ -42,6 +42,45 @@ public class RestoreBackupResponse implements IndexedRecord {
         return schema$;
     }
 
+    /**
+     * A set of string constants for the {@link RestoreBackupResponse}
+     * parameter {@link #getInfo() info}.
+     * <p>
+     * Additional information.
+     */
+    public static final class Info {
+        /**
+         * If {@link
+         * com.gpudb.protocol.RestoreBackupRequest.Options#RESTORE_POLICY
+         * RESTORE_POLICY} is {@link
+         * com.gpudb.protocol.RestoreBackupRequest.Options#CLEAN CLEAN} or
+         * {@link com.gpudb.protocol.RestoreBackupRequest.Options#CLEAN_ALL
+         * CLEAN_ALL}, the objects the clean dropped before restoring, grouped
+         * by type, e.g.&nbsp;'table: s.a, s.b; user: u1; schema: s'. When
+         * {@link com.gpudb.protocol.RestoreBackupRequest.Options#DRY_RUN
+         * DRY_RUN} is {@link
+         * com.gpudb.protocol.RestoreBackupRequest.Options#TRUE TRUE}, the
+         * objects it would drop. A long list ends with the number of objects
+         * left out.
+         */
+        public static final String CLEAN_DROPPED_OBJECTS = "clean_dropped_objects";
+
+        /**
+         * If {@link
+         * com.gpudb.protocol.RestoreBackupRequest.Options#RESTORE_POLICY
+         * RESTORE_POLICY} is {@link
+         * com.gpudb.protocol.RestoreBackupRequest.Options#CLEAN CLEAN} or
+         * {@link com.gpudb.protocol.RestoreBackupRequest.Options#CLEAN_ALL
+         * CLEAN_ALL}, comma-separated list of objects in the backup that the
+         * clean kept on the target, such as the calling user, and that the
+         * restore therefore left as they were instead of restoring them,
+         * e.g.&nbsp;user 'u1', directory '~u1'.
+         */
+        public static final String CLEAN_KEPT_OBJECTS = "clean_kept_objects";
+
+        private Info() {  }
+    }
+
     private String backupName;
     private long backupId;
     private long restoredBytes;
@@ -234,6 +273,31 @@ public class RestoreBackupResponse implements IndexedRecord {
 
     /**
      * Additional information.
+     * <ul>
+     *     <li>{@link Info#CLEAN_DROPPED_OBJECTS CLEAN_DROPPED_OBJECTS}: If
+     *         {@link
+     *         com.gpudb.protocol.RestoreBackupRequest.Options#RESTORE_POLICY
+     *         RESTORE_POLICY} is {@link
+     *         com.gpudb.protocol.RestoreBackupRequest.Options#CLEAN CLEAN} or
+     *         {@link com.gpudb.protocol.RestoreBackupRequest.Options#CLEAN_ALL
+     *         CLEAN_ALL}, the objects the clean dropped before restoring,
+     *         grouped by type, e.g. 'table: s.a, s.b; user: u1; schema: s'.
+     *         When {@link
+     *         com.gpudb.protocol.RestoreBackupRequest.Options#DRY_RUN DRY_RUN}
+     *         is {@link com.gpudb.protocol.RestoreBackupRequest.Options#TRUE
+     *         TRUE}, the objects it would drop. A long list ends with the
+     *         number of objects left out.
+     *     <li>{@link Info#CLEAN_KEPT_OBJECTS CLEAN_KEPT_OBJECTS}: If {@link
+     *         com.gpudb.protocol.RestoreBackupRequest.Options#RESTORE_POLICY
+     *         RESTORE_POLICY} is {@link
+     *         com.gpudb.protocol.RestoreBackupRequest.Options#CLEAN CLEAN} or
+     *         {@link com.gpudb.protocol.RestoreBackupRequest.Options#CLEAN_ALL
+     *         CLEAN_ALL}, comma-separated list of objects in the backup that
+     *         the clean kept on the target, such as the calling user, and that
+     *         the restore therefore left as they were instead of restoring
+     *         them, e.g. user 'u1', directory '~u1'.
+     * </ul>
+     * The default value is an empty {@link Map}.
      *
      * @return The current value of {@code info}.
      */
@@ -243,6 +307,31 @@ public class RestoreBackupResponse implements IndexedRecord {
 
     /**
      * Additional information.
+     * <ul>
+     *     <li>{@link Info#CLEAN_DROPPED_OBJECTS CLEAN_DROPPED_OBJECTS}: If
+     *         {@link
+     *         com.gpudb.protocol.RestoreBackupRequest.Options#RESTORE_POLICY
+     *         RESTORE_POLICY} is {@link
+     *         com.gpudb.protocol.RestoreBackupRequest.Options#CLEAN CLEAN} or
+     *         {@link com.gpudb.protocol.RestoreBackupRequest.Options#CLEAN_ALL
+     *         CLEAN_ALL}, the objects the clean dropped before restoring,
+     *         grouped by type, e.g. 'table: s.a, s.b; user: u1; schema: s'.
+     *         When {@link
+     *         com.gpudb.protocol.RestoreBackupRequest.Options#DRY_RUN DRY_RUN}
+     *         is {@link com.gpudb.protocol.RestoreBackupRequest.Options#TRUE
+     *         TRUE}, the objects it would drop. A long list ends with the
+     *         number of objects left out.
+     *     <li>{@link Info#CLEAN_KEPT_OBJECTS CLEAN_KEPT_OBJECTS}: If {@link
+     *         com.gpudb.protocol.RestoreBackupRequest.Options#RESTORE_POLICY
+     *         RESTORE_POLICY} is {@link
+     *         com.gpudb.protocol.RestoreBackupRequest.Options#CLEAN CLEAN} or
+     *         {@link com.gpudb.protocol.RestoreBackupRequest.Options#CLEAN_ALL
+     *         CLEAN_ALL}, comma-separated list of objects in the backup that
+     *         the clean kept on the target, such as the calling user, and that
+     *         the restore therefore left as they were instead of restoring
+     *         them, e.g. user 'u1', directory '~u1'.
+     * </ul>
+     * The default value is an empty {@link Map}.
      *
      * @param info  The new value for {@code info}.
      *

@@ -116,7 +116,7 @@ public class TableCreationOptions {
      */
     public TableCreationOptions setReplicated(boolean replicated) {
         this.isReplicated = replicated;
-        setMapValue( InsertRecordsFromFilesRequest.CreateTableOptions.IS_REPLICATED, this.noErrorIfExists
+        setMapValue( InsertRecordsFromFilesRequest.CreateTableOptions.IS_REPLICATED, this.isReplicated
                 ? InsertRecordsFromFilesRequest.CreateTableOptions.TRUE
                 : InsertRecordsFromFilesRequest.CreateTableOptions.FALSE );
         return this;

@@ -463,6 +463,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          *         type.
          *     <li>{@link Options#GZIP GZIP}: gzip file compression.
          *     <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
+         *     <li>{@link Options#ZSTD ZSTD}: zstd file compression.
          * </ul>
          * The default value is {@link Options#AUTO AUTO}.
          */
@@ -487,6 +488,26 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * bzip2 file compression.
          */
         public static final String BZIP2 = "bzip2";
+
+        /**
+         * zstd file compression.
+         */
+        public static final String ZSTD = "zstd";
+
+        /**
+         * If set to {@link Options#TRUE TRUE}, creates the table specified by
+         * {@link #getTableName() tableName} if it does not already exist.  If
+         * set to {@link Options#FALSE FALSE}, returns an error if the table
+         * does not already exist.  Not supported with {@link
+         * Options#TABLE_PER_FILE TABLE_PER_FILE}.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#TRUE TRUE}.
+         */
+        public static final String CREATE_TABLE_IF_NOT_EXISTS = "create_table_if_not_exists";
 
         /**
          * Specifies the default format to be applied to source data loaded
@@ -1565,8 +1586,24 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                                 compression.
      *                             <li>{@link Options#BZIP2 BZIP2}: bzip2 file
      *                                 compression.
+     *                             <li>{@link Options#ZSTD ZSTD}: zstd file
+     *                                 compression.
      *                         </ul>
      *                         The default value is {@link Options#AUTO AUTO}.
+     *                     <li>{@link Options#CREATE_TABLE_IF_NOT_EXISTS
+     *                         CREATE_TABLE_IF_NOT_EXISTS}: If set to {@link
+     *                         Options#TRUE TRUE}, creates the table specified
+     *                         by {@code tableName} if it does not already
+     *                         exist.  If set to {@link Options#FALSE FALSE},
+     *                         returns an error if the table does not already
+     *                         exist.  Not supported with {@link
+     *                         Options#TABLE_PER_FILE TABLE_PER_FILE}.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#DEFAULT_COLUMN_FORMATS
      *                         DEFAULT_COLUMN_FORMATS}: Specifies the default
      *                         format to be applied to source data loaded into
@@ -2605,8 +2642,22 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 compression type.
      *             <li>{@link Options#GZIP GZIP}: gzip file compression.
      *             <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
+     *             <li>{@link Options#ZSTD ZSTD}: zstd file compression.
      *         </ul>
      *         The default value is {@link Options#AUTO AUTO}.
+     *     <li>{@link Options#CREATE_TABLE_IF_NOT_EXISTS
+     *         CREATE_TABLE_IF_NOT_EXISTS}: If set to {@link Options#TRUE
+     *         TRUE}, creates the table specified by {@link #getTableName()
+     *         tableName} if it does not already exist.  If set to {@link
+     *         Options#FALSE FALSE}, returns an error if the table does not
+     *         already exist.  Not supported with {@link Options#TABLE_PER_FILE
+     *         TABLE_PER_FILE}.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#DEFAULT_COLUMN_FORMATS DEFAULT_COLUMN_FORMATS}:
      *         Specifies the default format to be applied to source data loaded
      *         into columns with the corresponding column property.  Currently
@@ -3127,8 +3178,22 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 compression type.
      *             <li>{@link Options#GZIP GZIP}: gzip file compression.
      *             <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
+     *             <li>{@link Options#ZSTD ZSTD}: zstd file compression.
      *         </ul>
      *         The default value is {@link Options#AUTO AUTO}.
+     *     <li>{@link Options#CREATE_TABLE_IF_NOT_EXISTS
+     *         CREATE_TABLE_IF_NOT_EXISTS}: If set to {@link Options#TRUE
+     *         TRUE}, creates the table specified by {@link #getTableName()
+     *         tableName} if it does not already exist.  If set to {@link
+     *         Options#FALSE FALSE}, returns an error if the table does not
+     *         already exist.  Not supported with {@link Options#TABLE_PER_FILE
+     *         TABLE_PER_FILE}.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#DEFAULT_COLUMN_FORMATS DEFAULT_COLUMN_FORMATS}:
      *         Specifies the default format to be applied to source data loaded
      *         into columns with the corresponding column property.  Currently

@@ -59,7 +59,7 @@ public class AlterWalRequest implements IndexedRecord {
         public static final String SEGMENT_COUNT = "segment_count";
 
         /**
-         * Maximum size of an individual segment file.
+         * How write-ahead log entries are synchronized to disk.
          * Supported values:
          * <ul>
          *     <li>{@link Options#NONE NONE}: Disables the WAL.
@@ -183,8 +183,9 @@ public class AlterWalRequest implements IndexedRecord {
      *                     <li>{@link Options#SEGMENT_COUNT SEGMENT_COUNT}:
      *                         Approximate number of segment files to split the
      *                         WAL across. Must be at least two.
-     *                     <li>{@link Options#SYNC_POLICY SYNC_POLICY}: Maximum
-     *                         size of an individual segment file.
+     *                     <li>{@link Options#SYNC_POLICY SYNC_POLICY}: How
+     *                         write-ahead log entries are synchronized to
+     *                         disk.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#NONE NONE}: Disables the
@@ -285,8 +286,8 @@ public class AlterWalRequest implements IndexedRecord {
      *         of an individual segment file.
      *     <li>{@link Options#SEGMENT_COUNT SEGMENT_COUNT}: Approximate number
      *         of segment files to split the WAL across. Must be at least two.
-     *     <li>{@link Options#SYNC_POLICY SYNC_POLICY}: Maximum size of an
-     *         individual segment file.
+     *     <li>{@link Options#SYNC_POLICY SYNC_POLICY}: How write-ahead log
+     *         entries are synchronized to disk.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#NONE NONE}: Disables the WAL.
@@ -356,8 +357,8 @@ public class AlterWalRequest implements IndexedRecord {
      *         of an individual segment file.
      *     <li>{@link Options#SEGMENT_COUNT SEGMENT_COUNT}: Approximate number
      *         of segment files to split the WAL across. Must be at least two.
-     *     <li>{@link Options#SYNC_POLICY SYNC_POLICY}: Maximum size of an
-     *         individual segment file.
+     *     <li>{@link Options#SYNC_POLICY SYNC_POLICY}: How write-ahead log
+     *         entries are synchronized to disk.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#NONE NONE}: Disables the WAL.

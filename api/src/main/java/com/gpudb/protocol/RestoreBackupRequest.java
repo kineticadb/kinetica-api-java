@@ -240,6 +240,14 @@ public class RestoreBackupRequest implements IndexedRecord {
 
         /**
          * Whether or not to perform a dry run of the restoration operation.
+         * With a {@link Options#RESTORE_POLICY RESTORE_POLICY} of {@link
+         * Options#CLEAN CLEAN} or {@link Options#CLEAN_ALL CLEAN_ALL}, a dry
+         * run lists the objects the clean would drop in the {@link
+         * com.gpudb.protocol.RestoreBackupResponse.Info#CLEAN_DROPPED_OBJECTS
+         * CLEAN_DROPPED_OBJECTS} entry of the response {@link
+         * com.gpudb.protocol.RestoreBackupResponse#getInfo() info} map and
+         * drops nothing, and fails as the restore would if the clean is
+         * refused.
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}
@@ -302,7 +310,12 @@ public class RestoreBackupRequest implements IndexedRecord {
 
         /**
          * Whether or not all permissions of restored principals should be
-         * restored or scoped to the restored objects.
+         * restored or scoped to the restored objects. When {@link
+         * Options#RESTORE_POLICY RESTORE_POLICY} is {@link Options#CLEAN
+         * CLEAN} or {@link Options#CLEAN_ALL CLEAN_ALL}, the default is {@link
+         * Options#TRUE TRUE}: the clean drops each principal in scope along
+         * with all of its permissions, including those on objects it does not
+         * drop.
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}: Restore all permissions.
@@ -322,12 +335,59 @@ public class RestoreBackupRequest implements IndexedRecord {
          *         already exists with the same name, abort and return error.
          *     <li>{@link Options#REPLACE REPLACE}: If an object to be restored
          *         already exists with the same name, replace it with the
-         *         backup version.
+         *         backup version. Only objects in the backup are dropped;
+         *         existing objects that are not in the backup are kept, so the
+         *         result is a merge of the backup into the database. To drop
+         *         those as well, use {@link Options#CLEAN CLEAN}.
          *     <li>{@link Options#RENAME RENAME}: If an object to be restored
          *         already exists with the same name, move that existing one to
          *         the schema specified by {@link
          *         Options#RENAMED_OBJECTS_SCHEMA RENAMED_OBJECTS_SCHEMA}. This
          *         policy does not apply to non-schema objects.
+         *     <li>{@link Options#CLEAN CLEAN}: Before restoring, drop every
+         *         existing object of each object type being restored, whether
+         *         or not that object is in the backup, including objects that
+         *         are not persisted; object types not being restored are left
+         *         untouched, and schemas are not dropped. Unlike {@link
+         *         Options#REPLACE REPLACE}, the clean is scoped by object
+         *         type, not by name: restoring a single table drops every
+         *         table in the database first, and the response warns when the
+         *         objects to restore name specific objects of a type rather
+         *         than all of them. Use {@link Options#DRY_RUN DRY_RUN} to
+         *         list the objects that would be dropped. The restore is
+         *         refused, before anything is dropped, if an object that would
+         *         be dropped is still used by an object of a type that is not
+         *         being restored, or cannot be dropped, such as a table locked
+         *         by a backup in progress. As graphs, contexts, table monitors
+         *         and stored procedures all depend on tables, restoring tables
+         *         requires restoring each of those types of which any objects
+         *         exist. A data sink generated for a monitor is dropped along
+         *         with the monitor, and a home directory only along with its
+         *         user. Objects created by other sessions while the restore
+         *         runs are not dropped. If the restore fails after the clean,
+         *         the dropped objects are not put back. System objects, the
+         *         data source being restored from and its credential, the
+         *         calling user and admin, with their default schemas, home
+         *         directories and resource groups, and the calling user's
+         *         roles are never dropped, nor are the schemas holding any of
+         *         these. Requires system administrator permission.
+         *     <li>{@link Options#CLEAN_ALL CLEAN_ALL}: Before restoring, drop
+         *         every existing object in the database, regardless of which
+         *         objects are being restored, including users, roles,
+         *         non-system schemas and objects that are not persisted. The
+         *         restore is refused, before anything is dropped, if an object
+         *         cannot be dropped, such as a table locked by a backup in
+         *         progress, or is still used by an object the clean keeps,
+         *         such as a resource group a system user is in; it also
+         *         requires {@link Options#CREATE_SCHEMA_IF_NOT_EXIST
+         *         CREATE_SCHEMA_IF_NOT_EXIST} to be {@link Options#TRUE TRUE}.
+         *         If the restore fails after the clean, the dropped objects
+         *         are not put back. System objects, the data source being
+         *         restored from and its credential, the calling user and
+         *         admin, with their default schemas, home directories and
+         *         resource groups, and the calling user's roles are never
+         *         dropped, nor are the schemas holding any of these. Requires
+         *         system administrator permission.
          * </ul>
          * The default value is {@link Options#NONE NONE}.
          */
@@ -341,7 +401,10 @@ public class RestoreBackupRequest implements IndexedRecord {
 
         /**
          * If an object to be restored already exists with the same name,
-         * replace it with the backup version.
+         * replace it with the backup version. Only objects in the backup are
+         * dropped; existing objects that are not in the backup are kept, so
+         * the result is a merge of the backup into the database. To drop those
+         * as well, use {@link Options#CLEAN CLEAN}.
          */
         public static final String REPLACE = "replace";
 
@@ -352,6 +415,52 @@ public class RestoreBackupRequest implements IndexedRecord {
          * does not apply to non-schema objects.
          */
         public static final String RENAME = "rename";
+
+        /**
+         * Before restoring, drop every existing object of each object type
+         * being restored, whether or not that object is in the backup,
+         * including objects that are not persisted; object types not being
+         * restored are left untouched, and schemas are not dropped. Unlike
+         * {@link Options#REPLACE REPLACE}, the clean is scoped by object type,
+         * not by name: restoring a single table drops every table in the
+         * database first, and the response warns when the objects to restore
+         * name specific objects of a type rather than all of them. Use {@link
+         * Options#DRY_RUN DRY_RUN} to list the objects that would be dropped.
+         * The restore is refused, before anything is dropped, if an object
+         * that would be dropped is still used by an object of a type that is
+         * not being restored, or cannot be dropped, such as a table locked by
+         * a backup in progress. As graphs, contexts, table monitors and stored
+         * procedures all depend on tables, restoring tables requires restoring
+         * each of those types of which any objects exist. A data sink
+         * generated for a monitor is dropped along with the monitor, and a
+         * home directory only along with its user. Objects created by other
+         * sessions while the restore runs are not dropped. If the restore
+         * fails after the clean, the dropped objects are not put back. System
+         * objects, the data source being restored from and its credential, the
+         * calling user and admin, with their default schemas, home directories
+         * and resource groups, and the calling user's roles are never dropped,
+         * nor are the schemas holding any of these. Requires system
+         * administrator permission.
+         */
+        public static final String CLEAN = "clean";
+
+        /**
+         * Before restoring, drop every existing object in the database,
+         * regardless of which objects are being restored, including users,
+         * roles, non-system schemas and objects that are not persisted. The
+         * restore is refused, before anything is dropped, if an object cannot
+         * be dropped, such as a table locked by a backup in progress, or is
+         * still used by an object the clean keeps, such as a resource group a
+         * system user is in; it also requires {@link
+         * Options#CREATE_SCHEMA_IF_NOT_EXIST CREATE_SCHEMA_IF_NOT_EXIST} to be
+         * {@link Options#TRUE TRUE}. If the restore fails after the clean, the
+         * dropped objects are not put back. System objects, the data source
+         * being restored from and its credential, the calling user and admin,
+         * with their default schemas, home directories and resource groups,
+         * and the calling user's roles are never dropped, nor are the schemas
+         * holding any of these. Requires system administrator permission.
+         */
+        public static final String CLEAN_ALL = "clean_all";
 
         /**
          * Restore schema-based objects to alternate schema. Value is a comma
@@ -547,7 +656,17 @@ public class RestoreBackupRequest implements IndexedRecord {
      *                         FALSE}.
      *                     <li>{@link Options#DRY_RUN DRY_RUN}: Whether or not
      *                         to perform a dry run of the restoration
-     *                         operation.
+     *                         operation. With a {@link Options#RESTORE_POLICY
+     *                         RESTORE_POLICY} of {@link Options#CLEAN CLEAN}
+     *                         or {@link Options#CLEAN_ALL CLEAN_ALL}, a dry
+     *                         run lists the objects the clean would drop in
+     *                         the {@link
+     *                         com.gpudb.protocol.RestoreBackupResponse.Info#CLEAN_DROPPED_OBJECTS
+     *                         CLEAN_DROPPED_OBJECTS} entry of the response
+     *                         {@link
+     *                         com.gpudb.protocol.RestoreBackupResponse#getInfo()
+     *                         info} map and drops nothing, and fails as the
+     *                         restore would if the clean is refused.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
@@ -594,7 +713,14 @@ public class RestoreBackupRequest implements IndexedRecord {
      *                     <li>{@link Options#RESTORE_ALL_PERMISSIONS
      *                         RESTORE_ALL_PERMISSIONS}: Whether or not all
      *                         permissions of restored principals should be
-     *                         restored or scoped to the restored objects.
+     *                         restored or scoped to the restored objects. When
+     *                         {@link Options#RESTORE_POLICY RESTORE_POLICY} is
+     *                         {@link Options#CLEAN CLEAN} or {@link
+     *                         Options#CLEAN_ALL CLEAN_ALL}, the default is
+     *                         {@link Options#TRUE TRUE}: the clean drops each
+     *                         principal in scope along with all of its
+     *                         permissions, including those on objects it does
+     *                         not drop.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}: Restore all
@@ -615,7 +741,12 @@ public class RestoreBackupRequest implements IndexedRecord {
      *                             <li>{@link Options#REPLACE REPLACE}: If an
      *                                 object to be restored already exists
      *                                 with the same name, replace it with the
-     *                                 backup version.
+     *                                 backup version. Only objects in the
+     *                                 backup are dropped; existing objects
+     *                                 that are not in the backup are kept, so
+     *                                 the result is a merge of the backup into
+     *                                 the database. To drop those as well, use
+     *                                 {@link Options#CLEAN CLEAN}.
      *                             <li>{@link Options#RENAME RENAME}: If an
      *                                 object to be restored already exists
      *                                 with the same name, move that existing
@@ -623,6 +754,74 @@ public class RestoreBackupRequest implements IndexedRecord {
      *                                 Options#RENAMED_OBJECTS_SCHEMA
      *                                 RENAMED_OBJECTS_SCHEMA}. This policy
      *                                 does not apply to non-schema objects.
+     *                             <li>{@link Options#CLEAN CLEAN}: Before
+     *                                 restoring, drop every existing object of
+     *                                 each object type being restored, whether
+     *                                 or not that object is in the backup,
+     *                                 including objects that are not
+     *                                 persisted; object types not being
+     *                                 restored are left untouched, and schemas
+     *                                 are not dropped. Unlike {@link
+     *                                 Options#REPLACE REPLACE}, the clean is
+     *                                 scoped by object type, not by name:
+     *                                 restoring a single table drops every
+     *                                 table in the database first, and the
+     *                                 response warns when the objects to
+     *                                 restore name specific objects of a type
+     *                                 rather than all of them. Use {@link
+     *                                 Options#DRY_RUN DRY_RUN} to list the
+     *                                 objects that would be dropped. The
+     *                                 restore is refused, before anything is
+     *                                 dropped, if an object that would be
+     *                                 dropped is still used by an object of a
+     *                                 type that is not being restored, or
+     *                                 cannot be dropped, such as a table
+     *                                 locked by a backup in progress. As
+     *                                 graphs, contexts, table monitors and
+     *                                 stored procedures all depend on tables,
+     *                                 restoring tables requires restoring each
+     *                                 of those types of which any objects
+     *                                 exist. A data sink generated for a
+     *                                 monitor is dropped along with the
+     *                                 monitor, and a home directory only along
+     *                                 with its user. Objects created by other
+     *                                 sessions while the restore runs are not
+     *                                 dropped. If the restore fails after the
+     *                                 clean, the dropped objects are not put
+     *                                 back. System objects, the data source
+     *                                 being restored from and its credential,
+     *                                 the calling user and admin, with their
+     *                                 default schemas, home directories and
+     *                                 resource groups, and the calling user's
+     *                                 roles are never dropped, nor are the
+     *                                 schemas holding any of these. Requires
+     *                                 system administrator permission.
+     *                             <li>{@link Options#CLEAN_ALL CLEAN_ALL}:
+     *                                 Before restoring, drop every existing
+     *                                 object in the database, regardless of
+     *                                 which objects are being restored,
+     *                                 including users, roles, non-system
+     *                                 schemas and objects that are not
+     *                                 persisted. The restore is refused,
+     *                                 before anything is dropped, if an object
+     *                                 cannot be dropped, such as a table
+     *                                 locked by a backup in progress, or is
+     *                                 still used by an object the clean keeps,
+     *                                 such as a resource group a system user
+     *                                 is in; it also requires {@link
+     *                                 Options#CREATE_SCHEMA_IF_NOT_EXIST
+     *                                 CREATE_SCHEMA_IF_NOT_EXIST} to be {@link
+     *                                 Options#TRUE TRUE}. If the restore fails
+     *                                 after the clean, the dropped objects are
+     *                                 not put back. System objects, the data
+     *                                 source being restored from and its
+     *                                 credential, the calling user and admin,
+     *                                 with their default schemas, home
+     *                                 directories and resource groups, and the
+     *                                 calling user's roles are never dropped,
+     *                                 nor are the schemas holding any of
+     *                                 these. Requires system administrator
+     *                                 permission.
      *                         </ul>
      *                         The default value is {@link Options#NONE NONE}.
      *                     <li>{@link Options#TARGET_SCHEMA_MAP
@@ -888,7 +1087,15 @@ public class RestoreBackupRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#DRY_RUN DRY_RUN}: Whether or not to perform a dry
-     *         run of the restoration operation.
+     *         run of the restoration operation. With a {@link
+     *         Options#RESTORE_POLICY RESTORE_POLICY} of {@link Options#CLEAN
+     *         CLEAN} or {@link Options#CLEAN_ALL CLEAN_ALL}, a dry run lists
+     *         the objects the clean would drop in the {@link
+     *         com.gpudb.protocol.RestoreBackupResponse.Info#CLEAN_DROPPED_OBJECTS
+     *         CLEAN_DROPPED_OBJECTS} entry of the response {@link
+     *         com.gpudb.protocol.RestoreBackupResponse#getInfo() info} map and
+     *         drops nothing, and fails as the restore would if the clean is
+     *         refused.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
@@ -927,7 +1134,12 @@ public class RestoreBackupRequest implements IndexedRecord {
      *         is ''.
      *     <li>{@link Options#RESTORE_ALL_PERMISSIONS RESTORE_ALL_PERMISSIONS}:
      *         Whether or not all permissions of restored principals should be
-     *         restored or scoped to the restored objects.
+     *         restored or scoped to the restored objects. When {@link
+     *         Options#RESTORE_POLICY RESTORE_POLICY} is {@link Options#CLEAN
+     *         CLEAN} or {@link Options#CLEAN_ALL CLEAN_ALL}, the default is
+     *         {@link Options#TRUE TRUE}: the clean drops each principal in
+     *         scope along with all of its permissions, including those on
+     *         objects it does not drop.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Restore all permissions.
@@ -944,12 +1156,63 @@ public class RestoreBackupRequest implements IndexedRecord {
      *                 error.
      *             <li>{@link Options#REPLACE REPLACE}: If an object to be
      *                 restored already exists with the same name, replace it
-     *                 with the backup version.
+     *                 with the backup version. Only objects in the backup are
+     *                 dropped; existing objects that are not in the backup are
+     *                 kept, so the result is a merge of the backup into the
+     *                 database. To drop those as well, use {@link
+     *                 Options#CLEAN CLEAN}.
      *             <li>{@link Options#RENAME RENAME}: If an object to be
      *                 restored already exists with the same name, move that
      *                 existing one to the schema specified by {@link
      *                 Options#RENAMED_OBJECTS_SCHEMA RENAMED_OBJECTS_SCHEMA}.
      *                 This policy does not apply to non-schema objects.
+     *             <li>{@link Options#CLEAN CLEAN}: Before restoring, drop
+     *                 every existing object of each object type being
+     *                 restored, whether or not that object is in the backup,
+     *                 including objects that are not persisted; object types
+     *                 not being restored are left untouched, and schemas are
+     *                 not dropped. Unlike {@link Options#REPLACE REPLACE}, the
+     *                 clean is scoped by object type, not by name: restoring a
+     *                 single table drops every table in the database first,
+     *                 and the response warns when the objects to restore name
+     *                 specific objects of a type rather than all of them. Use
+     *                 {@link Options#DRY_RUN DRY_RUN} to list the objects that
+     *                 would be dropped. The restore is refused, before
+     *                 anything is dropped, if an object that would be dropped
+     *                 is still used by an object of a type that is not being
+     *                 restored, or cannot be dropped, such as a table locked
+     *                 by a backup in progress. As graphs, contexts, table
+     *                 monitors and stored procedures all depend on tables,
+     *                 restoring tables requires restoring each of those types
+     *                 of which any objects exist. A data sink generated for a
+     *                 monitor is dropped along with the monitor, and a home
+     *                 directory only along with its user. Objects created by
+     *                 other sessions while the restore runs are not dropped.
+     *                 If the restore fails after the clean, the dropped
+     *                 objects are not put back. System objects, the data
+     *                 source being restored from and its credential, the
+     *                 calling user and admin, with their default schemas, home
+     *                 directories and resource groups, and the calling user's
+     *                 roles are never dropped, nor are the schemas holding any
+     *                 of these. Requires system administrator permission.
+     *             <li>{@link Options#CLEAN_ALL CLEAN_ALL}: Before restoring,
+     *                 drop every existing object in the database, regardless
+     *                 of which objects are being restored, including users,
+     *                 roles, non-system schemas and objects that are not
+     *                 persisted. The restore is refused, before anything is
+     *                 dropped, if an object cannot be dropped, such as a table
+     *                 locked by a backup in progress, or is still used by an
+     *                 object the clean keeps, such as a resource group a
+     *                 system user is in; it also requires {@link
+     *                 Options#CREATE_SCHEMA_IF_NOT_EXIST
+     *                 CREATE_SCHEMA_IF_NOT_EXIST} to be {@link Options#TRUE
+     *                 TRUE}. If the restore fails after the clean, the dropped
+     *                 objects are not put back. System objects, the data
+     *                 source being restored from and its credential, the
+     *                 calling user and admin, with their default schemas, home
+     *                 directories and resource groups, and the calling user's
+     *                 roles are never dropped, nor are the schemas holding any
+     *                 of these. Requires system administrator permission.
      *         </ul>
      *         The default value is {@link Options#NONE NONE}.
      *     <li>{@link Options#TARGET_SCHEMA_MAP TARGET_SCHEMA_MAP}: Restore
@@ -1023,7 +1286,15 @@ public class RestoreBackupRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#DRY_RUN DRY_RUN}: Whether or not to perform a dry
-     *         run of the restoration operation.
+     *         run of the restoration operation. With a {@link
+     *         Options#RESTORE_POLICY RESTORE_POLICY} of {@link Options#CLEAN
+     *         CLEAN} or {@link Options#CLEAN_ALL CLEAN_ALL}, a dry run lists
+     *         the objects the clean would drop in the {@link
+     *         com.gpudb.protocol.RestoreBackupResponse.Info#CLEAN_DROPPED_OBJECTS
+     *         CLEAN_DROPPED_OBJECTS} entry of the response {@link
+     *         com.gpudb.protocol.RestoreBackupResponse#getInfo() info} map and
+     *         drops nothing, and fails as the restore would if the clean is
+     *         refused.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
@@ -1062,7 +1333,12 @@ public class RestoreBackupRequest implements IndexedRecord {
      *         is ''.
      *     <li>{@link Options#RESTORE_ALL_PERMISSIONS RESTORE_ALL_PERMISSIONS}:
      *         Whether or not all permissions of restored principals should be
-     *         restored or scoped to the restored objects.
+     *         restored or scoped to the restored objects. When {@link
+     *         Options#RESTORE_POLICY RESTORE_POLICY} is {@link Options#CLEAN
+     *         CLEAN} or {@link Options#CLEAN_ALL CLEAN_ALL}, the default is
+     *         {@link Options#TRUE TRUE}: the clean drops each principal in
+     *         scope along with all of its permissions, including those on
+     *         objects it does not drop.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}: Restore all permissions.
@@ -1079,12 +1355,63 @@ public class RestoreBackupRequest implements IndexedRecord {
      *                 error.
      *             <li>{@link Options#REPLACE REPLACE}: If an object to be
      *                 restored already exists with the same name, replace it
-     *                 with the backup version.
+     *                 with the backup version. Only objects in the backup are
+     *                 dropped; existing objects that are not in the backup are
+     *                 kept, so the result is a merge of the backup into the
+     *                 database. To drop those as well, use {@link
+     *                 Options#CLEAN CLEAN}.
      *             <li>{@link Options#RENAME RENAME}: If an object to be
      *                 restored already exists with the same name, move that
      *                 existing one to the schema specified by {@link
      *                 Options#RENAMED_OBJECTS_SCHEMA RENAMED_OBJECTS_SCHEMA}.
      *                 This policy does not apply to non-schema objects.
+     *             <li>{@link Options#CLEAN CLEAN}: Before restoring, drop
+     *                 every existing object of each object type being
+     *                 restored, whether or not that object is in the backup,
+     *                 including objects that are not persisted; object types
+     *                 not being restored are left untouched, and schemas are
+     *                 not dropped. Unlike {@link Options#REPLACE REPLACE}, the
+     *                 clean is scoped by object type, not by name: restoring a
+     *                 single table drops every table in the database first,
+     *                 and the response warns when the objects to restore name
+     *                 specific objects of a type rather than all of them. Use
+     *                 {@link Options#DRY_RUN DRY_RUN} to list the objects that
+     *                 would be dropped. The restore is refused, before
+     *                 anything is dropped, if an object that would be dropped
+     *                 is still used by an object of a type that is not being
+     *                 restored, or cannot be dropped, such as a table locked
+     *                 by a backup in progress. As graphs, contexts, table
+     *                 monitors and stored procedures all depend on tables,
+     *                 restoring tables requires restoring each of those types
+     *                 of which any objects exist. A data sink generated for a
+     *                 monitor is dropped along with the monitor, and a home
+     *                 directory only along with its user. Objects created by
+     *                 other sessions while the restore runs are not dropped.
+     *                 If the restore fails after the clean, the dropped
+     *                 objects are not put back. System objects, the data
+     *                 source being restored from and its credential, the
+     *                 calling user and admin, with their default schemas, home
+     *                 directories and resource groups, and the calling user's
+     *                 roles are never dropped, nor are the schemas holding any
+     *                 of these. Requires system administrator permission.
+     *             <li>{@link Options#CLEAN_ALL CLEAN_ALL}: Before restoring,
+     *                 drop every existing object in the database, regardless
+     *                 of which objects are being restored, including users,
+     *                 roles, non-system schemas and objects that are not
+     *                 persisted. The restore is refused, before anything is
+     *                 dropped, if an object cannot be dropped, such as a table
+     *                 locked by a backup in progress, or is still used by an
+     *                 object the clean keeps, such as a resource group a
+     *                 system user is in; it also requires {@link
+     *                 Options#CREATE_SCHEMA_IF_NOT_EXIST
+     *                 CREATE_SCHEMA_IF_NOT_EXIST} to be {@link Options#TRUE
+     *                 TRUE}. If the restore fails after the clean, the dropped
+     *                 objects are not put back. System objects, the data
+     *                 source being restored from and its credential, the
+     *                 calling user and admin, with their default schemas, home
+     *                 directories and resource groups, and the calling user's
+     *                 roles are never dropped, nor are the schemas holding any
+     *                 of these. Requires system administrator permission.
      *         </ul>
      *         The default value is {@link Options#NONE NONE}.
      *     <li>{@link Options#TARGET_SCHEMA_MAP TARGET_SCHEMA_MAP}: Restore

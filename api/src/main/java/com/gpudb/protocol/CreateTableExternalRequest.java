@@ -470,6 +470,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
          *     <li>{@link Options#AUTO AUTO}: Auto detect compression type.
          *     <li>{@link Options#GZIP GZIP}: gzip file compression.
          *     <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
+         *     <li>{@link Options#ZSTD ZSTD}: zstd file compression.
          * </ul>
          * The default value is {@link Options#AUTO AUTO}.
          */
@@ -494,6 +495,11 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * bzip2 file compression.
          */
         public static final String BZIP2 = "bzip2";
+
+        /**
+         * zstd file compression.
+         */
+        public static final String ZSTD = "zstd";
 
         /**
          * Name of an existing datalake(iceberg) catalog used in loading files.
@@ -1776,6 +1782,8 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                                 compression.
      *                             <li>{@link Options#BZIP2 BZIP2}: bzip2 file
      *                                 compression.
+     *                             <li>{@link Options#ZSTD ZSTD}: zstd file
+     *                                 compression.
      *                         </ul>
      *                         The default value is {@link Options#AUTO AUTO}.
      *                     <li>{@link Options#DATALAKE_CATALOG
@@ -2963,6 +2971,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *             <li>{@link Options#AUTO AUTO}: Auto detect compression type.
      *             <li>{@link Options#GZIP GZIP}: gzip file compression.
      *             <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
+     *             <li>{@link Options#ZSTD ZSTD}: zstd file compression.
      *         </ul>
      *         The default value is {@link Options#AUTO AUTO}.
      *     <li>{@link Options#DATALAKE_CATALOG DATALAKE_CATALOG}: Name of an
@@ -3589,6 +3598,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *             <li>{@link Options#AUTO AUTO}: Auto detect compression type.
      *             <li>{@link Options#GZIP GZIP}: gzip file compression.
      *             <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
+     *             <li>{@link Options#ZSTD ZSTD}: zstd file compression.
      *         </ul>
      *         The default value is {@link Options#AUTO AUTO}.
      *     <li>{@link Options#DATALAKE_CATALOG DATALAKE_CATALOG}: Name of an

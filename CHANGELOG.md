@@ -2,6 +2,67 @@
 
 ## Version 7.2
 
+### Version 7.2.3.28 - 2026-10-29
+
+#### Added
+-   `GPUdbBase.Options.setSessionId()`, so several `GPUdb` objects can share
+    one session's `#name` temp tables.
+-   `GPUdb` now has `close()` and implements `AutoCloseable`.
+-   Each `GPUdb` is its own session for SQL `#name` temp tables: two `GPUdb`
+    objects for the same user no longer share one `#name`.  Closing a `GPUdb`
+    drops the temp tables it created; one that is never closed has them dropped
+    when it is garbage collected, on a best-effort basis.
+
+#### Changed
+-   A connection is addressed by the URL it was given, rather than by an address
+    the cluster advertises for its head rank.  `getURL()` reports the address you
+    passed in.
+-   Multi-head operations are disabled, with a warning naming the address, where
+    a cluster advertises a loopback address or one belonging to the client's own
+    interfaces.
+-   The host manager is addressed using the server-provided URL, where the
+    cluster publishes one, rather than by an address derived from the
+    connection.
+-   The shaded JAR no longer carries the unused Apache Commons Compress, Codec,
+    or IO.  A project that was picking any of them up through `gpudb-api` rather
+    than declaring it must now declare it.
+-   The shaded JAR no longer carries Snappy's compiled library for less
+    frequently used platforms.  On any other platform the client warns and sends
+    requests uncompressed.
+-   `GPUdbFileHandler.ingest()` returns an `IngestResult` holding the target
+    table and the counts of records inserted, skipped and updated, and a failure
+    it throws now carries the underlying error as its cause.
+-   Upgraded Jackson libraries to 2.22.4.
+
+#### Fixed
+-   A misconfigured cluster advertising connection URLs that coincided with
+    addresses local to the client would result in the client sending all
+    requests to its local interfaces instead of the remote cluster.  Could
+    manifest if a client local to one cluster in a ring connected to another
+    cluster in the same ring, where both clusters had identical networking
+    configurations; e.g., a data source in cluster A contacting cluster B.
+-   Constructing a `GPUdb` failed with an uncaught error on a platform Snappy
+    has no library for, rather than falling back to uncompressed requests.
+-   Non-ASCII usernames and passwords being sent in the JVM's default charset
+    instead of UTF-8, which could fail authentication where that default is not
+    UTF-8; e.g., Java 11 or 17 on Windows.
+-   `GPUdbFileHandler.ingest()` no longer leaves a copy of every file it ingests
+    or fails to ingest in the user's KiFS home directory.
+-   `TableCreationOptions.setReplicated()` being ignored by
+    `GPUdbFileHandler.ingest()`.
+-   `Type.getFullDefinition()` failing for columns whose type is set by a
+    property, such as `char16` or `decimal(10,2)`, and producing definitions
+    the server rejects for `uuid` columns and for columns with more than one
+    other property.
+
+#### Notes
+-   Two clusters whose advertised addresses and names are identical remain
+    indistinguishable to a client, so a cluster misconfigured to advertise
+    another's addresses exactly is still reached.  Give each cluster its own
+    `cluster_name` and addresses.
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
 ### Version 7.2.3.27 - 2026-09-30
 
 #### Fixed

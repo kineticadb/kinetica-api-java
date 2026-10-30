@@ -40,7 +40,9 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * A second, comma-separated value can be added to the {@link Stats#PERCENTILE
  * PERCENTILE} statistic to calculate percentile resolution, e.g., a 50th
- * percentile with 200 resolution would be 'percentile(50,200)'.
+ * percentile with 200 resolution would be 'percentile(50,200)'. The allowable
+ * range of the percentile resolution is 10 to 10000, with a default value of
+ * 100.
  * <p>
  * The weighted average statistic requires a weight column to be specified in
  * {@link Options#WEIGHT_COLUMN_NAME WEIGHT_COLUMN_NAME}.  The weighted average
@@ -158,14 +160,18 @@ public class AggregateStatisticsRequest implements IndexedRecord {
          * Estimate (via t-digest) of the given percentile of the column(s)
          * (percentile(50.0) will be an approximation of the median). Add a
          * second, comma-separated value to calculate percentile resolution,
-         * e.g., 'percentile(75,150)'.
+         * e.g., 'percentile(75,150)'. The resolution must be between 10 and
+         * 10000; the default is 100.
          */
         public static final String PERCENTILE = "percentile";
 
         /**
          * Estimate (via t-digest) of the percentile rank of the given value in
          * the column(s) (if the given value is the median of the column(s),
-         * percentile_rank(&lt;median&gt;) will return approximately 50.0).
+         * percentile_rank(&lt;median&gt;) will return approximately 50.0). Add
+         * a second, comma-separated value to calculate percentile resolution,
+         * e.g., 'percentile_rank(1234.56,150)'. The resolution must be between
+         * 10 and 10000; the default is 100.
          */
         public static final String PERCENTILE_RANK = "percentile_rank";
 
@@ -260,13 +266,17 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      *                       (percentile(50.0) will be an approximation of the
      *                       median). Add a second, comma-separated value to
      *                       calculate percentile resolution, e.g.,
-     *                       'percentile(75,150)'.
+     *                       'percentile(75,150)'. The resolution must be
+     *                       between 10 and 10000; the default is 100.
      *                   <li>{@link Stats#PERCENTILE_RANK PERCENTILE_RANK}:
      *                       Estimate (via t-digest) of the percentile rank of
      *                       the given value in the column(s) (if the given
      *                       value is the median of the column(s),
      *                       percentile_rank(&lt;median&gt;) will return
-     *                       approximately 50.0).
+     *                       approximately 50.0). Add a second, comma-separated
+     *                       value to calculate percentile resolution, e.g.,
+     *                       'percentile_rank(1234.56,150)'. The resolution
+     *                       must be between 10 and 10000; the default is 100.
      *               </ul>
      * @param options  Optional parameters.
      *                 <ul>
@@ -374,11 +384,15 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      *         the given percentile of the column(s) (percentile(50.0) will be
      *         an approximation of the median). Add a second, comma-separated
      *         value to calculate percentile resolution, e.g.,
-     *         'percentile(75,150)'.
+     *         'percentile(75,150)'. The resolution must be between 10 and
+     *         10000; the default is 100.
      *     <li>{@link Stats#PERCENTILE_RANK PERCENTILE_RANK}: Estimate (via
      *         t-digest) of the percentile rank of the given value in the
      *         column(s) (if the given value is the median of the column(s),
      *         percentile_rank(&lt;median&gt;) will return approximately 50.0).
+     *         Add a second, comma-separated value to calculate percentile
+     *         resolution, e.g., 'percentile_rank(1234.56,150)'. The resolution
+     *         must be between 10 and 10000; the default is 100.
      * </ul>
      *
      * @return The current value of {@code stats}.
@@ -419,11 +433,15 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      *         the given percentile of the column(s) (percentile(50.0) will be
      *         an approximation of the median). Add a second, comma-separated
      *         value to calculate percentile resolution, e.g.,
-     *         'percentile(75,150)'.
+     *         'percentile(75,150)'. The resolution must be between 10 and
+     *         10000; the default is 100.
      *     <li>{@link Stats#PERCENTILE_RANK PERCENTILE_RANK}: Estimate (via
      *         t-digest) of the percentile rank of the given value in the
      *         column(s) (if the given value is the median of the column(s),
      *         percentile_rank(&lt;median&gt;) will return approximately 50.0).
+     *         Add a second, comma-separated value to calculate percentile
+     *         resolution, e.g., 'percentile_rank(1234.56,150)'. The resolution
+     *         must be between 10 and 10000; the default is 100.
      * </ul>
      *
      * @param stats  The new value for {@code stats}.

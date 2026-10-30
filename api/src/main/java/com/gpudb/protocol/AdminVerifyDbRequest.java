@@ -88,9 +88,8 @@ public class AdminVerifyDbRequest implements IndexedRecord {
         public static final String VERIFY_PERSIST = "verify_persist";
 
         /**
-         * When {@link Options#TRUE TRUE}, allows this endpoint to be run
-         * safely with other concurrent database operations. Other operations
-         * may be slower while this is running.
+         * When {@link Options#TRUE TRUE}, halts other jobs while the verify
+         * operation runs.
          * Supported values:
          * <ul>
          *     <li>{@link Options#TRUE TRUE}
@@ -141,46 +140,15 @@ public class AdminVerifyDbRequest implements IndexedRecord {
         public static final String VERIFY_ORPHANED_TABLES_ONLY = "verify_orphaned_tables_only";
 
         /**
-         * When {@link Options#TRUE TRUE}, replicated tables whose record
-         * counts differ across the worker ranks and toms are repaired: the
-         * copy with the most records is kept, and every other copy is replaced
-         * with it. That copy may include records from a load that did not
-         * complete, or records that a delete did not remove. A table whose
-         * copies all have the same number of records is not detected, even if
-         * their contents differ. The {@link
-         * com.gpudb.protocol.AdminVerifyDbResponse#getVerifiedOk() verifiedOk}
-         * flag and {@link
-         * com.gpudb.protocol.AdminVerifyDbResponse#getErrorList() errorList}
-         * still report the inconsistencies found before the repair; run the
-         * verification again to confirm the repair. Only the tables selected
-         * by {@link Options#TABLE_INCLUDES TABLE_INCLUDES} or {@link
-         * Options#TABLE_EXCLUDES TABLE_EXCLUDES} are repaired. Requires {@link
-         * Options#CONCURRENT_SAFE CONCURRENT_SAFE} to be {@link Options#TRUE
-         * TRUE}, and cannot be used with {@link
-         * Options#VERIFY_ORPHANED_TABLES_ONLY VERIFY_ORPHANED_TABLES_ONLY}.
-         * The repaired tables are listed in the {@link
-         * com.gpudb.protocol.AdminVerifyDbResponse.Info#REPAIRED_REPLICATED_TABLES
-         * REPAIRED_REPLICATED_TABLES} entry of the response {@link
-         * com.gpudb.protocol.AdminVerifyDbResponse#getInfo() info} map.
-         * Supported values:
-         * <ul>
-         *     <li>{@link Options#TRUE TRUE}
-         *     <li>{@link Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link Options#FALSE FALSE}.
-         */
-        public static final String REPAIR_REPLICATED_TABLES = "repair_replicated_tables";
-
-        /**
          * Comma-separated list of table names to include when verifying table
-         * consistency on wokers. Cannot be used simultaneously with {@link
+         * consistency on workers. Cannot be used simultaneously with {@link
          * Options#TABLE_EXCLUDES TABLE_EXCLUDES}.
          */
         public static final String TABLE_INCLUDES = "table_includes";
 
         /**
          * Comma-separated list of table names to exclude when verifying table
-         * consistency on wokers. Cannot be used simultaneously with {@link
+         * consistency on workers. Cannot be used simultaneously with {@link
          * Options#TABLE_INCLUDES TABLE_INCLUDES}.
          */
         public static final String TABLE_EXCLUDES = "table_excludes";
@@ -239,10 +207,8 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
      *                     <li>{@link Options#CONCURRENT_SAFE CONCURRENT_SAFE}:
-     *                         When {@link Options#TRUE TRUE}, allows this
-     *                         endpoint to be run safely with other concurrent
-     *                         database operations. Other operations may be
-     *                         slower while this is running.
+     *                         When {@link Options#TRUE TRUE}, halts other jobs
+     *                         while the verify operation runs.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#TRUE TRUE}
@@ -287,52 +253,14 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *                         </ul>
      *                         The default value is {@link Options#FALSE
      *                         FALSE}.
-     *                     <li>{@link Options#REPAIR_REPLICATED_TABLES
-     *                         REPAIR_REPLICATED_TABLES}: When {@link
-     *                         Options#TRUE TRUE}, replicated tables whose
-     *                         record counts differ across the worker ranks and
-     *                         toms are repaired: the copy with the most
-     *                         records is kept, and every other copy is
-     *                         replaced with it. That copy may include records
-     *                         from a load that did not complete, or records
-     *                         that a delete did not remove. A table whose
-     *                         copies all have the same number of records is
-     *                         not detected, even if their contents differ. The
-     *                         {@link
-     *                         com.gpudb.protocol.AdminVerifyDbResponse#getVerifiedOk()
-     *                         verifiedOk} flag and {@link
-     *                         com.gpudb.protocol.AdminVerifyDbResponse#getErrorList()
-     *                         errorList} still report the inconsistencies
-     *                         found before the repair; run the verification
-     *                         again to confirm the repair. Only the tables
-     *                         selected by {@link Options#TABLE_INCLUDES
-     *                         TABLE_INCLUDES} or {@link Options#TABLE_EXCLUDES
-     *                         TABLE_EXCLUDES} are repaired. Requires {@link
-     *                         Options#CONCURRENT_SAFE CONCURRENT_SAFE} to be
-     *                         {@link Options#TRUE TRUE}, and cannot be used
-     *                         with {@link Options#VERIFY_ORPHANED_TABLES_ONLY
-     *                         VERIFY_ORPHANED_TABLES_ONLY}. The repaired
-     *                         tables are listed in the {@link
-     *                         com.gpudb.protocol.AdminVerifyDbResponse.Info#REPAIRED_REPLICATED_TABLES
-     *                         REPAIRED_REPLICATED_TABLES} entry of the
-     *                         response {@link
-     *                         com.gpudb.protocol.AdminVerifyDbResponse#getInfo()
-     *                         info} map.
-     *                         Supported values:
-     *                         <ul>
-     *                             <li>{@link Options#TRUE TRUE}
-     *                             <li>{@link Options#FALSE FALSE}
-     *                         </ul>
-     *                         The default value is {@link Options#FALSE
-     *                         FALSE}.
      *                     <li>{@link Options#TABLE_INCLUDES TABLE_INCLUDES}:
      *                         Comma-separated list of table names to include
-     *                         when verifying table consistency on wokers.
+     *                         when verifying table consistency on workers.
      *                         Cannot be used simultaneously with {@link
      *                         Options#TABLE_EXCLUDES TABLE_EXCLUDES}.
      *                     <li>{@link Options#TABLE_EXCLUDES TABLE_EXCLUDES}:
      *                         Comma-separated list of table names to exclude
-     *                         when verifying table consistency on wokers.
+     *                         when verifying table consistency on workers.
      *                         Cannot be used simultaneously with {@link
      *                         Options#TABLE_INCLUDES TABLE_INCLUDES}.
      *                 </ul>
@@ -375,9 +303,8 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#CONCURRENT_SAFE CONCURRENT_SAFE}: When {@link
-     *         Options#TRUE TRUE}, allows this endpoint to be run safely with
-     *         other concurrent database operations. Other operations may be
-     *         slower while this is running.
+     *         Options#TRUE TRUE}, halts other jobs while the verify operation
+     *         runs.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
@@ -415,43 +342,13 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#REPAIR_REPLICATED_TABLES
-     *         REPAIR_REPLICATED_TABLES}: When {@link Options#TRUE TRUE},
-     *         replicated tables whose record counts differ across the worker
-     *         ranks and toms are repaired: the copy with the most records is
-     *         kept, and every other copy is replaced with it. That copy may
-     *         include records from a load that did not complete, or records
-     *         that a delete did not remove. A table whose copies all have the
-     *         same number of records is not detected, even if their contents
-     *         differ. The {@link
-     *         com.gpudb.protocol.AdminVerifyDbResponse#getVerifiedOk()
-     *         verifiedOk} flag and {@link
-     *         com.gpudb.protocol.AdminVerifyDbResponse#getErrorList()
-     *         errorList} still report the inconsistencies found before the
-     *         repair; run the verification again to confirm the repair. Only
-     *         the tables selected by {@link Options#TABLE_INCLUDES
-     *         TABLE_INCLUDES} or {@link Options#TABLE_EXCLUDES TABLE_EXCLUDES}
-     *         are repaired. Requires {@link Options#CONCURRENT_SAFE
-     *         CONCURRENT_SAFE} to be {@link Options#TRUE TRUE}, and cannot be
-     *         used with {@link Options#VERIFY_ORPHANED_TABLES_ONLY
-     *         VERIFY_ORPHANED_TABLES_ONLY}. The repaired tables are listed in
-     *         the {@link
-     *         com.gpudb.protocol.AdminVerifyDbResponse.Info#REPAIRED_REPLICATED_TABLES
-     *         REPAIRED_REPLICATED_TABLES} entry of the response {@link
-     *         com.gpudb.protocol.AdminVerifyDbResponse#getInfo() info} map.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#TABLE_INCLUDES TABLE_INCLUDES}: Comma-separated
      *         list of table names to include when verifying table consistency
-     *         on wokers. Cannot be used simultaneously with {@link
+     *         on workers. Cannot be used simultaneously with {@link
      *         Options#TABLE_EXCLUDES TABLE_EXCLUDES}.
      *     <li>{@link Options#TABLE_EXCLUDES TABLE_EXCLUDES}: Comma-separated
      *         list of table names to exclude when verifying table consistency
-     *         on wokers. Cannot be used simultaneously with {@link
+     *         on workers. Cannot be used simultaneously with {@link
      *         Options#TABLE_INCLUDES TABLE_INCLUDES}.
      * </ul>
      * The default value is an empty {@link Map}.
@@ -495,9 +392,8 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#CONCURRENT_SAFE CONCURRENT_SAFE}: When {@link
-     *         Options#TRUE TRUE}, allows this endpoint to be run safely with
-     *         other concurrent database operations. Other operations may be
-     *         slower while this is running.
+     *         Options#TRUE TRUE}, halts other jobs while the verify operation
+     *         runs.
      *         Supported values:
      *         <ul>
      *             <li>{@link Options#TRUE TRUE}
@@ -535,43 +431,13 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *             <li>{@link Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link Options#FALSE FALSE}.
-     *     <li>{@link Options#REPAIR_REPLICATED_TABLES
-     *         REPAIR_REPLICATED_TABLES}: When {@link Options#TRUE TRUE},
-     *         replicated tables whose record counts differ across the worker
-     *         ranks and toms are repaired: the copy with the most records is
-     *         kept, and every other copy is replaced with it. That copy may
-     *         include records from a load that did not complete, or records
-     *         that a delete did not remove. A table whose copies all have the
-     *         same number of records is not detected, even if their contents
-     *         differ. The {@link
-     *         com.gpudb.protocol.AdminVerifyDbResponse#getVerifiedOk()
-     *         verifiedOk} flag and {@link
-     *         com.gpudb.protocol.AdminVerifyDbResponse#getErrorList()
-     *         errorList} still report the inconsistencies found before the
-     *         repair; run the verification again to confirm the repair. Only
-     *         the tables selected by {@link Options#TABLE_INCLUDES
-     *         TABLE_INCLUDES} or {@link Options#TABLE_EXCLUDES TABLE_EXCLUDES}
-     *         are repaired. Requires {@link Options#CONCURRENT_SAFE
-     *         CONCURRENT_SAFE} to be {@link Options#TRUE TRUE}, and cannot be
-     *         used with {@link Options#VERIFY_ORPHANED_TABLES_ONLY
-     *         VERIFY_ORPHANED_TABLES_ONLY}. The repaired tables are listed in
-     *         the {@link
-     *         com.gpudb.protocol.AdminVerifyDbResponse.Info#REPAIRED_REPLICATED_TABLES
-     *         REPAIRED_REPLICATED_TABLES} entry of the response {@link
-     *         com.gpudb.protocol.AdminVerifyDbResponse#getInfo() info} map.
-     *         Supported values:
-     *         <ul>
-     *             <li>{@link Options#TRUE TRUE}
-     *             <li>{@link Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link Options#FALSE FALSE}.
      *     <li>{@link Options#TABLE_INCLUDES TABLE_INCLUDES}: Comma-separated
      *         list of table names to include when verifying table consistency
-     *         on wokers. Cannot be used simultaneously with {@link
+     *         on workers. Cannot be used simultaneously with {@link
      *         Options#TABLE_EXCLUDES TABLE_EXCLUDES}.
      *     <li>{@link Options#TABLE_EXCLUDES TABLE_EXCLUDES}: Comma-separated
      *         list of table names to exclude when verifying table consistency
-     *         on wokers. Cannot be used simultaneously with {@link
+     *         on workers. Cannot be used simultaneously with {@link
      *         Options#TABLE_INCLUDES TABLE_INCLUDES}.
      * </ul>
      * The default value is an empty {@link Map}.

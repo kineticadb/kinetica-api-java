@@ -61,6 +61,24 @@ public class AdminRepairTableRequest implements IndexedRecord {
          *         write-ahead log (WAL) replay on the table.
          *     <li>{@link Options#ALTER_TABLE ALTER_TABLE}: Reset columns
          *         modification after incomplete alter column.
+         *     <li>{@link Options#RESYNC_REPLICAS RESYNC_REPLICAS}: Repairs
+         *         replicated tables whose record counts differ across the
+         *         worker ranks and toms: the copy with the most records is
+         *         kept, and every other copy is replaced with it. That copy
+         *         may include records from a load that did not complete, or
+         *         records that a delete did not remove. A table whose copies
+         *         all have the same number of records is not repaired, even if
+         *         their contents differ. Views cannot be named in {@link
+         *         #getTableNames() tableNames}; a named table that is not
+         *         replicated is reported in {@link
+         *         com.gpudb.protocol.AdminRepairTableResponse#getRepairStatus()
+         *         repairStatus}. An asterisk selects every replicated table.
+         *         The repair runs only while no other requests are running.
+         *         The repaired tables are listed in the {@link
+         *         com.gpudb.protocol.AdminRepairTableResponse.Info#REPAIRED_REPLICATED_TABLES
+         *         REPAIRED_REPLICATED_TABLES} entry of the response {@link
+         *         com.gpudb.protocol.AdminRepairTableResponse#getInfo() info}
+         *         map.
          * </ul>
          */
         public static final String REPAIR_POLICY = "repair_policy";
@@ -84,6 +102,25 @@ public class AdminRepairTableRequest implements IndexedRecord {
          * Reset columns modification after incomplete alter column.
          */
         public static final String ALTER_TABLE = "alter_table";
+
+        /**
+         * Repairs replicated tables whose record counts differ across the
+         * worker ranks and toms: the copy with the most records is kept, and
+         * every other copy is replaced with it. That copy may include records
+         * from a load that did not complete, or records that a delete did not
+         * remove. A table whose copies all have the same number of records is
+         * not repaired, even if their contents differ. Views cannot be named
+         * in {@link #getTableNames() tableNames}; a named table that is not
+         * replicated is reported in {@link
+         * com.gpudb.protocol.AdminRepairTableResponse#getRepairStatus()
+         * repairStatus}. An asterisk selects every replicated table. The
+         * repair runs only while no other requests are running. The repaired
+         * tables are listed in the {@link
+         * com.gpudb.protocol.AdminRepairTableResponse.Info#REPAIRED_REPLICATED_TABLES
+         * REPAIRED_REPLICATED_TABLES} entry of the response {@link
+         * com.gpudb.protocol.AdminRepairTableResponse#getInfo() info} map.
+         */
+        public static final String RESYNC_REPLICAS = "resync_replicas";
 
         /**
          * If {@link Options#FALSE FALSE} only table chunk data already known
@@ -142,6 +179,31 @@ public class AdminRepairTableRequest implements IndexedRecord {
      *                             <li>{@link Options#ALTER_TABLE ALTER_TABLE}:
      *                                 Reset columns modification after
      *                                 incomplete alter column.
+     *                             <li>{@link Options#RESYNC_REPLICAS
+     *                                 RESYNC_REPLICAS}: Repairs replicated
+     *                                 tables whose record counts differ across
+     *                                 the worker ranks and toms: the copy with
+     *                                 the most records is kept, and every
+     *                                 other copy is replaced with it. That
+     *                                 copy may include records from a load
+     *                                 that did not complete, or records that a
+     *                                 delete did not remove. A table whose
+     *                                 copies all have the same number of
+     *                                 records is not repaired, even if their
+     *                                 contents differ. Views cannot be named
+     *                                 in {@code tableNames}; a named table
+     *                                 that is not replicated is reported in
+     *                                 {@link
+     *                                 com.gpudb.protocol.AdminRepairTableResponse#getRepairStatus()
+     *                                 repairStatus}. An asterisk selects every
+     *                                 replicated table. The repair runs only
+     *                                 while no other requests are running. The
+     *                                 repaired tables are listed in the {@link
+     *                                 com.gpudb.protocol.AdminRepairTableResponse.Info#REPAIRED_REPLICATED_TABLES
+     *                                 REPAIRED_REPLICATED_TABLES} entry of the
+     *                                 response {@link
+     *                                 com.gpudb.protocol.AdminRepairTableResponse#getInfo()
+     *                                 info} map.
      *                         </ul>
      *                     <li>{@link Options#VERIFY_ALL VERIFY_ALL}: If {@link
      *                         Options#FALSE FALSE} only table chunk data
@@ -221,6 +283,25 @@ public class AdminRepairTableRequest implements IndexedRecord {
      *                 write-ahead log (WAL) replay on the table.
      *             <li>{@link Options#ALTER_TABLE ALTER_TABLE}: Reset columns
      *                 modification after incomplete alter column.
+     *             <li>{@link Options#RESYNC_REPLICAS RESYNC_REPLICAS}: Repairs
+     *                 replicated tables whose record counts differ across the
+     *                 worker ranks and toms: the copy with the most records is
+     *                 kept, and every other copy is replaced with it. That
+     *                 copy may include records from a load that did not
+     *                 complete, or records that a delete did not remove. A
+     *                 table whose copies all have the same number of records
+     *                 is not repaired, even if their contents differ. Views
+     *                 cannot be named in {@link #getTableNames() tableNames};
+     *                 a named table that is not replicated is reported in
+     *                 {@link
+     *                 com.gpudb.protocol.AdminRepairTableResponse#getRepairStatus()
+     *                 repairStatus}. An asterisk selects every replicated
+     *                 table. The repair runs only while no other requests are
+     *                 running. The repaired tables are listed in the {@link
+     *                 com.gpudb.protocol.AdminRepairTableResponse.Info#REPAIRED_REPLICATED_TABLES
+     *                 REPAIRED_REPLICATED_TABLES} entry of the response {@link
+     *                 com.gpudb.protocol.AdminRepairTableResponse#getInfo()
+     *                 info} map.
      *         </ul>
      *     <li>{@link Options#VERIFY_ALL VERIFY_ALL}: If {@link Options#FALSE
      *         FALSE} only table chunk data already known to be corrupted will
@@ -256,6 +337,25 @@ public class AdminRepairTableRequest implements IndexedRecord {
      *                 write-ahead log (WAL) replay on the table.
      *             <li>{@link Options#ALTER_TABLE ALTER_TABLE}: Reset columns
      *                 modification after incomplete alter column.
+     *             <li>{@link Options#RESYNC_REPLICAS RESYNC_REPLICAS}: Repairs
+     *                 replicated tables whose record counts differ across the
+     *                 worker ranks and toms: the copy with the most records is
+     *                 kept, and every other copy is replaced with it. That
+     *                 copy may include records from a load that did not
+     *                 complete, or records that a delete did not remove. A
+     *                 table whose copies all have the same number of records
+     *                 is not repaired, even if their contents differ. Views
+     *                 cannot be named in {@link #getTableNames() tableNames};
+     *                 a named table that is not replicated is reported in
+     *                 {@link
+     *                 com.gpudb.protocol.AdminRepairTableResponse#getRepairStatus()
+     *                 repairStatus}. An asterisk selects every replicated
+     *                 table. The repair runs only while no other requests are
+     *                 running. The repaired tables are listed in the {@link
+     *                 com.gpudb.protocol.AdminRepairTableResponse.Info#REPAIRED_REPLICATED_TABLES
+     *                 REPAIRED_REPLICATED_TABLES} entry of the response {@link
+     *                 com.gpudb.protocol.AdminRepairTableResponse#getInfo()
+     *                 info} map.
      *         </ul>
      *     <li>{@link Options#VERIFY_ALL VERIFY_ALL}: If {@link Options#FALSE
      *         FALSE} only table chunk data already known to be corrupted will

@@ -7,7 +7,7 @@ import com.gpudb.filesystem.ingest.IngestOptions;
 import com.gpudb.filesystem.ingest.IngestResult;
 import com.gpudb.filesystem.ingest.TableCreationOptions;
 import com.gpudb.filesystem.upload.UploadOptions;
-import com.gpudb.protocol.DeleteDirectoryRequest;
+import com.gpudb.protocol.DeleteFilesRequest;
 import com.gpudb.protocol.InsertRecordsFromFilesResponse;
 
 import java.util.*;
@@ -80,19 +80,23 @@ class FileIngestor {
      * to ingest from the uploaded files.
      *
      * The files are uploaded to the location identified by 'kifs://~/<some_uuid>' where '~' indicates the user's
-     * home directory on the server and ingested there from.
+     * home directory on the server and ingested there from.  The uploaded copies
+     * are deleted afterward, whether or not the upload or ingest succeeded.
      *
      * @return  An {@link IngestResult} object
      */
     IngestResult ingestFromFiles() {
         final String ingestStagingDir = UUID.randomUUID().toString();
-        Set<String> filesUploaded = new HashSet<>();
+
+        // Upload the files to '~/" on KIFS, this directory is automatically aliased to
+        // the users' home directory
+        final String remoteDirName = GPUdbFileHandler.REMOTE_USER_HOME_DIR_PREFIX + GPUdbFileHandler.KIFS_PATH_SEPARATOR + ingestStagingDir;
+
+        // KiFS paths of the staged copies, without the 'kifs://' prefix.  Known
+        // before the upload starts, so that a partial upload is removed as well.
+        final List<String> stagedFiles = new ArrayList<>();
 
         try {
-            // Upload the files to '~/" on KIFS, this directory is automatically aliased to
-            // the users' home directory
-            final String remoteDirName = GPUdbFileHandler.REMOTE_USER_HOME_DIR_PREFIX + GPUdbFileHandler.KIFS_PATH_SEPARATOR + ingestStagingDir;
-
             this.fileUploader = new FileUploader(
                     this.db,
                     this.fileNames,
@@ -102,21 +106,16 @@ class FileIngestor {
                     new GPUdbFileHandler.Options());
 
             // Get the names of the files uploaded without any path component
-            filesUploaded = this.fileUploader.getNamesOfFilesUploaded();
+            for (String fileName : this.fileUploader.getNamesOfFilesUploaded())
+                stagedFiles.add( remoteDirName + GPUdbFileHandler.KIFS_PATH_SEPARATOR + fileName );
 
             this.fileUploader.upload();
 
 
             List<String> filePaths = new ArrayList<>();
 
-            for (String fileName : filesUploaded) {
-                String fullyQualifiedFileName = String.format("%s%s%s%s",
-                        GPUdbFileHandler.KIFS_PATH_PREFIX,
-                        remoteDirName,
-                        GPUdbFileHandler.KIFS_PATH_SEPARATOR,
-                        fileName);
-                filePaths.add( fullyQualifiedFileName );
-            }
+            for (String stagedFile : stagedFiles)
+                filePaths.add( GPUdbFileHandler.KIFS_PATH_PREFIX + stagedFile );
 
             InsertRecordsFromFilesResponse resp = this.db.insertRecordsFromFiles(
                     this.tableName,
@@ -126,25 +125,41 @@ class FileIngestor {
                     this.ingestOptions.getOptions()
             );
 
-            deleteIngestedFiles( ingestStagingDir);
             return convertToIngestResult(resp, null);
         } catch (GPUdbException ex) {
             GPUdbLogger.error( ex.getMessage() );
-            deleteIngestedFiles( ingestStagingDir);
             return convertToIngestResult( null, ex );
+        } finally {
+            deleteStagedFiles( stagedFiles );
         }
     }
 
-    private void deleteIngestedFiles(final String remoteDirName) {
+    /**
+     * Deletes the staged copies of the ingested files.
+     *
+     * They are deleted by name rather than by removing the staging directory:
+     * that directory is a subdirectory of the user's KiFS home directory, and
+     * {@link GPUdb#deleteDirectory(String, Map)} accepts only top-level
+     * directories.  A KiFS subdirectory exists only as part of the paths of the
+     * files in it, so nothing is left once they are gone.
+     *
+     * A failure here is logged rather than thrown, so that it does not mask the
+     * outcome of the ingest itself.
+     *
+     * @param stagedFiles  KiFS paths, without the 'kifs://' prefix, of the
+     *        staged copies to delete; files never uploaded are ignored
+     */
+    private void deleteStagedFiles(final List<String> stagedFiles) {
+        if (stagedFiles.isEmpty())
+            return;
 
         Map<String, String> options = new HashMap<>();
-        options.put( DeleteDirectoryRequest.Options.RECURSIVE, DeleteDirectoryRequest.Options.TRUE);
-        options.put( DeleteDirectoryRequest.Options.NO_ERROR_IF_NOT_EXISTS, DeleteDirectoryRequest.Options.TRUE);
+        options.put( DeleteFilesRequest.Options.NO_ERROR_IF_NOT_EXISTS, DeleteFilesRequest.Options.TRUE );
 
         try {
-            this.db.deleteDirectory(remoteDirName, options);
+            this.db.deleteFiles( stagedFiles, options );
         } catch (GPUdbException e) {
-            GPUdbLogger.error( e.getMessage() );
+            GPUdbLogger.error( String.format( "Could not delete staged ingest files %s: %s", stagedFiles, e.getMessage() ) );
         }
     }
 

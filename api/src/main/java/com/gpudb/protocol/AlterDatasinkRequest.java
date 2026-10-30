@@ -116,7 +116,10 @@ public class AlterDatasinkRequest implements IndexedRecord {
 
         /**
          * Amazon IAM Role ARN which has required S3 permissions that can be
-         * assumed for the given S3 IAM user.
+         * assumed for the given S3 IAM user. Assuming the role requires access
+         * keys, from the {@code CREDENTIAL}, or {@code
+         * USE_MANAGED_CREDENTIALS} set to true; with neither, connecting to
+         * the bucket fails.
          */
         public static final String S3_AWS_ROLE_ARN = "s3_aws_role_arn";
 
@@ -432,7 +435,12 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *                                    S3_AWS_ROLE_ARN}: Amazon IAM Role ARN
      *                                    which has required S3 permissions
      *                                    that can be assumed for the given S3
-     *                                    IAM user.
+     *                                    IAM user. Assuming the role requires
+     *                                    access keys, from the {@code
+     *                                    CREDENTIAL}, or {@code
+     *                                    USE_MANAGED_CREDENTIALS} set to true;
+     *                                    with neither, connecting to the
+     *                                    bucket fails.
      *                                <li>{@link
      *                                    DatasinkUpdatesMap#S3_ENCRYPTION_CUSTOMER_ALGORITHM
      *                                    S3_ENCRYPTION_CUSTOMER_ALGORITHM}:
@@ -725,7 +733,10 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *         The default value is {@link DatasinkUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasinkUpdatesMap#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}:
      *         Amazon IAM Role ARN which has required S3 permissions that can
-     *         be assumed for the given S3 IAM user.
+     *         be assumed for the given S3 IAM user. Assuming the role requires
+     *         access keys, from the {@code CREDENTIAL}, or {@code
+     *         USE_MANAGED_CREDENTIALS} set to true; with neither, connecting
+     *         to the bucket fails.
      *     <li>{@link DatasinkUpdatesMap#S3_ENCRYPTION_CUSTOMER_ALGORITHM
      *         S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer encryption algorithm
      *         used encrypting data.
@@ -904,7 +915,10 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *         The default value is {@link DatasinkUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasinkUpdatesMap#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}:
      *         Amazon IAM Role ARN which has required S3 permissions that can
-     *         be assumed for the given S3 IAM user.
+     *         be assumed for the given S3 IAM user. Assuming the role requires
+     *         access keys, from the {@code CREDENTIAL}, or {@code
+     *         USE_MANAGED_CREDENTIALS} set to true; with neither, connecting
+     *         to the bucket fails.
      *     <li>{@link DatasinkUpdatesMap#S3_ENCRYPTION_CUSTOMER_ALGORITHM
      *         S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer encryption algorithm
      *         used encrypting data.

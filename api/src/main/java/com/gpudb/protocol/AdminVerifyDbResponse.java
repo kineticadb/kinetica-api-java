@@ -39,25 +39,6 @@ public class AdminVerifyDbResponse implements IndexedRecord {
         return schema$;
     }
 
-    /**
-     * A set of string constants for the {@link AdminVerifyDbResponse}
-     * parameter {@link #getInfo() info}.
-     * <p>
-     * Additional information.
-     */
-    public static final class Info {
-        /**
-         * If {@link
-         * com.gpudb.protocol.AdminVerifyDbRequest.Options#REPAIR_REPLICATED_TABLES
-         * REPAIR_REPLICATED_TABLES} is {@link
-         * com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE TRUE},
-         * comma-separated list of the replicated tables that were repaired.
-         */
-        public static final String REPAIRED_REPLICATED_TABLES = "repaired_replicated_tables";
-
-        private Info() {  }
-    }
-
     private boolean verifiedOk;
     private List<String> errorList;
     private long orphanedTablesTotalSize;
@@ -156,17 +137,7 @@ public class AdminVerifyDbResponse implements IndexedRecord {
     }
 
     /**
-     * Additional information.
-     * <ul>
-     *     <li>{@link Info#REPAIRED_REPLICATED_TABLES
-     *         REPAIRED_REPLICATED_TABLES}: If {@link
-     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#REPAIR_REPLICATED_TABLES
-     *         REPAIR_REPLICATED_TABLES} is {@link
-     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE TRUE},
-     *         comma-separated list of the replicated tables that were
-     *         repaired.
-     * </ul>
-     * The default value is an empty {@link Map}.
+     * Additional information. The default value is an empty {@link Map}.
      *
      * @return The current value of {@code info}.
      */
@@ -175,17 +146,7 @@ public class AdminVerifyDbResponse implements IndexedRecord {
     }
 
     /**
-     * Additional information.
-     * <ul>
-     *     <li>{@link Info#REPAIRED_REPLICATED_TABLES
-     *         REPAIRED_REPLICATED_TABLES}: If {@link
-     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#REPAIR_REPLICATED_TABLES
-     *         REPAIR_REPLICATED_TABLES} is {@link
-     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE TRUE},
-     *         comma-separated list of the replicated tables that were
-     *         repaired.
-     * </ul>
-     * The default value is an empty {@link Map}.
+     * Additional information. The default value is an empty {@link Map}.
      *
      * @param info  The new value for {@code info}.
      *

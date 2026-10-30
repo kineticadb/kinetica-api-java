@@ -125,6 +125,16 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String MAX_GET_RECORDS_SIZE = "max_get_records_size";
 
         /**
+         * Number of minutes after its last request that a client session is
+         * automatically dropped, along with its session temp tables (tables
+         * named #name in SQL).  Use 0 to keep sessions until they are
+         * explicitly dropped with {@link
+         * com.gpudb.GPUdb#dropSession(DropSessionRequest) GPUdb.dropSession}.
+         * The default value is '60'. The minimum allowed value is '0'.
+         */
+        public static final String SQL_SESSION_IDLE_TIMEOUT = "sql_session_idle_timeout";
+
+        /**
          * Accept additional date formats when ingesting and casting strings to
          * dates, datetimes, and timestamps: 'YYYYMMDD', 'YYYY/MM/DD', and
          * month-name forms like 'Aug 20 2026' or '20 August 2026', each
@@ -387,6 +397,14 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String POSTGRES_PROXY_KEEP_ALIVE = "postgres_proxy_keep_alive";
 
         /**
+         * Maximum number of PostgreSQL proxy connections queued while waiting
+         * for a server thread; connections arriving while the queue is full
+         * are refused.  Takes effect immediately for new connections. The
+         * default value is '64'. The minimum allowed value is '1'.
+         */
+        public static final String POSTGRES_PROXY_MAX_QUEUED_CONNECTIONS = "postgres_proxy_max_queued_connections";
+
+        /**
          * The default maximum capacity to apply when creating a KiFS directory
          * (bytes). The minimum allowed value is '-1'.
          */
@@ -556,6 +574,19 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    call. The default value is '20000'.
      *                                    The minimum allowed value is '0'. The
      *                                    maximum allowed value is '1000000'.
+     *                                <li>{@link
+     *                                    PropertyUpdatesMap#SQL_SESSION_IDLE_TIMEOUT
+     *                                    SQL_SESSION_IDLE_TIMEOUT}: Number of
+     *                                    minutes after its last request that a
+     *                                    client session is automatically
+     *                                    dropped, along with its session temp
+     *                                    tables (tables named #name in SQL).
+     *                                    Use 0 to keep sessions until they are
+     *                                    explicitly dropped with {@link
+     *                                    com.gpudb.GPUdb#dropSession(DropSessionRequest)
+     *                                    GPUdb.dropSession}. The default value
+     *                                    is '60'. The minimum allowed value is
+     *                                    '0'.
      *                                <li>{@link
      *                                    PropertyUpdatesMap#ALLOW_ALTERNATE_DATE_FORMATS
      *                                    ALLOW_ALTERNATE_DATE_FORMATS}: Accept
@@ -823,6 +854,17 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    PostgreSQL proxy keep alive. The
      *                                    default value is 'false'.
      *                                <li>{@link
+     *                                    PropertyUpdatesMap#POSTGRES_PROXY_MAX_QUEUED_CONNECTIONS
+     *                                    POSTGRES_PROXY_MAX_QUEUED_CONNECTIONS}:
+     *                                    Maximum number of PostgreSQL proxy
+     *                                    connections queued while waiting for
+     *                                    a server thread; connections arriving
+     *                                    while the queue is full are refused.
+     *                                    Takes effect immediately for new
+     *                                    connections. The default value is
+     *                                    '64'. The minimum allowed value is
+     *                                    '1'.
+     *                                <li>{@link
      *                                    PropertyUpdatesMap#KIFS_DIRECTORY_DATA_LIMIT
      *                                    KIFS_DIRECTORY_DATA_LIMIT}: The
      *                                    default maximum capacity to apply
@@ -939,6 +981,14 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         database will serve for a given data retrieval call. The default
      *         value is '20000'. The minimum allowed value is '0'. The maximum
      *         allowed value is '1000000'.
+     *     <li>{@link PropertyUpdatesMap#SQL_SESSION_IDLE_TIMEOUT
+     *         SQL_SESSION_IDLE_TIMEOUT}: Number of minutes after its last
+     *         request that a client session is automatically dropped, along
+     *         with its session temp tables (tables named #name in SQL).  Use 0
+     *         to keep sessions until they are explicitly dropped with {@link
+     *         com.gpudb.GPUdb#dropSession(DropSessionRequest)
+     *         GPUdb.dropSession}. The default value is '60'. The minimum
+     *         allowed value is '0'.
      *     <li>{@link PropertyUpdatesMap#ALLOW_ALTERNATE_DATE_FORMATS
      *         ALLOW_ALTERNATE_DATE_FORMATS}: Accept additional date formats
      *         when ingesting and casting strings to dates, datetimes, and
@@ -1092,6 +1142,12 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#POSTGRES_PROXY_KEEP_ALIVE
      *         POSTGRES_PROXY_KEEP_ALIVE}: Enable PostgreSQL proxy keep alive.
      *         The default value is 'false'.
+     *     <li>{@link PropertyUpdatesMap#POSTGRES_PROXY_MAX_QUEUED_CONNECTIONS
+     *         POSTGRES_PROXY_MAX_QUEUED_CONNECTIONS}: Maximum number of
+     *         PostgreSQL proxy connections queued while waiting for a server
+     *         thread; connections arriving while the queue is full are
+     *         refused.  Takes effect immediately for new connections. The
+     *         default value is '64'. The minimum allowed value is '1'.
      *     <li>{@link PropertyUpdatesMap#KIFS_DIRECTORY_DATA_LIMIT
      *         KIFS_DIRECTORY_DATA_LIMIT}: The default maximum capacity to
      *         apply when creating a KiFS directory (bytes). The minimum
@@ -1171,6 +1227,14 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         database will serve for a given data retrieval call. The default
      *         value is '20000'. The minimum allowed value is '0'. The maximum
      *         allowed value is '1000000'.
+     *     <li>{@link PropertyUpdatesMap#SQL_SESSION_IDLE_TIMEOUT
+     *         SQL_SESSION_IDLE_TIMEOUT}: Number of minutes after its last
+     *         request that a client session is automatically dropped, along
+     *         with its session temp tables (tables named #name in SQL).  Use 0
+     *         to keep sessions until they are explicitly dropped with {@link
+     *         com.gpudb.GPUdb#dropSession(DropSessionRequest)
+     *         GPUdb.dropSession}. The default value is '60'. The minimum
+     *         allowed value is '0'.
      *     <li>{@link PropertyUpdatesMap#ALLOW_ALTERNATE_DATE_FORMATS
      *         ALLOW_ALTERNATE_DATE_FORMATS}: Accept additional date formats
      *         when ingesting and casting strings to dates, datetimes, and
@@ -1324,6 +1388,12 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#POSTGRES_PROXY_KEEP_ALIVE
      *         POSTGRES_PROXY_KEEP_ALIVE}: Enable PostgreSQL proxy keep alive.
      *         The default value is 'false'.
+     *     <li>{@link PropertyUpdatesMap#POSTGRES_PROXY_MAX_QUEUED_CONNECTIONS
+     *         POSTGRES_PROXY_MAX_QUEUED_CONNECTIONS}: Maximum number of
+     *         PostgreSQL proxy connections queued while waiting for a server
+     *         thread; connections arriving while the queue is full are
+     *         refused.  Takes effect immediately for new connections. The
+     *         default value is '64'. The minimum allowed value is '1'.
      *     <li>{@link PropertyUpdatesMap#KIFS_DIRECTORY_DATA_LIMIT
      *         KIFS_DIRECTORY_DATA_LIMIT}: The default maximum capacity to
      *         apply when creating a KiFS directory (bytes). The minimum

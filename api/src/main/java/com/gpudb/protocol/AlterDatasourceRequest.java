@@ -139,7 +139,10 @@ public class AlterDatasourceRequest implements IndexedRecord {
 
         /**
          * Amazon IAM Role ARN which has required S3 permissions that can be
-         * assumed for the given S3 IAM user.
+         * assumed for the given S3 IAM user. Assuming the role requires access
+         * keys, from the {@code CREDENTIAL} or the {@code USER_NAME} and
+         * {@code PASSWORD}, or {@code USE_MANAGED_CREDENTIALS} set to true;
+         * with neither, connecting to the bucket fails.
          */
         public static final String S3_AWS_ROLE_ARN = "s3_aws_role_arn";
 
@@ -458,7 +461,13 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                      S3_AWS_ROLE_ARN}: Amazon IAM Role
      *                                      ARN which has required S3
      *                                      permissions that can be assumed for
-     *                                      the given S3 IAM user.
+     *                                      the given S3 IAM user. Assuming the
+     *                                      role requires access keys, from the
+     *                                      {@code CREDENTIAL} or the {@code
+     *                                      USER_NAME} and {@code PASSWORD}, or
+     *                                      {@code USE_MANAGED_CREDENTIALS} set
+     *                                      to true; with neither, connecting
+     *                                      to the bucket fails.
      *                                  <li>{@link
      *                                      DatasourceUpdatesMap#S3_ENCRYPTION_CUSTOMER_ALGORITHM
      *                                      S3_ENCRYPTION_CUSTOMER_ALGORITHM}:
@@ -754,7 +763,11 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         The default value is {@link DatasourceUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasourceUpdatesMap#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}:
      *         Amazon IAM Role ARN which has required S3 permissions that can
-     *         be assumed for the given S3 IAM user.
+     *         be assumed for the given S3 IAM user. Assuming the role requires
+     *         access keys, from the {@code CREDENTIAL} or the {@code
+     *         USER_NAME} and {@code PASSWORD}, or {@code
+     *         USE_MANAGED_CREDENTIALS} set to true; with neither, connecting
+     *         to the bucket fails.
      *     <li>{@link DatasourceUpdatesMap#S3_ENCRYPTION_CUSTOMER_ALGORITHM
      *         S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer encryption algorithm
      *         used encrypting data.
@@ -937,7 +950,11 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         The default value is {@link DatasourceUpdatesMap#TRUE TRUE}.
      *     <li>{@link DatasourceUpdatesMap#S3_AWS_ROLE_ARN S3_AWS_ROLE_ARN}:
      *         Amazon IAM Role ARN which has required S3 permissions that can
-     *         be assumed for the given S3 IAM user.
+     *         be assumed for the given S3 IAM user. Assuming the role requires
+     *         access keys, from the {@code CREDENTIAL} or the {@code
+     *         USER_NAME} and {@code PASSWORD}, or {@code
+     *         USE_MANAGED_CREDENTIALS} set to true; with neither, connecting
+     *         to the bucket fails.
      *     <li>{@link DatasourceUpdatesMap#S3_ENCRYPTION_CUSTOMER_ALGORITHM
      *         S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer encryption algorithm
      *         used encrypting data.

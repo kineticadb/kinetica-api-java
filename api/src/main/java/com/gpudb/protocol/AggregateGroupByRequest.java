@@ -126,6 +126,13 @@ public class AggregateGroupByRequest implements IndexedRecord {
          */
         public static final String JSON = "json";
 
+        /**
+         * Indicates that the returned records should be encoded as an Arrow
+         * IPC stream, returned in {@link
+         * com.gpudb.protocol.AggregateGroupByResponse#getData() data}.
+         */
+        public static final String ARROW = "arrow";
+
         private Encoding() {  }
     }
 
@@ -904,6 +911,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                          the returned records should be binary encoded.
      *                      <li>{@link Encoding#JSON JSON}: Indicates that the
      *                          returned records should be JSON-encoded.
+     *                      <li>{@link Encoding#ARROW ARROW}: Indicates that
+     *                          the returned records should be encoded as an
+     *                          Arrow IPC stream, returned in {@link
+     *                          com.gpudb.protocol.AggregateGroupByResponse#getData()
+     *                          data}.
      *                  </ul>
      *                  The default value is {@link Encoding#BINARY BINARY}.
      * @param options  Optional parameters.
@@ -1332,6 +1344,10 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         records should be binary encoded.
      *     <li>{@link Encoding#JSON JSON}: Indicates that the returned records
      *         should be JSON-encoded.
+     *     <li>{@link Encoding#ARROW ARROW}: Indicates that the returned
+     *         records should be encoded as an Arrow IPC stream, returned in
+     *         {@link com.gpudb.protocol.AggregateGroupByResponse#getData()
+     *         data}.
      * </ul>
      * The default value is {@link Encoding#BINARY BINARY}.
      *
@@ -1349,6 +1365,10 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         records should be binary encoded.
      *     <li>{@link Encoding#JSON JSON}: Indicates that the returned records
      *         should be JSON-encoded.
+     *     <li>{@link Encoding#ARROW ARROW}: Indicates that the returned
+     *         records should be encoded as an Arrow IPC stream, returned in
+     *         {@link com.gpudb.protocol.AggregateGroupByResponse#getData()
+     *         data}.
      * </ul>
      * The default value is {@link Encoding#BINARY BINARY}.
      *

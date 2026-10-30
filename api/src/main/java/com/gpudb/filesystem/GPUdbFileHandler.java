@@ -416,12 +416,17 @@ public class GPUdbFileHandler {
      *        target table; use null for
      *        {@link TableCreationOptions default options}.
      *
-     * @throws  GPUdbException If the upload or ingest fails.
+     * @return  The outcome of the ingest:  the target table and the counts of
+     *          records inserted, skipped and updated.
+     *
+     * @throws  GPUdbException If the upload or ingest fails; the error that
+     *          caused the failure is its {@link GPUdbException#getCause() cause}.
      *
      * @see IngestOptions
      * @see TableCreationOptions
+     * @see IngestResult
      */
-    public void ingest( final List<String> fileNames,
+    public IngestResult ingest( final List<String> fileNames,
                         final String tableName,
                         final IngestOptions ingestOptions,
                         final TableCreationOptions createTableOptions ) throws GPUdbException{
@@ -458,8 +463,10 @@ public class GPUdbFileHandler {
         IngestResult ingestResult = ingestor.ingestFromFiles();
 
         if ( ingestResult.getException() != null ) {
-            throw new GPUdbException( ingestResult.getErrorMessage() );
+            throw new GPUdbException( ingestResult.getErrorMessage(), ingestResult.getException() );
         }
+
+        return ingestResult;
     }
 
 

@@ -483,6 +483,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          *     <li>{@link Options#AUTO AUTO}: Auto detect compression type.
          *     <li>{@link Options#GZIP GZIP}: gzip file compression.
          *     <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
+         *     <li>{@link Options#ZSTD ZSTD}: zstd file compression.
          * </ul>
          * The default value is {@link Options#AUTO AUTO}.
          */
@@ -507,6 +508,26 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * bzip2 file compression.
          */
         public static final String BZIP2 = "bzip2";
+
+        /**
+         * zstd file compression.
+         */
+        public static final String ZSTD = "zstd";
+
+        /**
+         * If set to {@link Options#TRUE TRUE}, creates the table specified by
+         * {@link #getTableName() tableName} if it does not already exist.  If
+         * set to {@link Options#FALSE FALSE}, returns an error if the table
+         * does not already exist.  Not supported with {@link
+         * Options#TABLE_PER_FILE TABLE_PER_FILE}.
+         * Supported values:
+         * <ul>
+         *     <li>{@link Options#TRUE TRUE}
+         *     <li>{@link Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link Options#TRUE TRUE}.
+         */
+        public static final String CREATE_TABLE_IF_NOT_EXISTS = "create_table_if_not_exists";
 
         /**
          * Name of an existing external data source from which data file(s)
@@ -1687,8 +1708,24 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                                 compression.
      *                             <li>{@link Options#BZIP2 BZIP2}: bzip2 file
      *                                 compression.
+     *                             <li>{@link Options#ZSTD ZSTD}: zstd file
+     *                                 compression.
      *                         </ul>
      *                         The default value is {@link Options#AUTO AUTO}.
+     *                     <li>{@link Options#CREATE_TABLE_IF_NOT_EXISTS
+     *                         CREATE_TABLE_IF_NOT_EXISTS}: If set to {@link
+     *                         Options#TRUE TRUE}, creates the table specified
+     *                         by {@code tableName} if it does not already
+     *                         exist.  If set to {@link Options#FALSE FALSE},
+     *                         returns an error if the table does not already
+     *                         exist.  Not supported with {@link
+     *                         Options#TABLE_PER_FILE TABLE_PER_FILE}.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link Options#TRUE TRUE}
+     *                             <li>{@link Options#FALSE FALSE}
+     *                         </ul>
+     *                         The default value is {@link Options#TRUE TRUE}.
      *                     <li>{@link Options#DATASOURCE_NAME DATASOURCE_NAME}:
      *                         Name of an existing external data source from
      *                         which data file(s) specified in {@code
@@ -2811,8 +2848,22 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *             <li>{@link Options#AUTO AUTO}: Auto detect compression type.
      *             <li>{@link Options#GZIP GZIP}: gzip file compression.
      *             <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
+     *             <li>{@link Options#ZSTD ZSTD}: zstd file compression.
      *         </ul>
      *         The default value is {@link Options#AUTO AUTO}.
+     *     <li>{@link Options#CREATE_TABLE_IF_NOT_EXISTS
+     *         CREATE_TABLE_IF_NOT_EXISTS}: If set to {@link Options#TRUE
+     *         TRUE}, creates the table specified by {@link #getTableName()
+     *         tableName} if it does not already exist.  If set to {@link
+     *         Options#FALSE FALSE}, returns an error if the table does not
+     *         already exist.  Not supported with {@link Options#TABLE_PER_FILE
+     *         TABLE_PER_FILE}.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#DATASOURCE_NAME DATASOURCE_NAME}: Name of an
      *         existing external data source from which data file(s) specified
      *         in {@link #getFilepaths() filepaths} will be loaded.
@@ -3382,8 +3433,22 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *             <li>{@link Options#AUTO AUTO}: Auto detect compression type.
      *             <li>{@link Options#GZIP GZIP}: gzip file compression.
      *             <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
+     *             <li>{@link Options#ZSTD ZSTD}: zstd file compression.
      *         </ul>
      *         The default value is {@link Options#AUTO AUTO}.
+     *     <li>{@link Options#CREATE_TABLE_IF_NOT_EXISTS
+     *         CREATE_TABLE_IF_NOT_EXISTS}: If set to {@link Options#TRUE
+     *         TRUE}, creates the table specified by {@link #getTableName()
+     *         tableName} if it does not already exist.  If set to {@link
+     *         Options#FALSE FALSE}, returns an error if the table does not
+     *         already exist.  Not supported with {@link Options#TABLE_PER_FILE
+     *         TABLE_PER_FILE}.
+     *         Supported values:
+     *         <ul>
+     *             <li>{@link Options#TRUE TRUE}
+     *             <li>{@link Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link Options#TRUE TRUE}.
      *     <li>{@link Options#DATASOURCE_NAME DATASOURCE_NAME}: Name of an
      *         existing external data source from which data file(s) specified
      *         in {@link #getFilepaths() filepaths} will be loaded.

@@ -39,6 +39,26 @@ public class AdminRepairTableResponse implements IndexedRecord {
         return schema$;
     }
 
+    /**
+     * A set of string constants for the {@link AdminRepairTableResponse}
+     * parameter {@link #getInfo() info}.
+     * <p>
+     * Additional information.
+     */
+    public static final class Info {
+        /**
+         * If {@link
+         * com.gpudb.protocol.AdminRepairTableRequest.Options#REPAIR_POLICY
+         * REPAIR_POLICY} is {@link
+         * com.gpudb.protocol.AdminRepairTableRequest.Options#RESYNC_REPLICAS
+         * RESYNC_REPLICAS}, comma-separated list of the replicated tables that
+         * were repaired.
+         */
+        public static final String REPAIRED_REPLICATED_TABLES = "repaired_replicated_tables";
+
+        private Info() {  }
+    }
+
     private List<String> tableNames;
     private List<String> repairStatus;
     private Map<String, String> info;
@@ -93,6 +113,16 @@ public class AdminRepairTableResponse implements IndexedRecord {
 
     /**
      * Additional information.
+     * <ul>
+     *     <li>{@link Info#REPAIRED_REPLICATED_TABLES
+     *         REPAIRED_REPLICATED_TABLES}: If {@link
+     *         com.gpudb.protocol.AdminRepairTableRequest.Options#REPAIR_POLICY
+     *         REPAIR_POLICY} is {@link
+     *         com.gpudb.protocol.AdminRepairTableRequest.Options#RESYNC_REPLICAS
+     *         RESYNC_REPLICAS}, comma-separated list of the replicated tables
+     *         that were repaired.
+     * </ul>
+     * The default value is an empty {@link Map}.
      *
      * @return The current value of {@code info}.
      */
@@ -102,6 +132,16 @@ public class AdminRepairTableResponse implements IndexedRecord {
 
     /**
      * Additional information.
+     * <ul>
+     *     <li>{@link Info#REPAIRED_REPLICATED_TABLES
+     *         REPAIRED_REPLICATED_TABLES}: If {@link
+     *         com.gpudb.protocol.AdminRepairTableRequest.Options#REPAIR_POLICY
+     *         REPAIR_POLICY} is {@link
+     *         com.gpudb.protocol.AdminRepairTableRequest.Options#RESYNC_REPLICAS
+     *         RESYNC_REPLICAS}, comma-separated list of the replicated tables
+     *         that were repaired.
+     * </ul>
+     * The default value is an empty {@link Map}.
      *
      * @param info  The new value for {@code info}.
      *

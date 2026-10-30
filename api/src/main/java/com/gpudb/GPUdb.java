@@ -1285,6 +1285,32 @@ public class GPUdb extends GPUdbBase {
      *                                 com.gpudb.protocol.AdminRepairTableRequest.Options#ALTER_TABLE
      *                                 ALTER_TABLE}: Reset columns modification
      *                                 after incomplete alter column.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.AdminRepairTableRequest.Options#RESYNC_REPLICAS
+     *                                 RESYNC_REPLICAS}: Repairs replicated
+     *                                 tables whose record counts differ across
+     *                                 the worker ranks and toms: the copy with
+     *                                 the most records is kept, and every
+     *                                 other copy is replaced with it. That
+     *                                 copy may include records from a load
+     *                                 that did not complete, or records that a
+     *                                 delete did not remove. A table whose
+     *                                 copies all have the same number of
+     *                                 records is not repaired, even if their
+     *                                 contents differ. Views cannot be named
+     *                                 in {@code tableNames}; a named table
+     *                                 that is not replicated is reported in
+     *                                 {@link
+     *                                 com.gpudb.protocol.AdminRepairTableResponse#getRepairStatus()
+     *                                 repairStatus}. An asterisk selects every
+     *                                 replicated table. The repair runs only
+     *                                 while no other requests are running. The
+     *                                 repaired tables are listed in the {@link
+     *                                 com.gpudb.protocol.AdminRepairTableResponse.Info#REPAIRED_REPLICATED_TABLES
+     *                                 REPAIRED_REPLICATED_TABLES} entry of the
+     *                                 response {@link
+     *                                 com.gpudb.protocol.AdminRepairTableResponse#getInfo()
+     *                                 info} map.
      *                         </ul>
      *                     <li>{@link
      *                         com.gpudb.protocol.AdminRepairTableRequest.Options#VERIFY_ALL
@@ -1787,9 +1813,8 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.AdminVerifyDbRequest.Options#CONCURRENT_SAFE
      *                         CONCURRENT_SAFE}: When {@link
      *                         com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
-     *                         TRUE}, allows this endpoint to be run safely
-     *                         with other concurrent database operations. Other
-     *                         operations may be slower while this is running.
+     *                         TRUE}, halts other jobs while the verify
+     *                         operation runs.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
@@ -1865,58 +1890,10 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
      *                         FALSE}.
      *                     <li>{@link
-     *                         com.gpudb.protocol.AdminVerifyDbRequest.Options#REPAIR_REPLICATED_TABLES
-     *                         REPAIR_REPLICATED_TABLES}: When {@link
-     *                         com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
-     *                         TRUE}, replicated tables whose record counts
-     *                         differ across the worker ranks and toms are
-     *                         repaired: the copy with the most records is
-     *                         kept, and every other copy is replaced with it.
-     *                         That copy may include records from a load that
-     *                         did not complete, or records that a delete did
-     *                         not remove. A table whose copies all have the
-     *                         same number of records is not detected, even if
-     *                         their contents differ. The {@link
-     *                         com.gpudb.protocol.AdminVerifyDbResponse#getVerifiedOk()
-     *                         verifiedOk} flag and {@link
-     *                         com.gpudb.protocol.AdminVerifyDbResponse#getErrorList()
-     *                         errorList} still report the inconsistencies
-     *                         found before the repair; run the verification
-     *                         again to confirm the repair. Only the tables
-     *                         selected by {@link
-     *                         com.gpudb.protocol.AdminVerifyDbRequest.Options#TABLE_INCLUDES
-     *                         TABLE_INCLUDES} or {@link
-     *                         com.gpudb.protocol.AdminVerifyDbRequest.Options#TABLE_EXCLUDES
-     *                         TABLE_EXCLUDES} are repaired. Requires {@link
-     *                         com.gpudb.protocol.AdminVerifyDbRequest.Options#CONCURRENT_SAFE
-     *                         CONCURRENT_SAFE} to be {@link
-     *                         com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
-     *                         TRUE}, and cannot be used with {@link
-     *                         com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_ORPHANED_TABLES_ONLY
-     *                         VERIFY_ORPHANED_TABLES_ONLY}. The repaired
-     *                         tables are listed in the {@link
-     *                         com.gpudb.protocol.AdminVerifyDbResponse.Info#REPAIRED_REPLICATED_TABLES
-     *                         REPAIRED_REPLICATED_TABLES} entry of the
-     *                         response {@link
-     *                         com.gpudb.protocol.AdminVerifyDbResponse#getInfo()
-     *                         info} map.
-     *                         Supported values:
-     *                         <ul>
-     *                             <li>{@link
-     *                                 com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
-     *                                 TRUE}
-     *                             <li>{@link
-     *                                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
-     *                                 FALSE}
-     *                         </ul>
-     *                         The default value is {@link
-     *                         com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
-     *                         FALSE}.
-     *                     <li>{@link
      *                         com.gpudb.protocol.AdminVerifyDbRequest.Options#TABLE_INCLUDES
      *                         TABLE_INCLUDES}: Comma-separated list of table
      *                         names to include when verifying table
-     *                         consistency on wokers. Cannot be used
+     *                         consistency on workers. Cannot be used
      *                         simultaneously with {@link
      *                         com.gpudb.protocol.AdminVerifyDbRequest.Options#TABLE_EXCLUDES
      *                         TABLE_EXCLUDES}.
@@ -1924,7 +1901,7 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.AdminVerifyDbRequest.Options#TABLE_EXCLUDES
      *                         TABLE_EXCLUDES}: Comma-separated list of table
      *                         names to exclude when verifying table
-     *                         consistency on wokers. Cannot be used
+     *                         consistency on workers. Cannot be used
      *                         simultaneously with {@link
      *                         com.gpudb.protocol.AdminVerifyDbRequest.Options#TABLE_INCLUDES
      *                         TABLE_INCLUDES}.
@@ -3098,7 +3075,9 @@ public class GPUdb extends GPUdbBase {
      * A second, comma-separated value can be added to the {@link
      * com.gpudb.protocol.AggregateStatisticsRequest.Stats#PERCENTILE
      * PERCENTILE} statistic to calculate percentile resolution, e.g., a 50th
-     * percentile with 200 resolution would be 'percentile(50,200)'.
+     * percentile with 200 resolution would be 'percentile(50,200)'. The
+     * allowable range of the percentile resolution is 10 to 10000, with a
+     * default value of 100.
      * <p>
      * The weighted average statistic requires a weight column to be specified
      * in {@link
@@ -3188,7 +3167,9 @@ public class GPUdb extends GPUdbBase {
      * A second, comma-separated value can be added to the {@link
      * com.gpudb.protocol.AggregateStatisticsRequest.Stats#PERCENTILE
      * PERCENTILE} statistic to calculate percentile resolution, e.g., a 50th
-     * percentile with 200 resolution would be 'percentile(50,200)'.
+     * percentile with 200 resolution would be 'percentile(50,200)'. The
+     * allowable range of the percentile resolution is 10 to 10000, with a
+     * default value of 100.
      * <p>
      * The weighted average statistic requires a weight column to be specified
      * in {@link
@@ -3281,14 +3262,20 @@ public class GPUdb extends GPUdbBase {
      *                       percentile of the column(s) (percentile(50.0) will
      *                       be an approximation of the median). Add a second,
      *                       comma-separated value to calculate percentile
-     *                       resolution, e.g., 'percentile(75,150)'.
+     *                       resolution, e.g., 'percentile(75,150)'. The
+     *                       resolution must be between 10 and 10000; the
+     *                       default is 100.
      *                   <li>{@link
      *                       com.gpudb.protocol.AggregateStatisticsRequest.Stats#PERCENTILE_RANK
      *                       PERCENTILE_RANK}: Estimate (via t-digest) of the
      *                       percentile rank of the given value in the
      *                       column(s) (if the given value is the median of the
      *                       column(s), percentile_rank(&lt;median&gt;) will
-     *                       return approximately 50.0).
+     *                       return approximately 50.0). Add a second,
+     *                       comma-separated value to calculate percentile
+     *                       resolution, e.g., 'percentile_rank(1234.56,150)'.
+     *                       The resolution must be between 10 and 10000; the
+     *                       default is 100.
      *               </ul>
      * @param options  Optional parameters.
      *                 <ul>
@@ -4451,7 +4438,12 @@ public class GPUdb extends GPUdbBase {
      *                                    S3_AWS_ROLE_ARN}: Amazon IAM Role ARN
      *                                    which has required S3 permissions
      *                                    that can be assumed for the given S3
-     *                                    IAM user.
+     *                                    IAM user. Assuming the role requires
+     *                                    access keys, from the {@code
+     *                                    CREDENTIAL}, or {@code
+     *                                    USE_MANAGED_CREDENTIALS} set to true;
+     *                                    with neither, connecting to the
+     *                                    bucket fails.
      *                                <li>{@link
      *                                    com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#S3_ENCRYPTION_CUSTOMER_ALGORITHM
      *                                    S3_ENCRYPTION_CUSTOMER_ALGORITHM}:
@@ -4840,7 +4832,13 @@ public class GPUdb extends GPUdbBase {
      *                                      S3_AWS_ROLE_ARN}: Amazon IAM Role
      *                                      ARN which has required S3
      *                                      permissions that can be assumed for
-     *                                      the given S3 IAM user.
+     *                                      the given S3 IAM user. Assuming the
+     *                                      role requires access keys, from the
+     *                                      {@code CREDENTIAL} or the {@code
+     *                                      USER_NAME} and {@code PASSWORD}, or
+     *                                      {@code USE_MANAGED_CREDENTIALS} set
+     *                                      to true; with neither, connecting
+     *                                      to the bucket fails.
      *                                  <li>{@link
      *                                      com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#S3_ENCRYPTION_CUSTOMER_ALGORITHM
      *                                      S3_ENCRYPTION_CUSTOMER_ALGORITHM}:
@@ -5627,6 +5625,18 @@ public class GPUdb extends GPUdbBase {
      *                                    The minimum allowed value is '0'. The
      *                                    maximum allowed value is '1000000'.
      *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SQL_SESSION_IDLE_TIMEOUT
+     *                                    SQL_SESSION_IDLE_TIMEOUT}: Number of
+     *                                    minutes after its last request that a
+     *                                    client session is automatically
+     *                                    dropped, along with its session temp
+     *                                    tables (tables named #name in SQL).
+     *                                    Use 0 to keep sessions until they are
+     *                                    explicitly dropped with {@link
+     *                                    GPUdb#dropSession(Map) dropSession}.
+     *                                    The default value is '60'. The
+     *                                    minimum allowed value is '0'.
+     *                                <li>{@link
      *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ALLOW_ALTERNATE_DATE_FORMATS
      *                                    ALLOW_ALTERNATE_DATE_FORMATS}: Accept
      *                                    additional date formats when
@@ -5900,6 +5910,17 @@ public class GPUdb extends GPUdbBase {
      *                                    POSTGRES_PROXY_KEEP_ALIVE}: Enable
      *                                    PostgreSQL proxy keep alive. The
      *                                    default value is 'false'.
+     *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#POSTGRES_PROXY_MAX_QUEUED_CONNECTIONS
+     *                                    POSTGRES_PROXY_MAX_QUEUED_CONNECTIONS}:
+     *                                    Maximum number of PostgreSQL proxy
+     *                                    connections queued while waiting for
+     *                                    a server thread; connections arriving
+     *                                    while the queue is full are refused.
+     *                                    Takes effect immediately for new
+     *                                    connections. The default value is
+     *                                    '64'. The minimum allowed value is
+     *                                    '1'.
      *                                <li>{@link
      *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KIFS_DIRECTORY_DATA_LIMIT
      *                                    KIFS_DIRECTORY_DATA_LIMIT}: The
@@ -7133,8 +7154,8 @@ public class GPUdb extends GPUdbBase {
      *                         two.
      *                     <li>{@link
      *                         com.gpudb.protocol.AlterWalRequest.Options#SYNC_POLICY
-     *                         SYNC_POLICY}: Maximum size of an individual
-     *                         segment file.
+     *                         SYNC_POLICY}: How write-ahead log entries are
+     *                         synchronized to disk.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
@@ -8582,7 +8603,13 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.CreateDatasinkRequest.Options#S3_AWS_ROLE_ARN
      *                         S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which has
      *                         required S3 permissions that can be assumed for
-     *                         the given S3 IAM user.
+     *                         the given S3 IAM user. Assuming the role
+     *                         requires access keys, from the {@link
+     *                         com.gpudb.protocol.CreateDatasinkRequest.Options#CREDENTIAL
+     *                         CREDENTIAL}, or {@link
+     *                         com.gpudb.protocol.CreateDatasinkRequest.Options#USE_MANAGED_CREDENTIALS
+     *                         USE_MANAGED_CREDENTIALS} set to true; with
+     *                         neither, connecting to the bucket fails.
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateDatasinkRequest.Options#S3_ENCRYPTION_CUSTOMER_ALGORITHM
      *                         S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer
@@ -8900,7 +8927,14 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.CreateDatasourceRequest.Options#S3_AWS_ROLE_ARN
      *                         S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which has
      *                         required S3 permissions that can be assumed for
-     *                         the given S3 IAM user.
+     *                         the given S3 IAM user. Assuming the role
+     *                         requires access keys, from the {@link
+     *                         com.gpudb.protocol.CreateDatasourceRequest.Options#CREDENTIAL
+     *                         CREDENTIAL} or the user name and password, or
+     *                         {@link
+     *                         com.gpudb.protocol.CreateDatasourceRequest.Options#USE_MANAGED_CREDENTIALS
+     *                         USE_MANAGED_CREDENTIALS} set to true; with
+     *                         neither, connecting to the bucket fails.
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateDatasourceRequest.Options#S3_ENCRYPTION_CUSTOMER_ALGORITHM
      *                         S3_ENCRYPTION_CUSTOMER_ALGORITHM}: Customer
@@ -11789,6 +11823,9 @@ public class GPUdb extends GPUdbBase {
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateTableExternalRequest.Options#BZIP2
      *                                 BZIP2}: bzip2 file compression.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.CreateTableExternalRequest.Options#ZSTD
+     *                                 ZSTD}: zstd file compression.
      *                         </ul>
      *                         The default value is {@link
      *                         com.gpudb.protocol.CreateTableExternalRequest.Options#AUTO
@@ -15186,6 +15223,61 @@ public class GPUdb extends GPUdbBase {
         DropSchemaRequest actualRequest_ = new DropSchemaRequest(schemaName, options);
         DropSchemaResponse actualResponse_ = new DropSchemaResponse();
         submitRequest("/drop/schema", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+    /**
+     * Ends the client session named by the X-Kinetica-Session HTTP header of
+     * this request, dropping every session temp table (a table created in SQL
+     * as #name) that belongs to it.  Objects outside the session that depend
+     * on those tables are invalidated, not dropped.
+     * <p>
+     * A client sends its session ID in the X-Kinetica-Session HTTP header to
+     * every endpoint (e.g., /execute/sql), and needs to call this endpoint
+     * only when a response's info map has carried session_id_used set to true.
+     * <p>
+     * Only the user that owns the session, or a system administrator, may drop
+     * it.  Dropping an unknown session is a no-op.
+     *
+     * @param request  {@link DropSessionRequest Request} object containing the
+     *                 parameters for the operation.
+     *
+     * @return {@link DropSessionResponse Response} object containing the
+     *         results of the operation.
+     *
+     * @throws GPUdbException  if an error occurs during the operation.
+     */
+    public DropSessionResponse dropSession(DropSessionRequest request) throws GPUdbException {
+        DropSessionResponse actualResponse_ = new DropSessionResponse();
+        submitRequest("/drop/session", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+    /**
+     * Ends the client session named by the X-Kinetica-Session HTTP header of
+     * this request, dropping every session temp table (a table created in SQL
+     * as #name) that belongs to it.  Objects outside the session that depend
+     * on those tables are invalidated, not dropped.
+     * <p>
+     * A client sends its session ID in the X-Kinetica-Session HTTP header to
+     * every endpoint (e.g., /execute/sql), and needs to call this endpoint
+     * only when a response's info map has carried session_id_used set to true.
+     * <p>
+     * Only the user that owns the session, or a system administrator, may drop
+     * it.  Dropping an unknown session is a no-op.
+     *
+     * @param options  Optional parameters. The default value is an empty
+     *                 {@link Map}.
+     *
+     * @return {@link DropSessionResponse Response} object containing the
+     *         results of the operation.
+     *
+     * @throws GPUdbException  if an error occurs during the operation.
+     */
+    public DropSessionResponse dropSession(Map<String, String> options) throws GPUdbException {
+        DropSessionRequest actualRequest_ = new DropSessionRequest(options);
+        DropSessionResponse actualResponse_ = new DropSessionResponse();
+        submitRequest("/drop/session", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -21882,10 +21974,37 @@ public class GPUdb extends GPUdbBase {
      *                             <li>{@link
      *                                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BZIP2
      *                                 BZIP2}: bzip2 file compression.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ZSTD
+     *                                 ZSTD}: zstd file compression.
      *                         </ul>
      *                         The default value is {@link
      *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO
      *                         AUTO}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#CREATE_TABLE_IF_NOT_EXISTS
+     *                         CREATE_TABLE_IF_NOT_EXISTS}: If set to {@link
+     *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE
+     *                         TRUE}, creates the table specified by {@code
+     *                         tableName} if it does not already exist.  If set
+     *                         to {@link
+     *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+     *                         FALSE}, returns an error if the table does not
+     *                         already exist.  Not supported with {@link
+     *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_PER_FILE
+     *                         TABLE_PER_FILE}.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE
+     *                         TRUE}.
      *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DATASOURCE_NAME
      *                         DATASOURCE_NAME}: Name of an existing external
@@ -23116,10 +23235,37 @@ public class GPUdb extends GPUdbBase {
      *                             <li>{@link
      *                                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BZIP2
      *                                 BZIP2}: bzip2 file compression.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#ZSTD
+     *                                 ZSTD}: zstd file compression.
      *                         </ul>
      *                         The default value is {@link
      *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO
      *                         AUTO}.
+     *                     <li>{@link
+     *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#CREATE_TABLE_IF_NOT_EXISTS
+     *                         CREATE_TABLE_IF_NOT_EXISTS}: If set to {@link
+     *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUE
+     *                         TRUE}, creates the table specified by {@code
+     *                         tableName} if it does not already exist.  If set
+     *                         to {@link
+     *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *                         FALSE}, returns an error if the table does not
+     *                         already exist.  Not supported with {@link
+     *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TABLE_PER_FILE
+     *                         TABLE_PER_FILE}.
+     *                         Supported values:
+     *                         <ul>
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUE
+     *                                 TRUE}
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *                                 FALSE}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUE
+     *                         TRUE}.
      *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DEFAULT_COLUMN_FORMATS
      *                         DEFAULT_COLUMN_FORMATS}: Specifies the default
@@ -26776,7 +26922,20 @@ public class GPUdb extends GPUdbBase {
      *                     <li>{@link
      *                         com.gpudb.protocol.RestoreBackupRequest.Options#DRY_RUN
      *                         DRY_RUN}: Whether or not to perform a dry run of
-     *                         the restoration operation.
+     *                         the restoration operation. With a {@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#RESTORE_POLICY
+     *                         RESTORE_POLICY} of {@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#CLEAN
+     *                         CLEAN} or {@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#CLEAN_ALL
+     *                         CLEAN_ALL}, a dry run lists the objects the
+     *                         clean would drop in the {@link
+     *                         com.gpudb.protocol.RestoreBackupResponse.Info#CLEAN_DROPPED_OBJECTS
+     *                         CLEAN_DROPPED_OBJECTS} entry of the response
+     *                         {@link
+     *                         com.gpudb.protocol.RestoreBackupResponse#getInfo()
+     *                         info} map and drops nothing, and fails as the
+     *                         restore would if the clean is refused.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
@@ -26843,7 +27002,18 @@ public class GPUdb extends GPUdbBase {
      *                         com.gpudb.protocol.RestoreBackupRequest.Options#RESTORE_ALL_PERMISSIONS
      *                         RESTORE_ALL_PERMISSIONS}: Whether or not all
      *                         permissions of restored principals should be
-     *                         restored or scoped to the restored objects.
+     *                         restored or scoped to the restored objects. When
+     *                         {@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#RESTORE_POLICY
+     *                         RESTORE_POLICY} is {@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#CLEAN
+     *                         CLEAN} or {@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#CLEAN_ALL
+     *                         CLEAN_ALL}, the default is {@link
+     *                         com.gpudb.protocol.RestoreBackupRequest.Options#TRUE
+     *                         TRUE}: the clean drops each principal in scope
+     *                         along with all of its permissions, including
+     *                         those on objects it does not drop.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
@@ -26872,7 +27042,14 @@ public class GPUdb extends GPUdbBase {
      *                                 com.gpudb.protocol.RestoreBackupRequest.Options#REPLACE
      *                                 REPLACE}: If an object to be restored
      *                                 already exists with the same name,
-     *                                 replace it with the backup version.
+     *                                 replace it with the backup version. Only
+     *                                 objects in the backup are dropped;
+     *                                 existing objects that are not in the
+     *                                 backup are kept, so the result is a
+     *                                 merge of the backup into the database.
+     *                                 To drop those as well, use {@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#CLEAN
+     *                                 CLEAN}.
      *                             <li>{@link
      *                                 com.gpudb.protocol.RestoreBackupRequest.Options#RENAME
      *                                 RENAME}: If an object to be restored
@@ -26882,6 +27059,78 @@ public class GPUdb extends GPUdbBase {
      *                                 com.gpudb.protocol.RestoreBackupRequest.Options#RENAMED_OBJECTS_SCHEMA
      *                                 RENAMED_OBJECTS_SCHEMA}. This policy
      *                                 does not apply to non-schema objects.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#CLEAN
+     *                                 CLEAN}: Before restoring, drop every
+     *                                 existing object of each object type
+     *                                 being restored, whether or not that
+     *                                 object is in the backup, including
+     *                                 objects that are not persisted; object
+     *                                 types not being restored are left
+     *                                 untouched, and schemas are not dropped.
+     *                                 Unlike {@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#REPLACE
+     *                                 REPLACE}, the clean is scoped by object
+     *                                 type, not by name: restoring a single
+     *                                 table drops every table in the database
+     *                                 first, and the response warns when the
+     *                                 objects to restore name specific objects
+     *                                 of a type rather than all of them. Use
+     *                                 {@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#DRY_RUN
+     *                                 DRY_RUN} to list the objects that would
+     *                                 be dropped. The restore is refused,
+     *                                 before anything is dropped, if an object
+     *                                 that would be dropped is still used by
+     *                                 an object of a type that is not being
+     *                                 restored, or cannot be dropped, such as
+     *                                 a table locked by a backup in progress.
+     *                                 As graphs, contexts, table monitors and
+     *                                 stored procedures all depend on tables,
+     *                                 restoring tables requires restoring each
+     *                                 of those types of which any objects
+     *                                 exist. A data sink generated for a
+     *                                 monitor is dropped along with the
+     *                                 monitor, and a home directory only along
+     *                                 with its user. Objects created by other
+     *                                 sessions while the restore runs are not
+     *                                 dropped. If the restore fails after the
+     *                                 clean, the dropped objects are not put
+     *                                 back. System objects, the data source
+     *                                 being restored from and its credential,
+     *                                 the calling user and admin, with their
+     *                                 default schemas, home directories and
+     *                                 resource groups, and the calling user's
+     *                                 roles are never dropped, nor are the
+     *                                 schemas holding any of these. Requires
+     *                                 system administrator permission.
+     *                             <li>{@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#CLEAN_ALL
+     *                                 CLEAN_ALL}: Before restoring, drop every
+     *                                 existing object in the database,
+     *                                 regardless of which objects are being
+     *                                 restored, including users, roles,
+     *                                 non-system schemas and objects that are
+     *                                 not persisted. The restore is refused,
+     *                                 before anything is dropped, if an object
+     *                                 cannot be dropped, such as a table
+     *                                 locked by a backup in progress, or is
+     *                                 still used by an object the clean keeps,
+     *                                 such as a resource group a system user
+     *                                 is in; it also requires {@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#CREATE_SCHEMA_IF_NOT_EXIST
+     *                                 CREATE_SCHEMA_IF_NOT_EXIST} to be {@link
+     *                                 com.gpudb.protocol.RestoreBackupRequest.Options#TRUE
+     *                                 TRUE}. If the restore fails after the
+     *                                 clean, the dropped objects are not put
+     *                                 back. System objects, the data source
+     *                                 being restored from and its credential,
+     *                                 the calling user and admin, with their
+     *                                 default schemas, home directories and
+     *                                 resource groups, and the calling user's
+     *                                 roles are never dropped, nor are the
+     *                                 schemas holding any of these. Requires
+     *                                 system administrator permission.
      *                         </ul>
      *                         The default value is {@link
      *                         com.gpudb.protocol.RestoreBackupRequest.Options#NONE

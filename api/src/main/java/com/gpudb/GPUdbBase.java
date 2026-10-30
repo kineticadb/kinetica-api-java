@@ -11,7 +11,6 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.DecoderFactory;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.hc.client5.http.HttpRequestRetryStrategy;
@@ -147,7 +146,7 @@ import java.util.stream.Stream;
  * @see GPUdbBase.Options#setBypassSslCertCheck(boolean)
 */
 
-public abstract class GPUdbBase {
+public abstract class GPUdbBase implements AutoCloseable {
 
     // The amount of time for checking if a given IP/hostname is good (5 seconds)
     private static final int DEFAULT_SERVER_CONNECTION_TIMEOUT = 5000;
@@ -228,6 +227,7 @@ public abstract class GPUdbBase {
         private Map<String, String> httpHeaders = new HashMap<>();
         private String clientName;
         private String clientVersion;
+        private String sessionId;
         private int   timeout;
         private boolean tcpKeepAlive = true;
         private int   tcpKeepIdle = 0;      // 0 = use OS default (7200 seconds on Linux)
@@ -268,6 +268,7 @@ public abstract class GPUdbBase {
             this.httpHeaders          = new HashMap<>( other.httpHeaders );
             this.clientName           = other.clientName;
             this.clientVersion        = other.clientVersion;
+            this.sessionId            = other.sessionId;
             this.timeout              = other.timeout;
             this.tcpKeepAlive                = other.tcpKeepAlive;
             this.tcpKeepIdle                 = other.tcpKeepIdle;
@@ -316,6 +317,7 @@ public abstract class GPUdbBase {
                                             toStringKeyValue("httpHeaders",                           this.httpHeaders,                           false),
                                             toStringKeyValue("clientName",                            this.clientName,                            false),
                                             toStringKeyValue("clientVersion",                         this.clientVersion,                         false),
+                                            toStringKeyValue("sessionId",                             this.sessionId,                             false),
                                             toStringKeyValue("hmPort",                                this.hmPort,                                false),
                                             toStringKeyValue("timeout",                               this.timeout,                               false),
                                             toStringKeyValue("tcpKeepAlive",                          this.tcpKeepAlive,                          false),
@@ -1217,6 +1219,40 @@ public abstract class GPUdbBase {
                 this.clientName    = clientName;
                 this.clientVersion = clientVersion;
             }
+            return this;
+        }
+
+
+        /**
+         * Gets the session id for SQL {@code #name} temp tables, or
+         * {@code null} if none has been set.
+         *
+         * @return the session id, or {@code null}
+         *
+         * @see #setSessionId(String)
+         */
+        public String getSessionId() {
+            return this.sessionId;
+        }
+
+
+        /**
+         * Sets the session id for SQL {@code #name} temp tables, so that
+         * several {@link GPUdb} objects can share one session's temp tables.
+         * The caller must drop that session, by calling
+         * {@link GPUdb#dropSession} on a {@link GPUdb} object given the same
+         * session id; {@link GPUdb#close()} does not.  If {@code null} or empty (the
+         * default), each {@link GPUdb} object has its own session, which its
+         * {@link GPUdb#close()} drops.  A session id may contain only letters,
+         * digits and {@code -}, as a UUID does; the server refuses any other.
+         *
+         * @param value  the session id, or {@code null}
+         * @return       the current {@link Options} instance
+         *
+         * @see #getSessionId()
+         */
+        public Options setSessionId(String value) {
+            this.sessionId = value;
             return this;
         }
 
@@ -2190,11 +2226,20 @@ public abstract class GPUdbBase {
     /**
      * This class provides options to control JSON ingest using {@link BulkInserter}.
      * By default, for performance reasons {@link JsonOptions#VALIDATE_JSON} is set to
-     * false and {@link JsonOptions#COMPRESSION_ON} set to true
+     * false.
+     * <p>
+     * Compression of JSON payloads is not implemented yet.  The compression
+     * setting is accepted, and defaults to {@link JsonOptions#COMPRESSION_ON},
+     * but has no effect:  JSON requests are always sent uncompressed.
      */
     public static final class JsonOptions {
 
         public static final boolean VALIDATE_JSON = false;
+
+        /**
+         * The default compression setting.  Compression of JSON payloads is
+         * not implemented yet, so this setting has no effect.
+         */
         public static final boolean COMPRESSION_ON = true;
 
         private final boolean validateJson;
@@ -2218,6 +2263,15 @@ public abstract class GPUdbBase {
         }
 
 
+        /**
+         * Creates JSON options with the given settings.
+         *
+         * @param validateJson   whether {@link BulkInserter} validates each JSON
+         *                       record before queuing it for insertion
+         * @param compressionOn  whether to compress JSON payloads; compression
+         *                       of JSON payloads is not implemented yet, so this
+         *                       has no effect
+         */
         public JsonOptions(boolean validateJson, boolean compressionOn) {
             this.validateJson = validateJson;
             this.compressionOn = compressionOn;
@@ -2229,6 +2283,12 @@ public abstract class GPUdbBase {
         }
 
 
+        /**
+         * Returns the compression setting.  Compression of JSON payloads is not
+         * implemented yet, so this setting has no effect.
+         *
+         * @return  the compression setting given at construction
+         */
         public boolean isCompressionOn() {
             return this.compressionOn;
         }
@@ -2812,14 +2872,26 @@ public abstract class GPUdbBase {
     protected static final String HEADER_AUTHORIZATION = "Authorization";
     protected static final String HEADER_CONTENT_TYPE  = "Content-type";
     protected static final String HEADER_USER_AGENT    = "User-Agent";
+    protected static final String HEADER_SESSION       = "X-Kinetica-Session";
 
     // Headers that are read-only once the connection has been created
     protected static final String[] PROTECTED_HEADERS = new String[]{
         HEADER_HA_SYNC_MODE,
         HEADER_AUTHORIZATION,
         HEADER_CONTENT_TYPE,
-        HEADER_USER_AGENT
+        HEADER_USER_AGENT,
+        HEADER_SESSION
     };
+
+    /**
+     * Key in a response's {@code info} map that the server sets to
+     * {@code "true"} once this connection's session owns objects (SQL
+     * {@code #name} temp tables) that {@link #close()} must drop.
+     */
+    protected static final String RESPONSE_INFO_SESSION_ID_USED = "session_id_used";
+
+    /** Drops the sessions of connections that are collected without being closed. */
+    private static final java.lang.ref.Cleaner SESSION_CLEANER = java.lang.ref.Cleaner.create();
 
     /**
      * The program name reported in the {@code User-Agent} HTTP header sent with
@@ -3440,6 +3512,15 @@ public abstract class GPUdbBase {
     private ConcurrentHashMap<Class<?>, TypeObjectMap<?>> knownTypeObjectMaps;
     private ConcurrentHashMap<String, Object> knownTypes;
 
+    // Session temp tables: every request carries this object's session id, so
+    // the SQL #name temp tables it creates are its own.  A minted session is
+    // dropped when this object is closed; a caller-supplied one is the caller's to drop.
+    private String sessionId;
+    private boolean ownsSession;
+    private SessionCleanup sessionCleanup;
+    private java.lang.ref.Cleaner.Cleanable sessionCleanable;
+    private volatile boolean closed = false;
+
 
     // Constructors
     // ------------
@@ -3524,6 +3605,11 @@ public abstract class GPUdbBase {
      *                          2. Error raised in case of any SSL related handling like mismatched certificate etc.
      */
     private void init(List<URL> urls, Options optionList) throws GPUdbException {
+        String callerSessionId = optionList.getSessionId();
+        this.ownsSession    = (callerSessionId == null) || callerSessionId.isEmpty();
+        this.sessionId      = this.ownsSession ? UUID.randomUUID().toString() : callerSessionId;
+        this.sessionCleanup = new SessionCleanup( this.sessionId );
+
         // Save the options object
         this.options  = optionList;
 
@@ -3949,6 +4035,10 @@ public abstract class GPUdbBase {
             String msg = String.format("Connectivity check for <%s> failed: %s", this.getURL(), ex.getMessage());
             throw new GPUdbException( msg, ex );
         }
+
+        // Drop the session even if this object is never closed
+        this.sessionCleanup.setSslOptions( this.bypassSslCertCheck, this.trustStoreFilePath, this.trustStorePassword );
+        this.sessionCleanable = SESSION_CLEANER.register( this, this.sessionCleanup );
     }   // end init
 
 
@@ -3960,7 +4050,194 @@ public abstract class GPUdbBase {
 
         this.httpClient.close(CloseMode.GRACEFUL);
         this.httpClientFastConnect.close(CloseMode.GRACEFUL);
-        this.failbackPollerService.stop();
+        if (this.failbackPollerService != null)
+            this.failbackPollerService.stop();
+    }
+
+
+    /**
+     * Closes this connection: drops the SQL {@code #name} temp tables it
+     * created, if any, and releases its HTTP clients.  The object cannot be
+     * used afterwards.  Closing an already-closed connection does nothing.
+     * A session id given by {@link Options#setSessionId} is not dropped: the
+     * caller drops it with {@link GPUdb#dropSession}.
+     * <p>
+     * A connection that is never closed still has its temp tables dropped
+     * when it is garbage collected, on a best-effort basis; failing that, the
+     * server reclaims them on its own.  Closing it is what makes the drop
+     * prompt.
+     */
+    @Override
+    public void close() {
+        if (this.closed)
+            return;
+        this.closed = true;
+
+        // Drop through the full client, with fail-over, rather than leaving it
+        // to the best-effort collection-time path
+        if (this.sessionCleanup.isArmed()) {
+            try {
+                submitRequest( "/drop/session",
+                               new DropSessionRequest( new HashMap<String, String>() ),
+                               new DropSessionResponse(), false );
+            } catch (GPUdbException ex) {
+                GPUdbLogger.warn( "Unable to drop session <" + this.sessionId + ">: " + ex.getMessage() );
+            }
+        }
+        this.sessionCleanup.disarm();
+        if (this.sessionCleanable != null)
+            this.sessionCleanable.clean();
+
+        if (this.failbackPollerService != null)
+            this.failbackPollerService.stop();
+        this.httpClient.close(CloseMode.GRACEFUL);
+        this.httpClientFastConnect.close(CloseMode.GRACEFUL);
+    }
+
+
+    /**
+     * Notes whether a response reports this connection's session as used, in
+     * which case {@link #close()} (or collection) must drop it.  Once set, it
+     * stays set: a spurious drop costs one round trip, a missed one strands
+     * tables until the server reclaims them.
+     */
+    private void noteSessionUsed( IndexedRecord response ) {
+        if (!this.ownsSession || this.sessionCleanup.isArmed())
+            return;
+
+        Schema.Field infoField = response.getSchema().getField( "info" );
+        if (infoField == null)
+            return;
+
+        Object info = response.get( infoField.pos() );
+        if (!(info instanceof Map))
+            return;
+
+        Object used = ((Map<?, ?>) info).get( RESPONSE_INFO_SESSION_ID_USED );
+        if (used == null || !"true".equals( used.toString() ))
+            return;
+
+        try {
+            Map<String, String> headers = new HashMap<>( this.httpHeaders );
+            if ( this.haSyncMode != HASynchronicityMode.DEFAULT )
+                headers.put( HEADER_HA_SYNC_MODE, this.haSyncMode.getMode() );
+            if (this.authorization != null)
+                headers.put( HEADER_AUTHORIZATION, this.authorization );
+            headers.put( HEADER_SESSION, this.sessionId );
+            headers.put( HEADER_CONTENT_TYPE, "application/octet-stream" );
+
+            byte[] body = Avro.encode(
+                    new DropSessionRequest( new HashMap<String, String>() ) ).array();
+
+            this.sessionCleanup.arm( appendPathToURL( getURL(), "/drop/session" ), headers, body );
+        } catch (Exception ex) {
+            GPUdbLogger.warn( "Unable to prepare the drop of session <" + this.sessionId + ">: " + ex.getMessage() );
+        }
+    }
+
+
+    /**
+     * The collection-time drop of a {@link GPUdbBase}'s session, run by a
+     * {@link java.lang.ref.Cleaner}.  It must not reference the connection it
+     * cleans up (or the connection would never become collectable), so it is a
+     * static class holding a snapshot of what the request needs, taken when the
+     * server first reports the session used, and sends it with its own minimal
+     * HTTP client: one best-effort POST with a short timeout and no fail-over.
+     * {@link GPUdbBase#close()} disarms it after dropping the session itself.
+     */
+    private static final class SessionCleanup implements Runnable {
+        private static final java.time.Duration TIMEOUT = java.time.Duration.ofSeconds( 10 );
+
+        private final String sessionId;
+        private volatile boolean bypassSslCertCheck;
+        private volatile String  trustStoreFilePath;
+        private volatile String  trustStorePassword;
+
+        private volatile URL                 dropUrl;
+        private volatile Map<String, String> dropHeaders;
+        private volatile byte[]              dropBody;
+
+        SessionCleanup( String sessionId ) {
+            this.sessionId = sessionId;
+        }
+
+        void setSslOptions( boolean bypassSslCertCheck, String trustStoreFilePath, String trustStorePassword ) {
+            this.bypassSslCertCheck = bypassSslCertCheck;
+            this.trustStoreFilePath = trustStoreFilePath;
+            this.trustStorePassword = trustStorePassword;
+        }
+
+        boolean isArmed() {
+            return this.dropUrl != null;
+        }
+
+        void arm( URL url, Map<String, String> headers, byte[] body ) {
+            this.dropHeaders = headers;
+            this.dropBody    = body;
+            this.dropUrl     = url;
+        }
+
+        void disarm() {
+            this.dropUrl = null;
+        }
+
+        @Override
+        public void run() {
+            URL url = this.dropUrl;
+            if (url == null)
+                return;
+            this.dropUrl = null;
+
+            try {
+                java.net.http.HttpClient.Builder clientBuilder = java.net.http.HttpClient.newBuilder()
+                        .connectTimeout( TIMEOUT );
+                SSLContext sslContext = createSslContext();
+                if (sslContext != null)
+                    clientBuilder.sslContext( sslContext );
+
+                java.net.http.HttpRequest.Builder requestBuilder = java.net.http.HttpRequest.newBuilder( url.toURI() )
+                        .timeout( TIMEOUT )
+                        .POST( java.net.http.HttpRequest.BodyPublishers.ofByteArray( this.dropBody ) );
+                for (Map.Entry<String, String> header : this.dropHeaders.entrySet()) {
+                    // The client sets these itself and rejects them as user headers
+                    if (!header.getKey().equalsIgnoreCase( "Host" ) &&
+                        !header.getKey().equalsIgnoreCase( "Connection" ) &&
+                        !header.getKey().equalsIgnoreCase( "Content-Length" ))
+                        requestBuilder.header( header.getKey(), header.getValue() );
+                }
+
+                clientBuilder.build().send( requestBuilder.build(),
+                                            java.net.http.HttpResponse.BodyHandlers.discarding() );
+            } catch (Exception ex) {
+                // Best effort: the server reclaims the session on its own
+                GPUdbLogger.debug( "Unable to drop session <" + this.sessionId + "> at collection: " + ex.getMessage() );
+            }
+        }
+
+        /** The same trust the connection used; null for the JVM default. */
+        private SSLContext createSslContext() throws Exception {
+            if (this.bypassSslCertCheck) {
+                SSLContext context = SSLContext.getInstance( "TLS" );
+                context.init( null, new javax.net.ssl.TrustManager[] { new X509TrustManagerBypass() }, null );
+                return context;
+            }
+
+            if (this.trustStoreFilePath != null && !this.trustStoreFilePath.isEmpty()) {
+                KeyStore trustStore = KeyStore.getInstance( KeyStore.getDefaultType() );
+                char[] password = this.trustStorePassword == null ? null : this.trustStorePassword.toCharArray();
+                try (InputStream in = new FileInputStream( this.trustStoreFilePath )) {
+                    trustStore.load( in, password );
+                }
+                javax.net.ssl.TrustManagerFactory factory = javax.net.ssl.TrustManagerFactory.getInstance(
+                        javax.net.ssl.TrustManagerFactory.getDefaultAlgorithm() );
+                factory.init( trustStore );
+                SSLContext context = SSLContext.getInstance( "TLS" );
+                context.init( null, factory.getTrustManagers(), null );
+                return context;
+            }
+
+            return null;
+        }
     }
 
 
@@ -3992,13 +4269,13 @@ public abstract class GPUdbBase {
             ((this.password != null) && !this.password.isEmpty())
         ) {
             return "Basic " +
-                    Base64.encodeBase64String
+                    Base64.getEncoder().encodeToString
                     (
                             (
                                     (this.username != null ? this.username : "") +
                                     ":" +
                                     (this.password != null ? this.password : "")
-                            ).getBytes()
+                            ).getBytes(StandardCharsets.UTF_8)
                     ).replace("\n", "");
         }
 
@@ -4017,7 +4294,7 @@ public abstract class GPUdbBase {
             if (headerAuth.startsWith("Basic")) {
                 String[] splits = headerAuth.split(" ");
                 if( splits.length == 2 && !splits[1].isEmpty()) {
-                    String decodedCredentials = new String(Base64.decodeBase64(splits[1]), StandardCharsets.UTF_8);
+                    String decodedCredentials = new String(Base64.getMimeDecoder().decode(splits[1]), StandardCharsets.UTF_8);
                     String[] userPassword = decodedCredentials.split(":");
                     this.username = userPassword[0];
                     this.password = userPassword[1];
@@ -4309,10 +4586,13 @@ public abstract class GPUdbBase {
         if (requestSize <= MAX_SNAPPY_COMPRESSION_SIZE)
             return true;
 
+        // WARN on the first occurrence of hitting the limit, DEBUG thereafter
         if (!this.didSnappyCompressionSizeWarning) {
             this.didSnappyCompressionSizeWarning = true;
-            GPUdbLogger.warn("Snappy compression enabled, but data exceeds compressible limit <" + MAX_SNAPPY_COMPRESSION_SIZE + ">.  Any data above the limit will be sent uncompressed.");
+            GPUdbLogger.warn("Snappy compression enabled, but data size <" + requestSize + "> exceeds compressible limit <" + MAX_SNAPPY_COMPRESSION_SIZE + ">.  This and any future data above the limit will be sent uncompressed.");
         }
+        else
+            GPUdbLogger.debug("Snappy compression enabled, but data size <" + requestSize + "> exceeds compressible limit <" + MAX_SNAPPY_COMPRESSION_SIZE + ">.  This data will be sent uncompressed.");
 
         return false;
     }
@@ -4327,22 +4607,49 @@ public abstract class GPUdbBase {
      *            request and system availability
      */
     private static boolean checkSnappy(boolean requestUseSnappy) {
+        final String errorClass;
+        final String errorDesc;
+
         if (requestUseSnappy) {
             try {
                 Snappy.getNativeLibraryVersion();
                 return true;
             }
-            catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
-                GPUdbLogger.warn(
-                        "Disabling Snappy compression, as it is unavailable on this system, " +
-                        "potentially due to lack of write permission on the system temp directory.  " +
+
+            // The call above is the first use of the Snappy class, so it runs
+            // that class's initializer, which loads the native library; with no
+            // library for the running platform, that initializer throws
+            // SnappyError and fails to load the Snappy class.  A failed
+            // initializer marks the class erroneous, so every later use throws
+            // NoClassDefFoundError instead.
+            catch (UnsatisfiedLinkError e) {
+                errorClass = e.getClass().getSimpleName();
+                errorDesc = "This usually happens when the system temp directory is not writable.  " +
                         "To allow Snappy to use the current system temp directory, allow write permissions to it.  " +
-                        "To use a different directory, use the JVM option: -Dorg.xerial.snappy.tempdir=<other/temp/path>  " +
-                        "To disable Snappy in Java and remove this warning message, use options.setUseSnappy(false) in the GPUdb constructor.  " +
-                        "To disable Snappy in JDBC and remove this warning message, use DisableSnappy=1 in the connection string.  " +
-                        "To disable Snappy in KiSQL and remove this warning message, use \"--disableSnappy true\" on the command line.  "
-                );
+                        "To use a different directory, use the JVM option: \"-Dorg.xerial.snappy.tempdir=<other/temp/path>\".  ";
             }
+            catch (NoClassDefFoundError e) {
+                errorClass = e.getClass().getSimpleName();
+                errorDesc = "This happens when the Snappy class is not present at all, usually because the API has been repackaged without the Snappy library.  " +
+                        "It also happens on every GPUdb instantiation after one that could not load a native Snappy library, " +
+                        "in which case that earlier instantiation reported a more specific error.  ";
+            }
+            catch (Throwable t) {
+                // SnappyError is identified by name rather than caught by type, as
+                // a consumer who shades snappy-java out of their artifact will not
+                // have a reference to the SnappyError type either.
+                errorClass = t.getClass().getSimpleName();
+                errorDesc = "org.xerial.snappy.SnappyError".equals(t.getClass().getName())
+                        ? "This usually happens when no native Snappy library has been bundled in the Kinetica Java API for this platform.  "
+                        : t.getMessage();
+            }
+
+            GPUdbLogger.warn(
+                    "Disabling Snappy compression, as it is unavailable on this system; error: <" + errorClass + ">.  " + errorDesc +
+                    "To disable Snappy in Java and remove this warning message, use options.setUseSnappy(false) in the GPUdb constructor.  " +
+                    "To disable Snappy in JDBC and remove this warning message, use DisableSnappy=1 in the connection string.  " +
+                    "To disable Snappy in KiSQL and remove this warning message, use \"--disableSnappy true\" on the command line.  "
+            );
         }
 
         return false;
@@ -4412,7 +4719,7 @@ public abstract class GPUdbBase {
         @Override
         public Socket createSocket(HttpContext context) throws IOException {
             Socket socket = super.createSocket(context);
-            applyTcpKeepaliveOptions(socket, keepIdle, keepInterval, keepCount);
+            applyTcpKeepaliveOptions(socket, this.keepIdle, this.keepInterval, this.keepCount);
             return socket;
         }
     }
@@ -4446,7 +4753,7 @@ public abstract class GPUdbBase {
         @Override
         public Socket createSocket(HttpContext context) throws IOException {
             Socket socket = super.createSocket(context);
-            applyTcpKeepaliveOptions(socket, keepIdle, keepInterval, keepCount);
+            applyTcpKeepaliveOptions(socket, this.keepIdle, this.keepInterval, this.keepCount);
             return socket;
         }
     }
@@ -4646,7 +4953,9 @@ public abstract class GPUdbBase {
 
             List<URL> selected = new ArrayList<>();
             available = probeRankCandidateUrls( retained, rankHost,
-                                             cluster.getActiveHeadNodeUrl(), selected );
+                                             cluster.getActiveHeadNodeUrl(), selected,
+                                             AddressResolution.isLocalAddress( cluster.getActiveHeadNodeUrl().getHost() )
+                                                 ? AddressResolution.clusterIdentitySignature( properties ) : null );
 
             workerUrls   = selected;
             probeDecided = true;
@@ -5366,6 +5675,9 @@ public abstract class GPUdbBase {
             connection.addHeader( entry.getKey(), entry.getValue() );
         }
 
+        // Scope this connection's SQL #name temp tables to it
+        connection.addHeader( HEADER_SESSION, this.sessionId );
+
         // Set the sync mode header (only if not using the default)
         if ( this.haSyncMode != HASynchronicityMode.DEFAULT ) {
             connection.addHeader( HEADER_HA_SYNC_MODE, this.haSyncMode.getMode() );
@@ -5425,6 +5737,9 @@ public abstract class GPUdbBase {
         for (Map.Entry<String, String> entry : this.httpHeaders.entrySet()) {
             connection.setRequestProperty(entry.getKey(), entry.getValue());
         }
+
+        // Scope this connection's SQL #name temp tables to it
+        connection.setRequestProperty( HEADER_SESSION, this.sessionId );
 
         // Set the sync mode header (only if not using the default)
         if ( this.haSyncMode != HASynchronicityMode.DEFAULT ) {
@@ -5644,6 +5959,9 @@ public abstract class GPUdbBase {
     /**
      * This method inserts a JSON payload (either a single JSON record or an array) into a Kinetica table
      * @param insertRecordsJsonRequest - an instance of {@link InsertRecordsJsonRequest} class
+     * @param jsonOptions - JSON-specific {@link JsonOptions options}; none
+     *        currently affect this method, as compression of JSON payloads is
+     *        not implemented yet
      * @return - the JSON response as a Map of String to Object.
      * @throws GPUdbException - in case of an error raised by the underlying endpoint
      */
@@ -5678,7 +5996,9 @@ public abstract class GPUdbBase {
      * This method inserts a JSON payload (either a single JSON record or an array) into a Kinetica table
      * @param jsonRecords - A single JSON record or an array of records as JSON
      * @param tableName - the table to insert the records into
-     * @param jsonOptions - Indicates whether Snappy compression is to be set on or not
+     * @param jsonOptions - JSON-specific {@link JsonOptions options}; none
+     *        currently affect this method, as compression of JSON payloads is
+     *        not implemented yet
      * @param createTableOptions - an instance of the class
      *        {@link com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions InsertRecordsJsonRequest.CreateTableOptions}
      * @param insertRecordsOptions - an instance of the class
@@ -6067,7 +6387,7 @@ public abstract class GPUdbBase {
      * the resulting data.
      * 
      * @param sql        - The SQL query to execute
-     * @param parameters - Query parameters for the SQL query.  Can be null or a String, String[] or List<String>.
+     * @param parameters - Query parameters for the SQL query.  Can be null, a string, or an array or list of strings.
      * 
      * @return - an instance of {@link GPUdbSqlIterator} class
      * 
@@ -6085,7 +6405,7 @@ public abstract class GPUdbBase {
      * the resulting data.
      * 
      * @param sql        - The SQL query to execute
-     * @param parameters - Query parameters for the SQL query.  Can be null or a String, String[] or List<String>.
+     * @param parameters - Query parameters for the SQL query.  Can be null, a string, or an array or list of strings.
      * @param sqlOptions - Optional parameters for the executeSql call.  Can be null.
      * 
      * @return - an instance of {@link GPUdbSqlIterator} class
@@ -6133,7 +6453,7 @@ public abstract class GPUdbBase {
      * See {@link #query(String, Object, Map)} to execute a SQL query to read the resulting data records.
      * 
      * @param sql        - The SQL query to execute
-     * @param parameters - Query parameters for the SQL query.  Can be null or a String, String[] or List<String>.
+     * @param parameters - Query parameters for the SQL query.  Can be null, a string, or an array or list of strings.
      * 
      * @return - number of rows affected by the execution of statement
      * 
@@ -6151,7 +6471,7 @@ public abstract class GPUdbBase {
      * See {@link #query(String, Object, Map)} to execute a SQL query to read the resulting data records.
      * 
      * @param sql        - The SQL query to execute
-     * @param parameters - Query parameters for the SQL query.  Can be null or a String, String[] or List<String>.
+     * @param parameters - Query parameters for the SQL query.  Can be null, a string, or an array or list of strings.
      * @param sqlOptions - Optional parameters for the executeSql call.  Can be null.
      * 
      * @return - number of rows affected by the execution of statement
@@ -6216,16 +6536,21 @@ public abstract class GPUdbBase {
      *                        is rank {@code i + 1}; a removed rank is null, and
      *                        an unreachable rank keeps its first candidate so
      *                        the published addresses stay meaningful
+     * @param referenceSignature  the identity signature of the cluster being
+     *                            probed, or null to accept any address that
+     *                            answers; passed through to each rank's search
      *
      * @return whether every live rank answered on some candidate
      */
-    private boolean probeRankCandidateUrls( List<List<URL>> candidateUrls, int[] rankHost, URL headNodeUrl, List<URL> selectedOut ) {
+    private boolean probeRankCandidateUrls( List<List<URL>> candidateUrls, int[] rankHost, URL headNodeUrl,
+                                            List<URL> selectedOut, String referenceSignature ) {
 
         // Keyed by the full address text, never by URL equality: URL.equals
         // resolves host names, which would make this a series of blocking DNS
         // lookups under the probe lock.
         final Map<String, Boolean> answeredByAddress = new HashMap<>();
         final Map<Integer, String> preferredHostByHost = new HashMap<>();
+        final Map<String, Boolean> differentClusterByAddress = new HashMap<>();
 
         // An address naming more than one host cannot stand for any of them
         final Set<String> nonIdentifying = AddressResolution.getNonIdentifyingHosts( candidateUrls, rankHost );
@@ -6255,7 +6580,9 @@ public abstract class GPUdbBase {
             final URL answered = getRunningRankUrl(
                     AddressResolution.orderUrlsByPreferredHostFirst( candidates, preferredHost ),
                     answeredByAddress,
-                    AddressResolution.rankLabel( rank ) );
+                    AddressResolution.rankLabel( rank ),
+                    referenceSignature,
+                    differentClusterByAddress );
 
             if ( answered == null ) {
                 // Every candidate for this rank failed.  Keep the first so the
@@ -6287,6 +6614,67 @@ public abstract class GPUdbBase {
     }  // end probeRankCandidateUrls
 
 
+
+    /**
+     * Whether a candidate address demonstrably belongs to a different cluster.
+     *
+     * <p>Rejects on evidence only: a differing signature proves the addresses
+     * are different clusters, while a matching one proves nothing and is
+     * treated as no objection.  Where the properties cannot be read at all the
+     * candidate is accepted, because an unreachable address will fail its own
+     * probe and a reachable one that will not answer this is not evidence of
+     * anything.
+     *
+     * <p>Keyed by the full address rather than by host: two clusters on one
+     * machine differ by port, and that is the configuration this exists for.
+     *
+     * @param candidate   an address that has already answered a liveness probe;
+     *                    its properties are fetched here, so this costs a round
+     *                    trip the first time a given address is judged
+     * @param reference   the identity signature of the cluster this connection
+     *                    was opened against, from
+     *                    {@link AddressResolution#clusterIdentitySignature}; an
+     *                    empty or null signature means there is nothing to
+     *                    compare against and nothing is rejected
+     * @param seen        verdicts already reached, keyed by full address text
+     *                    rather than by host, since two clusters on one machine
+     *                    differ only by port; both read and written here
+     *
+     * @return  whether {@code candidate} reported a signature that differs from
+     *          {@code reference} -- false where they match, where the signature
+     *          could not be read, and where there is no reference to compare to
+     */
+    private boolean isDifferentCluster( URL candidate, String reference, Map<String, Boolean> seen ) {
+
+        if ( (reference == null) || reference.isEmpty() )
+            return false;   // nothing to compare against
+
+        final String address = candidate.toString();
+        final Boolean decided = seen.get( address );
+
+        if ( decided != null )
+            return decided;
+
+        boolean different = false;
+
+        try {
+            final String signature = AddressResolution.clusterIdentitySignature(
+                    getSystemProperties( candidate ) );
+
+            different = !signature.isEmpty() && !signature.equals( reference );
+
+            if ( different )
+                GPUdbLogger.debug_with_info( "Address <" + candidate + "> answers, but reports a"
+                                             + " different cluster than the one reached; skipping it" );
+        } catch ( Exception ex ) {
+            GPUdbLogger.debug_with_info( "Could not read properties at <" + candidate
+                                         + "> to compare clusters: " + ex.getMessage() );
+        }
+
+        seen.put( address, different );
+        return different;
+    }  // end isDifferentCluster
+
     /**
      * The first of a rank's candidate URLs that answers, or null if none does.
      *
@@ -6307,12 +6695,26 @@ public abstract class GPUdbBase {
      *                           resolves host names and would make this a series
      *                           of blocking DNS lookups under the probe lock
      * @param what               what is being searched for, for logging
+     * @param referenceSignature the identity signature of the cluster this
+     *                           connection was opened against, or null to accept
+     *                           any address that answers.  Supplied only where
+     *                           the locality filter cannot help -- a server on
+     *                           this machine, where every advertised address
+     *                           looks legitimate and only the cluster's own
+     *                           report distinguishes a second instance on
+     *                           another port
+     * @param differentClusterByAddress  verdicts already reached, keyed by full
+     *                           address text; read and written here, and unused
+     *                           where {@code referenceSignature} is null
      *
-     * @return the candidate that answered, or null if none did
+     * @return the candidate that answered AND, where a reference was given, did
+     *         not report a different cluster; null if none did
      */
     private URL getRunningRankUrl( List<URL> candidates,
                                          Map<String, Boolean> answeredByAddress,
-                                         String what ) {
+                                         String what,
+                                         String referenceSignature,
+                                         Map<String, Boolean> differentClusterByAddress ) {
 
         for ( URL candidate : candidates ) {
             final String address = candidate.toString();
@@ -6326,8 +6728,18 @@ public abstract class GPUdbBase {
                     answeredByAddress.put( address, answered );
             }
 
-            if ( answered )
+            if ( answered ) {
+                // Answering is not belonging.  Where the candidate reports a
+                // different cluster, treat it as not having answered -- this is
+                // the only check that reaches two clusters on one machine,
+                // where neither address is remote and the locality filter
+                // therefore abstains.
+                if ( (referenceSignature != null)
+                     && isDifferentCluster( candidate, referenceSignature, differentClusterByAddress ) )
+                    continue;
+
                 return candidate;
+            }
 
             GPUdbLogger.debug_with_info( what + " did not answer at <" + candidate + ">" );
         }
@@ -6361,24 +6773,48 @@ public abstract class GPUdbBase {
 
 
     /**
-     * Assemble the host manager URL from the head node's URL.
+     * The host manager address for the host a connection is addressed by.
      *
-     * <p>Separate because it is done more than once: the head node address is
-     * not final until it has been shown to answer, and adopting a different one
-     * leaves a host manager URL derived from an address the client never
-     * reached.
+     * <p>Prefers what the deployment publishes.  The two derived forms are not
+     * interchangeable: under httpd every host proxies the host-manager path to
+     * the HEAD node's host manager, while the direct port reaches whichever
+     * host was addressed -- and a subset of host-manager endpoints are
+     * head-only and answer 503 elsewhere.  Deriving therefore picks a host
+     * manager rather than an address form, which is not a choice this code is
+     * in a position to make.
      *
-     * <p>Behind httpd the head node's protocol, host and <b>port</b> are kept
-     * and only the path's last segment is replaced -- appending a fixed path
-     * instead would drop any prefix a hosted deployment sits behind, and
-     * address nothing.  Otherwise the configured host manager port is used with
-     * no path at all.
+     * <p>{@code conf.host<i>_host_manager_public_url} is the operator's answer.
+     * It is all-or-none across hosts and unique per host, so where it is set it
+     * is a complete table; where it is absent the derivation stands.
      *
-     * @param headNodeUrl     the address the head rank answers on
-     * @param isHttpdEnabled  whether the server reports an httpd proxy
+     * <p>The derivation rewrites the path where httpd is enabled AND the address
+     * carries one -- a caller connected straight to the database port has no
+     * path to rewrite, and substituting one would drop any prefix a hosted
+     * deployment sits behind.  Otherwise the host manager port is used with no
+     * path at all.
+     *
+     * @param headNodeUrl       the address the connection is made through, whose
+     *                          host's host manager is wanted
+     * @param isHttpdEnabled    whether the server reports an httpd proxy, which
+     *                          governs the derivation only
+     * @param systemProperties  the cluster's properties, consulted for the
+     *                          published URL and, failing that, for the port
+     *
+     * @return  the published address for that host where one exists, otherwise
+     *          one derived from {@code headNodeUrl}
+     *
+     * @throws GPUdbException  if the resulting address is malformed
      */
-    private URL buildHostManagerUrl( URL headNodeUrl, boolean isHttpdEnabled )
+    private URL buildHostManagerUrl( URL headNodeUrl, boolean isHttpdEnabled,
+                                     Map<String, String> systemProperties )
         throws GPUdbException {
+
+        URL published = AddressResolution.publishedHostManagerUrl( systemProperties, headNodeUrl );
+
+        if ( published != null ) {
+            GPUdbLogger.debug_with_info( "Using the published host manager URL: " + published );
+            return published;
+        }
 
         try {
             URL hostManagerUrl;
@@ -6396,10 +6832,18 @@ public abstract class GPUdbBase {
                         AddressResolution.hostManagerPathFor( headNodeUrl )
                 );
             } else {
+                // The server's reported port where the caller has not chosen
+                // one.  The default is configurable and upgraded deployments
+                // are found on other ports, so the literal is not safe to
+                // assume -- but an explicit setting is the caller's to keep.
+                int port = (this.hostManagerPort == DEFAULT_HOST_MANAGER_PORT)
+                        ? AddressResolution.publishedHostManagerPort( systemProperties, this.hostManagerPort )
+                        : this.hostManagerPort;
+
                 hostManagerUrl = new URL(
                         headNodeUrl.getProtocol(),
                         headNodeUrl.getHost(),
-                        this.hostManagerPort,
+                        port,
                         ""
                 );
             }
@@ -6428,13 +6872,27 @@ public abstract class GPUdbBase {
      * @param selected          the address selection chose, tried first
      *
      * @return the address that answered, or null if none of them did
+          * @param serverIsLocal  whether the address this connection was opened
+     *                       through resolves to the machine the client runs on;
+     *                       where it does, candidates are compared against the
+     *                       cluster's own identity, since no address can be
+     *                       ruled out by locality
      */
-    private URL resolveReachableHeadNodeUrl( Map<String, String> systemProperties, URL selected ) {
+    private URL resolveReachableHeadNodeUrl( Map<String, String> systemProperties, URL selected,
+                                             boolean serverIsLocal ) {
 
         List<URL> candidates = null;
 
         try {
             List<List<URL>> retained = AddressResolution.retainMatchingRankCandidateUrls( AddressResolution.extractRankCandidateUrls( systemProperties ), this.hostnameRegex );
+
+            // Same credibility filter as the rank addresses: a candidate that
+            // cannot name this server must not be probed, because a probe there
+            // answers whenever anything local is listening.
+            for ( int rank = 0; rank < retained.size(); ++rank ) {
+                retained.set( rank, AddressResolution.retainCredibleUrls(
+                        retained.get( rank ), serverIsLocal, "head rank candidate" ) );
+            }
 
             if ( !retained.isEmpty() ) {
                 // An address naming several hosts must not be what a cluster
@@ -6456,7 +6914,15 @@ public abstract class GPUdbBase {
         if ( (candidates == null) || candidates.isEmpty() )
             candidates = Collections.singletonList( selected );
 
-        return getRunningRankUrl( candidates, null, "Head rank" );
+        // The identity comparison is spent only where the locality filter
+        // abstains.  Where the server is elsewhere, an address naming this
+        // machine has already been removed; where it is here, every address
+        // looks legitimate and only the cluster's own report distinguishes a
+        // second instance on another port.
+        final String reference = serverIsLocal
+                ? AddressResolution.clusterIdentitySignature( systemProperties ) : null;
+
+        return getRunningRankUrl( candidates, null, "Head rank", reference, new HashMap<>() );
     }  // end resolveReachableHeadNodeUrl
 
 
@@ -6471,8 +6937,18 @@ public abstract class GPUdbBase {
      *   <li>hostnames for all cluster nodes</li>
      * </ul>
      *
+     * @param url               the address this connection was opened through,
+     *                          which becomes the cluster's address and the basis
+     *                          for deciding whether its advertised addresses
+     *                          could name it
+     * @param systemProperties  the cluster's properties, as reported through
+     *                          {@code url}
+     *
      * @return a ClusterAddressInfo object
      *
+     * @throws GPUdbHostnameRegexFailureException  if a hostname regex is set and
+     *                          matches none of the cluster's addresses
+     * @throws GPUdbException   if the host manager URL cannot be built
      */
     private ClusterAddressInfo createClusterAddressInfo( URL url,
                                                          Map<String, String> systemProperties )
@@ -6482,9 +6958,20 @@ public abstract class GPUdbBase {
 
         boolean isHttpdEnabled = AddressResolution.getIsHttpdEnabled(systemProperties);
 
+        // Whether the server the caller reached is on this machine.  Decided
+        // from the caller's address, not from the advertised ones: addressing
+        // one's own machine by a routable address is an ordinary choice, so the
+        // caller writing a non-loopback URL says nothing on its own.
+        final boolean serverIsLocal = AddressResolution.isLocalAddress( url.getHost() );
+
         // Get the rank URLs (head and worker ones)
         URL activeHeadNodeUrl;
-        List<URL> rankURLs = AddressResolution.extractRankUrls( systemProperties, this.hostnameRegex );
+        // All-or-nothing: this list is rank-indexed and a null already means
+        // "rank removed", so there is no way to mark one entry unusable without
+        // shifting the rest.  See rankUrlsIfAllCredible.
+        List<URL> rankURLs = AddressResolution.rankUrlsIfAllCredible(
+                AddressResolution.extractRankUrls( systemProperties, this.hostnameRegex ),
+                serverIsLocal, "rank address" );
 
         // Get the head node URL and keep it separately.  Note that the
         // rank-0 slot must be removed whatever it holds, so that the indices
@@ -6510,7 +6997,7 @@ public abstract class GPUdbBase {
         Set<String> clusterHostnames = AddressResolution.getHostNamesFromSystemProperties( systemProperties, this.hostnameRegex );
 
         // Create the host manager URL
-        URL hostManagerUrl = buildHostManagerUrl( activeHeadNodeUrl, isHttpdEnabled );
+        URL hostManagerUrl = buildHostManagerUrl( activeHeadNodeUrl, isHttpdEnabled, systemProperties );
 
         // Create an object to store all the information about this cluster
         ClusterAddressInfo clusterInfo = new ClusterAddressInfo(
@@ -6567,7 +7054,7 @@ public abstract class GPUdbBase {
                 return; // one successful attempt is all we need
             } catch (GPUdbHostnameRegexFailureException ex) {
 
-            	List<URL> acceptedUrls =
+                List<URL> acceptedUrls =
                         AddressResolution.urlsAcceptedByHostnameRegex( urls, this.hostnameRegex );
 
                 if ( acceptedUrls.isEmpty() ) {
@@ -6817,9 +7304,10 @@ public abstract class GPUdbBase {
                 if (!url.equals(clusterHeadNodeUrl)) {
 
                     // Check whether the head node is reachable, using every
-                	// server-advertised URL for it.  If not the client will
-                	// operate in degraded (head-node-only) mode.
-                    URL reachableHeadNodeUrl = resolveReachableHeadNodeUrl( systemProperties, clusterHeadNodeUrl );
+                    // server-advertised URL for it.  If not the client will
+                    // operate in degraded (head-node-only) mode.
+                    URL reachableHeadNodeUrl = resolveReachableHeadNodeUrl( systemProperties, clusterHeadNodeUrl,
+                                                                             AddressResolution.isLocalAddress( url.getHost() ) );
 
                     if ( reachableHeadNodeUrl == null ) {
 
@@ -6843,19 +7331,35 @@ public abstract class GPUdbBase {
                         continue;
                     }
     
-                    // A later candidate answered, so the head rank is reachable
-                    // at an address other than the one selection preferred.
-                    // Adopt it, and rebuild the host manager URL with it.
+                    // A head rank answered, so the cluster's advertised address
+                    // space is reachable and multi-head is viable.  That is all
+                    // the probe establishes.
+                    //
+                    // It does NOT establish that what answered is this cluster.
+                    // isSystemRunning reports liveness, and a server advertising
+                    // an address that resolves elsewhere from here -- loopback, a
+                    // container bridge present on every host, a name that exists
+                    // in two namespaces -- sends the probe to a different
+                    // Kinetica, which answers exactly as the right one would.
+                    //
+                    // So the address that carries this connection stays the one
+                    // the caller gave.  It is the only address in the set with an
+                    // authority behind it: the caller asserted it, and the
+                    // cluster's own properties arrived through it.  Every other
+                    // candidate is the server's self-report, which is the thing
+                    // in question.
                     if ( !reachableHeadNodeUrl.equals( clusterHeadNodeUrl ) ) {
                         GPUdbLogger.debug_with_info(String.format(
-                                "Head rank did not answer at its preferred address <%s> but did at <%s>; adopting the latter",
-                                clusterHeadNodeUrl, reachableHeadNodeUrl
+                                "Head rank did not answer at its preferred address <%s> but did at <%s>;"
+                                + " multi-head stays enabled and the connection continues through the"
+                                + " user-given URL <%s>",
+                                clusterHeadNodeUrl, reachableHeadNodeUrl, url
                         ));
-
-                        clusterInfo.setActiveHeadNodeUrl( reachableHeadNodeUrl );
-                        clusterInfo.setHostManagerUrl( buildHostManagerUrl( reachableHeadNodeUrl, AddressResolution.getIsHttpdEnabled( systemProperties ) ) );
-                        clusterHeadNodeUrl = reachableHeadNodeUrl;
                     }
+
+                    clusterInfo.setActiveHeadNodeUrl( url );
+                    clusterInfo.setHostManagerUrl( buildHostManagerUrl( url, AddressResolution.getIsHttpdEnabled( systemProperties ), systemProperties ) );
+                    clusterHeadNodeUrl = url;
 
                     GPUdbLogger.debug_with_info(String.format(
                             "Verified connectivity with user-given URL %s at server-known URL %s; adding index %s to user-given processed cluster list",
@@ -7492,12 +7996,10 @@ public abstract class GPUdbBase {
 
     /**
      * Submits a JSON payload to GPUdb via the specified URL and returns the
-     * response as a map of key/value pairs, optionally compressing the request
-     * before sending. The request will only be compressed if
-     * {@code enableCompression} is {@code true} and the
-     * {@link GPUdb#GPUdb(String, GPUdbBase.Options) GPUdb constructor} was
-     * called with the {@link Options#setUseSnappy(boolean) Snappy compression
-     * flag} set to {@code true}.
+     * response as a map of key/value pairs.  Compression of JSON payloads is
+     * not implemented yet, so the request is always sent uncompressed,
+     * regardless of {@code enableCompression} and the
+     * {@link Options#setUseSnappy(boolean) Snappy compression flag}.
      *
      * NOTE:  This method's primary use is in support of
      * {@link #insertRecordsFromJson} and its other variants.
@@ -7507,7 +8009,9 @@ public abstract class GPUdbBase {
      *
      * @param endpoint           the GPUdb endpoint to send the request to
      * @param payload            the payload as a JSON String
-     * @param enableCompression  whether to compress the request
+     * @param enableCompression  whether to compress the request; not
+     *                           implemented yet for JSON payloads, so this has
+     *                           no effect
      *
      * @return  The response as a JSON map of values.  If the top-level
      *          {@code status} key is {@code OK}, insert statistics will be
@@ -7785,12 +8289,10 @@ public abstract class GPUdbBase {
 
     /**
      * Submits a JSON payload to GPUdb via the specified URL and returns the
-     * response as a map of key/value pairs, optionally compressing the request
-     * before sending. The request will only be compressed if
-     * {@code enableCompression} is {@code true} and the
-     * {@link GPUdb#GPUdb(String, GPUdbBase.Options) GPUdb constructor} was
-     * called with the {@link Options#setUseSnappy(boolean) Snappy compression
-     * flag} set to {@code true}.
+     * response as a map of key/value pairs.  Compression of JSON payloads is
+     * not implemented yet, so the request is always sent uncompressed,
+     * regardless of {@code enableCompression} and the
+     * {@link Options#setUseSnappy(boolean) Snappy compression flag}.
      *
      * NOTE:  This method's primary use is in support of
      * {@link #insertRecordsFromJson} and its other variants.
@@ -7800,7 +8302,9 @@ public abstract class GPUdbBase {
      *
      * @param url                the URL to send the request to
      * @param payload            the payload as a JSON String
-     * @param enableCompression  whether to compress the request
+     * @param enableCompression  whether to compress the request; not
+     *                           implemented yet for JSON payloads, so this has
+     *                           no effect
      * 
      * @return  The response as a JSON map of values.  If the top-level
      *          {@code status} key is {@code OK}, insert statistics will be
@@ -8006,12 +8510,10 @@ public abstract class GPUdbBase {
 
     /**
      * Submits a JSON payload to GPUdb via the specified URL and returns the
-     * response as a map of key/value pairs, optionally compressing the request
-     * before sending. The request will only be compressed if
-     * {@code enableCompression} is {@code true} and the
-     * {@link GPUdb#GPUdb(String, GPUdbBase.Options) GPUdb constructor} was
-     * called with the {@link Options#setUseSnappy(boolean) Snappy compression
-     * flag} set to {@code true}.
+     * response as a map of key/value pairs.  Compression of JSON payloads is
+     * not implemented yet, so the request is always sent uncompressed,
+     * regardless of {@code enableCompression} and the
+     * {@link Options#setUseSnappy(boolean) Snappy compression flag}.
      *
      * NOTE:  This method's primary use is in support of
      * {@link #insertRecordsFromJson} and its other variants.
@@ -8021,7 +8523,9 @@ public abstract class GPUdbBase {
      *
      * @param url                the URL to send the request to
      * @param payload            the payload as a JSON String
-     * @param enableCompression  whether to compress the request
+     * @param enableCompression  whether to compress the request; not
+     *                           implemented yet for JSON payloads, so this has
+     *                           no effect
      * 
      * @return  The response as a JSON map of values.  If the top-level
      *          {@code status} key is {@code OK}, insert statistics will be
@@ -8287,7 +8791,9 @@ public abstract class GPUdbBase {
 
                 // Decode data field
                 decoder.readInt();
-                return new Avro.DatumReader<T>(response.getSchema()).read(response, decoder);
+                T decoded = new Avro.DatumReader<T>(response.getSchema()).read(response, decoder);
+                noteSessionUsed( decoded );
+                return decoded;
             }
         } catch (GPUdbExitException ex) {
             // An HA failover should be triggered
@@ -8623,12 +9129,10 @@ public abstract class GPUdbBase {
 
     /**
      * Submits a JSON payload to GPUdb via the specified URL and returns the
-     * response as a map of key/value pairs, optionally compressing the request
-     * before sending. The request will only be compressed if
-     * {@code enableCompression} is {@code true} and the
-     * {@link GPUdb#GPUdb(String, GPUdbBase.Options) GPUdb constructor} was
-     * called with the {@link Options#setUseSnappy(boolean) Snappy compression
-     * flag} set to {@code true}.
+     * response as a map of key/value pairs.  Compression of JSON payloads is
+     * not implemented yet, so the request is always sent uncompressed,
+     * regardless of {@code enableCompression} and the
+     * {@link Options#setUseSnappy(boolean) Snappy compression flag}.
      *
      * NOTE:  This method's primary use is in support of
      * {@link #insertRecordsFromJson} and its other variants.
@@ -8638,7 +9142,9 @@ public abstract class GPUdbBase {
      *
      * @param url                the URL to send the request to
      * @param payload            the payload as a JSON String
-     * @param enableCompression  whether to compress the request
+     * @param enableCompression  whether to compress the request; not
+     *                           implemented yet for JSON payloads, so this has
+     *                           no effect
      * @param responseTimeout    a positive integer representing the number of
      *                           milliseconds to use for response timeout
      * 

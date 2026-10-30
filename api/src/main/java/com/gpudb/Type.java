@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1398,6 +1399,71 @@ public final class Type implements Serializable {
         return gpudb.createType(root.toString(), this.label, properties, null).getTypeId();
     }
 
+    /**
+     * Column properties that name a column's type in place of its Avro base
+     * type in {@link #getFullDefinition()}.
+     */
+    private static final Set<String> TYPE_PROPERTIES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
+            ColumnProperty.BOOLEAN,
+            ColumnProperty.CHAR1,
+            ColumnProperty.CHAR2,
+            ColumnProperty.CHAR4,
+            ColumnProperty.CHAR8,
+            ColumnProperty.CHAR16,
+            ColumnProperty.CHAR32,
+            ColumnProperty.CHAR64,
+            ColumnProperty.CHAR128,
+            ColumnProperty.CHAR256,
+            ColumnProperty.DATE,
+            ColumnProperty.DATETIME,
+            ColumnProperty.INT8,
+            ColumnProperty.INT16,
+            ColumnProperty.IPV4,
+            ColumnProperty.JSON,
+            ColumnProperty.TIME,
+            ColumnProperty.TIMESTAMP,
+            ColumnProperty.ULONG,
+            ColumnProperty.UUID,
+            ColumnProperty.WKT
+    )));
+
+    /**
+     * Prefixes of the type-naming column properties that carry parameters,
+     * such as {@code decimal(10,2)}; see {@link #TYPE_PROPERTIES}.
+     */
+    private static final List<String> TYPE_PROPERTY_PREFIXES = Collections.unmodifiableList(Arrays.asList(
+            ColumnProperty.ARRAY,
+            ColumnProperty.DECIMAL,
+            ColumnProperty.VECTOR
+    ));
+
+    /**
+     * Whether the given column property names the column's type, rather than
+     * qualifying it.
+     *
+     * @param property  the column property to check
+     * @return  whether it names the column's type
+     */
+    private static boolean isTypeProperty(String property) {
+        if (TYPE_PROPERTIES.contains(property))
+            return true;
+
+        for (String prefix : TYPE_PROPERTY_PREFIXES)
+            if (property.startsWith(prefix))
+                return true;
+
+        return false;
+    }
+
+    /**
+     * Returns the columns of this type with their Avro base types, as a JSON
+     * array of {@code [name, base type]} pairs, followed by {@code "nullable"}
+     * for a nullable column; e.g.,
+     * {@code [["id","long"],["name","string","nullable"]]}.  Other column
+     * properties are omitted.
+     *
+     * @return  the base definition of this type
+     */
     public String getBaseDefinition()
     {
         StringBuilder schemaJson = new StringBuilder("[");
@@ -1419,66 +1485,47 @@ public final class Type implements Serializable {
         return schemaJson.toString();
     }
 
+    /**
+     * Returns the columns of this type with their full types and properties,
+     * as a JSON array with one entry per column:  the column name, its type,
+     * then each of its remaining properties as a separate element; e.g.,
+     * {@code [["id","long","primary_key"],["code","char8","primary_key","nullable"],["price","decimal(10,2)"]]}.
+     * This is the column-definition form the server accepts for a request
+     * schema, such as the {@code request_schema_str} option of
+     * {@link GPUdb#insertRecords(String, List, Map) /insert/records}.
+     * <p>
+     * A column's type is the property that names it, such as {@code char16},
+     * {@code uuid} or {@code decimal(10,2)}, where it has one, and its Avro base
+     * type otherwise; the server accepts only one type per column.  This
+     * {@code Type} is not modified.
+     *
+     * @return  the full definition of this type
+     */
     public String getFullDefinition()
     {
-        StringBuilder schemaJson = new StringBuilder("[");
+        ArrayNode definition = MAPPER.createArrayNode();
+
         for (Column column : this.columns)
         {
-            if (schemaJson.length() > 1)
-                schemaJson.append(",");
-
-            List<String> columnProperties = column.getProperties();
             String type = column.getAvroType();
+            List<String> otherProperties = new ArrayList<>();
 
-            int i = 0;
-            while (i < columnProperties.size())
+            for (String prop : column.getProperties())
             {
-                String prop = columnProperties.get(i);
-                if (prop == ColumnProperty.BOOLEAN ||
-                    prop == ColumnProperty.CHAR1 ||
-                    prop == ColumnProperty.CHAR2 ||
-                    prop == ColumnProperty.CHAR4 ||
-                    prop == ColumnProperty.CHAR8 ||
-                    prop == ColumnProperty.CHAR16 ||
-                    prop == ColumnProperty.CHAR32 ||
-                    prop == ColumnProperty.CHAR64 ||
-                    prop == ColumnProperty.CHAR128 ||
-                    prop == ColumnProperty.CHAR256 ||
-                    prop == ColumnProperty.DATE ||
-                    prop == ColumnProperty.DATETIME ||
-                    prop == ColumnProperty.INT8 ||
-                    prop == ColumnProperty.INT16 ||
-                    prop == ColumnProperty.IPV4 ||
-                    prop == ColumnProperty.JSON ||
-                    prop == ColumnProperty.TIME ||
-                    prop == ColumnProperty.TIMESTAMP ||
-                    prop == ColumnProperty.ULONG ||
-                    prop == ColumnProperty.WKT ||
-                    prop.startsWith(ColumnProperty.ARRAY) ||
-                    prop.startsWith(ColumnProperty.DECIMAL) ||
-                    prop.startsWith(ColumnProperty.VECTOR))
-                {
+                if (isTypeProperty(prop))
                     type = prop;
-                    columnProperties.remove(i);
-                }
                 else
-                {
-                    i++;
-                }
+                    otherProperties.add(prop);
             }
 
-            schemaJson.append("[\"")
-                      .append(column.getName())
-                      .append("\",\"")
-                      .append(type)
-                      .append("\"");
-            if (!columnProperties.isEmpty())
-                schemaJson.append(",\"").append(String.join(",", columnProperties)).append("\"");
-            schemaJson.append("]");
+            ArrayNode columnDefinition = definition.addArray();
+            columnDefinition.add(column.getName());
+            columnDefinition.add(type);
+            for (String prop : otherProperties)
+                columnDefinition.add(prop);
         }
-        schemaJson.append("]");
 
-        return schemaJson.toString();
+        return definition.toString();
     }
 
     @Override

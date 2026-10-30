@@ -13,10 +13,6 @@ public class GPUdbLogger {
     // The name of the logger for this API
     protected static final String API_LOGGER_NAME = "com.gpudb";
 
-    // The loggers used for dependent libraries that might have verbose
-    // default log levels
-    protected static final String DEP_LIB_APACHE_CLIENT_LOGGER = "org.apache.http";
-
     // Actual logger used for the API
     private static Logger LOGGER = LoggerFactory.getLogger(API_LOGGER_NAME);
 
@@ -389,7 +385,7 @@ public class GPUdbLogger {
      * Sets the log level for a dependent library logger.
      * Useful for silencing verbose third-party libraries.
      *
-     * @param loggerName The fully qualified logger name (e.g., "org.apache.http")
+     * @param loggerName The fully qualified logger name (e.g., "org.apache.hc")
      * @param logLevel   The desired log level
      * @return true if successful, false otherwise
      */

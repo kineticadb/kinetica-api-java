@@ -1,6 +1,10 @@
 package com.gpudb;
 
+import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.net.URL;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -28,6 +32,8 @@ final class AddressResolution {
     // The property names this class reads
     // ------------------------------------------------------------------
 
+    static final String SYSTEM_PROPERTIES_RESPONSE_RING_NAME           = "conf.ring_name";
+    static final String SYSTEM_PROPERTIES_RESPONSE_CLUSTER_NAME        = "conf.cluster_name";
     static final String SYSTEM_PROPERTIES_RESPONSE_ENABLE_HTTPD        = "conf.enable_httpd_proxy";
     static final String SYSTEM_PROPERTIES_RESPONSE_ENABLE_MH           = "conf.enable_worker_http_servers";
     static final String SYSTEM_PROPERTIES_RESPONSE_NUM_HOSTS           = "conf.number_of_hosts";
@@ -45,6 +51,16 @@ final class AddressResolution {
     static final String SYSTEM_PROPERTIES_RESPONSE_SERVER_PORTS         = "conf.worker_http_server_ports";
     // Scheme of a rank's own listener.
     static final String SYSTEM_PROPERTIES_RESPONSE_USE_HTTPS            = "conf.use_https";
+
+    /**
+     * {@code conf.host<i>_host_manager_public_url} -- the address an operator
+     * has published for a host's host manager.  All-or-none across hosts and
+     * unique per host, so where it is set at all it is a complete table.
+     */
+    static final String SYSTEM_PROPERTIES_RESPONSE_HM_PUBLIC_URL        = "conf.host%d_host_manager_public_url";
+
+    //The port the host manager listens on.
+    static final String SYSTEM_PROPERTIES_RESPONSE_HM_PORT              = "conf.hm_http_port";
     static final String SYSTEM_PROPERTIES_RESPONSE_TRUE                = "TRUE";
 
 
@@ -111,6 +127,305 @@ final class AddressResolution {
 
         return isMultiHeadEnabled;
     }
+
+
+    /**
+     * The host manager address the deployment publishes for the host that
+     * {@code headNodeUrl} names, or null where none is published.
+     *
+     * <p>Matched by host rather than by index, because what is held here is an
+     * address while the property is indexed by host number.
+     *
+     * @param systemProperties  the cluster's properties, as reported by
+     *                          {@code /show/system/properties}; null yields null
+     * @param headNodeUrl       the address whose host's entry is wanted; null
+     *                          yields null
+     *
+     * @return  the published address for that host, or null where the property
+     *          is unset, unparsable, or set for other hosts only
+     */
+    static URL publishedHostManagerUrl( Map<String, String> systemProperties, URL headNodeUrl ) {
+
+        if ( (systemProperties == null) || (headNodeUrl == null) )
+            return null;
+
+        final int hostCount = getIntProperty( systemProperties, SYSTEM_PROPERTIES_RESPONSE_NUM_HOSTS, 0 );
+
+        for ( int host = 0; host < hostCount; ++host ) {
+            final String value = systemProperties.get(
+                    String.format( SYSTEM_PROPERTIES_RESPONSE_HM_PUBLIC_URL, host ) );
+
+            if ( (value == null) || value.trim().isEmpty() )
+                continue;
+
+            try {
+                final URL candidate = new URL( value.trim() );
+
+                if ( candidate.getHost().equals( headNodeUrl.getHost() ) )
+                    return candidate;
+            } catch ( MalformedURLException ex ) {
+                GPUdbLogger.debug_with_info( "Ignoring malformed published host manager URL <"
+                                             + value + ">: " + ex.getMessage() );
+            }
+        }
+
+        return null;
+    }  // end publishedHostManagerUrl
+
+
+    /** A non-negative integer property, or the given default. */
+    private static int getIntProperty( Map<String, String> systemProperties, String key, int fallback ) {
+        try {
+            return Integer.parseInt( systemProperties.get( key ).trim() );
+        } catch ( Exception ex ) {
+            return fallback;
+        }
+    }
+
+
+    /**
+     * The host manager port the deployment reports, or {@code fallback}.
+     *
+     * @param systemProperties  the cluster's properties; null yields the fallback
+     * @param fallback          the port to use where the property is absent or
+     *                          not a number -- normally the caller's configured
+     *                          port, which is why this is not defaulted here
+     *
+     * @return  the reported port, or {@code fallback}
+     */
+    static int publishedHostManagerPort( Map<String, String> systemProperties, int fallback ) {
+        return (systemProperties == null) ? fallback
+                : getIntProperty( systemProperties, SYSTEM_PROPERTIES_RESPONSE_HM_PORT, fallback );
+    }
+
+
+    /**
+     * A value that differs between two clusters whose configurations differ.
+     *
+     * <p><b>One-sided, and that is the whole of what it claims.</b>  Two
+     * signatures differing proves the addresses belong to different clusters.
+     * Two matching proves nothing: no property is guaranteed to differ, the
+     * ones that do are addresses, and two deployments built from one
+     * configuration are identical in every value a client can see.  Use it to
+     * reject, never to confirm.
+     *
+     * <p>The system configuration properties used in the identity:
+     *
+     * <ul>
+     *   <li>ring name</li>
+     *   <li>cluster name</li>
+     *   <li>public/enumerated URLs</li>
+     *   <li>private URLs</li>
+     * </ul>
+     * 
+     * @param systemProperties  the properties reported by one address; null
+     *                          yields the empty signature
+     *
+     * @return  a value equal for two similarly-configured clusters and unequal
+     *          where their configurations differ; empty where none of the
+     *          members is present/defined
+     */
+    static String clusterIdentitySignature( Map<String, String> systemProperties ) {
+
+        if ( systemProperties == null )
+            return "";
+
+        final StringBuilder signature = new StringBuilder();
+
+        for ( String key : new String[] { SYSTEM_PROPERTIES_RESPONSE_RING_NAME,
+                                          SYSTEM_PROPERTIES_RESPONSE_CLUSTER_NAME,
+                                          SYSTEM_PROPERTIES_RESPONSE_SERVER_URLS,
+                                          SYSTEM_PROPERTIES_RESPONSE_SERVER_URLS_PRIVATE } ) {
+            final String value = systemProperties.get( key );
+
+            if ( (value != null) && !value.trim().isEmpty() )
+                signature.append( key ).append( '=' ).append( value.trim() ).append( '\n' );
+        }
+
+        return signature.toString();
+    }  // end clusterIdentitySignature
+
+
+    /**
+     * Whether an address names this machine.
+     *
+     * <p>Used to decide whether an address a server advertises could refer to
+     * that server from here.  The question is not whether the caller wrote a
+     * loopback URL -- addressing one's own machine by a routable address is an
+     * ordinary choice -- but whether the server is on this machine at all.
+     *
+     * <p>Resolves first and tests the addresses, so a host alias classifies the
+     * same as the literal it names.  Every resolved address is considered,
+     * because a name may carry several and only one need be local.
+     *
+     * @param host  a host name or literal address
+     *
+     * @return  whether any address it resolves to is loopback or sits on a
+     *          local interface; {@code false} if it cannot be resolved
+     */
+    static boolean isLocalAddress( String host ) {
+        if ( (host == null) || host.isEmpty() )
+            return false;
+
+        try {
+            for ( InetAddress address : InetAddress.getAllByName( host ) ) {
+                if ( address.isLoopbackAddress() )
+                    return true;
+
+                if ( NetworkInterface.getByInetAddress( address ) != null )
+                    return true;
+            }
+        } catch ( UnknownHostException | SocketException ex ) {
+            GPUdbLogger.debug_with_info( "Could not classify <" + host + "> as local: " + ex.getMessage() );
+        }
+
+        return false;
+    }  // end isLocalAddress
+
+
+    /**
+     * Whether an advertised address is one this connection may use.
+     *
+     * <p>Rejects exactly one case: the server was reached on another machine,
+     * and {@code url} names the machine this client is running on -- loopback,
+     * or any address on a local interface.  Such an address cannot be the
+     * server.  A probe sent there reaches whatever is listening locally, and
+     * that answers indistinguishably from the cluster that was asked for, which
+     * is how a client ends up talking to the wrong one with every check passing.
+     *
+     * <p>Everything else is accepted, including addresses that turn out to be
+     * unreachable: being wrong about an address is the probe's business, and
+     * this method only removes the ones a probe could not settle.
+     *
+     * <p>{@code serverIsLocal} is supplied rather than computed here because it
+     * describes the connection, not this address -- every address advertised by
+     * one cluster shares it, and where it is true nothing is rejected, since the
+     * client and the server are then the same machine and an address naming that
+     * machine is correct.
+     *
+     * @param url             an advertised address; null is accepted, being a
+     *                        rank slot held open for a rank removed from the
+     *                        cluster rather than an address to judge
+     * @param serverIsLocal   whether the address this connection was opened
+     *                        through resolves to the machine the client runs on
+     * @param localityCache   resolutions already performed, keyed by host name;
+     *                        both read and written here, so that a host repeated
+     *                        across ranks costs one lookup rather than one per
+     *                        address
+     *
+     * @return  whether {@code url} may be used -- always true for null, and
+     *          always true when {@code serverIsLocal}
+     */
+    private static boolean isCredibleAddress( URL url, boolean serverIsLocal, Map<String, Boolean> localityCache ) {
+
+        if ( serverIsLocal || (url == null) )
+            return true;
+
+        final String host = url.getHost();
+
+        Boolean local = localityCache.get( host );
+
+        if ( local == null ) {
+            local = isLocalAddress( host );
+            localityCache.put( host, local );
+        }
+
+        return !local;
+    }
+
+
+    /**
+     * The rank addresses, or an empty list where any of them could not name
+     * this server.
+     *
+     * <p><b>All or nothing, deliberately.</b>  This list is index-aligned --
+     * entry {@code i} is rank {@code i}, and a null is a rank removed from the
+     * cluster.  Dropping an entry would shift every rank above it, which is the
+     * defect that silently misroutes sharded records; and a null cannot stand
+     * in for "not credible", because null already means something else.  There
+     * is no way to express "this one rank is unreachable" in this structure, so
+     * one incredible address withdraws the whole list and multi-head with it.
+     *
+     * <p>That is the conservative direction: the alternative to withholding
+     * multi-head is routing shard keys at an address that may be a different
+     * cluster.
+     *
+     * @param urls            one address per rank, index-aligned, with null for
+     *                        a rank removed from the cluster; null and empty are
+     *                        returned unchanged
+     * @param serverIsLocal   whether this connection reached a server on the
+     *                        machine the client runs on, in which case the list
+     *                        is returned unchanged
+     * @param what            what these addresses are, for the warning naming
+     *                        the one that withdrew them
+     *
+     * @return  {@code urls} unchanged where every entry could name this server,
+     *          or an empty list where any could not
+     */
+    static List<URL> rankUrlsIfAllCredible( List<URL> urls, boolean serverIsLocal, String what ) {
+
+        if ( serverIsLocal || (urls == null) || urls.isEmpty() )
+            return urls;
+
+        final Map<String, Boolean> localityCache = new HashMap<>();
+
+        for ( URL url : urls ) {
+            if ( !isCredibleAddress( url, serverIsLocal, localityCache ) ) {
+                // WARN, not debug: this costs the caller multi-head, and the
+                // symptom otherwise is a silent throughput cliff that looks
+                // exactly like a cluster with no worker servers configured.
+                GPUdbLogger.warn(
+                        "Multi-head operations disabled for this cluster: it advertises <" + url
+                        + "> for a rank, which names this machine and so cannot name a server"
+                        + " reached elsewhere.  Requests will go through the head node."
+                        + "  The advertised addresses are rank-indexed, so the rest cannot be"
+                        + " used without this one." );
+                return new ArrayList<>();
+            }
+        }
+
+        return urls;
+    }  // end rankUrlsIfAllCredible
+
+
+    /**
+     * The candidates that could name this server, from a rank's alternatives.
+     *
+     * <p>Safe to filter, unlike {@link #rankUrlsIfAllCredible}: these are
+     * alternative addresses for one rank rather than one address per rank, so
+     * removing some reorders nothing and loses nothing but a probe that could
+     * only have reached the wrong machine.
+     *
+     * @param urls            one rank's candidate addresses; null is returned
+     *                        unchanged
+     * @param serverIsLocal   whether this connection reached a server on the
+     *                        machine the client runs on, in which case every
+     *                        candidate is kept
+     * @param what            what these addresses are, for the log line naming
+     *                        any that are dropped
+     *
+     * @return  the candidates that could name this server, in their original
+     *          order; possibly empty
+     */
+    static List<URL> retainCredibleUrls( List<URL> urls, boolean serverIsLocal, String what ) {
+
+        if ( serverIsLocal || (urls == null) )
+            return urls;
+
+        final Map<String, Boolean> localityCache = new HashMap<>();
+        final List<URL> retained = new ArrayList<>();
+
+        for ( URL url : urls ) {
+            if ( isCredibleAddress( url, serverIsLocal, localityCache ) ) {
+                retained.add( url );
+            } else {
+                GPUdbLogger.debug_with_info( "Skipping " + what + " <" + url + ">: it names this"
+                                             + " machine, not a server reached elsewhere" );
+            }
+        }
+
+        return retained;
+    }  // end retainCredibleUrls
 
 
     /**
