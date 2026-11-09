@@ -375,7 +375,7 @@ public class RecordRetriever<T> {
         // out, we will pretend it is not
         try {
             // Check whether 'replicated' is in one of the response fields
-            this.tableReplicated = this.gpudb.showTable( this.tableName, null )
+            this.tableReplicated = GPUdbBase.ownRead( () -> this.gpudb.showTable( this.tableName, null ) )
                 .getTableDescriptions()
                 .get(0)
                 .contains( ShowTableResponse.TableDescriptions.REPLICATED );
@@ -561,7 +561,7 @@ public class RecordRetriever<T> {
         try {
             // Get the latest shard mapping information; note that this endpoint
             // call might trigger an HA failover in the GPUdb object
-            AdminShowShardsResponse shardInfo = this.gpudb.adminShowShards(new AdminShowShardsRequest());
+            AdminShowShardsResponse shardInfo = GPUdbBase.ownRead( () -> this.gpudb.adminShowShards(new AdminShowShardsRequest()) );
 
             // Get the shard version
             long newShardVersion = shardInfo.getVersion();

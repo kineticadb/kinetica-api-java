@@ -2,6 +2,43 @@
 
 ## Version 7.2
 
+### Version 7.2.3.29 - 2026-11-08
+
+#### Fixed
+-   A connection given a trust store (`GPUdbBase.Options.setTrustStoreFilePath()`)
+    or an OAuth token now fails back to its primary cluster.
+-   A `BulkInserter` under concurrent inserts could hang during a fail-over:
+    a thread sending a batch that failed over and a thread flushing a full
+    batch each waited for a lock the other held.  Neither waits for the other
+    now.
+-   A `BulkInserter` rebuilding its queues for another cluster, or for a
+    changed shard mapping, could silently drop a record another thread queued
+    at that moment.  Such a record is now queued again against the new
+    mapping.
+-   A `BulkInserter` that stops accepting records after a per-record error
+    (`return_individual_errors`) cleared its queues while other threads were
+    still inserting into them, which could corrupt a queue.
+-   A closed `BulkInserter` now throws `IllegalStateException` when reused.
+-   A `BulkInserter` now retries requests, with a back-off delay, when the
+    server's HA queues are initializing after startup, instead of repeatedly
+    failing over and failing back for several seconds.
+-   `GPUdbBase.Options.setTcpKeepIdle()`, `setTcpKeepInterval()` and
+    `setTcpKeepCount()` had no effect:  with TCP keep-alive on, a connection
+    was probed after 5 seconds idle, every 5 seconds, whatever they were set
+    to.  They now apply, to HTTP and HTTPS connections alike.  Once any of
+    them is set, one left at 0 takes the operating system's default; with none
+    set, the 5-second probing remains the default, as their documentation now
+    says.
+
+#### Changed
+-   Improved ingest performance by reducing lock acquisitions from 2 to 1 when
+    inserting a record into a batch, and using a multi-threaded background
+    service for inserting record batches only when it would benefit.
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
 ### Version 7.2.3.28 - 2026-10-29
 
 #### Added
@@ -23,6 +60,33 @@
 -   The host manager is addressed using the server-provided URL, where the
     cluster publishes one, rather than by an address derived from the
     connection.
+-   A request is re-sent to the same server only where a second copy cannot
+    be applied twice; otherwise it fails over, or fails with a single cluster:
+    -   A request that timed out, or lost its connection, after it was sent in
+        full is no longer re-sent, since the server may have applied it.  Under
+        heavy load this surfaces timeouts that re-sends used to absorb; raise
+        `Options.setTimeout()`, or re-send a request that is safe to repeat
+        yourself.  The API's own reads of table, type, shard and server
+        metadata, and listings of KiFS files and directories, are still
+        re-sent.
+    -   A reply saying the server is shutting down, exiting, offline, starting
+        up, restricted to admin users, draining its HA queue, migrating, or has
+        a rank down fails over at once instead of being re-sent.
+    -   A reply saying a rank failed while handling the request fails over
+        instead of being reported.
+    -   A gateway's error page with a status below 500, and a request sent to a
+        host manager other than the head's, are reported at once.
+    -   A 504 is now re-sent, as a 502 or 503 is.
+    -   `Options.setMaxRetries()` now defaults to 3, down from 5.
+-   A `BulkInserter` batch is re-sent to the same cluster up to the inserter's
+    own `setMaxRetries()` times, now defaulting to 7, so it is sent at most 8
+    times rather than 24; the connection's `setMaxRetries()` no longer adds to
+    it.  If the table has a primary key, it will be marked safe for re-sends; if
+    multiple sends land, the final response will reflect the insert/update
+    status at that time.
+-   `insertRecordsFromJson()` fails over, rather than returning an `ERROR`
+    reply, when the reply says the server is draining its HA queue or is in
+    another of the states above.
 -   The shaded JAR no longer carries the unused Apache Commons Compress, Codec,
     or IO.  A project that was picking any of them up through `gpudb-api` rather
     than declaring it must now declare it.
@@ -46,6 +110,8 @@
 -   Non-ASCII usernames and passwords being sent in the JVM's default charset
     instead of UTF-8, which could fail authentication where that default is not
     UTF-8; e.g., Java 11 or 17 on Windows.
+-   A JSON `BulkInserter` silently dropped a batch it could not send.  It is now
+    handled as a `GenericRecord` batch is, and reported in an `InsertException`.
 -   `GPUdbFileHandler.ingest()` no longer leaves a copy of every file it ingests
     or fails to ingest in the user's KiFS home directory.
 -   `TableCreationOptions.setReplicated()` being ignored by

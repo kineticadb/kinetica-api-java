@@ -85,12 +85,16 @@ class FailbackPollerService {
 
         // If preliminary running test checks out, acquire a database connection
         if (kineticaRunning) {
+            GPUdb.Options mainOptions = this.gpudb.getOptions();
             GPUdb.Options options = new GPUdb.Options();
             options.setDisableAutoDiscovery(true);
             options.setDisableFailover(true);
             options.setUsername(this.gpudb.getUsername());
             options.setPassword(this.gpudb.getPassword());
+            options.setOauthToken(mainOptions.getOauthToken());
             options.setBypassSslCertCheck(this.gpudb.getBypassSslCertCheck());
+            options.setTrustStoreFilePath(mainOptions.getTrustStoreFilePath());
+            options.setTrustStorePassword(mainOptions.getTrustStorePassword());
 
             try {
                 db = new GPUdb(this.primaryURL, options);
@@ -102,11 +106,17 @@ class FailbackPollerService {
             GPUdbLogger.debug_with_info(String.format("Kinetica is not running at URL: [%s]", this.primaryURL.toString()));
         }
 
+        // The checks of the primary after the first are re-sent like any
+        // request, as the client's own reads:  the client stays with its
+        // primary for as long as it can, so the poller gives the primary the
+        // same chance to come back
+        final GPUdb primary = db;
+
         // If database connection is successful, check draining status
         if (kineticaRunning && db != null) {
             String statusJsonString = null;
             try {
-                statusJsonString = db.showSystemStatus(new HashMap<>()).getStatusMap().get(HA_STATUS_KEY);
+                statusJsonString = GPUdbBase.ownRead( () -> primary.showSystemStatus(new HashMap<>()) ).getStatusMap().get(HA_STATUS_KEY);
     
                 if (HA_STATUS_DRAINED_VALUE_DRAINING.equals(JSON_MAPPER.readTree( statusJsonString ).get(HA_STATUS_DRAINED_KEY).textValue())) {
                     GPUdbLogger.debug_with_info(String.format("Kinetica running on primary cluster at [%s], but HA queues are still draining", this.primaryURL.toString()));
@@ -120,16 +130,9 @@ class FailbackPollerService {
 
         // If draining status check is successful, issue query
         if (kineticaRunning && db != null) {
-            long timeCheck = System.currentTimeMillis();
-            try (GPUdbSqlIterator<Record> si = db.query("SELECT " + timeCheck)) {
-                if (si.size() != 1) {
-                    GPUdbLogger.debug_with_info(String.format("Kinetica running on primary cluster at [%s], but query check failed to return expected result count--instead [%d]", this.primaryURL.toString(), si.size()));
-                    kineticaRunning = false;
-                } else if (si.iterator().next().getLong(0) != timeCheck) {
-                    GPUdbLogger.debug_with_info(String.format("Kinetica running on primary cluster at [%s], but query check failed to return expected result--instead [%d] != [%d]", this.primaryURL.toString(), si.iterator().next().getLong(0), timeCheck));
-                    kineticaRunning = false;
-                }
-            } catch ( Exception e ) {
+            try {
+                kineticaRunning = GPUdbBase.ownRead( () -> answersQuery( primary ) );
+            } catch ( GPUdbException e ) {
                 GPUdbLogger.warn(String.format("Kinetica running on primary cluster at [%s], but query check failed: [%s]", this.primaryURL.toString(), e.getMessage()));
                 kineticaRunning = false;
             }
@@ -139,6 +142,30 @@ class FailbackPollerService {
             GPUdbLogger.info(String.format("Failback to primary cluster at [%s] succeeded", this.primaryURL));
 
         return kineticaRunning;
+    }
+
+    /**
+     * Whether the primary cluster answers a query with the result expected.
+     *
+     * @param primary  a connection to the primary cluster alone
+     * @return  whether it answered as expected; a failure to answer is
+     *          logged, and returns {@code false}
+     */
+    private boolean answersQuery( GPUdb primary ) {
+        long timeCheck = System.currentTimeMillis();
+        try (GPUdbSqlIterator<Record> si = primary.query("SELECT " + timeCheck)) {
+            if (si.size() != 1) {
+                GPUdbLogger.debug_with_info(String.format("Kinetica running on primary cluster at [%s], but query check failed to return expected result count--instead [%d]", this.primaryURL.toString(), si.size()));
+                return false;
+            } else if (si.iterator().next().getLong(0) != timeCheck) {
+                GPUdbLogger.debug_with_info(String.format("Kinetica running on primary cluster at [%s], but query check failed to return expected result--instead [%d] != [%d]", this.primaryURL.toString(), si.iterator().next().getLong(0), timeCheck));
+                return false;
+            }
+            return true;
+        } catch ( Exception e ) {
+            GPUdbLogger.warn(String.format("Kinetica running on primary cluster at [%s], but query check failed: [%s]", this.primaryURL.toString(), e.getMessage()));
+            return false;
+        }
     }
 
     // Handle specific exceptions that require warnings

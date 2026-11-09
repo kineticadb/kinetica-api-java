@@ -15,6 +15,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
 
@@ -30,8 +31,8 @@ import java.util.regex.Pattern;
  */
 public class BulkInserter<T> implements AutoCloseable {
 
-    // The default number of times insertions will be re-attempted
-    private static final int DEFAULT_INSERTION_RETRY_COUNT = 3;
+    // The default number of times a batch is re-sent to the same rank
+    private static final int DEFAULT_INSERTION_RETRY_COUNT = 7;
 
     //Number of seconds to wait for the thread pools (scheduler and worker) to terminate
     private static final int DEFAULT_THREADPOOL_TERMINATION_TIMEOUT = 30; //In seconds
@@ -44,6 +45,7 @@ public class BulkInserter<T> implements AutoCloseable {
     private final Map<String, String> options;
     private final boolean isJson;
     private final boolean isTableReplicated;
+    private final boolean tableHasPrimaryKey;
 
     // Ingest processing members
     private final ExecutorService workerExecutorService;
@@ -58,7 +60,11 @@ public class BulkInserter<T> implements AutoCloseable {
     private List<InsertException> errorList = new ArrayList<>();
     private List<InsertException> warningList = new ArrayList<>();
     private final Object errorListLock = new Object();
-    private boolean simulateErrorMode = false; // Simulate returnIndividualErrors after an error
+    private volatile boolean simulateErrorMode = false; // Simulate returnIndividualErrors after an error
+
+    // Whether this BulkInserter has been closed; further requests are rejected.
+    private final AtomicBoolean closed = new AtomicBoolean( false );
+    private final Object closeMutex = new Object();
 
     // Sharding members
     private com.gpudb.WorkerList workerList;
@@ -879,15 +885,18 @@ public class BulkInserter<T> implements AutoCloseable {
         // HA failover has happened)
         this.currentHeadNodeURL = gpudb.getURL();
 
-        // Call /show/table to check table existence & replicated nature
-        List<String> tableDescriptions = null;
+        // Call /show/table to check table existence, replicated nature and
+        // whether the table has a primary key
+        ShowTableResponse tableInfo = null;
         try {
-            tableDescriptions = gpudb.showTable(this.tableName, null).getTableDescriptions().get(0);
+            tableInfo = GPUdbBase.ownRead( () -> gpudb.showTable(this.tableName, null) );
         }
         catch (GPUdbException ge) {
             throw new GPUdbException( "Table '" + this.tableName + "' does not exist!" );
         }
+        List<String> tableDescriptions = tableInfo.getTableDescriptions().get(0);
         this.isTableReplicated = tableDescriptions.contains(ShowTableResponse.TableDescriptions.REPLICATED);
+        this.tableHasPrimaryKey = hasPrimaryKey( tableInfo );
 
         // If no worker list is given, attempt to create one, by default, using
         // the given connection's work rank list
@@ -1188,13 +1197,17 @@ public class BulkInserter<T> implements AutoCloseable {
 
         @Override
         public void run() {
+            // Do nothing if this BulkInserter is closed
+            if ( this.thisInserter.closed.get() )
+                return;
+
             final LocalDateTime startTime = LocalDateTime.now();
             GPUdbLogger.debug(String.format("Timed flush started at : %s", startTime));
             try {
                 if( this.thisInserter.getTimedFlushOptions().isFlushWhenFull())
-                    this.thisInserter.flushFullQueues( this.thisInserter.getMaxRetries() );
+                    this.thisInserter.flushFullQueues();
                 else
-                    this.thisInserter.flush();
+                    this.thisInserter.flushAll();
                 final LocalDateTime endTime = LocalDateTime.now();
                 GPUdbLogger.debug(String.format("Timed flush completed in : %d seconds", Duration.between(startTime, endTime).getSeconds()));
             } catch (InsertException e) {
@@ -1204,13 +1217,13 @@ public class BulkInserter<T> implements AutoCloseable {
     }
 
     /**
-     * A callable class that stores a list of records to insert and can also insert
-     * those records in its call() method.
-     * 
+     * The records queued for one rank, and the means of sending a batch of
+     * them to it; a batch cut from the queue travels as a {@link BatchSend}.
+     *
      * Those constructed with JSON options will be dedicated to ingesting JSON
      * records.
      */
-    private static final class WorkerQueue<T> implements Callable< WorkerQueueInsertionResult<T> > {
+    private static final class WorkerQueue<T> {
         private final GPUdb gpudb;
         
         /** Rank URL including insert records endpoint call path */
@@ -1222,8 +1235,8 @@ public class BulkInserter<T> implements AutoCloseable {
         // This is the same as the batchSize in BulkInserter class
         private final int capacity;
         List<T> queue;
-        private final List<List<T>> recordBatches = new ArrayList<>();
         private final Object queueLock = new Object();
+        private boolean retired = false; // guarded by queueLock
         private final TypeObjectMap<T> typeObjectMap;
         private final Map<String, String> options;
 
@@ -1290,11 +1303,94 @@ public class BulkInserter<T> implements AutoCloseable {
         }
 
         /**
-         * Insert the given record into the queue.
+         * Queues the given record unless this queue has been retired by a
+         * rebuild of the routing state, or the inserter has been closed.  Both
+         * checks are made under the queue's lock, the same lock the retiring
+         * rebuild and the closing drain take to empty it, so a record is
+         * either queued before the queue was emptied for the last time, and
+         * sent by whoever emptied it, or refused.
+         * <p>
+         * Where asked to, a record that fills the queue also cuts the full
+         * batch, in the same critical section, as {@link #cut} would; so
+         * queuing a record and learning that it completed a batch costs one
+         * acquisition of the queue's lock, not two.
+         *
+         * @param record  the record to queue
+         * @param closed  whether the inserter has been closed, or {@code null}
+         *        for a record accepted before any close, which is queued
+         *        regardless
+         * @param cutIfFull  whether to cut the batch the record fills, which
+         *        the caller then sends; a caller queuing many records cuts
+         *        once at the end instead
+         * @param maxRetries  how many times the batch may be re-sent, should
+         *        one be cut
+         * @param repeatable  whether a second copy of the batch is harmless
+         * @return  {@code null} where the record was queued and no batch cut;
+         *          the send of the batch it filled; or a refusal,
+         *          {@link BatchSend#REFUSED_CLOSED} or
+         *          {@link BatchSend#REFUSED_RETIRED}, compared by identity
          */
-        public void insert(T record) {
+        @SuppressWarnings("unchecked")
+        public BatchSend<T> offer(T record, AtomicBoolean closed, boolean cutIfFull, int maxRetries, boolean repeatable) {
             synchronized (this.queueLock) {
+                if (this.retired)
+                    return (BatchSend<T>) BatchSend.REFUSED_RETIRED;
+                if (closed != null && closed.get())
+                    return (BatchSend<T>) BatchSend.REFUSED_CLOSED;
                 this.queue.add(record);
+                if (cutIfFull && this.queue.size() >= this.capacity)
+                    return cutLocked(maxRetries, repeatable);
+                return null;
+            }
+        }
+
+        /**
+         * Cuts the queued records into a batch to send:  all of them, or only
+         * a full batch's worth.
+         *
+         * @param onlyIfFull  whether to cut only when the queue is full
+         * @param maxRetries  how many times the batch may be re-sent
+         * @param repeatable  whether a second copy of the batch is harmless
+         * @return  the send of the batch, or {@code null} where nothing was cut
+         */
+        public BatchSend<T> cut(boolean onlyIfFull, int maxRetries, boolean repeatable) {
+            synchronized (this.queueLock) {
+                if (this.queue.isEmpty() || (onlyIfFull && this.queue.size() < this.capacity))
+                    return null;
+                return cutLocked(maxRetries, repeatable);
+            }
+        }
+
+        /** Takes the queued records as a batch to send; the queue's lock must be held. */
+        private BatchSend<T> cutLocked(int maxRetries, boolean repeatable) {
+            List<T> batch = this.queue;
+            this.queue = new ArrayList<>( this.capacity );
+            return new BatchSend<>(this, batch, maxRetries, repeatable);
+        }
+
+        /**
+         * Sends a batch cut from this queue, by whichever path its records
+         * take.
+         */
+        WorkerQueueInsertionResult<T> send(List<T> batch, int maxRetries, boolean repeatable) {
+            RequestRetries retries = new RequestRetries( maxRetries, repeatable );
+            return this.isJson ? handleJsonRecords(batch, retries) : handleRecordObjects(batch, retries);
+        }
+
+        /**
+         * Takes the queued records for the last time, on a rebuild of the
+         * routing state that replaces this queue.  A record offered after
+         * this is refused, and its thread routes it again, so none is left
+         * behind in a queue nothing flushes.
+         *
+         * @return  the records queued so far
+         */
+        public List<T> retire() {
+            synchronized (this.queueLock) {
+                this.retired = true;
+                List<T> oldQueue = this.queue;
+                this.queue = new ArrayList<>();
+                return oldQueue;
             }
         }
 
@@ -1306,13 +1402,7 @@ public class BulkInserter<T> implements AutoCloseable {
          *
          * @return - An instance of {@link WorkerQueueInsertionResult<T>}
          */
-        private WorkerQueueInsertionResult<T> handleRecordObjects(List<T> queuedRecords) {
-
-            // If nothing to insert, return a null object for the response
-            if ( queuedRecords.isEmpty() ) {
-                GPUdbLogger.debug_with_info( "0 records in the queue; nothing to insert" );
-                return null;
-            }
+        private WorkerQueueInsertionResult<T> handleRecordObjects(List<T> queuedRecords, RequestRetries retries) {
 
             // First, encode the records to create the request packet
             RawInsertRecordsRequest request;
@@ -1361,6 +1451,7 @@ public class BulkInserter<T> implements AutoCloseable {
                         queuedRecords,
                         errors,
                         warnings,
+                        Collections.emptyList(),
                         false,
                         false,
                         false,
@@ -1378,6 +1469,7 @@ public class BulkInserter<T> implements AutoCloseable {
             // Information that we will need to pass via the result object
             Exception exception   = null;
             List<T> failedRecords = null;
+            List<InsertException> possiblyStored = Collections.emptyList();
 
             InsertRecordsResponse response = new InsertRecordsResponse();
 
@@ -1399,7 +1491,7 @@ public class BulkInserter<T> implements AutoCloseable {
                 //                              + Arrays.toString( queue.toArray() ) );
 
                 // Insert into the given worker rank
-                response = this.gpudb.submitRequest(this.insertUrl, request, response, true);
+                response = this.gpudb.submitRequestRaw(this.insertUrl, request, response, true, this.gpudb.getTimeout(), retries);
 
                 final LocalDateTime endTime = LocalDateTime.now();
 
@@ -1433,6 +1525,8 @@ public class BulkInserter<T> implements AutoCloseable {
                     int index = Integer.parseInt(key.substring(0,key.indexOf(":")));
                     errors.put( index, Pair.of( key, value ));
                 });
+
+                possiblyStored = BulkInserter.possiblyStored( this.gpudb.getURL(), retries.getUncertainFailure(), queuedRecords, errors, warnings );
 
                 // Check if shard re-balancing is under way at the server; if so,
                 // we need to update the shard mapping
@@ -1471,6 +1565,7 @@ public class BulkInserter<T> implements AutoCloseable {
                     failedRecords,
                     errors,
                     warnings,
+                    possiblyStored,
                     isSuccess,
                     doUpdateWorkers,
                     doFailover,
@@ -1488,13 +1583,7 @@ public class BulkInserter<T> implements AutoCloseable {
          *
          * @return - an instance of {@link WorkerQueueInsertionResult}
          */
-        private WorkerQueueInsertionResult<T> handleJsonRecords(List<T> queuedRecords) {
-
-            // If nothing to insert, return a null object for the response
-            if ( queuedRecords.isEmpty() ) {
-                GPUdbLogger.debug_with_info( "0 records in the queue; nothing to insert" );
-                return null;
-            }
+        private WorkerQueueInsertionResult<T> handleJsonRecords(List<T> queuedRecords, RequestRetries retries) {
 
             // Some flags for necessary follow-up work
             boolean doUpdateWorkers = false;
@@ -1509,6 +1598,7 @@ public class BulkInserter<T> implements AutoCloseable {
             long insertionAttemptTimestamp = new Timestamp( System.currentTimeMillis() ).getTime();
 
             Map<String, Object> insertRecordsFromJsonResponse = null;
+            List<InsertException> possiblyStored = Collections.emptyList();
 
             @SuppressWarnings("unchecked")
             String jsonPayload = JsonUtils.toJsonArray((List<String>) queuedRecords);
@@ -1520,7 +1610,8 @@ public class BulkInserter<T> implements AutoCloseable {
                             jsonPayload,
                             this.tableName,
                             this.jsonOptions,
-                            this.options
+                            this.options,
+                            retries
                     );
 
                     if (!(isSuccess = "OK".equalsIgnoreCase(insertRecordsFromJsonResponse.get("status").toString()))) {
@@ -1530,6 +1621,9 @@ public class BulkInserter<T> implements AutoCloseable {
                                 failedRecords.size(),
                                 insertRecordsFromJsonResponse.get("message")
                         ));
+                    } else {
+                        possiblyStored = BulkInserter.possiblyStored( this.gpudb.getURL(), retries.getUncertainFailure(),
+                                queuedRecords, null, jsonReplyWarnings( insertRecordsFromJsonResponse ) );
                     }
                 } catch (GPUdbException ex) {
                     // If some connection issue occurred, we want to force an HA failover
@@ -1549,6 +1643,11 @@ public class BulkInserter<T> implements AutoCloseable {
                     failedRecords = queuedRecords;
                     exception     = ex;
                 }
+            } else {
+                failedRecords = queuedRecords;
+                exception     = new InsertException(String.format(
+                        "Error inserting <%d> JSON objects: they could not be combined into a JSON array",
+                        failedRecords.size()));
             }
 
             return new WorkerQueueInsertionResult<>(
@@ -1558,6 +1657,7 @@ public class BulkInserter<T> implements AutoCloseable {
                     failedRecords,
                     null,
                     null,
+                    possiblyStored,
                     isSuccess,
                     doUpdateWorkers,
                     doFailover,
@@ -1567,61 +1667,41 @@ public class BulkInserter<T> implements AutoCloseable {
             );
         }
 
-        /**
-         * Adds queued records to the queue of records to insert, if any queued
-         * records exist in this queue.
-         * 
-         * @param queueOnlyIfFull only add this queue to the queue of records to
-         *        insert if it's full
-         * 
-         * @return whether this queue's records were queued for insert
-         */
-        boolean queueQueue(boolean queueOnlyIfFull) {
-            boolean didQueueQueue = false;
-            synchronized (this.queueLock) {
-                if ((!queueOnlyIfFull && !this.queue.isEmpty()) || (this.queue.size() >= this.capacity)) {
-                    didQueueQueue = true;
-                    this.recordBatches.add(this.queue);
-                    this.queue = new ArrayList<>( this.capacity );
-                }
-            }
-            return didQueueQueue;
-        }
-
-        /**
-         * Inserts one set of records from the list of full record batches
-         * queued for ingest.  Returns a {@link WorkerQueueInsertionResult}
-         * object containing the result of the insertion, or null if no
-         * insertion was attempted.
-         */
-        @Override
-        public WorkerQueueInsertionResult<T> call() throws Exception {
-
-            List<T> queuedRecords = null;
-            synchronized (this.queueLock) {
-                if (!this.recordBatches.isEmpty()) {
-                    queuedRecords = this.recordBatches.remove(0);
-                }
-            }
-
-            if (queuedRecords == null)
-                return null;
-
-            if (this.isJson)
-                return handleJsonRecords(queuedRecords);
-            
-            return handleRecordObjects(queuedRecords);
-        }
-
-        // Clear queue without sending
-        public void clear() {
-            this.queue.clear();
-        }
-
         public URL getUrl() {
             return this.insertUrl;
         }
+
     }   // end class WorkerQueue
+
+
+    /**
+     * A batch of records cut from a queue, with how it is sent:  the one unit
+     * handed to the worker pool, or sent on the calling thread.
+     */
+    private static final class BatchSend<T> implements Callable< WorkerQueueInsertionResult<T> > {
+
+        /** A queue refused the record because the inserter is closed; see {@link WorkerQueue#offer}. */
+        static final BatchSend<Object> REFUSED_CLOSED = new BatchSend<>( null, null, 0, false );
+        /** A queue refused the record because a rebuild retired the queue; see {@link WorkerQueue#offer}. */
+        static final BatchSend<Object> REFUSED_RETIRED = new BatchSend<>( null, null, 0, false );
+
+        final WorkerQueue<T> queue;
+        final List<T> records;
+        final int maxRetries;
+        final boolean repeatable;
+
+        BatchSend(WorkerQueue<T> queue, List<T> records, int maxRetries, boolean repeatable) {
+            this.queue      = queue;
+            this.records    = records;
+            this.maxRetries = maxRetries;
+            this.repeatable = repeatable;
+        }
+
+        @Override
+        public WorkerQueueInsertionResult<T> call() {
+            return this.queue.send( this.records, this.maxRetries, this.repeatable );
+        }
+    }
 
 
     /**
@@ -1744,6 +1824,7 @@ public class BulkInserter<T> implements AutoCloseable {
         private final long      insertionAttemptTimestamp;
         private final Map<Integer, Pair<String, T>> error_map;
         private final List<String> warnings;
+        private final List<InsertException> possiblyStored;
 
         public WorkerQueueInsertionResult(URL workerUrl,
                                           URL headUrl,
@@ -1752,6 +1833,7 @@ public class BulkInserter<T> implements AutoCloseable {
                                           List<T> failedRecords,
                                           Map<Integer, Pair<String, T>> error_map,
                                           List<String> warnings,
+                                          List<InsertException> possiblyStored,
                                           boolean didSucceed,
                                           boolean doUpdateWorkers,
                                           boolean doFailover,
@@ -1765,6 +1847,7 @@ public class BulkInserter<T> implements AutoCloseable {
             this.failedRecords    = failedRecords;
             this.error_map        = error_map;
             this.warnings         = warnings;
+            this.possiblyStored   = possiblyStored;
             this.didSucceed       = didSucceed;
             this.doUpdateWorkers  = doUpdateWorkers;
             this.doFailover       = doFailover;
@@ -1779,6 +1862,7 @@ public class BulkInserter<T> implements AutoCloseable {
                                           List<T> failedRecords,
                                           Map<Integer, Pair<String, T>> error_map,
                                           List<String> warnings,
+                                          List<InsertException> possiblyStored,
                                           boolean didSucceed,
                                           boolean doUpdateWorkers,
                                           boolean doFailover,
@@ -1792,6 +1876,7 @@ public class BulkInserter<T> implements AutoCloseable {
             this.failedRecords    = failedRecords;
             this.error_map        = error_map;
             this.warnings         = warnings;
+            this.possiblyStored   = possiblyStored;
             this.didSucceed       = didSucceed;
             this.doUpdateWorkers  = doUpdateWorkers;
             this.doFailover       = doFailover;
@@ -1810,6 +1895,14 @@ public class BulkInserter<T> implements AutoCloseable {
 
         public InsertRecordsResponse getInsertResponse() {
             return this.insertResponse;
+        }
+
+        /**
+         * @return  the records a re-sent batch met as primary key collisions,
+         *          which an earlier copy of the batch may have stored
+         */
+        public List<InsertException> getPossiblyStored() {
+            return this.possiblyStored;
         }
 
         public Map<String, Object> getInsertJsonResponse() {
@@ -1893,8 +1986,16 @@ public class BulkInserter<T> implements AutoCloseable {
      * @param flushOptions {@link FlushOptions} to use for timed flush operation
      * @throws GPUdbException in case an invalid timeout values is set in the
      *                          {@code flushOptions} parameter.
+     * @throws IllegalStateException if this inserter has been closed
      */
     public void setTimedFlushOptions(FlushOptions flushOptions) throws GPUdbException {
+        synchronized ( this.closeMutex ) {
+            checkOpen();
+            applyTimedFlushOptions( flushOptions );
+        }
+    }
+
+    private void applyTimedFlushOptions(FlushOptions flushOptions) {
         this.flushOptions = (flushOptions == null) ? FlushOptions.defaultOptions() : flushOptions;
 
         // Timed flush already active, terminate first
@@ -1966,30 +2067,61 @@ public class BulkInserter<T> implements AutoCloseable {
      *     inserter.close();
      * </pre>
      *
+     * Once closed, the inserter accepts no more records:
+     * {@link #insert(Object)}, {@link #insert(List)}, {@link #flush()} and
+     * {@link #setTimedFlushOptions(FlushOptions)} throw
+     * {@link IllegalStateException}.  Every record accepted before the close
+     * is sent:  by this method, or, for a batch an insert on another thread
+     * was already sending, by that insert.  Closing again does nothing.
+     *
      * @throws InsertException - While doing the final flush
      */
     @Override
     public void close() throws InsertException {
-        // Call the flush method one last time
-        InsertException ie = null;
-        try {
-            this.flush();
-        } catch (InsertException e) {
-            GPUdbLogger.error(e.getMessage());
-            ie = e;
+        synchronized ( this.closeMutex ) {
+            // Refuse records from here on; the queues check this flag under
+            // their own locks, so the drain below takes every record queued
+            // before it
+            if ( !this.closed.compareAndSet( false, true ) )
+                return;
+
+            // Stop the timed flushes; one in progress finishes first
+            terminateTimedFlushExecutor();
+
+            // Call the flush method one last time
+            InsertException ie = null;
+            try {
+                flushAll();
+            } catch (InsertException e) {
+                GPUdbLogger.error(e.getMessage());
+                ie = e;
+            }
+
+            GPUdbLogger.debug_with_info("Terminating BulkInserter and cleaning up ...");
+
+            // Terminate the worker thread pool.  A batch an insert on another
+            // thread hands over after this is sent by that thread; see
+            // flushQueues
+            terminateWorkerThreadPool();
+
+            if( ie != null ) {
+                throw ie;
+            }
         }
+    }
 
-        GPUdbLogger.debug_with_info("Terminating BulkInserter and cleaning up ...");
 
-        //Terminate the scheduler thread
-        terminateTimedFlushExecutor();
+    /**
+     * @throws IllegalStateException if this inserter has been closed
+     */
+    private void checkOpen() {
+        if ( this.closed.get() )
+            throw closedException();
+    }
 
-        // Terminate the worker thread pool
-        terminateWorkerThreadPool();
 
-        if( ie != null ) {
-            throw ie;
-        }
+    private IllegalStateException closedException() {
+        return new IllegalStateException( "BulkInserter for table <" + this.tableName + "> is closed" );
     }
 
     /**
@@ -2156,7 +2288,7 @@ public class BulkInserter<T> implements AutoCloseable {
         try {
             // Get the latest shard mapping information; note that this endpoint
             // call might trigger an HA failover in the GPUdb object
-            AdminShowShardsResponse shardInfo = this.gpudb.adminShowShards(new AdminShowShardsRequest());
+            AdminShowShardsResponse shardInfo = GPUdbBase.ownRead( () -> this.gpudb.adminShowShards(new AdminShowShardsRequest()) );
 
             // Get the shard version
             long newShardVersion = shardInfo.getVersion();
@@ -2372,13 +2504,18 @@ public class BulkInserter<T> implements AutoCloseable {
         this.routing = new Routing<>( isMultiHeadEnabled, this.isTableReplicated,
                                       newWorkerQueues, newRoutingTable );
 
-        // Re-queue any existing queued records
+        // Re-queue any existing queued records.  They were accepted before
+        // any close, so they are queued whether or not the inserter has been
+        // closed since; and if it has, nothing else will flush the new queues
+        // they land in, so flush them now.
         for ( WorkerQueue<T> oldQueue : oldWorkerQueues ) {
             if ( oldQueue != null ) { // skipping removed ranks
-                List<T> records = oldQueue.flush();
-                this.insert( records );
+                List<T> records = oldQueue.retire();
+                this.queueAndFlushFull( records, false );
             }
         }
+        if ( this.closed.get() )
+            flushAll();
 
         GPUdbLogger.debug_with_info( "Worker list was updated, returning true" );
         return true; // we did change the queues!
@@ -2431,9 +2568,22 @@ public class BulkInserter<T> implements AutoCloseable {
     }
 
     /**
-     * Gets the number of times inserts into GPUdb will be retried in the event
-     * of an error. After this many retries, {@link InsertException} will be
-     * thrown.
+     * @return  whether this inserter's table has a primary key, so that its
+     *          batches are re-sent where a second copy would otherwise be
+     *          unsafe
+     */
+    boolean isTableWithPrimaryKey() {
+        return this.tableHasPrimaryKey;
+    }
+
+    /**
+     * Gets the number of times a batch is re-sent to the same cluster after a
+     * failure that a second attempt may get past, such as a refused connection
+     * or a busy server, before the inserter fails over to another cluster, or
+     * throws {@link InsertException} where there is none.  A batch is given
+     * this budget in place of the connection's
+     * {@link GPUdbBase#getMaxRetries() maxRetries}, not in addition to it.
+     * The default value is 7.
      *
      * @return  the number of retries
      *
@@ -2444,9 +2594,13 @@ public class BulkInserter<T> implements AutoCloseable {
     }
 
     /**
-     * Sets the number of times inserts into GPUdb will be retried in the event
-     * of an error. After this many retries, {@link InsertException} will be
-     * thrown.
+     * Sets the number of times a batch is re-sent to the same cluster after a
+     * failure that a second attempt may get past, such as a refused connection
+     * or a busy server, before the inserter fails over to another cluster, or
+     * throws {@link InsertException} where there is none.  A batch is given
+     * this budget in place of the connection's
+     * {@link GPUdbBase#getMaxRetries() maxRetries}, not in addition to it.
+     * The default value is 7.
      *
      * @param value  the number of retries
      *
@@ -2495,6 +2649,7 @@ public class BulkInserter<T> implements AutoCloseable {
 
         this.maxRetries = value;
     }
+
 
     /**
      * Gets the number of records inserted into GPUdb. Excludes records that
@@ -2556,84 +2711,55 @@ public class BulkInserter<T> implements AutoCloseable {
      * this occurs.
      *
      * @throws InsertException if an error occurs while inserting
+     * @throws IllegalStateException if this inserter has been closed
      */
     public void flush() throws InsertException {
-        // Flush all queues, regardless of how full they are.  Also, we will
-        // retry based on user configuration.  Note the last parameter
-        // lets the called method know that the user is forcing this flush;
-        // this is important for recursive calls.
-        this.flush( this.maxRetries );
+        checkOpen();
+        flushAll();
     }
 
 
     /**
-     * Ensures that any queued records are inserted into GPUdb. If an error
-     * occurs while inserting the records from any queue, the records will no
-     * longer be in that queue nor in GPUdb; catch {@link InsertException} to
-     * get the list of records that were being inserted if needed (for example,
-     * to retry). Other queues may also still contain unflushed records if
-     * this occurs.
-     *
-     * @throws InsertException if an error occurs while inserting
+     * Flushes every queue, as {@link #flush()} does, without checking whether
+     * this inserter is closed.
      */
-    private void flush( int retryCount ) throws InsertException {
-        List<WorkerQueue<T>> queues = new ArrayList<>();
-        // Flush all queues, regardless of how full they are.  Also, we will
-        // retry based on user configuration.  Note the last parameter
-        // lets the called method know that the user is forcing this flush;
-        // this is important for recursive calls.
+    private void flushAll() throws InsertException {
+        // Flush all queues, regardless of how full they are.  Note the last
+        // parameter lets the called method know that the user is forcing this
+        // flush; this is important for recursive calls.
+        this.flushQueues( cutBatches( false ), true );
+    }
+
+
+    /**
+     * Cuts a batch from every queue holding one:  all of each queue's records,
+     * or only a full batch's worth.
+     */
+    private List<BatchSend<T>> cutBatches( boolean onlyIfFull ) {
+        List<BatchSend<T>> batches = new ArrayList<>();
         for (WorkerQueue<T> workerQueue : this.routing.queues) {
 
             // Handle removed ranks
             if ( workerQueue == null)
                 continue;
 
-            if (workerQueue.queueQueue(false)) {
-                GPUdbLogger.debug_with_info( "Adding non-empty queue for " + workerQueue.getUrl() );
-                queues.add( workerQueue );
+            BatchSend<T> batch = workerQueue.cut( onlyIfFull, this.maxRetries, this.tableHasPrimaryKey );
+            if ( batch != null ) {
+                GPUdbLogger.debug_with_info( "Cut a batch of " + batch.records.size() + " records for " + workerQueue.getUrl() );
+                batches.add( batch );
             }
         }
-        this.flushQueues( queues, retryCount, true );
-    }
-
-
-    /**
-     * Flush the records of a given worker queue.
-     */
-    private void flush( WorkerQueue<T> workerQueue ) throws InsertException {
-        // Flush only the given single queue.  Also, we will retry based on user
-        // configuration.
-        List<WorkerQueue<T>> workerQueueToFlush = new ArrayList<>();
-        workerQueueToFlush.add( workerQueue );
-        this.flushQueues( workerQueueToFlush, this.maxRetries, false );
+        return batches;
     }
 
 
     /**
      * Flush only the queues that are already full.
      *
-     * @param retryCount  the number of times we have left to retry inserting
-     *
      * @throws InsertException if an error occurs while flushing
      */
-    void flushFullQueues( int retryCount ) throws InsertException {
-        List<WorkerQueue<T>> fullQueues = new ArrayList<>();
-
-        for (WorkerQueue<T> workerQueue : this.routing.queues) {
-
-            // Handle removed ranks
-            if ( workerQueue == null)
-                continue;
-
-            // We will flush only full queues
-            if ( workerQueue.queueQueue(true) ) {
-                GPUdbLogger.debug_with_info( "Adding full queue for " + workerQueue.getUrl() );
-                fullQueues.add( workerQueue );
-            }
-        }
-
-        GPUdbLogger.debug_with_info( "Before calling flushQueues()" );
-        this.flushQueues( fullQueues, retryCount, false );
+    void flushFullQueues() throws InsertException {
+        this.flushQueues( cutBatches( true ), false );
     }
 
 
@@ -2642,77 +2768,91 @@ public class BulkInserter<T> implements AutoCloseable {
      * There is an assumption that each of the WorkerQueues will have record
      * batches queued for insert.
      *
-     * If any queue encounters a failover scenario, trigger the failover
-     * mechanism to re-establish connection with the server.  Then, re-insert
-     * all records that we failed to insert.
+     * Each batch is sent with this inserter's own budget of re-sends to its
+     * rank, spent by the connection's request layer, and marked repeatable
+     * where the table has a primary key.  No batch is re-sent to the same
+     * cluster here.  If any queue encounters a failover scenario,
+     * trigger the failover mechanism to re-establish connection with the
+     * server.  Then, re-insert all records that we failed to insert.
      * 
      * NOTE:  This method is also responsible for switching the connections and
      * queue configuration back to the primary cluster in the event of a
      * fail-back scenario.
      *
      * @param queues      the queues that we need to flush
-     * @param retryCount  the number of times we have left to retry inserting
      * @param forcedFlush boolean indicating if the user wants a forced flush
-     *                    of all the records.  Useful in error cases when
-     *                    insertion retries happen.
+     *                    of all the records, so that records re-inserted
+     *                    after a failover are flushed too
      *
      * @throws InsertException if an error occurs while flushing
      */
-    private void flushQueues( List<WorkerQueue<T>> queues, int retryCount, boolean forcedFlush ) throws InsertException {
-
-        int currRetryCount = retryCount;
+    private void flushQueues( List<BatchSend<T>> batches, boolean forcedFlush ) throws InsertException {
 
         GPUdbLogger.debug_with_info(String.format(
-                "Begin flushQueues; <%d> queues, <%d> retries left", queues.size(), currRetryCount
+                "Begin flushQueues; <%d> batches", batches.size()
         ));
 
-        // Let the user know that we ran out of retries
-        if ( ( currRetryCount < 0 ) || (queues.size() == 0) ) {
-            // Retry count of 0 means try once but do no retry
+        if ( batches.isEmpty() ) {
             GPUdbLogger.debug_with_info( "Returning without further action" );
             return;
         }
 
         // Check if a fail-back has occurred, updating the cluster connections
-        // and config, if so
-        synchronized (this.haFailoverLock) {
-            if (this.currentHeadNodeURL != this.gpudb.getURL()) {
-                try {
-                    updateWorkerQueues();
-                }
-                catch (GPUdbException e)
-                {
-                    throw new InsertException(e.getMessage());
-                }
+        // and config, if so.  The rebuild takes this inserter's monitor, and a
+        // fail-over, which runs under that monitor, records its new head URL
+        // under haFailoverLock; so the URL is read under haFailoverLock and
+        // the lock released before the rebuild is called, or the two could
+        // each wait for the other's lock.
+        if (getCurrentHeadNodeURL() != this.gpudb.getURL()) {
+            try {
+                updateWorkerQueues();
+            }
+            catch (GPUdbException e)
+            {
+                throw new InsertException(e.getMessage());
             }
         }
 
         // Create an execution completion service that will let each queue
         // work in an independent parallel thread.  We will consume the
         // result of the queues as they complete (in the order of completion).
+        BlockingQueue<Future<WorkerQueueInsertionResult<T>>> completedQueues = new LinkedBlockingQueue<>();
         CompletionService<WorkerQueueInsertionResult<T>> queueService
-            = new ExecutorCompletionService<>( this.workerExecutorService );
+            = new ExecutorCompletionService<>( this.workerExecutorService, completedQueues );
+
+        // Which batch each pending result belongs to
+        Map<Future<WorkerQueueInsertionResult<T>>, BatchSend<T>> inFlight = new IdentityHashMap<>();
 
         // Add all the given tasks to the service
         int countQueueSubmitted = 0;
-        for (WorkerQueue<T> workerQueue : queues) {
+        for (BatchSend<T> batch : batches) {
 
-            // Handle removed ranks
-            if (workerQueue == null) {
-                GPUdbLogger.debug_with_info( "Skipping null worker queue" );
+            // Nothing more is sent once a per-record error has stopped the
+            // inserter; the batch is dropped
+            if (this.simulateErrorMode)
                 continue;
-            }
 
-            if (this.simulateErrorMode) {
-                workerQueue.clear();
-                continue;
+            // Submit each batch to the service.  A lone batch is sent on this
+            // thread instead:  this flush waits for its result anyway, so a
+            // worker thread would add a hand-off and, with the pool busy, a
+            // wait for one, and no concurrency.  The pool is for the flushes
+            // that send several queues' batches at once.
+            if (batches.size() == 1) {
+                sendOnThisThread( batch, completedQueues, inFlight );
+            } else {
+                try {
+                    inFlight.put( queueService.submit( batch ), batch );
+                } catch (RejectedExecutionException poolShutDown) {
+                    // close() shut the pool down after this flush began.  The
+                    // batch was accepted before the close, so send it here,
+                    // and hand its result in as the pool would have.
+                    GPUdbLogger.debug_with_info( "Worker pool shut down; inserting the batch for " + batch.queue.getUrl() + " on the calling thread" );
+                    sendOnThisThread( batch, completedQueues, inFlight );
+                }
             }
-
-            // Submit each extant worker queue to the service
-            queueService.submit( workerQueue );
             ++countQueueSubmitted;
         }
-        GPUdbLogger.debug_with_info( "# queues submitted: " + countQueueSubmitted );
+        GPUdbLogger.debug_with_info( "# batches submitted: " + countQueueSubmitted );
 
         boolean doUpdateWorkers  = false;
         boolean doFailover       = false;
@@ -2724,31 +2864,28 @@ public class BulkInserter<T> implements AutoCloseable {
         List<Exception> workerExceptions = new ArrayList<>();
 
         // Handle the results of the parallel insertions.  Aggregate results,
-        // or set up the need for retry or failover.
+        // or set up the need for failover.
         for (int i = 0; i < countQueueSubmitted; ++i) {
-            // Note that this take() will block until the next queue has
+            // Note that this take() will block until the next batch has
             // completed its work
-            WorkerQueueInsertionResult<T> result;
+            Future<WorkerQueueInsertionResult<T>> done;
             try {
-                result = queueService.take().get();
-            } catch ( ExecutionException
-                      | java.lang.InterruptedException ex ) {
-                // Something interrupted the execution of the threads.
-                if (ex instanceof ExecutionException ) {
-                    // Some error occurred in the task being executed
-                    // Need to report
-                    final URL url = queues.get(i).getUrl();
-                    GPUdbLogger.debug_with_info(String.format("Error in inserting data for queue with URL : %s : Error message # %s", url, ex.getMessage()));
-                    workerExceptions.add(ex);
-                }
-                if( ex instanceof InterruptedException ) {
-                    GPUdbLogger.debug_with_info(String.format("Thread interrupted : %s", ex.getMessage()));
-                }
+                done = queueService.take();
+            } catch ( InterruptedException ex ) {
+                GPUdbLogger.debug_with_info(String.format("Thread interrupted : %s", ex.getMessage()));
                 continue;
             }
-
-            // Empty queues would return null results
-            if ( result ==  null ) {
+            WorkerQueueInsertionResult<T> result;
+            try {
+                result = done.get();
+            } catch ( ExecutionException ex ) {
+                // Some error occurred in the task being executed; need to report
+                final URL url = inFlight.get(done).queue.getUrl();
+                GPUdbLogger.debug_with_info(String.format("Error in inserting data for queue with URL : %s : Error message # %s", url, ex.getMessage()));
+                workerExceptions.add(ex);
+                continue;
+            } catch ( InterruptedException ex ) {
+                GPUdbLogger.debug_with_info(String.format("Thread interrupted : %s", ex.getMessage()));
                 continue;
             }
 
@@ -2764,8 +2901,6 @@ public class BulkInserter<T> implements AutoCloseable {
                     this.countInserted.addAndGet(insertResponse.getCountInserted());
                     this.countUpdated.addAndGet(insertResponse.getCountUpdated());
 
-                    gatherErrorsFromInsertionResult(result);
-
                     // Check if shard re-balancing is under way at the server; if so,
                     // we need to update the shard mapping
                     if ("true".equals(result.getInsertResponse().getInfo().get(GPUdbBase.RESPONSE_INFO_DATA_REROUTED))) {
@@ -2780,104 +2915,86 @@ public class BulkInserter<T> implements AutoCloseable {
                     this.countInserted.addAndGet((Integer) responseData.get("count_inserted"));
                     this.countUpdated.addAndGet((Integer) responseData.get("count_updated"));
                 }
+
+                gatherErrorsFromInsertionResult(result);
             } else {
-                if (insertResponse != null) {
-                    // Something went wrong and the data was not inserted.
-                    Exception fe = result.getFailureException();
-                    if(fe instanceof GPUdbExitException || (fe instanceof GPUdbException && ((GPUdbException)fe).hadConnectionFailure())) {
-                        GPUdbLogger.debug_with_info("Setting retry to true");
-                        doRetryInsertion = true;
-                    }
-                    else {
-                        throw new InsertException(getCurrentHeadNodeURL(), result.getFailedRecords(), fe.getMessage());
-                    }
-
-
-                    // Figure out went wrong with the insertion and what follow-up
-                    // steps need to be done, including saving the records that
-                    // could not be inserted.
-
-                    failedWorkerUrls.add(result.getWorkerUrl());
-
-                    List<T> workerFailedRecords = result.getFailedRecords();
-                    if (workerFailedRecords != null) {
-                        failedRecords.addAll(workerFailedRecords);
-                    }
-
-                    if (result.getDoUpdateWorkers()) {
-                        // We're only saving true values so that we don't
-                        // accidentally override a true value based on a previous
-                        // worker's result with a false value of this worker.  We
-                        // are trying to find out if *any* worker has triggered a
-                        // need for updating our worker list.
-                        GPUdbLogger.debug_with_info("Setting update workers to true");
-                        doUpdateWorkers = true;
-                    }
-
-                    if (result.getDoFailover()) {
-                        // We're only saving true values so that we don't
-                        // accidentally override a true value based on a previous
-                        // worker's result with a false value of this worker.  We
-                        // are trying to find out if *any* worker has triggered a
-                        // need for updating our worker list.
-                        GPUdbLogger.debug_with_info("Setting doFailover & updateWorkers to true");
-                        doFailover = true;
-                        // We need to update the worker if we have to fail over
-                        doUpdateWorkers = true;
-                    }
-
-                    int workerCountClusterSwitches = result.getCountClusterSwitches();
-                    if (workerCountClusterSwitches > latestCountClusterSwitches) {
-                        // We're only saving the largest value so that we know the
-                        // latest cluster switch (in the gpudb object) that was
-                        // encountered by the workers.
-                        GPUdbLogger.debug_with_info("Changing # cluster switches from "
-                                + latestCountClusterSwitches
-                                + " to "
-                                + workerCountClusterSwitches);
-                        latestCountClusterSwitches = workerCountClusterSwitches;
-                    }
-
-                    long workerInsertionAttemptTimestamp = result.getInsertionAttemptTimestamp();
-                    if (workerInsertionAttemptTimestamp > latestInsertionAttemptTimestamp) {
-                        // We're only saving the largest value so that we know the
-                        // latest insertion attempt timestamp by the workers.
-                        GPUdbLogger.debug_with_info("Changing insertion attempt time from "
-                                + latestInsertionAttemptTimestamp
-                                + " to "
-                                + workerInsertionAttemptTimestamp);
-                        latestInsertionAttemptTimestamp = workerInsertionAttemptTimestamp;
-                    }
-
-                    // Save any exception encountered by the worker
-                    if (workerFailedRecords != null)
-                        GPUdbLogger.debug_with_info(String.format("Saving <%s> ingest worker failure exception with <%d> failed records", workerFailedRecords.getClass(), workerFailedRecords.size()));
-                    workerExceptions.add(result.getFailureException());
+                // Something went wrong and the data was not inserted, whether
+                // from a GenericRecord queue or a JSON one.  A JSON queue's
+                // failure carries no response, so it is judged by its exception
+                // alone, as a GenericRecord queue's is.  The request layer has
+                // already re-sent the batch as often as the rules allow, so a
+                // failure that calls for failing over is failed over; any other
+                // is reported.
+                Exception fe = result.getFailureException();
+                if(fe instanceof GPUdbExitException || (fe instanceof GPUdbException && ((GPUdbException)fe).hadConnectionFailure())) {
+                    GPUdbLogger.debug_with_info("Setting retry to true");
+                    doRetryInsertion = true;
+                }
+                else {
+                    throw new InsertException(getCurrentHeadNodeURL(), result.getFailedRecords(), fe.getMessage());
                 }
 
-                if( insertJsonResponse != null ) {
-                    // Something went wrong and the data was not inserted.
-                    if( result.getFailureException() instanceof GPUdbException ) {
-                        GPUdbException exception = (GPUdbException) result.getFailureException();
-                        if( !exception.hadConnectionFailure() ) {
-                            throw new InsertException(getCurrentHeadNodeURL(), result.getFailedRecords(), exception.getMessage());
-                        }
-                        
-                        GPUdbLogger.debug_with_info("Setting retry to true");
-                        doRetryInsertion = true;
-                    }
 
+                // Figure out went wrong with the insertion and what follow-up
+                // steps need to be done, including saving the records that
+                // could not be inserted.
 
-                    List<T> workerFailedRecords = result.getFailedRecords();
-                    if (workerFailedRecords != null) {
-                        failedRecords.addAll(workerFailedRecords);
-                    }
+                failedWorkerUrls.add(result.getWorkerUrl());
 
-                    // Save any exception encountered by the worker
-                    if (workerFailedRecords != null)
-                        GPUdbLogger.debug_with_info(String.format("Saving JSON ingest worker failure exception with <%d> failed records", workerFailedRecords.size()));
-                    workerExceptions.add(result.getFailureException());
+                List<T> workerFailedRecords = result.getFailedRecords();
+                if (workerFailedRecords != null) {
+                    failedRecords.addAll(workerFailedRecords);
                 }
+
+                if (result.getDoUpdateWorkers()) {
+                    // We're only saving true values so that we don't
+                    // accidentally override a true value based on a previous
+                    // worker's result with a false value of this worker.  We
+                    // are trying to find out if *any* worker has triggered a
+                    // need for updating our worker list.
+                    GPUdbLogger.debug_with_info("Setting update workers to true");
+                    doUpdateWorkers = true;
+                }
+
+                if (result.getDoFailover()) {
+                    // We're only saving true values so that we don't
+                    // accidentally override a true value based on a previous
+                    // worker's result with a false value of this worker.  We
+                    // are trying to find out if *any* worker has triggered a
+                    // need for updating our worker list.
+                    GPUdbLogger.debug_with_info("Setting doFailover & updateWorkers to true");
+                    doFailover = true;
+                    // We need to update the worker if we have to fail over
+                    doUpdateWorkers = true;
+                }
+
+                int workerCountClusterSwitches = result.getCountClusterSwitches();
+                if (workerCountClusterSwitches > latestCountClusterSwitches) {
+                    // We're only saving the largest value so that we know the
+                    // latest cluster switch (in the gpudb object) that was
+                    // encountered by the workers.
+                    GPUdbLogger.debug_with_info("Changing # cluster switches from "
+                            + latestCountClusterSwitches
+                            + " to "
+                            + workerCountClusterSwitches);
+                    latestCountClusterSwitches = workerCountClusterSwitches;
+                }
+
+                long workerInsertionAttemptTimestamp = result.getInsertionAttemptTimestamp();
+                if (workerInsertionAttemptTimestamp > latestInsertionAttemptTimestamp) {
+                    // We're only saving the largest value so that we know the
+                    // latest insertion attempt timestamp by the workers.
+                    GPUdbLogger.debug_with_info("Changing insertion attempt time from "
+                            + latestInsertionAttemptTimestamp
+                            + " to "
+                            + workerInsertionAttemptTimestamp);
+                    latestInsertionAttemptTimestamp = workerInsertionAttemptTimestamp;
+                }
+
+                // Save any exception encountered by the worker
+                if (workerFailedRecords != null)
+                    GPUdbLogger.debug_with_info(String.format("Saving <%s> ingest worker failure exception with <%d> failed records", workerFailedRecords.getClass(), workerFailedRecords.size()));
+                workerExceptions.add(result.getFailureException());
             }
         }  // end loop handling results
 
@@ -2907,44 +3024,11 @@ public class BulkInserter<T> implements AutoCloseable {
                     + originalCauses);
         }
 
-
-        // This is the scenario where we are re-trying without attempting a
-        // failover. We would recurse till the set retryCount becomes 0 and
-        // subsequently attempt an HA failover.
-        if (doRetryInsertion && currRetryCount > 0) {
-            // We need to re-attempt inserting the records that did not get
-            // ingested.
-            GPUdbLogger.debug_with_info("Retry insertion");
-
-            GPUdbLogger.debug_with_info("Decreasing retry count from: " + currRetryCount);
-            --currRetryCount;
-            GPUdbLogger.debug_with_info("retryCount: " + currRetryCount);
-
-            // Retry insertion of the failed records (recursive call to our
-            // private insertion with the retry count decreased to halt
-            // the recursion as needed
-            boolean couldRetry = this.insert(failedRecords, currRetryCount);
-
-            if (couldRetry) {
-                // If this is part of a user-initiated forced flush, then we
-                // need to call the flush method again (otherwise, failed records
-                // may have been queued but not actually inserted).
-                if (forcedFlush) {
-                    GPUdbLogger.debug_with_info("Before forced flush");
-                    this.flush(currRetryCount);
-                    GPUdbLogger.debug_with_info("After forced flush");
-                }
-                return;
-            }
-            GPUdbLogger.debug_with_info("End flushQueues");
-        }
-
-        // We ran out of chances to retry.  Let the user know this and
-        // pass along the records that we could not insert.
-        if (doRetryInsertion && currRetryCount <= 0 && this.gpudb.getHARingSize() == 1) {
-            String message = ("Insertion failed; ran out of retries.  "
-                    + "Original causes encountered by workers: "
-                    + originalCauses);
+        // With a single cluster there is nowhere to fail over to.  Let the
+        // user know this and pass along the records that we could not insert.
+        if (doRetryInsertion && this.gpudb.getHARingSize() == 1) {
+            String message = "Insertion failed.  Original causes encountered by workers: "
+                    + originalCauses;
             throw new InsertException(currHeadUrl, failedRecords, message);
         }
 
@@ -2992,24 +3076,38 @@ public class BulkInserter<T> implements AutoCloseable {
             }
         }
 
-        // Here we reset the local retryCount variable to what was set as the
-        // value of the instance variable retryCount. This block will retry
-        // insertion after an HA failover has taken place, so it will start with
-        // original retryCount once more into the new cluster.
-        currRetryCount = this.maxRetries;
         if (doRetryInsertion) {
-            // We need to re-attempt inserting the records that did not get
-            // ingested.
+            // Re-insert the records that did not get ingested into the cluster
+            // failed over to, where each batch starts with a full budget
             GPUdbLogger.debug_with_info("Retry insertion into new cluster");
 
-            // Retry insertion of the failed records (recursive call to our
-            // private insertion with the retry count decreased to halt
-            // the recursion as needed
-            this.insert(failedRecords, currRetryCount);
+            this.queueAndFlushFull(failedRecords, false);
+
+            // If this is part of a user-initiated forced flush, the re-inserted
+            // records must be flushed too, not left queued
+            if (forcedFlush) {
+                GPUdbLogger.debug_with_info("Before forced flush");
+                flushAll();
+                GPUdbLogger.debug_with_info("After forced flush");
+            }
 
             GPUdbLogger.debug_with_info("Done retrying insertion into new cluster");
         }
     }   // end flushQueues
+
+    /**
+     * Sends a batch on the calling thread, handing its result in as a worker
+     * thread would.
+     */
+    private static <T> void sendOnThisThread( BatchSend<T> batch,
+                                              BlockingQueue<Future<WorkerQueueInsertionResult<T>>> completedQueues,
+                                              Map<Future<WorkerQueueInsertionResult<T>>, BatchSend<T>> inFlight ) {
+        FutureTask<WorkerQueueInsertionResult<T>> direct = new FutureTask<>( batch );
+        direct.run();
+        completedQueues.add( direct );
+        inFlight.put( direct, batch );
+    }
+
 
     private void gatherErrorsFromInsertionResult(WorkerQueueInsertionResult<T> result) {
         Map<Integer, Pair<String, T>> errors = result.getErrors();
@@ -3035,6 +3133,111 @@ public class BulkInserter<T> implements AutoCloseable {
                 });
             }
         }
+
+        List<InsertException> possiblyStored = result.getPossiblyStored();
+        if (possiblyStored != null && !possiblyStored.isEmpty()) {
+            synchronized (this.errorListLock) {
+                this.warningList.addAll(possiblyStored);
+            }
+        }
+    }
+
+
+    /**
+     * The warnings for the primary key collisions a batch met when it was
+     * re-sent after a failure that leaves an earlier copy's outcome
+     * unknown.  The earlier copy may have stored those records,
+     * so they are reported as possibly stored rather than as rejected:
+     * each record the reply names, or the batch as a whole where it names
+     * none.  The per-record collisions are removed from {@code errors}
+     * and the batch warnings from {@code warnings}.
+     *
+     * @param <T>  the type of the records
+     * @param url  the URL of the cluster the batch was sent to
+     * @param uncertainFailure  the failure the batch was re-sent after, as
+     *        {@link RequestRetries#getUncertainFailure()} records it, or
+     *        {@code null} where it was not re-sent so
+     * @param batch  the records in the batch
+     * @param errors  the per-record errors from the reply, by record index,
+     *        each its message and its record
+     * @param warnings  the batch warnings from the reply
+     * @return  the warnings to report, or an empty list where the batch
+     *          was not re-sent so or met no collisions
+     */
+    static <T> List<InsertException> possiblyStored( URL url,
+                                                     String uncertainFailure,
+                                                     List<T> batch,
+                                                     Map<Integer, ? extends Map.Entry<String, T>> errors,
+                                                     List<String> warnings ) {
+        List<InsertException> possiblyStored = new ArrayList<>();
+        if (uncertainFailure == null)
+            return possiblyStored;
+
+        String note = "may already have been stored by an earlier copy of the batch, "
+                      + "which was re-sent after: " + uncertainFailure;
+
+        if (errors != null) {
+            for (Iterator<? extends Map.Entry<Integer, ? extends Map.Entry<String, T>>> it = errors.entrySet().iterator(); it.hasNext(); ) {
+                Map.Entry<Integer, ? extends Map.Entry<String, T>> error = it.next();
+                if (!RetryRules.isPrimaryKeyCollision( error.getValue().getKey() ))
+                    continue;
+                it.remove();
+                List<T> record = new ArrayList<>();
+                if (error.getValue().getValue() != null)
+                    record.add( error.getValue().getValue() );
+                possiblyStored.add( new InsertException( url, record,
+                        "Record " + error.getKey() + " " + note ) );
+            }
+        }
+
+        if (warnings != null && warnings.removeIf( RetryRules::isPrimaryKeyCollision ))
+            possiblyStored.add( new InsertException( url, new ArrayList<>( batch ),
+                    "Records the server reported as already existing " + note ) );
+
+        return possiblyStored;
+    }
+
+
+    /**
+     * Parses the response to a JSON insert, extracting and returning any
+     * warnings from it.
+     * 
+     * @return  the batch warnings of a JSON insert's reply, from the
+     *          {@code info} map of its {@code data}
+     */
+    static List<String> jsonReplyWarnings( Map<String, Object> reply ) {
+        List<String> warnings = new ArrayList<>();
+        Object data = reply.get( "data" );
+        if (!(data instanceof Map))
+            return warnings;
+
+        Object info = ((Map<?, ?>) data).get( "info" );
+        if (!(info instanceof Map))
+            return warnings;
+
+        for (Map.Entry<?, ?> entry : ((Map<?, ?>) info).entrySet())
+            if (String.valueOf( entry.getKey() ).toLowerCase().startsWith( "warning_" ))
+                warnings.add( String.valueOf( entry.getValue() ) );
+        return warnings;
+    }
+
+
+    /**
+     * Whether a table has a primary key, from the column properties its
+     * description lists.
+     *
+     * @param tableInfo  the table's description
+     * @return  whether any of its columns is part of a primary key
+     */
+    static boolean hasPrimaryKey( ShowTableResponse tableInfo ) {
+        List<Map<String, List<String>>> properties = tableInfo.getProperties();
+        if (properties == null || properties.isEmpty() || properties.get(0) == null)
+            return false;
+
+        for (List<String> columnProperties : properties.get(0).values())
+            if (columnProperties != null && columnProperties.contains( ColumnProperty.PRIMARY_KEY ))
+                return true;
+        return false;
     }
 
 
@@ -3049,81 +3252,105 @@ public class BulkInserter<T> implements AutoCloseable {
      * @param record  the record to insert
      * @param flushWhenFull  boolean flag indicating if the queue should be flushed
      *                       if it is full after inserting this record.
+     * @param refuseIfClosed  whether to refuse the record once this inserter
+     *                        is closed:  so for a caller's record, not for one
+     *                        accepted earlier and being re-queued
      *
      * @throws GPUdbException if an error occurs while calculating shard/primary keys
      * @throws InsertException if an error occurs while inserting
+     * @throws IllegalStateException if the record is refused
      */
-    private void insert(T record, boolean flushWhenFull) throws InsertException {
+    private void insert(T record, boolean flushWhenFull, boolean refuseIfClosed) throws InsertException {
         // Don't accept new records if there was an error thrown already with returnIndividualErrors
         if (this.simulateErrorMode)
             return;
 
         WorkerQueue<T> workerQueue;
+        BatchSend<T> cut;
 
         // Take the routing state once and route this record entirely from that
         // snapshot.  A rebuild running concurrently publishes a new one; this
         // record then goes wherever the state it was routed against said, which
-        // is consistent, rather than to a destination assembled from both.
-        final Routing<T> routing = this.routing;
+        // is consistent, rather than to a destination assembled from both.  A
+        // rebuild also retires the queues it replaces, so a record routed to
+        // one of them after the rebuild emptied it is refused and routed again,
+        // against the new state.
+        for (int attempt = 0; ; ++attempt) {
+            final Routing<T> routing = this.routing;
 
-        if (routing.useHeadNode) {
-            // Head-node routing.  Routing<T> guarantees the head-node queue is
-            // the only queue, so index 0 is it.
-            workerQueue = routing.queues.get(0);
-        }
-        else if (routing.queues.size() == 1) {
-            // A single destination, so there is nothing to choose: skip the
-            // shard key work.  Note this is worker rank 1 -- not the head node,
-            // which the branch above handles.
-            workerQueue = routing.queues.get(0);
-        }
-        else {
-            if ((routing.routingTable == null) || routing.routingTable.isEmpty()) {
-                List<T> queuedRecord = new ArrayList<>();
-                queuedRecord.add(record);
-                throw new InsertException((URL) null, queuedRecord,
-                        "No shard mapping is available for table '" + this.tableName
-                        + "'; cannot route the record to a worker rank.  Maybe "
-                        + "need to update the shard mapping.");
+            if (routing.useHeadNode) {
+                // Head-node routing.  Routing<T> guarantees the head-node queue is
+                // the only queue, so index 0 is it.
+                workerQueue = routing.queues.get(0);
             }
-
-            if( this.isJson ) {
-                // Handle JSON records
-                workerQueue = routing.queues.get(routing.routingTable.get(ThreadLocalRandom.current().nextInt(routing.routingTable.size())) - 1);
-            } else {
-                //Handle GenericRecords or RecordObjects
-                RecordKey shardKey = null;
-
-                try {
-                    shardKey = this.shardKeyBuilder.build(record);
-                } catch (Exception ex) {
+            else if (routing.queues.size() == 1) {
+                // A single destination, so there is nothing to choose: skip the
+                // shard key work.  Note this is worker rank 1 -- not the head node,
+                // which the branch above handles.
+                workerQueue = routing.queues.get(0);
+            }
+            else {
+                if ((routing.routingTable == null) || routing.routingTable.isEmpty()) {
                     List<T> queuedRecord = new ArrayList<>();
                     queuedRecord.add(record);
                     throw new InsertException((URL) null, queuedRecord,
-                            "Unable to calculate shard/primary key; please check data for unshardable values");
+                            "No shard mapping is available for table '" + this.tableName
+                            + "'; cannot route the record to a worker rank.  Maybe "
+                            + "need to update the shard mapping.");
                 }
 
-                if (shardKey == null)
+                if( this.isJson ) {
+                    // Handle JSON records
                     workerQueue = routing.queues.get(routing.routingTable.get(ThreadLocalRandom.current().nextInt(routing.routingTable.size())) - 1);
-                else
-                    workerQueue = routing.queues.get(shardKey.route(routing.routingTable));
+                } else {
+                    //Handle GenericRecords or RecordObjects
+                    RecordKey shardKey = null;
+
+                    try {
+                        shardKey = this.shardKeyBuilder.build(record);
+                    } catch (Exception ex) {
+                        List<T> queuedRecord = new ArrayList<>();
+                        queuedRecord.add(record);
+                        throw new InsertException((URL) null, queuedRecord,
+                                "Unable to calculate shard/primary key; please check data for unshardable values");
+                    }
+
+                    if (shardKey == null)
+                        workerQueue = routing.queues.get(routing.routingTable.get(ThreadLocalRandom.current().nextInt(routing.routingTable.size())) - 1);
+                    else
+                        workerQueue = routing.queues.get(shardKey.route(routing.routingTable));
+                }
+            }
+
+
+            // Ensure that this is a valid worker queue (and not a previously removed rank)
+            if (workerQueue == null) {
+                List<T> queuedRecord = new ArrayList<>();
+                queuedRecord.add(record);
+                throw new InsertException((URL) null, queuedRecord,
+                        "Attempted to insert into worker rank that has been removed!  Maybe need to update the shard mapping.");
+            }
+
+            // Insert the record into the queue, cutting the batch it fills
+            // where this call is the one to send it
+            cut = workerQueue.offer(record, refuseIfClosed ? this.closed : null, flushWhenFull,
+                                    this.maxRetries, this.tableHasPrimaryKey);
+            if (cut == BatchSend.REFUSED_CLOSED)
+                throw closedException();
+            if (cut != BatchSend.REFUSED_RETIRED)
+                break;
+            // Retired by a rebuild; route again, against the state it published
+            if (attempt >= 100) {
+                List<T> queuedRecord = new ArrayList<>();
+                queuedRecord.add(record);
+                throw new InsertException((URL) null, queuedRecord,
+                        "The worker queues for table '" + this.tableName + "' kept being rebuilt; could not queue the record");
             }
         }
 
-        // Ensure that this is a valid worker queue (and not a previously removed rank)
-        if (workerQueue == null) {
-            List<T> queuedRecord = new ArrayList<>();
-            queuedRecord.add(record);
-            throw new InsertException((URL) null, queuedRecord,
-                    "Attempted to insert into worker rank that has been removed!  Maybe need to update the shard mapping.");
-        }
-
-        // Insert the record into the queue
-        workerQueue.insert(record);
-
-        // Flush the queue if it is full
-        if (flushWhenFull && workerQueue.queueQueue(true)) {
-            this.flush(workerQueue);
+        // Send the batch this record filled, if it did
+        if (cut != null) {
+            this.flushQueues(Collections.singletonList(cut), false);
         }
 
     }   // end private insert( single record, flush when full flag )
@@ -3146,8 +3373,10 @@ public class BulkInserter<T> implements AutoCloseable {
      *
      * @throws GPUdbException if an error occurs while calculating shard/primary keys
      * @throws InsertException if an error occurs while inserting
+     * @throws IllegalStateException if this inserter has been closed
      */
     public void insert(T record) throws InsertException {
+        checkOpen();
         // Do flush the queue when it is full.  Note that we are setting
         // flushWhenFull to true here to preserve backward compatibility.
         // Before version 7.0.19.1, the insertion and flushing in this class
@@ -3164,7 +3393,7 @@ public class BulkInserter<T> implements AutoCloseable {
         if (this.isJson && this.jsonOptions.isValidateJson() && !JsonUtils.isValidJson((String) record))
             throw new InsertException("String passed in is Not a valid JSON record");
 
-        this.insert( record, true );
+        this.insert( record, true, true );
     }   // end insert( single record )
 
 
@@ -3180,27 +3409,18 @@ public class BulkInserter<T> implements AutoCloseable {
      * retry). Note that depending on the number of records, multiple calls to
      * the database may occur.
      *
-     * If no retries are left, then returns false indicating it could not
-     * attempt insertion.  Otherwise, returns true upon successful insertion.
-     *
      * @param records      the records to insert
-     * @param retryCount   the number of times we have left to retry insertion
-     *                     the given list of records
+     * @param refuseIfClosed  whether to refuse the records once this inserter
+     *                        is closed; see {@link #insert(Object, boolean, boolean)}
      *
      * @throws InsertException if an error occurs while inserting
+     * @throws IllegalStateException if a record is refused
      */
     @SuppressWarnings("unchecked")
-    private boolean insert(List<T> records, int retryCount ) throws InsertException {
+    private void queueAndFlushFull(List<T> records, boolean refuseIfClosed) throws InsertException {
         // Don't accept new records if there was an error thrown already with returnIndividualErrors
         if (this.simulateErrorMode)
-            return true;
-
-        // Let the user know that we ran out of retries
-        if ( retryCount < 0 ) {
-            // Retry count of 0 means try once but do no retry
-            GPUdbLogger.debug_with_info( "Insert not attempted--out of retries" );
-            return false;
-        }
+            return;
 
         for (int i = 0; i < records.size(); ++i) {
             try {
@@ -3209,7 +3429,7 @@ public class BulkInserter<T> implements AutoCloseable {
                 // only occurs within this method by delaying the flush until
                 // all records have been added, then flushing any/all queues
                 // that happen to be full at the same time.
-                insert( records.get(i), false );
+                insert( records.get(i), false, refuseIfClosed );
             } catch (InsertException ex) {
                 List<T> queue = (List<T>)ex.getRecords();
 
@@ -3225,11 +3445,8 @@ public class BulkInserter<T> implements AutoCloseable {
 
         // Flush all the queues that are full in parallel
         GPUdbLogger.debug_with_info( "Before flushing full queues" );
-        this.flushFullQueues( retryCount );
+        this.flushFullQueues();
         GPUdbLogger.debug_with_info( "After flushing full queues" );
-
-        // We succeeded in inserting all the records!
-        return true;
     }
 
 
@@ -3251,12 +3468,16 @@ public class BulkInserter<T> implements AutoCloseable {
      * @param records  the records to insert
      *
      * @throws InsertException if an error occurs while inserting
+     * @throws IllegalStateException if this inserter has been closed.  Where
+     *         the close overlaps this call on another thread, the records
+     *         queued before it are sent by the close, and the rest are refused.
      */
     @SuppressWarnings("unchecked")
     public void insert(List<T> records) throws InsertException {
+        checkOpen();
         if (this.isJson && this.jsonOptions.isValidateJson() && !JsonUtils.isValidJson((List<String>) records))
             throw new InsertException("List passed in is not a list of valid JSON strings");
 
-        this.insert( records, this.maxRetries );
+        this.queueAndFlushFull( records, true );
     }
 }

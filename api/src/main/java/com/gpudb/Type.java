@@ -679,7 +679,7 @@ public final class Type implements Serializable {
      * or if an error occurs during the request for metadata
      */
     public static Type fromTable(GPUdb gpudb, String tableName) throws GPUdbException {
-        ShowTableResponse response = gpudb.showTable(tableName, null);
+        ShowTableResponse response = GPUdbBase.ownRead( () -> gpudb.showTable(tableName, null) );
 
         if (response.getTypeIds().isEmpty()) {
             throw new GPUdbException("Table " + tableName + " does not exist.");
@@ -712,7 +712,7 @@ public final class Type implements Serializable {
      * during the request for metadata
      */
     public static Type fromType(GPUdb gpudb, String typeId) throws GPUdbException {
-        ShowTypesResponse response = gpudb.showTypes(typeId, null, null);
+        ShowTypesResponse response = GPUdbBase.ownRead( () -> gpudb.showTypes(typeId, null, null) );
 
         if (response.getTypeIds().isEmpty()) {
             throw new GPUdbException("Type " + typeId + " does not exist.");

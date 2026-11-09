@@ -13,27 +13,25 @@ import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.hc.client5.http.HttpRequestRetryStrategy;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.config.ConnectionConfig;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
-import org.apache.hc.client5.http.socket.ConnectionSocketFactory;
-import org.apache.hc.client5.http.socket.PlainConnectionSocketFactory;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.ssl.ClientTlsStrategyBuilder;
+import org.apache.hc.client5.http.ssl.HostnameVerificationPolicy;
+import org.apache.hc.client5.http.ssl.HttpsSupport;
 import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
-import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
+import org.apache.hc.client5.http.ssl.TlsSocketStrategy;
 import org.apache.hc.client5.http.ssl.TrustAllStrategy;
 import org.apache.hc.core5.http.*;
-import org.apache.hc.core5.http.config.Registry;
-import org.apache.hc.core5.http.config.RegistryBuilder;
 import org.apache.hc.core5.http.io.SocketConfig;
 import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
-import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.core5.http.io.entity.HttpEntityWrapper;
 import org.apache.hc.core5.http.message.StatusLine;
-import org.apache.hc.core5.http.protocol.HttpContext;
 import org.apache.hc.core5.io.CloseMode;
 import org.apache.hc.core5.pool.PoolConcurrencyPolicy;
 import org.apache.hc.core5.pool.PoolReusePolicy;
@@ -45,11 +43,10 @@ import org.apache.hc.core5.util.Timeout;
 import org.xerial.snappy.Snappy;
 
 import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 import java.io.*;
 import java.net.*;
-import jdk.net.ExtendedSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
@@ -176,10 +173,9 @@ public abstract class GPUdbBase implements AutoCloseable {
     private static final int DEFAULT_MAX_TOTAL_CONNECTIONS    = 40;
     private static final int DEFAULT_MAX_CONNECTIONS_PER_HOST = 10;
 
-    // Used to set the number of retries for HTTP requests.
-    // KECO-2150 - Handle 'Failed to respond' errors resulting from
-    // NoHttpResponseException due to socket HALF_OPEN states.
-    private static final int HTTP_REQUEST_MAX_RETRY_ATTEMPTS = 5;
+    // The default number of times a request is re-sent to the same server; a
+    // bulk-insert batch has its inserter's own budget instead
+    private static final int HTTP_REQUEST_MAX_RETRY_ATTEMPTS = 3;
 
     // This is used to control the timeout value for obtaining
     // a connection from the HTTP connection pool. Right now it is
@@ -230,9 +226,11 @@ public abstract class GPUdbBase implements AutoCloseable {
         private String sessionId;
         private int   timeout;
         private boolean tcpKeepAlive = true;
-        private int   tcpKeepIdle = 0;      // 0 = use OS default (7200 seconds on Linux)
-        private int   tcpKeepInterval = 0;  // 0 = use OS default (75 seconds on Linux)
-        private int   tcpKeepCount = 0;     // 0 = use OS default (9 probes on Linux)
+        // 0 = the client's default (5 seconds, 5 seconds, 3 probes) while all
+        // three are 0, or the OS default once any of them is set
+        private int   tcpKeepIdle = 0;
+        private int   tcpKeepInterval = 0;
+        private int   tcpKeepCount = 0;
         private int   connectionInactivityValidationTimeout = DEFAULT_CONNECTION_INACTIVITY_VALIDATION_TIMEOUT;
         private int   serverConnectionTimeout = DEFAULT_SERVER_CONNECTION_TIMEOUT;
         private int   threadCount = 1;
@@ -618,10 +616,10 @@ public abstract class GPUdbBase implements AutoCloseable {
          * load balancer) silently drops an idle connection during a
          * long-running query.</p>
          *
-         * <p><b>Note:</b> TCP keep-alive alone may not be sufficient. The
-         * keep-alive interval is OS-controlled (default 2 hours on Linux).
-         * For robust protection, also set a non-infinite timeout using
-         * {@link #setTimeout(int)}.</p>
+         * <p><b>Note:</b> TCP keep-alive alone may not be sufficient.  By
+         * default, the first probe is sent after 5 seconds idle; see
+         * {@link #setTcpKeepIdle(int)}.  For robust protection, also set a
+         * non-infinite timeout using {@link #setTimeout(int)}.</p>
          *
          * @return  {@code true} if TCP keep-alive is enabled, {@code false} otherwise
          *
@@ -637,13 +635,22 @@ public abstract class GPUdbBase implements AutoCloseable {
          * Gets the TCP keep-alive idle time in seconds. This is the time a
          * connection must be idle before the first keep-alive probe is sent.
          *
-         * <p>A value of 0 (the default) means use the operating system default,
-         * which is typically 7200 seconds (2 hours) on Linux.</p>
+         * <p>A value of 0 (the default) leaves the client's keep-alive settings
+         * in place while none of {@code tcpKeepIdle}, {@code tcpKeepInterval}
+         * and {@code tcpKeepCount} is set:  the first probe after 5 seconds
+         * idle, then a probe every 5 seconds, with the connection closed after
+         * 3 go unanswered.  Once any of the three is set, one left at 0 takes
+         * the operating system's default instead, which for this setting is
+         * typically 7200 seconds (2 hours) on Linux.</p>
          *
-         * <p><b>Note:</b> This option requires Java 11+ and OS support for
-         * {@code TCP_KEEPIDLE}. If not supported, the setting will be ignored.</p>
+         * <p><b>Note:</b> This option requires Java 11+ and a platform that
+         * supports {@code TCP_KEEPIDLE}, {@code TCP_KEEPINTERVAL} and
+         * {@code TCP_KEEPCOUNT}.  Where any is unsupported, none is applied,
+         * and the operating system's defaults are used throughout, in place of
+         * the client's 5-second ones as well.</p>
          *
-         * @return  the TCP keep-alive idle time in seconds, or 0 for OS default
+         * @return  the TCP keep-alive idle time in seconds, or 0 for the default
+         *          described above
          *
          * @see #setTcpKeepIdle(int)
          * @see #getTcpKeepAlive()
@@ -657,13 +664,22 @@ public abstract class GPUdbBase implements AutoCloseable {
          * Gets the TCP keep-alive probe interval in seconds. This is the time
          * between successive keep-alive probes when no acknowledgment is received.
          *
-         * <p>A value of 0 (the default) means use the operating system default,
-         * which is typically 75 seconds on Linux.</p>
+         * <p>A value of 0 (the default) leaves the client's keep-alive settings
+         * in place while none of {@code tcpKeepIdle}, {@code tcpKeepInterval}
+         * and {@code tcpKeepCount} is set:  the first probe after 5 seconds
+         * idle, then a probe every 5 seconds, with the connection closed after
+         * 3 go unanswered.  Once any of the three is set, one left at 0 takes
+         * the operating system's default instead, which for this setting is
+         * typically 75 seconds on Linux.</p>
          *
-         * <p><b>Note:</b> This option requires Java 11+ and OS support for
-         * {@code TCP_KEEPINTERVAL}. If not supported, the setting will be ignored.</p>
+         * <p><b>Note:</b> This option requires Java 11+ and a platform that
+         * supports {@code TCP_KEEPIDLE}, {@code TCP_KEEPINTERVAL} and
+         * {@code TCP_KEEPCOUNT}.  Where any is unsupported, none is applied,
+         * and the operating system's defaults are used throughout, in place of
+         * the client's 5-second ones as well.</p>
          *
-         * @return  the TCP keep-alive interval in seconds, or 0 for OS default
+         * @return  the TCP keep-alive interval in seconds, or 0 for the default
+         *          described above
          *
          * @see #setTcpKeepInterval(int)
          * @see #getTcpKeepAlive()
@@ -677,13 +693,22 @@ public abstract class GPUdbBase implements AutoCloseable {
          * Gets the TCP keep-alive probe count. This is the number of unacknowledged
          * probes to send before considering the connection dead.
          *
-         * <p>A value of 0 (the default) means use the operating system default,
-         * which is typically 9 probes on Linux.</p>
+         * <p>A value of 0 (the default) leaves the client's keep-alive settings
+         * in place while none of {@code tcpKeepIdle}, {@code tcpKeepInterval}
+         * and {@code tcpKeepCount} is set:  the first probe after 5 seconds
+         * idle, then a probe every 5 seconds, with the connection closed after
+         * 3 go unanswered.  Once any of the three is set, one left at 0 takes
+         * the operating system's default instead, which for this setting is
+         * typically 9 probes on Linux.</p>
          *
-         * <p><b>Note:</b> This option requires Java 11+ and OS support for
-         * {@code TCP_KEEPCOUNT}. If not supported, the setting will be ignored.</p>
+         * <p><b>Note:</b> This option requires Java 11+ and a platform that
+         * supports {@code TCP_KEEPIDLE}, {@code TCP_KEEPINTERVAL} and
+         * {@code TCP_KEEPCOUNT}.  Where any is unsupported, none is applied,
+         * and the operating system's defaults are used throughout, in place of
+         * the client's 5-second ones as well.</p>
          *
-         * @return  the TCP keep-alive probe count, or 0 for OS default
+         * @return  the TCP keep-alive probe count, or 0 for the default
+         *          described above
          *
          * @see #setTcpKeepCount(int)
          * @see #getTcpKeepAlive()
@@ -740,7 +765,9 @@ public abstract class GPUdbBase implements AutoCloseable {
 
 
         /**
-         * Gets the maximum number of retries for HTTP requests.
+         * Gets the maximum number of times a request is re-sent to the same
+         * server before the client fails over to another cluster.  The
+         * default value is 3.
          *
          * @return  the maxRetries value
          *
@@ -1315,11 +1342,12 @@ public abstract class GPUdbBase implements AutoCloseable {
          * long-running query.</p>
          *
          * <p><b>Important:</b> TCP keep-alive alone may not be sufficient to
-         * prevent hangs. The keep-alive interval is controlled at the operating
-         * system level (e.g., {@code tcp_keepalive_time} on Linux, which
-         * defaults to 2 hours). If the firewall's idle timeout is shorter than
-         * the OS keep-alive interval, the connection may still be dropped before
-         * the first keep-alive probe is sent.</p>
+         * prevent hangs.  It protects an idle connection only if the first
+         * probe is sent before an intermediary's idle timeout expires.  By
+         * default the client sends it after 5 seconds idle, then probes every
+         * 5 seconds, closing the connection after 3 go unanswered; see
+         * {@link #setTcpKeepIdle(int)}, {@link #setTcpKeepInterval(int)} and
+         * {@link #setTcpKeepCount(int)} to change them.</p>
          *
          * <p>For robust protection against connection drops during long-running
          * queries, you should also set a non-infinite socket timeout using
@@ -1327,7 +1355,9 @@ public abstract class GPUdbBase implements AutoCloseable {
          * receive a {@code SocketTimeoutException} rather than hanging forever,
          * allowing the application to detect the issue and retry.</p>
          *
-         * <p>To tune OS-level keep-alive parameters on Linux:</p>
+         * <p>The operating system's defaults, used for any of those three left at
+         * 0 once another is set, and for all three on a platform that does not
+         * support them, are on Linux:</p>
          * <ul>
          *   <li>{@code tcp_keepalive_time} - seconds before first probe (default: 7200)</li>
          *   <li>{@code tcp_keepalive_intvl} - seconds between probes (default: 75)</li>
@@ -1350,23 +1380,33 @@ public abstract class GPUdbBase implements AutoCloseable {
          * Sets the TCP keep-alive idle time in seconds. This is the time a
          * connection must be idle before the first keep-alive probe is sent.
          *
-         * <p>A value of 0 (the default) means use the operating system default,
-         * which is typically 7200 seconds (2 hours) on Linux. Setting a lower
-         * value (e.g., 60-300 seconds) can help detect dead connections faster
-         * and prevent firewalls from dropping idle connections during long-running
-         * queries.</p>
+         * <p>A value of 0 (the default) leaves the client's keep-alive settings
+         * in place while none of {@code tcpKeepIdle}, {@code tcpKeepInterval}
+         * and {@code tcpKeepCount} is set:  the first probe after 5 seconds
+         * idle, then a probe every 5 seconds, with the connection closed after
+         * 3 go unanswered.  Once any of the three is set, one left at 0 takes
+         * the operating system's default instead, which for this setting is
+         * typically 7200 seconds (2 hours) on Linux.</p>
          *
-         * <p><b>Note:</b> This option requires Java 11+ and OS support for
-         * {@code TCP_KEEPIDLE} (equivalent to Linux's {@code tcp_keepalive_time}).
-         * If not supported on the current platform, the setting will be silently
-         * ignored.</p>
+         * <p>A longer idle time sends fewer probes on idle connections; it must
+         * stay shorter than the idle timeout of any firewall or NAT device
+         * between the client and the server, or a connection waiting on a
+         * long-running query may be dropped before the first probe.</p>
+         *
+         * <p><b>Note:</b> This option requires Java 11+ and a platform that
+         * supports {@code TCP_KEEPIDLE}, {@code TCP_KEEPINTERVAL} and
+         * {@code TCP_KEEPCOUNT}.  Where any is unsupported, none is applied,
+         * and the operating system's defaults are used throughout, in place of
+         * the client's 5-second ones as well.  {@code TCP_KEEPIDLE} is the
+         * equivalent of Linux's {@code tcp_keepalive_time}.</p>
          *
          * <p><b>Important:</b> TCP keep-alive must be enabled via
          * {@link #setTcpKeepAlive(boolean)} for this setting to have any effect.
          * If {@code tcpKeepAlive} is {@code false} and this option is set to a
          * non-zero value, a warning will be logged and the setting will be ignored.</p>
          *
-         * @param seconds  the idle time in seconds before first probe, or 0 for OS default
+         * @param seconds  the idle time in seconds before first probe, or 0 for
+         *                 the default described above
          * @return         the current {@link Options} instance
          * @throws IllegalArgumentException if seconds is negative
          *
@@ -1388,21 +1428,31 @@ public abstract class GPUdbBase implements AutoCloseable {
          * Sets the TCP keep-alive probe interval in seconds. This is the time
          * between successive keep-alive probes when no acknowledgment is received.
          *
-         * <p>A value of 0 (the default) means use the operating system default,
-         * which is typically 75 seconds on Linux. Setting a lower value can help
-         * detect dead connections more quickly once keep-alive probing has started.</p>
+         * <p>A value of 0 (the default) leaves the client's keep-alive settings
+         * in place while none of {@code tcpKeepIdle}, {@code tcpKeepInterval}
+         * and {@code tcpKeepCount} is set:  the first probe after 5 seconds
+         * idle, then a probe every 5 seconds, with the connection closed after
+         * 3 go unanswered.  Once any of the three is set, one left at 0 takes
+         * the operating system's default instead, which for this setting is
+         * typically 75 seconds on Linux.</p>
          *
-         * <p><b>Note:</b> This option requires Java 11+ and OS support for
-         * {@code TCP_KEEPINTERVAL} (equivalent to Linux's {@code tcp_keepalive_intvl}).
-         * If not supported on the current platform, the setting will be silently
-         * ignored.</p>
+         * <p>A shorter interval detects a dead connection more quickly once
+         * probing has started.</p>
+         *
+         * <p><b>Note:</b> This option requires Java 11+ and a platform that
+         * supports {@code TCP_KEEPIDLE}, {@code TCP_KEEPINTERVAL} and
+         * {@code TCP_KEEPCOUNT}.  Where any is unsupported, none is applied,
+         * and the operating system's defaults are used throughout, in place of
+         * the client's 5-second ones as well.  {@code TCP_KEEPINTERVAL} is the
+         * equivalent of Linux's {@code tcp_keepalive_intvl}.</p>
          *
          * <p><b>Important:</b> TCP keep-alive must be enabled via
          * {@link #setTcpKeepAlive(boolean)} for this setting to have any effect.
          * If {@code tcpKeepAlive} is {@code false} and this option is set to a
          * non-zero value, a warning will be logged and the setting will be ignored.</p>
          *
-         * @param seconds  the interval in seconds between probes, or 0 for OS default
+         * @param seconds  the interval in seconds between probes, or 0 for the
+         *                 default described above
          * @return         the current {@link Options} instance
          * @throws IllegalArgumentException if seconds is negative
          *
@@ -1424,21 +1474,30 @@ public abstract class GPUdbBase implements AutoCloseable {
          * Sets the TCP keep-alive probe count. This is the number of unacknowledged
          * probes to send before considering the connection dead.
          *
-         * <p>A value of 0 (the default) means use the operating system default,
-         * which is typically 9 probes on Linux. Setting a lower value can help
-         * fail faster when a connection is truly dead.</p>
+         * <p>A value of 0 (the default) leaves the client's keep-alive settings
+         * in place while none of {@code tcpKeepIdle}, {@code tcpKeepInterval}
+         * and {@code tcpKeepCount} is set:  the first probe after 5 seconds
+         * idle, then a probe every 5 seconds, with the connection closed after
+         * 3 go unanswered.  Once any of the three is set, one left at 0 takes
+         * the operating system's default instead, which for this setting is
+         * typically 9 probes on Linux.</p>
          *
-         * <p><b>Note:</b> This option requires Java 11+ and OS support for
-         * {@code TCP_KEEPCOUNT} (equivalent to Linux's {@code tcp_keepalive_probes}).
-         * If not supported on the current platform, the setting will be silently
-         * ignored.</p>
+         * <p>A lower count fails faster when a connection is truly dead.</p>
+         *
+         * <p><b>Note:</b> This option requires Java 11+ and a platform that
+         * supports {@code TCP_KEEPIDLE}, {@code TCP_KEEPINTERVAL} and
+         * {@code TCP_KEEPCOUNT}.  Where any is unsupported, none is applied,
+         * and the operating system's defaults are used throughout, in place of
+         * the client's 5-second ones as well.  {@code TCP_KEEPCOUNT} is the
+         * equivalent of Linux's {@code tcp_keepalive_probes}.</p>
          *
          * <p><b>Important:</b> TCP keep-alive must be enabled via
          * {@link #setTcpKeepAlive(boolean)} for this setting to have any effect.
          * If {@code tcpKeepAlive} is {@code false} and this option is set to a
          * non-zero value, a warning will be logged and the setting will be ignored.</p>
          *
-         * @param count  the number of probes before giving up, or 0 for OS default
+         * @param count  the number of probes before giving up, or 0 for the
+         *               default described above
          * @return       the current {@link Options} instance
          * @throws IllegalArgumentException if count is negative
          *
@@ -1554,8 +1613,13 @@ public abstract class GPUdbBase implements AutoCloseable {
 
 
         /**
-         * Sets the maximum number of retries for HTTP requests.
-         * Must be 0 at a minimum.
+         * Sets the maximum number of times a request is re-sent to the same
+         * server after a failure that a second attempt may get past, such as
+         * a refused connection or a busy server, before the client fails over
+         * to another cluster.  A {@link BulkInserter} batch is re-sent as
+         * many times as its inserter's own
+         * {@link BulkInserter#setMaxRetries(int) maxRetries} instead.  Must be
+         * 0 at a minimum.  The default value is 3.
          *
          * @param value  the maxRetries value
          * @return       the current {@link Options} instance
@@ -2360,6 +2424,8 @@ public abstract class GPUdbBase implements AutoCloseable {
     public static class GPUdbExitException extends GPUdbException {
         private static final long serialVersionUID = 1L;
 
+        private final RetryRules.Resend resend;
+
         /**
          * Creates a new {@link GPUdbExitException} with the specified message.
          *
@@ -2367,6 +2433,7 @@ public abstract class GPUdbBase implements AutoCloseable {
          */
         public GPUdbExitException(String message) {
             super(message);
+            this.resend = RetryRules.Resend.NEVER;
         }
 
 
@@ -2379,6 +2446,33 @@ public abstract class GPUdbBase implements AutoCloseable {
          */
         public GPUdbExitException(String message, Throwable cause) {
             super(message, cause);
+            this.resend = RetryRules.Resend.NEVER;
+        }
+
+
+        /**
+         * Creates a new {@link GPUdbExitException} with the specified message and
+         * cause, marked with whether it may be re-sent to the same server.
+         *
+         * @param message  the message
+         * @param cause    the cause, or {@code null}
+         * @param resend  whether the request may be re-sent to the same server,
+         *        as {@link RetryRules} decides
+         */
+        GPUdbExitException(String message, Throwable cause, RetryRules.Resend resend) {
+            super(message, cause);
+            this.resend = resend;
+        }
+
+
+        /**
+         * Whether the request that failed may be re-sent to the same server,
+         * as decided where the failure was raised.
+         *
+         * @return  whether it may be re-sent
+         */
+        RetryRules.Resend getResend() {
+            return this.resend;
         }
     }
 
@@ -2837,15 +2931,18 @@ public abstract class GPUdbBase implements AutoCloseable {
      * number of results should be returned.
      */
     public static final long END_OF_SET = -9999;
-    private static final String DB_OFFLINE_ERROR_MESSAGE            = "Kinetica is offline";
-    private static final String DB_CONNECTION_RESET_ERROR_MESSAGE   = "Connection reset";
-    private static final String DB_CONNECTION_REFUSED_ERROR_MESSAGE = "Connection refused";
-    private static final String DB_EXITING_ERROR_MESSAGE            = "Kinetica is exiting";
-    private static final String DB_SHUTTING_DOWN_ERROR_MESSAGE      = "System shutting down";
-    private static final String DB_DRAINING_HAQ_ERROR_MESSAGE       = "Unavailable: Draining HA queue";
-    private static final String DB_SYSTEM_LIMITED_ERROR_MESSAGE     = "system-limited-fatal";
-    private static final String DB_EOF_FROM_SERVER_ERROR_MESSAGE    = "Unexpected end of file from server";
-    private static final String DB_QP_DOWN_ERROR_MESSAGE            = "Query planner is not running";
+    static final String DB_OFFLINE_ERROR_MESSAGE            = "Kinetica is offline";
+    static final String DB_CONNECTION_RESET_ERROR_MESSAGE   = "Connection reset";
+    static final String DB_CONNECTION_REFUSED_ERROR_MESSAGE = "Connection refused";
+    static final String DB_EXITING_ERROR_MESSAGE            = "Kinetica is exiting";
+    static final String DB_SHUTTING_DOWN_ERROR_MESSAGE      = "System shutting down";
+    static final String DB_DRAINING_HAQ_ERROR_MESSAGE       = "Unavailable: Draining HA queue";
+    static final String DB_SYSTEM_LIMITED_ERROR_MESSAGE     = "system-limited-fatal";
+    static final String DB_EOF_FROM_SERVER_ERROR_MESSAGE    = "Unexpected end of file from server";
+    static final String DB_QP_DOWN_ERROR_MESSAGE            = "Query planner is not running";
+    static final String DB_STARTING_UP_ERROR_MESSAGE        = "Kinetica is starting up";
+    static final String DB_RANK_DOWN_ERROR_MESSAGE          = "Kinetica is currently unable to process this message";
+    static final String DB_ADMIN_ONLY_ERROR_MESSAGE         = "Kinetica is restricted to admin users only";
 
     // Endpoints
     private static final String ENDPOINT_SHOW_SYSTEM_STATUS     = "/show/system/status";
@@ -3509,6 +3606,10 @@ public abstract class GPUdbBase implements AutoCloseable {
     private HAFailoverOrder     haFailoverOrder;
     private CloseableHttpClient httpClient;
     private CloseableHttpClient httpClientFastConnect;
+    // The TLS settings both HTTP clients use, kept for the one request made
+    // outside them, the liveness ping
+    private SSLContext      sslContext;
+    private HostnameVerifier hostnameVerifier;
     private ConcurrentHashMap<Class<?>, TypeObjectMap<?>> knownTypeObjectMaps;
     private ConcurrentHashMap<String, Object> knownTypes;
 
@@ -3698,7 +3799,8 @@ public abstract class GPUdbBase implements AutoCloseable {
 
         // Initiate the HttpClient object
         // ------------------------------
-        // Get TCP keep-alive options for custom socket factories
+        // Get TCP keep-alive options, applied to every socket either client
+        // opens through its socket configuration
         final boolean tcpKeepAlive = this.options.getTcpKeepAlive();
         final int tcpKeepIdle = this.options.getTcpKeepIdle();
         final int tcpKeepInterval = this.options.getTcpKeepInterval();
@@ -3717,39 +3819,31 @@ public abstract class GPUdbBase implements AutoCloseable {
                     ". To use extended options, set tcpKeepAlive=true.");
         }
 
-        // Create a socket factory in order to use an http connection manager
-        SSLConnectionSocketFactory secureSocketFactory = SSLConnectionSocketFactory.getSocketFactory();
+        // The TLS settings for HTTPS connections:  the context that decides
+        // which server certificates are trusted, and the check of the server's
+        // host name.  By default, the certificates the JVM trusts and the
+        // standard host name check.
+        SSLContext sslContext = SSLContexts.createDefault();
+        HostnameVerifier hostnameVerifier = HttpsSupport.getDefaultHostnameVerifier();
+        boolean isDefaultTls = true;
+
         if ( this.bypassSslCertCheck ) {
-            // Allow self-signed certificates
-            SSLContext sslContext = null;
+            // Allow self-signed certificates, and disable hostname verification
             try {
                 sslContext = SSLContextBuilder
                     .create()
                     .loadTrustMaterial( new TrustAllStrategy() )
                     .build();
+                hostnameVerifier = NoopHostnameVerifier.INSTANCE;
+                isDefaultTls = false;
             } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException ex) {
-            }
-
-            // Disable hostname verification
-            HostnameVerifier allowAllHosts = new NoopHostnameVerifier();
-
-            // Create the appropriate SSL socket factory
-            if ( sslContext != null ) {
-                if (useTcpKeepaliveOptions) {
-                    secureSocketFactory = new TcpKeepaliveAwareSSLSocketFactory(sslContext, allowAllHosts,
-                            tcpKeepIdle, tcpKeepInterval, tcpKeepCount);
-                } else {
-                    secureSocketFactory = new SSLConnectionSocketFactory( sslContext, allowAllHosts );
-                }
             }
         }
 
         // If 'trustStoreFilePath' and 'trustStorePassword' are both set, use
-        // that to create the 'secureSocketFactory' variable unless 'bypassSslCertCheck` is
-        // set to 'true'.
+        // that trust store unless 'bypassSslCertCheck' is set to 'true'.
         if( (this.trustStoreFilePath != null && !this.trustStoreFilePath.isEmpty())
             && (this.trustStorePassword != null && !this.trustStorePassword.isEmpty()) && !this.bypassSslCertCheck) {
-            SSLConnectionSocketFactory connectionSocketFactory;
 
             TrustStrategy acceptingTrustStrategy = (chain, authType) -> {
                 KeyStore trustStore;
@@ -3804,26 +3898,15 @@ public abstract class GPUdbBase implements AutoCloseable {
             };
 
             try {
-                SSLContext sslContext = SSLContexts.custom()
+                sslContext = SSLContexts.custom()
                     .loadTrustMaterial(
                         new File(this.trustStoreFilePath),
                         this.trustStorePassword.toCharArray(),
                         acceptingTrustStrategy
                     ).build();
 
-                HostnameVerifier trustStoreHostnameVerifier = new HostnameVerifier() {
-                    @Override
-                    public boolean verify(String hostName, SSLSession session) {
-                        return true;
-                    }
-                };
-                if (useTcpKeepaliveOptions) {
-                    connectionSocketFactory = new TcpKeepaliveAwareSSLSocketFactory(sslContext, trustStoreHostnameVerifier,
-                            tcpKeepIdle, tcpKeepInterval, tcpKeepCount);
-                } else {
-                    connectionSocketFactory = new SSLConnectionSocketFactory(sslContext, trustStoreHostnameVerifier);
-                }
-                secureSocketFactory = connectionSocketFactory;
+                hostnameVerifier = (hostName, session) -> true;
+                isDefaultTls = false;
             } catch (Exception e) {
                 GPUdbLogger.error(String.format("Exception : %s", e.getMessage()));
                 throw new GPUdbException(e.getMessage());
@@ -3831,52 +3914,56 @@ public abstract class GPUdbBase implements AutoCloseable {
 
         }
 
-        // If TCP keep-alive options are set but we're using the default SSL factory,
-        // we need to wrap it with our custom factory
-        if (useTcpKeepaliveOptions && secureSocketFactory == SSLConnectionSocketFactory.getSocketFactory()) {
+        // With extended TCP keep-alive options and no TLS settings of the
+        // caller's, the context is the JVM's default one, which also presents
+        // the client certificate the javax.net.ssl.keyStore properties name;
+        // otherwise the default context presents none
+        if (useTcpKeepaliveOptions && isDefaultTls) {
             try {
-                SSLContext defaultSslContext = SSLContext.getDefault();
-                secureSocketFactory = new TcpKeepaliveAwareSSLSocketFactory(defaultSslContext,
-                        tcpKeepIdle, tcpKeepInterval, tcpKeepCount);
+                sslContext = SSLContext.getDefault();
             } catch (NoSuchAlgorithmException e) {
-                GPUdbLogger.warn("Could not create TCP keep-alive aware SSL factory: " + e.getMessage());
+                GPUdbLogger.warn("Could not load the JVM's default SSL context: " + e.getMessage());
             }
         }
 
-        // And a plain http socket factory
-        ConnectionSocketFactory plainSocketFactory;
+        this.sslContext = sslContext;
+        this.hostnameVerifier = hostnameVerifier;
+
+        // The server's host name is checked by the verifier above alone, not
+        // also by the JVM's endpoint identification, so that a verifier that
+        // accepts every host name does
+        final TlsSocketStrategy tlsSocketStrategy = ClientTlsStrategyBuilder.create()
+            .setSslContext( sslContext )
+            .setHostnameVerifier( hostnameVerifier )
+            .setHostVerificationPolicy( HostnameVerificationPolicy.CLIENT )
+            .buildClassic();
+
+        // The socket settings both clients' connections share.  SO timeout
+        // here controls read timeouts within cloud cluster environments, and
+        // must be set explicitly.  TCP keep-alive prevents firewalls/NATs from
+        // silently dropping idle connections during long-running queries; its
+        // extended options are applied where the platform supports them.
+        final SocketConfig.Builder socketConfig = SocketConfig.custom()
+            .setSoTimeout(Timeout.ofMilliseconds(this.options.getTimeout()))
+            .setSoKeepAlive(tcpKeepAlive);
         if (useTcpKeepaliveOptions) {
-            plainSocketFactory = new TcpKeepaliveAwarePlainSocketFactory(tcpKeepIdle, tcpKeepInterval, tcpKeepCount);
-        } else {
-            plainSocketFactory = PlainConnectionSocketFactory.getSocketFactory();
+            socketConfig
+                .setTcpKeepIdle(tcpKeepIdle)
+                .setTcpKeepInterval(tcpKeepInterval)
+                .setTcpKeepCount(tcpKeepCount);
         }
-        Registry<ConnectionSocketFactory> connSocketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
-            .register("https", secureSocketFactory)
-            .register("http", plainSocketFactory)
-            .build();
 
         // Create a connection pool manager
         @SuppressWarnings("resource")
-        final PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(
-                connSocketFactoryRegistry,
-                PoolConcurrencyPolicy.LAX,
-                PoolReusePolicy.LIFO,
-                TimeValue.ofMinutes(1),
-                null,
-                null,
-                null);
+        final PoolingHttpClientConnectionManager connectionManager = PoolingHttpClientConnectionManagerBuilder.create()
+            .setTlsSocketStrategy( tlsSocketStrategy )
+            .setPoolConcurrencyPolicy( PoolConcurrencyPolicy.LAX )
+            .setConnPoolPolicy( PoolReusePolicy.LIFO )
+            .setDefaultSocketConfig( socketConfig.build() )
+            .build();
 
         connectionManager.setMaxTotal( this.options.getMaxTotalConnections() );
         connectionManager.setDefaultMaxPerRoute( this.options.getMaxConnectionsPerHost() );
-
-        // SO timeout here controls read timeouts within cloud cluster
-        //   environments, and must be set explicitly.
-        // TCP keep-alive prevents firewalls/NATs from silently dropping idle
-        //   connections during long-running queries.
-        connectionManager.setDefaultSocketConfig(SocketConfig.custom()
-            .setSoTimeout(Timeout.ofMilliseconds(this.options.getTimeout()))
-            .setSoKeepAlive(this.options.getTcpKeepAlive())
-            .build());
 
         GPUdbLogger.debug("Setting SO timeout to <" + this.options.getTimeout() + "> ms");
         GPUdbLogger.debug("Setting TCP keep-alive to <" + this.options.getTcpKeepAlive() + ">");
@@ -3917,65 +4004,22 @@ public abstract class GPUdbBase implements AutoCloseable {
             .setDefaultRequestConfig( requestConfig )
             .evictExpiredConnections()
             .evictIdleConnections(TimeValue.ofSeconds(DEFAULT_EVICT_IDLE_CONNECTIONS_AFTER))
-            .setRetryStrategy(new HttpRequestRetryStrategy() {
-                @Override
-                public boolean retryRequest(HttpRequest httpRequest, IOException e, int executionCount, HttpContext httpContext) {
-                    GPUdbLogger.trace_with_info(String.format("Retry #%d for exception %s", executionCount, e.getMessage()));
-
-                    if (executionCount > GPUdbBase.this.maxRetries) {
-                        return false;
-                    }
-
-                    // Retry if the exception is one of the ones below
-                    return
-                        e instanceof NoHttpResponseException ||
-                        e instanceof SocketTimeoutException  ||
-                        e instanceof SocketException ||
-                        e instanceof UnknownHostException ||
-                        e instanceof ConnectionClosedException;
-                }
-
-
-                @Override
-                public boolean retryRequest(HttpResponse httpResponse, int executionCount, HttpContext httpContext) {
-                    boolean doRetry =
-                            executionCount <= GPUdbBase.this.maxRetries &&
-                            (
-                                httpResponse.getCode() == HttpURLConnection.HTTP_BAD_GATEWAY ||
-                                httpResponse.getCode() == HttpURLConnection.HTTP_UNAVAILABLE
-                            );
-
-                    if (doRetry)
-                        GPUdbLogger.trace_with_info(String.format("Retry #%d for status %s", executionCount, httpResponse.getCode()));
-
-                    return doRetry;
-                }
-
-
-                @Override
-                public TimeValue getRetryInterval(HttpResponse httpResponse, int i, HttpContext httpContext) {
-                    return null;
-                }
-            })
+            // Re-sends are made by the request layer, which can read what
+            // the server said; see sendWithRetries
+            .disableAutomaticRetries()
             .build();
 
         // Build the second http client with fast connect timeout and no retries
-        final PoolingHttpClientConnectionManager connectionManagerFastConnect = new PoolingHttpClientConnectionManager(
-                connSocketFactoryRegistry,
-                PoolConcurrencyPolicy.LAX,
-                PoolReusePolicy.LIFO,
-                TimeValue.ofMinutes(1),
-                null,
-                null,
-                null);
+        @SuppressWarnings("resource")
+        final PoolingHttpClientConnectionManager connectionManagerFastConnect = PoolingHttpClientConnectionManagerBuilder.create()
+            .setTlsSocketStrategy( tlsSocketStrategy )
+            .setPoolConcurrencyPolicy( PoolConcurrencyPolicy.LAX )
+            .setConnPoolPolicy( PoolReusePolicy.LIFO )
+            .setDefaultSocketConfig( socketConfig.build() )
+            .build();
 
         connectionManagerFastConnect.setMaxTotal( this.options.getMaxTotalConnections() );
         connectionManagerFastConnect.setDefaultMaxPerRoute( this.options.getMaxConnectionsPerHost() );
-
-        connectionManagerFastConnect.setDefaultSocketConfig(SocketConfig.custom()
-            .setSoTimeout(Timeout.ofMilliseconds(this.options.getTimeout()))
-            .setSoKeepAlive(this.options.getTcpKeepAlive())
-            .build());
 
         connectionManagerFastConnect.setDefaultConnectionConfig(ConnectionConfig.custom()
             .setConnectTimeout(Timeout.ofMilliseconds(FAST_CONNECTION_TIMEOUT))
@@ -4657,109 +4701,6 @@ public abstract class GPUdbBase implements AutoCloseable {
 
 
     /**
-     * Applies TCP keep-alive extended socket options to a socket.
-     * These options are only available on Java 11+ and require OS support.
-     * If the options are not supported, they are silently ignored.
-     *
-     * @param socket       the socket to configure
-     * @param keepIdle     seconds before first probe (0 = use OS default)
-     * @param keepInterval seconds between probes (0 = use OS default)
-     * @param keepCount    number of probes before giving up (0 = use OS default)
-     */
-    private static void applyTcpKeepaliveOptions(Socket socket, int keepIdle, int keepInterval, int keepCount) {
-        // Only apply if at least one option is set (non-zero)
-        if (keepIdle <= 0 && keepInterval <= 0 && keepCount <= 0) {
-            return;
-        }
-
-        try {
-            if (keepIdle > 0) {
-                socket.setOption(ExtendedSocketOptions.TCP_KEEPIDLE, keepIdle);
-                GPUdbLogger.debug("Set TCP_KEEPIDLE to " + keepIdle + " seconds");
-            }
-        } catch (UnsupportedOperationException | IOException e) {
-            GPUdbLogger.debug("TCP_KEEPIDLE not supported on this platform: " + e.getMessage());
-        }
-
-        try {
-            if (keepInterval > 0) {
-                socket.setOption(ExtendedSocketOptions.TCP_KEEPINTERVAL, keepInterval);
-                GPUdbLogger.debug("Set TCP_KEEPINTERVAL to " + keepInterval + " seconds");
-            }
-        } catch (UnsupportedOperationException | IOException e) {
-            GPUdbLogger.debug("TCP_KEEPINTERVAL not supported on this platform: " + e.getMessage());
-        }
-
-        try {
-            if (keepCount > 0) {
-                socket.setOption(ExtendedSocketOptions.TCP_KEEPCOUNT, keepCount);
-                GPUdbLogger.debug("Set TCP_KEEPCOUNT to " + keepCount);
-            }
-        } catch (UnsupportedOperationException | IOException e) {
-            GPUdbLogger.debug("TCP_KEEPCOUNT not supported on this platform: " + e.getMessage());
-        }
-    }
-
-
-    /**
-     * Custom PlainConnectionSocketFactory that applies TCP keep-alive extended options.
-     */
-    private static class TcpKeepaliveAwarePlainSocketFactory extends PlainConnectionSocketFactory {
-        private final int keepIdle;
-        private final int keepInterval;
-        private final int keepCount;
-
-        TcpKeepaliveAwarePlainSocketFactory(int keepIdle, int keepInterval, int keepCount) {
-            this.keepIdle = keepIdle;
-            this.keepInterval = keepInterval;
-            this.keepCount = keepCount;
-        }
-
-
-        @Override
-        public Socket createSocket(HttpContext context) throws IOException {
-            Socket socket = super.createSocket(context);
-            applyTcpKeepaliveOptions(socket, this.keepIdle, this.keepInterval, this.keepCount);
-            return socket;
-        }
-    }
-
-
-    /**
-     * Custom SSLConnectionSocketFactory that applies TCP keep-alive extended options.
-     */
-    private static class TcpKeepaliveAwareSSLSocketFactory extends SSLConnectionSocketFactory {
-        private final int keepIdle;
-        private final int keepInterval;
-        private final int keepCount;
-
-        TcpKeepaliveAwareSSLSocketFactory(SSLContext sslContext, HostnameVerifier hostnameVerifier,
-                                          int keepIdle, int keepInterval, int keepCount) {
-            super(sslContext, hostnameVerifier);
-            this.keepIdle = keepIdle;
-            this.keepInterval = keepInterval;
-            this.keepCount = keepCount;
-        }
-
-        TcpKeepaliveAwareSSLSocketFactory(SSLContext sslContext,
-                                          int keepIdle, int keepInterval, int keepCount) {
-            super(sslContext);
-            this.keepIdle = keepIdle;
-            this.keepInterval = keepInterval;
-            this.keepCount = keepCount;
-        }
-
-
-        @Override
-        public Socket createSocket(HttpContext context) throws IOException {
-            Socket socket = super.createSocket(context);
-            applyTcpKeepaliveOptions(socket, this.keepIdle, this.keepInterval, this.keepCount);
-            return socket;
-        }
-    }
-
-
-    /**
      * Result object containing system running status and HA status information.
      * Used to return both values from a single ShowSystemStatus call.
      */
@@ -5073,7 +5014,8 @@ public abstract class GPUdbBase implements AutoCloseable {
 
 
     /**
-     * Gets the maximum number of retries for HTTP requests.
+     * Gets the maximum number of times a request is re-sent to the same
+     * server before the client fails over to another cluster.
      *
      * @return  the maxRetries value
      *
@@ -5082,6 +5024,256 @@ public abstract class GPUdbBase implements AutoCloseable {
     public int getMaxRetries() {
         return this.maxRetries;
     }
+
+
+    /**
+     * One attempt at sending a request and reading its response.
+     *
+     * @param <R>  the type of the response
+     */
+    @FunctionalInterface
+    private interface RequestAttempt<R> {
+        R send() throws GPUdbException;
+    }
+
+
+    /**
+     * A request the client sends itself, to read what it needs to do its own
+     * work; see {@link #ownRead(ClientRead)}.
+     *
+     * @param <R>  the type of the response
+     */
+    @FunctionalInterface
+    interface ClientRead<R> {
+        R read() throws GPUdbException;
+    }
+
+
+    /**
+     * How deeply the current thread is nested in {@link #ownRead} calls.
+     */
+    private static final ThreadLocal<int[]> OWN_READ_DEPTH = ThreadLocal.withInitial(() -> new int[1]);
+
+
+    /**
+     * Sends a read the client makes itself -- to describe a table, a type, the
+     * shard mapping or the server, or to check the cluster -- so that it is
+     * re-sent to the same server after a failure that leaves the first copy's
+     * outcome unknown.  A read changes nothing, so a second copy cannot apply
+     * anything twice.
+     * <p>
+     * Every request the calling thread sends during {@code read} is treated
+     * so, which is why the scope wraps the client's own request and nothing a
+     * caller supplied.  A probe is still sent once:  probes go through a
+     * client that makes no re-sends.
+     *
+     * @param <R>  the type of the response
+     * @param read  the request
+     * @return  its response
+     *
+     * @throws GPUdbException  the request's failure
+     */
+    static <R> R ownRead(ClientRead<R> read) throws GPUdbException {
+        int[] depth = OWN_READ_DEPTH.get();
+        ++depth[0];
+        try {
+            return read.read();
+        } finally {
+            --depth[0];
+        }
+    }
+
+
+    /**
+     * @return  whether the current thread is sending a read the client makes
+     *          itself; see {@link #ownRead(ClientRead)}
+     */
+    private static boolean isOwnRead() {
+        return OWN_READ_DEPTH.get()[0] > 0;
+    }
+
+
+    /**
+     * Sends a request, re-sending it to the same server while it fails in a
+     * way {@link RetryRules} allows a re-send for, up to its budget of
+     * retries.  Every re-send of the request is made here, and
+     * counted against the one budget.  A failure that leaves the first copy's
+     * outcome unknown is re-sent only for a request that is repeatable, one
+     * the client sends itself as a read, or one to an endpoint that is
+     * repeatable whoever sends it.  A request during HA process initialization
+     * is re-sent after a wait that grows with each re-send, so that the budget
+     * outlasts the seconds the rank takes to rebuild its HA client; the wait
+     * is the only difference, and each such re-send is counted like any
+     * other.
+     *
+     * @param <R>  the type of the response
+     * @param url  the URL the request is sent to, for logging
+     * @param retries  the request's budget, whether it is repeatable, and the
+     *        record of what its re-sends left behind
+     * @param attempt  one attempt at sending the request
+     * @return  the response
+     *
+     * @throws GPUdbException  the last attempt's failure, or the first one
+     *         that is not re-sent, or the failure a wait was interrupted in
+     */
+    private <R> R sendWithRetries( URL url, RequestRetries retries, RequestAttempt<R> attempt ) throws GPUdbException {
+        final int budget = retries.budget( this.maxRetries );
+        final boolean repeatable = retries.isRepeatable() || isOwnRead() || RetryRules.isRepeatableEndpoint( url );
+        int waits = 0;
+
+        for (int retry = 0; ; ++retry) {
+            try {
+                return attempt.send();
+            } catch (GPUdbExitException ex) {
+                RetryRules.Resend resend = ex.getResend();
+                boolean mayResend =
+                        (resend == RetryRules.Resend.ALWAYS) ||
+                        (resend == RetryRules.Resend.AFTER_WAIT) ||
+                        (resend == RetryRules.Resend.IF_REPEATABLE && repeatable);
+
+                if (retry >= budget || !mayResend)
+                    throw ex;
+
+                if (resend == RetryRules.Resend.IF_REPEATABLE)
+                    retries.noteResentAfterUncertainFailure( ex.getMessage() );
+
+                if (resend == RetryRules.Resend.AFTER_WAIT) {
+                    long wait = RetryRules.resendWaitMillis( waits++ );
+                    GPUdbLogger.debug_with_info( String.format( "Waiting %d ms before retry #%d of request to %s; rank not ready: %s", wait, retry + 1, url, ex.getMessage() ) );
+                    try {
+                        Thread.sleep( wait );
+                    } catch (InterruptedException interrupted) {
+                        Thread.currentThread().interrupt();
+                        throw ex;
+                    }
+                }
+
+                GPUdbLogger.debug_with_info( String.format( "Retry #%d of request to %s after: %s", retry + 1, url, ex.getMessage() ) );
+            }
+        }
+    }
+
+
+    /**
+     * A request body that records whether it was written in full, which
+     * decides whether a request lost before any response arrived can have
+     * been applied.  It counts as written once every byte has been
+     * handed to the connection; a failure after that may leave the server
+     * holding the whole request.
+     */
+    private static final class TrackedRequestBody extends HttpEntityWrapper {
+        private volatile boolean writtenInFull;
+
+        TrackedRequestBody( byte[] body, ContentType contentType ) {
+            super( new ByteArrayEntity( body, contentType ) );
+        }
+
+        @Override
+        public void writeTo( OutputStream outStream ) throws IOException {
+            super.writeTo( outStream );
+            outStream.flush();
+            this.writtenInFull = true;
+        }
+
+        boolean isWrittenInFull() {
+            return this.writtenInFull;
+        }
+    }
+
+
+    /**
+     * The exception for a reply that failed, as {@link RetryRules#ofReply}
+     * decides what the client does with it.
+     *
+     * @param url  the URL the request was sent to
+     * @param httpStatus  the reply's HTTP status code
+     * @param reasonPhrase  the reply's reason phrase
+     * @param message  the reply's message, or {@code null} where it has none
+     * @param description  the text to report the failure with
+     * @return  a {@link GPUdbExitException}, marked with whether it may be
+     *          re-sent, for a reply the client fails over from; otherwise the
+     *          exception that reports it to the caller
+     */
+    private static GPUdbException replyFailure( URL url, int httpStatus, String reasonPhrase, String message, String description ) {
+        RetryRules.Reply reply = RetryRules.ofReply( httpStatus, reasonPhrase, message );
+
+        GPUdbLogger.debug_with_info(
+                "Reply from " + url + "; response_code: " + httpStatus
+                + "; reason: " + reasonPhrase + "; message: " + message + "; action: " + reply
+        );
+
+        switch (reply) {
+            case RESEND:
+                return new GPUdbExitException( description, null, RetryRules.Resend.ALWAYS );
+            case RANK_NOT_READY:
+                return new GPUdbExitException( description, null, RetryRules.Resend.AFTER_WAIT );
+            case FAIL_OVER:
+                return new GPUdbExitException( description, null, RetryRules.Resend.NEVER );
+            case RANK_FAILURE:
+                return new GPUdbExitException( description, null, RetryRules.Resend.IF_REPEATABLE );
+            default:
+                if ((httpStatus == HttpURLConnection.HTTP_UNAUTHORIZED) ||
+                    (httpStatus == HttpURLConnection.HTTP_FORBIDDEN))
+                    return new GPUdbUnauthorizedAccessException(
+                            String.format( "Server response status: %d : %s", httpStatus, reasonPhrase ) );
+                return new GPUdbException( description );
+        }
+    }
+
+
+    /**
+     * The exception for a failure to send a request, met before any response
+     * arrived.
+     *
+     * @param url  the URL the request was sent to
+     * @param failure  what sending the request failed with
+     * @param requestTime  when the attempt began, in milliseconds
+     * @param writtenInFull  whether the request was written in full
+     * @return  the {@link GPUdbExitException} to fail over with, marked with
+     *          whether the request may be re-sent
+     */
+    private static GPUdbExitException sendFailure( URL url, Exception failure, long requestTime, boolean writtenInFull ) {
+        long elapsed = System.currentTimeMillis() - requestTime;
+        GPUdbLogger.error( failure, "Throwing exit exception after " + elapsed + "ms due to ");
+
+        String errorMessage = String.format( "Error submitting endpoint <%s> request after <%d>ms due to: %s",
+                url.toString(), elapsed, ExceptionUtils.getRootCauseMessage( failure ) );
+        return new GPUdbExitException( errorMessage, failure, RetryRules.ofSendFailure( failure, writtenInFull ) );
+    }
+
+
+    /**
+     * The exception for a failure to read a response, after its status line
+     * arrived:  a {@link GPUdbExitException} for a connection lost while it
+     * was read, or {@code null} for any other failure.
+     *
+     * @param url  the URL the request was sent to
+     * @param failure  what reading the response failed with
+     * @return  the exception to fail over with, or {@code null}
+     */
+    private static GPUdbExitException readFailure( URL url, Exception failure ) {
+        RetryRules.Resend resend = RetryRules.ofReadFailure( failure );
+        if (resend == null)
+            return null;
+
+        return new GPUdbExitException(
+                String.format( "Connection to <%s> lost while reading the response: %s",
+                        url.toString(), ExceptionUtils.getRootCauseMessage( failure ) ),
+                failure, resend );
+    }
+
+
+    /**
+     * Reads the start of a text reply's body, for its message; a gateway's
+     * error page or a short server message is well within the limit.
+     */
+    private static String textReplyMessage( HttpEntity entity ) throws IOException, ParseException {
+        if (entity == null)
+            return null;
+        return EntityUtils.toString( entity, TEXT_REPLY_MESSAGE_LIMIT );
+    }
+
+    private static final int TEXT_REPLY_MESSAGE_LIMIT = 4096;
 
 
     /**
@@ -5718,6 +5910,14 @@ public abstract class GPUdbBase implements AutoCloseable {
 
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 
+        // Over HTTPS, trust what the connection's HTTP clients trust, rather
+        // than the JVM's defaults:  a trust store or bypass given in the
+        // options applies here too
+        if ( connection instanceof HttpsURLConnection && this.sslContext != null ) {
+            ((HttpsURLConnection) connection).setSSLSocketFactory( this.sslContext.getSocketFactory() );
+            ((HttpsURLConnection) connection).setHostnameVerifier( this.hostnameVerifier );
+        }
+
         // Set the timeout
         if ( connectionTimeout < 0 ) {
             throw new GPUdbException( "Positive timeout value required, given " + connectionTimeout );
@@ -5809,10 +6009,14 @@ public abstract class GPUdbBase implements AutoCloseable {
         // Call /show/system/status at the given URL
         ShowSystemStatusRequest request = new ShowSystemStatusRequest();
         ShowSystemStatusResponse response = new ShowSystemStatusResponse();
+        // A quick check is a probe, sent once; a full one is made while
+        // connecting, and is re-sent like the client's other reads
+        final URL statusUrl = endpointUrl;
+        final ShowSystemStatusResponse statusResponse = response;
         response =
                 quickCheck ?
                 submitRequestRawFast(endpointUrl, request, response, false) :
-                submitRequest(endpointUrl, request, response, false);
+                ownRead( () -> submitRequest(statusUrl, request, statusResponse, false) );
 
         return response;
     }   // end getSystemStatusResponse
@@ -5846,22 +6050,23 @@ public abstract class GPUdbBase implements AutoCloseable {
                 // Get system properties for the current URL
                 // This will trigger failover and also failback if the properties cannot be retrieved
                 GPUdbLogger.debug_with_info( "Getting system properties for active head node URL: " + targetUrl);
-                response = submitRequest(
+                response = ownRead( () -> submitRequest(
                     ENDPOINT_SHOW_SYSTEM_PROPERTIES,
                     new ShowSystemPropertiesRequest(),
                     new ShowSystemPropertiesResponse(),
                     false
-                );
+                ) );
             } else {
                 // Get system properties for the given URL, in initialization & fail-over scenarios
                 // This will not trigger fail-over and fail-back if the properties cannot be retrieved
                 GPUdbLogger.debug_with_info( "Getting system properties for target URL: " + targetUrl);
-                response = submitRequest(
-                        appendPathToURL( targetUrl, ENDPOINT_SHOW_SYSTEM_PROPERTIES ),
+                final URL propertiesUrl = appendPathToURL( targetUrl, ENDPOINT_SHOW_SYSTEM_PROPERTIES );
+                response = ownRead( () -> submitRequest(
+                        propertiesUrl,
                         new ShowSystemPropertiesRequest(),
                         new ShowSystemPropertiesResponse(),
                         false
-                    );
+                    ) );
             }
         } catch (MalformedURLException ex) {
             throw new GPUdbException( "Error forming URL: " + targetUrl + " -- " + ex.getMessage(), ex );
@@ -6053,6 +6258,8 @@ public abstract class GPUdbBase implements AutoCloseable {
      * @param insertRecordsOptions  general
      *        {@link com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options options}
      *        for inserting data
+     * @param retries  how the request may be re-sent, and the record of what
+     *        its re-sends left behind
      *
      * @return - the JSON response as a Map of String to Object.
      * @throws GPUdbException - in case of an error raised by the underlying endpoint
@@ -6062,7 +6269,8 @@ public abstract class GPUdbBase implements AutoCloseable {
             String jsonRecords,
             String tableName,
             JsonOptions jsonOptions,
-            Map<String, String> insertRecordsOptions
+            Map<String, String> insertRecordsOptions,
+            RequestRetries retries
     ) throws GPUdbException {
 
         JsonOptions jOpts = jsonOptions == null ? JsonOptions.defaultOptions() : jsonOptions;
@@ -6086,7 +6294,7 @@ public abstract class GPUdbBase implements AutoCloseable {
             throw new GPUdbRuntimeException(ex.getMessage(), ex);
         }
 
-        return Collections.unmodifiableMap(submitRequest(endpointUrl, jsonRecords, jOpts.isCompressionOn()));
+        return Collections.unmodifiableMap(submitRequestRaw(endpointUrl, jsonRecords, jOpts.isCompressionOn(), this.timeout, retries));
     }
 
 
@@ -7639,7 +7847,7 @@ public abstract class GPUdbBase implements AutoCloseable {
                 typeDescriptor instanceof TypeObjectMap ||
                 typeDescriptor instanceof Class && IndexedRecord.class.isAssignableFrom((Class)typeDescriptor)
         ) {
-            ShowTableResponse response = submitRequest("/show/table", new ShowTableRequest(tableName, null), new ShowTableResponse(), false);
+            ShowTableResponse response = ownRead( () -> submitRequest("/show/table", new ShowTableRequest(tableName, null), new ShowTableResponse(), false) );
 
             if (response.getTypeIds().isEmpty()) {
                 throw new GPUdbException("Table " + tableName + " does not exist.");
@@ -7795,7 +8003,7 @@ public abstract class GPUdbBase implements AutoCloseable {
             return typeDescriptor;
         }
 
-        ShowTypesResponse response = submitRequest("/show/types", new ShowTypesRequest(typeId, null, null), new ShowTypesResponse(), false);
+        ShowTypesResponse response = ownRead( () -> submitRequest("/show/types", new ShowTypesRequest(typeId, null, null), new ShowTypesResponse(), false) );
 
         if (response.getTypeSchemas().isEmpty()) {
             throw new GPUdbException("Unable to obtain type information for type " + typeId + ".");
@@ -8382,8 +8590,8 @@ public abstract class GPUdbBase implements AutoCloseable {
         // the caller never named, and report success.  The rules now say plainly
         // that a host manager failure goes back to the caller.
         //
-        // Ordinary transport retries still apply: they happen inside
-        // submitRequest(), at the HTTP layer, and are not this method's concern.
+        // Re-sends to the same host manager still apply, as for any request;
+        // they are made by the request layer, and are not this method's concern.
         try {
             return submitRequest( appendPathToURL( getHmURL(), endpoint ),
                                   request, response, enableCompression );
@@ -8613,6 +8821,60 @@ public abstract class GPUdbBase implements AutoCloseable {
                                                          boolean enableCompression,
                                                          int responseTimeout)
         throws SubmitException, GPUdbExitException, GPUdbException {
+        return submitRequestRaw( url, request, response, enableCompression, responseTimeout, RequestRetries.connectionDefault() );
+    }
+
+
+    /**
+     * Submits an Avro request as {@link #submitRequestRaw(URL, IndexedRecord,
+     * IndexedRecord, boolean, int)} does, re-sending it as the given retries
+     * allow in place of the connection's defaults.  {@link BulkInserter} sends
+     * its batches this way, with the inserter's own budget, and marked
+     * repeatable for a table with a primary key.
+     *
+     * @param <T>  the type of the response object
+     * @param url  the URL to send the request to
+     * @param request  the request object
+     * @param response  the response object
+     * @param enableCompression  whether to compress the request
+     * @param responseTimeout  the number of milliseconds to wait for a response
+     * @param retries  how the request may be re-sent, and the record of what
+     *        its re-sends left behind
+     * @return  the response object, filled in
+     *
+     * @throws SubmitException if an error occurs while submitting the request
+     */
+    <T extends IndexedRecord> T submitRequestRaw( URL url,
+                                                  IndexedRecord request,
+                                                  T response,
+                                                  boolean enableCompression,
+                                                  int responseTimeout,
+                                                  RequestRetries retries)
+        throws SubmitException, GPUdbExitException, GPUdbException {
+        return sendWithRetries( url, retries,
+                () -> submitRequestRawOnce( url, request, response, enableCompression, responseTimeout ) );
+    }
+
+
+    /**
+     * Sends an Avro request once, without re-sending it on failure.
+     *
+     * @param <T>  the type of the response object
+     * @param url  the URL to send the request to
+     * @param request  the request object
+     * @param response  the response object
+     * @param enableCompression  whether to compress the request
+     * @param responseTimeout  the number of milliseconds to wait for a response
+     * @return  the response object, filled in
+     *
+     * @throws SubmitException if an error occurs while submitting the request
+     */
+    private <T extends IndexedRecord> T submitRequestRawOnce( URL url,
+                                                              IndexedRecord request,
+                                                              T response,
+                                                              boolean enableCompression,
+                                                              int responseTimeout)
+        throws SubmitException, GPUdbExitException, GPUdbException {
 
         int requestSize = -1;
         HttpPost              postRequest    = null;
@@ -8645,7 +8907,8 @@ public abstract class GPUdbBase implements AutoCloseable {
             }
 
             // Create the entity for the request and execute the request
-            try (HttpEntity requestPacket = new ByteArrayEntity(encodedRequest, contentType)) {
+            TrackedRequestBody requestPacket = new TrackedRequestBody(encodedRequest, contentType);
+            try {
                 if (GPUdbLogger.isTraceEnabled())
                     GPUdbLogger.trace("Executing <" + request.toString() + ">");
 
@@ -8656,24 +8919,12 @@ public abstract class GPUdbBase implements AutoCloseable {
 
                 postResponse = this.httpClient.executeOpen( host, postRequest, null );
             } catch ( javax.net.ssl.SSLException ex) {
-                String errorMsg = null;
-                if( ex.getMessage().toLowerCase().contains("subject alternative names")) {
-                    errorMsg = String.format(SslErrorMessageFormat, "Server SSL certificate not found in specified trust store.");
-                } else if( ex.getMessage().toLowerCase().contains("unable to find valid certification path")) {
-                    errorMsg = String.format(SslErrorMessageFormat, "No trust store was specified, but server requires SSL certificate validation.");
-                } else {
-                    errorMsg = String.format(SslErrorMessageFormat, "Error: " + ex.getMessage());
-                }
-                errorMsg = String.format("Encountered SSL error when trying to connect to server at %s.  %s", url.toString(), errorMsg);
-                GPUdbLogger.error( errorMsg );
-                throw new GPUdbException( errorMsg );
+                throw sslFailure( url, ex );
             } catch (Exception ex) {
                 // Trigger an HA failover at the caller level
-                requestTime = System.currentTimeMillis() - requestTime;
-                GPUdbLogger.error( ex, "Throwing exit exception after " + requestTime + "ms due to ");
-
-                String errorMessage = "Error submitting endpoint <%s> request after <%d>ms due to: %s";
-                throw new GPUdbExitException(String.format(errorMessage, url.toString(), requestTime, ExceptionUtils.getRootCauseMessage(ex)));
+                throw sendFailure( url, ex, requestTime, requestPacket.isWrittenInFull() );
+            } finally {
+                requestPacket.close();
             }
 
             // Get the status code and the messages of the response
@@ -8687,132 +8938,67 @@ public abstract class GPUdbBase implements AutoCloseable {
             if (GPUdbLogger.isTraceEnabled())
                 GPUdbLogger.trace_with_info(String.format(
                         "<Status|Message|Type>: <%d|%s|%s>",
-                        statusCode, responseMessage, responseEntity.getContentType()
+                        statusCode, responseMessage, (responseEntity == null) ? null : responseEntity.getContentType()
                 ));
 
-            // Handle unauthorized connection specially--better error messaging
-            if ((statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) ||
-                (statusCode == HttpURLConnection.HTTP_FORBIDDEN)) {
-                // Got status 401 -- unauthorized, 403 -- forbidden
-                GPUdbLogger.debug_with_info( "Got status code: " + statusCode );
-                String errorMsg = (String.format("Server response status: %d : %s", statusCode, responseMessage));
-                throw new GPUdbUnauthorizedAccessException(errorMsg);
-            }
-
-            // Ensure that we're not getting any HTML snippet (may be
-            // returned by the HTTPD server)
-            if (
-                    (responseEntity.getContentType() != null) &&
-                    (!responseEntity.getContentType().isEmpty()) &&
-                    responseEntity.getContentType().startsWith( "text" )
-            ) {
-                String errorMsg;
+            try {
+                // Ensure that we're not getting any HTML snippet (may be
+                // returned by the HTTPD server); its text is the reply's
+                // message
                 if (
-                        statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR ||
-                        statusCode == HttpURLConnection.HTTP_BAD_GATEWAY ||
-                        statusCode == HttpURLConnection.HTTP_UNAVAILABLE ||
-                        statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT
+                        (responseEntity != null) &&
+                        (responseEntity.getContentType() != null) &&
+                        (!responseEntity.getContentType().isEmpty()) &&
+                        responseEntity.getContentType().startsWith( "text" )
                 ) {
-                    // Some status codes should trigger an exit exception which will
-                    // in turn trigger a failover on the client side
-                    GPUdbLogger.debug_with_info(
-                            "Throwing EXIT exception from " + url.toString()
-                            + "; response_code: " + statusCode
-                            + "; content type " + responseEntity.getContentType()
-                            + "; response message: " + responseMessage
-                    );
-                    throw new GPUdbExitException(responseMessage);
+                    String text = textReplyMessage( responseEntity );
+                    throw replyFailure( url, statusCode, responseMessage, text, textReplyDescription( statusCode, responseMessage ) );
                 }
 
-                // All other issues are simply propagated to the user
-                errorMsg = ("Cannot parse response from server: '" + responseMessage + "'; status code: " + statusCode );
-                throw new SubmitException( url, request, requestSize, errorMsg );
-            }
+                try (InputStream inputStream = (responseEntity == null) ? null : responseEntity.getContent()) {
+                    // Manually decode the RawGpudbResponse wrapper directly from
+                    // the stream to avoid allocation of intermediate buffers
 
-            try (InputStream inputStream = responseEntity.getContent()) {
-                // Manually decode the RawGpudbResponse wrapper directly from
-                // the stream to avoid allocation of intermediate buffers
-
-                if (inputStream == null) {
-                    // Trigger an HA failover at the caller level
-                    throw new GPUdbExitException("Server returned HTTP " + statusCode + " (" + responseMessage + "); returning EXIT exception");
-                }
-
-                BinaryDecoder decoder = DecoderFactory.get().binaryDecoder(inputStream, null);
-                String status = decoder.readString();
-                String message = decoder.readString();
-
-                // Parse response based on error code
-                if (statusCode == HttpURLConnection.HTTP_BAD_REQUEST) {
-                    if (message != null)
-                        if (message.contains( DB_SHUTTING_DOWN_ERROR_MESSAGE ))
-                            throw new GPUdbExitException("Kinetica shutting down");
-                        else if (message.contains( DB_DRAINING_HAQ_ERROR_MESSAGE ))
-                            throw new GPUdbExitException("Draining HA message queue");
-                }
-
-                if (status.equals("ERROR")) {
-                    // Check if Kinetica is shutting down
-                    if (
-                            statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR ||
-                            statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT ||
-                            message != null &&
-                            (
-                                message.contains( DB_EXITING_ERROR_MESSAGE ) ||
-                                message.contains( DB_CONNECTION_REFUSED_ERROR_MESSAGE ) ||
-                                message.contains( DB_CONNECTION_RESET_ERROR_MESSAGE ) ||
-                                message.contains( DB_SYSTEM_LIMITED_ERROR_MESSAGE ) ||
-                                message.contains( DB_OFFLINE_ERROR_MESSAGE ) ||
-                                message.contains( DB_QP_DOWN_ERROR_MESSAGE )
-                            )
-                    ) {
-                        GPUdbLogger.debug_with_info(
-                                "Throwing EXIT exception from " + url.toString() + "; response_code: " + statusCode + "; message: " + message
-                        );
-                        throw new GPUdbExitException(message);
-                    } else if(
-                            statusCode == HttpURLConnection.HTTP_BAD_GATEWAY ||
-                            statusCode == HttpURLConnection.HTTP_UNAVAILABLE
-                    ) {
-                        GPUdbLogger.debug_with_info(
-                                "Throwing EXIT exception from " + url.toString() + "; response_code: " + statusCode + "; message: " + message
-                        );
-                        throw new GPUdbExitException("Cluster may be stopped or suspended: " + message);
+                    if (inputStream == null) {
+                        throw replyFailure( url, statusCode, responseMessage, null,
+                                "Server returned HTTP " + statusCode + " (" + responseMessage + ") with no response body" );
                     }
-                    // A legitimate error
-                    GPUdbLogger.debug_with_info(
-                            "Throwing GPUdb exception from " + url.toString() + "; response_code: " + statusCode + "; message: " + message
-                    );
-                    throw new GPUdbException( message );
+
+                    BinaryDecoder decoder = DecoderFactory.get().binaryDecoder(inputStream, null);
+                    String status = decoder.readString();
+                    String message = decoder.readString();
+
+                    if (status.equals("ERROR")) {
+                        // The server's message decides before the status
+                        // does; see RetryRules
+                        boolean unavailable =
+                                (statusCode == HttpURLConnection.HTTP_BAD_GATEWAY || statusCode == HttpURLConnection.HTTP_UNAVAILABLE) &&
+                                RetryRules.ofReply( statusCode, responseMessage, message ) == RetryRules.Reply.RESEND;
+                        throw replyFailure( url, statusCode, responseMessage, message,
+                                unavailable ? "Cluster may be stopped or suspended: " + message : message );
+                    }
+
+                    // Skip over data_type field
+                    decoder.skipString();
+
+                    // Decode data field
+                    decoder.readInt();
+                    T decoded = new Avro.DatumReader<T>(response.getSchema()).read(response, decoder);
+                    noteSessionUsed( decoded );
+                    return decoded;
                 }
-
-                // Skip over data_type field
-                decoder.skipString();
-
-                // Decode data field
-                decoder.readInt();
-                T decoded = new Avro.DatumReader<T>(response.getSchema()).read(response, decoder);
-                noteSessionUsed( decoded );
-                return decoded;
+            } catch (IOException | ParseException ex) {
+                // The response was lost while it was being read, or could not
+                // be read
+                GPUdbExitException lost = readFailure( url, ex );
+                if (lost != null)
+                    throw lost;
+                throw new SubmitException(url, request, requestSize, ex.getMessage(), ex);
             }
-        } catch (GPUdbExitException ex) {
-            // An HA failover should be triggered
-            throw ex;
-        } catch (SubmitException ex) {
-            GPUdbLogger.debug_with_info( "Got SubmitException: " + ex.getMessage() );
-            // Some sort of submission error
-            throw ex;
         } catch (GPUdbException ex) {
-            if ( ex.getMessage().contains( DB_EOF_FROM_SERVER_ERROR_MESSAGE ) ) {
-                // The server did not send a response; we need to trigger an HA
-                // failover scenario
-                throw new GPUdbExitException(ex.getMessage());
-            }
-            // Some legitimate error
+            // A failover, a re-send, a report to the caller, or a submission
+            // error, as decided above
             throw ex;
-        } catch (java.net.SocketException ex) {
-            // Any network issue should trigger an HA failover
-            throw new GPUdbExitException(ex.getMessage());
         } catch (Exception ex) {
             GPUdbLogger.debug_with_info( "Caught " + ex.getClass() + ": " + ex.getMessage() );
             // Some sort of submission error
@@ -8844,6 +9030,50 @@ public abstract class GPUdbBase implements AutoCloseable {
             }
         }
     }   // end submitRequestRaw
+
+
+    /**
+     * @return  whether an HTTP status reports success
+     */
+    private static boolean isSuccessStatus( int statusCode ) {
+        return statusCode >= 200 && statusCode < 300;
+    }
+
+
+    /**
+     * The text to report a reply with a text body with, such as a gateway's
+     * error page:  its reason phrase for a server error, or a note that the
+     * reply could not be read otherwise.
+     */
+    private static String textReplyDescription( int statusCode, String reasonPhrase ) {
+        if (statusCode >= HttpURLConnection.HTTP_INTERNAL_ERROR)
+            return reasonPhrase;
+        return "Cannot parse response from server: '" + reasonPhrase + "'; status code: " + statusCode;
+    }
+
+
+    /**
+     * The exception reporting a TLS failure to the caller, which neither a
+     * re-send nor another cluster can get past.
+     *
+     * @param url  the URL the request was sent to
+     * @param ex  the TLS failure
+     * @return  the exception to report it with
+     */
+    private static GPUdbException sslFailure( URL url, javax.net.ssl.SSLException ex ) {
+        String errorMsg = null;
+        String reason = (ex.getMessage() == null) ? "" : ex.getMessage().toLowerCase();
+        if( reason.contains("subject alternative names")) {
+            errorMsg = String.format(SslErrorMessageFormat, "Server SSL certificate not found in specified trust store.");
+        } else if( reason.contains("unable to find valid certification path")) {
+            errorMsg = String.format(SslErrorMessageFormat, "No trust store was specified, but server requires SSL certificate validation.");
+        } else {
+            errorMsg = String.format(SslErrorMessageFormat, "Error: " + ex.getMessage());
+        }
+        errorMsg = String.format("Encountered SSL error when trying to connect to server at %s.  %s", url.toString(), errorMsg);
+        GPUdbLogger.error( errorMsg );
+        return new GPUdbException( errorMsg );
+    }
 
 
     /**
@@ -9161,6 +9391,53 @@ public abstract class GPUdbBase implements AutoCloseable {
                                                 boolean enableCompression,
                                                 int responseTimeout)
             throws SubmitException, GPUdbExitException, GPUdbException {
+        return submitRequestRaw( url, payload, enableCompression, responseTimeout, RequestRetries.connectionDefault() );
+    }
+
+
+    /**
+     * Submits a JSON payload as {@link #submitRequestRaw(URL, String, boolean,
+     * int)} does, re-sending it as the given retries allow in place of the
+     * connection's defaults.  {@link BulkInserter} sends its JSON batches this
+     * way.
+     *
+     * @param url                the URL to send the request to
+     * @param payload            the payload as a JSON String
+     * @param enableCompression  whether to compress the request; not
+     *                           implemented yet for JSON payloads, so this has
+     *                           no effect
+     * @param responseTimeout    the number of milliseconds to wait for a response
+     * @param retries  how the request may be re-sent, and the record of what
+     *        its re-sends left behind
+     * @return  the response as a JSON map of values
+     *
+     * @throws SubmitException if an error occurs while submitting the request
+     */
+    Map<String, Object> submitRequestRaw( URL url,
+                                          String payload,
+                                          boolean enableCompression,
+                                          int responseTimeout,
+                                          RequestRetries retries)
+            throws SubmitException, GPUdbExitException, GPUdbException {
+        return sendWithRetries( url, retries,
+                () -> submitJsonRequestRawOnce( url, payload, responseTimeout ) );
+    }
+
+
+    /**
+     * Sends a JSON payload once, without re-sending it on failure.
+     *
+     * @param url              the URL to send the request to
+     * @param payload          the payload as a JSON String
+     * @param responseTimeout  the number of milliseconds to wait for a response
+     * @return  the response as a JSON map of values
+     *
+     * @throws SubmitException if an error occurs while submitting the request
+     */
+    private Map<String, Object> submitJsonRequestRawOnce( URL url,
+                                                          String payload,
+                                                          int responseTimeout)
+            throws SubmitException, GPUdbExitException, GPUdbException {
 
         HttpPost              postRequest    = null;
         HttpEntity            responseEntity = null;
@@ -9177,32 +9454,21 @@ public abstract class GPUdbBase implements AutoCloseable {
             host = new HttpHost( url.getProtocol(), url.getHost(), url.getPort() );
 
             // Execute the request
-            try (StringEntity entity = new StringEntity( payload, ContentType.APPLICATION_JSON )) {
+            TrackedRequestBody entity = new TrackedRequestBody( payload.getBytes( StandardCharsets.UTF_8 ), ContentType.APPLICATION_JSON );
+            try {
                 // Save the payload into the http post object as a JSON payload
-                postRequest.setEntity( entity);
+                postRequest.setEntity( entity );
 
                 requestTime = System.currentTimeMillis();
                 
                 postResponse = this.httpClient.executeOpen( host, postRequest, null );
             } catch ( javax.net.ssl.SSLException ex) {
-                String errorMsg;
-                if( ex.getMessage().toLowerCase().contains("subject alternative names")) {
-                    errorMsg = String.format(SslErrorMessageFormat, "Server SSL certificate not found in specified trust store.");
-                } else if( ex.getMessage().toLowerCase().contains("unable to find valid certification path")) {
-                    errorMsg = String.format(SslErrorMessageFormat, "No trust store was specified, but server requires SSL certificate validation.");
-                } else {
-                    errorMsg = String.format(SslErrorMessageFormat, "Error: " + ex.getMessage());
-                }
-                errorMsg = String.format("Encountered SSL error when trying to connect to server at %s.  %s", url.toString(), errorMsg);
-                GPUdbLogger.error( errorMsg );
-                throw new GPUdbException( errorMsg );
+                throw sslFailure( url, ex );
             } catch (Exception ex) {
                 // Trigger an HA failover at the caller level
-                requestTime = System.currentTimeMillis() - requestTime;
-                GPUdbLogger.error( ex, "Throwing exit exception after " + requestTime + "ms due to ");
-
-                String errorMessage = "Error submitting endpoint <%s> request after <%d>ms due to: %s";
-                throw new GPUdbExitException(String.format(errorMessage, url.toString(), requestTime, ExceptionUtils.getRootCauseMessage(ex)));
+                throw sendFailure( url, ex, requestTime, entity.isWrittenInFull() );
+            } finally {
+                entity.close();
             }
 
             // Get the status code and the messages of the response
@@ -9213,12 +9479,25 @@ public abstract class GPUdbBase implements AutoCloseable {
             // Get the entity and the content of the response
             responseEntity = postResponse.getEntity();
 
-            // use org.apache.http.util.EntityUtils to read JSON as string
-            String json = EntityUtils.toString(responseEntity, StandardCharsets.UTF_8);
+            String json = readReplyBody( url, responseEntity, payload );
+
+            // Ensure that we're not getting any HTML snippet (may be
+            // returned by the HTTPD server); its text is the reply's message
+            if (isTextReply( responseEntity ))
+                throw replyFailure( url, statusCode, responseMessage, truncateReplyMessage( json ), textReplyDescription( statusCode, responseMessage ) );
+
+            if (json == null || json.isEmpty())
+                throw replyFailure( url, statusCode, responseMessage, null,
+                        "Server returned HTTP " + statusCode + " (" + responseMessage + ") with no response body" );
 
             TypeReference<HashMap<String,Object>> typeRef
                     = new TypeReference<>() {};
-            Map<String, Object> response = JSON_MAPPER.readValue(json.getBytes(StandardCharsets.UTF_8), typeRef);
+            Map<String, Object> response;
+            try {
+                response = JSON_MAPPER.readValue(json.getBytes(StandardCharsets.UTF_8), typeRef);
+            } catch (IOException ex) {
+                throw new SubmitException( url, payload, ex.getMessage(), ex );
+            }
 
             if (GPUdbLogger.isTraceEnabled())
                 GPUdbLogger.trace_with_info(String.format(
@@ -9226,73 +9505,17 @@ public abstract class GPUdbBase implements AutoCloseable {
                         statusCode, responseMessage, responseEntity.getContentType(), response
                 ));
 
-            // Ensure that we're not getting any HTML snippet (may be
-            // returned by the HTTPD server)
-            if (
-                    responseEntity.getContentType() != null &&
-                    responseEntity.getContentType().length() > 0 &&
-                    responseEntity.getContentType().startsWith( "text" )
-            ) {
-                String errorMsg = ("Cannot parse response from server: '" + responseMessage + "'; status code: " + statusCode );
-                throw new SubmitException( url, payload, errorMsg );
-            }
-
-            // Parse response based on error code
-            if ((statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) ||
-                (statusCode == HttpURLConnection.HTTP_FORBIDDEN)) {
-                GPUdbLogger.debug_with_info( "Got status code: " + statusCode );
-                String errorMsg = (String.format("Server response status: %d : %s", statusCode, responseMessage));
-                throw new GPUdbUnauthorizedAccessException(errorMsg);
-            }
-            
-            if (
-                    statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR ||
-                    statusCode == HttpURLConnection.HTTP_BAD_GATEWAY ||
-                    statusCode == HttpURLConnection.HTTP_UNAVAILABLE ||
-                    statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT ||
-                    responseMessage.contains( DB_EXITING_ERROR_MESSAGE ) ||
-                    responseMessage.contains( DB_CONNECTION_REFUSED_ERROR_MESSAGE ) ||
-                    responseMessage.contains( DB_CONNECTION_RESET_ERROR_MESSAGE ) ||
-                    responseMessage.contains( DB_SYSTEM_LIMITED_ERROR_MESSAGE ) ||
-                    responseMessage.contains( DB_OFFLINE_ERROR_MESSAGE )
-            ) {
-                // Some status codes should trigger an exit exception which will
-                // in turn trigger a failover on the client side
-                GPUdbLogger.debug_with_info(
-                        "Throwing EXIT exception from " + url.toString()
-                                + "; response_code: " + statusCode
-                                + "; content type " + responseEntity.getContentType()
-                                + "; response message: " + responseMessage
-                );
-                throw new GPUdbExitException(responseMessage);
-            }
-            
-            if (statusCode == HttpURLConnection.HTTP_BAD_REQUEST) {
-                String message = response.get("message").toString();
-                if (message != null && message.contains( DB_SHUTTING_DOWN_ERROR_MESSAGE ))
-                    throw new GPUdbExitException("Kinetica shutting down");
+            if (!isSuccessStatus( statusCode )) {
+                Object message = response.get( "message" );
+                throwUnlessReported( url, statusCode, responseMessage, (message == null) ? null : message.toString() );
             }
 
             return response;
 
-        } catch (GPUdbExitException ex) {
-            // An HA failover should be triggered
-            throw ex;
-        } catch (SubmitException ex) {
-            GPUdbLogger.debug_with_info( "Got SubmitException: " + ex.getMessage() );
-            // Some sort of submission error
-            throw ex;
         } catch (GPUdbException ex) {
-            if ( ex.getMessage().contains( DB_EOF_FROM_SERVER_ERROR_MESSAGE ) ) {
-                // The server did not send a response; we need to trigger an HA
-                // failover scenario
-                throw new GPUdbExitException(ex.getMessage());
-            }
-            // Some legitimate error
+            // A failover, a re-send, a report to the caller, or a submission
+            // error, as decided above
             throw ex;
-        } catch (java.net.SocketException ex) {
-            // Any network issue should trigger an HA failover
-            throw new GPUdbExitException(ex.getMessage());
         } catch (Exception ex) {
             GPUdbLogger.debug_with_info( "Caught Exception: " + ex.getMessage() );
             // Some sort of submission error
@@ -9313,6 +9536,71 @@ public abstract class GPUdbBase implements AutoCloseable {
             }
         }
     }   // end submitRequestRaw
+
+
+    /**
+     * @return  whether a reply's body is text, such as a gateway's error page
+     */
+    private static boolean isTextReply( HttpEntity entity ) {
+        return entity != null &&
+               entity.getContentType() != null &&
+               entity.getContentType().length() > 0 &&
+               entity.getContentType().startsWith( "text" );
+    }
+
+
+    /**
+     * Reads a JSON reply's body, failing over where the connection is lost
+     * while it is read.
+     *
+     * @param url  the URL the request was sent to
+     * @param entity  the reply's body, or {@code null}
+     * @param payload  the request's payload, for reporting, or {@code null}
+     * @return  the body, or {@code null} where the reply has none
+     */
+    private static String readReplyBody( URL url, HttpEntity entity, String payload ) throws GPUdbException {
+        if (entity == null)
+            return null;
+
+        try {
+            return EntityUtils.toString( entity, StandardCharsets.UTF_8 );
+        } catch (IOException | ParseException ex) {
+            GPUdbExitException lost = readFailure( url, ex );
+            if (lost != null)
+                throw lost;
+            throw new SubmitException( url, payload, ex.getMessage(), ex );
+        }
+    }
+
+
+    /**
+     * @return  the start of a text reply's body, as its message
+     */
+    private static String truncateReplyMessage( String body ) {
+        return (body == null || body.length() <= TEXT_REPLY_MESSAGE_LIMIT) ? body : body.substring( 0, TEXT_REPLY_MESSAGE_LIMIT );
+    }
+
+
+    /**
+     * Throws the failure for a JSON reply with an error status, unless the
+     * reply is one reported to the caller in its own body:  a JSON
+     * reply rejecting the request is returned, as it always has been, with its
+     * {@code status} and {@code message} for the caller to read.
+     *
+     * @param url  the URL the request was sent to
+     * @param statusCode  the reply's HTTP status code
+     * @param reasonPhrase  the reply's reason phrase
+     * @param message  the reply's message, or {@code null}
+     */
+    private static void throwUnlessReported( URL url, int statusCode, String reasonPhrase, String message ) throws GPUdbException {
+        GPUdbException failure = replyFailure( url, statusCode, reasonPhrase, message,
+                (message == null || message.isEmpty()) ? reasonPhrase : message );
+
+        if (failure instanceof GPUdbExitException ||
+            failure instanceof GPUdbUnauthorizedAccessException ||
+            statusCode >= HttpURLConnection.HTTP_INTERNAL_ERROR)
+            throw failure;
+    }
 
 
     /**
@@ -9349,6 +9637,25 @@ public abstract class GPUdbBase implements AutoCloseable {
                                     boolean enableCompression,
                                     int responseTimeout)
             throws SubmitException, GPUdbExitException, GPUdbException {
+        return sendWithRetries( url, RequestRetries.connectionDefault(),
+                () -> submitRequestRawOnce( url, enableCompression, responseTimeout ) );
+    }
+
+
+    /**
+     * Sends a request with no payload once, without re-sending it on failure.
+     *
+     * @param url                the URL to send the request to
+     * @param enableCompression  whether to compress the request
+     * @param responseTimeout    the number of milliseconds to wait for a response
+     * @return  the response
+     *
+     * @throws SubmitException if an error occurs while submitting the request
+     */
+    private String submitRequestRawOnce( URL url,
+                                         boolean enableCompression,
+                                         int responseTimeout)
+            throws SubmitException, GPUdbExitException, GPUdbException {
 
         HttpPost              postRequest    = null;
         HttpEntity            responseEntity = null;
@@ -9365,26 +9672,15 @@ public abstract class GPUdbBase implements AutoCloseable {
 
             // Execute the request
             try {
+                requestTime = System.currentTimeMillis();
+
                 postResponse = this.httpClient.executeOpen( host, postRequest, null );
             } catch ( javax.net.ssl.SSLException ex) {
-                String errorMsg;
-                if( ex.getMessage().toLowerCase().contains("subject alternative names")) {
-                    errorMsg = String.format(SslErrorMessageFormat, "Server SSL certificate not found in specified trust store.");
-                } else if( ex.getMessage().toLowerCase().contains("unable to find valid certification path")) {
-                    errorMsg = String.format(SslErrorMessageFormat, "No trust store was specified, but server requires SSL certificate validation.");
-                } else {
-                    errorMsg = String.format(SslErrorMessageFormat, "Error: " + ex.getMessage());
-                }
-                errorMsg = String.format("Encountered SSL error when trying to connect to server at %s.  %s", url.toString(), errorMsg);
-                GPUdbLogger.error( errorMsg );
-                throw new GPUdbException( errorMsg );
+                throw sslFailure( url, ex );
             } catch (Exception ex) {
-                // Trigger an HA failover at the caller level
-                requestTime = System.currentTimeMillis() - requestTime;
-                GPUdbLogger.error( ex, "Throwing exit exception after " + requestTime + "ms due to ");
-
-                String errorMessage = "Error submitting endpoint <%s> request after <%d>ms due to: %s";
-                throw new GPUdbExitException(String.format(errorMessage, url.toString(), requestTime, ExceptionUtils.getRootCauseMessage(ex)));
+                // Trigger an HA failover at the caller level; a request with
+                // no body is written in full once its connection is made
+                throw sendFailure( url, ex, requestTime, true );
             }
 
             // Get the status code and the messages of the response
@@ -9395,8 +9691,7 @@ public abstract class GPUdbBase implements AutoCloseable {
             // Get the entity and the content of the response
             responseEntity = postResponse.getEntity();
 
-            // use org.apache.http.util.EntityUtils to read JSON as string
-            String json = EntityUtils.toString(responseEntity, StandardCharsets.UTF_8);
+            String json = readReplyBody( url, responseEntity, null );
 
             if (GPUdbLogger.isTraceEnabled())
                 GPUdbLogger.trace_with_info(String.format(
@@ -9405,65 +9700,18 @@ public abstract class GPUdbBase implements AutoCloseable {
                 ));
 
             // Ensure that we're not getting any HTML snippet (may be
-            // returned by the HTTPD server)
-            if (
-                    responseEntity.getContentType() != null &&
-                    responseEntity.getContentType().length() > 0 &&
-                    responseEntity.getContentType().startsWith( "text" )
-            ) {
-                String errorMsg = ("Cannot parse response from server: '" + responseMessage + "'; status code: " + statusCode );
-                throw new SubmitException( url, errorMsg );
-            }
+            // returned by the HTTPD server); its text is the reply's message
+            if (isTextReply( responseEntity ))
+                throw replyFailure( url, statusCode, responseMessage, truncateReplyMessage( json ), textReplyDescription( statusCode, responseMessage ) );
 
-            // Parse response based on error code
-            if ((statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) ||
-                (statusCode == HttpURLConnection.HTTP_FORBIDDEN)) {
-                GPUdbLogger.debug_with_info( "Got status code: " + statusCode );
-                String errorMsg = (String.format("Server response status: %d : %s", statusCode, responseMessage));
-                throw new GPUdbUnauthorizedAccessException(errorMsg);
-            }
-            
-            if (
-                    statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR ||
-                    statusCode == HttpURLConnection.HTTP_BAD_GATEWAY ||
-                    statusCode == HttpURLConnection.HTTP_UNAVAILABLE ||
-                    statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT ||
-                    responseMessage.contains( DB_EXITING_ERROR_MESSAGE ) ||
-                    responseMessage.contains( DB_CONNECTION_REFUSED_ERROR_MESSAGE ) ||
-                    responseMessage.contains( DB_CONNECTION_RESET_ERROR_MESSAGE ) ||
-                    responseMessage.contains( DB_SYSTEM_LIMITED_ERROR_MESSAGE ) ||
-                    responseMessage.contains( DB_OFFLINE_ERROR_MESSAGE )
-            ) {
-                // Some status codes should trigger an exit exception which will
-                // in turn trigger a failover on the client side
-                GPUdbLogger.debug_with_info(
-                        "Throwing EXIT exception from " + url.toString()
-                                + "; response_code: " + statusCode
-                                + "; content type " + responseEntity.getContentType()
-                                + "; response message: " + responseMessage
-                );
-                throw new GPUdbExitException(responseMessage);
-            }
+            if (!isSuccessStatus( statusCode ))
+                throwUnlessReported( url, statusCode, responseMessage, jsonReplyMessage( json ) );
 
             return json;
-        } catch (GPUdbExitException ex) {
-            // An HA failover should be triggered
-            throw ex;
-        } catch (SubmitException ex) {
-            GPUdbLogger.debug_with_info( "Got SubmitException: " + ex.getMessage() );
-            // Some sort of submission error
-            throw ex;
         } catch (GPUdbException ex) {
-            if ( ex.getMessage().contains( DB_EOF_FROM_SERVER_ERROR_MESSAGE ) ) {
-                // The server did not send a response; we need to trigger an HA
-                // failover scenario
-                throw new GPUdbExitException(ex.getMessage());
-            }
-            // Some legitimate error
+            // A failover, a re-send, a report to the caller, or a submission
+            // error, as decided above
             throw ex;
-        } catch (java.net.SocketException ex) {
-            // Any network issue should trigger an HA failover
-            throw new GPUdbExitException(ex.getMessage());
         } catch (Exception ex) {
             GPUdbLogger.debug_with_info( "Caught Exception: " + ex.getMessage() );
             // Some sort of submission error
@@ -9484,6 +9732,22 @@ public abstract class GPUdbBase implements AutoCloseable {
             }
         }
     }   // end submitRequestRaw
+
+
+    /**
+     * @return  the {@code message} of a JSON reply, or {@code null} where it
+     *          has none or is not JSON
+     */
+    private static String jsonReplyMessage( String json ) {
+        if (json == null || json.isEmpty())
+            return null;
+        try {
+            JsonNode message = JSON_MAPPER.readTree( json ).get( "message" );
+            return (message == null || message.isNull()) ? null : message.asText();
+        } catch (IOException ex) {
+            return null;
+        }
+    }
     // Utilities
 
     /**

@@ -387,6 +387,14 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String TELM_FORCE_METRICS_DURATION = "telm_force_metrics_duration";
 
         /**
+         * Maximum number of telemetry meters a single query may hold per rank;
+         * once reached, the query's further workers run unmetered, so its
+         * metrics are incomplete. Use 0 for no limit. The default value is
+         * '100000'. The minimum allowed value is '0'.
+         */
+        public static final String TELM_MAX_METERS_PER_QUERY = "telm_max_meters_per_query";
+
+        /**
          * Idle connection timeout in seconds.
          */
         public static final String POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT = "postgres_proxy_idle_connection_timeout";
@@ -845,6 +853,16 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    metrics for any query exceeding this
      *                                    duration in seconds.
      *                                <li>{@link
+     *                                    PropertyUpdatesMap#TELM_MAX_METERS_PER_QUERY
+     *                                    TELM_MAX_METERS_PER_QUERY}: Maximum
+     *                                    number of telemetry meters a single
+     *                                    query may hold per rank; once
+     *                                    reached, the query's further workers
+     *                                    run unmetered, so its metrics are
+     *                                    incomplete. Use 0 for no limit. The
+     *                                    default value is '100000'. The
+     *                                    minimum allowed value is '0'.
+     *                                <li>{@link
      *                                    PropertyUpdatesMap#POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT
      *                                    POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT}:
      *                                    Idle connection timeout in seconds.
@@ -1136,6 +1154,12 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#TELM_FORCE_METRICS_DURATION
      *         TELM_FORCE_METRICS_DURATION}: Capture metrics for any query
      *         exceeding this duration in seconds.
+     *     <li>{@link PropertyUpdatesMap#TELM_MAX_METERS_PER_QUERY
+     *         TELM_MAX_METERS_PER_QUERY}: Maximum number of telemetry meters a
+     *         single query may hold per rank; once reached, the query's
+     *         further workers run unmetered, so its metrics are incomplete.
+     *         Use 0 for no limit. The default value is '100000'. The minimum
+     *         allowed value is '0'.
      *     <li>{@link PropertyUpdatesMap#POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT
      *         POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT}: Idle connection timeout
      *         in seconds.
@@ -1382,6 +1406,12 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *     <li>{@link PropertyUpdatesMap#TELM_FORCE_METRICS_DURATION
      *         TELM_FORCE_METRICS_DURATION}: Capture metrics for any query
      *         exceeding this duration in seconds.
+     *     <li>{@link PropertyUpdatesMap#TELM_MAX_METERS_PER_QUERY
+     *         TELM_MAX_METERS_PER_QUERY}: Maximum number of telemetry meters a
+     *         single query may hold per rank; once reached, the query's
+     *         further workers run unmetered, so its metrics are incomplete.
+     *         Use 0 for no limit. The default value is '100000'. The minimum
+     *         allowed value is '0'.
      *     <li>{@link PropertyUpdatesMap#POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT
      *         POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT}: Idle connection timeout
      *         in seconds.

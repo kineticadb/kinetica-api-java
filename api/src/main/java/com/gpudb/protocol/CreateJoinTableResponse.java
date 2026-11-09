@@ -50,11 +50,6 @@ public class CreateJoinTableResponse implements IndexedRecord {
          */
         public static final String QUALIFIED_JOIN_TABLE_NAME = "qualified_join_table_name";
 
-        /**
-         * &lt;DEVELOPER&gt;
-         */
-        public static final String DEFERRED_TABLES = "deferred_tables";
-
         private Info() {  }
     }
 
@@ -122,7 +117,6 @@ public class CreateJoinTableResponse implements IndexedRecord {
      *     <li>{@link Info#QUALIFIED_JOIN_TABLE_NAME
      *         QUALIFIED_JOIN_TABLE_NAME}: The fully qualified name of the join
      *         table (i.e. including the schema).
-     *     <li>{@link Info#DEFERRED_TABLES DEFERRED_TABLES}: &lt;DEVELOPER&gt;
      * </ul>
      * The default value is an empty {@link Map}.
      *
@@ -138,7 +132,6 @@ public class CreateJoinTableResponse implements IndexedRecord {
      *     <li>{@link Info#QUALIFIED_JOIN_TABLE_NAME
      *         QUALIFIED_JOIN_TABLE_NAME}: The fully qualified name of the join
      *         table (i.e. including the schema).
-     *     <li>{@link Info#DEFERRED_TABLES DEFERRED_TABLES}: &lt;DEVELOPER&gt;
      * </ul>
      * The default value is an empty {@link Map}.
      *

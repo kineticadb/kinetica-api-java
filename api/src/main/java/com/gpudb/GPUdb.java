@@ -5902,6 +5902,16 @@ public class GPUdb extends GPUdbBase {
      *                                    metrics for any query exceeding this
      *                                    duration in seconds.
      *                                <li>{@link
+     *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TELM_MAX_METERS_PER_QUERY
+     *                                    TELM_MAX_METERS_PER_QUERY}: Maximum
+     *                                    number of telemetry meters a single
+     *                                    query may hold per rank; once
+     *                                    reached, the query's further workers
+     *                                    run unmetered, so its metrics are
+     *                                    incomplete. Use 0 for no limit. The
+     *                                    default value is '100000'. The
+     *                                    minimum allowed value is '0'.
+     *                                <li>{@link
      *                                    com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT
      *                                    POSTGRES_PROXY_IDLE_CONNECTION_TIMEOUT}:
      *                                    Idle connection timeout in seconds.
@@ -11808,24 +11818,41 @@ public class GPUdb extends GPUdbBase {
      *                         column count plus the number of columns skipped.
      *                     <li>{@link
      *                         com.gpudb.protocol.CreateTableExternalRequest.Options#COMPRESSION_TYPE
-     *                         COMPRESSION_TYPE}: Source data compression type.
+     *                         COMPRESSION_TYPE}: Source data compression type:
+     *                         which files are checked for compression. A
+     *                         checked file compressed as gzip, bzip2, zstd or
+     *                         lz4 is recognized by its format and
+     *                         decompressed; other files are read as is, so a
+     *                         load can mix compressed and uncompressed files.
+     *                         Compressed data that is corrupt or truncated
+     *                         fails the load. Only delimited_text and json
+     *                         files are decompressed; other file types accept
+     *                         only auto and none, and are read as is.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateTableExternalRequest.Options#NONE
-     *                                 NONE}: No compression.
+     *                                 NONE}: No decompression: files are read
+     *                                 as is.
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateTableExternalRequest.Options#AUTO
-     *                                 AUTO}: Auto detect compression type.
+     *                                 AUTO}: Decompress files whose names end
+     *                                 in .gz, .bz2, .zst or .lz4.
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateTableExternalRequest.Options#GZIP
-     *                                 GZIP}: gzip file compression.
+     *                                 GZIP}: Check every file, whatever its
+     *                                 name. Named for gzip, but any supported
+     *                                 format is decompressed.
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateTableExternalRequest.Options#BZIP2
-     *                                 BZIP2}: bzip2 file compression.
+     *                                 BZIP2}: Check every file, whatever its
+     *                                 name. Named for bzip2, but any supported
+     *                                 format is decompressed.
      *                             <li>{@link
      *                                 com.gpudb.protocol.CreateTableExternalRequest.Options#ZSTD
-     *                                 ZSTD}: zstd file compression.
+     *                                 ZSTD}: Check every file, whatever its
+     *                                 name. Named for zstd, but any supported
+     *                                 format is decompressed.
      *                         </ul>
      *                         The default value is {@link
      *                         com.gpudb.protocol.CreateTableExternalRequest.Options#AUTO
@@ -21959,24 +21986,41 @@ public class GPUdb extends GPUdbBase {
      *                         skipped.
      *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COMPRESSION_TYPE
-     *                         COMPRESSION_TYPE}: Source data compression type.
+     *                         COMPRESSION_TYPE}: Source data compression type:
+     *                         which files are checked for compression. A
+     *                         checked file compressed as gzip, bzip2, zstd or
+     *                         lz4 is recognized by its format and
+     *                         decompressed; other files are read as is, so a
+     *                         load can mix compressed and uncompressed files.
+     *                         Compressed data that is corrupt or truncated
+     *                         fails the load. Only delimited_text and json
+     *                         files are decompressed; other file types accept
+     *                         only auto and none, and are read as is.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
      *                                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NONE
-     *                                 NONE}: No compression.
+     *                                 NONE}: No decompression: files are read
+     *                                 as is.
      *                             <li>{@link
      *                                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO
-     *                                 AUTO}: Auto detect compression type.
+     *                                 AUTO}: Decompress files whose names end
+     *                                 in .gz, .bz2, .zst or .lz4.
      *                             <li>{@link
      *                                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#GZIP
-     *                                 GZIP}: gzip file compression.
+     *                                 GZIP}: Check every file, whatever its
+     *                                 name. Named for gzip, but any supported
+     *                                 format is decompressed.
      *                             <li>{@link
      *                                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BZIP2
-     *                                 BZIP2}: bzip2 file compression.
+     *                                 BZIP2}: Check every file, whatever its
+     *                                 name. Named for bzip2, but any supported
+     *                                 format is decompressed.
      *                             <li>{@link
      *                                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ZSTD
-     *                                 ZSTD}: zstd file compression.
+     *                                 ZSTD}: Check every file, whatever its
+     *                                 name. Named for zstd, but any supported
+     *                                 format is decompressed.
      *                         </ul>
      *                         The default value is {@link
      *                         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AUTO
@@ -23220,24 +23264,37 @@ public class GPUdb extends GPUdbBase {
      *                     <li>{@link
      *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#COMPRESSION_TYPE
      *                         COMPRESSION_TYPE}: Payload compression type.
+     *                         Unless it is none, a payload compressed as gzip,
+     *                         bzip2, zstd or lz4 is recognized by its format
+     *                         and decompressed; other payloads are read as is.
+     *                         A compressed payload that is corrupt or
+     *                         truncated fails the load. Only delimited_text
+     *                         and json payloads are decompressed; other file
+     *                         types accept only auto and none, and are read as
+     *                         is.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link
      *                                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NONE
-     *                                 NONE}: Uncompressed.
+     *                                 NONE}: Uncompressed: the payload is read
+     *                                 as is.
      *                             <li>{@link
      *                                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO
-     *                                 AUTO}: Default. Auto detect compression
-     *                                 type.
+     *                                 AUTO}: Default. Decompress the payload
+     *                                 if it is compressed.
      *                             <li>{@link
      *                                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#GZIP
-     *                                 GZIP}: gzip file compression.
+     *                                 GZIP}: Same as auto. Named for gzip, but
+     *                                 any supported format is decompressed.
      *                             <li>{@link
      *                                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#BZIP2
-     *                                 BZIP2}: bzip2 file compression.
+     *                                 BZIP2}: Same as auto. Named for bzip2,
+     *                                 but any supported format is
+     *                                 decompressed.
      *                             <li>{@link
      *                                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#ZSTD
-     *                                 ZSTD}: zstd file compression.
+     *                                 ZSTD}: Same as auto. Named for zstd, but
+     *                                 any supported format is decompressed.
      *                         </ul>
      *                         The default value is {@link
      *                         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AUTO

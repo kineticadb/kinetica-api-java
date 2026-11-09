@@ -455,42 +455,54 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String COLUMNS_TO_SKIP = "columns_to_skip";
 
         /**
-         * Payload compression type.
+         * Payload compression type. Unless it is none, a payload compressed as
+         * gzip, bzip2, zstd or lz4 is recognized by its format and
+         * decompressed; other payloads are read as is. A compressed payload
+         * that is corrupt or truncated fails the load. Only delimited_text and
+         * json payloads are decompressed; other file types accept only auto
+         * and none, and are read as is.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#NONE NONE}: Uncompressed.
-         *     <li>{@link Options#AUTO AUTO}: Default. Auto detect compression
-         *         type.
-         *     <li>{@link Options#GZIP GZIP}: gzip file compression.
-         *     <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
-         *     <li>{@link Options#ZSTD ZSTD}: zstd file compression.
+         *     <li>{@link Options#NONE NONE}: Uncompressed: the payload is read
+         *         as is.
+         *     <li>{@link Options#AUTO AUTO}: Default. Decompress the payload
+         *         if it is compressed.
+         *     <li>{@link Options#GZIP GZIP}: Same as auto. Named for gzip, but
+         *         any supported format is decompressed.
+         *     <li>{@link Options#BZIP2 BZIP2}: Same as auto. Named for bzip2,
+         *         but any supported format is decompressed.
+         *     <li>{@link Options#ZSTD ZSTD}: Same as auto. Named for zstd, but
+         *         any supported format is decompressed.
          * </ul>
          * The default value is {@link Options#AUTO AUTO}.
          */
         public static final String COMPRESSION_TYPE = "compression_type";
 
         /**
-         * Uncompressed.
+         * Uncompressed: the payload is read as is.
          */
         public static final String NONE = "none";
 
         /**
-         * Default. Auto detect compression type.
+         * Default. Decompress the payload if it is compressed.
          */
         public static final String AUTO = "auto";
 
         /**
-         * gzip file compression.
+         * Same as auto. Named for gzip, but any supported format is
+         * decompressed.
          */
         public static final String GZIP = "gzip";
 
         /**
-         * bzip2 file compression.
+         * Same as auto. Named for bzip2, but any supported format is
+         * decompressed.
          */
         public static final String BZIP2 = "bzip2";
 
         /**
-         * zstd file compression.
+         * Same as auto. Named for zstd, but any supported format is
+         * decompressed.
          */
         public static final String ZSTD = "zstd";
 
@@ -1577,17 +1589,30 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         skipped.
      *                     <li>{@link Options#COMPRESSION_TYPE
      *                         COMPRESSION_TYPE}: Payload compression type.
+     *                         Unless it is none, a payload compressed as gzip,
+     *                         bzip2, zstd or lz4 is recognized by its format
+     *                         and decompressed; other payloads are read as is.
+     *                         A compressed payload that is corrupt or
+     *                         truncated fails the load. Only delimited_text
+     *                         and json payloads are decompressed; other file
+     *                         types accept only auto and none, and are read as
+     *                         is.
      *                         Supported values:
      *                         <ul>
-     *                             <li>{@link Options#NONE NONE}: Uncompressed.
-     *                             <li>{@link Options#AUTO AUTO}: Default. Auto
-     *                                 detect compression type.
-     *                             <li>{@link Options#GZIP GZIP}: gzip file
-     *                                 compression.
-     *                             <li>{@link Options#BZIP2 BZIP2}: bzip2 file
-     *                                 compression.
-     *                             <li>{@link Options#ZSTD ZSTD}: zstd file
-     *                                 compression.
+     *                             <li>{@link Options#NONE NONE}: Uncompressed:
+     *                                 the payload is read as is.
+     *                             <li>{@link Options#AUTO AUTO}: Default.
+     *                                 Decompress the payload if it is
+     *                                 compressed.
+     *                             <li>{@link Options#GZIP GZIP}: Same as auto.
+     *                                 Named for gzip, but any supported format
+     *                                 is decompressed.
+     *                             <li>{@link Options#BZIP2 BZIP2}: Same as
+     *                                 auto. Named for bzip2, but any supported
+     *                                 format is decompressed.
+     *                             <li>{@link Options#ZSTD ZSTD}: Same as auto.
+     *                                 Named for zstd, but any supported format
+     *                                 is decompressed.
      *                         </ul>
      *                         The default value is {@link Options#AUTO AUTO}.
      *                     <li>{@link Options#CREATE_TABLE_IF_NOT_EXISTS
@@ -2634,15 +2659,24 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         position; the source column count must then equal the target
      *         table's column count plus the number of columns skipped.
      *     <li>{@link Options#COMPRESSION_TYPE COMPRESSION_TYPE}: Payload
-     *         compression type.
+     *         compression type. Unless it is none, a payload compressed as
+     *         gzip, bzip2, zstd or lz4 is recognized by its format and
+     *         decompressed; other payloads are read as is. A compressed
+     *         payload that is corrupt or truncated fails the load. Only
+     *         delimited_text and json payloads are decompressed; other file
+     *         types accept only auto and none, and are read as is.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#NONE NONE}: Uncompressed.
-     *             <li>{@link Options#AUTO AUTO}: Default. Auto detect
-     *                 compression type.
-     *             <li>{@link Options#GZIP GZIP}: gzip file compression.
-     *             <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
-     *             <li>{@link Options#ZSTD ZSTD}: zstd file compression.
+     *             <li>{@link Options#NONE NONE}: Uncompressed: the payload is
+     *                 read as is.
+     *             <li>{@link Options#AUTO AUTO}: Default. Decompress the
+     *                 payload if it is compressed.
+     *             <li>{@link Options#GZIP GZIP}: Same as auto. Named for gzip,
+     *                 but any supported format is decompressed.
+     *             <li>{@link Options#BZIP2 BZIP2}: Same as auto. Named for
+     *                 bzip2, but any supported format is decompressed.
+     *             <li>{@link Options#ZSTD ZSTD}: Same as auto. Named for zstd,
+     *                 but any supported format is decompressed.
      *         </ul>
      *         The default value is {@link Options#AUTO AUTO}.
      *     <li>{@link Options#CREATE_TABLE_IF_NOT_EXISTS
@@ -3170,15 +3204,24 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         position; the source column count must then equal the target
      *         table's column count plus the number of columns skipped.
      *     <li>{@link Options#COMPRESSION_TYPE COMPRESSION_TYPE}: Payload
-     *         compression type.
+     *         compression type. Unless it is none, a payload compressed as
+     *         gzip, bzip2, zstd or lz4 is recognized by its format and
+     *         decompressed; other payloads are read as is. A compressed
+     *         payload that is corrupt or truncated fails the load. Only
+     *         delimited_text and json payloads are decompressed; other file
+     *         types accept only auto and none, and are read as is.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#NONE NONE}: Uncompressed.
-     *             <li>{@link Options#AUTO AUTO}: Default. Auto detect
-     *                 compression type.
-     *             <li>{@link Options#GZIP GZIP}: gzip file compression.
-     *             <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
-     *             <li>{@link Options#ZSTD ZSTD}: zstd file compression.
+     *             <li>{@link Options#NONE NONE}: Uncompressed: the payload is
+     *                 read as is.
+     *             <li>{@link Options#AUTO AUTO}: Default. Decompress the
+     *                 payload if it is compressed.
+     *             <li>{@link Options#GZIP GZIP}: Same as auto. Named for gzip,
+     *                 but any supported format is decompressed.
+     *             <li>{@link Options#BZIP2 BZIP2}: Same as auto. Named for
+     *                 bzip2, but any supported format is decompressed.
+     *             <li>{@link Options#ZSTD ZSTD}: Same as auto. Named for zstd,
+     *                 but any supported format is decompressed.
      *         </ul>
      *         The default value is {@link Options#AUTO AUTO}.
      *     <li>{@link Options#CREATE_TABLE_IF_NOT_EXISTS

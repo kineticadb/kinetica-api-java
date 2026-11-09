@@ -463,41 +463,58 @@ public class CreateTableExternalRequest implements IndexedRecord {
         public static final String COLUMNS_TO_SKIP = "columns_to_skip";
 
         /**
-         * Source data compression type.
+         * Source data compression type: which files are checked for
+         * compression. A checked file compressed as gzip, bzip2, zstd or lz4
+         * is recognized by its format and decompressed; other files are read
+         * as is, so a load can mix compressed and uncompressed files.
+         * Compressed data that is corrupt or truncated fails the load. Only
+         * delimited_text and json files are decompressed; other file types
+         * accept only auto and none, and are read as is.
          * Supported values:
          * <ul>
-         *     <li>{@link Options#NONE NONE}: No compression.
-         *     <li>{@link Options#AUTO AUTO}: Auto detect compression type.
-         *     <li>{@link Options#GZIP GZIP}: gzip file compression.
-         *     <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
-         *     <li>{@link Options#ZSTD ZSTD}: zstd file compression.
+         *     <li>{@link Options#NONE NONE}: No decompression: files are read
+         *         as is.
+         *     <li>{@link Options#AUTO AUTO}: Decompress files whose names end
+         *         in .gz, .bz2, .zst or .lz4.
+         *     <li>{@link Options#GZIP GZIP}: Check every file, whatever its
+         *         name. Named for gzip, but any supported format is
+         *         decompressed.
+         *     <li>{@link Options#BZIP2 BZIP2}: Check every file, whatever its
+         *         name. Named for bzip2, but any supported format is
+         *         decompressed.
+         *     <li>{@link Options#ZSTD ZSTD}: Check every file, whatever its
+         *         name. Named for zstd, but any supported format is
+         *         decompressed.
          * </ul>
          * The default value is {@link Options#AUTO AUTO}.
          */
         public static final String COMPRESSION_TYPE = "compression_type";
 
         /**
-         * No compression.
+         * No decompression: files are read as is.
          */
         public static final String NONE = "none";
 
         /**
-         * Auto detect compression type.
+         * Decompress files whose names end in .gz, .bz2, .zst or .lz4.
          */
         public static final String AUTO = "auto";
 
         /**
-         * gzip file compression.
+         * Check every file, whatever its name. Named for gzip, but any
+         * supported format is decompressed.
          */
         public static final String GZIP = "gzip";
 
         /**
-         * bzip2 file compression.
+         * Check every file, whatever its name. Named for bzip2, but any
+         * supported format is decompressed.
          */
         public static final String BZIP2 = "bzip2";
 
         /**
-         * zstd file compression.
+         * Check every file, whatever its name. Named for zstd, but any
+         * supported format is decompressed.
          */
         public static final String ZSTD = "zstd";
 
@@ -1771,19 +1788,35 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         count must then equal the external table's
      *                         column count plus the number of columns skipped.
      *                     <li>{@link Options#COMPRESSION_TYPE
-     *                         COMPRESSION_TYPE}: Source data compression type.
+     *                         COMPRESSION_TYPE}: Source data compression type:
+     *                         which files are checked for compression. A
+     *                         checked file compressed as gzip, bzip2, zstd or
+     *                         lz4 is recognized by its format and
+     *                         decompressed; other files are read as is, so a
+     *                         load can mix compressed and uncompressed files.
+     *                         Compressed data that is corrupt or truncated
+     *                         fails the load. Only delimited_text and json
+     *                         files are decompressed; other file types accept
+     *                         only auto and none, and are read as is.
      *                         Supported values:
      *                         <ul>
      *                             <li>{@link Options#NONE NONE}: No
-     *                                 compression.
-     *                             <li>{@link Options#AUTO AUTO}: Auto detect
-     *                                 compression type.
-     *                             <li>{@link Options#GZIP GZIP}: gzip file
-     *                                 compression.
-     *                             <li>{@link Options#BZIP2 BZIP2}: bzip2 file
-     *                                 compression.
-     *                             <li>{@link Options#ZSTD ZSTD}: zstd file
-     *                                 compression.
+     *                                 decompression: files are read as is.
+     *                             <li>{@link Options#AUTO AUTO}: Decompress
+     *                                 files whose names end in .gz, .bz2, .zst
+     *                                 or .lz4.
+     *                             <li>{@link Options#GZIP GZIP}: Check every
+     *                                 file, whatever its name. Named for gzip,
+     *                                 but any supported format is
+     *                                 decompressed.
+     *                             <li>{@link Options#BZIP2 BZIP2}: Check every
+     *                                 file, whatever its name. Named for
+     *                                 bzip2, but any supported format is
+     *                                 decompressed.
+     *                             <li>{@link Options#ZSTD ZSTD}: Check every
+     *                                 file, whatever its name. Named for zstd,
+     *                                 but any supported format is
+     *                                 decompressed.
      *                         </ul>
      *                         The default value is {@link Options#AUTO AUTO}.
      *                     <li>{@link Options#DATALAKE_CATALOG
@@ -2964,14 +2997,28 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         equal the external table's column count plus the number of
      *         columns skipped.
      *     <li>{@link Options#COMPRESSION_TYPE COMPRESSION_TYPE}: Source data
-     *         compression type.
+     *         compression type: which files are checked for compression. A
+     *         checked file compressed as gzip, bzip2, zstd or lz4 is
+     *         recognized by its format and decompressed; other files are read
+     *         as is, so a load can mix compressed and uncompressed files.
+     *         Compressed data that is corrupt or truncated fails the load.
+     *         Only delimited_text and json files are decompressed; other file
+     *         types accept only auto and none, and are read as is.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#NONE NONE}: No compression.
-     *             <li>{@link Options#AUTO AUTO}: Auto detect compression type.
-     *             <li>{@link Options#GZIP GZIP}: gzip file compression.
-     *             <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
-     *             <li>{@link Options#ZSTD ZSTD}: zstd file compression.
+     *             <li>{@link Options#NONE NONE}: No decompression: files are
+     *                 read as is.
+     *             <li>{@link Options#AUTO AUTO}: Decompress files whose names
+     *                 end in .gz, .bz2, .zst or .lz4.
+     *             <li>{@link Options#GZIP GZIP}: Check every file, whatever
+     *                 its name. Named for gzip, but any supported format is
+     *                 decompressed.
+     *             <li>{@link Options#BZIP2 BZIP2}: Check every file, whatever
+     *                 its name. Named for bzip2, but any supported format is
+     *                 decompressed.
+     *             <li>{@link Options#ZSTD ZSTD}: Check every file, whatever
+     *                 its name. Named for zstd, but any supported format is
+     *                 decompressed.
      *         </ul>
      *         The default value is {@link Options#AUTO AUTO}.
      *     <li>{@link Options#DATALAKE_CATALOG DATALAKE_CATALOG}: Name of an
@@ -3591,14 +3638,28 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         equal the external table's column count plus the number of
      *         columns skipped.
      *     <li>{@link Options#COMPRESSION_TYPE COMPRESSION_TYPE}: Source data
-     *         compression type.
+     *         compression type: which files are checked for compression. A
+     *         checked file compressed as gzip, bzip2, zstd or lz4 is
+     *         recognized by its format and decompressed; other files are read
+     *         as is, so a load can mix compressed and uncompressed files.
+     *         Compressed data that is corrupt or truncated fails the load.
+     *         Only delimited_text and json files are decompressed; other file
+     *         types accept only auto and none, and are read as is.
      *         Supported values:
      *         <ul>
-     *             <li>{@link Options#NONE NONE}: No compression.
-     *             <li>{@link Options#AUTO AUTO}: Auto detect compression type.
-     *             <li>{@link Options#GZIP GZIP}: gzip file compression.
-     *             <li>{@link Options#BZIP2 BZIP2}: bzip2 file compression.
-     *             <li>{@link Options#ZSTD ZSTD}: zstd file compression.
+     *             <li>{@link Options#NONE NONE}: No decompression: files are
+     *                 read as is.
+     *             <li>{@link Options#AUTO AUTO}: Decompress files whose names
+     *                 end in .gz, .bz2, .zst or .lz4.
+     *             <li>{@link Options#GZIP GZIP}: Check every file, whatever
+     *                 its name. Named for gzip, but any supported format is
+     *                 decompressed.
+     *             <li>{@link Options#BZIP2 BZIP2}: Check every file, whatever
+     *                 its name. Named for bzip2, but any supported format is
+     *                 decompressed.
+     *             <li>{@link Options#ZSTD ZSTD}: Check every file, whatever
+     *                 its name. Named for zstd, but any supported format is
+     *                 decompressed.
      *         </ul>
      *         The default value is {@link Options#AUTO AUTO}.
      *     <li>{@link Options#DATALAKE_CATALOG DATALAKE_CATALOG}: Name of an
