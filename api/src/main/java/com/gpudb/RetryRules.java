@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+import javax.net.ssl.SSLException;
+
 import org.apache.hc.client5.http.ConnectTimeoutException;
 import org.apache.hc.core5.http.ConnectionClosedException;
 import org.apache.hc.core5.http.NoHttpResponseException;
@@ -199,7 +201,36 @@ final class RetryRules {
             failure instanceof ConnectTimeoutException  ||
             failure instanceof NoRouteToHostException   ||
             failure instanceof PortUnreachableException ||
-            failure instanceof UnknownHostException;
+            failure instanceof UnknownHostException     ||
+            failure instanceof SSLException;    // only a handshake the peer cut off gets here; see connectionFailureIn
+    }
+
+
+    /** Texts of a TLS handshake the peer ended by closing or resetting the connection. */
+    private static final Pattern HANDSHAKE_CUT_OFF_MESSAGE = Pattern.compile(
+            "terminated the handshake|peer shut down|connection reset|broken pipe|unexpected end of|closed by remote host",
+            Pattern.CASE_INSENSITIVE);
+
+    /**
+     * Whether a TLS failure is the peer closing or resetting the connection
+     * before the handshake completed or a certificate/trust/protocol issue.
+     *
+     * @param failure  the TLS failure
+     * @return  whether the peer cut the handshake off
+     */
+    static boolean isHandshakeCutOff(SSLException failure) {
+        for (Throwable cause = failure; cause != null; cause = (cause.getCause() == cause) ? null : cause.getCause()) {
+            if (cause instanceof java.security.cert.CertificateException
+                    || cause instanceof javax.net.ssl.SSLPeerUnverifiedException)
+                return false;
+            if (cause instanceof java.io.EOFException
+                    || cause instanceof SocketException
+                    || cause instanceof ConnectionClosedException)
+                return true;
+            if (cause.getMessage() != null && HANDSHAKE_CUT_OFF_MESSAGE.matcher(cause.getMessage()).find())
+                return true;
+        }
+        return false;
     }
 
 
@@ -362,9 +393,13 @@ final class RetryRules {
      * {@code null} where there is none.
      */
     private static IOException connectionFailureIn(Throwable failure) {
-        for (Throwable cause = failure; cause != null; cause = (cause.getCause() == cause) ? null : cause.getCause())
+        for (Throwable cause = failure; cause != null; cause = (cause.getCause() == cause) ? null : cause.getCause()) {
+            // Report certificate problems; retry everything else
+            if (cause instanceof SSLException)
+                return isHandshakeCutOff((SSLException) cause) ? (IOException) cause : null;
             if (cause instanceof IOException && isConnectionFailure((IOException) cause))
                 return (IOException) cause;
+        }
 
         return null;
     }

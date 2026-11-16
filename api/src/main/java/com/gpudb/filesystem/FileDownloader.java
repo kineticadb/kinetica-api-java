@@ -103,6 +103,18 @@ class FileDownloader extends FileOperation {
             return allResults;
         }
 
+        // Without 'overwriteExisting', a file that exists locally is not
+        // downloaded at all, rather than downloaded whole and then discarded.
+        if( !this.downloadOptions.isOverwriteExisting() ) {
+            for( Iterator<String> it = this.fullFileList.iterator(); it.hasNext(); ) {
+                String kifsFileName = it.next();
+                if( Files.exists( localPathOf( kifsFileName ) ) ) {
+                    GPUdbLogger.warn( String.format("File <%s> exists in local directory <%s>; Use 'overwriteExisting' to download and overwrite ", kifsFileName, this.dirName ) );
+                    it.remove();
+                }
+            }
+        }
+
         List<List<String>> batches = createBatches();
 
         for (int batchNum = 0; batchNum < batches.size(); batchNum++) {
@@ -253,9 +265,23 @@ class FileDownloader extends FileOperation {
 
 
     /**
-     * This method writes out a ByteBuffer to a file in the local directory.
-     * It checks if the directory exists in the local file system and of not
-     * it creates the directory tree if it doesn't exist.
+     * Gives the local path a KiFS file is saved to:  its base name, in the
+     * local directory.
+     *
+     * @param kifsFileName  Fully-qualified KiFS path of the file.
+     * @return  The normalized, absolute local path of its copy.
+     */
+    private Path localPathOf(String kifsFileName) {
+        String fileName = StringUtils.substringAfterLast( kifsFileName, GPUdbFileHandler.KIFS_PATH_SEPARATOR );
+
+        return Paths.get( this.dirName + File.separator + fileName ).normalize().toAbsolutePath();
+    }
+
+
+    /**
+     * This method writes out a ByteBuffer to a file in the local directory,
+     * which must exist; it is not created.  A file that exists is overwritten
+     * only with 'overwriteExisting'.
      *
      * @param kifsFileName  Fully-qualified KiFS path of the file to save.
      * @param byteBuffer  The downloaded file content as bytes.
@@ -263,13 +289,9 @@ class FileDownloader extends FileOperation {
      */
     private void saveFullFile(String kifsFileName, ByteBuffer byteBuffer) throws GPUdbException {
 
-        String fileName = StringUtils.substringAfterLast( kifsFileName, GPUdbFileHandler.KIFS_PATH_SEPARATOR );
+        Path normalizedPath = localPathOf( kifsFileName );
 
-        String localPath = this.dirName + File.separator + fileName;
-
-        Path normalizedPath = Paths.get( localPath ).normalize().toAbsolutePath();
-
-        GPUdbLogger.debug(String.format("Writing downloaded KiFS file <%s> to <%s>", fileName, normalizedPath.toString()));
+        GPUdbLogger.debug(String.format("Writing downloaded KiFS file <%s> to <%s>", kifsFileName, normalizedPath.toString()));
 
         if( Files.notExists( normalizedPath) || this.downloadOptions.isOverwriteExisting() ) {
 
@@ -308,6 +330,12 @@ class FileDownloader extends FileOperation {
 
         // For each file in the multi part list create an IoJob instance
         for (String kifsFileName : this.multiPartList) {
+
+            if( !this.downloadOptions.isOverwriteExisting() && Files.exists( localPathOf( kifsFileName ) ) ) {
+                GPUdbLogger.warn( String.format("File <%s> exists in local directory <%s>; Use 'overwriteExisting' to download and overwrite ", kifsFileName, this.dirName ) );
+                continue;
+            }
+
             String fileName = StringUtils.substringAfterLast( kifsFileName, GPUdbFileHandler.KIFS_PATH_SEPARATOR );
 
             String localFileName = this.dirName + File.separator + fileName;
@@ -383,13 +411,17 @@ class FileDownloader extends FileOperation {
      */
     void download() throws GPUdbException {
 
+        // Taken before the download, which drops from the list the files it
+        // skips for existing locally
+        final boolean nothingToDownload = this.fullFileList.isEmpty() && this.multiPartList.isEmpty();
+
         List<Result> multiPartResults = downloadMultiPartFiles();
         List<Result> allResults = new ArrayList<>(multiPartResults);
 
         List<Result> fullFileResults = downloadFullFiles();
         allResults.addAll(fullFileResults);
 
-        if(this.fullFileList.isEmpty() && this.multiPartList.isEmpty())
+        if( nothingToDownload )
             GPUdbLogger.warn( "No files found to download ..." );
 
         // Collect all error messages from failed downloads

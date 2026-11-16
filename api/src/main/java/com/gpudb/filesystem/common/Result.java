@@ -183,6 +183,7 @@ public class Result {
      * downloading parts of a file. This is used internally by the file
      * download implementation.
      */
+    @Deprecated(since = "7.2.3.30", forRemoval = true)
     public static class SortByDownloadPartNumber implements Comparator<Result> {
 
         @Override

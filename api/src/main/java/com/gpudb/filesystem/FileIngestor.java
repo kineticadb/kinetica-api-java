@@ -105,9 +105,18 @@ class FileIngestor {
                     null,
                     new GPUdbFileHandler.Options());
 
-            // Get the names of the files uploaded without any path component
-            for (String fileName : this.fileUploader.getNamesOfFilesUploaded())
-                stagedFiles.add( remoteDirName + GPUdbFileHandler.KIFS_PATH_SEPARATOR + fileName );
+            // Two files staged at the same path would overwrite each other
+            // and the last one uploaded be ingested twice
+            if (!this.fileUploader.getFilesWithDuplicateNames().isEmpty()) {
+                throw new GPUdbException( String.format(
+                        "Files with the same name cannot be ingested together: %s; nothing was uploaded",
+                        this.fileUploader.getFilesWithDuplicateNames() ) );
+            }
+
+            // The staged copies, at the paths the uploader puts them:  a file
+            // found in a subdirectory, by a directory or a recursive pattern,
+            // is staged under that subdirectory, not under its base name
+            stagedFiles.addAll( this.fileUploader.getRemoteNamesOfFilesUploaded() );
 
             this.fileUploader.upload();
 

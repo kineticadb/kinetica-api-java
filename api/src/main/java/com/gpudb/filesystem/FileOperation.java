@@ -33,7 +33,8 @@ class FileOperation {
 
     /**
      * Indicates whether the search for files is to be recursive through a local
-     * directory hierarchy.
+     * directory hierarchy.  It applies to patterns and to directories; a file
+     * given by name is that one file.
      */
     protected final boolean recursive;
 
@@ -43,10 +44,23 @@ class FileOperation {
     protected List<String> fileNames;
 
     /**
-     * The list of files uploaded, used by the {@link FileIngestor} to insert
-     * records from the uploaded files into the database.
+     * The KiFS paths the files are uploaded to, in the order found.  Used by
+     * the {@link FileIngestor} to insert records from the uploaded files into
+     * the database, and to delete them afterward.
      */
-    protected Set<String> namesOfFilesUploaded;
+    protected Set<String> remoteNamesOfFilesUploaded;
+
+    /**
+     * The local files, among those to upload, that would be uploaded to the
+     * KiFS path of another of them, and so overwrite it.
+     */
+    protected Set<String> filesWithDuplicateNames;
+
+    /**
+     * The first local file found for each KiFS path in
+     * {@link #remoteNamesOfFilesUploaded}.
+     */
+    private final Map<String, String> localFileOfRemoteName = new HashMap<>();
 
     /**
      * Target directory name (KIFS for upload, local for download).
@@ -98,7 +112,8 @@ class FileOperation {
         this.fileHandlerOptions = fileHandlerOptions;
 
         // Initialize collections immediately to avoid null checks later
-        this.namesOfFilesUploaded = new LinkedHashSet<>();
+        this.remoteNamesOfFilesUploaded = new LinkedHashSet<>();
+        this.filesWithDuplicateNames = new LinkedHashSet<>();
         this.multiPartList = new ArrayList<>();
         this.multiPartRemoteFileNames = new ArrayList<>();
         this.fullFileList = new ArrayList<>();
@@ -108,16 +123,28 @@ class FileOperation {
     }
 
     /**
-     * This method returns the list of file names uploaded without the path
-     * information. This used by the {@link FileIngestor#ingestFromFiles()}
+     * This method returns the KiFS paths the files are uploaded to:  the target
+     * directory, then each file's path under the directory or pattern it was
+     * found by.  This is used by the {@link FileIngestor#ingestFromFiles()}
      * method to prepare the list of file names to be passed on to the
      * {@link GPUdb#insertRecordsFromFiles(com.gpudb.protocol.InsertRecordsFromFilesRequest)}
      * endpoint.
      *
-     * @return  A set of file names without the path information.
+     * @return  A set of KiFS paths, without the 'kifs://' prefix.
      */
-    Set<String> getNamesOfFilesUploaded() {
-        return this.namesOfFilesUploaded;
+    Set<String> getRemoteNamesOfFilesUploaded() {
+        return this.remoteNamesOfFilesUploaded;
+    }
+
+    /**
+     * Returns the local files to upload that would be uploaded to the same
+     * KiFS path as another of them, each with the first file of that path.
+     *
+     * @return  The paths of the local files with duplicate KiFS paths; empty
+     *        if every KiFS path is unique.
+     */
+    Set<String> getFilesWithDuplicateNames() {
+        return this.filesWithDuplicateNames;
     }
 
     /**
@@ -142,43 +169,90 @@ class FileOperation {
      * resolves them to actual files, checks sizes, and buckets them for full or
      * multi-part upload.
      */
-    private void decideMultiPartUpload() {
-        try {
-            // Parse inputs into (Root, BasePath, FileName/Pattern)
-            List<Triple<String, String, String>> parsedFileNames = parseFileNames(this.fileNames);
+    private void decideMultiPartUpload() throws GPUdbException {
+        // The names and patterns given that match no local file, and those
+        // whose resolution failed, each with its failure
+        List<String> unmatched = new ArrayList<>();
+        List<String> unreadable = new ArrayList<>();
 
-            for (Triple<String, String, String> triple : parsedFileNames) {
-                String searchBaseDir = triple.getMiddle();
-                String patternOrName = triple.getRight();
+        // Parse inputs into (Root, BasePath, FileName/Pattern)
+        List<Triple<String, String, String>> parsedFileNames = parseFileNames(this.fileNames);
 
-                List<String> localResolvedFiles = new ArrayList<>();
-                List<String> remoteResolvedFiles = new ArrayList<>();
+        for (int n = 0; n < parsedFileNames.size(); n++) {
+            Triple<String, String, String> triple = parsedFileNames.get(n);
+            String searchBaseDir = triple.getMiddle();
+            String patternOrName = triple.getRight();
 
-                // Check if the filename contains glob characters (*, ?, {}, [], etc.)
-                boolean isPattern = isGlobPattern(patternOrName);
+            List<String> localResolvedFiles = new ArrayList<>();
+            List<String> remoteResolvedFiles = new ArrayList<>();
 
-                if (isPattern || this.recursive) {
-                    // Perform a filesystem search using Java NIO
+            // Check if the filename contains glob characters (*, ?, {}, [], etc.)
+            boolean isPattern = isGlobPattern(patternOrName);
+
+            String explicitPath = searchBaseDir + File.separator + patternOrName;
+
+            try {
+                if (isPattern) {
+                    // Perform a filesystem search using Java NIO; through the
+                    // subdirectories too, if recursive
                     Pair<List<String>, List<String>> searchResults = searchLocalDirectories(searchBaseDir, patternOrName);
                     localResolvedFiles.addAll(searchResults.getLeft());
                     remoteResolvedFiles.addAll(searchResults.getRight());
+
+                    // A pattern that matches nothing is an error, as a file
+                    // that does not exist is, not an upload of nothing
+                    if (localResolvedFiles.isEmpty())
+                        unmatched.add(this.fileNames.get(n));
+                } else if (Files.isDirectory(Paths.get(explicitPath))) {
+                    // A directory:  every file in it; and in its
+                    // subdirectories too, if recursive
+                    Pair<List<String>, List<String>> searchResults = searchLocalDirectories(explicitPath, "*");
+                    localResolvedFiles.addAll(searchResults.getLeft());
+                    remoteResolvedFiles.addAll(searchResults.getRight());
+
+                    // A directory holding no file to upload is refused as a
+                    // pattern matching none is, not taken as an upload of nothing
+                    if (localResolvedFiles.isEmpty())
+                        unmatched.add(this.fileNames.get(n));
                 } else {
-                    // Simple file case - Explicit single file
-                    String fullPath = searchBaseDir + File.separator + patternOrName;
+                    // Simple file case - Explicit single file.  It is taken
+                    // alone, whether recursive or not:  searching its directory
+                    // tree for the name would also upload any file of the same
+                    // name in a subdirectory.
+                    String fullPath = explicitPath;
                     if (localFileExists(fullPath)) {
                         localResolvedFiles.add(fullPath);
                         remoteResolvedFiles.add(this.dirName + GPUdbFileHandler.KIFS_PATH_SEPARATOR + patternOrName);
                     } else {
-                        GPUdbLogger.warn("Local file not found, skipping: " + fullPath);
+                        unmatched.add(this.fileNames.get(n));
                     }
                 }
-
-                if (!localResolvedFiles.isEmpty()) {
-                    sortFilesIntoFullAndMultipartLists(localResolvedFiles, remoteResolvedFiles);
-                }
+            } catch (IOException | java.io.UncheckedIOException e) {
+                // One entry's failure ends neither the resolution of the others
+                // nor the request silently:  it is refused below, with every
+                // other problem found.  A walk reports a directory it cannot
+                // read as the unchecked form.
+                Throwable cause = (e instanceof java.io.UncheckedIOException) ? e.getCause() : e;
+                unreadable.add(this.fileNames.get(n) + " (" + cause + ")");
+                continue;
             }
-        } catch (IOException e) {
-            GPUdbLogger.error("Error resolving local files for upload: " + e.getMessage());
+
+            if (!localResolvedFiles.isEmpty()) {
+                sortFilesIntoFullAndMultipartLists(localResolvedFiles, remoteResolvedFiles);
+            }
+        }
+
+        // Refused here, before anything is uploaded
+        if (!unmatched.isEmpty() || !unreadable.isEmpty()) {
+            StringBuilder reason = new StringBuilder();
+            if (!unmatched.isEmpty())
+                reason.append( "No local file matches " ).append( unmatched );
+            if (!unreadable.isEmpty()) {
+                if (reason.length() > 0)
+                    reason.append( "; " );
+                reason.append( "Local files could not be resolved: " ).append( unreadable );
+            }
+            throw new GPUdbException( reason + "; nothing was uploaded" );
         }
     }
 
@@ -220,9 +294,21 @@ class FileOperation {
             String localFileName = fileList.get(i);
             String remoteFileName = remoteFileList.get(i);
 
-            // Track simple name for Ingestor
-            String simpleName = Paths.get(localFileName).getFileName().toString();
-            this.namesOfFilesUploaded.add(simpleName);
+            // Track the KiFS path for the Ingestor
+            if (!this.remoteNamesOfFilesUploaded.add(remoteFileName)) {
+                String first = this.localFileOfRemoteName.get(remoteFileName);
+                if (isSameLocalFile(localFileName, first)) {
+                    // The same local file given twice, however each is
+                    // spelled:  uploaded once
+                    continue;
+                }
+                // Another file goes to this KiFS path; name them both, for
+                // the refusal made before anything is uploaded
+                this.filesWithDuplicateNames.add(first);
+                this.filesWithDuplicateNames.add(localFileName);
+            } else {
+                this.localFileOfRemoteName.put(remoteFileName, localFileName);
+            }
 
             try {
                 long fileSize = Files.size(Paths.get(localFileName));
@@ -238,6 +324,16 @@ class FileOperation {
             }
         }
     }
+
+    /**
+     * Walks a local directory tree, as {@link Files#walk(Path, int, java.nio.file.FileVisitOption...)}
+     * does.  The one place the local filesystem is read for an upload, so
+     * that a test can make it fail.
+     */
+    protected java.util.stream.Stream<Path> walkLocal(Path start, int maxDepth) throws IOException {
+        return Files.walk(start, maxDepth);
+    }
+
 
     /**
      * Searches the local filesystem starting from a specified base directory using standard
@@ -304,7 +400,7 @@ class FileOperation {
         // Max depth depends on recursive flag or if pattern contains **
         int maxDepth = (this.recursive || pattern.contains("**")) ? Integer.MAX_VALUE : 1;
 
-        try (java.util.stream.Stream<Path> stream = Files.walk(startPath, maxDepth)) {
+        try (java.util.stream.Stream<Path> stream = walkLocal(startPath, maxDepth)) {
             stream.filter(path -> !Files.isDirectory(path)) // Files only
                 .filter(path -> {
                     // CRITICAL : Match against full path or filename depending on pattern type
@@ -428,6 +524,15 @@ class FileOperation {
     // --- Utility Methods ---
 
     /**
+     * Checks whether two local paths name the same file, however each is
+     * written.
+     */
+    private static boolean isSameLocalFile(final String one, final String other) {
+        return Paths.get(one).toAbsolutePath().normalize()
+                .equals(Paths.get(other).toAbsolutePath().normalize());
+    }
+
+    /**
      * Checks if a local directory exists or not.
      *
      * @param localDirName  Name of the local directory to check for.
@@ -449,7 +554,8 @@ class FileOperation {
     static boolean localFileExists(final String localFileName) {
         if (StringUtils.isBlank(localFileName)) return false;
 
-        // If it looks like a pattern, assume true and let the resolver handle it
+        // If it looks like a pattern, assume true and let the resolver handle
+        // it:  a pattern that matches no file is refused there
         if (StringUtils.containsAny(localFileName, '*', '?', '{', '[')) {
             return true;
         }

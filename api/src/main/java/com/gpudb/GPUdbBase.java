@@ -984,7 +984,7 @@ public abstract class GPUdbBase implements AutoCloseable {
          * Sets the flag indicating whether to use Snappy compression for
          * certain GPUdb requests that potentially submit large amounts of data.
          * If {@code true}, such requests will be automatically compressed
-         * before being sent to the server; the default is {@code false}.
+         * before being sent to the server; the default is {@code true}.
          *
          * @param value  the new value for the Snappy compression flag
          * @return       the current {@link Options} instance
@@ -2067,6 +2067,23 @@ public abstract class GPUdbBase implements AutoCloseable {
         }
 
 
+        /**
+         * Determine whether this version has the same major, minor, revision
+         * and ABI version components as the given one.
+         *
+         * <p>The build number is not compared here, though {@link
+         * #compareTo(GPUdbVersion)} and {@link #isEqualTo(GPUdbVersion)}
+         * do compare it:  two versions of different builds are equal by this
+         * method (and have the same {@link #hashCode() hash code}), but
+         * {@code compareTo()} orders one before the other and
+         * {@code isEqualTo()} is false for them.  Use {@code isEqualTo()}
+         * to tell builds apart.
+         *
+         * @param obj  the object to compare this version to
+         *
+         * @return true if {@code obj} is a {@link GPUdbVersion} with the same
+         *         four leading components.
+         */
         @Override
         public boolean equals(Object obj) {
             if( obj == this ) {
@@ -2093,6 +2110,10 @@ public abstract class GPUdbBase implements AutoCloseable {
         }
 
 
+        /**
+         * Hashes the major, minor, revision and ABI version components; like
+         * {@link #equals(Object)}, it leaves the build number out.
+         */
         @Override
         public int hashCode() {
             return Objects.hash(this.major, this.minor, this.revision, this.abiVersion);
@@ -4520,7 +4541,8 @@ public abstract class GPUdbBase implements AutoCloseable {
         // Now parse the version string
         try {
             // Split on period (.); note that the expected format is
-            // A.B.C.D.datewithtimestamp.  We will extract all components.
+            // A.B.C.D.datewithtimestamp.  We will extract all components; the
+            // build (datewithtimestamp) is optional, and taken as 0 if absent.
             int[] components = new int[4];
             long componentBuild = 0;
 
@@ -4534,7 +4556,8 @@ public abstract class GPUdbBase implements AutoCloseable {
             // Parse each primary component
             for ( int i = 0; i < 4; ++i  )
                 components[ i ] = Integer.parseInt( componentStrings[ i ] );
-            componentBuild = Long.parseLong(componentStrings[4]);
+            if ( componentStrings.length > 4 )
+                componentBuild = Long.parseLong(componentStrings[4]);
 
             serverVersion = new GPUdbVersion( components[0], components[1], components[2], components[3], componentBuild );
         } catch (Exception ex) {
@@ -4599,7 +4622,7 @@ public abstract class GPUdbBase implements AutoCloseable {
     /**
      * Gets the value of the flag indicating whether Snappy compression will be
      * used for certain GPUdb requests that potentially submit large amounts of
-     * data. Will be {@code false} if not overridden using the {@link
+     * data. Will be {@code true} if not overridden using the {@link
      * GPUdb#GPUdb(String, GPUdbBase.Options) GPUdb constructor} via {@link
      * Options}.
      *
@@ -8919,6 +8942,9 @@ public abstract class GPUdbBase implements AutoCloseable {
 
                 postResponse = this.httpClient.executeOpen( host, postRequest, null );
             } catch ( javax.net.ssl.SSLException ex) {
+                // Report certificate problems; retry everything else
+                if (RetryRules.isHandshakeCutOff( ex ))
+                    throw sendFailure( url, ex, requestTime, false );
                 throw sslFailure( url, ex );
             } catch (Exception ex) {
                 // Trigger an HA failover at the caller level
@@ -9162,17 +9188,12 @@ public abstract class GPUdbBase implements AutoCloseable {
 
                 postResponse = this.httpClientFastConnect.executeOpen( host, postRequest, null );
             } catch ( javax.net.ssl.SSLException ex) {
-                String errorMsg = null;
-                if( ex.getMessage().toLowerCase().contains("subject alternative names")) {
-                    errorMsg = String.format(SslErrorMessageFormat, "Server SSL certificate not found in specified trust store.");
-                } else if( ex.getMessage().toLowerCase().contains("unable to find valid certification path")) {
-                    errorMsg = String.format(SslErrorMessageFormat, "No trust store was specified, but server requires SSL certificate validation.");
-                } else {
-                    errorMsg = String.format(SslErrorMessageFormat, "Error: " + ex.getMessage());
-                }
-                errorMsg = String.format("Encountered SSL error when trying to connect to server at %s.  %s", url.toString(), errorMsg);
-                GPUdbLogger.error( errorMsg );
-                throw new GPUdbException( errorMsg );
+                // Report certificate problems; retry everything else
+                if (!RetryRules.isHandshakeCutOff( ex ))
+                    throw sslFailure( url, ex );
+                requestTime = System.currentTimeMillis() - requestTime;
+                throw new GPUdbExitException(String.format("Error submitting endpoint <%s> request after <%d>ms due to: %s",
+                                                           url.toString(), requestTime, ExceptionUtils.getRootCauseMessage(ex)));
             } catch (Exception ex) {
                 // Trigger an HA failover at the caller level
                 requestTime = System.currentTimeMillis() - requestTime;
@@ -9463,6 +9484,9 @@ public abstract class GPUdbBase implements AutoCloseable {
                 
                 postResponse = this.httpClient.executeOpen( host, postRequest, null );
             } catch ( javax.net.ssl.SSLException ex) {
+                // Report certificate problems; retry everything else
+                if (RetryRules.isHandshakeCutOff( ex ))
+                    throw sendFailure( url, ex, requestTime, false );
                 throw sslFailure( url, ex );
             } catch (Exception ex) {
                 // Trigger an HA failover at the caller level
@@ -9676,6 +9700,9 @@ public abstract class GPUdbBase implements AutoCloseable {
 
                 postResponse = this.httpClient.executeOpen( host, postRequest, null );
             } catch ( javax.net.ssl.SSLException ex) {
+                // Report certificate problems; retry everything else
+                if (RetryRules.isHandshakeCutOff( ex ))
+                    throw sendFailure( url, ex, requestTime, false );
                 throw sslFailure( url, ex );
             } catch (Exception ex) {
                 // Trigger an HA failover at the caller level; a request with
@@ -9758,7 +9785,13 @@ public abstract class GPUdbBase implements AutoCloseable {
      *
      * @throws GPUdbException if an error occurs and/or GPUdb is not running on
      * the server
+     *
+     * @deprecated Do not use; this method will be removed soon.  It fails over
+     * to another cluster on any connection error, outside the rules every other
+     * request follows.  Use {@link #ping(URL)} with {@link #getURL()} to check
+     * the current cluster instead.
      */
+    @Deprecated(since = "7.2.3", forRemoval = true)
     public void ping() throws GPUdbException {
         URL url = getURL();
         URL originalURL = url;
@@ -9889,14 +9922,15 @@ public abstract class GPUdbBase implements AutoCloseable {
 
     /**
      * Verifies that GPUdb is running at the given URL (does not do any HA failover).
-     * Use a very short timeout so that we don't wait for a long time if the server
-     * at the given URL is not accessible.
+     * Uses a 5-second timeout, not the timeout of this connection, so that we
+     * don't wait for a long time if the server at the given URL is not
+     * accessible.
      *
      * @return true if Kinetica is running, false otherwise.
      */
     public boolean isKineticaRunning(URL url) {
 
-        // Use a super short timeout (0.5 second)
+        // Use a short timeout (5 seconds), not this connection's timeout
         String pingResponse = ping( url, DEFAULT_SERVER_CONNECTION_TIMEOUT );
         GPUdbLogger.debug_with_info( "HTTP server @ " + url.toString() + " responded with: '" + pingResponse + "'" );
         if ( pingResponse.equals("Kinetica is running!") ) {

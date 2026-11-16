@@ -76,6 +76,62 @@ public final class TypeObjectMap<T> {
         }
     }
 
+    /**
+     * Checks that a whole number fits the type it is being converted to,
+     * rather than letting the cast wrap it around silently.
+     *
+     * @throws GPUdbRuntimeException if the value is out of the type's range
+     */
+    private static long inRange(long value, long min, long max, DataType toType) {
+        if ((value < min) || (value > max)) {
+            throw new GPUdbRuntimeException("Value out of range: " + value
+                    + " does not fit type " + toType + " (" + min + " to " + max + ").");
+        }
+
+        return value;
+    }
+
+    /**
+     * Checks that a floating-point number, once its fraction is dropped, fits
+     * the whole-number type it is being converted to, rather than letting the
+     * cast clamp or wrap it silently. The fraction itself is still dropped.
+     *
+     * @throws GPUdbRuntimeException if the value is not a number or is out of
+     *         the type's range
+     */
+    private static double wholeInRange(double value, long min, long max, DataType toType) {
+        // Truncated toward zero, as the cast does. The limits are compared as
+        // doubles: (double)Long.MAX_VALUE is 2^63, one more than the largest
+        // long, so that limit is exclusive.
+        double whole = (value < 0) ? Math.ceil(value) : Math.floor(value);
+        boolean tooBig = (max == Long.MAX_VALUE) ? (whole >= (double)max) : (whole > (double)max);
+
+        if (Double.isNaN(value) || (whole < (double)min) || tooBig) {
+            throw new GPUdbRuntimeException("Value out of range: " + value
+                    + " does not fit type " + toType + " (" + min + " to " + max + ").");
+        }
+
+        return value;
+    }
+
+    /**
+     * Converts a double to a float, refusing a finite value too large for a
+     * float, which the cast would silently turn into infinity. Precision
+     * beyond a float's is still dropped.
+     *
+     * @throws GPUdbRuntimeException if the value is out of a float's range
+     */
+    private static float narrowToFloat(double value) {
+        float narrowed = (float)value;
+
+        if (Float.isInfinite(narrowed) && !Double.isInfinite(value)) {
+            throw new GPUdbRuntimeException("Value out of range: " + value
+                    + " does not fit type " + DataType.FLOAT + ".");
+        }
+
+        return narrowed;
+    }
+
     private static Object convert(Object value, DataType fromType, DataType toType) {
         if (value != null) {
             switch (fromType) {
@@ -162,23 +218,23 @@ public final class TypeObjectMap<T> {
                             break;
 
                         case BYTE:
-                            value = (byte)(double)value;
+                            value = (byte)wholeInRange((double)value, Byte.MIN_VALUE, Byte.MAX_VALUE, toType);
                             break;
 
                         case FLOAT:
-                            value = (float)(double)value;
+                            value = narrowToFloat((double)value);
                             break;
 
                         case INTEGER:
-                            value = (int)(double)value;
+                            value = (int)wholeInRange((double)value, Integer.MIN_VALUE, Integer.MAX_VALUE, toType);
                             break;
 
                         case LONG:
-                            value = (long)(double)value;
+                            value = (long)wholeInRange((double)value, Long.MIN_VALUE, Long.MAX_VALUE, toType);
                             break;
 
                         case SHORT:
-                            value = (short)(double)value;
+                            value = (short)wholeInRange((double)value, Short.MIN_VALUE, Short.MAX_VALUE, toType);
                             break;
                     }
 
@@ -191,7 +247,7 @@ public final class TypeObjectMap<T> {
                             break;
 
                         case BYTE:
-                            value = (byte)(float)value;
+                            value = (byte)wholeInRange((float)value, Byte.MIN_VALUE, Byte.MAX_VALUE, toType);
                             break;
 
                         case DOUBLE:
@@ -199,15 +255,15 @@ public final class TypeObjectMap<T> {
                             break;
 
                         case INTEGER:
-                            value = (int)(float)value;
+                            value = (int)wholeInRange((float)value, Integer.MIN_VALUE, Integer.MAX_VALUE, toType);
                             break;
 
                         case LONG:
-                            value = (long)(float)value;
+                            value = (long)wholeInRange((float)value, Long.MIN_VALUE, Long.MAX_VALUE, toType);
                             break;
 
                         case SHORT:
-                            value = (short)(float)value;
+                            value = (short)wholeInRange((float)value, Short.MIN_VALUE, Short.MAX_VALUE, toType);
                             break;
                     }
 
@@ -220,7 +276,7 @@ public final class TypeObjectMap<T> {
                             break;
 
                         case BYTE:
-                            value = (byte)(int)value;
+                            value = (byte)inRange((int)value, Byte.MIN_VALUE, Byte.MAX_VALUE, toType);
                             break;
 
                         case DOUBLE:
@@ -236,7 +292,7 @@ public final class TypeObjectMap<T> {
                             break;
 
                         case SHORT:
-                            value = (short)(int)value;
+                            value = (short)inRange((int)value, Short.MIN_VALUE, Short.MAX_VALUE, toType);
                             break;
                     }
 
@@ -249,7 +305,7 @@ public final class TypeObjectMap<T> {
                             break;
 
                         case BYTE:
-                            value = (byte)(long)value;
+                            value = (byte)inRange((long)value, Byte.MIN_VALUE, Byte.MAX_VALUE, toType);
                             break;
 
                         case DOUBLE:
@@ -261,11 +317,11 @@ public final class TypeObjectMap<T> {
                             break;
 
                         case INTEGER:
-                            value = (int)(long)value;
+                            value = (int)inRange((long)value, Integer.MIN_VALUE, Integer.MAX_VALUE, toType);
                             break;
 
                         case SHORT:
-                            value = (short)(long)value;
+                            value = (short)inRange((long)value, Short.MIN_VALUE, Short.MAX_VALUE, toType);
                             break;
                     }
 
@@ -278,7 +334,7 @@ public final class TypeObjectMap<T> {
                             break;
 
                         case BYTE:
-                            value = (byte)(short)value;
+                            value = (byte)inRange((short)value, Byte.MIN_VALUE, Byte.MAX_VALUE, toType);
                             break;
 
                         case DOUBLE:
@@ -695,7 +751,13 @@ public final class TypeObjectMap<T> {
     /**
      * Creates a {@link TypeObjectMap} based on the specified class. All public
      * fields and get/set method pairs with supported data types will be used as
-     * columns and ordered by name.
+     * columns:  the fields first, then the method pairs, each in the order
+     * that reflection ({@link Class#getFields()}, {@link Class#getMethods()})
+     * returns them.  That order is not sorted and is not specified by the
+     * JVM, so the same class may give columns in another order, and so a type
+     * with another type ID, on another JVM.  Where the column order matters,
+     * create the map with the constructor and an explicit {@link Type}
+     * instead.
      *
      * @param <T>          the class
      * @param objectClass  the class
@@ -711,8 +773,10 @@ public final class TypeObjectMap<T> {
      * Creates a {@link TypeObjectMap} based on the specified class with the
      * specified type label and overrides. By default, all public fields and
      * get/set method pairs with supported data types will be used as columns
-     * and ordered by name, but column names, data types and properties can be
-     * overridden with entries in the {@code columnOverrides} map. Each entry in
+     * (the fields first, then the method pairs, each in the order reflection
+     * returns them, which is not sorted and not specified by the JVM; see
+     * {@link #fromClass(Class)}), but column names, data types and properties
+     * can be overridden with entries in the {@code columnOverrides} map. Each entry in
      * the map must consist of the name of a field in the specified class (or
      * for method pairs, the name following "get" and "set") as a key, and a
      * {@link Type.Column} object providing the name, data type, and properties

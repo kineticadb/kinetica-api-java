@@ -10,7 +10,9 @@ import com.gpudb.filesystem.GPUdbFileHandlerUtils;
 import com.gpudb.protocol.InsertRecordsFromFilesRequest;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -182,13 +184,21 @@ public class IngestOptions {
     }
 
     /**
-     * Sets the set of column names to load
+     * Sets the column names to load, sent to the server as a comma-separated
+     * list in the set's iteration order.
+     *
+     * <p>The list is positional:  entry <i>i</i> feeds column <i>i</i> of the
+     * target table.  A {@link java.util.HashSet} does not keep the order its
+     * names were added in; pass a {@link LinkedHashSet}, or use
+     * {@link #setColumnsToLoad(List)}, where the order matters.
+     *
      * @param columnsToLoad - a Set of column names
      * @return an {@link IngestOptions} object
      * @throws GPUdbException - when names of columns to skip and load overlap
-     * @throws JsonProcessingException - when JSON conversion fails
+     * @throws JsonProcessingException - never; kept for compatibility
      *
      * @see #getColumnsToLoad()
+     * @see #setColumnsToLoad(List)
      */
     public IngestOptions setColumnsToLoad(Set<String> columnsToLoad) throws GPUdbException, JsonProcessingException {
         if( columnsToLoad != null && columnsToSkip != null ) {
@@ -197,13 +207,40 @@ public class IngestOptions {
                 throw new GPUdbException(" Columns to load and columns to skip are mutually exclusive ..");
         }
         this.columnsToLoad = columnsToLoad;
-        try {
-            setMapValue( InsertRecordsFromFilesRequest.Options.COLUMNS_TO_LOAD, mapper.writeValueAsString( this.columnsToLoad ));
-        } catch (JsonProcessingException e) {
-            GPUdbLogger.error( String.format( "Error in Json processing [%s]; COLUMNS_TO_LOAD value not set", e.getMessage() ) );
-        }
+        if( columnsToLoad != null )
+            setMapValue( InsertRecordsFromFilesRequest.Options.COLUMNS_TO_LOAD,
+                    GPUdbFileHandlerUtils.joinStrings( new ArrayList<>( columnsToLoad ), ',' ) );
+        else if( this.options != null )
+            this.options.remove( InsertRecordsFromFilesRequest.Options.COLUMNS_TO_LOAD );
 
         return this;
+    }
+
+    /**
+     * Sets the column names to load, in the order given, sent to the server
+     * as a comma-separated list.  The list is positional:  entry <i>i</i>
+     * feeds column <i>i</i> of the target table.
+     *
+     * @param columnsToLoad - a List of column names, without duplicates
+     * @return an {@link IngestOptions} object
+     * @throws GPUdbException - when a name is given twice, or when names of
+     *         columns to skip and load overlap
+     *
+     * @see #getColumnsToLoad()
+     */
+    public IngestOptions setColumnsToLoad(List<String> columnsToLoad) throws GPUdbException {
+        Set<String> ordered = null;
+        if( columnsToLoad != null ) {
+            ordered = new LinkedHashSet<>( columnsToLoad );
+            if( ordered.size() != columnsToLoad.size() )
+                throw new GPUdbException( "Columns to load must not contain a name more than once: " + columnsToLoad );
+        }
+        try {
+            return setColumnsToLoad( ordered );
+        } catch (JsonProcessingException e) {
+            // Not thrown; the Set overload declares it for compatibility only
+            throw new GPUdbException( e.getMessage(), e );
+        }
     }
 
     /**
@@ -217,12 +254,15 @@ public class IngestOptions {
     }
 
     /**
-     * Sets the column names to skip
+     * Sets the column names to skip, sent to the server as a comma-separated
+     * list.
+     *
      * @param columnsToSkip - a Set of column names
      * @return - an {@link IngestOptions} object
-     * @throws GPUdbException
+     * @throws GPUdbException - when names of columns to skip and load overlap
      *
      * @see #getColumnsToSkip()
+     * @see #setColumnsToSkip(List)
      */
     public IngestOptions setColumnsToSkip(Set<String> columnsToSkip) throws GPUdbException {
         if( columnsToSkip != null && columnsToLoad != null ) {
@@ -231,13 +271,27 @@ public class IngestOptions {
                 throw new GPUdbException(" Columns to load and columns to skip are mutually exclusive ..");
         }
         this.columnsToSkip = columnsToSkip;
-        try {
-            setMapValue( InsertRecordsFromFilesRequest.Options.COLUMNS_TO_SKIP, mapper.writeValueAsString( this.columnsToSkip ));
-        } catch (JsonProcessingException e) {
-            GPUdbLogger.error( String.format( "Error in Json processing [%s]: COLUMNS_TO_SKIP value not set", e.getMessage() ) );
-        }
+        if( columnsToSkip != null )
+            setMapValue( InsertRecordsFromFilesRequest.Options.COLUMNS_TO_SKIP,
+                    GPUdbFileHandlerUtils.joinStrings( new ArrayList<>( columnsToSkip ), ',' ) );
+        else if( this.options != null )
+            this.options.remove( InsertRecordsFromFilesRequest.Options.COLUMNS_TO_SKIP );
 
         return this;
+    }
+
+    /**
+     * Sets the column names to skip, sent to the server as a comma-separated
+     * list.
+     *
+     * @param columnsToSkip - a List of column names
+     * @return - an {@link IngestOptions} object
+     * @throws GPUdbException - when names of columns to skip and load overlap
+     *
+     * @see #getColumnsToSkip()
+     */
+    public IngestOptions setColumnsToSkip(List<String> columnsToSkip) throws GPUdbException {
+        return setColumnsToSkip( columnsToSkip == null ? (Set<String>) null : new LinkedHashSet<>( columnsToSkip ) );
     }
 
     /**

@@ -76,10 +76,15 @@ public interface FileUploadListener {
     void onPartUpload( Result result );
 
     /**
-     * This method is called when a single shot complete upload has been
-     * completed.
+     * This method is called when a single shot upload, of one or more files
+     * sent in one request, has completed or failed.
+     * <p>
+     * {@link Result#isSuccessful()} tells which, and
+     * {@link Result#getFullFileNames()} gives the KiFS names of the files in
+     * the request in either case.  A failed request fails for all of its
+     * files; {@link Result#getErrorMessage()} then says why.
      *
-     * @param result - a list of file names
+     * @param result - the outcome of the upload, with its file names
      */
     void onFullFileUpload(Result result);
 

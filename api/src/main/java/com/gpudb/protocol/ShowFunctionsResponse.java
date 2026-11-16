@@ -39,6 +39,8 @@ public class ShowFunctionsResponse implements IndexedRecord {
         public static final String SQL = "sql";
         public static final String UDF = "udf";
         public static final String CAST = "cast";
+        public static final String NEVER_NULL = "never_null";
+        public static final String VARIES_PER_ROW = "varies_per_row";
         public static final String NONDETERMINISTIC = "nondeterministic";
 
         private Flags() {  }

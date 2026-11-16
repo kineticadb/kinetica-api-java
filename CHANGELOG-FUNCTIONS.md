@@ -1,5 +1,10 @@
 # Kinetica REST API Changelog
 
+## Version 7.2.3.25
+#### Added
+-   Added new ``never_null`` choice to the ``flags`` of the ``/show/functions`` response, for functions that never return NULL
+-   Added new ``varies_per_row`` choice to the ``flags`` of the ``/show/functions`` response, for non-deterministic functions whose value varies per row, not only per query
+
 ## Version 7.2.3.24
 #### Added
 -   Added new ``resync_replicas`` choice to the ``repair_policy`` option of the ``/admin/repair/table`` request, and ``repaired_replicated_tables`` to the ``info`` map of its response

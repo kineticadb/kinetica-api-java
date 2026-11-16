@@ -52,7 +52,7 @@ public class BulkInserter<T> implements AutoCloseable {
     private ScheduledExecutorService timedFlushExecutorService;
     private boolean timedFlushExecutorServiceTerminated;
     private FlushOptions flushOptions;
-    private GPUdbBase.JsonOptions jsonOptions;
+    private volatile GPUdbBase.JsonOptions jsonOptions;
     private volatile int maxRetries;
     private final boolean returnIndividualErrors;
     private final AtomicLong countInserted = new AtomicLong();
@@ -892,7 +892,15 @@ public class BulkInserter<T> implements AutoCloseable {
             tableInfo = GPUdbBase.ownRead( () -> gpudb.showTable(this.tableName, null) );
         }
         catch (GPUdbException ge) {
-            throw new GPUdbException( "Table '" + this.tableName + "' does not exist!" );
+            // An outage is not a missing table:  report it as it is, so that
+            // the caller can tell the two apart
+            if ( (ge instanceof GPUdbExitException) || ge.hadConnectionFailure() )
+                throw ge;
+
+            // A rejection:  keep the server's message, which says why the
+            // table could not be described
+            throw new GPUdbException( "Table '" + this.tableName + "' does not exist or cannot be used: "
+                                      + ge.getMessage(), ge );
         }
         List<String> tableDescriptions = tableInfo.getTableDescriptions().get(0);
         this.isTableReplicated = tableDescriptions.contains(ShowTableResponse.TableDescriptions.REPLICATED);
@@ -1240,8 +1248,6 @@ public class BulkInserter<T> implements AutoCloseable {
         private final TypeObjectMap<T> typeObjectMap;
         private final Map<String, String> options;
 
-        private final GPUdbBase.JsonOptions jsonOptions;
-
         /**
          * Creates a queue for records to be inserted into the queue's
          * associated rank.  For head-node inserts, this queue will target
@@ -1260,11 +1266,14 @@ public class BulkInserter<T> implements AutoCloseable {
          *        <br/>
          *        The details can be found at
          *        {@link com.gpudb.protocol.InsertRecordsRequest.Options}.
-         * @param jsonOptions  {@link GPUdbBase.JsonOptions} to use for JSON
-         *        ingest only
+         * @param jsonOptions  {@link GPUdbBase.JsonOptions} for JSON ingest
+         *        only
          *        <br/>
          *        Note that a null here will trigger the non-JSON ingest path,
-         *        and a non-null here will trigger the JSON ingest path.
+         *        and a non-null here will trigger the JSON ingest path.  The
+         *        options themselves are not kept:  each batch is sent with
+         *        the options given when it is cut, so that a change to the
+         *        inserter's options reaches the queues it already has.
          * @param typeObjectMap
          */
         public WorkerQueue(
@@ -1281,9 +1290,8 @@ public class BulkInserter<T> implements AutoCloseable {
             this.tableName     = tableName;
             this.capacity      = capacity;
             this.options       = options;
-            this.jsonOptions   = jsonOptions;
             this.typeObjectMap = typeObjectMap;
-            this.isJson        = (this.jsonOptions != null);
+            this.isJson        = (jsonOptions != null);
 
             // Allow some extra room when allocating the memory since we may
             // sometimes go over the capacity before we flush
@@ -1325,13 +1333,16 @@ public class BulkInserter<T> implements AutoCloseable {
          * @param maxRetries  how many times the batch may be re-sent, should
          *        one be cut
          * @param repeatable  whether a second copy of the batch is harmless
+         * @param jsonOptions  the JSON options to send the batch with, should
+         *        one be cut; unused for a queue that is not for JSON
          * @return  {@code null} where the record was queued and no batch cut;
          *          the send of the batch it filled; or a refusal,
          *          {@link BatchSend#REFUSED_CLOSED} or
          *          {@link BatchSend#REFUSED_RETIRED}, compared by identity
          */
         @SuppressWarnings("unchecked")
-        public BatchSend<T> offer(T record, AtomicBoolean closed, boolean cutIfFull, int maxRetries, boolean repeatable) {
+        public BatchSend<T> offer(T record, AtomicBoolean closed, boolean cutIfFull, int maxRetries, boolean repeatable,
+                                  GPUdbBase.JsonOptions jsonOptions) {
             synchronized (this.queueLock) {
                 if (this.retired)
                     return (BatchSend<T>) BatchSend.REFUSED_RETIRED;
@@ -1339,7 +1350,7 @@ public class BulkInserter<T> implements AutoCloseable {
                     return (BatchSend<T>) BatchSend.REFUSED_CLOSED;
                 this.queue.add(record);
                 if (cutIfFull && this.queue.size() >= this.capacity)
-                    return cutLocked(maxRetries, repeatable);
+                    return cutLocked(maxRetries, repeatable, jsonOptions);
                 return null;
             }
         }
@@ -1351,30 +1362,34 @@ public class BulkInserter<T> implements AutoCloseable {
          * @param onlyIfFull  whether to cut only when the queue is full
          * @param maxRetries  how many times the batch may be re-sent
          * @param repeatable  whether a second copy of the batch is harmless
+         * @param jsonOptions  the JSON options to send the batch with; unused
+         *        for a queue that is not for JSON
          * @return  the send of the batch, or {@code null} where nothing was cut
          */
-        public BatchSend<T> cut(boolean onlyIfFull, int maxRetries, boolean repeatable) {
+        public BatchSend<T> cut(boolean onlyIfFull, int maxRetries, boolean repeatable,
+                                GPUdbBase.JsonOptions jsonOptions) {
             synchronized (this.queueLock) {
                 if (this.queue.isEmpty() || (onlyIfFull && this.queue.size() < this.capacity))
                     return null;
-                return cutLocked(maxRetries, repeatable);
+                return cutLocked(maxRetries, repeatable, jsonOptions);
             }
         }
 
         /** Takes the queued records as a batch to send; the queue's lock must be held. */
-        private BatchSend<T> cutLocked(int maxRetries, boolean repeatable) {
+        private BatchSend<T> cutLocked(int maxRetries, boolean repeatable, GPUdbBase.JsonOptions jsonOptions) {
             List<T> batch = this.queue;
             this.queue = new ArrayList<>( this.capacity );
-            return new BatchSend<>(this, batch, maxRetries, repeatable);
+            return new BatchSend<>(this, batch, maxRetries, repeatable, jsonOptions);
         }
 
         /**
          * Sends a batch cut from this queue, by whichever path its records
          * take.
          */
-        WorkerQueueInsertionResult<T> send(List<T> batch, int maxRetries, boolean repeatable) {
+        WorkerQueueInsertionResult<T> send(List<T> batch, int maxRetries, boolean repeatable,
+                                           GPUdbBase.JsonOptions jsonOptions) {
             RequestRetries retries = new RequestRetries( maxRetries, repeatable );
-            return this.isJson ? handleJsonRecords(batch, retries) : handleRecordObjects(batch, retries);
+            return this.isJson ? handleJsonRecords(batch, retries, jsonOptions) : handleRecordObjects(batch, retries);
         }
 
         /**
@@ -1583,7 +1598,8 @@ public class BulkInserter<T> implements AutoCloseable {
          *
          * @return - an instance of {@link WorkerQueueInsertionResult}
          */
-        private WorkerQueueInsertionResult<T> handleJsonRecords(List<T> queuedRecords, RequestRetries retries) {
+        private WorkerQueueInsertionResult<T> handleJsonRecords(List<T> queuedRecords, RequestRetries retries,
+                                                                GPUdbBase.JsonOptions jsonOptions) {
 
             // Some flags for necessary follow-up work
             boolean doUpdateWorkers = false;
@@ -1609,7 +1625,7 @@ public class BulkInserter<T> implements AutoCloseable {
                             this.insertUrl,
                             jsonPayload,
                             this.tableName,
-                            this.jsonOptions,
+                            jsonOptions,
                             this.options,
                             retries
                     );
@@ -1681,25 +1697,29 @@ public class BulkInserter<T> implements AutoCloseable {
     private static final class BatchSend<T> implements Callable< WorkerQueueInsertionResult<T> > {
 
         /** A queue refused the record because the inserter is closed; see {@link WorkerQueue#offer}. */
-        static final BatchSend<Object> REFUSED_CLOSED = new BatchSend<>( null, null, 0, false );
+        static final BatchSend<Object> REFUSED_CLOSED = new BatchSend<>( null, null, 0, false, null );
         /** A queue refused the record because a rebuild retired the queue; see {@link WorkerQueue#offer}. */
-        static final BatchSend<Object> REFUSED_RETIRED = new BatchSend<>( null, null, 0, false );
+        static final BatchSend<Object> REFUSED_RETIRED = new BatchSend<>( null, null, 0, false, null );
 
         final WorkerQueue<T> queue;
         final List<T> records;
         final int maxRetries;
         final boolean repeatable;
+        /** The inserter's JSON options when the batch was cut; unused for a non-JSON batch. */
+        final GPUdbBase.JsonOptions jsonOptions;
 
-        BatchSend(WorkerQueue<T> queue, List<T> records, int maxRetries, boolean repeatable) {
-            this.queue      = queue;
-            this.records    = records;
-            this.maxRetries = maxRetries;
-            this.repeatable = repeatable;
+        BatchSend(WorkerQueue<T> queue, List<T> records, int maxRetries, boolean repeatable,
+                  GPUdbBase.JsonOptions jsonOptions) {
+            this.queue       = queue;
+            this.records     = records;
+            this.maxRetries  = maxRetries;
+            this.repeatable  = repeatable;
+            this.jsonOptions = jsonOptions;
         }
 
         @Override
         public WorkerQueueInsertionResult<T> call() {
-            return this.queue.send( this.records, this.maxRetries, this.repeatable );
+            return this.queue.send( this.records, this.maxRetries, this.repeatable, this.jsonOptions );
         }
     }
 
@@ -2026,13 +2046,26 @@ public class BulkInserter<T> implements AutoCloseable {
 
     /**
      * This method could be used to set {@link GPUdbBase.JsonOptions} in case the user wants to
-     * modify the defaults.
+     * modify the defaults.  The new options apply to the records validated,
+     * and to the batches cut, from then on; a batch already cut is sent with
+     * the options it was cut with.
+     * <p>
+     * Whether this inserter takes JSON records is fixed when it is created,
+     * and this method does not change it.  On an inserter created for JSON,
+     * the options cannot be {@code null}; on any other, they have no effect.
      *
      * @param jsonOptions {@link GPUdbBase.JsonOptions} to use for JSON ingest
+     *
+     * @throws IllegalArgumentException if {@code jsonOptions} is {@code null}
+     *         and this inserter was created for JSON
      *
      * @see GPUdbBase.JsonOptions
      */
     public void setJsonOptions(GPUdbBase.JsonOptions jsonOptions) {
+        if (this.isJson && jsonOptions == null) {
+            throw new IllegalArgumentException("JSON options must not be null for a JSON inserter.");
+        }
+
         this.jsonOptions = jsonOptions;
     }
 
@@ -2743,7 +2776,7 @@ public class BulkInserter<T> implements AutoCloseable {
             if ( workerQueue == null)
                 continue;
 
-            BatchSend<T> batch = workerQueue.cut( onlyIfFull, this.maxRetries, this.tableHasPrimaryKey );
+            BatchSend<T> batch = workerQueue.cut( onlyIfFull, this.maxRetries, this.tableHasPrimaryKey, this.jsonOptions );
             if ( batch != null ) {
                 GPUdbLogger.debug_with_info( "Cut a batch of " + batch.records.size() + " records for " + workerQueue.getUrl() );
                 batches.add( batch );
@@ -3334,7 +3367,7 @@ public class BulkInserter<T> implements AutoCloseable {
             // Insert the record into the queue, cutting the batch it fills
             // where this call is the one to send it
             cut = workerQueue.offer(record, refuseIfClosed ? this.closed : null, flushWhenFull,
-                                    this.maxRetries, this.tableHasPrimaryKey);
+                                    this.maxRetries, this.tableHasPrimaryKey, this.jsonOptions);
             if (cut == BatchSend.REFUSED_CLOSED)
                 throw closedException();
             if (cut != BatchSend.REFUSED_RETIRED)

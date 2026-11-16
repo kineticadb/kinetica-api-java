@@ -133,7 +133,12 @@ public class TableCreationOptions {
     }
 
     /**
-     * Sets the list of foreign keys
+     * Sets the list of foreign keys.  Each is of the format
+     * '(source_column_name [, ...]) references
+     * target_table_name(primary_key_column_name [, ...]) [as foreign_key_name]';
+     * they are sent to the server as one semicolon-separated list, as a key's
+     * own column lists contain commas.
+     *
      * @param foreignKeys - A list of strings specifying the foreign keys
      * @return - This {@link TableCreationOptions} object
      *
@@ -142,7 +147,7 @@ public class TableCreationOptions {
     public TableCreationOptions setForeignKeys(List<String> foreignKeys) {
         if( foreignKeys != null && !foreignKeys.isEmpty() ) {
             this.foreignKeys = foreignKeys;
-            setMapValue( InsertRecordsFromFilesRequest.CreateTableOptions.FOREIGN_KEYS, GPUdbFileHandlerUtils.joinStrings( foreignKeys, ',' ) );
+            setMapValue( InsertRecordsFromFilesRequest.CreateTableOptions.FOREIGN_KEYS, GPUdbFileHandlerUtils.joinStrings( foreignKeys, ';' ) );
         } else {
             GPUdbLogger.warn( "FOREIGN_KEYS cannot be null or empty; value not set");
         }
@@ -195,7 +200,8 @@ public class TableCreationOptions {
      */
     public TableCreationOptions setPartitionType(PartitionType partitionType) {
         this.partitionType = partitionType;
-        setMapValue( InsertRecordsFromFilesRequest.CreateTableOptions.PARTITION_TYPE, partitionType.getText() );
+        // The server documents these values in uppercase (RANGE, INTERVAL, ...)
+        setMapValue( InsertRecordsFromFilesRequest.CreateTableOptions.PARTITION_TYPE, partitionType.name() );
         return this;
     }
 

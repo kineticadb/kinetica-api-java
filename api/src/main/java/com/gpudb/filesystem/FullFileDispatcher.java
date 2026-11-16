@@ -1,13 +1,14 @@
 package com.gpudb.filesystem;
 
 import com.gpudb.GPUdb;
+import com.gpudb.GPUdbException;
 import com.gpudb.GPUdbLogger;
 import com.gpudb.filesystem.common.Result;
 import com.gpudb.filesystem.upload.FileUploadListener;
-import com.gpudb.protocol.DownloadFilesResponse;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -31,6 +32,14 @@ class FullFileDispatcher {
     private final ExecutorService threadPool;
     private final CompletionService<Result> jobExecutor;
     private final GPUdbFileHandler.Options fileHandlerOptions;
+
+    /**
+     * The task behind each result still to be collected.  Results arrive in
+     * completion order, so this is what names a task's files when the task
+     * itself could not:  one that ended in an error rather than a result, or
+     * one still running when the wait for it was interrupted.
+     */
+    private final Map<Future<Result>, FullFileUploadTask> inFlight = new IdentityHashMap<>();
 
     /**
      * This keeps track of all the tasks which have been submitted to the
@@ -59,7 +68,7 @@ class FullFileDispatcher {
                 }
         );
 
-        jobExecutor = new ExecutorCompletionService<>(threadPool);
+        this.jobExecutor = new ExecutorCompletionService<>(this.threadPool);
         this.taskList = new ArrayList<>();
     }
 
@@ -70,8 +79,8 @@ class FullFileDispatcher {
      * @param task a {@link FullFileUploadTask} object
      */
     void submit( FullFileUploadTask task ) {
-        jobExecutor.submit(task);
-        taskList.add( task );
+        this.inFlight.put( this.jobExecutor.submit(task), task );
+        this.taskList.add( task );
     }
 
     /**
@@ -84,43 +93,40 @@ class FullFileDispatcher {
     List<Result> collect() {
 
         List<Result> results = new ArrayList<>();
-        int countTasks = taskList.size();
+        int countTasks = this.taskList.size();
 
         while( countTasks-- > 0 ) {
+            Future<Result> done;
             try {
-                Result result = jobExecutor.take().get();
-                result.setSuccessful(true);
-                results.add(result);
-
-                if( callback != null ) {
-                    callback.onFullFileUpload( result );
+                done = this.jobExecutor.take();
+            } catch (InterruptedException e) {
+                // The wait was cut short:  every task still in flight is
+                // reported as failed, each naming its files, and the wait is
+                // not resumed
+                Thread.currentThread().interrupt();
+                for( FullFileUploadTask task : this.inFlight.values() ) {
+                    report( failure( e, task.remoteFileNames ), results );
                 }
-            } catch (Exception e) {
-                // Determine actual cause
-                Throwable cause = (e instanceof ExecutionException) ? e.getCause() : e;
-
-                Result result = new Result();
-                result.setSuccessful( false );
-                result.setException( (Exception) cause );
-                result.setErrorMessage( cause.getMessage() );
-                results.add(result);
-
-                if( callback != null ) {
-                    callback.onFullFileUpload( result );
-                }
-
-                // Log error but DO NOT shutdown or throw.
-                // Allow other tasks in the batch to finish.
-                GPUdbLogger.error("Error in full file upload batch: " + cause.getMessage());
-
-                if (e instanceof InterruptedException) {
-                    Thread.currentThread().interrupt();
-                    // If interrupted, we might want to stop, but for general exceptions we continue.
-                }
+                this.inFlight.clear();
+                break;
             }
+
+            FullFileUploadTask task = this.inFlight.remove( done );
+            Result result;
+            try {
+                // A task reports its own failure, in a result that names its
+                // files; see FullFileUploadTask#call
+                result = done.get();
+            } catch (ExecutionException | CancellationException | InterruptedException e) {
+                // The task ended without a result -- an error, or a failure
+                // its own handling did not cover; its files are named here
+                Throwable cause = (e instanceof ExecutionException) ? e.getCause() : e;
+                result = failure( cause, (task == null) ? null : task.remoteFileNames );
+            }
+            report( result, results );
         }
 
-        taskList.clear();
+        this.taskList.clear();
         return results;
     }
 
@@ -132,6 +138,46 @@ class FullFileDispatcher {
         this.threadPool.shutdownNow();
         GPUdbFileHandlerUtils.awaitTerminationAfterShutdown( this.threadPool, GPUdbFileHandler.getDefaultThreadPoolTerminationTimeout() );
     }
+
+    /**
+     * A result for a task that produced none, naming the files it carried,
+     * as the listener is promised in either case.
+     */
+    private static Result failure( Throwable cause, List<String> fileNames ) {
+        Result result = new Result();
+        result.setSuccessful( false );
+        result.setFullFileNames( fileNames );
+        result.setException( (cause instanceof Exception) ? (Exception) cause : new GPUdbException( cause.toString(), cause ) );
+
+        // The same shape as a task's own report, naming the files; an
+        // interrupt has no message of its own, so it is said in words
+        String reason;
+        if ( cause instanceof InterruptedException )
+            reason = "the wait for it was interrupted";
+        else if ( cause instanceof CancellationException )
+            reason = "it was cancelled";
+        else
+            reason = (cause.getMessage() == null) ? cause.toString() : cause.getMessage();
+        result.setErrorMessage( String.format( "Failed to upload %s: %s", fileNames, reason ) );
+        return result;
+    }
+
+
+    /**
+     * Records a task's result and hands it to the listener; a failure is
+     * logged, and the rest of the batch goes on regardless.
+     */
+    private void report( Result result, List<Result> results ) {
+        results.add( result );
+
+        if( this.callback != null ) {
+            this.callback.onFullFileUpload( result );
+        }
+
+        if( !result.isSuccessful() )
+            GPUdbLogger.error("Error in full file upload batch: " + result.getErrorMessage());
+    }
+
 
     /**
      * This class represents a task handling the upload of a bunch of full
@@ -163,52 +209,30 @@ class FullFileDispatcher {
             this.options = options;
         }
 
-        @Override
-        public Result call() throws Exception {
-            db.uploadFiles( remoteFileNames, payloads, options );
-
-            Result result = new Result();
-            result.setFullFileNames( remoteFileNames );
-            return result;
-        }
-    }
-
-    /**
-     * This class represents a task handling the download of a bunch of full
-     * file downloads.
-     */
-    static final class FullFileDownloadTask implements Callable<Result> {
-
-        private final GPUdb db;
-        private final List<String> remoteFileNames;
-        private final List<ByteBuffer> payloads;
-        private final Map<String, String> options;
-
         /**
-         * Constructs a download task with the resources required to download
-         * files from KiFS in a thread.
+         * Uploads the files of this task in one request.
          *
-         * @param db - the {@link GPUdb} object
-         * @param remoteFileNames - Names of the files on KIFS
-         * @param payloads - The payloads for the files as ByteBuffers
-         * @param options - Options passed to  {@link GPUdb#downloadFiles(List, List, List, Map)}
+         * A failure is returned, not thrown, so that the result can name the
+         * files of the batch:  the one request fails for all of them, and the
+         * caller could not otherwise tell which files were not uploaded.
+         *
+         * @return  the outcome of the upload, with the KiFS names of the
+         *          files in the batch, whether it succeeded or failed
          */
-        FullFileDownloadTask(GPUdb db,
-                             List<String> remoteFileNames,
-                             List<ByteBuffer> payloads,
-                             Map<String, String> options) {
-            this.db = db;
-            this.remoteFileNames = remoteFileNames;
-            this.payloads = payloads;
-            this.options = options;
-        }
-
         @Override
-        public Result call() throws Exception {
-            DownloadFilesResponse downloadFilesResponse = db.downloadFiles( remoteFileNames, null, null, options );
-
+        public Result call() {
             Result result = new Result();
-            result.setFullFileNames( remoteFileNames );
+            result.setFullFileNames( this.remoteFileNames );
+
+            try {
+                this.db.uploadFiles( this.remoteFileNames, this.payloads, this.options );
+                result.setSuccessful( true );
+            } catch (Exception e) {
+                result.setSuccessful( false );
+                result.setException( e );
+                result.setErrorMessage( String.format( "Failed to upload %s: %s", this.remoteFileNames, e.getMessage() ) );
+            }
+
             return result;
         }
     }

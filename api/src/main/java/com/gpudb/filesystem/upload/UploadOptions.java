@@ -19,7 +19,9 @@ public class UploadOptions {
      * a recursive search along a directory hierarchy or not. This is only
      * applicable if the file names passed to the upload methods of the class
      * {@link com.gpudb.filesystem.GPUdbFileHandler} contain wildcards like
-     * '**.txt', '<some_path>/</>*.csv' etc.
+     * '**.txt', '<some_path>/</>*.csv' etc., or name a directory.  A file
+     * given by its name, without wildcards, is uploaded alone, whether or not
+     * a file of the same name exists in a subdirectory beside it.
      */
     private final boolean recursive;
 

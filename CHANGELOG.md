@@ -2,7 +2,120 @@
 
 ## Version 7.2
 
+### Version 7.2.3.30 - 2026-11-15
+
+#### Added
+-   `RecordRetriever.lookup()` returns the records a lookup matches as an
+    `Iterable`, read from the server a page at a time, with `size()` for the
+    count.  On a replicated table every page comes from one worker rank,
+    drawn at random for that lookup, so each lookup is consistent and lookups
+    with the same expression are spread over the ranks; `getByKey()` with an
+    offset keeps one rank per retriever for an expression instead, since one
+    call cannot know whether the next is its next page.  A lookup is read
+    once, and fails rather than continue from another rank if the cluster or
+    shard mapping changes during it.
+
+#### Changed
+-   `GPUdbFileHandler.upload()` and `ingest()` now throw a `GPUdbException`
+    when a file pattern matches no local file, instead of uploading nothing;
+    and when a given file, pattern or directory cannot be read while the
+    files are being resolved, instead of logging it and uploading the files
+    resolved so far.  Every such problem in the request is named in the one
+    exception, and nothing is uploaded.
+-   `GPUdbFileHandler.upload()` and `ingest()` now throw a `GPUdbException`,
+    before uploading anything, when two of their files would be uploaded to the
+    same path (two files of the same name given from different directories),
+    instead of uploading one over the other, or ingesting one of them twice.
+    The same file given twice is uploaded once.
+-   A `TypeObjectMap` now throws a `GPUdbRuntimeException` for a number out of
+    the range of the type it is converted to (between a field and a column of
+    different numeric types), instead of silently wrapping it.
+-   `GPUdbFileHandler.Options.setFullFileDispatcherThreadpoolSize()` accepts
+    any positive number; it was capped at the number of processors.
+-   Added `ErrorHandlingMode.SKIP`, `FileType.AVRO`, `FileType.GDB` and
+    `PartitionType.SERIES`.
+-   Added `getDefault()` to `ErrorHandlingMode`, `FileType` and
+    `TypeInferenceMode`, returning the server's defaults; deprecated
+    `ErrorHandlingMode.defaultMode()` and the misnamed
+    `defaultPartitionType()` of `FileType` and `TypeInferenceMode`.
+-   `BulkInserter.setJsonOptions(null)` on an inserter created for JSON now
+    throws an `IllegalArgumentException`, instead of making every later
+    `insert()` throw a `NullPointerException`.
+-   Deprecated `GPUdbBase.ping()`, the overload with no arguments; do not use
+    it, as it will be removed soon.  Use `ping(URL)` with `getURL()` instead.
+
+#### Fixed
+-   A server that closed or reset the connection during the TLS handshake was
+    reported as a certificate error, with advice to add a trust store, and the
+    request was neither re-sent nor failed over.  It is now treated as a
+    connection that could not be made, and re-sent/failed over.
+-   `IngestOptions.setColumnsToLoad()` and `setColumnsToSkip()` sent the column
+    names as a JSON array, which the server rejected; they are now sent as a
+    comma-separated list.  `columns_to_load` is positional, so both setters
+    gain a `List` overload that keeps the order given.
+-   `TableCreationOptions.setForeignKeys()` joined the foreign keys with
+    commas; they are now separated by semicolons, as the server expects.
+-   `TableCreationOptions.setPartitionType()` now sends the partition type in
+    uppercase, as the server documents it.
+-   `GPUdbFileHandler.upload()` and `ingest()`, with the `recursive` upload
+    option (the default), also uploaded files of the same name found in the
+    subdirectories beside a file given by name.  A file given by name is now
+    uploaded alone; `recursive` applies to patterns and to directories.
+-   `GPUdbFileHandler.kifsDirectoryExists()`, `kifsDirectoriesExist()` and
+    `kifsFileExists()` were false for the home directory given as `~`, so
+    `upload()` to `~` failed with "Remote directory does not exist".
+-   `GPUdbFileHandler.deleteFilesInDir()` threw for a directory that does not
+    exist, even with `noErrorIfNotExists` on (its default).  A missing
+    directory is now passed over; a connection failure, or any other error,
+    is still thrown.
+-   A failed `GPUdbFileHandler.upload()` of files small enough to be sent in
+    one request did not say which files had failed.  The error, and the
+    result given to the upload listener, now name the files of the request
+    that failed.
+-   `GPUdbFileHandler.download()`, with `overwriteExisting` off, downloaded a
+    file that already exists locally before discarding it; it is no longer
+    downloaded.
+-   `GPUdbFileHandler.ingest()` of a directory, or of a pattern with the
+    `recursive` upload option (the default), uploaded a file found in a
+    subdirectory under that subdirectory but ingested and deleted it by its
+    name alone.  Such a file was not ingested, or the file of the same name
+    above it was ingested in its place, and its uploaded copy was left in
+    KiFS.  Each file is now ingested from, and deleted at, the path it was
+    uploaded to.
+-   A `RecordRetriever` took the pages of a lookup on a replicated table from
+    different worker ranks when another lookup, or another thread, ran between
+    them.  The rank is now chosen by the lookup's expression, so one
+    retriever's lookups with the same expression stay on one rank; different
+    retrievers spread the same expression over the ranks.
+-   `RecordRetriever.getByKey()` and `getColumnsByKey()`, given an offset,
+    dropped it when they tried a lookup again after a failover or a shard-map
+    update, and returned the first page instead of the one asked for.
+-   `BulkInserter.setJsonOptions()` changed the options of the inserter but
+    not of the queues it had already built, which kept sending with the
+    options given at construction.  Each batch is now sent with the options
+    in force when it is cut.
+-   The `BulkInserter` constructors reported every failure to look up the
+    table as "Table ... does not exist!", a lost connection included.  A
+    connection failure is now thrown as it is, and a rejection keeps the
+    server's message and the original exception as its cause.
+-   A server version with four components, without a build number, failed to
+    parse.
+-   The documentation of `GPUdbBase.Options.setUseSnappy()` (on by default),
+    `GPUdbVersion.equals()` (ignores the build number),
+    `GPUdbBase.isKineticaRunning()` (a 5-second timeout) and
+    `TypeObjectMap.fromClass()` (columns are not ordered by name) now matches
+    what the code does.
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
 ### Version 7.2.3.29 - 2026-11-08
+
+#### Changed
+-   Improved ingest performance by reducing lock acquisitions from 2 to 1 when
+    inserting a record into a batch, and using a multi-threaded background
+    service for inserting record batches only when it would benefit.
 
 #### Fixed
 -   A connection given a trust store (`GPUdbBase.Options.setTrustStoreFilePath()`)
@@ -29,11 +142,6 @@
     them is set, one left at 0 takes the operating system's default; with none
     set, the 5-second probing remains the default, as their documentation now
     says.
-
-#### Changed
--   Improved ingest performance by reducing lock acquisitions from 2 to 1 when
-    inserting a record into a batch, and using a multi-threaded background
-    service for inserting record batches only when it would benefit.
 
 #### Notes
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.

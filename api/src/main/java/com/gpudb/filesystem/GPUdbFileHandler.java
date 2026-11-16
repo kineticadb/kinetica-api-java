@@ -263,6 +263,14 @@ public class GPUdbFileHandler {
                 this.options
         );
 
+        // Two files bound for one KiFS path would overwrite each other;
+        // refused as a whole, before anything is uploaded
+        if (!fileUploader.getFilesWithDuplicateNames().isEmpty()) {
+            throw new GPUdbException( String.format(
+                    "Files with the same name cannot be uploaded together: %s; nothing was uploaded",
+                    fileUploader.getFilesWithDuplicateNames() ) );
+        }
+
         fileUploader.upload();
     }
 
@@ -520,10 +528,23 @@ public class GPUdbFileHandler {
      * @param remoteDirName  Name of the KiFS directory containing files to
      *        delete.
      * @param noErrorIfNotExists  Whether or not to suppress errors if the given
-     *        directory is not found in KiFS.
+     *        directory is not found in KiFS.  Only that error is suppressed:
+     *        a connection failure, or any other error, is still thrown.
      * @throws GPUdbException  If an error occurs deleting the files.
      */
     public void deleteFilesInDir(String remoteDirName, boolean noErrorIfNotExists) throws GPUdbException {
+
+        if( remoteDirName == null || remoteDirName.isEmpty() ) {
+            throw new GPUdbException( "KiFS directory name cannot be null or empty" );
+        }
+
+        // A directory that is not there is passed over by asking for it by
+        // name:  the listing answers without it, where a file listing of it
+        // answers with an error whose wording is the server's to change.  A
+        // lost connection, or any other failure, is thrown either way, or an
+        // outage would read as a directory with nothing to delete.
+        if ( noErrorIfNotExists && !isListedDirectory( remoteDirName ) )
+            return;
 
         // Retrieve the files in the directory and delete them
         ShowFilesResponse showFilesResponse = this.db.showFiles( Collections.singletonList( remoteDirName ), new HashMap<>());
@@ -867,17 +888,18 @@ public class GPUdbFileHandler {
          * full file uploads. The default value is 5.
 
          * @param fullFileDispatcherThreadpoolSize  The number of threads that
-         *        the file dispatcher pool should use.
+         *        the file dispatcher pool should use; any positive number.
+         *        The threads wait on the network rather than compute, so the
+         *        size is not limited by the number of processors.
          * @return  The current {@link Options} instance.
-         * @throws GPUdbException  If the given thread pool size is invalid in
-         *         the current execution environment.
+         * @throws GPUdbException  If the given thread pool size is not
+         *         positive.
          *
          * @see #getFullFileDispatcherThreadpoolSize()
          */
         public Options setFullFileDispatcherThreadpoolSize(int fullFileDispatcherThreadpoolSize) throws GPUdbException {
-            if( fullFileDispatcherThreadpoolSize <= 0
-                    || fullFileDispatcherThreadpoolSize > Runtime.getRuntime().availableProcessors() ) {
-                throw new GPUdbException(String.format("Thread pool size must be between 1 and %d", Runtime.getRuntime().availableProcessors()));
+            if( fullFileDispatcherThreadpoolSize <= 0 ) {
+                throw new GPUdbException(String.format("Thread pool size must be a positive number; got %d", fullFileDispatcherThreadpoolSize));
             }
             this.fullFileDispatcherThreadpoolSize = fullFileDispatcherThreadpoolSize;
             return this;
@@ -942,6 +964,65 @@ public class GPUdbFileHandler {
 
 
     /**
+     * Whether the server lists the given directory, asked for by name.  A
+     * directory that does not exist is answered with an empty listing, not
+     * an error; a failure to ask is thrown.
+     */
+    private boolean isListedDirectory( String dirName ) throws GPUdbException {
+        ShowDirectoriesResponse listing = this.db.showDirectories( dirName, new HashMap<>() );
+        for ( String reportedName : listing.getDirectories() ) {
+            if ( isSameKifsPath( dirName, reportedName ) )
+                return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Tells whether a KiFS path is the user's home directory given by its
+     * alias, "~", or a path under it ("~/...").
+     */
+    private static boolean isUnderUserHome( String path ) {
+        return path.equals( REMOTE_USER_HOME_DIR_PREFIX )
+                || path.startsWith( REMOTE_USER_HOME_DIR_PREFIX + KIFS_PATH_SEPARATOR );
+    }
+
+
+    /**
+     * Tells whether a KiFS path the server reported, in answer to a request
+     * for the given path, is that path.
+     *
+     * <p>The names are compared as given, but for the home directory:  a path
+     * asked for as "~" or "~/..." is reported with the directory's full name,
+     * "~" followed by the user name (e.g. "~admin/a.txt" for "~/a.txt").
+     *
+     * @param askedFor  The path the server was asked for.
+     * @param reported  A path in the server's answer.
+     * @return  Whether {@code reported} names {@code askedFor}.
+     */
+    static boolean isSameKifsPath( String askedFor, String reported ) {
+        if ( askedFor.equals( reported ) )
+            return true;
+
+        if ( !isUnderUserHome( askedFor ) || reported == null
+                || !reported.startsWith( REMOTE_USER_HOME_DIR_PREFIX ) )
+            return false;
+
+        // Compare all that follows the home directory's name
+        String askedRest = askedFor.substring( REMOTE_USER_HOME_DIR_PREFIX.length() );
+        int reportedHomeEnd = reported.indexOf( KIFS_PATH_SEPARATOR );
+        String reportedRest = ( reportedHomeEnd < 0 ) ? "" : reported.substring( reportedHomeEnd );
+
+        // The home directory must be reported with a user name
+        boolean reportedHasUser = ( reportedHomeEnd < 0 )
+                ? reported.length() > REMOTE_USER_HOME_DIR_PREFIX.length()
+                : reportedHomeEnd > REMOTE_USER_HOME_DIR_PREFIX.length();
+
+        return reportedHasUser && askedRest.equals( reportedRest );
+    }
+
+
+    /**
      * Checks whether the given KiFS directories exist or not.
      *
      * @param dirNames  The set of full KiFS directory paths to check for.
@@ -959,11 +1040,20 @@ public class GPUdbFileHandler {
             sdResp = this.db.showDirectories( "", new HashMap<>());
             Set<String> remoteDirNames = new LinkedHashSet<>( sdResp.getDirectories() );
 
-            remoteDirNames.retainAll( dirNames );
+            for ( String dirName : dirNames ) {
+                if ( dirName != null && isUnderUserHome( dirName ) ) {
+                    // The listing of all directories names every user's home
+                    // directory it may show; ask for this user's own
+                    if ( !kifsDirectoryExists( dirName ) )
+                        return false;
+                } else if ( !remoteDirNames.contains( dirName ) ) {
+                    return false;
+                }
+            }
 
-            return remoteDirNames.equals( dirNames );
+            return true;
         } catch (GPUdbException e) {
-            GPUdbLogger.error( e.getMessage() );
+            GPUdbLogger.info( e.getMessage() );
             return false;
         }
     }
@@ -973,6 +1063,8 @@ public class GPUdbFileHandler {
      * Checks whether the given KiFS directory exists or not.
      * <p>
      * Directory name may contain separators for nested directory checks.
+     * The user's home directory may be given as "~"; the server reports it
+     * under its full name, "~" followed by the user name.
      *
      * @param dirName  The full KiFS directory path to check for.
      * @return  Whether or not the given directory exists.
@@ -987,16 +1079,21 @@ public class GPUdbFileHandler {
         ShowDirectoriesResponse sdResp = null;
         try {
             sdResp = this.db.showDirectories( dirName, new HashMap<>());
-            return sdResp.getDirectories().contains( dirName );
+            for ( String reportedName : sdResp.getDirectories() ) {
+                if ( isSameKifsPath( dirName, reportedName ) )
+                    return true;
+            }
+            return false;
         } catch (GPUdbException e) {
-            GPUdbLogger.error( e.getMessage() );
+            GPUdbLogger.info( e.getMessage() );
             return false;
         }
     }
 
 
     /**
-     * Checks whether the given KiFS file exists or not.
+     * Checks whether the given KiFS file exists or not.  A file in the user's
+     * home directory may be given as "~/...".
      *
      * @param fileName  The full KiFS file path to check for.
      * @return  Whether or not the given file exists.
@@ -1011,9 +1108,13 @@ public class GPUdbFileHandler {
         ShowFilesResponse sfResp = null;
         try {
             sfResp = this.db.showFiles( Collections.singletonList( fileName ), new HashMap<>());
-            return sfResp.getFileNames().contains( fileName );
+            for ( String reportedName : sfResp.getFileNames() ) {
+                if ( isSameKifsPath( fileName, reportedName ) )
+                    return true;
+            }
+            return false;
         } catch (GPUdbException e) {
-            GPUdbLogger.error( e.getMessage() );
+            GPUdbLogger.info( e.getMessage() );
             return false;
         }
 

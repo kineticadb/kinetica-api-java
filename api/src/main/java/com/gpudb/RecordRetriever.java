@@ -16,10 +16,10 @@ import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 import org.apache.commons.lang3.mutable.MutableLong;
 
 /**
@@ -38,6 +38,14 @@ public class RecordRetriever<T> {
     private final TypeObjectMap<T> typeObjectMap;
     private volatile Map<String,String> options;
     private boolean tableReplicated;
+
+    /**
+     * Mixed into the choice of rank for a lookup on a replicated table, so
+     * that the same expression lands on one rank for this retriever but not
+     * on the same rank for every retriever in every client; see
+     * {@link #getLiveWorkerUrlFor}.
+     */
+    private final int rankSalt = java.util.concurrent.ThreadLocalRandom.current().nextInt();
 
     /**
      * The multi-head config the worker list was last built from, compared by
@@ -86,7 +94,6 @@ public class RecordRetriever<T> {
     // HA members
     private int numClusterSwitches;
     private URL currentHeadNodeURL;
-    private URL lastUsedUrl;
     private final Object haFailoverLock;
 
 
@@ -839,15 +846,28 @@ public class RecordRetriever<T> {
 
 
     /**
-     * Returns the URL of a randomly chosen <b>live</b> worker rank, for
-     * lookups that are not routed by a shard key (i.e. on replicated tables,
-     * where every live rank holds the whole table).
+     * Returns the URL of a <b>live</b> worker rank for a lookup that is not
+     * routed by a shard key (i.e. on replicated tables, where every live rank
+     * holds the whole table).
      *
-     * @return the URL of a randomly chosen live worker rank
+     * <p>The rank is chosen by the lookup's expression, so that every page of
+     * one lookup is taken from the same rank (whose rows may be in another
+     * order than another rank's), whatever other lookups run between its
+     * pages and from whichever thread; different lookups are still spread
+     * over the live ranks.  A lookup moves to another rank only when the set
+     * of live ranks changes.  The choice is salted per retriever, so a
+     * lookup every client makes -- a hot key polled from many services --
+     * is spread over the ranks by client rather than pinned to one rank
+     * everywhere.
+     *
+     * @param routing     the routing state to choose from
+     * @param expression  the lookup's whole filter expression; may be null
+     *
+     * @return the URL of the live worker rank for that expression
      *
      * @throws GPUdbException if no rank slot holds a live worker
      */
-    private URL getRandomLiveWorkerUrl( Routing routing ) throws GPUdbException {
+    private URL getLiveWorkerUrlFor( Routing routing, String expression ) throws GPUdbException {
         if ( (routing.liveWorkerIndices == null) || routing.liveWorkerIndices.isEmpty() ) {
             throw new GPUdbException( "No live worker rank is available for "
                                       + "record retrieval; all "
@@ -856,11 +876,12 @@ public class RecordRetriever<T> {
                                       + "(removed ranks)" );
         }
 
+        int hash = ((expression == null) ? 0 : expression.hashCode()) ^ this.rankSalt;
         int liveIndex = routing.liveWorkerIndices.get(
-                ThreadLocalRandom.current().nextInt( routing.liveWorkerIndices.size() ) );
+                Math.floorMod( hash, routing.liveWorkerIndices.size() ) );
 
         return routing.workerUrls.get( liveIndex );
-    }  // end getRandomLiveWorkerUrl
+    }  // end getLiveWorkerUrlFor
 
 
     /**
@@ -1062,6 +1083,22 @@ public class RecordRetriever<T> {
      */
     public GetRecordsResponse<T> getByKey(List<Object> keyValues, String expression,
         long offset) throws GPUdbException {
+        return getByKey( keyValues, expression, offset, GPUdbBase.END_OF_SET, null );
+    }
+
+
+    /**
+     * The lookup itself:  what {@link #getByKey(List, String, long)} does,
+     * with the page's size, and, for a lookup read page by page from a
+     * replicated table, the worker rank its pages come from.
+     *
+     * @param limit         how many records to return, or
+     *                      {@link GPUdbBase#END_OF_SET} for the server's page
+     * @param pinnedWorker  the rank a {@link Lookup} drew for its pages, or
+     *                      {@code null} to choose by the expression
+     */
+    private GetRecordsResponse<T> getByKey(List<Object> keyValues, String expression,
+        long offset, long limit, URL pinnedWorker) throws GPUdbException {
 
         // Take the routing state once and route this lookup entirely from that
         // snapshot.  A rebuild running concurrently publishes a new one; this
@@ -1071,9 +1108,6 @@ public class RecordRetriever<T> {
         boolean doWorkerLookup = routing.multiHeadEnabled;
         String compositeExpression = expression;
         boolean keyValuesSpecified = keyValues != null && !keyValues.isEmpty();
-
-        if (offset < 1)
-            this.lastUsedUrl = null;
 
         if (!keyValuesSpecified) {
             // Use head rank if table is [randomly] sharded and no keys are given,
@@ -1119,8 +1153,7 @@ public class RecordRetriever<T> {
                 );
         }
 
-        GetRecordsRequest request = new GetRecordsRequest(this.tableName, offset, GPUdbBase.END_OF_SET,
-            retrievalOptions);
+        GetRecordsRequest request = new GetRecordsRequest(this.tableName, offset, limit, retrievalOptions);
         RawGetRecordsResponse response = new RawGetRecordsResponse();
         GetRecordsResponse<T> decodedResponse = new GetRecordsResponse<>();
         
@@ -1141,14 +1174,14 @@ public class RecordRetriever<T> {
                 // If the table is replicated and it's determined that the
                 // server supports it, use random worker rank for lookups
                 if ( this.tableReplicated ) {
-                    // For replicated tables, use the same worker for new pages (i.e., offset > 0)
-                    // in case the data is in a different order on different workers
-                    if (this.lastUsedUrl != null)
-                        url = this.lastUsedUrl;
-                    else {
-                        url = getRandomLiveWorkerUrl( routing );
-                        this.lastUsedUrl = url; // Remember for next time
-                    }
+                    // For replicated tables, every page of one lookup must come
+                    // from one worker, in case the data is in a different order
+                    // on different workers.  The worker is therefore chosen by
+                    // the lookup's expression, not remembered between calls:
+                    // other lookups, or other threads, between two pages do not
+                    // change it.
+                    // A lookup read page by page has drawn its rank already
+                    url = (pinnedWorker != null) ? pinnedWorker : getLiveWorkerUrlFor( routing, compositeExpression );
                 } else {
                     // Not a replicated table; so calculate the shard to figure
                     // out which worker rank contains the requested records
@@ -1241,10 +1274,17 @@ public class RecordRetriever<T> {
             }
             GPUdbLogger.debug_with_info( "'retry' value: " + retry );
             if ( retry ) {
+                // A page pinned to one rank is not tried again:  the routing
+                // was rebuilt, so the rank may be gone, and a page from
+                // another rank could repeat or skip records
+                if ( pinnedWorker != null )
+                    throw new GPUdbException( "The lookup cannot go on from rank " + pinnedWorker
+                                              + " after a change of cluster or shard mapping: "
+                                              + ex.getMessage(), ex );
                 // We need to try fetching the records again
                 try {
                     // Don't use the modified expression;use the original one
-                    return this.getByKey( keyValues, expression );
+                    return this.getByKey( keyValues, expression, offset, limit, null );
                 } catch (Exception ex2) {
                     // Keep the original failure.  It is the diagnosis; the
                     // retry's own failure is usually a consequence of it, and
@@ -1278,9 +1318,16 @@ public class RecordRetriever<T> {
                           || ( retrievalAttemptTimestamp < this.shardUpdateTime.longValue() ) );
             }
             if ( retry ) {
+                // A page pinned to one rank is not tried again:  the routing
+                // was rebuilt, so the rank may be gone, and a page from
+                // another rank could repeat or skip records
+                if ( pinnedWorker != null )
+                    throw new GPUdbException( "The lookup cannot go on from rank " + pinnedWorker
+                                              + " after a change of cluster or shard mapping: "
+                                              + ex.getMessage(), ex );
                 // We need to try fetching the records again
                 try {
-                    return this.getByKey( keyValues, expression );
+                    return this.getByKey( keyValues, expression, offset, limit, null );
                 } catch (Exception ex2) {
                     // Keep the original failure.  It is the diagnosis; the
                     // retry's own failure is usually a consequence of it, and
@@ -1294,7 +1341,162 @@ public class RecordRetriever<T> {
         }
 
         return decodedResponse;
-    }  // getByKey()
+    }
+
+
+    /**
+     * Makes a lookup whose records are read a page at a time; see
+     * {@link Lookup}.  The lookup is made here and sent when it is read.
+     *
+     * @param keyValues   the key values to use for the lookup, as for
+     *                    {@link #getByKey(List, String)}; may be null
+     * @param expression  a filter expression applied to the records the key
+     *                    values select, or to the whole table; may be null
+     * @param pageSize    how many records to read from the server at a time,
+     *                    or 0 for the server's own page size
+     *
+     * @return            the lookup, to iterate over once
+     *
+     * @throws GPUdbException if no worker rank is live to take the lookup
+     */
+    public Lookup lookup(List<Object> keyValues, String expression, int pageSize) throws GPUdbException {
+        return new Lookup( keyValues, expression, pageSize );
+    }
+
+
+    /**
+     * A live worker rank drawn at random from the routing state.
+     */
+    private static URL randomLiveWorkerUrl( Routing routing ) throws GPUdbException {
+        if ( (routing.liveWorkerIndices == null) || routing.liveWorkerIndices.isEmpty() ) {
+            throw new GPUdbException( "No live worker rank is available for "
+                                      + "record retrieval; all "
+                                      + routing.workerUrls.size()
+                                      + " worker rank slot(s) are empty "
+                                      + "(removed ranks)" );
+        }
+        int pick = java.util.concurrent.ThreadLocalRandom.current().nextInt( routing.liveWorkerIndices.size() );
+        return routing.workerUrls.get( routing.liveWorkerIndices.get( pick ) );
+    }
+
+
+    /**
+     * The records one lookup returns, read a page at a time in a single
+     * pass.
+     * <p>
+     * On a replicated table every page is taken from one worker rank, drawn
+     * at random when the lookup is made:  each rank holds the whole table in
+     * an order of its own, so a page from another rank could repeat or skip
+     * records.  A lookup made with {@link RecordRetriever#getByKey(List, String, long)}
+     * and an offset has no such identity -- one call cannot know whether the
+     * next is its next page -- so those send every call with one expression
+     * to one rank per retriever; a lookup made here is spread over the ranks
+     * lookup by lookup.  Should the routing be rebuilt during the pass -- the
+     * rank leaving the cluster, a fail-over, a change of shard mapping -- the
+     * pass fails rather than go on from another rank.
+     * <p>
+     * {@link #size()} is the number of records the lookup matches, known once
+     * its first page has been read; asking for it reads that page.
+     */
+    public final class Lookup implements Iterable<T> {
+        private final List<Object> keyValues;
+        private final String expression;
+        private final long pageSize;
+        private final Routing routing;
+        private final URL worker;
+
+        private List<T> page = Collections.emptyList();
+        private int position = 0;
+        private long offset = 0;
+        private boolean started = false;
+        private boolean more = true;
+        private long total = -1;
+        private boolean iterated = false;
+
+        private Lookup( List<Object> keyValues, String expression, int pageSize ) throws GPUdbException {
+            this.keyValues = keyValues;
+            this.expression = expression;
+            this.pageSize = (pageSize > 0) ? pageSize : GPUdbBase.END_OF_SET;
+            this.routing = RecordRetriever.this.routing;
+
+            // The rank is drawn here, once, where a replicated table is looked
+            // up through the workers; a sharded table's rank is the key's, and
+            // a lookup with neither keys nor expression goes to the head node
+            boolean replicatedWorkerLookup = this.routing.multiHeadEnabled
+                    && RecordRetriever.this.tableReplicated
+                    && ( (keyValues != null && !keyValues.isEmpty())
+                         || (expression != null && !expression.isEmpty()) );
+            this.worker = replicatedWorkerLookup ? randomLiveWorkerUrl( this.routing ) : null;
+        }
+
+        /**
+         * @return  how many records the lookup matches in all; reads the
+         *          first page if none has been read
+         *
+         * @throws GPUdbException if the page cannot be read
+         */
+        public long size() throws GPUdbException {
+            if ( !this.started )
+                readPage();
+            return this.total;
+        }
+
+        private void readPage() throws GPUdbException {
+            // A rank drawn for this lookup is only right against the routing
+            // state it was drawn from
+            if ( this.worker != null && RecordRetriever.this.routing != this.routing )
+                throw new GPUdbException( "The lookup cannot go on from rank " + this.worker
+                                          + ": the cluster or shard mapping changed during it" );
+
+            GetRecordsResponse<T> response = RecordRetriever.this.getByKey(
+                    this.keyValues, this.expression, this.offset, this.pageSize, this.worker );
+            this.started = true;
+            this.page = response.getData();
+            this.position = 0;
+            this.offset += this.page.size();
+            this.total = response.getTotalNumberOfRecords();
+            // Read on while the count says records remain, whatever the
+            // reply's own flag says:  a worker rank's reply can report no
+            // more records while its count says otherwise
+            this.more = !this.page.isEmpty()
+                        && ( response.getHasMoreRecords() || this.offset < this.total );
+            GPUdbLogger.debug_with_info( String.format(
+                    "Lookup page of %d record(s) at offset %d; has_more_records=%s, total=%d, from %s",
+                    this.page.size(), this.offset - this.page.size(), response.getHasMoreRecords(),
+                    this.total, (this.worker == null) ? "the head node" : this.worker ) );
+        }
+
+        @Override
+        public Iterator<T> iterator() {
+            if ( this.iterated )
+                throw new IllegalStateException( "A lookup is read once; make another for a second pass" );
+            this.iterated = true;
+
+            return new Iterator<T>() {
+                @Override
+                public boolean hasNext() {
+                    if ( position < page.size() )
+                        return true;
+                    if ( started && !more )
+                        return false;
+                    try {
+                        readPage();
+                    } catch ( GPUdbException ex ) {
+                        throw new GPUdbRuntimeException( ex.getMessage(), ex );
+                    }
+                    return position < page.size();
+                }
+
+                @Override
+                public T next() {
+                    if ( !hasNext() )
+                        throw new java.util.NoSuchElementException();
+                    return page.get( position++ );
+                }
+            };
+        }
+    }
+  // getByKey()
 
     
     /**
@@ -1393,9 +1595,6 @@ public class RecordRetriever<T> {
         String compositeExpression = expression;
         boolean keyValuesSpecified = keyValues != null && !keyValues.isEmpty();
 
-        if (offset < 1)
-            this.lastUsedUrl = null;
-
         if (!keyValuesSpecified)
         {
             // Use head rank if table is [randomly] sharded and no keys are given,
@@ -1457,14 +1656,13 @@ public class RecordRetriever<T> {
                 // server supports it, use random worker rank for lookups
                 if ( this.tableReplicated )
                 {
-                    // For replicated tables, use the same worker for new pages (i.e., offset > 0)
-                    // in case the data is in a different order on different workers
-                    if (this.lastUsedUrl != null)
-                        url = this.lastUsedUrl;
-                    else {
-                        url = getRandomLiveWorkerUrl( routing );
-                        this.lastUsedUrl = url; // Remember for next time
-                    }
+                    // For replicated tables, every page of one lookup must come
+                    // from one worker, in case the data is in a different order
+                    // on different workers.  The worker is therefore chosen by
+                    // the lookup's expression, not remembered between calls:
+                    // other lookups, or other threads, between two pages do not
+                    // change it.
+                    url = getLiveWorkerUrlFor( routing, compositeExpression );
                 } else {
                     // Not a replicated table; so calculate the shard to figure
                     // out which worker rank contains the requested records
@@ -1554,7 +1752,7 @@ public class RecordRetriever<T> {
                 // We need to try fetching the records again
                 try {
                     // Don't use the modified expression;use the original one
-                    return this.getColumnsByKey( columns, keyValues, expression );
+                    return this.getColumnsByKey( columns, keyValues, expression, offset );
                 } catch (Exception ex2) {
                     // Keep the original failure.  It is the diagnosis; the
                     // retry's own failure is usually a consequence of it, and
@@ -1590,7 +1788,7 @@ public class RecordRetriever<T> {
             if ( retry ) {
                 // We need to try fetching the records again
                 try {
-                    return this.getColumnsByKey( columns, keyValues, expression );
+                    return this.getColumnsByKey( columns, keyValues, expression, offset );
                 } catch (Exception ex2) {
                     // Keep the original failure.  It is the diagnosis; the
                     // retry's own failure is usually a consequence of it, and

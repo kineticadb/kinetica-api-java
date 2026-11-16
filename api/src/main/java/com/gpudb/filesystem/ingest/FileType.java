@@ -11,7 +11,11 @@ public enum FileType {
     @JsonProperty("json")
     JSON("json"),
     @JsonProperty("shapefile")
-    SHAPEFILE("shapefile");
+    SHAPEFILE("shapefile"),
+    @JsonProperty("avro")
+    AVRO("avro"),
+    @JsonProperty("gdb")
+    GDB("gdb");
 
     private final String text;
 
@@ -23,6 +27,24 @@ public enum FileType {
         return this.text;
     }
 
+    /**
+     * Returns the file type the server assumes when none is given and none
+     * can be told from the file's extension: {@link #DELIMITED_TEXT}.
+     *
+     * @return  the server's default file type
+     */
+    public static FileType getDefault() {
+        return DELIMITED_TEXT;
+    }
+
+    /**
+     * Returns the text of the default file type; misnamed, as it has nothing
+     * to do with partitioning.
+     *
+     * @deprecated  Use {@link #getDefault()}.
+     * @return  "delimited_text"
+     */
+    @Deprecated
     public String defaultPartitionType() {
         return DELIMITED_TEXT.getText();
     }

@@ -11,7 +11,9 @@ public enum PartitionType {
     @JsonProperty("list")
     LIST("list"),
     @JsonProperty("hash")
-    HASH("hash");
+    HASH("hash"),
+    @JsonProperty("series")
+    SERIES("series");
 
     private final String text;
 
@@ -19,6 +21,13 @@ public enum PartitionType {
         this.text = text;
     }
 
+    /**
+     * Returns the name of this partition type, in lowercase.  The server
+     * documents the values in uppercase, which is how
+     * {@link TableCreationOptions#setPartitionType(PartitionType)} sends them.
+     *
+     * @return  the lowercase name of this partition type
+     */
     public String getText() {
         return this.text;
     }
