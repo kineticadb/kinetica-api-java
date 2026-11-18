@@ -906,10 +906,13 @@ public class BulkInserter<T> implements AutoCloseable {
         this.isTableReplicated = tableDescriptions.contains(ShowTableResponse.TableDescriptions.REPLICATED);
         this.tableHasPrimaryKey = hasPrimaryKey( tableInfo );
 
-        // If no worker list is given, attempt to create one, by default, using
-        // the given connection's work rank list
+        // If no worker list is given, create one from the rank addresses the
+        // connection has determined for its current cluster.  Acquiring, rather
+        // than reading the snapshot the connection holds, so the first
+        // inserter built after connecting or after a fail-over does not start
+        // on unverified addresses and rebuild on its first flush.
         if (this.workerList == null)
-            this.workerList = new com.gpudb.WorkerList( this.gpudb.getCurrentMultiHeadSnapshot() );
+            this.workerList = new com.gpudb.WorkerList( this.gpudb.acquireMultiHeadSnapshot( false ) );
 
         // Set if multi-head I/O is turned on at the server and rank URLs are accessible
         boolean isMultiHeadEnabled = ( (this.workerList != null) && !this.workerList.isEmpty() );

@@ -393,15 +393,14 @@ public class RecordRetriever<T> {
         }
 
         // If no worker list is given, use the rank URLs the connection has
-        // already resolved, which is the route BulkInserter takes.
+        // determined for its current cluster, which is the route BulkInserter
+        // takes.
         //
-        // Those URLs were filtered through the user's hostname regex when the
-        // cluster was discovered (GPUdbBase.getRankURLs), and they already carry
-        // the null placeholders for ranks removed from the cluster.  Building
-        // from them therefore honors setHostnameRegex -- and it avoids a
-        // second /show/system/properties round trip that could itself fail.
+        // Acquiring, rather than reading the snapshot the connection holds, so
+        // the first object built after connecting or after a fail-over does not
+        // start on unverified addresses and rebuild on its first retrieval.
         if (this.workerList == null) {
-            this.workerList = new WorkerList( this.gpudb.getCurrentMultiHeadSnapshot() );
+            this.workerList = new WorkerList( this.gpudb.acquireMultiHeadSnapshot( false ) );
 
             if (this.workerList.isEmpty())
                 GPUdbLogger.info("No worker rank URLs available for record retrieval; using head node instead.");

@@ -2,6 +2,36 @@
 
 ## Version 7.2
 
+### Version 7.2.3.32 - 2026-11-18
+
+#### Changed
+-   The specific cause for multi-head operations not being available on a
+    cluster is now logged.
+
+#### Fixed
+-   Only the cluster whose head rank is unreachable at its advertised addresses
+    operates in degraded mode; HA discovery still continues on.
+-   `WorkerList(GPUdb)`, and a `BulkInserter` or `RecordRetriever` built
+    without a worker list, could take the rank addresses a cluster advertises
+    before the connection had checked that they answer.  The list named ranks
+    the client could not reach, and the object started on them and rebuilt on
+    its first flush or retrieval.  The connection's check now runs first, so
+    the first such construction after an arrival carries its cost, one request
+    per rank.
+-   Honored disabling of auto-discovery even after fail-over/fail-back.
+-   `GPUdbFileHandler.upload()` and `ingest()` read a local name holding a
+    `[` or `{` as a pattern even when a file of that name existed, so
+    `q[1].csv` selected `q1.csv` and was refused as matching nothing where
+    there was no such file.  A file or directory of the literal name is now
+    taken first, and a name is read as a pattern only when nothing exists
+    under it.
+-   On Windows, `GPUdbFileHandler.upload()` and `ingest()` refused every
+    absolute local path written with backslashes -- a file, a pattern or a
+    directory -- as matching no local file, because the backslash was read
+    as the glob escape it is on other platforms.  Relative paths, and paths
+    written with forward slashes, were unaffected.
+
+
 ### Version 7.2.3.31 - 2026-11-16
 
 #### Security
@@ -28,7 +58,7 @@
 #### Changed
 -   `GPUdbFileHandler.upload()` and `ingest()` now throw a `GPUdbException`
     when a file pattern matches no local file, instead of uploading nothing;
-    and when a given file, pattern or directory cannot be read while the
+    and when a given file, pattern, or directory cannot be read while the
     files are being resolved, instead of logging it and uploading the files
     resolved so far.  Every such problem in the request is named in the one
     exception, and nothing is uploaded.

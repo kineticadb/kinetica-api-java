@@ -186,10 +186,15 @@ class FileOperation {
             List<String> localResolvedFiles = new ArrayList<>();
             List<String> remoteResolvedFiles = new ArrayList<>();
 
-            // Check if the filename contains glob characters (*, ?, {}, [], etc.)
-            boolean isPattern = isGlobPattern(patternOrName);
-
             String explicitPath = searchBaseDir + File.separator + patternOrName;
+
+            // A name holding a glob character (*, ?, {, [, and the escape where
+            // that is not the separator) is a pattern -- unless a file or
+            // directory of exactly that name exists.  "[" and "{" are legal
+            // in file names, and a name that exists is what the caller meant,
+            // not the class of names it could also be read as:  given
+            // "q[1].csv", the file of that name, never q1.csv.
+            boolean isPattern = isGlobPattern(patternOrName) && !literalExists(explicitPath);
 
             try {
                 if (isPattern) {
@@ -222,7 +227,11 @@ class FileOperation {
                     String fullPath = explicitPath;
                     if (localFileExists(fullPath)) {
                         localResolvedFiles.add(fullPath);
-                        remoteResolvedFiles.add(this.dirName + GPUdbFileHandler.KIFS_PATH_SEPARATOR + patternOrName);
+                        // The name keeps any directory elements under the base
+                        // the parse left it (a directory named with a glob
+                        // character), written in the KiFS separator
+                        remoteResolvedFiles.add(this.dirName + GPUdbFileHandler.KIFS_PATH_SEPARATOR
+                                                + patternOrName.replace(File.separator, GPUdbFileHandler.KIFS_PATH_SEPARATOR));
                     } else {
                         unmatched.add(this.fileNames.get(n));
                     }
@@ -447,11 +456,30 @@ class FileOperation {
     /**
      * Checks the given string for the presence of glob characters.
      *
+     * <p>A backslash counts only where it is not the platform's path
+     * separator.  In the glob syntax it escapes the character after it, but
+     * on Windows it separates path elements, and reading it as an escape
+     * there would make every absolute path a pattern.
+     *
      * @param s String to check for glob characters.
      * @return  Whether or not glob characters exist in the given string.
      */
     private static boolean isGlobPattern(String s) {
-        return StringUtils.containsAny(s, '*', '?', '{', '[', '\\');
+        return StringUtils.containsAny(s, '*', '?', '{', '[')
+               || ((File.separatorChar != '\\') && StringUtils.contains(s, '\\'));
+    }
+
+    /**
+     * Checks whether a file or directory of exactly the given name exists.
+     * A name the platform cannot form at all -- one holding a character its
+     * file names may not -- names nothing.
+     */
+    private static boolean literalExists(String path) {
+        try {
+            return Files.exists(Paths.get(path));
+        } catch (java.nio.file.InvalidPathException e) {
+            return false;
+        }
     }
 
     /**

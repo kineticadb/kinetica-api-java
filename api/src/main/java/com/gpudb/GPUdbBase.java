@@ -4895,6 +4895,16 @@ public abstract class GPUdbBase implements AutoCloseable {
         if ( cluster == null )
             return false;
 
+        // Auto-discovery off is a connection-wide choice -- the user's, or this
+        // connection's own on finding it could not discover -- that multi-head
+        // is not used anywhere on the ring.  The cluster record then holds no
+        // rank addresses, and acquiring some here would turn multi-head on
+        // against that choice; the probe is owed nothing beyond that answer.
+        if ( this.disableAutoDiscovery ) {
+            cluster.setProbeOwed( false );
+            return false;
+        }
+
         boolean wasAvailable = cluster.isMultiHeadAvailable();
         List<URL> workerUrls;
         // Whether the probe below decided reachability for itself.  A refresh
@@ -4902,9 +4912,15 @@ public abstract class GPUdbBase implements AutoCloseable {
         // still be probed rather than inherited as good.
         boolean probeDecided = false;
         boolean available    = false;
+        // Whether the server has multi-head on at all, for the reason given
+        // when it is found unavailable:  off at the server, enabled but no
+        // rank address advertised, or addresses advertised and unreachable
+        boolean serverMultiHeadEnabled = true;
 
         try {
             Map<String, String> properties = getSystemProperties( cluster.getActiveHeadNodeUrl() );
+            serverMultiHeadEnabled = ShowSystemPropertiesResponse.PropertyMap.TRUE.equalsIgnoreCase(
+                    properties.get( AddressResolution.SYSTEM_PROPERTIES_RESPONSE_ENABLE_MH ) );
 
             // Resolution draws on four properties, ordered so that addresses an
             // operator configured are tried before ones the server discovered
@@ -4961,11 +4977,18 @@ public abstract class GPUdbBase implements AutoCloseable {
         // is reported by switchURL() when the switch happens; warning again here
         // would double up on every failover onto it.
         if ( wasAvailable && !available ) {
+            String reason;
+            if ( (workerUrls != null) && !workerUrls.isEmpty() )
+                reason = "its worker addresses are not reachable from this client";
+            else if ( serverMultiHeadEnabled )
+                reason = "it advertises no worker rank addresses although multi-head is enabled at the server"
+                         + " (" + AddressResolution.SYSTEM_PROPERTIES_RESPONSE_SERVER_URLS + " is not set)";
+            else
+                reason = "multi-head is off at the server";
             GPUdbLogger.warn( String.format(
-                    "Multi-head operations are no longer available on cluster <%s>:"
-                    + " its worker addresses are not reachable from this client."
+                    "Multi-head operations are not available on cluster <%s>: %s."
                     + "  Operations will use the head node only.",
-                    cluster.getActiveHeadNodeUrl() ) );
+                    cluster.getActiveHeadNodeUrl(), reason ) );
         }
 
         return available;
@@ -7358,6 +7381,43 @@ public abstract class GPUdbBase implements AutoCloseable {
 
 
     /**
+     * Appends the HA ring head nodes from the given system properties map to
+     * the given queue.
+     *
+     * @param systemProperties  the cluster's properties, as read
+     * @param urlQueue          the discovery queue, which the head nodes not
+     *                          yet known are appended to
+     *
+     * @throws GPUdbException  if the ring's head nodes cannot be read from the
+     *         properties, a hostname regex that matches none of a member's
+     *         addresses included
+     */
+    private void queueHARingHeadNodes( Map<String, String> systemProperties, Deque<URL> urlQueue )
+        throws GPUdbException {
+
+        List<URL> haRingHeadNodeURLs = AddressResolution.getHARingHeadNodeURLs( systemProperties, this.hostnameRegex );
+        GPUdbLogger.debug_with_info( "Got HA ring head node URLs: " + Arrays.toString(haRingHeadNodeURLs.toArray()) );
+        for (URL haUrl : haRingHeadNodeURLs) {
+            if (getIndexOfClusterContainingNode(haUrl.getHost()) == -1) {
+                // We have not encountered this cluster yet; add it to the
+                // queue of URLs to process
+                if( !urlQueue.contains(haUrl) ) {
+                    urlQueue.add( haUrl );
+                    GPUdbLogger.debug_with_info(String.format("HA ring head node URL %s not found in known clusters; adding to queue to process", haUrl.toString()));
+                }
+            } else {
+                GPUdbLogger.debug_with_info(String.format("HA ring head node URL %s found in known clusters; skipping", haUrl.toString()));
+            }
+        }
+
+        GPUdbLogger.debug_with_info(String.format(
+                "URLs queue after processing this HA ring's head node URLs (size %d): %s",
+                urlQueue.size(), Arrays.toString(urlQueue.toArray())
+        ));
+    }  // end queueHARingHeadNodes
+
+
+    /**
      * Parse the given list of URLs which may have, in any order, URLs
      * for head node (rank-0) or worker ranks of any number of clusters.
      * Sort it all out and save information in a list of objects each
@@ -7555,10 +7615,18 @@ public abstract class GPUdbBase implements AutoCloseable {
                         ClusterAddressInfo degraded = new ClusterAddressInfo( url, this.hostManagerPort );
                         degraded.setHaStatus( haStatusFromStatusCheck );
                         degraded.setMultiHeadAvailable( false );
+                        // The record keeps every address the cluster advertises
+                        // for its head rank, reachable or not:  a ring peer names
+                        // this cluster by one of them, and must find this record
+                        // rather than queue the address as a cluster of its own
+                        degraded.getHostNames().addAll( clusterInfo.getHostNames() );
 
                         clusterIndicesOfUserGivenURLs.add( this.hostAddresses.size() );
                         this.hostAddresses.add( degraded );
 
+                        // Queue the HA ring head nodes for processing, even
+                        // though this cluster connects in degraded mode
+                        queueHARingHeadNodes( systemProperties, urlQueue );
                         continue;
                     }
     
@@ -7606,28 +7674,7 @@ public abstract class GPUdbBase implements AutoCloseable {
 
             GPUdbLogger.debug_with_info(String.format("Added URL %s -> cluster %s", urlStr, clusterInfo.toString()));
 
-            // Parse the HA ring head nodes in the properties and add them
-            // to this queue (only if we haven't processed them already).
-            // This could fail due to a hostname regex mismatch.
-            List<URL> haRingHeadNodeURLs = AddressResolution.getHARingHeadNodeURLs( systemProperties, this.hostnameRegex );
-            GPUdbLogger.debug_with_info( "Got HA ring head node URLs: " + Arrays.toString(haRingHeadNodeURLs.toArray()) );
-            for (URL haUrl : haRingHeadNodeURLs) {
-                if (getIndexOfClusterContainingNode(haUrl.getHost()) == -1) {
-                    // We have not encountered this cluster yet; add it to the
-                    // queue of URLs to process
-                    if( !urlQueue.contains(haUrl) ) {
-                        urlQueue.add( haUrl );
-                        GPUdbLogger.debug_with_info(String.format("HA ring head node URL %s not found in known clusters; adding to queue to process", haUrl.toString()));
-                    }
-                } else {
-                    GPUdbLogger.debug_with_info(String.format("HA ring head node URL %s found in known clusters; skipping", haUrl.toString()));
-                }
-            }
-
-            GPUdbLogger.debug_with_info(String.format(
-                    "URLs queue after processing this HA ring's head node URLs (size %d): ",
-                    urlQueue.size(), Arrays.toString(urlQueue.toArray())
-            ));
+            queueHARingHeadNodes( systemProperties, urlQueue );
         }   // end while
 
         // Check that we have got at least one working URL

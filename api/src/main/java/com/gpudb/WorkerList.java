@@ -90,23 +90,25 @@ public class WorkerList extends ArrayList<URL> {
 
     /**
      * Creates a {@link WorkerList} from the worker rank addresses the given
-     * connection has already discovered for the cluster it is currently on.
+     * connection has determined for the cluster it is currently on.
      *
-     * <p>This reads the connection's addresses; it does not query the server or
-     * re-resolve them.  They were filtered through the connection's hostname
-     * regex when that cluster was discovered, so they already reflect it.
+     * <p>This reads the connection's addresses and resolves none of its own.
+     * The connection filtered them through its hostname regex and checked
+     * that each one answers, in its capability check of the cluster.  Where
+     * that check has not yet run, this waits for it, so the list is never
+     * built from addresses nothing has reached.
      *
      * <p>If the connection has no worker addresses for the current cluster --
-     * multi-head is off at the server, or the cluster advertises none this
-     * client can use -- the list is empty and the object using it operates
-     * through the head node.
+     * multi-head is off at the server, the cluster advertises none this client
+     * can use, or the ones advertised do not answer -- the list is empty and
+     * the object using it operates through the head node.
      *
      * @param gpudb  the {@link GPUdb} instance whose addresses to use
      *
      * @throws GPUdbException  never thrown; retained for source compatibility
      */
     public WorkerList(GPUdb gpudb) throws GPUdbException {
-        this( gpudb.getCurrentMultiHeadSnapshot() );
+        this( gpudb.acquireMultiHeadSnapshot( false ) );
     }
 
 
